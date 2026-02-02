@@ -423,7 +423,7 @@ def apply_conditions(listings: list[HomesListing]) -> list[HomesListing]:
             continue
         if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
             continue
-        if r.area_m2 is not None and (r.area_m2 < AREA_MIN_M2 or r.area_m2 > AREA_MAX_M2):
+        if r.area_m2 is not None and (r.area_m2 < AREA_MIN_M2 or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
             continue
         if not _layout_ok(r.layout):
             continue

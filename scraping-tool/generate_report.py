@@ -52,10 +52,10 @@ try:
     )
 except ImportError:
     PRICE_MIN_MAN, PRICE_MAX_MAN = 7500, 10000
-    AREA_MIN_M2, AREA_MAX_M2 = 65, 70
+    AREA_MIN_M2, AREA_MAX_M2 = 60, None
     BUILT_YEAR_MIN = datetime.now().year - 20
     WALK_MIN_MAX = 7
-    TOTAL_UNITS_MIN = 100
+    TOTAL_UNITS_MIN = 50
     STATION_PASSENGERS_MIN = 0
     AREA_LABEL = "東京23区"
     ALLOWED_LINE_KEYWORDS = ()
@@ -77,7 +77,7 @@ def get_search_conditions_md() -> str:
         "|------|------|",
         f"| 検索地域 | {AREA_LABEL} |",
         f"| 価格 | {price_range} |",
-        f"| 専有面積 | {AREA_MIN_M2}〜{AREA_MAX_M2}㎡ |",
+        f"| 専有面積 | {AREA_MIN_M2}㎡以上" + (f"〜{AREA_MAX_M2}㎡" if AREA_MAX_M2 is not None else "") + " |",
         "| 間取り | 2LDK〜3LDK 系（2LDK, 3LDK, 2DK, 3DK など） |",
         f"| 築年 | {BUILT_YEAR_MIN}年以降（築20年以内） |",
         f"| 駅徒歩 | {WALK_MIN_MAX}分以内 |",
