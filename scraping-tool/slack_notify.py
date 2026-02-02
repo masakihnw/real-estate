@@ -9,123 +9,20 @@ import os
 import sys
 from pathlib import Path
 from typing import Any, Optional
-from urllib.parse import urljoin
 
-try:
-    from asset_score import get_asset_score_and_rank, get_asset_score_and_rank_with_breakdown
-except ImportError:
-    def get_asset_score_and_rank(r: dict, **kwargs: Any) -> tuple[float, str]:
-        return 0.0, "-"
-
-    def get_asset_score_and_rank_with_breakdown(r: dict, **kwargs: Any) -> tuple[float, str, str]:
-        return 0.0, "-", "-"
-
-try:
-    from asset_simulation import simulate_10year_from_listing, format_simulation_for_report
-except ImportError:
-    def simulate_10year_from_listing(r: dict) -> Any:
-        return None
-
-    def format_simulation_for_report(sim: Any) -> tuple[str, str, str, str]:
-        return "-", "-", "-", "-"
-
-try:
-    from loan_calc import get_loan_display_for_listing
-except ImportError:
-    def get_loan_display_for_listing(price_man: Any) -> tuple[str, str]:
-        return "-", "-"
-
-try:
-    from commute import get_commute_display_with_estimate
-except ImportError:
-    def get_commute_display_with_estimate(station_line: str, walk_min: Optional[int]) -> tuple[str, str]:
-        return ("-", "-")
-
-try:
-    from generate_report import (
-        compare_listings,
-        format_price,
-        format_area,
-        format_floor,
-        format_total_units,
-        get_three_scenario_columns,
-        get_ward_from_address,
-        get_station_group,
-        row_merge_key,
-        TOKYO_23_WARDS,
-    )
-    from commute import format_all_station_walk
-except ImportError:
-    # generate_report / commute がインポートできない場合のフォールバック
-    def compare_listings(current: list[dict], previous: Optional[list[dict]] = None) -> dict[str, Any]:
-        if not previous:
-            return {"new": current, "updated": [], "removed": []}
-        current_by_url = {r["url"]: r for r in current}
-        previous_by_url = {r["url"]: r for r in previous}
-        new = [curr for url, curr in current_by_url.items() if url not in previous_by_url]
-        updated = [
-            {"current": curr, "previous": previous_by_url[url]}
-            for url, curr in current_by_url.items()
-            if url in previous_by_url and curr.get("price_man") != previous_by_url[url].get("price_man")
-        ]
-        removed = [prev for url, prev in previous_by_url.items() if url not in current_by_url]
-        return {"new": new, "updated": updated, "removed": removed}
-
-    def format_price(price_man: Optional[int]) -> str:
-        if price_man is None:
-            return "-"
-        if price_man >= 10000:
-            oku = price_man // 10000
-            man = price_man % 10000
-            if man == 0:
-                return f"{oku}億円"
-            return f"{oku}億{man}万円"
-        return f"{price_man}万円"
-
-    def format_area(area_m2: Optional[float]) -> str:
-        return f"{area_m2:.1f}㎡" if area_m2 else "-"
-
-    def format_walk(walk_min: Optional[int]) -> str:
-        return f"徒歩{walk_min}分" if walk_min is not None else "-"
-
-    def format_all_station_walk(station_line: str, fallback_walk_min: Optional[int]) -> str:
-        return format_walk(fallback_walk_min) if fallback_walk_min is not None else "-"
-
-    def format_floor(floor_position: Any, floor_total: Any) -> str:
-        if floor_position is not None and floor_position >= 0 and floor_total is not None and floor_total >= 1:
-            return f"{floor_position}階/{floor_total}階建"
-        if floor_position is not None and floor_position >= 0:
-            return f"{floor_position}階"
-        if floor_total is not None and floor_total >= 1:
-            return f"{floor_total}階建"
-        return "階:-"
-
-    def format_total_units(total_units: Optional[int]) -> str:
-        return f"{total_units}戸" if total_units else "戸数:不明"
-
-    def get_three_scenario_columns(r: dict) -> tuple[str, str, str]:
-        return "-", "-", "-"
-
-    def get_ward_from_address(address: str) -> str:
-        return ""
-
-    def get_station_group(station_line: str) -> str:
-        return (station_line or "")[:25] or "(駅情報なし)"
-
-    def row_merge_key(r: dict) -> tuple:
-        name = (r.get("name") or "").strip()
-        name_norm = "".join(name.split())  # 全角・半角スペースを除いて同一判定
-        return (name_norm, r.get("price_man"), (r.get("layout") or "").strip())
-
-    TOKYO_23_WARDS = ()
-
-
-def load_json(path: Path) -> list[dict[str, Any]]:
-    """JSONファイルを読み込む。"""
-    if not path.exists():
-        return []
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+from optional_features import optional_features
+from report_utils import (
+    compare_listings,
+    format_area,
+    format_floor,
+    format_price,
+    format_total_units,
+    get_station_group,
+    get_ward_from_address,
+    load_json,
+    row_merge_key,
+    TOKYO_23_WARDS,
+)
 
 
 def format_diff_message(diff: dict[str, Any], current_count: int, report_url: Optional[str] = None) -> str:
@@ -158,8 +55,7 @@ def format_diff_message(diff: dict[str, Any], current_count: int, report_url: Op
             name = r.get("name", "")[:40]
             price = format_price(r.get("price_man"))
             layout = r.get("layout", "-")
-            area = r.get("area_m2")
-            area_str = f"{area:.1f}㎡" if area else "-"
+            area_str = format_area(r.get("area_m2"))
             lines.append(f"  • {name}")
             lines.append(f"    {price} | {layout} | {area_str}")
         if len(diff["new"]) > 5:
@@ -257,22 +153,22 @@ SLACK_TEXT_LIMIT = 35000
 
 def _listing_line_slack(r: dict, url: str = "", include_breakdown: bool = True) -> str:
     """1物件をSlack用1行に。総戸数・資産性・根拠・楽観/中立/悲観10年後・通勤時間（M3・PG）含む。"""
-    _, rank, breakdown = get_asset_score_and_rank_with_breakdown(r)
-    opt_10y, neu_10y, pes_10y = get_three_scenario_columns(r)
-    m3_str, pg_str = get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
+    _, rank, breakdown = optional_features.get_asset_score_and_rank_with_breakdown(r)
+    opt_10y, neu_10y, pes_10y = optional_features.get_three_scenario_columns(r)
+    m3_str, pg_str = optional_features.get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
     name = (r.get("name") or "")[:28]
     price = format_price(r.get("price_man"))
     layout = r.get("layout", "-")
     area = format_area(r.get("area_m2"))
     built = f"築{r.get('built_year', '-')}年" if r.get("built_year") else "-"
-    walk = format_all_station_walk(r.get("station_line"), r.get("walk_min"))
+    walk = optional_features.format_all_station_walk(r.get("station_line"), r.get("walk_min"))
     floor_str = format_floor(r.get("floor_position"), r.get("floor_total"))
     units = format_total_units(r.get("total_units"))
     parts = [name, price, layout, area, built, walk, floor_str, units, rank]
     if include_breakdown:
         parts.append(breakdown)
     parts.extend([f"楽観:{opt_10y}", f"中立:{neu_10y}", f"悲観:{pes_10y}"])
-    monthly_loan, _ = get_loan_display_for_listing(r.get("price_man"))
+    monthly_loan, _ = optional_features.get_loan_display_for_listing(r.get("price_man"))
     parts.extend([f"月額:{monthly_loan}"])
     parts.extend([f"M3:{m3_str}", f"PG:{pg_str}"])
     line = "• " + " ｜ ".join(parts)
@@ -290,11 +186,11 @@ def build_slack_message_from_listings(
     from collections import defaultdict
 
     # 資産性B以上に絞る
-    current_a = [r for r in current if get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
+    current_a = [r for r in current if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff = compare_listings(current, previous) if previous else {}
-    diff_new_a = [r for r in diff.get("new", []) if get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-    diff_updated_a = [item for item in diff.get("updated", []) if get_asset_score_and_rank(item.get("current", {}))[1] in ("S", "A", "B")]
-    diff_removed_a = [r for r in diff.get("removed", []) if get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
+    diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
+    diff_updated_a = [item for item in diff.get("updated", []) if optional_features.get_asset_score_and_rank(item.get("current", {}))[1] in ("S", "A", "B")]
+    diff_removed_a = [r for r in diff.get("removed", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
 
     new_c = len(diff_new_a)
     upd_c = len(diff_updated_a)
@@ -427,15 +323,15 @@ def main() -> None:
         print("警告: SLACK_WEBHOOK_URL 環境変数が設定されていません（通知をスキップ）", file=sys.stderr)
         sys.exit(0)  # エラーではなく警告として扱い、ワークフローは続行
 
-    current = load_json(current_path)
-    previous = load_json(previous_path) if previous_path.exists() else None
+    current = load_json(current_path, missing_ok=True, default=[])
+    previous = load_json(previous_path, missing_ok=True, default=[]) if previous_path else []
 
     # 投稿対象は資産性B以上のみ。前回ありかつB以上に絞った差分がなければ投稿をスキップする
     if previous:
         diff = compare_listings(current, previous)
-        diff_new_a = [r for r in diff.get("new", []) if get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-        diff_updated_a = [item for item in diff.get("updated", []) if get_asset_score_and_rank(item.get("current", {}))[1] in ("S", "A", "B")]
-        diff_removed_a = [r for r in diff.get("removed", []) if get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
+        diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
+        diff_updated_a = [item for item in diff.get("updated", []) if optional_features.get_asset_score_and_rank(item.get("current", {}))[1] in ("S", "A", "B")]
+        diff_removed_a = [r for r in diff.get("removed", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
         if not diff_new_a and not diff_updated_a and not diff_removed_a:
             print("変更なし（資産性B以上の新規・削除・価格変動なし）Slack通知をスキップします", file=sys.stderr)
             sys.exit(0)

@@ -18,19 +18,8 @@ from pathlib import Path
 # スクリプト配置が scraping-tool/ である前提
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from report_utils import listing_key
 from suumo_scraper import scrape_suumo
-
-try:
-    from generate_report import listing_key
-except ImportError:
-    def listing_key(r: dict) -> tuple:
-        return (
-            (r.get("name") or "").strip(),
-            (r.get("layout") or "").strip(),
-            r.get("area_m2"), r.get("price_man"),
-            (r.get("address") or "").strip(), r.get("built_year"),
-            (r.get("station_line") or "").strip(), r.get("walk_min"),
-        )
 
 
 def dedupe_listings(rows: list[dict]) -> list[dict]:

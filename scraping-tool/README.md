@@ -10,25 +10,39 @@
 
 ```
 scraping-tool/
-├── README.md           # 本ファイル
-├── requirements.txt    # Python 依存
-├── config.py           # 条件フィルタの閾値（価格・専有・間取り・築年・徒歩）
-├── asset_score.py           # 資産性スコア・S/A/B/Cランク（含み益率ベース）
+├── README.md              # 本ファイル
+├── requirements.txt       # Python 依存
+├── config.py              # 条件フィルタの閾値（価格・専有・間取り・築年・徒歩）
+├── asset_score.py         # 資産性スコア・S/A/B/Cランク（含み益率ベース）
+├── asset_simulation.py    # 10年シミュレーション（資産性試算用）
 ├── future_estate_predictor.py # 10年後価格予測（3シナリオ・収益還元・原価法ハイブリッド）
-├── price_predictor.py       # 10年後成約価格予測（FutureEstatePredictor を利用、外部CSV利用）
-├── commute.py          # 通勤時間表示（オフィスB・playground、data/commute_*.json）
-├── suumo_scraper.py    # SUUMO 中古マンション一覧スクレイパー
-├── homes_scraper.py    # HOME'S スクレイパー（実装済）
-├── main.py             # CLI エントリ
-├── generate_report.py  # Markdownレポート生成（差分検出付き）
-├── docs/                # セットアップ・規約・実装メモ
+├── price_predictor.py    # 10年後成約価格予測（FutureEstatePredictor を利用、外部CSV利用）
+├── loan_calc.py           # ローン月額試算（50年変動・諸経費込）
+├── commute.py             # 通勤時間表示（オフィスB・playground、data/commute_*.json）
+├── suumo_scraper.py       # SUUMO 中古マンション一覧スクレイパー
+├── homes_scraper.py       # HOME'S スクレイパー（実装済）
+├── main.py                # CLI エントリ（取得・重複除去）
+├── check_changes.py       # 前回結果との差分有無判定（update_listings.sh で利用）
+├── report_utils.py        # レポート・Slack共有: フォーマット・比較・identity_key/listing_key・load_json
+├── optional_features.py   # オプショナル依存の一括ロード（asset_score/loan_calc/commute/price_predictor 等）
+├── generate_report.py     # Markdownレポート生成（差分検出付き、report_utils・optional_features 利用）
+├── slack_notify.py        # Slack通知（report_utils・optional_features 利用。generate_report には依存しない）
+├── tests/                 # pytest（差分検出・キー・フォーマットのテスト）
+├── docs/                  # セットアップ・規約・実装メモ
 │   ├── GITHUB_SETUP.md
 │   ├── SLACK_SETUP.md
+│   ├── calculation-summary.md
+│   ├── price-prediction-logic.md
+│   ├── refactor-evaluation-chatgpt.md
 │   ├── feasibility-study.md
 │   ├── terms-check.md
 │   └── HOMES_実装ガイド.md
-└── scripts/             # 定期実行・キャッシュ取得用
+└── scripts/               # 定期実行・キャッシュ取得用
 ```
+
+**Python モジュールについて**: 役割ごとにファイルを分割しています（スクレイプ・予測・レポート・通知など）。一つのファイルにまとめず保守性を優先しています。`report_utils.py` はフォーマット・比較・**差分検出用キー**（`identity_key`：価格を除く同一判定）と**重複除去用キー**（`listing_key`：価格含む完全一致）および `load_json` を提供します。`optional_features.py` は asset_score / loan_calc / commute / price_predictor 等のオプショナル依存を一箇所でロードし、未インストール時は "-" 等の互換値を返します。`generate_report` と `slack_notify` は `optional_features` 経由で利用するため、両ファイルから try/except ImportError を撤去しています。`slack_notify` は `generate_report` に依存しません。
+
+**差分検出の仕様**: 同一物件は **identity_key**（名前・間取り・広さ・住所・築年・駅徒歩。**価格は含まない**）で判定します。価格だけ変わった場合は **updated（価格変動）** として分類され、new/removed にはなりません。重複除去（main の dedupe）では **listing_key**（価格含む）を使い、完全一致した行のみ1件にまとめます。
 
 ## 使い方
 
@@ -39,23 +53,43 @@ cd scraping-tool
 pip install -r requirements.txt
 ```
 
+### テスト（pytest）
+
+差分検出・キー・フォーマットの仕様を固定するため、pytest でテストを実行できます。
+
+```bash
+cd scraping-tool
+python3 -m pytest tests/ -v
+```
+
 ### 実行例
+
+いずれも `cd scraping-tool` したうえで実行します。`python3` を推奨（Actions / update_listings.sh では `python3` を使用）。
 
 ```bash
 # SUUMO 関東・駅徒歩5分以内から1ページ取得し、条件フィルタをかけて JSON 出力
-python main.py -o result.json
+python3 main.py -o result.json
 
 # フィルタなしで2ページ分の生データを取得
-python main.py --max-pages 2 --no-filter -o raw.json
+python3 main.py --max-pages 2 --no-filter -o raw.json
 
 # 出力先を指定しない場合は標準出力に JSON
-python main.py --max-pages 1
+python3 main.py --max-pages 1
 
 # HOME'S から取得
-python main.py --source homes --max-pages 1 -o homes_result.json
+python3 main.py --source homes --max-pages 1 -o homes_result.json
 
 # SUUMO と HOME'S の両方から取得
-python main.py --source both --max-pages 1 -o all_result.json
+python3 main.py --source both --max-pages 1 -o all_result.json
+```
+
+### 差分有無の判定（check_changes.py）
+
+`update_listings.sh` で「変更時のみレポート・通知」するために利用します。同一物件は **identity_key**（価格を除く）で判定し、価格差分は updated としてカウントします。
+
+```bash
+# 差分があれば exit 0、なければ exit 1
+python3 check_changes.py current.json previous.json
 ```
 
 ### レポート生成（見やすい形式で出力）
@@ -66,19 +100,30 @@ python main.py --source both --max-pages 1 -o all_result.json
 
 ```bash
 # 基本レポート生成
-python generate_report.py result.json -o results/report/report.md
+python3 generate_report.py result.json -o results/report/report.md
 
 # 前回結果と比較して差分を表示
-python generate_report.py result.json --compare previous.json -o results/report/report.md
+python3 generate_report.py result.json --compare previous.json -o results/report/report.md
+
+# GitHub のレポートURLをレポート先頭に記載する（Actions 等で利用）
+python3 generate_report.py result.json -o report.md --report-url "https://github.com/OWNER/REPO/blob/main/scraping-tool/results/report/report.md"
 ```
+
+**generate_report.py のオプション**:
+| オプション | 説明 |
+|------------|------|
+| `input` | 入力JSON（main.py の出力） |
+| `--compare`, `-c` | 前回結果JSON（差分検出用。省略時は差分セクションなし） |
+| `--output`, `-o` | 出力Markdown（未指定時は stdout） |
+| `--report-url` | レポート先頭に記載するGitHub URL（省略可） |
 
 レポートには以下が含まれます：
 - 🔍 **検索条件**: 価格・専有面積・間取り・築年・駅徒歩（config.py の設定）
 - 📊 **変更サマリー**: 新規・価格変動・削除の件数
-- 🆕 **新規物件**: 前回にない物件
-- 🔄 **価格変動**: 価格が変更された物件（差額表示）
+- 🆕 **新規物件**: 前回にない物件（identity_key で判定）
+- 🔄 **価格変動**: 同一物件で価格だけ変わったもの（identity_key で同一判定し updated として表示）
 - ❌ **削除された物件**: 前回はあったが今回ない物件
-- 📋 **全物件一覧**: 価格順でソートされた全物件
+- 📋 **全物件一覧**: 区・最寄駅別、資産性B以上のみ。10年後差額が大きい順で表示
 
 ### 定期実行の例
 
@@ -96,16 +141,16 @@ DATE=$(TZ=Asia/Tokyo date +%Y%m%d_%H%M%S)
 CURRENT="${OUTPUT_DIR}/current_${DATE}.json"
 PREVIOUS="${OUTPUT_DIR}/current_*.json"  # 最新の前回ファイル
 
-python main.py --source both --max-pages 2 -o "$CURRENT"
+python3 main.py --source both --max-pages 2 -o "$CURRENT"
 
 # 2. 前回結果があれば差分レポート生成
 LATEST_PREV=$(ls -t ${OUTPUT_DIR}/current_*.json 2>/dev/null | head -2 | tail -1)
 if [ -n "$LATEST_PREV" ] && [ "$LATEST_PREV" != "$CURRENT" ]; then
-    python generate_report.py "$CURRENT" --compare "$LATEST_PREV" \
+    python3 generate_report.py "$CURRENT" --compare "$LATEST_PREV" \
         -o "${OUTPUT_DIR}/report_${DATE}.md"
     echo "差分レポート生成: ${OUTPUT_DIR}/report_${DATE}.md"
 else
-    python generate_report.py "$CURRENT" -o "${OUTPUT_DIR}/report_${DATE}.md"
+    python3 generate_report.py "$CURRENT" -o "${OUTPUT_DIR}/report_${DATE}.md"
     echo "レポート生成: ${OUTPUT_DIR}/report_${DATE}.md"
 fi
 
@@ -164,13 +209,20 @@ Update listings: 20260128_132800
 
 ### Slack通知
 
-ワークフロー実行後、変更があった場合にSlackに通知を送信します。
+ワークフロー実行後、変更があった場合にSlackに通知を送信します。`slack_notify.py` は `optional_features` 経由で資産性・10年後予測等を利用し、**generate_report には依存しません**。
+
+```bash
+# 使い方（SLACK_WEBHOOK_URL が未設定の場合は警告ののち exit 0 でスキップ）
+python3 slack_notify.py current.json [previous.json] [report.md]
+```
 
 **通知内容**:
-- 📊 現在の件数
-- 🆕 新規物件（最大5件）
-- 🔄 価格変動（最大5件、差額が大きい順）
+- 📊 現在の件数（資産性B以上のみカウント）
+- ■ 今回の変更（新規・削除・価格変動の件数）
+- 🆕 新規追加された物件（最大10件）
+- 🔄 価格変動した物件（最大5件、差額が大きい順）
 - ❌ 削除された物件（最大5件）
+- 📋 物件一覧（区・駅別、資産性B以上）
 - 📄 レポートへのリンク
 
 **セットアップ**: [docs/SLACK_SETUP.md](./docs/SLACK_SETUP.md) を参照
@@ -245,7 +297,16 @@ Update listings: 20260128_132800
 
 ## 関連ドキュメント
 
-- **購入条件**: [docs/10year-index-mansion-conditions-draft.md](../docs/10year-index-mansion-conditions-draft.md)
-- **実装可否検討**: [docs/feasibility-study.md](./docs/feasibility-study.md)
-- **資産性ランクの可否・実現案**: [docs/asset-ranking-feasibility.md](./docs/asset-ranking-feasibility.md)
-- **規約確認結果**: [docs/terms-check.md](./docs/terms-check.md)
+| ドキュメント | 内容 |
+|--------------|------|
+| [docs/calculation-summary.md](./docs/calculation-summary.md) | 10年後価格・騰落率・資産性ランクの計算の仕方（FutureEstatePredictor 等） |
+| [docs/price-prediction-logic.md](./docs/price-prediction-logic.md) | 価格予測ロジックの詳細 |
+| [docs/GITHUB_SETUP.md](./docs/GITHUB_SETUP.md) | GitHub Actions での定期実行セットアップ |
+| [docs/SLACK_SETUP.md](./docs/SLACK_SETUP.md) | Slack 通知のセットアップ |
+| [docs/asset-ranking-feasibility.md](./docs/asset-ranking-feasibility.md) | 資産性ランクの可否・実現案 |
+| [docs/feasibility-study.md](./docs/feasibility-study.md) | 実装可否検討 |
+| [docs/terms-check.md](./docs/terms-check.md) | 規約確認結果 |
+| [docs/refactor-evaluation-chatgpt.md](./docs/refactor-evaluation-chatgpt.md) | リファクタ指針の評価・実施状況メモ |
+| [docs/HOMES_実装ガイド.md](./docs/HOMES_実装ガイド.md) | HOME'S スクレイパー実装ガイド |
+
+- **購入条件（リポジトリルート）**: [../docs/10year-index-mansion-conditions-draft.md](../docs/10year-index-mansion-conditions-draft.md)

@@ -48,7 +48,7 @@ git push origin main
 
 **原因**: デフォルトの GITHUB_TOKEN は「読み取り専用」のため、ワークフローから `git push` できません。
 
-**対処（必須）**: このワークフローが動いている **リポジトリ**（例: dev-workspace）で、以下を実施してください。
+**対処（必須）**: このワークフローが動いている **リポジトリ**（例: real-estate やあなたのリポジトリ名）で、以下を実施してください。
 
 1. GitHub でそのリポジトリを開く
 2. **Settings** → **Actions** → **General**
@@ -56,7 +56,7 @@ git push origin main
    **「Read and write permissions」** を選択
 4. **Save** で保存
 
-※ real-estate がサブフォルダの場合は、親リポジトリ（ワークフローが置いてあるリポジトリ）の設定を変更します。
+※ 本リポジトリが real-estate 単体の場合は、そのリポジトリの Settings を変更します。real-estate が別リポジトリのサブフォルダとして含まれる場合は、親リポジトリ（ワークフローが置いてあるリポジトリ）の設定を変更します。
 
 **Read and write にしているのに 128 になる場合**
 

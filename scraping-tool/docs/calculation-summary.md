@@ -144,3 +144,5 @@
   **楽観（optimistic）**／**悲観（pessimistic）** シナリオに相当。賃料・金利・建築費の前提が異なり、資産性ランクや「騰落」「含み益」の数値には使わず、**参考**として表にのみ表示しています。
 
 詳細は `future_estate_predictor.py` と `price_predictor.py` を参照してください。
+
+**実装上の補足**: レポート（generate_report）とSlack通知（slack_notify）は、3シナリオ表示を **optional_features.get_three_scenario_columns** 経由で取得しています。price_predictor が未インストールの場合は "-" を表示します。
