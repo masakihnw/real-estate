@@ -48,6 +48,7 @@ try:
         format_area,
         format_floor,
         format_total_units,
+        get_three_scenario_columns,
         get_ward_from_address,
         get_station_group,
         row_merge_key,
@@ -101,6 +102,9 @@ except ImportError:
 
     def format_total_units(total_units: Optional[int]) -> str:
         return f"{total_units}戸" if total_units else "戸数:不明"
+
+    def get_three_scenario_columns(r: dict) -> tuple[str, str, str]:
+        return "-", "-", "-"
 
     def get_ward_from_address(address: str) -> str:
         return ""
@@ -252,10 +256,9 @@ SLACK_TEXT_LIMIT = 35000
 
 
 def _listing_line_slack(r: dict, url: str = "", include_breakdown: bool = True) -> str:
-    """1物件をSlack用1行に。総戸数・資産性・根拠・10年シミュレーション・通勤時間（M3・PG）含む。"""
+    """1物件をSlack用1行に。総戸数・資産性・根拠・楽観/中立/悲観10年後・通勤時間（M3・PG）含む。"""
     _, rank, breakdown = get_asset_score_and_rank_with_breakdown(r)
-    sim = simulate_10year_from_listing(r)
-    p10, chg, implied, _ = format_simulation_for_report(sim) if sim else ("-", "-", "-", "-")
+    opt_10y, neu_10y, pes_10y = get_three_scenario_columns(r)
     m3_str, pg_str = get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
     name = (r.get("name") or "")[:28]
     price = format_price(r.get("price_man"))
@@ -268,7 +271,7 @@ def _listing_line_slack(r: dict, url: str = "", include_breakdown: bool = True) 
     parts = [name, price, layout, area, built, walk, floor_str, units, rank]
     if include_breakdown:
         parts.append(breakdown)
-    parts.extend([f"10年後:{p10}", f"騰落:{chg}", f"含み益:{implied}"])
+    parts.extend([f"楽観:{opt_10y}", f"中立:{neu_10y}", f"悲観:{pes_10y}"])
     monthly_loan, _ = get_loan_display_for_listing(r.get("price_man"))
     parts.extend([f"月額:{monthly_loan}"])
     parts.extend([f"M3:{m3_str}", f"PG:{pg_str}"])
@@ -359,7 +362,7 @@ def build_slack_message_from_listings(
     ordered_wards = sorted(by_ward.keys(), key=lambda w: ward_order.get(w, 999))
 
     lines.append("*📋 物件一覧（区・駅別・資産性B以上）*")
-    lines.append("  _物件名 ｜ 価格 ｜ … ｜ 10年後 ｜ 騰落 ｜ 含み益 ｜ 月額(50年・諸経費3.5万) ｜ M3 ｜ PG ｜ 詳細_")
+    lines.append("  _物件名 ｜ 価格 ｜ … ｜ 楽観10年後 ｜ 中立10年後 ｜ 悲観10年後 ｜ 月額(50年・諸経費3.5万) ｜ M3 ｜ PG ｜ 詳細_")
     lines.append("")
     for ward in ordered_wards:
         ward_listings = by_ward.get(ward, [])

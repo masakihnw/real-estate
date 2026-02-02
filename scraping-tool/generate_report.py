@@ -58,7 +58,11 @@ except ImportError:
         return format_walk(fallback_walk_min) if fallback_walk_min is not None else "-"
 
 try:
-    from price_predictor import MansionPricePredictor, listing_to_property_data
+    from price_predictor import (
+        MansionPricePredictor,
+        listing_to_property_data,
+        _calc_loan_residual_10y_yen,
+    )
     _PRICE_PREDICTOR: Optional[MansionPricePredictor] = None
 
     def _get_predictor() -> MansionPricePredictor:
@@ -68,28 +72,59 @@ try:
             _PRICE_PREDICTOR.load_data()
         return _PRICE_PREDICTOR
 
-    def get_price_predictor_3scenarios(listing: dict[str, Any]) -> str:
-        """物件1件について price_predictor の 10年後3シナリオ（Standard/Best/Worst）を取得し、表用文字列で返す。"""
-        if not listing.get("price_man") and not listing.get("listing_price"):
+    def _format_scenario_cell(price_yen: int, contract_yen: int, loan_residual_yen: float) -> str:
+        """1シナリオのセル: 予測金額（含み益/騰落率）形式。例: 8204万円（+1000万円/+8.6%）"""
+        if price_yen <= 0 or contract_yen <= 0:
             return "-"
+        price_man = price_yen / 10000
+        implied_yen = price_yen - loan_residual_yen
+        implied_man = implied_yen / 10000
+        change_pct = (price_yen / contract_yen - 1.0) * 100
+        price_str = format_price(int(round(price_man)))
+        # 含み益: 1億以上は「1億○○万円」、それ以外は「±○○万円」
+        if abs(implied_man) >= 10000:
+            oku = int(abs(implied_man) // 10000)
+            man = int(round(abs(implied_man) % 10000))
+            sign = "+" if implied_man >= 0 else "-"
+            implied_str = f"{sign}{oku}億{man}万円" if man else f"{sign}{oku}億円"
+        else:
+            implied_str = f"{'+' if implied_man >= 0 else ''}{int(round(implied_man))}万円"
+        return f"{price_str}（{implied_str}/{change_pct:+.1f}%）"
+
+    def get_three_scenario_columns(listing: dict[str, Any]) -> tuple[str, str, str]:
+        """楽観・中立・悲観の3列セルを返す。各セルは「予測金額（含み益/騰落率）」形式。"""
+        if not listing.get("price_man") and not listing.get("listing_price"):
+            return "-", "-", "-"
         prop = listing_to_property_data(listing)
         if not prop.get("listing_price"):
-            return "-"
+            return "-", "-", "-"
         try:
             pred = _get_predictor().predict(prop)
+            contract = pred.get("current_estimated_contract_price") or 0
             f = pred.get("10y_forecast") or {}
-            std = f.get("standard") or 0
-            best = f.get("best") or 0
-            worst = f.get("worst") or 0
-            if not std and not best and not worst:
-                return "-"
-            std_man = std / 10000 if std else 0
-            best_man = best / 10000 if best else 0
-            worst_man = worst / 10000 if worst else 0
-            return f"{format_price(int(std_man))} / {format_price(int(best_man))} / {format_price(int(worst_man))}"
+            best_yen = f.get("best") or 0
+            std_yen = f.get("standard") or 0
+            worst_yen = f.get("worst") or 0
+            if contract <= 0:
+                return "-", "-", "-"
+            loan_residual = _calc_loan_residual_10y_yen(contract)
+            opt = _format_scenario_cell(best_yen, contract, loan_residual)
+            neu = _format_scenario_cell(std_yen, contract, loan_residual)
+            pes = _format_scenario_cell(worst_yen, contract, loan_residual)
+            return opt, neu, pes
         except Exception:
+            return "-", "-", "-"
+
+    def get_price_predictor_3scenarios(listing: dict[str, Any]) -> str:
+        """物件1件について price_predictor の 10年後3シナリオ（Standard/Best/Worst）を取得し、表用文字列で返す。"""
+        opt, neu, pes = get_three_scenario_columns(listing)
+        if opt == "-" and neu == "-" and pes == "-":
             return "-"
+        return f"{neu} / {opt} / {pes}"  # 中立 / 楽観 / 悲観（後方互換用）
 except ImportError:
+    def get_three_scenario_columns(listing: dict[str, Any]) -> tuple[str, str, str]:
+        return "-", "-", "-"
+
     def get_price_predictor_3scenarios(listing: dict[str, Any]) -> str:
         return "-"
 
@@ -318,8 +353,7 @@ def get_search_conditions_md() -> str:
         f"| 総戸数 | {TOTAL_UNITS_MIN}戸以上 |",
         "| 資産性ランク | 独自スコア（駅乗降客数・徒歩・築年・総戸数）4段階（S/A/B/C）。参考値。 |",
         "| 表示対象 | 資産性B以上（S/A/B）の物件のみ表示。根拠は表の「資産性根拠」列参照。 |",
-        "| 10年シミュレーション | 沖有人氏の資産性の法則に基づく10年後推定時価・予測騰落率・推定含み益。 |",
-        "| 10年予測3シナリオ | price_predictor（区別係数・calibration・Yield Floor）による Standard / Best / Worst の3シナリオ価格（万円）。住所で区判定。 |",
+        "| 10年シミュレーション | FutureEstatePredictor（収益還元・原価法ハイブリッド）による楽観・中立・悲観3シナリオ。各列に「予測金額（含み益/騰落率）」を表示。 |",
         "| ローン試算 | 50年変動金利・頭金なし。諸経費（修繕積立等）月3.5万円を加算した月額支払。 |",
         "| 通勤時間 | エムスリーキャリア（虎ノ門）・playground（千代田区一番町）まで。ドアtoドア（物件→最寄駅の徒歩＋最寄駅→オフィス）。登録済み駅はその合計、未登録は(概算)で徒歩＋駅→会社最寄り駅＋会社最寄り駅→会社の徒歩を表示。 |",
     ]
@@ -394,8 +428,8 @@ def generate_markdown(
         lines.extend([
             "## 🆕 新規物件",
             "",
-            f"| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 10年後の推定価格 | 10年予測(Std/Best/Worst) | 騰落率 | 推定含み益 | 月額(50年・諸経費3.5万) | {m3_label} | {pg_label} | 所在地 | Google Map | 詳細 |",
-            f"|--------|------|--------|------|------|--------|-----|--------|----------------|------------|------------------|---------------------------|--------|------------|------------------------|------|------|--------|------------|------|",
+            f"| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | {m3_label} | {pg_label} | 所在地 | Google Map | 詳細 |",
+            f"|--------|------|--------|------|------|--------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|--------|------------|------|",
         ])
         new_groups: dict[tuple, list[dict]] = defaultdict(list)
         for r in diff_a["new"]:
@@ -403,9 +437,7 @@ def generate_markdown(
         for group in sorted(new_groups.values(), key=lambda g: _price_diff_for_sort(g[0]), reverse=True):
             r = group[0]
             _, rank, breakdown = get_asset_score_and_rank_with_breakdown(r)
-            sim = simulate_10year_from_listing(r)
-            p10, chg, implied, _ = format_simulation_for_report(sim) if sim else ("-", "-", "-", "-")
-            pred3 = get_price_predictor_3scenarios(r)
+            opt_10y, neu_10y, pes_10y = get_three_scenario_columns(r)
             monthly_loan, _ = get_loan_display_for_listing(r.get("price_man"))
             m3_str, pg_str = get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
             name = (r.get("name") or "")[:30]
@@ -425,7 +457,7 @@ def generate_markdown(
                 link = " ".join(f"[{i+1}]({u})" for i, u in enumerate(urls[:3]))
                 if len(urls) > 3:
                     link += f" 他{len(urls)-3}件"
-            lines.append(f"| {name} | {price} | {layout} | {area} | {built} | {walk} | {floor_str} | {units} | {rank} | {breakdown} | {p10} | {pred3} | {chg} | {implied} | {monthly_loan} | {m3_str} | {pg_str} | {address} | {gmap} | {link} |")
+            lines.append(f"| {name} | {price} | {layout} | {area} | {built} | {walk} | {floor_str} | {units} | {rank} | {breakdown} | {opt_10y} | {neu_10y} | {pes_10y} | {monthly_loan} | {m3_str} | {pg_str} | {address} | {gmap} | {link} |")
         lines.append("")
 
     # 変更サマリー（新規・価格変動・削除の件数）
@@ -449,16 +481,14 @@ def generate_markdown(
         lines.extend([
             "## 🔄 価格変動",
             "",
-            f"| 物件名 | 変更前 | 変更後 | 差額 | 間取り | 専有 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 10年後の推定価格 | 10年予測(Std/Best/Worst) | 騰落率 | 推定含み益 | 月額(50年・諸経費3.5万) | {m3_label} | {pg_label} | Google Map | 詳細URL |",
-            f"|--------|--------|--------|------|--------|------|-----|--------|----------------|------------|------------------|---------------------------|--------|------------|------------------------|------|------|------------|---------|",
+            f"| 物件名 | 変更前 | 変更後 | 差額 | 間取り | 専有 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | {m3_label} | {pg_label} | Google Map | 詳細URL |",
+            f"|--------|--------|--------|------|--------|------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------------|---------|",
         ])
         for item in sorted(diff_a["updated"], key=lambda x: _price_diff_for_sort(x["current"]), reverse=True):
             curr = item["current"]
             prev = item["previous"]
             _, rank, breakdown = get_asset_score_and_rank_with_breakdown(curr)
-            sim = simulate_10year_from_listing(curr)
-            p10, chg, implied, _ = format_simulation_for_report(sim) if sim else ("-", "-", "-", "-")
-            pred3 = get_price_predictor_3scenarios(curr)
+            opt_10y, neu_10y, pes_10y = get_three_scenario_columns(curr)
             monthly_loan, _ = get_loan_display_for_listing(curr.get("price_man"))
             m3_str, pg_str = get_commute_display_with_estimate(curr.get("station_line"), curr.get("walk_min"))
             name = curr.get("name", "")[:30]
@@ -472,7 +502,7 @@ def generate_markdown(
             units = format_total_units(curr.get("total_units"))
             gmap = google_maps_link(curr.get("address") or "")
             url = curr.get("url", "")
-            lines.append(f"| {name} | {prev_price} | {curr_price} | {diff_str} | {layout} | {area} | {floor_str} | {units} | {rank} | {breakdown} | {p10} | {pred3} | {chg} | {implied} | {monthly_loan} | {m3_str} | {pg_str} | {gmap} | [詳細]({url}) |")
+            lines.append(f"| {name} | {prev_price} | {curr_price} | {diff_str} | {layout} | {area} | {floor_str} | {units} | {rank} | {breakdown} | {opt_10y} | {neu_10y} | {pes_10y} | {monthly_loan} | {m3_str} | {pg_str} | {gmap} | [詳細]({url}) |")
         lines.append("")
 
     # 削除された物件
@@ -481,14 +511,12 @@ def generate_markdown(
         lines.extend([
             "## ❌ 削除された物件",
             "",
-            f"| 物件名 | 価格 | 間取り | 専有 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 10年後の推定価格 | 10年予測(Std/Best/Worst) | 騰落率 | 推定含み益 | 月額(50年・諸経費3.5万) | {m3_label} | {pg_label} | Google Map | 詳細URL |",
-            f"|--------|------|--------|------|-----|--------|----------------|------------|------------------|---------------------------|--------|------------|------------------------|------|------|------------|---------|",
+            f"| 物件名 | 価格 | 間取り | 専有 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | {m3_label} | {pg_label} | Google Map | 詳細URL |",
+            f"|--------|------|--------|------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------------|---------|",
         ])
         for r in sorted(diff_a["removed"], key=_price_diff_for_sort, reverse=True):
             _, rank, breakdown = get_asset_score_and_rank_with_breakdown(r)
-            sim = simulate_10year_from_listing(r)
-            p10, chg, implied, _ = format_simulation_for_report(sim) if sim else ("-", "-", "-", "-")
-            pred3 = get_price_predictor_3scenarios(r)
+            opt_10y, neu_10y, pes_10y = get_three_scenario_columns(r)
             monthly_loan, _ = get_loan_display_for_listing(r.get("price_man"))
             m3_str, pg_str = get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
             gmap = google_maps_link(r.get("address") or "")
@@ -499,7 +527,7 @@ def generate_markdown(
             floor_str = format_floor(r.get("floor_position"), r.get("floor_total"))
             units = format_total_units(r.get("total_units"))
             url = r.get("url", "")
-            lines.append(f"| {name} | {price} | {layout} | {area} | {floor_str} | {units} | {rank} | {breakdown} | {p10} | {pred3} | {chg} | {implied} | {monthly_loan} | {m3_str} | {pg_str} | {gmap} | [詳細]({url}) |")
+            lines.append(f"| {name} | {price} | {layout} | {area} | {floor_str} | {units} | {rank} | {breakdown} | {opt_10y} | {neu_10y} | {pes_10y} | {monthly_loan} | {m3_str} | {pg_str} | {gmap} | [詳細]({url}) |")
         lines.append("")
 
     # 全物件一覧: 区ごと → 最寄駅ごとにセクション（資産性B以上の物件のみ）
@@ -551,8 +579,8 @@ def generate_markdown(
                 lines.append("所在地: " + "、".join(addrs[:5]) + (" 他" if len(addrs) > 5 else ""))
             lines.append("")
             m3_label, pg_label = get_destination_labels()
-            lines.append(f"| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 10年後の推定価格 | 10年予測(Std/Best/Worst) | 騰落率 | 推定含み益 | 月額(50年・諸経費3.5万) | {m3_label} | {pg_label} | 詳細 |")
-            lines.append("|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------------|---------------------------|--------|------------|------------------------|------|------|------|")
+            lines.append(f"| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | {m3_label} | {pg_label} | 詳細 |")
+            lines.append("|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|")
 
             # 同名・同価格・同間取りで1行にまとめる。現在価格と10年後推定価格の差額が大きい順に表示
             merge_groups: dict[tuple, list[dict]] = defaultdict(list)
@@ -561,9 +589,7 @@ def generate_markdown(
             for group in sorted(merge_groups.values(), key=lambda g: _price_diff_for_sort(g[0]), reverse=True):
                 r = group[0]
                 _, rank, breakdown = get_asset_score_and_rank_with_breakdown(r)
-                sim = simulate_10year_from_listing(r)
-                p10, chg, implied, _ = format_simulation_for_report(sim) if sim else ("-", "-", "-", "-")
-                pred3 = get_price_predictor_3scenarios(r)
+                opt_10y, neu_10y, pes_10y = get_three_scenario_columns(r)
                 monthly_loan, _ = get_loan_display_for_listing(r.get("price_man"))
                 m3_str, pg_str = get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
                 name = (r.get("name") or "")[:30]
@@ -583,7 +609,7 @@ def generate_markdown(
                     link = " ".join(f"[{i+1}]({u})" for i, u in enumerate(urls[:3]))
                     if len(urls) > 3:
                         link += f" 他{len(urls)-3}件"
-                lines.append(f"| {name} | {price} | {layout} | {area} | {built} | {walk} | {address_short} | {gmap} | {floor_str} | {units} | {rank} | {breakdown} | {p10} | {pred3} | {chg} | {implied} | {monthly_loan} | {m3_str} | {pg_str} | {link} |")
+                lines.append(f"| {name} | {price} | {layout} | {area} | {built} | {walk} | {address_short} | {gmap} | {floor_str} | {units} | {rank} | {breakdown} | {opt_10y} | {neu_10y} | {pes_10y} | {monthly_loan} | {m3_str} | {pg_str} | {link} |")
             lines.append("")
 
     lines.extend([
