@@ -1,0 +1,4 @@
+# building_units.json: SUUMO 詳細ページから取得した総戸数キャッシュ（scripts/build_units_cache.py）
+# station_passengers.json: 国土数値情報 S12 から取得した駅別乗降客数（scripts/fetch_station_passengers.py）
+# S12-22_GML.zip: 国土数値情報「駅別乗降客数データ」令和3年（手動ダウンロード用）
+# commute_m3career.json, commute_playground.json: 駅名→通勤分数。レポート・Slackに表示。手動編集または乗換APIで取得。

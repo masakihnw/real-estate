@@ -1,0 +1,4 @@
+scenario_id,scenario_name,price_multiplier,description
+standard,Standard,1.0,現在のインフレ率と金利上昇が均衡するシナリオ
+best,Inflation (Best),1.15,インフレ・建築費高騰が続き資産価格が上昇するシナリオ
+worst,Stagnation (Worst),0.85,金利上昇により購買力が低下し需給が緩むシナリオ
