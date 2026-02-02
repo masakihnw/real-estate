@@ -73,6 +73,7 @@ class SuumoListing:
     total_units: Optional[int] = None  # 総戸数（詳細ページキャッシュから取得）
     floor_position: Optional[int] = None   # 所在階（何階）
     floor_total: Optional[int] = None     # 建物階数（何階建て）
+    list_ward_roman: Optional[str] = None  # 一覧取得元の区（sc_itabashi 等）。住所に区名が無くても23区判定に利用
 
     def to_dict(self):
         return asdict(self)
@@ -182,11 +183,21 @@ def fetch_list_page(
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
             return r.text
+        except requests.exceptions.HTTPError as e:
+            # 502/503 は一時的なサーバーエラーのためリトライ
+            if e.response is not None and e.response.status_code in (502, 503) and attempt < REQUEST_RETRIES - 1:
+                last_error = e
+                time.sleep(2)
+            else:
+                raise
         except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as e:
             last_error = e
             if attempt < REQUEST_RETRIES - 1:
                 time.sleep(2)
-    raise last_error
+            else:
+                raise last_error
+    if last_error:
+        raise last_error
 
 
 def parse_list_html(html: str, base_url: str = BASE_URL) -> list[SuumoListing]:
@@ -425,12 +436,15 @@ def _parse_fallback(soup: BeautifulSoup, base_url: str) -> list[SuumoListing]:
     return items
 
 
-def _is_tokyo_23(address: str, url: str = "") -> bool:
-    """東京23区の物件かどうか。住所とURLの両方で判定する。"""
+def _is_tokyo_23(address: str, url: str = "", list_ward_roman: Optional[str] = None) -> bool:
+    """東京23区の物件かどうか。住所・URL・一覧取得元の区で判定する。"""
     url_lower = (url or "").lower()
     # URL に他県パスが含まれる場合は除外（横浜・千葉等）
     if any(path in url_lower for path in NON_TOKYO_23_URL_PATHS):
         return False
+    # 区ごと一覧（sc_板橋 等）で取得した行はその区の物件とみなす（住所に区名が無い場合の救済）
+    if list_ward_roman and list_ward_roman in SUUMO_23_WARD_ROMAN:
+        return True
     # 住所に23区の区名が含まれる場合は採用
     if address and any(ward in address for ward in TOKYO_23_WARDS):
         return True
@@ -441,12 +455,12 @@ def _is_tokyo_23(address: str, url: str = "") -> bool:
 
 
 def _line_ok(station_line: str) -> bool:
-    """路線限定時、最寄り路線がALLOWED_LINE_KEYWORDSのいずれかを含むか。空のときは全通過。"""
+    """路線限定時、最寄り路線がALLOWED_LINE_KEYWORDSのいずれかを含むか。空のときは通過（パース失敗時の取りこぼし防止）。"""
     if not ALLOWED_LINE_KEYWORDS:
         return True
     line = (station_line or "").strip()
     if not line:
-        return False
+        return True  # 一覧で沿線・駅が取れない場合は通過（SUUMO HTML変更等で全件落ちるのを防ぐ）
     return any(kw in line for kw in ALLOWED_LINE_KEYWORDS)
 
 
@@ -506,7 +520,8 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
     passengers_map = _load_station_passengers()
     out = []
     for r in listings:
-        if not _is_tokyo_23(r.address, r.url):
+        list_ward = getattr(r, "list_ward_roman", None)
+        if not _is_tokyo_23(r.address, r.url, list_ward_roman=list_ward):
             continue
         if not _line_ok(r.station_line):
             continue
@@ -549,6 +564,7 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
                 break
             passed = 0
             for row in rows:
+                row.list_ward_roman = ward_roman  # 区ごと一覧のため、住所に区名が無くても23区判定に利用
                 if row.url and row.url not in seen_urls:
                     seen_urls.add(row.url)
                     if apply_filter:
