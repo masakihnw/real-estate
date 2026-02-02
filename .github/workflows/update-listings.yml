@@ -48,6 +48,14 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Send Slack notification
+        if: steps.check.outputs.changed == 'true'
+        working-directory: scraping-tool
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          python3 slack_notify.py results/latest.json results/previous.json results/report/report.md
+
       - name: Commit and push
         if: steps.check.outputs.changed == 'true'
         run: |
