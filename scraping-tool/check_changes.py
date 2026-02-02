@@ -1,27 +1,13 @@
 #!/usr/bin/env python3
 """
 現在結果と前回結果を比較し、差分があれば exit 0、なければ exit 1 で終了する。
-同一物件は名前・間取り・広さ・価格・住所・築年・駅徒歩の一致で判定（URLは見ない）。
+同一物件は identity_key（名前・間取り・広さ・住所・築年・駅徒歩。価格は除く）で判定し、価格差分は updated としてカウントする。
 update_listings.sh で「変更時のみレポート・通知」するために使用。
 """
 import sys
 from pathlib import Path
 
-try:
-    from generate_report import load_json, listing_key
-except ImportError:
-    import json
-    def load_json(path):
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    def listing_key(r):
-        return (
-            (r.get("name") or "").strip(),
-            (r.get("layout") or "").strip(),
-            r.get("area_m2"), r.get("price_man"),
-            (r.get("address") or "").strip(), r.get("built_year"),
-            (r.get("station_line") or "").strip(), r.get("walk_min"),
-        )
+from report_utils import identity_key, load_json
 
 
 def main() -> None:
@@ -40,8 +26,8 @@ def main() -> None:
     current = load_json(current_path)
     previous = load_json(previous_path)
 
-    curr_by_key = {listing_key(r): r for r in current}
-    prev_by_key = {listing_key(r): r for r in previous}
+    curr_by_key = {identity_key(r): r for r in current}
+    prev_by_key = {identity_key(r): r for r in previous}
 
     new = sum(1 for k in curr_by_key if k not in prev_by_key)
     removed = sum(1 for k in prev_by_key if k not in curr_by_key)
