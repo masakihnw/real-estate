@@ -1,0 +1,22 @@
+# 出力ファイル（任意）
+output_test.json
+output*.json
+result*.json
+result*.csv
+test_*.json
+test_*.md
+
+# data/ の元データ（手動DL。fetch_station_passengers.py が読み、station_passengers.json を生成）
+data/*.zip
+
+# results/ はコミット対象（定期実行結果をGitHubで管理）
+# results/previous.json は Slack 差分用の一時ファイル（コミットしない）
+results/previous.json
+
+# Python
+__pycache__/
+*.py[cod]
+.Python
+.venv/
+venv/
+.env
