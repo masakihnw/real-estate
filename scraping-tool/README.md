@@ -244,20 +244,20 @@ python3 slack_notify.py current.json [previous.json] [report.md]
 ### 条件フィルタ（config.py）
 
 - 価格: 7,500万〜1億円
-- 専有面積: 55〜75㎡
+- 専有面積: 60㎡以上（上限なし）
 - 間取り: 2LDK〜3LDK 系
-- 築年: 1982年以降（新耐震目安）
-- 駅徒歩: 10分以内（Must は5分以内だが、一覧では5分条件のURLを使用）
+- 築年: 築20年以内（BUILT_YEAR_MIN 以降）
+- 駅徒歩: 7分以内
 
 変更する場合は `config.py` の定数を編集してください。
 
-### 総戸数100戸以上フィルタ
+### 総戸数50戸以上フィルタ
 
-- **HOME'S**: 一覧の `textFeatureComment`（例: 総戸数143戸）から総戸数をパースし、100戸未満を除外。
+- **HOME'S**: 一覧の `textFeatureComment`（例: 総戸数143戸）から総戸数をパースし、50戸未満を除外。
 - **SUUMO**: 一覧には総戸数が出ないため、**詳細ページのキャッシュ**を使用する。
   1. 一度 `main.py` で取得した結果（`results/latest.json`）を用意する。
-  2. `python scripts/build_units_cache.py` を実行し、SUUMO 詳細ページから総戸数を取得して `data/building_units.json` に保存する。
-  3. 次回以降のスクレイプで、キャッシュに載っている物件は総戸数100戸未満で除外される。キャッシュにない物件は通過（取りこぼし防止）。
+  2. `python3 scripts/build_units_cache.py` を実行し、SUUMO 詳細ページから総戸数を取得して `data/building_units.json` に保存する。
+  3. 次回以降のスクレイプで、キャッシュに載っている物件は総戸数50戸未満で除外される。キャッシュにない物件は通過（取りこぼし防止）。
 
 ### 駅乗降客数フィルタ（オプション）
 
