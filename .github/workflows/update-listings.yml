@@ -17,52 +17,52 @@ jobs:
       contents: write  # コミット・プッシュに必要（リポジトリ設定でも「Read and write」を有効にすること）
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0  # 履歴を全て取得（差分検出のため）
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.9'
-    
-    - name: Install dependencies
-      working-directory: scraping-tool
-      run: |
-        pip install -r requirements.txt
-    
-    - name: Run update script
-      working-directory: scraping-tool
-      run: |
-        chmod +x scripts/update_listings.sh
-        ./scripts/update_listings.sh --no-git  # Git操作は手動で行う
-    
-    - name: Check for changes
-      id: check
-      run: |
-        if git diff --quiet && git diff --cached --quiet; then
-          echo "changed=false" >> $GITHUB_OUTPUT
-        else
-          echo "changed=true" >> $GITHUB_OUTPUT
-        fi
-    
-    - name: Commit and push
-      if: steps.check.outputs.changed == 'true'
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        DATE=$(date +%Y%m%d_%H%M%S)
-        COUNT=$(python3 -c "import json, glob; files = glob.glob('scraping-tool/results/current_*.json'); print(len(json.load(open(max(files)))) if files else 0)")
-        
-        git add scraping-tool/results/
-        git commit -m "Update listings: ${DATE}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # 履歴を全て取得（差分検出のため）
 
-取得件数: ${COUNT}件
-レポート: scraping-tool/results/report/report.md
-自動更新: GitHub Actions" || exit 0
-        
-        git pull --rebase origin ${{ github.ref_name }}
-        git push origin HEAD:refs/heads/${{ github.ref_name }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run update script
+        working-directory: scraping-tool
+        run: |
+          chmod +x scripts/update_listings.sh
+          ./scripts/update_listings.sh --no-git  # Git操作は手動で行う
+
+      - name: Check for changes
+        id: check
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          DATE=$(date +%Y%m%d_%H%M%S)
+          COUNT=$(python3 -c "import json, glob; files = glob.glob('scraping-tool/results/current_*.json'); print(len(json.load(open(max(files)))) if files else 0)")
+
+          git add scraping-tool/results/
+          git commit -m "Update listings: ${DATE}
+
+          取得件数: ${COUNT}件
+          レポート: scraping-tool/results/report/report.md
+          自動更新: GitHub Actions" || exit 0
+
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin HEAD:refs/heads/${{ github.ref_name }}
