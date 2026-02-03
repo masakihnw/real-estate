@@ -15,10 +15,12 @@ from report_utils import (
     compare_listings,
     format_area,
     format_floor,
+    format_ownership,
     format_price,
     format_total_units,
     get_station_group,
     get_ward_from_address,
+    google_maps_url,
     load_json,
     row_merge_key,
     TOKYO_23_WARDS,
@@ -107,8 +109,16 @@ def format_diff_message(diff: dict[str, Any], current_count: int, report_url: Op
     return "\n".join(lines)
 
 
+# 1投稿あたりの文字数上限（Slack推奨は40000未満。余裕を持たせる）
+SLACK_CHUNK_SIZE = 35000
+# 1チャンク送信の最大リトライ回数
+SLACK_SEND_RETRIES = 5
+# リトライ間隔（秒）
+SLACK_RETRY_DELAY_SEC = 2
+
+
 def send_slack_message(webhook_url: str, message: str) -> bool:
-    """Slack Incoming Webhookにメッセージを送信。"""
+    """Slack Incoming Webhookにメッセージを1通送信。"""
     import urllib.request
     import urllib.parse
 
@@ -126,6 +136,42 @@ def send_slack_message(webhook_url: str, message: str) -> bool:
     except Exception as e:
         print(f"Slack送信エラー: {e}", file=sys.stderr)
         return False
+
+
+def send_slack_message_chunked_with_retry(webhook_url: str, message: str) -> bool:
+    """メッセージをチャンクに分割し、全チャンクを送信し切るまでリトライする。"""
+    import time
+
+    if not message.strip():
+        return True
+    chunks: list[str] = []
+    rest = message
+    while rest:
+        if len(rest) <= SLACK_CHUNK_SIZE:
+            chunks.append(rest)
+            break
+        # 行境界で分割（長い行の途中で切らない）
+        cut = rest[:SLACK_CHUNK_SIZE]
+        last_nl = cut.rfind("\n")
+        if last_nl > SLACK_CHUNK_SIZE // 2:
+            chunks.append(rest[: last_nl + 1])
+            rest = rest[last_nl + 1 :]
+        else:
+            chunks.append(cut)
+            rest = rest[SLACK_CHUNK_SIZE:]
+    for i, chunk in enumerate(chunks):
+        for attempt in range(SLACK_SEND_RETRIES):
+            if send_slack_message(webhook_url, chunk):
+                if len(chunks) > 1:
+                    print(f"Slack: チャンク {i + 1}/{len(chunks)} 送信完了", file=sys.stderr)
+                break
+            if attempt < SLACK_SEND_RETRIES - 1:
+                time.sleep(SLACK_RETRY_DELAY_SEC)
+                print(f"Slack: チャンク {i + 1} リトライ ({attempt + 2}/{SLACK_SEND_RETRIES})", file=sys.stderr)
+        else:
+            print(f"Slack: チャンク {i + 1}/{len(chunks)} が送信できませんでした（リトライ上限）", file=sys.stderr)
+            return False
+    return True
 
 
 def report_url_from_current_path(current_path: Path) -> Optional[str]:
@@ -152,9 +198,9 @@ SLACK_TEXT_LIMIT = 35000
 
 
 def _listing_line_slack(r: dict, url: str = "", include_breakdown: bool = True) -> str:
-    """1物件をSlack用1行に。総戸数・資産性・根拠・楽観/中立/悲観10年後・通勤時間（M3・PG）含む。"""
+    """1物件をSlack用1行に。戸数・階数・権利・資産性・10年後(中立)・通勤時間（M3・PG）を必ず含む。"""
     _, rank, breakdown = optional_features.get_asset_score_and_rank_with_breakdown(r)
-    opt_10y, neu_10y, pes_10y = optional_features.get_three_scenario_columns(r)
+    _, neu_10y, _ = optional_features.get_three_scenario_columns(r)
     m3_str, pg_str = optional_features.get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
     name = (r.get("name") or "")[:28]
     price = format_price(r.get("price_man"))
@@ -162,16 +208,21 @@ def _listing_line_slack(r: dict, url: str = "", include_breakdown: bool = True) 
     area = format_area(r.get("area_m2"))
     built = f"築{r.get('built_year', '-')}年" if r.get("built_year") else "-"
     walk = optional_features.format_all_station_walk(r.get("station_line"), r.get("walk_min"))
-    floor_str = format_floor(r.get("floor_position"), r.get("floor_total"))
+    # 戸数・階数・権利は必ず表示（取得できない場合は「戸数:不明」「階:-」「権利:不明」）
+    floor_str = format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure"))
     units = format_total_units(r.get("total_units"))
-    parts = [name, price, layout, area, built, walk, floor_str, units, rank]
+    ownership_str = format_ownership(r.get("ownership"))
+    parts = [name, price, layout, area, built, walk, floor_str, units, ownership_str, rank]
     if include_breakdown:
         parts.append(breakdown)
-    parts.extend([f"楽観:{opt_10y}", f"中立:{neu_10y}", f"悲観:{pes_10y}"])
+    parts.append(f"10年後:{neu_10y}")
     monthly_loan, _ = optional_features.get_loan_display_for_listing(r.get("price_man"))
     parts.extend([f"月額:{monthly_loan}"])
     parts.extend([f"M3:{m3_str}", f"PG:{pg_str}"])
     line = "• " + " ｜ ".join(parts)
+    map_url = google_maps_url(r.get("name") or r.get("address") or "")
+    if map_url:
+        line += f" ｜ <{map_url}|Map>"
     if url:
         line += f" ｜ <{url}|詳細>"
     return line
@@ -221,7 +272,7 @@ def build_slack_message_from_listings(
             lines.append(f"  … 他 {len(diff_new_a) - 10}件")
         lines.append("")
 
-    # 価格変動した物件（最大5件）
+    # 価格変動した物件（最大5件）。戸数・階数・権利を必ず含める
     if diff_updated_a:
         lines.append("*🔄 価格変動した物件*")
         for item in sorted(
@@ -232,16 +283,27 @@ def build_slack_message_from_listings(
             c = item["current"]
             prev_p = format_price(item["previous"].get("price_man"))
             curr_p = format_price(c.get("price_man"))
-            lines.append(f"• {(c.get('name') or '')[:28]} ｜ {prev_p} → {curr_p} ｜ <{c.get('url', '')}|詳細>")
+            floor_str = format_floor(c.get("floor_position"), c.get("floor_total"), c.get("floor_structure"))
+            units = format_total_units(c.get("total_units"))
+            ownership_str = format_ownership(c.get("ownership"))
+            map_url = google_maps_url(c.get("name") or c.get("address") or "")
+            detail_part = f" ｜ <{c.get('url', '')}|詳細>" if c.get("url") else ""
+            map_part = f" ｜ <{map_url}|Map>" if map_url else ""
+            lines.append(f"• {(c.get('name') or '')[:28]} ｜ {prev_p} → {curr_p} ｜ {floor_str} ｜ {units} ｜ {ownership_str}{map_part}{detail_part}")
         if len(diff_updated_a) > 5:
             lines.append(f"  … 他 {len(diff_updated_a) - 5}件")
         lines.append("")
 
-    # 削除された物件（最大5件）
+    # 削除された物件（最大5件）。戸数・階数・権利を必ず含める
     if diff_removed_a:
         lines.append("*❌ 削除された物件*")
         for r in diff_removed_a[:5]:
-            lines.append(f"• {(r.get('name') or '')[:28]} ｜ {format_price(r.get('price_man'))}")
+            floor_str = format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure"))
+            units = format_total_units(r.get("total_units"))
+            ownership_str = format_ownership(r.get("ownership"))
+            map_url = google_maps_url(r.get("name") or r.get("address") or "")
+            map_part = f" ｜ <{map_url}|Map>" if map_url else ""
+            lines.append(f"• {(r.get('name') or '')[:28]} ｜ {format_price(r.get('price_man'))} ｜ {floor_str} ｜ {units} ｜ {ownership_str}{map_part}")
         if len(diff_removed_a) > 5:
             lines.append(f"  … 他 {len(diff_removed_a) - 5}件")
         lines.append("")
@@ -258,7 +320,7 @@ def build_slack_message_from_listings(
     ordered_wards = sorted(by_ward.keys(), key=lambda w: ward_order.get(w, 999))
 
     lines.append("*📋 物件一覧（区・駅別・資産性B以上）*")
-    lines.append("  _物件名 ｜ 価格 ｜ … ｜ 楽観10年後 ｜ 中立10年後 ｜ 悲観10年後 ｜ 月額(50年・諸経費3.5万) ｜ M3 ｜ PG ｜ 詳細_")
+    lines.append("  _物件名 ｜ 価格 ｜ 間取 ｜ 専有 ｜ 築 ｜ 徒歩 ｜ 階 ｜ 戸数 ｜ 権利 ｜ ランク ｜ … ｜ 10年後(中立) ｜ 月額 ｜ M3 ｜ PG ｜ Map ｜ 詳細_")
     lines.append("")
     for ward in ordered_wards:
         ward_listings = by_ward.get(ward, [])
@@ -287,10 +349,7 @@ def build_slack_message_from_listings(
     else:
         lines.append("📄 レポート: GitHub の results/report を確認")
 
-    out = "\n".join(lines)
-    if len(out) > SLACK_TEXT_LIMIT:
-        out = out[:SLACK_TEXT_LIMIT] + "\n\n… (文字数制限のため省略。詳細は下記リンクから)"
-    return out
+    return "\n".join(lines)
 
 
 def build_message_from_report(report_path: Path, report_url: Optional[str] = None) -> Optional[str]:
@@ -337,13 +396,13 @@ def main() -> None:
             sys.exit(0)
 
     report_url = report_url_from_report_path(report_path) if report_path else report_url_from_current_path(current_path)
-    # Slack用はMarkdown表を使わない見やすい形式で投稿（総戸数含む）。レポートMDはGitHub用に残し、投稿内容はJSONから生成。
+    # Slack用はMarkdown表を使わない見やすい形式で投稿。長文はチャンク分割し、送り切れるまでリトライする。
     message = build_slack_message_from_listings(current, previous, report_url)
 
-    if send_slack_message(webhook_url, message):
+    if send_slack_message_chunked_with_retry(webhook_url, message):
         print("Slack通知を送信しました", file=sys.stderr)
     else:
-        print("Slack通知の送信に失敗しました", file=sys.stderr)
+        print("Slack通知の送信に失敗しました（リトライ後も送信できませんでした）", file=sys.stderr)
         sys.exit(1)
 
 
