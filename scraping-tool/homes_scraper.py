@@ -60,6 +60,7 @@ class HomesListing:
     total_units: Optional[int] = None  # 総戸数（一覧の textFeatureComment などから取得）
     floor_position: Optional[int] = None   # 所在階（何階）
     floor_total: Optional[int] = None     # 建物階数（何階建て）
+    ownership: Optional[str] = None        # 権利形態（所有権・借地権等。一覧に表示されていれば取得）
 
     def to_dict(self):
         return asdict(self)
@@ -205,6 +206,14 @@ def _parse_floor_total(text: str) -> Optional[int]:
     return int(m.group(1)) if m else None
 
 
+def _parse_ownership(text: str) -> Optional[str]:
+    """テキストから権利形態（所有権・借地権・底地権等）を抽出。"""
+    if not text or not text.strip():
+        return None
+    m = re.search(r"(所有権|借地権|底地権|普通借地権|定期借地権)", (text or "").strip())
+    return m.group(1).strip() if m else None
+
+
 def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, dict[str, Any]]:
     """HTML から url → {layout, walk_min, station_line, total_units} を抽出。mod-mergeBuilding と mod-listKks を処理。"""
     by_url: dict[str, dict[str, Any]] = {}
@@ -272,6 +281,8 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
                     if station_m:
                         station_line = station_m.group(0)
                     total_units = _parse_total_units(t)
+            ownership = table_cell_value(vt, "権利") or table_cell_value(vt, "権利形態") if vt else ""
+            ownership = (_parse_ownership(ownership) or _parse_ownership(tr.get_text() or ""))
             by_url[url] = {
                 "layout": layout,
                 "walk_min": walk_min,
@@ -279,6 +290,7 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
                 "total_units": total_units,
                 "floor_position": floor_position,
                 "floor_total": building_floor_total,
+                "ownership": ownership,
             }
 
     # mod-listKks.mod-listKks-sale: 1カード1物件
@@ -308,6 +320,8 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
         if floor_position is None:
             floor_position = _parse_floor_position(text_all)
         floor_total = _parse_floor_total(text_all)
+        ownership = table_cell_value(vt, "権利") or table_cell_value(vt, "権利形態") if vt else ""
+        ownership = _parse_ownership(ownership) or _parse_ownership(text_all)
         by_url[url] = {
             "layout": layout,
             "walk_min": walk_min,
@@ -315,6 +329,7 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
             "total_units": total_units,
             "floor_position": floor_position,
             "floor_total": floor_total,
+            "ownership": ownership,
         }
 
     return by_url
@@ -351,6 +366,7 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[HomesListing]:
             total_units=total_units,
             floor_position=floor_position,
             floor_total=floor_total,
+            ownership=extra.get("ownership") if isinstance(extra.get("ownership"), str) else None,
         ))
     return items
 

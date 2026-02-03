@@ -56,6 +56,19 @@ jobs:
         run: |
           python3 slack_notify.py results/latest.json results/previous.json results/report/report.md
 
+      - name: Sync to Notion
+        if: steps.check.outputs.changed == 'true'
+        working-directory: scraping-tool
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: |
+          if [ -n "$NOTION_TOKEN" ] && [ -n "$NOTION_DATABASE_ID" ]; then
+            python3 notion-tool/sync_to_notion.py results/latest.json --compare results/previous.json
+          else
+            echo "NOTION_TOKEN または NOTION_DATABASE_ID が未設定のため Notion 同期をスキップします"
+          fi
+
       - name: Commit and push
         if: steps.check.outputs.changed == 'true'
         run: |

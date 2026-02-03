@@ -131,11 +131,11 @@ def _listing_cells(r: dict) -> dict[str, Any]:
         "area": format_area(r.get("area_m2")),
         "built": f"築{r.get('built_year', '-')}年" if r.get("built_year") else "-",
         "walk": optional_features.format_all_station_walk(r.get("station_line"), r.get("walk_min")),
-        "floor_str": format_floor(r.get("floor_position"), r.get("floor_total")),
+        "floor_str": format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure")),
         "units": format_total_units(r.get("total_units")),
         "address_short": format_address_from_ward(r.get("address") or ""),
         "address_trunc": (r.get("address") or "")[:20],
-        "gmap": google_maps_link(r.get("address") or ""),
+        "gmap": google_maps_link(r.get("name") or r.get("address") or ""),
     }
 
 

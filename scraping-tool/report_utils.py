@@ -146,17 +146,33 @@ def format_total_units(total_units: Optional[int]) -> str:
     return f"{total_units}戸"
 
 
-def format_floor(floor_position: Optional[int], floor_total: Optional[int]) -> str:
-    """何階 / 何階建て を読みやすい形式に。未取得時は「階:-」（列名が分かるように）。"""
+def format_floor(
+    floor_position: Optional[int],
+    floor_total: Optional[int],
+    floor_structure: Optional[str] = None,
+) -> str:
+    """所在階/構造・階建 の形式で表示。例: 12階/RC13階地下1階建。floor_structure があればそれを使い、なければ N階/M階建。"""
     pos = floor_position is not None and floor_position >= 0
     tot = floor_total is not None and floor_total >= 1
+    structure = (floor_structure or "").strip()
+    if pos and structure:
+        return f"{floor_position}階/{structure}"
     if pos and tot:
         return f"{floor_position}階/{floor_total}階建"
     if pos:
         return f"{floor_position}階"
+    if structure:
+        return structure
     if tot:
         return f"{floor_total}階建"
     return "階:-"
+
+
+def format_ownership(ownership: Optional[str]) -> str:
+    """所有権/借地権/底地権等をそのまま表示。未取得時は「権利:不明」。"""
+    if not ownership or not (ownership or "").strip():
+        return "権利:不明"
+    return (ownership or "").strip()
 
 
 def get_ward_from_address(address: str) -> str:
@@ -183,12 +199,18 @@ def format_address_from_ward(address: str) -> str:
     return s[:30] or "-"
 
 
-def google_maps_link(address: str) -> str:
-    """住所から Google Map のハイパーリンク Markdown を返す。"""
-    if not address or not address.strip():
+def google_maps_url(query: str) -> str:
+    """検索クエリ（物件名・住所など）から Google Map の検索URLを返す。空の場合は空文字。"""
+    if not query or not query.strip():
+        return ""
+    return f"https://www.google.com/maps/search/?api=1&query={quote(query.strip())}"
+
+
+def google_maps_link(query: str) -> str:
+    """検索クエリ（物件名・住所など）から Google Map のハイパーリンク Markdown を返す。"""
+    url = google_maps_url(query)
+    if not url:
         return "-"
-    q = quote(address.strip())
-    url = f"https://www.google.com/maps/search/?api=1&query={q}"
     return f"[Google Map]({url})"
 
 

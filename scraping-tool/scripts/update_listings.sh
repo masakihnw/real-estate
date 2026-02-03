@@ -60,6 +60,12 @@ cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
 cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
 cp "$CURRENT" "${OUTPUT_DIR}/latest.json"
 
+# 4.5. Notion 同期（NOTION_TOKEN と NOTION_DATABASE_ID が設定されている場合のみ）
+if [ -n "${NOTION_TOKEN:-}" ] && [ -n "${NOTION_DATABASE_ID:-}" ]; then
+    echo "Notion に同期中..." >&2
+    python3 notion-tool/sync_to_notion.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" || true
+fi
+
 # 5. JSON は不要のため削除（md 生成に使った current_*.json を削除）
 rm -f "$CURRENT"
 for f in "${OUTPUT_DIR}"/current_*.json; do

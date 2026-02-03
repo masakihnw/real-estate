@@ -73,6 +73,7 @@ class SuumoListing:
     total_units: Optional[int] = None  # 総戸数（詳細ページキャッシュから取得）
     floor_position: Optional[int] = None   # 所在階（何階）
     floor_total: Optional[int] = None     # 建物階数（何階建て）
+    ownership: Optional[str] = None       # 権利形態（所有権・借地権・底地権等。一覧の「権利形態」から取得）
     list_ward_roman: Optional[str] = None  # 一覧取得元の区（sc_itabashi 等）。住所に区名が無くても23区判定に利用
 
     def to_dict(self):
@@ -256,6 +257,9 @@ def _parse_suumo_unit(bloc, base_url: str) -> Optional[SuumoListing]:
         body_text = bloc.get_text()
         floor_position = _parse_floor_position(get_val("所在階") or get_val("階") or body_text) or _parse_floor_position(name)
         floor_total = _parse_floor_total(get_val("階建") or get_val("建物階数") or body_text) or _parse_floor_total(name)
+        # 権利形態: 所有権・借地権・底地権等（一覧に表示されていれば取得）
+        ownership_raw = get_val("権利形態") or ""
+        ownership = (ownership_raw.strip() or None) if ownership_raw.strip() else None
 
         return SuumoListing(
             source="suumo",
@@ -272,6 +276,7 @@ def _parse_suumo_unit(bloc, base_url: str) -> Optional[SuumoListing]:
             total_units=None,
             floor_position=floor_position,
             floor_total=floor_total,
+            ownership=ownership,
         )
     except Exception:
         return None
@@ -337,6 +342,7 @@ def _parse_cassette(div, base_url: str) -> Optional[SuumoListing]:
             total_units=None,
             floor_position=floor_position,
             floor_total=floor_total,
+            ownership=None,
         )
     except Exception:
         return None
@@ -378,6 +384,7 @@ def _parse_property_block(bloc, base_url: str) -> Optional[SuumoListing]:
         total_units=None,
         floor_position=floor_position,
         floor_total=floor_total,
+        ownership=None,
     )
 
 
@@ -431,9 +438,71 @@ def _parse_fallback(soup: BeautifulSoup, base_url: str) -> list[SuumoListing]:
                 total_units=None,
                 floor_position=floor_position,
                 floor_total=floor_total,
+                ownership=None,
             )
         )
     return items
+
+
+def parse_suumo_detail_html(html: str) -> dict[str, Optional[int]]:
+    """SUUMO 物件詳細ページのHTMLから「総戸数」「所在階」「構造・階建」をパースする。
+
+    詳細ページを自動取得する機能は含まない。HTML文字列を渡して利用する。
+    戻り値: {"total_units": int|None, "floor_position": int|None, "floor_total": int|None, "floor_structure": str|None}
+    floor_structure は "RC13階地下1階建" など表示用文字列（format_floor で 12階/RC13階地下1階建 にする際に使用）。
+
+    想定HTML構造（docs/suumo.html 参照）:
+    - th に「総戸数」を含む行の直後 td → "38戸" など → total_units
+    - th に「所在階」または「所在階/構造・階建」を含む行の td → "12階" または "12階/RC13階地下1階建" → floor_position, 必要なら floor_total
+    - th に「構造・階建て」を含む行の td → "RC13階地下1階建" など → floor_total
+    """
+    soup = BeautifulSoup(html, "lxml")
+    total_units: Optional[int] = None
+    floor_position: Optional[int] = None
+    floor_total: Optional[int] = None
+    floor_structure: Optional[str] = None
+
+    for tr in soup.find_all("tr"):
+        cells = tr.find_all(["th", "td"], recursive=False)
+        for i, cell in enumerate(cells):
+            if cell.name != "th" or i + 1 >= len(cells) or cells[i + 1].name != "td":
+                continue
+            th_text = (cell.get_text() or "").strip()
+            td_text = (cells[i + 1].get_text() or "").strip()
+
+            if "総戸数" in th_text:
+                m = re.search(r"(\d+)\s*戸", td_text)
+                if m:
+                    total_units = int(m.group(1))
+
+            if "所在階" in th_text:
+                m = re.search(r"(\d+)\s*階", td_text)
+                if m:
+                    floor_position = int(m.group(1))
+                m2 = re.search(r"(?:RC|SRC|鉄骨)?(\d+)\s*階(?:\s*地下\d+階)?\s*建", td_text)
+                if m2:
+                    floor_total = int(m2.group(1))
+                # "12階/RC13階地下1階建" の形式なら / 以降を構造として保存
+                if "/" in td_text:
+                    after_slash = td_text.split("/", 1)[1].strip()
+                    if after_slash:
+                        floor_structure = after_slash
+
+            if "構造・階建" in th_text:
+                # 「RC13階地下1階建」のように「○階建」で終わる部分から階数を取る（所在階の「12階」にマッチしないよう）
+                m = re.search(r"(?:RC|SRC|鉄骨)?(\d+)\s*階(?:\s*地下\d+階)?\s*建", td_text)
+                if m:
+                    floor_total = int(m.group(1))
+                # 「所在階/構造・階建」の同一セルでなく、別行の「構造・階建て」セルなら td 全体を構造とする
+                if "所在階" not in th_text and td_text.strip():
+                    floor_structure = td_text.strip()
+
+    return {
+        "total_units": total_units,
+        "floor_position": floor_position,
+        "floor_total": floor_total,
+        "floor_structure": floor_structure,
+    }
 
 
 def _is_tokyo_23(address: str, url: str = "", list_ward_roman: Optional[str] = None) -> bool:

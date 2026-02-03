@@ -9,8 +9,11 @@ from report_utils import (
     compare_listings,
     format_area,
     format_floor,
+    format_ownership,
     format_price,
     format_walk,
+    google_maps_link,
+    google_maps_url,
     identity_key,
     listing_key,
     normalize_listing_name,
@@ -145,3 +148,30 @@ def test_format_floor():
     assert format_floor(3, 10) == "3階/10階建"
     assert format_floor(3, None) == "3階"
     assert format_floor(None, 10) == "10階建"
+    # 構造文字列がある場合は 所在階/構造 の形式
+    assert format_floor(12, 13, "RC13階地下1階建") == "12階/RC13階地下1階建"
+    assert format_floor(12, None, "RC13階地下1階建") == "12階/RC13階地下1階建"
+    assert format_floor(None, None, "RC13階地下1階建") == "RC13階地下1階建"
+
+
+def test_format_ownership():
+    assert format_ownership(None) == "権利:不明"
+    assert format_ownership("") == "権利:不明"
+    assert format_ownership("   ") == "権利:不明"
+    assert format_ownership("所有権") == "所有権"
+    assert format_ownership("  借地権  ") == "借地権"
+
+
+def test_google_maps_url():
+    assert google_maps_url("") == ""
+    assert google_maps_url("   ") == ""
+    assert "google.com/maps" in google_maps_url("東京都練馬区東大泉１")
+    assert "api=1" in google_maps_url("東京都練馬区東大泉１")
+    assert "query=" in google_maps_url("東京都練馬区東大泉１")
+
+
+def test_google_maps_link():
+    assert google_maps_link("") == "-"
+    assert google_maps_link("   ") == "-"
+    assert "[Google Map]" in google_maps_link("東京都練馬区東大泉１")
+    assert "google.com/maps" in google_maps_link("東京都練馬区東大泉１")
