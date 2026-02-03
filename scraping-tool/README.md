@@ -27,6 +27,7 @@ scraping-tool/
 ├── optional_features.py   # オプショナル依存の一括ロード（asset_score/loan_calc/commute/price_predictor 等）
 ├── generate_report.py     # Markdownレポート生成（差分検出付き、report_utils・optional_features 利用）
 ├── slack_notify.py        # Slack通知（report_utils・optional_features 利用。generate_report には依存しない）
+├── notion-tool/           # Notion 連携（DB 同期・物件ページに SUUMO 詳細を Web Clipper 風保存）
 ├── tests/                 # pytest（差分検出・キー・フォーマットのテスト）
 ├── docs/                  # セットアップ・規約・実装メモ
 │   ├── GITHUB_SETUP.md
@@ -226,6 +227,17 @@ python3 slack_notify.py current.json [previous.json] [report.md]
 - 📄 レポートへのリンク
 
 **セットアップ**: [docs/SLACK_SETUP.md](./docs/SLACK_SETUP.md) を参照
+
+### Notion 連携
+
+Slack 通知と同時に、取得結果を Notion のデータベースに同期できます。表のカラムはそのまま DB のプロパティになり、各物件ページの詳細に SUUMO/HOME'S の物件ページを Web Clipper のように（ブックマーク＋保存時点の HTML 全文）保存します。
+
+```bash
+# NOTION_TOKEN と NOTION_DATABASE_ID を設定したうえで
+python3 notion-tool/sync_to_notion.py results/latest.json --compare results/previous.json
+```
+
+**セットアップ・使い方**: [notion-tool/README.md](./notion-tool/README.md) を参照。ワークフローで Slack と同時に実行する場合は、GitHub の Secrets に `NOTION_TOKEN` と `NOTION_DATABASE_ID` を追加してください。
 
 **cron での定期実行（ローカル環境）**:
 ```bash
