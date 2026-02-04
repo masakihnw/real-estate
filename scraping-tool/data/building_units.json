@@ -695,5 +695,47 @@
     "floor_total": 10,
     "floor_structure": "RC10階地下1階建",
     "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_79222675/": {
+    "total_units": 27,
+    "floor_position": 1,
+    "floor_total": 3,
+    "floor_structure": "RC3階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20114072/": {
+    "total_units": 27,
+    "floor_position": 1,
+    "floor_total": 3,
+    "floor_structure": "RC3階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_78608050/": {
+    "total_units": 35,
+    "floor_position": 2,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20078102/": {
+    "total_units": 35,
+    "floor_position": 2,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78317467/": {
+    "total_units": 24,
+    "floor_position": 1,
+    "floor_total": 5,
+    "floor_structure": "RC5階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79179380/": {
+    "total_units": 24,
+    "floor_position": 1,
+    "floor_total": 5,
+    "floor_structure": "RC5階地下1階建",
+    "ownership": "所有権"
   }
 }
