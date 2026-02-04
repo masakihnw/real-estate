@@ -60,6 +60,10 @@ cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
 cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
 cp "$CURRENT" "${OUTPUT_DIR}/latest.json"
 
+# 4.4. 総戸数キャッシュ更新（SUUMO 詳細ページを取得して data/building_units.json を更新。次回実行時の総戸数・フィルタに利用）
+echo "総戸数キャッシュを更新中（詳細ページ取得のため時間がかかります）..." >&2
+python3 scripts/build_units_cache.py "${OUTPUT_DIR}/latest.json" || echo "総戸数キャッシュの更新に失敗しました（続行）" >&2
+
 # 4.5. Notion 同期（NOTION_TOKEN と NOTION_DATABASE_ID が設定されている場合のみ。失敗してもレポート・コミットは行う）
 if [ -n "${NOTION_TOKEN:-}" ] && [ -n "${NOTION_DATABASE_ID:-}" ]; then
     echo "Notion に同期中..." >&2

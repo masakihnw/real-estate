@@ -5,9 +5,9 @@ name: Update Listings
 
 on:
   schedule:
-    # 毎日朝8時（JST）に実行（UTCでは前日23時）
-    # タイムゾーン変更: https://crontab.guru/ で確認可能
-    - cron: '0 23 * * *'
+    # 毎日 04:00 JST に実行（UTC 19:00 = 日本時間 翌日 04:00）
+    # タイムゾーン: https://crontab.guru/ で確認可能
+    - cron: '0 19 * * *'
   workflow_dispatch:  # 手動実行も可能（GitHub Actions タブから実行）
 
 jobs:
@@ -83,6 +83,7 @@ jobs:
           COUNT=$(python3 -c "import json, glob; files = glob.glob('scraping-tool/results/current_*.json'); print(len(json.load(open(max(files)))) if files else 0)")
 
           git add scraping-tool/results/
+          [ -f scraping-tool/data/building_units.json ] && git add scraping-tool/data/building_units.json
           git commit -m "Update listings: ${DATE}
 
           取得件数: ${COUNT}件
