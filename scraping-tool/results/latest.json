@@ -14,6 +14,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "shinjuku"
   },
   {
@@ -31,6 +33,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "bunkyo"
   },
   {
@@ -48,6 +52,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "shibuya"
   },
   {
@@ -65,6 +71,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "taito"
   },
   {
@@ -82,6 +90,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "taito"
   },
   {
@@ -99,6 +109,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "sumida"
   },
   {
@@ -116,6 +128,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -133,6 +147,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -150,6 +166,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -167,6 +185,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -184,6 +204,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -201,6 +223,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -218,6 +242,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -235,6 +261,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -252,6 +280,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -269,6 +299,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -286,6 +318,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -303,23 +337,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
-    "list_ward_roman": "koto"
-  },
-  {
-    "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20100754/",
-    "name": "アップルタワー東京キャナルコート",
-    "price_man": 9780,
-    "address": "東京都江東区東雲１",
-    "station_line": "東京メトロ有楽町線「辰巳」徒歩7分",
-    "walk_min": 7,
-    "area_m2": 69.04,
-    "layout": "2LDK",
-    "built_str": "2007年2月",
-    "built_year": 2007,
-    "total_units": null,
-    "floor_position": null,
-    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -337,6 +356,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -354,6 +375,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "koto"
   },
   {
@@ -371,6 +394,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "adachi"
   },
   {
@@ -388,6 +413,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "adachi"
   },
   {
@@ -405,6 +432,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "adachi"
   },
   {
@@ -422,6 +451,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "adachi"
   },
   {
@@ -439,6 +470,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "adachi"
   },
   {
@@ -456,6 +489,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "adachi"
   },
   {
@@ -473,6 +508,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "edogawa"
   },
   {
@@ -490,6 +527,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "edogawa"
   },
   {
@@ -507,6 +546,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "edogawa"
   },
   {
@@ -524,6 +565,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "edogawa"
   },
   {
@@ -541,6 +584,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "edogawa"
   },
   {
@@ -558,7 +603,28 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "edogawa"
+  },
+  {
+    "source": "suumo",
+    "url": "https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20126461/",
+    "name": "レグノ・カリテ品川シーサイド",
+    "price_man": 7980,
+    "address": "東京都品川区東品川４",
+    "station_line": "りんかい線「品川シーサイド」徒歩2分",
+    "walk_min": 2,
+    "area_m2": 61.29,
+    "layout": "2LDK",
+    "built_str": "2007年3月",
+    "built_year": 2007,
+    "total_units": null,
+    "floor_position": null,
+    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
+    "list_ward_roman": "shinagawa"
   },
   {
     "source": "suumo",
@@ -575,23 +641,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
-    "list_ward_roman": "meguro"
-  },
-  {
-    "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20067779/",
-    "name": "フォルス学芸大学ラクシーズ",
-    "price_man": 8300,
-    "address": "東京都目黒区中央町１-１８－９",
-    "station_line": "東急東横線「学芸大学」徒歩6分",
-    "walk_min": 6,
-    "area_m2": 62.52,
-    "layout": "2LDK",
-    "built_str": "2007年6月",
-    "built_year": 2007,
-    "total_units": null,
-    "floor_position": null,
-    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "meguro"
   },
   {
@@ -609,6 +660,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "meguro"
   },
   {
@@ -626,6 +679,27 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
+    "list_ward_roman": "meguro"
+  },
+  {
+    "source": "suumo",
+    "url": "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20067779/",
+    "name": "フォルス学芸大学ラクシーズ",
+    "price_man": 8300,
+    "address": "東京都目黒区中央町１-１８－９",
+    "station_line": "東急東横線「学芸大学」徒歩6分",
+    "walk_min": 6,
+    "area_m2": 62.52,
+    "layout": "2LDK",
+    "built_str": "2007年6月",
+    "built_year": 2007,
+    "total_units": null,
+    "floor_position": null,
+    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "meguro"
   },
   {
@@ -643,6 +717,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "meguro"
   },
   {
@@ -660,23 +736,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
-    "list_ward_roman": "ota"
-  },
-  {
-    "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20035893/",
-    "name": "シャリエ武蔵新田",
-    "price_man": 9000,
-    "address": "東京都大田区矢口１-13-13",
-    "station_line": "東急多摩川線「武蔵新田」徒歩2分",
-    "walk_min": 2,
-    "area_m2": 76.61,
-    "layout": "3LDK",
-    "built_str": "2018年4月",
-    "built_year": 2018,
-    "total_units": null,
-    "floor_position": null,
-    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "ota"
   },
   {
@@ -694,6 +755,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "ota"
   },
   {
@@ -711,6 +774,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "ota"
   },
   {
@@ -728,6 +793,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "ota"
   },
   {
@@ -745,6 +812,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "ota"
   },
   {
@@ -762,16 +831,18 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "ota"
   },
   {
     "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_78834182/",
+    "url": "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_79144032/",
     "name": "シャリエ武蔵新田",
     "price_man": 9000,
-    "address": "東京都大田区矢口１",
-    "station_line": "東急多摩川線「武蔵新田」徒歩3分",
-    "walk_min": 3,
+    "address": "東京都大田区矢口１-13-13",
+    "station_line": "東急多摩川線「武蔵新田」徒歩2分",
+    "walk_min": 2,
     "area_m2": 76.61,
     "layout": "3LDK",
     "built_str": "2018年4月",
@@ -779,6 +850,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "ota"
   },
   {
@@ -796,6 +869,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "ota"
   },
   {
@@ -813,6 +888,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "setagaya"
   },
   {
@@ -830,6 +907,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "setagaya"
   },
   {
@@ -847,24 +926,9 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "setagaya"
-  },
-  {
-    "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79179380/",
-    "name": "オープンレジデンシア中野中央",
-    "price_man": 9280,
-    "address": "東京都中野区中央３",
-    "station_line": "東京メトロ丸ノ内線「新中野」徒歩6分",
-    "walk_min": 6,
-    "area_m2": 72.84,
-    "layout": "3LDK",
-    "built_str": "2019年7月",
-    "built_year": 2019,
-    "total_units": null,
-    "floor_position": null,
-    "floor_total": null,
-    "list_ward_roman": "nakano"
   },
   {
     "source": "suumo",
@@ -881,11 +945,13 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nakano"
   },
   {
     "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78317467/",
+    "url": "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79064686/",
     "name": "オープンレジデンシア中野中央",
     "price_man": 9280,
     "address": "東京都中野区中央３",
@@ -898,6 +964,27 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
+    "list_ward_roman": "nakano"
+  },
+  {
+    "source": "suumo",
+    "url": "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20043394/",
+    "name": "オープンレジデンシア中野中央",
+    "price_man": 9280,
+    "address": "東京都中野区中央３",
+    "station_line": "東京メトロ丸ノ内線「新中野」徒歩6分",
+    "walk_min": 6,
+    "area_m2": 72.84,
+    "layout": "3LDK",
+    "built_str": "2019年7月",
+    "built_year": 2019,
+    "total_units": null,
+    "floor_position": null,
+    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nakano"
   },
   {
@@ -915,6 +1002,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nakano"
   },
   {
@@ -932,6 +1021,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "suginami"
   },
   {
@@ -949,6 +1040,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "suginami"
   },
   {
@@ -966,6 +1059,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "suginami"
   },
   {
@@ -983,6 +1078,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "suginami"
   },
   {
@@ -1000,6 +1097,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "suginami"
   },
   {
@@ -1017,6 +1116,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1034,6 +1135,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1051,6 +1154,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1068,6 +1173,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1085,6 +1192,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1102,6 +1211,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1119,6 +1230,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1136,6 +1249,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1153,6 +1268,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "nerima"
   },
   {
@@ -1170,6 +1287,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1187,6 +1306,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1204,6 +1325,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1221,6 +1344,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1238,6 +1363,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1255,6 +1382,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1272,23 +1401,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
-    "list_ward_roman": "toshima"
-  },
-  {
-    "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_79095175/",
-    "name": "BELISTA椎名町",
-    "price_man": 8980,
-    "address": "東京都豊島区長崎２",
-    "station_line": "西武池袋線「椎名町」徒歩5分",
-    "walk_min": 5,
-    "area_m2": 65.61,
-    "layout": "3LDK",
-    "built_str": "2009年2月",
-    "built_year": 2009,
-    "total_units": null,
-    "floor_position": null,
-    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1306,6 +1420,27 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
+    "list_ward_roman": "toshima"
+  },
+  {
+    "source": "suumo",
+    "url": "https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_79095175/",
+    "name": "BELISTA椎名町",
+    "price_man": 8980,
+    "address": "東京都豊島区長崎２",
+    "station_line": "西武池袋線「椎名町」徒歩5分",
+    "walk_min": 5,
+    "area_m2": 65.61,
+    "layout": "3LDK",
+    "built_str": "2009年2月",
+    "built_year": 2009,
+    "total_units": null,
+    "floor_position": null,
+    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1323,6 +1458,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "toshima"
   },
   {
@@ -1340,6 +1477,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1357,6 +1496,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1374,6 +1515,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1391,6 +1534,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1408,6 +1553,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1425,11 +1572,13 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
     "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20009255/",
+    "url": "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79135381/",
     "name": "シティインデックス王子",
     "price_man": 8999,
     "address": "東京都北区豊島１",
@@ -1437,11 +1586,13 @@
     "walk_min": 4,
     "area_m2": 61.72,
     "layout": "2LDK",
-    "built_str": "2010年10月",
+    "built_str": "2010年9月",
     "built_year": 2010,
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1459,6 +1610,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1476,6 +1629,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1493,6 +1648,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "kita"
   },
   {
@@ -1510,6 +1667,8 @@
     "total_units": null,
     "floor_position": 13,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1527,6 +1686,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1544,6 +1705,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1561,6 +1724,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1578,23 +1743,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
-    "list_ward_roman": "itabashi"
-  },
-  {
-    "source": "suumo",
-    "url": "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78920405/",
-    "name": "ＴＨＥ　ＩＴＡＢＡＳＨＩレジデンス　ノース棟",
-    "price_man": 7980,
-    "address": "東京都板橋区清水町",
-    "station_line": "都営三田線「板橋本町」徒歩5分",
-    "walk_min": 5,
-    "area_m2": 70.35,
-    "layout": "3LDK",
-    "built_str": "2012年7月",
-    "built_year": 2012,
-    "total_units": null,
-    "floor_position": null,
-    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1612,6 +1762,27 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
+    "list_ward_roman": "itabashi"
+  },
+  {
+    "source": "suumo",
+    "url": "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78920405/",
+    "name": "ＴＨＥ　ＩＴＡＢＡＳＨＩレジデンス　ノース棟",
+    "price_man": 7980,
+    "address": "東京都板橋区清水町",
+    "station_line": "都営三田線「板橋本町」徒歩5分",
+    "walk_min": 5,
+    "area_m2": 70.35,
+    "layout": "3LDK",
+    "built_str": "2012年7月",
+    "built_year": 2012,
+    "total_units": null,
+    "floor_position": null,
+    "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1629,6 +1800,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1646,6 +1819,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1663,6 +1838,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1680,6 +1857,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   },
   {
@@ -1697,6 +1876,8 @@
     "total_units": null,
     "floor_position": null,
     "floor_total": null,
+    "floor_structure": null,
+    "ownership": null,
     "list_ward_roman": "itabashi"
   }
 ]
