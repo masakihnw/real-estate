@@ -185,8 +185,8 @@ def fetch_list_page(
             r.encoding = r.apparent_encoding or "utf-8"
             return r.text
         except requests.exceptions.HTTPError as e:
-            # 502/503 は一時的なサーバーエラーのためリトライ
-            if e.response is not None and e.response.status_code in (502, 503) and attempt < REQUEST_RETRIES - 1:
+            # 500/502/503 は一時的なサーバーエラーのためリトライ
+            if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
                 last_error = e
                 time.sleep(2)
             else:
@@ -627,7 +627,15 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
     for ward_roman in SUUMO_23_WARD_ROMAN:  # 全23区を同じ方式で取得
         p = 1
         while p <= limit:
-            html = fetch_list_page(session, p, ward_roman=ward_roman)
+            try:
+                html = fetch_list_page(session, p, ward_roman=ward_roman)
+            except requests.exceptions.HTTPError as e:
+                # リトライ後も 5xx の場合はそのページをスキップして続行（ジョブ全体は落とさない）
+                if e.response is not None and 500 <= e.response.status_code < 600:
+                    print(f"SUUMO: sc_{ward_roman} ページ{p} で {e.response.status_code} エラーのためスキップします: {e.response.url}", file=__import__("sys").stderr)
+                    p += 1
+                    continue
+                raise
             rows = parse_list_html(html)
             if not rows:
                 break
