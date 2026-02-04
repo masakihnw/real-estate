@@ -268,8 +268,9 @@ python3 notion-tool/sync_to_notion.py results/latest.json --compare results/prev
 - **HOME'S**: 一覧の `textFeatureComment`（例: 総戸数143戸）から総戸数をパースし、50戸未満を除外。
 - **SUUMO**: 一覧には総戸数が出ないため、**詳細ページのキャッシュ**を使用する。
   1. 一度 `main.py` で取得した結果（`results/latest.json`）を用意する。
-  2. `python3 scripts/build_units_cache.py` を実行し、SUUMO 詳細ページから総戸数を取得して `data/building_units.json` に保存する。
-  3. 次回以降のスクレイプで、キャッシュに載っている物件は総戸数50戸未満で除外される。キャッシュにない物件は通過（取りこぼし防止）。
+  2. `python3 scripts/build_units_cache.py` を実行する。キャッシュにない URL は詳細ページを HTTP 取得し、**HTML を `data/html_cache/` に保存**。パース結果（総戸数・所在階・階建・権利形態）を `data/building_units.json` に保存する。
+  3. 次回実行時は**キャッシュに HTML がある URL は再取得せず**、ローカルの HTML からパースする。所在階・階建・権利形態も一覧で取れない場合はこのキャッシュで補完される。
+  4. キャッシュに載っている物件は総戸数50戸未満で除外。キャッシュにない物件は通過（取りこぼし防止）。
 
 ### 駅乗降客数フィルタ（オプション）
 

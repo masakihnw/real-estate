@@ -8,6 +8,8 @@ test_*.md
 
 # data/ の元データ（手動DL。fetch_station_passengers.py が読み、station_passengers.json を生成）
 data/*.zip
+# 詳細ページ HTML キャッシュ（build_units_cache が生成。再取得で復元可能なためコミットしない）
+data/html_cache/
 
 # results/ はコミット対象（定期実行結果をGitHubで管理）
 # results/previous.json は Slack 差分用の一時ファイル（コミットしない）

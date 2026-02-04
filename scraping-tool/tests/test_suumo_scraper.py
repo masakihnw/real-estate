@@ -50,6 +50,7 @@ def test_parse_suumo_detail_html_empty():
     assert r["floor_position"] is None
     assert r["floor_total"] is None
     assert r["floor_structure"] is None
+    assert r["ownership"] is None
 
 
 def test_parse_suumo_detail_html_only_units():
