@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 スクレイピング結果の差分を取得し、Slackに通知する。
-前回結果（latest.json）と現在結果を比較して、新規・価格変動・削除を検出。
+前回結果（latest.json）と現在結果を比較し、新規追加・削除された物件のみ通知（価格変動は含めない）。
 """
 
 import json
@@ -18,12 +18,8 @@ from report_utils import (
     format_ownership,
     format_price,
     format_total_units,
-    get_station_group,
-    get_ward_from_address,
     google_maps_url,
     load_json,
-    row_merge_key,
-    TOKYO_23_WARDS,
 )
 
 
@@ -33,9 +29,8 @@ def format_diff_message(
     report_url: Optional[str] = None,
     map_url: Optional[str] = None,
 ) -> str:
-    """差分をSlackメッセージ形式に整形。report_url / map_url が指定されていればそのリンクを使う。"""
+    """差分をSlackメッセージ形式に整形。report_url / map_url が指定されていればそのリンクを使う。新規・削除のみ。"""
     new_count = len(diff["new"])
-    updated_count = len(diff["updated"])
     removed_count = len(diff["removed"])
 
     lines = [
@@ -45,12 +40,10 @@ def format_diff_message(
         "",
     ]
 
-    if new_count > 0 or updated_count > 0 or removed_count > 0:
+    if new_count > 0 or removed_count > 0:
         lines.append("*📈 変更サマリー*")
         if new_count > 0:
             lines.append(f"  🆕 新規: {new_count}件")
-        if updated_count > 0:
-            lines.append(f"  🔄 価格変動: {updated_count}件")
         if removed_count > 0:
             lines.append(f"  ❌ 削除: {removed_count}件")
         lines.append("")
@@ -69,28 +62,6 @@ def format_diff_message(
             lines.append(f"  ... 他 {len(diff['new']) - 5}件")
         lines.append("")
 
-    # 価格変動（最大5件、差額が大きい順）
-    if diff["updated"]:
-        lines.append("*🔄 価格変動*")
-        sorted_updated = sorted(
-            diff["updated"],
-            key=lambda x: abs((x["current"].get("price_man") or 0) - (x["previous"].get("price_man") or 0)),
-            reverse=True,
-        )
-        for item in sorted_updated[:5]:
-            curr = item["current"]
-            prev = item["previous"]
-            name = curr.get("name", "")[:40]
-            prev_price = format_price(prev.get("price_man"))
-            curr_price = format_price(curr.get("price_man"))
-            diff_price = (curr.get("price_man") or 0) - (prev.get("price_man") or 0)
-            diff_str = f"{'+' if diff_price >= 0 else ''}{diff_price}万円"
-            lines.append(f"  • {name}")
-            lines.append(f"    {prev_price} → {curr_price} ({diff_str})")
-        if len(diff["updated"]) > 5:
-            lines.append(f"  ... 他 {len(diff['updated']) - 5}件")
-        lines.append("")
-
     # 削除された物件（最大5件）
     if diff["removed"]:
         lines.append("*❌ 削除された物件*")
@@ -102,7 +73,7 @@ def format_diff_message(
             lines.append(f"  ... 他 {len(diff['removed']) - 5}件")
         lines.append("")
 
-    if new_count == 0 and updated_count == 0 and removed_count == 0:
+    if new_count == 0 and removed_count == 0:
         lines.append("変更はありませんでした。")
 
     lines.append("")
@@ -259,18 +230,14 @@ def build_slack_message_from_listings(
     report_url: Optional[str] = None,
     map_url: Optional[str] = None,
 ) -> str:
-    """Slack用にMarkdown表を使わず、見やすいテキスト形式でメッセージを組み立てる。資産性B以上の物件のみ。"""
-    from collections import defaultdict
-
+    """Slack用にメッセージを組み立てる。新規追加・削除のみ表示。資産性B以上の物件のみ。レポート・地図はリンクで提供。"""
     # 資産性B以上に絞る
     current_a = [r for r in current if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff = compare_listings(current, previous) if previous else {}
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-    diff_updated_a = [item for item in diff.get("updated", []) if optional_features.get_asset_score_and_rank(item.get("current", {}))[1] in ("S", "A", "B")]
     diff_removed_a = [r for r in diff.get("removed", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
 
     new_c = len(diff_new_a)
-    upd_c = len(diff_updated_a)
     rem_c = len(diff_removed_a)
 
     lines = [
@@ -287,12 +254,11 @@ def build_slack_message_from_listings(
     if report_url or map_url:
         lines.append("")
 
-    # ■ 今回の変更（新規追加・削除・価格変動を冒頭で明示）
-    if new_c or upd_c or rem_c:
+    # ■ 今回の変更（新規追加・削除のみ）
+    if new_c or rem_c:
         lines.append("*■ 今回の変更*")
         lines.append(f"  🆕 *新規追加*: {new_c}件")
         lines.append(f"  ❌ *削除*: {rem_c}件")
-        lines.append(f"  🔄 *価格変動*: {upd_c}件")
         lines.append("")
 
     # 新規追加された物件（区に関係なく一番上）
@@ -303,28 +269,6 @@ def build_slack_message_from_listings(
             lines.append(_listing_line_slack(r, url))
         if len(diff_new_a) > 10:
             lines.append(f"  … 他 {len(diff_new_a) - 10}件")
-        lines.append("")
-
-    # 価格変動した物件（最大5件）。戸数・階数・権利を必ず含める
-    if diff_updated_a:
-        lines.append("*🔄 価格変動した物件*")
-        for item in sorted(
-            diff_updated_a,
-            key=lambda x: abs((x["current"].get("price_man") or 0) - (x["previous"].get("price_man") or 0)),
-            reverse=True,
-        )[:5]:
-            c = item["current"]
-            prev_p = format_price(item["previous"].get("price_man"))
-            curr_p = format_price(c.get("price_man"))
-            floor_str = format_floor(c.get("floor_position"), c.get("floor_total"), c.get("floor_structure"))
-            units = format_total_units(c.get("total_units"))
-            ownership_str = format_ownership(c.get("ownership"))
-            map_url = google_maps_url(c.get("name") or c.get("address") or "")
-            detail_part = f" ｜ <{c.get('url', '')}|詳細>" if c.get("url") else ""
-            map_part = f" ｜ <{map_url}|Map>" if map_url else ""
-            lines.append(f"• {(c.get('name') or '')[:28]} ｜ {prev_p} → {curr_p} ｜ {floor_str} ｜ {units} ｜ {ownership_str}{map_part}{detail_part}")
-        if len(diff_updated_a) > 5:
-            lines.append(f"  … 他 {len(diff_updated_a) - 5}件")
         lines.append("")
 
     # 削除された物件（最大5件）。戸数・階数・権利を必ず含める
@@ -339,42 +283,6 @@ def build_slack_message_from_listings(
             lines.append(f"• {(r.get('name') or '')[:28]} ｜ {format_price(r.get('price_man'))} ｜ {floor_str} ｜ {units} ｜ {ownership_str}{map_part}")
         if len(diff_removed_a) > 5:
             lines.append(f"  … 他 {len(diff_removed_a) - 5}件")
-        lines.append("")
-
-    # 物件一覧（区・駅別、資産性B以上のみ）
-    ward_order = {w: i for i, w in enumerate(TOKYO_23_WARDS)}
-    by_ward: dict[str, list[dict]] = defaultdict(list)
-    for r in current_a:
-        ward = get_ward_from_address(r.get("address") or "")
-        if ward:
-            by_ward[ward].append(r)
-        else:
-            by_ward["(区不明)"].append(r)
-    ordered_wards = sorted(by_ward.keys(), key=lambda w: ward_order.get(w, 999))
-
-    lines.append("*📋 物件一覧（区・駅別・資産性B以上）*")
-    lines.append("  _物件名 ｜ 価格 ｜ 間取 ｜ 専有 ｜ 築 ｜ 徒歩 ｜ 階 ｜ 戸数 ｜ 権利 ｜ ランク ｜ … ｜ 10年後(中立) ｜ 月額 ｜ M3 ｜ PG ｜ Map ｜ 詳細_")
-    lines.append("")
-    for ward in ordered_wards:
-        ward_listings = by_ward.get(ward, [])
-        if not ward_listings:
-            continue
-        lines.append(f"*{ward}*")
-        by_station: dict[str, list[dict]] = defaultdict(list)
-        for r in ward_listings:
-            st = get_station_group(r.get("station_line") or "")
-            by_station[st].append(r)
-        for station in sorted(by_station.keys()):
-            st_listings = by_station[station]
-            merge_groups: dict[tuple, list[dict]] = defaultdict(list)
-            for r in st_listings:
-                merge_groups[row_merge_key(r)].append(r)
-            for group in sorted(merge_groups.values(), key=lambda g: (g[0].get("price_man") or 0)):
-                r = group[0]
-                urls = [x.get("url", "") for x in group if x.get("url")]
-                url = urls[0] if urls else ""
-                lines.append(f"  _{station}_")
-                lines.append(f"  {_listing_line_slack(r, url)}")
         lines.append("")
 
     # 末尾にもレポート・地図リンク（冒頭で既に出しているが、長文の最後にも）
@@ -421,14 +329,13 @@ def main() -> None:
     current = load_json(current_path, missing_ok=True, default=[])
     previous = load_json(previous_path, missing_ok=True, default=[]) if previous_path else []
 
-    # 投稿対象は資産性B以上のみ。前回ありかつB以上に絞った差分がなければ投稿をスキップする
+    # 投稿対象は資産性B以上のみ。前回ありかつB以上の新規・削除がなければ投稿をスキップする
     if previous:
         diff = compare_listings(current, previous)
         diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-        diff_updated_a = [item for item in diff.get("updated", []) if optional_features.get_asset_score_and_rank(item.get("current", {}))[1] in ("S", "A", "B")]
         diff_removed_a = [r for r in diff.get("removed", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-        if not diff_new_a and not diff_updated_a and not diff_removed_a:
-            print("変更なし（資産性B以上の新規・削除・価格変動なし）Slack通知をスキップします", file=sys.stderr)
+        if not diff_new_a and not diff_removed_a:
+            print("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします", file=sys.stderr)
             sys.exit(0)
 
     # CI（GitHub Actions）では GITHUB_REPOSITORY / GITHUB_REF_NAME から正しい URL を組み立てる
