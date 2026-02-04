@@ -27,8 +27,13 @@ from report_utils import (
 )
 
 
-def format_diff_message(diff: dict[str, Any], current_count: int, report_url: Optional[str] = None) -> str:
-    """差分をSlackメッセージ形式に整形。report_url が指定されていればそのリンクを使う。"""
+def format_diff_message(
+    diff: dict[str, Any],
+    current_count: int,
+    report_url: Optional[str] = None,
+    map_url: Optional[str] = None,
+) -> str:
+    """差分をSlackメッセージ形式に整形。report_url / map_url が指定されていればそのリンクを使う。"""
     new_count = len(diff["new"])
     updated_count = len(diff["updated"])
     removed_count = len(diff["removed"])
@@ -105,6 +110,8 @@ def format_diff_message(diff: dict[str, Any], current_count: int, report_url: Op
         lines.append(f"📄 詳細: <{report_url}|レポートを確認>")
     else:
         lines.append("📄 詳細: <https://github.com/masakihnw/dev-workspace/blob/main/personal/projects/real-estate/scraping-tool/results/report/report.md|レポートを確認>")
+    if map_url:
+        lines.append(f"📌 地図: <{map_url}|地図で見る（スマホ可）>")
 
     return "\n".join(lines)
 
@@ -193,6 +200,24 @@ def report_url_from_report_path(report_path: Path) -> Optional[str]:
     return f"{base}/{report_path.name}"
 
 
+def map_url_from_report_url(report_url: Optional[str]) -> Optional[str]:
+    """
+    GitHub のレポート URL から、同一リポジトリの map_viewer.html を
+    htmlpreview で開く URL を組み立てる。スマホからも閲覧可能。
+    """
+    if not report_url or "github.com" not in report_url or "/blob/" not in report_url:
+        return None
+    # https://github.com/OWNER/REPO/blob/BRANCH/path 形式 → raw URL
+    raw = report_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
+    if "report/report.md" in raw:
+        raw = raw.replace("report/report.md", "map_viewer.html")
+    elif "results/report.md" in raw or raw.endswith("/report.md"):
+        raw = raw.replace("results/report.md", "results/map_viewer.html").replace("/report.md", "/map_viewer.html")
+    else:
+        raw = raw.rstrip("/").rsplit("/", 1)[0] + "/map_viewer.html" if "/" in raw else raw + "/map_viewer.html"
+    return f"https://htmlpreview.github.io/?{raw}"
+
+
 # Slack メッセージの上限（余裕を持って）
 SLACK_TEXT_LIMIT = 35000
 
@@ -232,6 +257,7 @@ def build_slack_message_from_listings(
     current: list[dict[str, Any]],
     previous: Optional[list[dict[str, Any]]],
     report_url: Optional[str] = None,
+    map_url: Optional[str] = None,
 ) -> str:
     """Slack用にMarkdown表を使わず、見やすいテキスト形式でメッセージを組み立てる。資産性B以上の物件のみ。"""
     from collections import defaultdict
@@ -348,6 +374,8 @@ def build_slack_message_from_listings(
         lines.append(f"📄 <{report_url}|レポートを確認>")
     else:
         lines.append("📄 レポート: GitHub の results/report を確認")
+    if map_url:
+        lines.append(f"📌 <{map_url}|地図で見る（スマホ可）>")
 
     return "\n".join(lines)
 
@@ -396,8 +424,9 @@ def main() -> None:
             sys.exit(0)
 
     report_url = report_url_from_report_path(report_path) if report_path else report_url_from_current_path(current_path)
+    map_url = map_url_from_report_url(report_url)
     # Slack用はMarkdown表を使わない見やすい形式で投稿。長文はチャンク分割し、送り切れるまでリトライする。
-    message = build_slack_message_from_listings(current, previous, report_url)
+    message = build_slack_message_from_listings(current, previous, report_url, map_url=map_url)
 
     if send_slack_message_chunked_with_retry(webhook_url, message):
         print("Slack通知を送信しました", file=sys.stderr)

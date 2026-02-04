@@ -39,6 +39,9 @@ scraping-tool/
 │   ├── terms-check.md
 │   └── HOMES_実装ガイド.md
 └── scripts/               # 定期実行・キャッシュ取得用
+    ├── build_map_viewer.py # 物件を地図上にマッピングした HTML を生成
+    ├── geocode.py          # 住所→緯度経度（Nominatim、data/geocode_cache.json にキャッシュ）
+    └── ...
 ```
 
 **Python モジュールについて**: 役割ごとにファイルを分割しています（スクレイプ・予測・レポート・通知など）。一つのファイルにまとめず保守性を優先しています。`report_utils.py` はフォーマット・比較・**差分検出用キー**（`identity_key`：価格を除く同一判定）と**重複除去用キー**（`listing_key`：価格含む完全一致）および `load_json` を提供します。`optional_features.py` は asset_score / loan_calc / commute / price_predictor 等のオプショナル依存を一箇所でロードし、未インストール時は "-" 等の互換値を返します。`generate_report` と `slack_notify` は `optional_features` 経由で利用するため、両ファイルから try/except ImportError を撤去しています。`slack_notify` は `generate_report` に依存しません。
@@ -125,6 +128,23 @@ python3 generate_report.py result.json -o report.md --report-url "https://github
 - 🔄 **価格変動**: 同一物件で価格だけ変わったもの（identity_key で同一判定し updated として表示）
 - ❌ **削除された物件**: 前回はあったが今回ない物件
 - 📋 **全物件一覧**: 区・最寄駅別、資産性B以上のみ。10年後差額が大きい順で表示
+
+### 地図で物件を確認（map viewer）
+
+取得した物件を地図上にマッピングして確認できます。住所は OpenStreetMap Nominatim でジオコーディングし、結果は `data/geocode_cache.json` にキャッシュされます。
+
+```bash
+# results/latest.json から地図用 HTML を生成（results/map_viewer.html）
+python3 scripts/build_map_viewer.py
+
+# 先頭 N 件だけ（テスト用。初回はジオコーディングで時間がかかります）
+python3 scripts/build_map_viewer.py --limit 20
+```
+
+生成した `results/map_viewer.html` をブラウザで開くと、Leaflet 地図上にマーカーが表示され、クリックで物件名・価格・間取り・最寄駅・詳細リンクを確認できます。
+
+**レポート・Slack・スマホでの閲覧**  
+定期実行（`update_listings.sh` や GitHub Actions）では、上記のあとに `map_viewer.html` を生成し、レポート先頭に「📌 物件マップ（スマホからも閲覧可）」リンクを付け、Slack 通知にも「📌 地図で見る（スマホ可）」を追加します。地図の URL は [htmlpreview.github.io](https://htmlpreview.github.io/) 経由で、GitHub にプッシュした `results/map_viewer.html` を表示するため、スマホからも同じリンクで開けます。
 
 ### 定期実行の例
 

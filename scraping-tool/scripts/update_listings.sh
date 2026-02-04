@@ -38,14 +38,17 @@ if [ -f "${OUTPUT_DIR}/latest.json" ]; then
     fi
 fi
 
-# GitHub Actions 実行時は results/report へのハイパーリンク用 URL を渡す
+# GitHub Actions 実行時は results/report と物件マップへのリンク用 URL を渡す（スマホからも閲覧可）
 REPORT_URL_ARG=""
+MAP_URL_ARG=""
 if [ -n "${GITHUB_REPOSITORY:-}" ] && [ -n "${GITHUB_REF_NAME:-}" ]; then
     REPORT_URL="https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_REF_NAME}/scraping-tool/results/report/report.md"
     REPORT_URL_ARG="--report-url ${REPORT_URL}"
+    MAP_URL="https://htmlpreview.github.io/?https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/scraping-tool/results/map_viewer.html"
+    MAP_URL_ARG="--map-url ${MAP_URL}"
 fi
 
-# 3. 前回結果（latest.json）があれば差分レポート生成、なければ通常レポート
+# 3. 前回結果（latest.json）があれば差分レポート生成、なければ通常レポート（地図URLは再生成後に付与）
 if [ -f "${OUTPUT_DIR}/latest.json" ]; then
     echo "前回結果と比較: latest.json" >&2
     python3 generate_report.py "$CURRENT" --compare "${OUTPUT_DIR}/latest.json" -o "$REPORT" $REPORT_URL_ARG
@@ -67,11 +70,16 @@ python3 scripts/build_units_cache.py "${OUTPUT_DIR}/latest.json" || echo "キャ
 # 4.4.1. 今回の latest.json にキャッシュをマージし、レポートを再生成
 #         → report.md と Slack（latest.json を参照）の両方に階・戸数・権利が反映される
 python3 scripts/merge_detail_cache.py "${OUTPUT_DIR}/latest.json" || echo "詳細キャッシュのマージに失敗しました（続行）" >&2
-echo "レポートを再生成（詳細キャッシュ反映）..." >&2
+
+# 4.4.2. 物件マップ用 HTML を生成（レポート・Slack に地図リンクを付与するため。初回はジオコーディングで時間がかかることがあります）
+echo "物件マップを生成中..." >&2
+python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" || echo "地図の生成に失敗しました（続行）" >&2
+
+echo "レポートを再生成（詳細キャッシュ・地図リンク反映）..." >&2
 if [ -f "${OUTPUT_DIR}/previous.json" ]; then
-    python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG
+    python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
 else
-    python3 generate_report.py "${OUTPUT_DIR}/latest.json" -o "$REPORT" $REPORT_URL_ARG
+    python3 generate_report.py "${OUTPUT_DIR}/latest.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
 fi
 cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
 
