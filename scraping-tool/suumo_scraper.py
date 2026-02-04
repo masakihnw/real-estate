@@ -110,8 +110,9 @@ def _parse_area_m2(s: str) -> Optional[float]:
     """「48.93m2」「48.93㎡」「48.93m2（14.80坪）」などから数値を返す。"""
     if not s:
         return None
-    m = re.search(r"([0-9.]+)\s*m2|㎡|m\s*2", s, re.I)
-    if m:
+    # 数値＋単位の形のみマッチ（「㎡」単体だと group(1) が None になるため数値を必須に）
+    m = re.search(r"([0-9.]+)\s*(?:m2|㎡|m\s*2)", s, re.I)
+    if m and m.group(1) is not None:
         return float(m.group(1))
     return None
 
