@@ -42,6 +42,34 @@ def identity_key(r: dict) -> tuple:
     )
 
 
+# Notion に同期するプロパティに対応するキー。いずれかが前回と異なれば「updated」とする
+NOTION_SYNC_KEYS = (
+    "name", "url", "address", "price_man", "area_m2", "walk_min",
+    "floor_position", "ownership", "built_year", "total_units",
+    "station_line", "layout", "floor_total", "list_ward_roman",
+)
+
+
+def _norm_prop(v: Any) -> Any:
+    """プロパティ比較用。None と空文字を揃え、数値は int/float を統一。"""
+    if v is None:
+        return None
+    if isinstance(v, str):
+        s = v.strip()
+        return s if s else None
+    if isinstance(v, float) and v == int(v):
+        return int(v)
+    return v
+
+
+def listing_has_property_changes(curr: dict, prev: dict) -> bool:
+    """Notion に送るプロパティのいずれかが curr と prev で異なれば True。"""
+    for key in NOTION_SYNC_KEYS:
+        if _norm_prop(curr.get(key)) != _norm_prop(prev.get(key)):
+            return True
+    return False
+
+
 def listing_key(r: dict) -> tuple:
     """完全一致判定用のキー（価格含む）。重複除去（dedupe）等で「名前・間取り・広さ・価格・住所・築年・駅徒歩が全て一致」を同一とする。"""
     return (
@@ -57,7 +85,7 @@ def listing_key(r: dict) -> tuple:
 
 
 def compare_listings(current: list[dict], previous: Optional[list[dict]] = None) -> dict[str, Any]:
-    """前回結果と比較して差分を検出。同一物件は identity_key（価格を除く）で判定し、価格差分は updated とする。"""
+    """前回結果と比較して差分を検出。同一物件は identity_key で判定し、価格や総戸数など Notion 同期項目の変更があれば updated とする。"""
     if not previous:
         return {
             "new": current,
@@ -86,7 +114,7 @@ def compare_listings(current: list[dict], previous: Optional[list[dict]] = None)
         prev = previous_by_key.get(k)
         if not prev:
             new.append(curr)
-        elif curr.get("price_man") != prev.get("price_man"):
+        elif listing_has_property_changes(curr, prev):
             updated.append({"current": curr, "previous": prev})
         else:
             unchanged.append(curr)

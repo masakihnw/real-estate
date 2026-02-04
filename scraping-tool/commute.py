@@ -224,6 +224,30 @@ def get_commute_display_with_estimate(
     return (m3_str, pg_str)
 
 
+def get_commute_total_minutes(
+    station_line: str,
+    walk_min: Optional[int],
+) -> Tuple[Optional[int], Optional[int]]:
+    """
+    M3・PG のドアtoドア通勤分数を返す。(m3_total_min, pg_total_min)。
+    未登録駅の場合は概算（徒歩＋最寄り→会社最寄り＋会社最寄り→会社）を返す。
+    """
+    m3_min, pg_min = get_commute_display_best(station_line or "")
+    walk = walk_min if walk_min is not None else 0
+
+    if m3_min is not None:
+        m3_total = walk + m3_min
+    else:
+        m3_total = walk + ESTIMATE_STATION_TO_OFFICE_M3_MIN + ESTIMATE_OFFICE_STATION_WALK_M3_MIN
+
+    if pg_min is not None:
+        pg_total = walk + pg_min
+    else:
+        pg_total = walk + ESTIMATE_STATION_TO_OFFICE_PG_MIN + ESTIMATE_OFFICE_STATION_WALK_PG_MIN
+
+    return (m3_total, pg_total)
+
+
 def get_destination_labels() -> tuple[str, str]:
     """レポート用の通勤先ラベル。(M3のラベル, playgroundのラベル)。"""
     return (COMMUTE_DESTINATIONS["m3career"][0], COMMUTE_DESTINATIONS["playground"][0])
