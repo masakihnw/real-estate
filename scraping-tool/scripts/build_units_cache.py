@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
-SUUMO 物件詳細ページから総戸数を取得し、data/building_units.json にキャッシュする。
-main.py の取得結果（results/latest.json）の SUUMO URL を対象に、詳細ページを取得して総戸数をパースする。
-キャッシュがあると apply_conditions で総戸数100戸以上フィルタが有効になる。
+SUUMO 物件詳細ページから総戸数・所在階・階建・権利形態を取得し、
+HTML を data/html_cache/ にキャッシュ、パース結果を data/building_units.json に保存する。
+
+- キャッシュに HTML がある URL は再取得せず、ローカルの HTML からパースする。
+- キャッシュにない URL は HTTP 取得し、取得した HTML を保存してからパースする。
+- building_units.json の形式: URL → 数値（従来互換）または URL → { "total_units", "floor_position", "floor_total", "floor_structure", "ownership" }
 
 使い方:
   python scripts/build_units_cache.py                    # results/latest.json の URL を対象
   python scripts/build_units_cache.py results/xxx.json  # 指定 JSON を対象
 """
 
+import hashlib
 import json
-import re
 import sys
 import time
 from pathlib import Path
@@ -22,20 +25,56 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from config import REQUEST_DELAY_SEC, REQUEST_TIMEOUT_SEC, REQUEST_RETRIES, USER_AGENT
+from suumo_scraper import parse_suumo_detail_html
 
-CACHE_PATH = ROOT / "data" / "building_units.json"
+CACHE_DIR = ROOT / "data" / "html_cache"
+MANIFEST_PATH = CACHE_DIR / "manifest.json"
+BUILDING_UNITS_PATH = ROOT / "data" / "building_units.json"
 
 
-def _parse_total_units_from_html(html: str) -> int | None:
-    """HTML から総戸数を抽出。SUUMO 詳細ページの表・dt/dd などを想定。"""
-    # 総戸数 123戸 や 総戸数：123戸 など
-    m = re.search(r"総戸数\s*[：:]\s*(\d+)\s*戸", html)
-    if m:
-        return int(m.group(1))
-    m = re.search(r"総戸数\s*(\d+)\s*戸", html)
-    if m:
-        return int(m.group(1))
-    return None
+def _url_to_hash(url: str) -> str:
+    return hashlib.sha256(url.encode("utf-8")).hexdigest()
+
+
+def _load_manifest() -> dict[str, str]:
+    """url → hash のマッピングを読み込む。"""
+    if not MANIFEST_PATH.exists():
+        return {}
+    try:
+        with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _save_manifest(manifest: dict[str, str]) -> None:
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(MANIFEST_PATH, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, ensure_ascii=False, indent=2)
+
+
+def _read_cached_html(url: str, manifest: dict[str, str]) -> str | None:
+    """キャッシュに HTML があれば読み込んで返す。"""
+    h = manifest.get(url)
+    if not h:
+        return None
+    path = CACHE_DIR / f"{h}.html"
+    if not path.exists():
+        return None
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+
+
+def _write_html_cache(url: str, html: str, manifest: dict[str, str]) -> None:
+    """HTML をキャッシュに保存し、manifest を更新する。"""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    h = _url_to_hash(url)
+    path = CACHE_DIR / f"{h}.html"
+    path.write_text(html, encoding="utf-8")
+    manifest[url] = h
+    _save_manifest(manifest)
 
 
 def fetch_detail(session: requests.Session, url: str) -> str:
@@ -48,12 +87,33 @@ def fetch_detail(session: requests.Session, url: str) -> str:
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
             return r.text
-        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as e:
+        except (
+            requests.exceptions.ReadTimeout,
+            requests.exceptions.ConnectTimeout,
+            requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError,
+        ) as e:
             if attempt < REQUEST_RETRIES - 1:
                 time.sleep(2)
             else:
                 raise e
     return ""
+
+
+def _detail_to_cache_entry(parsed: dict) -> dict:
+    """parse_suumo_detail_html の戻り値を building_units.json 用のエントリに変換。None は含めない。"""
+    entry = {}
+    if parsed.get("total_units") is not None:
+        entry["total_units"] = parsed["total_units"]
+    if parsed.get("floor_position") is not None:
+        entry["floor_position"] = parsed["floor_position"]
+    if parsed.get("floor_total") is not None:
+        entry["floor_total"] = parsed["floor_total"]
+    if parsed.get("floor_structure") is not None:
+        entry["floor_structure"] = parsed["floor_structure"]
+    if parsed.get("ownership") is not None:
+        entry["ownership"] = parsed["ownership"]
+    return entry
 
 
 def main() -> None:
@@ -70,33 +130,58 @@ def main() -> None:
         print("SUUMO の URL がありません。", file=sys.stderr)
         sys.exit(0)
 
-    CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    existing: dict[str, int] = {}
-    if CACHE_PATH.exists():
+    BUILDING_UNITS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    existing: dict = {}
+    if BUILDING_UNITS_PATH.exists():
         try:
-            with open(CACHE_PATH, "r", encoding="utf-8") as f:
-                existing = json.load(f)
+            with open(BUILDING_UNITS_PATH, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+            # 既存が URL → int の場合はそのまま。URL → dict もそのまま。
+            existing = raw
         except (json.JSONDecodeError, OSError):
             pass
 
+    manifest = _load_manifest()
+    # キャッシュにない URL 数＝初回は全件、2回目以降は新規・未キャッシュのみ
+    to_fetch = [u for u in suumo_urls if _read_cached_html(u, manifest) is None]
+    if to_fetch:
+        print(
+            f"フィルタ通過後のSUUMO {len(suumo_urls)}件のうち、HTML未キャッシュ {len(to_fetch)}件の詳細ページを取得します。",
+            file=sys.stderr,
+        )
+        if len(to_fetch) == len(suumo_urls):
+            print("（初回のため全件取得します）", file=sys.stderr)
+
     session = requests.Session()
     updated = 0
-    for url in suumo_urls:
-        if url in existing:
-            continue
-        try:
-            html = fetch_detail(session, url)
-            units = _parse_total_units_from_html(html)
-            if units is not None:
-                existing[url] = units
-                updated += 1
-                print(f"  {url[:60]}... → {units}戸", file=sys.stderr)
-        except Exception as e:
-            print(f"  取得失敗 {url[:50]}...: {e}", file=sys.stderr)
+    fetched = 0
 
-    with open(CACHE_PATH, "w", encoding="utf-8") as f:
+    for url in suumo_urls:
+        html = _read_cached_html(url, manifest)
+        if html is None:
+            try:
+                html = fetch_detail(session, url)
+                _write_html_cache(url, html, manifest)
+                fetched += 1
+            except Exception as e:
+                print(f"  取得失敗 {url[:50]}...: {e}", file=sys.stderr)
+                continue
+
+        parsed = parse_suumo_detail_html(html)
+        entry = _detail_to_cache_entry(parsed)
+        if entry:
+            existing[url] = entry
+            updated += 1
+            units = parsed.get("total_units")
+            if units is not None:
+                print(f"  {url[:60]}... → {units}戸", file=sys.stderr)
+
+    with open(BUILDING_UNITS_PATH, "w", encoding="utf-8") as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
-    print(f"キャッシュ保存: {CACHE_PATH} ({len(existing)}件、今回{updated}件追加)", file=sys.stderr)
+    print(
+        f"キャッシュ保存: {BUILDING_UNITS_PATH} ({len(existing)}件、今回{updated}件更新・HTML新規取得{fetched}件)",
+        file=sys.stderr,
+    )
 
 
 if __name__ == "__main__":

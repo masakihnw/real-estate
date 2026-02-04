@@ -73,7 +73,8 @@ class SuumoListing:
     total_units: Optional[int] = None  # 総戸数（詳細ページキャッシュから取得）
     floor_position: Optional[int] = None   # 所在階（何階）
     floor_total: Optional[int] = None     # 建物階数（何階建て）
-    ownership: Optional[str] = None       # 権利形態（所有権・借地権・底地権等。一覧の「権利形態」から取得）
+    floor_structure: Optional[str] = None  # 構造・階建表示（例: RC13階地下1階建。詳細キャッシュから取得）
+    ownership: Optional[str] = None       # 権利形態（所有権・借地権・底地権等。一覧または詳細キャッシュから取得）
     list_ward_roman: Optional[str] = None  # 一覧取得元の区（sc_itabashi 等）。住所に区名が無くても23区判定に利用
 
     def to_dict(self):
@@ -276,6 +277,7 @@ def _parse_suumo_unit(bloc, base_url: str) -> Optional[SuumoListing]:
             total_units=None,
             floor_position=floor_position,
             floor_total=floor_total,
+            floor_structure=None,
             ownership=ownership,
         )
     except Exception:
@@ -342,6 +344,7 @@ def _parse_cassette(div, base_url: str) -> Optional[SuumoListing]:
             total_units=None,
             floor_position=floor_position,
             floor_total=floor_total,
+            floor_structure=None,
             ownership=None,
         )
     except Exception:
@@ -384,6 +387,7 @@ def _parse_property_block(bloc, base_url: str) -> Optional[SuumoListing]:
         total_units=None,
         floor_position=floor_position,
         floor_total=floor_total,
+        floor_structure=None,
         ownership=None,
     )
 
@@ -438,29 +442,33 @@ def _parse_fallback(soup: BeautifulSoup, base_url: str) -> list[SuumoListing]:
                 total_units=None,
                 floor_position=floor_position,
                 floor_total=floor_total,
+                floor_structure=None,
                 ownership=None,
             )
         )
     return items
 
 
-def parse_suumo_detail_html(html: str) -> dict[str, Optional[int]]:
-    """SUUMO 物件詳細ページのHTMLから「総戸数」「所在階」「構造・階建」をパースする。
+def parse_suumo_detail_html(html: str) -> dict:
+    """SUUMO 物件詳細ページのHTMLから「総戸数」「所在階」「構造・階建」「権利形態」をパースする。
 
     詳細ページを自動取得する機能は含まない。HTML文字列を渡して利用する。
-    戻り値: {"total_units": int|None, "floor_position": int|None, "floor_total": int|None, "floor_structure": str|None}
-    floor_structure は "RC13階地下1階建" など表示用文字列（format_floor で 12階/RC13階地下1階建 にする際に使用）。
+    戻り値: {"total_units": int|None, "floor_position": int|None, "floor_total": int|None,
+             "floor_structure": str|None, "ownership": str|None}
+    floor_structure は "RC13階地下1階建" など表示用文字列。ownership は「所有権」「借地権」等。
 
     想定HTML構造（docs/suumo.html 参照）:
     - th に「総戸数」を含む行の直後 td → "38戸" など → total_units
-    - th に「所在階」または「所在階/構造・階建」を含む行の td → "12階" または "12階/RC13階地下1階建" → floor_position, 必要なら floor_total
-    - th に「構造・階建て」を含む行の td → "RC13階地下1階建" など → floor_total
+    - th に「所在階」または「所在階/構造・階建」を含む行の td → "12階" または "12階/RC13階地下1階建"
+    - th に「構造・階建て」を含む行の td → "RC13階地下1階建" など
+    - th に「権利形態」または「敷地の権利形態」を含む行の td → "所有権" など → ownership
     """
     soup = BeautifulSoup(html, "lxml")
     total_units: Optional[int] = None
     floor_position: Optional[int] = None
     floor_total: Optional[int] = None
     floor_structure: Optional[str] = None
+    ownership: Optional[str] = None
 
     for tr in soup.find_all("tr"):
         cells = tr.find_all(["th", "td"], recursive=False)
@@ -497,11 +505,15 @@ def parse_suumo_detail_html(html: str) -> dict[str, Optional[int]]:
                 if "所在階" not in th_text and td_text.strip():
                     floor_structure = td_text.strip()
 
+            if "権利形態" in th_text and td_text.strip():
+                ownership = td_text.strip()
+
     return {
         "total_units": total_units,
         "floor_position": floor_position,
         "floor_total": floor_total,
         "floor_structure": floor_structure,
+        "ownership": ownership,
     }
 
 
@@ -533,8 +545,9 @@ def _line_ok(station_line: str) -> bool:
     return any(kw in line for kw in ALLOWED_LINE_KEYWORDS)
 
 
-def _load_building_units_cache() -> dict[str, int]:
-    """data/building_units.json から URL → 総戸数 のキャッシュを読み込む。"""
+def _load_building_units_cache() -> dict:
+    """data/building_units.json から URL → 総戸数(int) または URL → 詳細dict のキャッシュを読み込む。
+    詳細dict は total_units, floor_position, floor_total, floor_structure, ownership を含む。"""
     cache_path = Path(__file__).resolve().parent / "data" / "building_units.json"
     if not cache_path.exists():
         return {}
@@ -606,11 +619,26 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
             continue
         if r.walk_min is not None and r.walk_min > WALK_MIN_MAX:
             continue
-        total_units = r.total_units if r.total_units is not None else units_cache.get(r.url)
+        cache_val = units_cache.get(r.url)
+        total_units = r.total_units
+        if isinstance(cache_val, dict):
+            if total_units is None:
+                total_units = cache_val.get("total_units")
+            if r.total_units is None and cache_val.get("total_units") is not None:
+                r.total_units = cache_val["total_units"]
+            if r.floor_position is None and cache_val.get("floor_position") is not None:
+                r.floor_position = cache_val["floor_position"]
+            if r.floor_total is None and cache_val.get("floor_total") is not None:
+                r.floor_total = cache_val["floor_total"]
+            if getattr(r, "floor_structure", None) is None and cache_val.get("floor_structure") is not None:
+                r.floor_structure = cache_val["floor_structure"]
+            if r.ownership is None and cache_val.get("ownership") is not None:
+                r.ownership = cache_val["ownership"]
+        elif total_units is None and isinstance(cache_val, int):
+            total_units = cache_val
+            r.total_units = cache_val
         if total_units is not None and total_units < TOTAL_UNITS_MIN:
             continue
-        if total_units is not None:
-            r.total_units = total_units
         out.append(r)
     return out
 
