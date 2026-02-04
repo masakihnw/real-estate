@@ -243,8 +243,8 @@ def main() -> None:
         if (i + 1) < len(listings):
             time.sleep(REQUEST_DELAY_SEC)
 
-    # 100件以上あるときは失敗分をリトライして全件登録を目指す
-    if failed_list and len(listings) >= 100:
+    # 失敗した物件はスキップして次へ進み、後からリトライ。それでもダメな件だけエラーとして残す
+    if failed_list:
         print(f"リトライ: 失敗 {len(failed_list)} 件を最大 {MAX_RETRIES} 回まで再試行します", file=sys.stderr)
         for round_no in range(MAX_RETRIES):
             if not failed_list:
