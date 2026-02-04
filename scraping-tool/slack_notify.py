@@ -279,6 +279,13 @@ def build_slack_message_from_listings(
         f"📊 対象件数: {len(current_a)}件（B以上 / 全{len(current)}件中）",
         "",
     ]
+    # レポート・ピン付き地図へのリンクを冒頭で表示（見逃し防止）
+    if report_url:
+        lines.append(f"📄 <{report_url}|レポートを確認>")
+    if map_url:
+        lines.append(f"📌 <{map_url}|物件のピン付き地図で見る>")
+    if report_url or map_url:
+        lines.append("")
 
     # ■ 今回の変更（新規追加・削除・価格変動を冒頭で明示）
     if new_c or upd_c or rem_c:
@@ -370,12 +377,13 @@ def build_slack_message_from_listings(
                 lines.append(f"  {_listing_line_slack(r, url)}")
         lines.append("")
 
+    # 末尾にもレポート・地図リンク（冒頭で既に出しているが、長文の最後にも）
     if report_url:
         lines.append(f"📄 <{report_url}|レポートを確認>")
     else:
         lines.append("📄 レポート: GitHub の results/report を確認")
     if map_url:
-        lines.append(f"📌 <{map_url}|地図で見る（スマホ可）>")
+        lines.append(f"📌 <{map_url}|物件のピン付き地図で見る>")
 
     return "\n".join(lines)
 
@@ -423,8 +431,17 @@ def main() -> None:
             print("変更なし（資産性B以上の新規・削除・価格変動なし）Slack通知をスキップします", file=sys.stderr)
             sys.exit(0)
 
-    report_url = report_url_from_report_path(report_path) if report_path else report_url_from_current_path(current_path)
-    map_url = map_url_from_report_url(report_url)
+    # CI（GitHub Actions）では GITHUB_REPOSITORY / GITHUB_REF_NAME から正しい URL を組み立てる
+    repo = os.environ.get("GITHUB_REPOSITORY")
+    ref = os.environ.get("GITHUB_REF_NAME") or (
+        (os.environ.get("GITHUB_REF") or "").replace("refs/heads/", "").replace("refs/tags/", "")
+    )
+    if repo and ref:
+        report_url = f"https://github.com/{repo}/blob/{ref}/scraping-tool/results/report/report.md"
+        map_url = f"https://htmlpreview.github.io/?https://raw.githubusercontent.com/{repo}/{ref}/scraping-tool/results/map_viewer.html"
+    else:
+        report_url = report_url_from_report_path(report_path) if report_path else report_url_from_current_path(current_path)
+        map_url = map_url_from_report_url(report_url)
     # Slack用はMarkdown表を使わない見やすい形式で投稿。長文はチャンク分割し、送り切れるまでリトライする。
     message = build_slack_message_from_listings(current, previous, report_url, map_url=map_url)
 

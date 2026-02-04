@@ -17,6 +17,7 @@ import json
 import sys
 import time
 from pathlib import Path
+from typing import Optional
 
 import requests
 
@@ -53,7 +54,7 @@ def _save_manifest(manifest: dict[str, str]) -> None:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
 
 
-def _read_cached_html(url: str, manifest: dict[str, str]) -> str | None:
+def _read_cached_html(url: str, manifest: dict[str, str]) -> Optional[str]:
     """キャッシュに HTML があれば読み込んで返す。"""
     h = manifest.get(url)
     if not h:
