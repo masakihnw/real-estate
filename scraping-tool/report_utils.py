@@ -197,10 +197,13 @@ def format_floor(
 
 
 def format_ownership(ownership: Optional[str]) -> str:
-    """所有権/借地権/底地権等をそのまま表示。未取得時は「権利:不明」。"""
+    """所有権/借地権/底地権等を表示。一般定期借地権は「一般定期借地権（賃借権）」のみ表示。未取得時は「権利:不明」。"""
     if not ownership or not (ownership or "").strip():
         return "権利:不明"
-    return (ownership or "").strip()
+    s = (ownership or "").strip()
+    if "一般定期借地権（賃借権）" in s:
+        return "一般定期借地権（賃借権）"
+    return s
 
 
 def get_ward_from_address(address: str) -> str:

@@ -160,6 +160,9 @@ def test_format_ownership():
     assert format_ownership("   ") == "権利:不明"
     assert format_ownership("所有権") == "所有権"
     assert format_ownership("  借地権  ") == "借地権"
+    # 一般定期借地権は詳細を省略して「一般定期借地権（賃借権）」のみ表示
+    long_teiki = "一般定期借地権（賃借権）、借地期間残存59年8ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)"
+    assert format_ownership(long_teiki) == "一般定期借地権（賃借権）"
 
 
 def test_google_maps_url():
