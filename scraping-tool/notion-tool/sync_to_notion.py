@@ -171,20 +171,18 @@ def main() -> None:
         print("物件が0件です", file=sys.stderr)
         sys.exit(0)
 
+    # 売り切れ判定: --compare で前回結果を渡した場合、今回の一覧から消えた物件を Notion で「売り切れ」に更新
     removed_listings: list[dict] = []
     if args.compare and args.compare.exists():
         prev = load_json(args.compare, missing_ok=True, default=[])
         diff = compare_listings(listings, prev)
-        to_sync = [r for r in diff["new"]]
-        for item in diff["updated"]:
-            to_sync.append(item["current"])
         removed_listings = diff.get("removed", [])
-        listings = to_sync
-        print(f"新規 {len(diff['new'])} 件、更新（情報変更） {len(diff['updated'])} 件を同期対象にします", file=sys.stderr)
         if removed_listings:
-            print(f"売り切れ（削除）: {len(removed_listings)} 件を Notion で「売り切れ」に更新します", file=sys.stderr)
-    else:
-        print(f"全 {len(listings)} 件を同期対象にします", file=sys.stderr)
+            print(f"売り切れ（一覧から削除）: {len(removed_listings)} 件を Notion で「売り切れ」に更新します", file=sys.stderr)
+
+    # 同期対象: latest.json の全件。各件について Notion を URL で検索し、無ければ作成・あれば更新する。
+    # → 過去登録済みでも Notion 上で手動削除されていれば「無い」と判定され再登録される。
+    print(f"全 {len(listings)} 件を同期対象にします（Notion に無いものは新規作成、あるものは更新）", file=sys.stderr)
 
     if args.limit > 0:
         listings = listings[: args.limit]

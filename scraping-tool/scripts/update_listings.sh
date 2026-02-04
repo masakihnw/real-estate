@@ -60,9 +60,20 @@ cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
 cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
 cp "$CURRENT" "${OUTPUT_DIR}/latest.json"
 
-# 4.4. 総戸数キャッシュ更新（SUUMO 詳細ページを取得して data/building_units.json を更新。次回実行時の総戸数・フィルタに利用）
-echo "総戸数キャッシュを更新中（詳細ページ取得のため時間がかかります）..." >&2
-python3 scripts/build_units_cache.py "${OUTPUT_DIR}/latest.json" || echo "総戸数キャッシュの更新に失敗しました（続行）" >&2
+# 4.4. 総戸数・階数・権利形態キャッシュ更新（SUUMO 詳細ページを取得して data/building_units.json と data/html_cache/ を更新）
+echo "総戸数・階数・権利形態キャッシュを更新中（詳細ページ取得のため時間がかかります）..." >&2
+python3 scripts/build_units_cache.py "${OUTPUT_DIR}/latest.json" || echo "キャッシュの更新に失敗しました（続行）" >&2
+
+# 4.4.1. 今回の latest.json にキャッシュをマージし、レポートを再生成
+#         → report.md と Slack（latest.json を参照）の両方に階・戸数・権利が反映される
+python3 scripts/merge_detail_cache.py "${OUTPUT_DIR}/latest.json" || echo "詳細キャッシュのマージに失敗しました（続行）" >&2
+echo "レポートを再生成（詳細キャッシュ反映）..." >&2
+if [ -f "${OUTPUT_DIR}/previous.json" ]; then
+    python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG
+else
+    python3 generate_report.py "${OUTPUT_DIR}/latest.json" -o "$REPORT" $REPORT_URL_ARG
+fi
+cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
 
 # 4.5. Notion 同期（NOTION_TOKEN と NOTION_DATABASE_ID が設定されている場合のみ。失敗してもレポート・コミットは行う）
 if [ -n "${NOTION_TOKEN:-}" ] && [ -n "${NOTION_DATABASE_ID:-}" ]; then
