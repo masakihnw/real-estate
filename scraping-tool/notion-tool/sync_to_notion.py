@@ -2,7 +2,7 @@
 """
 スクレイピング結果（JSON）を Notion のデータベースに同期する。
 - 表のカラムはそのまま DB のプロパティとして保存
-- 各ページの詳細に、SUUMO/HOME'S の物件ページを Web Clipper 風に保存（ブックマーク + HTML 全文）
+- 各ページの詳細に、物件詳細 URL を Web Clipper 風に保存（ブックマーク + Embed）。HTML は取得・保存しない。
 """
 
 import argparse
@@ -18,17 +18,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import requests
 
 from notion_client import (
+    NOTION_PAGE_CHILDREN_LIMIT,
     append_blocks,
     create_page,
-    get_database_select_options,
     listing_to_properties,
     make_bookmark_block,
-    make_code_blocks,
-    make_heading2_block,
-    make_image_block,
+    make_embed_block,
     query_database_by_url,
     update_page_properties,
 )
+
+try:
+    from optional_features import optional_features
+except ImportError:
+    optional_features = None
 
 try:
     from report_utils import compare_listings, load_json
@@ -47,6 +50,10 @@ try:
 except ImportError:
     USER_AGENT = "Mozilla/5.0 (compatible; NotionSync/1.0)"
     REQUEST_DELAY_SEC = 2
+
+# 100件以上あるときのリトライ: 失敗した物件を最大この回数まで再試行
+MAX_RETRIES = 3
+RETRY_ROUND_DELAY_SEC = 20
 
 
 def fetch_page_html(url: str) -> str:
@@ -95,40 +102,60 @@ def extract_image_urls(html: str, base_url: str) -> list[str]:
     return urls
 
 
-def build_page_children(detail_url: str, html: str) -> list[dict]:
+def build_page_children(detail_url: str) -> list[dict]:
     """
-    Notion ページの子ブロックを組み立てる。
-    ブックマーク ＋ ページ内画像 ＋ 「保存時点の HTML」見出し＋コードブロック群。
+    Notion ページの子ブロックを組み立てる（Web Clipper 風）。
+    ブックマーク（リンクプレビュー）＋ Embed（URL のウェブページを埋め込み表示）。
+    HTML の取得・保存は行わない。
     """
     children = []
     if detail_url:
         children.append(make_bookmark_block(detail_url))
-    # ページ内画像を保存
-    if html and detail_url:
-        image_urls = extract_image_urls(html, detail_url)
-        if image_urls:
-            children.append(make_heading2_block("ページ内画像"))
-            for img_url in image_urls:
-                children.append(make_image_block(img_url))
-    children.append(make_heading2_block("ページ HTML（保存時点）"))
-    if html:
-        children.extend(make_code_blocks(html))
-    else:
-        children.append(
-            {
-                "object": "block",
-                "type": "paragraph",
-                "paragraph": {"rich_text": [{"text": {"content": "（取得できませんでした）"}}]},
-            }
-        )
+        children.append(make_embed_block(detail_url))
     return children
+
+
+def sync_one_listing(
+    r: dict,
+    database_id: str,
+    *,
+    refresh_html: bool = False,
+) -> str:
+    """
+    1件の物件を Notion に同期する。
+    戻り値: "created" | "updated" | "skip"（URL なしでスキップ）。
+    例外: 作成・更新に失敗した場合。
+    """
+    url = (r.get("url") or "").strip()
+    if not url:
+        return "skip"
+
+    existing = query_database_by_url(database_id, url)
+    m3_min, pg_min = (None, None)
+    if optional_features:
+        m3_min, pg_min = optional_features.get_commute_total_minutes(r.get("station_line"), r.get("walk_min"))
+    props = listing_to_properties(r, sold_out=False, m3_min=m3_min, pg_min=pg_min)
+
+    if existing:
+        page_id = existing["id"]
+        update_page_properties(page_id, props)
+        if refresh_html:
+            children = build_page_children(url)
+            append_blocks(page_id, children)
+        return "updated"
+    else:
+        children = build_page_children(url)
+        page = create_page(database_id, props, children=children)
+        if len(children) > NOTION_PAGE_CHILDREN_LIMIT:
+            append_blocks(page["id"], children[NOTION_PAGE_CHILDREN_LIMIT:])
+        return "created"
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="物件 JSON を Notion データベースに同期（Web Clipper 風に詳細ページを保存）")
     ap.add_argument("json_path", type=Path, help="物件一覧 JSON（例: results/latest.json）")
     ap.add_argument("--compare", type=Path, default=None, help="前回結果 JSON。指定時は新規＋価格変動のみ同期")
-    ap.add_argument("--refresh-html", action="store_true", help="既存ページも HTML を再取得してブロックを追加する（重い）")
+    ap.add_argument("--refresh-html", action="store_true", help="既存ページにもブックマーク＋Embed ブロックを追加する")
     ap.add_argument("--limit", type=int, default=0, help="同期する最大件数。0=無制限")
     ap.add_argument("--dry-run", action="store_true", help="実際には Notion に書き込まない")
     args = ap.parse_args()
@@ -138,13 +165,6 @@ def main() -> None:
     if not database_id:
         print("NOTION_DATABASE_ID が設定されていません", file=sys.stderr)
         sys.exit(1)
-
-    # Select は既存の選択肢のみ設定し、新規の選択肢を Notion に作成しない
-    try:
-        allowed_select_options = get_database_select_options(database_id)
-    except Exception as e:
-        print(f"データベースの Select 選択肢を取得できませんでした: {e}（Select は既存のみ選択）", file=sys.stderr)
-        allowed_select_options = {}
 
     listings = load_json(args.json_path, missing_ok=True, default=[])
     if not listings:
@@ -160,7 +180,7 @@ def main() -> None:
             to_sync.append(item["current"])
         removed_listings = diff.get("removed", [])
         listings = to_sync
-        print(f"新規 {len(diff['new'])} 件、価格変動 {len(diff['updated'])} 件を同期対象にします", file=sys.stderr)
+        print(f"新規 {len(diff['new'])} 件、更新（情報変更） {len(diff['updated'])} 件を同期対象にします", file=sys.stderr)
         if removed_listings:
             print(f"売り切れ（削除）: {len(removed_listings)} 件を Notion で「売り切れ」に更新します", file=sys.stderr)
     else:
@@ -191,7 +211,7 @@ def main() -> None:
             if existing:
                 update_page_properties(
                     existing["id"],
-                    {"ステータス": {"status": {"name": "売り切れ"}}},
+                    {"販売状況": {"status": {"name": "売り切れ"}}},
                 )
                 sold_out_updated += 1
                 print(f"  [売り切れ] {(r.get('name') or '')[:36]}", file=sys.stderr)
@@ -202,39 +222,54 @@ def main() -> None:
     if removed_listings:
         time.sleep(REQUEST_DELAY_SEC)
 
+    failed_list: list[dict] = []
     for i, r in enumerate(listings):
-        url = (r.get("url") or "").strip()
-        if not url:
-            print(f"  [skip] URL なし: {(r.get('name') or '')[:30]}", file=sys.stderr)
-            continue
-
         try:
-            existing = query_database_by_url(database_id, url)
-            props = listing_to_properties(r, sold_out=False, allowed_select_options=allowed_select_options)
-
-            if existing:
-                page_id = existing["id"]
-                update_page_properties(page_id, props)
-                updated += 1
-                if args.refresh_html:
-                    html = fetch_page_html(url)
-                    time.sleep(REQUEST_DELAY_SEC)
-                    children = build_page_children(url, html)
-                    append_blocks(page_id, children)
-                print(f"  [update] {(r.get('name') or '')[:36]}", file=sys.stderr)
-            else:
-                html = fetch_page_html(url)
-                time.sleep(REQUEST_DELAY_SEC)
-                children = build_page_children(url, html)
-                create_page(database_id, props, children=children)
+            result = sync_one_listing(r, database_id, refresh_html=args.refresh_html)
+            if result == "skip":
+                print(f"  [skip] URL なし: {(r.get('name') or '')[:30]}", file=sys.stderr)
+                continue
+            if result == "created":
                 created += 1
                 print(f"  [create] {(r.get('name') or '')[:36]}", file=sys.stderr)
+            else:
+                updated += 1
+                print(f"  [update] {(r.get('name') or '')[:36]}", file=sys.stderr)
         except Exception as e:
             errors += 1
+            failed_list.append(r)
             print(f"  [error] {(r.get('name') or '')[:30]}: {e}", file=sys.stderr)
 
         if (i + 1) < len(listings):
             time.sleep(REQUEST_DELAY_SEC)
+
+    # 100件以上あるときは失敗分をリトライして全件登録を目指す
+    if failed_list and len(listings) >= 100:
+        print(f"リトライ: 失敗 {len(failed_list)} 件を最大 {MAX_RETRIES} 回まで再試行します", file=sys.stderr)
+        for round_no in range(MAX_RETRIES):
+            if not failed_list:
+                break
+            time.sleep(RETRY_ROUND_DELAY_SEC)
+            still_failed: list[dict] = []
+            for r in failed_list:
+                try:
+                    result = sync_one_listing(r, database_id, refresh_html=args.refresh_html)
+                    if result == "created":
+                        created += 1
+                        print(f"  [retry create] {(r.get('name') or '')[:36]}", file=sys.stderr)
+                    elif result == "updated":
+                        updated += 1
+                        print(f"  [retry update] {(r.get('name') or '')[:36]}", file=sys.stderr)
+                    else:
+                        still_failed.append(r)
+                except Exception as e:
+                    still_failed.append(r)
+                    print(f"  [retry error] {(r.get('name') or '')[:30]}: {e}", file=sys.stderr)
+                time.sleep(REQUEST_DELAY_SEC)
+            failed_list = still_failed
+            if failed_list:
+                print(f"  リトライ {round_no + 1}/{MAX_RETRIES} 後、まだ {len(failed_list)} 件失敗", file=sys.stderr)
+        errors = len(failed_list)
 
     print(f"完了: 新規 {created}、更新 {updated}、売り切れ {sold_out_updated}、エラー {errors}", file=sys.stderr)
     if errors:

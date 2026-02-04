@@ -32,6 +32,9 @@ class OptionalFeatures:
     def get_commute_display_with_estimate(self, station_line: str, walk_min: Optional[int]) -> tuple[str, str]:
         return "-", "-"
 
+    def get_commute_total_minutes(self, station_line: str, walk_min: Optional[int]) -> tuple[Optional[int], Optional[int]]:
+        return (None, None)
+
     def get_destination_labels(self) -> tuple[str, str]:
         return "エムスリーキャリア", "playground(一番町)"
 
@@ -77,10 +80,12 @@ def _load_optional_features() -> OptionalFeatures:
     try:
         from commute import (
             get_commute_display_with_estimate,
+            get_commute_total_minutes,
             get_destination_labels,
             format_all_station_walk,
         )
         f.get_commute_display_with_estimate = get_commute_display_with_estimate
+        f.get_commute_total_minutes = get_commute_total_minutes
         f.get_destination_labels = get_destination_labels
         f.format_all_station_walk = format_all_station_walk
     except ImportError:

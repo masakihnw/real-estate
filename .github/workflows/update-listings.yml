@@ -37,8 +37,10 @@ jobs:
         working-directory: scraping-tool
         run: |
           chmod +x scripts/update_listings.sh
-          ./scripts/update_listings.sh --no-git  # Git操作は手動で行う
+          ./scripts/update_listings.sh --no-git  # レポート・latest/previous まで。Notion は次ステップで実行
 
+      # スクリプトで「変更なし」と判断されると早期終了し、latest.json/report を更新しない。
+      # その場合 git に変更が残らないため changed=false となり、Slack・コミットはスキップされる。
       - name: Check for changes
         id: check
         run: |
@@ -56,8 +58,10 @@ jobs:
         run: |
           python3 slack_notify.py results/latest.json results/previous.json results/report/report.md
 
+      # Notion 同期が失敗してもジョブは成功扱いとし、続けてコミット・プッシュする（md は必ずリポジトリに残る）
       - name: Sync to Notion
         if: steps.check.outputs.changed == 'true'
+        continue-on-error: true
         working-directory: scraping-tool
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
