@@ -69,7 +69,7 @@ NOTION_TOKEN="secret_xxx" NOTION_PARENT_PAGE_ID="親ページのUUID" python3 no
 
 ## 使い方
 
-**scraping-tool ディレクトリで実行:**
+**scraping-tool ディレクトリで実行。** 第1引数 `json_path`（例: `results/latest.json`）は必須です。
 
 ```bash
 cd scraping-tool
