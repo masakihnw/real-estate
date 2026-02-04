@@ -155,6 +155,7 @@ def generate_markdown(
     diff: Optional[dict[str, Any]] = None,
     output_path: Optional[Path] = None,
     report_url: Optional[str] = None,
+    map_url: Optional[str] = None,
 ) -> str:
     """Markdown形式のレポートを生成。資産性B以上の物件のみ表示し、根拠列を追加。"""
     now = datetime.now(JST).strftime("%Y年%m月%d日 %H:%M")
@@ -177,6 +178,11 @@ def generate_markdown(
     if report_url and report_url.strip():
         lines.extend([
             f"**レポート（GitHub）**: [results/report を開く]({report_url.strip()})",
+            "",
+        ])
+    if map_url and map_url.strip():
+        lines.extend([
+            f"**📌 物件マップ（スマホからも閲覧可）**: [地図で見る]({map_url.strip()})",
             "",
         ])
     lines.extend([
@@ -347,13 +353,14 @@ def main() -> None:
     ap.add_argument("--compare", "-c", type=Path, help="前回結果JSONファイル（差分検出用）")
     ap.add_argument("--output", "-o", type=Path, help="出力Markdownファイル（未指定時はstdout）")
     ap.add_argument("--report-url", type=str, default=None, help="GitHub の results/report へのURL（指定時のみレポート先頭にリンクを記載）")
+    ap.add_argument("--map-url", type=str, default=None, help="物件マップ（HTML）のURL。スマホから開ける URL を指定（例: htmlpreview.github.io の URL）")
     args = ap.parse_args()
 
     current = load_json(args.input)
     previous = load_json(args.compare) if args.compare and args.compare.exists() else None
 
     diff = compare_listings(current, previous) if previous else None
-    content = generate_markdown(current, diff, args.output, report_url=args.report_url)
+    content = generate_markdown(current, diff, args.output, report_url=args.report_url, map_url=args.map_url)
 
     if not args.output:
         print(content)

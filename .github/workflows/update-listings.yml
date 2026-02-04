@@ -84,6 +84,7 @@ jobs:
 
           git add scraping-tool/results/
           [ -f scraping-tool/data/building_units.json ] && git add scraping-tool/data/building_units.json
+          [ -f scraping-tool/data/geocode_cache.json ] && git add scraping-tool/data/geocode_cache.json
           git commit -m "Update listings: ${DATE}
 
           取得件数: ${COUNT}件
