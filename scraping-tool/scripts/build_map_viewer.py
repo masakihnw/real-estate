@@ -93,12 +93,12 @@ def html_content(map_data: list[dict]) -> str:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>物件マップ - 取得物件の位置</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <style>
     * {{ margin: 0; padding: 0; box-sizing: border-box; }}
     body {{ font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif; }}
-    #map {{ width: 100%; height: 100vh; }}
+    #map {{ width: 100%; height: 100vh; min-height: 360px; }}
     .leaflet-popup-content-wrapper {{ border-radius: 8px; }}
     .popup-name {{ font-weight: bold; margin-bottom: 4px; font-size: 14px; }}
     .popup-row {{ font-size: 12px; color: #444; margin: 2px 0; }}
@@ -114,9 +114,11 @@ def html_content(map_data: list[dict]) -> str:
     #legend .pin {{ width: 14px; height: 14px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 2px solid #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }}
     #legend .pin-default {{ background: #3b82f6; }}
     #legend .pin-new {{ background: #22c55e; }}
+    #hint {{ position: absolute; top: 12px; left: 12px; right: 12px; z-index: 1000; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #92400e; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
   </style>
 </head>
 <body>
+  <div id="hint">※Slackアプリ内で開くと地図が表示されないことがあります。リンクを長押し→「ブラウザで開く」で Safari や Chrome から開くと表示されます。</div>
   <div id="map"></div>
   <div id="legend">
     <div class="item"><span class="pin pin-default"></span> 既存の物件</div>
@@ -124,34 +126,6 @@ def html_content(map_data: list[dict]) -> str:
   </div>
   <script type="application/json" id="map-data">{data_json}</script>
   <script>
-    const MAP_DATA = JSON.parse(document.getElementById("map-data").textContent);
-    const center = MAP_DATA.length
-      ? [MAP_DATA.reduce((s, p) => s + p.lat, 0) / MAP_DATA.length, MAP_DATA.reduce((s, p) => s + p.lon, 0) / MAP_DATA.length]
-      : [35.68, 139.75];
-    const map = L.map("map").setView(center, 12);
-    L.tileLayer("https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png", {{
-      attribution: "&copy; <a href=\\"https://www.openstreetmap.org/copyright\\">OpenStreetMap</a>"
-    }}).addTo(map);
-    const newIcon = L.divIcon({{ className: "pin-new", html: "<div style=\\"background:#22c55e;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)\\"></div>", iconSize: [24, 24], iconAnchor: [12, 24] }});
-    const defaultIcon = L.divIcon({{ className: "pin-default", html: "<div style=\\"background:#3b82f6;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)\\"></div>", iconSize: [24, 24], iconAnchor: [12, 24] }});
-    MAP_DATA.forEach(function(p) {{
-      const addrHtml = "<div class=\\"popup-address\\">" + escapeHtml(p.address) + "</div>";
-      let itemsHtml = "";
-      (p.listings || [p]).forEach(function(item, i) {{
-        const price = item.price_man != null ? item.price_man + "万円" : "-";
-        const area = item.area_m2 != null ? item.area_m2 + "m²" : "-";
-        const walk = item.walk_min != null ? item.walk_min + "分" : "";
-        const newBadge = item.is_new ? "<span class=\\"popup-new\\">🆕</span> " : "";
-        itemsHtml += "<div class=\\"popup-item\\">" + newBadge +
-          "<div class=\\"popup-name\\">" + escapeHtml(item.name || "(名前なし)") + "</div>" +
-          "<div class=\\"popup-row\\">" + price + " · " + (item.layout || "-") + " · " + area + "</div>" +
-          (item.station_line ? "<div class=\\"popup-row\\">" + escapeHtml(item.station_line) + (walk ? " 徒歩" + walk : "") + "</div>" : "") +
-          (item.url ? "<div class=\\"popup-link\\"><a href=\\"" + escapeAttr(item.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\">詳細を開く</a></div>" : "") + "</div>";
-      }});
-      const content = addrHtml + itemsHtml;
-      const marker = L.marker([p.lat, p.lon], {{ icon: p.is_new ? newIcon : defaultIcon }});
-      marker.addTo(map).bindPopup(content);
-    }});
     function escapeHtml(s) {{
       const div = document.createElement("div");
       div.textContent = s;
@@ -159,6 +133,46 @@ def html_content(map_data: list[dict]) -> str:
     }}
     function escapeAttr(s) {{
       return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }}
+    function initMap() {{
+      if (typeof L === "undefined") {{
+        document.getElementById("map").innerHTML = "<div style=\\"padding:24px;text-align:center;color:#666;\\">地図を表示できません。Slackアプリ内では表示されないため、リンクを長押し→「ブラウザで開く」で Safari や Chrome から開いてください。</div>";
+        return;
+      }}
+      const MAP_DATA = JSON.parse(document.getElementById("map-data").textContent);
+      const center = MAP_DATA.length
+        ? [MAP_DATA.reduce((s, p) => s + p.lat, 0) / MAP_DATA.length, MAP_DATA.reduce((s, p) => s + p.lon, 0) / MAP_DATA.length]
+        : [35.68, 139.75];
+      const map = L.map("map").setView(center, 12);
+      L.tileLayer("https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png", {{
+        attribution: "&copy; <a href=\\"https://www.openstreetmap.org/copyright\\">OpenStreetMap</a>"
+      }}).addTo(map);
+      const newIcon = L.divIcon({{ className: "pin-new", html: "<div style=\\"background:#22c55e;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)\\"></div>", iconSize: [24, 24], iconAnchor: [12, 24] }});
+      const defaultIcon = L.divIcon({{ className: "pin-default", html: "<div style=\\"background:#3b82f6;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)\\"></div>", iconSize: [24, 24], iconAnchor: [12, 24] }});
+      MAP_DATA.forEach(function(p) {{
+        const addrHtml = "<div class=\\"popup-address\\">" + escapeHtml(p.address) + "</div>";
+        let itemsHtml = "";
+        (p.listings || [p]).forEach(function(item, i) {{
+          const price = item.price_man != null ? item.price_man + "万円" : "-";
+          const area = item.area_m2 != null ? item.area_m2 + "m²" : "-";
+          const walk = item.walk_min != null ? item.walk_min + "分" : "";
+          const newBadge = item.is_new ? "<span class=\\"popup-new\\">🆕</span> " : "";
+          itemsHtml += "<div class=\\"popup-item\\">" + newBadge +
+            "<div class=\\"popup-name\\">" + escapeHtml(item.name || "(名前なし)") + "</div>" +
+            "<div class=\\"popup-row\\">" + price + " · " + (item.layout || "-") + " · " + area + "</div>" +
+            (item.station_line ? "<div class=\\"popup-row\\">" + escapeHtml(item.station_line) + (walk ? " 徒歩" + walk : "") + "</div>" : "") +
+            (item.url ? "<div class=\\"popup-link\\"><a href=\\"" + escapeAttr(item.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\">詳細を開く</a></div>" : "") + "</div>";
+        }});
+        const content = addrHtml + itemsHtml;
+        const marker = L.marker([p.lat, p.lon], {{ icon: p.is_new ? newIcon : defaultIcon }});
+        marker.addTo(map).bindPopup(content);
+      }});
+      setTimeout(function() {{ if (map && map.invalidateSize) map.invalidateSize(); }}, 300);
+    }}
+    if (document.readyState === "complete") {{
+      initMap();
+    }} else {{
+      window.addEventListener("load", initMap);
     }}
   </script>
 </body>
