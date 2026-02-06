@@ -807,5 +807,46 @@
     "floor_total": 10,
     "floor_structure": "RC10階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存72年5ヶ月、借地権設定登記不可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料要)"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78555120/": {
+    "total_units": 362,
+    "floor_position": 1,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "一般定期借地権（賃借権）、借地期間残存59年11ヶ月、借地権設定登記可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_20153656/": {
+    "total_units": 47,
+    "floor_position": 2,
+    "floor_total": 11,
+    "floor_structure": "RC11階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20150493/": {
+    "floor_position": 20,
+    "floor_total": 22,
+    "floor_structure": "SRC22階地下2階建",
+    "ownership": "一般定期借地権（地上権）、借地期間残存31年3ヶ月、敷地権利については確認中です。、借地権設定登記相談、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20000892/": {
+    "total_units": 27,
+    "floor_position": 1,
+    "floor_total": 3,
+    "floor_structure": "RC3階地下2階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_20153133/": {
+    "total_units": 199,
+    "floor_position": 6,
+    "floor_total": 12,
+    "floor_structure": "RC12階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_20154112/": {
+    "total_units": 26,
+    "floor_position": 5,
+    "floor_total": 7,
+    "floor_structure": "RC7階建",
+    "ownership": "所有権"
   }
 }
