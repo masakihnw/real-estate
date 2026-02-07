@@ -848,5 +848,19 @@
     "floor_total": 7,
     "floor_structure": "RC7階建",
     "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20145736/": {
+    "total_units": 68,
+    "floor_position": 4,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_79208746/": {
+    "total_units": 30,
+    "floor_position": 1,
+    "floor_total": 3,
+    "floor_structure": "RC3階地下2階建",
+    "ownership": "所有権"
   }
 }
