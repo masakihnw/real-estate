@@ -806,7 +806,7 @@
     "floor_position": 5,
     "floor_total": 10,
     "floor_structure": "RC10階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存72年5ヶ月、借地権設定登記不可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存72年5ヶ月、解体準備保証金：解体準備金の6カ月分/10年毎更新　地代保証金・解体準備保証金については、購入者様にもご負担いただきます。なお、保証金は返還されません。、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)"
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78555120/": {
     "total_units": 362,
@@ -861,6 +861,13 @@
     "floor_position": 1,
     "floor_total": 3,
     "floor_structure": "RC3階地下2階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_79064729/": {
+    "total_units": 126,
+    "floor_position": 14,
+    "floor_total": 19,
+    "floor_structure": "RC19階建一部RC",
     "ownership": "所有権"
   }
 }
