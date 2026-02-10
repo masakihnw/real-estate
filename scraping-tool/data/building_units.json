@@ -869,5 +869,32 @@
     "floor_total": 19,
     "floor_structure": "RC19階建一部RC",
     "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20183327/": {
+    "total_units": 48,
+    "floor_position": 4,
+    "floor_total": 7,
+    "floor_structure": "RC7階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20187566/": {
+    "total_units": 27,
+    "floor_position": 1,
+    "floor_total": 3,
+    "floor_structure": "RC3階地下2階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_78834182/": {
+    "floor_position": 2,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20009255/": {
+    "total_units": 84,
+    "floor_position": 14,
+    "floor_total": 15,
+    "floor_structure": "SRC15階建",
+    "ownership": "所有権"
   }
 }
