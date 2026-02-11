@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import FirebaseCore
+import GoogleSignIn
 
 @main
 struct RealEstateAppApp: App {
@@ -27,19 +28,46 @@ struct RealEstateAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView(sharedModelContainer: sharedModelContainer)
                 .environment(ListingStore.shared)
                 .environment(FirebaseSyncService.shared)
-                .task {
-                    // アプリ起動時に匿名認証 → Firestore からアノテーションを取得
-                    await FirebaseSyncService.shared.ensureSignedIn()
-                    let context = sharedModelContainer.mainContext
-                    await FirebaseSyncService.shared.pullAnnotations(modelContext: context)
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
-                    BackgroundRefreshManager.shared.scheduleNextRefresh()
+                .environment(AuthService.shared)
+                .onOpenURL { url in
+                    // Google Sign-In のコールバック URL を処理
+                    _ = AuthService.shared.handle(url)
                 }
         }
         .modelContainer(sharedModelContainer)
+    }
+}
+
+// MARK: - Root View（認証状態に応じて画面を切り替え）
+
+private struct RootView: View {
+    @Environment(AuthService.self) private var authService
+    @Environment(FirebaseSyncService.self) private var syncService
+    let sharedModelContainer: ModelContainer
+
+    var body: some View {
+        Group {
+            if authService.isLoading {
+                // Firebase Auth の初期化待ち
+                ProgressView()
+            } else if authService.isSignedIn {
+                // ログイン済み → メイン画面
+                ContentView()
+                    .task {
+                        // Firestore からアノテーションを取得
+                        let context = sharedModelContainer.mainContext
+                        await syncService.pullAnnotations(modelContext: context)
+                    }
+                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+                        BackgroundRefreshManager.shared.scheduleNextRefresh()
+                    }
+            } else {
+                // 未ログイン → ログイン画面
+                LoginView()
+            }
+        }
     }
 }

@@ -110,6 +110,17 @@ if [ -s "$CURRENT_SHINCHIKU" ]; then
     echo "新築: ${OUTPUT_DIR}/latest_shinchiku.json に保存" >&2
 fi
 
+# 4.7. 住まいサーフィン enrichment（SUMAI_USER / SUMAI_PASS が設定されている場合のみ）
+if [ -n "${SUMAI_USER:-}" ] && [ -n "${SUMAI_PASS:-}" ]; then
+    echo "住まいサーフィン enrichment 実行中..." >&2
+    python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
+    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+        python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
+    fi
+else
+    echo "住まいサーフィン: SUMAI_USER / SUMAI_PASS 未設定のためスキップ" >&2
+fi
+
 # 5. JSON は不要のため削除（md 生成に使った current_*.json を削除）
 rm -f "$CURRENT" "$CURRENT_SHINCHIKU"
 for f in "${OUTPUT_DIR}"/current_*.json; do

@@ -3,7 +3,7 @@
 //  RealEstateApp
 //
 //  Firestore を使って「いいね」「メモ」を家族間で共有する。
-//  匿名認証でログインし、annotations コレクションに読み書きする。
+//  Google アカウント認証でログインし、annotations コレクションに読み書きする。
 //  ドキュメントID = identityKey の SHA256 先頭16文字（Firestore のキー制約を回避）。
 //
 
@@ -24,22 +24,21 @@ final class FirebaseSyncService {
 
     private init() {}
 
-    // MARK: - Auth
+    // MARK: - Auth Check
 
-    /// 匿名認証でサインイン（未認証の場合のみ）。
-    func ensureSignedIn() async {
-        if Auth.auth().currentUser != nil { return }
-        do {
-            try await Auth.auth().signInAnonymously()
-        } catch {
-            print("[FirebaseSync] 匿名認証失敗: \(error.localizedDescription)")
-        }
+    /// 現在のユーザーが認証済みかどうかを返す。
+    var isAuthenticated: Bool {
+        Auth.auth().currentUser != nil
     }
 
     // MARK: - Push（ローカル → Firestore）
 
     /// 1件のアノテーション（いいね・メモ）を Firestore に書き込む。
     func pushAnnotation(for listing: Listing) {
+        guard isAuthenticated else {
+            print("[FirebaseSync] 未認証のため push をスキップ")
+            return
+        }
         let docID = documentID(for: listing.identityKey)
         let data: [String: Any] = [
             "isLiked": listing.isLiked,
@@ -55,7 +54,10 @@ final class FirebaseSyncService {
     /// Firestore の全アノテーションを取得し、ローカル SwiftData にマージする。
     /// Firestore 側の `updatedAt` がローカルより新しい場合のみ上書き。
     func pullAnnotations(modelContext: ModelContext) async {
-        await ensureSignedIn()
+        guard isAuthenticated else {
+            print("[FirebaseSync] 未認証のため pull をスキップ")
+            return
+        }
         isSyncing = true
         defer { isSyncing = false }
 
