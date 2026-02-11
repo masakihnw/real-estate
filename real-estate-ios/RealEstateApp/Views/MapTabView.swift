@@ -612,12 +612,17 @@ struct HazardMapView: UIViewRepresentable {
                 ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
 
             view.annotation = annotation
-            view.markerTintColor = listing.isShinchiku
-                ? UIColor.systemGreen
-                : UIColor.systemBlue
-            view.glyphImage = listing.isLiked
-                ? UIImage(systemName: "heart.fill")
-                : UIImage(systemName: "building.2.fill")
+            // HTML準拠: いいね=赤、新築=緑、中古=青
+            if listing.isLiked {
+                view.markerTintColor = UIColor.systemRed
+                view.glyphImage = UIImage(systemName: "heart.fill")
+            } else if listing.isShinchiku {
+                view.markerTintColor = UIColor.systemGreen
+                view.glyphImage = UIImage(systemName: "building.2.fill")
+            } else {
+                view.markerTintColor = UIColor.systemBlue
+                view.glyphImage = UIImage(systemName: "building.2.fill")
+            }
             view.titleVisibility = .hidden
             view.subtitleVisibility = .hidden
             view.canShowCallout = true
@@ -729,15 +734,19 @@ struct HazardMapView: UIViewRepresentable {
                 listing.isLiked.toggle()
                 parent.onLikeTapped?(listing)
 
-                // ピンの表示を更新
+                // ピンの表示を更新（いいね=赤、新築=緑、中古=青）
                 if let markerView = view as? MKMarkerAnnotationView {
                     let heartImage = listing.isLiked
                         ? UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
                         : UIImage(systemName: "heart")?.withTintColor(.secondaryLabel, renderingMode: .alwaysOriginal)
                     (markerView.leftCalloutAccessoryView as? UIButton)?.setImage(heartImage, for: .normal)
-                    markerView.glyphImage = listing.isLiked
-                        ? UIImage(systemName: "heart.fill")
-                        : UIImage(systemName: "building.2.fill")
+                    if listing.isLiked {
+                        markerView.markerTintColor = .systemRed
+                        markerView.glyphImage = UIImage(systemName: "heart.fill")
+                    } else {
+                        markerView.markerTintColor = listing.isShinchiku ? .systemGreen : .systemBlue
+                        markerView.glyphImage = UIImage(systemName: "building.2.fill")
+                    }
                 }
             }
         }
@@ -1183,7 +1192,7 @@ struct MapTabView: View {
             .accessibilityHint(isLegendExpanded ? "タップで折りたたみ" : "タップで展開")
 
             if isLegendExpanded {
-                // ピン凡例（常時表示）
+                // ピン凡例（常時表示）— HTML準拠: 中古/新築/♥いいね
                 HStack(spacing: 10) {
                     HStack(spacing: 4) {
                         Circle().fill(.blue).frame(width: 8, height: 8)
@@ -1192,6 +1201,10 @@ struct MapTabView: View {
                     HStack(spacing: 4) {
                         Circle().fill(.green).frame(width: 8, height: 8)
                         Text("新築").font(.caption2)
+                    }
+                    HStack(spacing: 4) {
+                        Circle().fill(.red).frame(width: 8, height: 8)
+                        Text("♥いいね").font(.caption2)
                     }
                 }
 
