@@ -52,6 +52,11 @@ targets:
         UIBackgroundModes:
           - fetch
           - remote-notification
+        NSCameraUsageDescription: "内見時の物件写真撮影に使用します"
+        NSPhotoLibraryUsageDescription: "内見写真の保存・読み込みに使用します"
+        NSLocationWhenInUseUsageDescription: "地図上で現在地を表示するために使用します"
+        LSApplicationQueriesSchemes:
+          - comgooglemaps
         CFBundleURLTypes:
           - CFBundleURLSchemes:
               - "com.googleusercontent.apps.481688023840-pd1prakenbuqgl1phfpdgkf2cghurak6"

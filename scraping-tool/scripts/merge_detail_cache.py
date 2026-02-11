@@ -57,8 +57,11 @@ def main() -> None:
                 r[key] = entry[key]
                 merged += 1
 
-    with open(json_path, "w", encoding="utf-8") as f:
+    # 原子的書き込み
+    tmp_path = json_path.with_suffix(".json.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
+    tmp_path.replace(json_path)
     print(f"詳細キャッシュをマージしました: {json_path}（{merged}件のフィールドを補完）", file=sys.stderr)
 
 

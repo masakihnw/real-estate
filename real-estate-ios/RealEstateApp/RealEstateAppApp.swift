@@ -18,11 +18,19 @@ struct RealEstateAppApp: App {
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([Listing.self])
-        let config = ModelConfiguration(isStoredInMemoryOnly: false)
+        // ディスクへの永続化を試みる
+        let diskConfig = ModelConfiguration(isStoredInMemoryOnly: false)
         do {
-            return try ModelContainer(for: schema, configurations: [config])
+            return try ModelContainer(for: schema, configurations: [diskConfig])
         } catch {
-            fatalError("ModelContainer の作成に失敗しました: \(error.localizedDescription)")
+            // ディスク失敗時はインメモリにフォールバック（データは永続化されない）
+            print("[RealEstateApp] 警告: ModelContainer のディスク作成に失敗、インメモリにフォールバック: \(error.localizedDescription)")
+            let memoryConfig = ModelConfiguration(isStoredInMemoryOnly: true)
+            do {
+                return try ModelContainer(for: schema, configurations: [memoryConfig])
+            } catch {
+                fatalError("ModelContainer の作成に失敗しました: \(error.localizedDescription)")
+            }
         }
     }()
 
@@ -30,7 +38,8 @@ struct RealEstateAppApp: App {
         // Firebase 初期化（GoogleService-Info.plist がバンドルに必要）
         FirebaseApp.configure()
 
-        // BGAppRefreshTask のハンドラ登録
+        // BGAppRefreshTask 用に共有 ModelContainer を設定してからハンドラ登録
+        BackgroundRefreshManager.shared.configure(modelContainer: sharedModelContainer)
         BackgroundRefreshManager.shared.registerTask()
     }
 
@@ -40,6 +49,7 @@ struct RealEstateAppApp: App {
                 .environment(ListingStore.shared)
                 .environment(FirebaseSyncService.shared)
                 .environment(AuthService.shared)
+                .preferredColorScheme(.light) // ライトモード固定
                 .onOpenURL { url in
                     // Google Sign-In のコールバック URL を処理
                     _ = AuthService.shared.handle(url)

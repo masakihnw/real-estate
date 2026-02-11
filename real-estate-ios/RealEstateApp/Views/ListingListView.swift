@@ -8,30 +8,7 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Filter State
-
-enum OwnershipType: String, CaseIterable, Hashable {
-    case ownership = "所有権"
-    case leasehold = "定期借地"
-}
-
-struct ListingFilter: Equatable {
-    var priceMin: Int? = nil              // 万円
-    var priceMax: Int? = nil              // 万円
-    var layouts: Set<String> = []         // 空 = 全て
-    var stations: Set<String> = []        // 空 = 全て（駅名）
-    var walkMax: Int? = nil               // 分以内
-    var areaMin: Double? = nil            // ㎡以上
-    var ownershipTypes: Set<OwnershipType> = []  // 空 = 全て
-
-    var isActive: Bool {
-        priceMin != nil || priceMax != nil || !layouts.isEmpty || !stations.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty
-    }
-
-    mutating func reset() {
-        priceMin = nil; priceMax = nil; layouts = []; stations = []; walkMax = nil; areaMin = nil; ownershipTypes = []
-    }
-}
+// ListingFilter / OwnershipType は Models/ListingFilter.swift に定義
 
 struct ListingListView: View {
     @Environment(\.modelContext) private var modelContext
@@ -39,9 +16,13 @@ struct ListingListView: View {
     @Query(sort: \Listing.priceMan, order: .forward) private var listings: [Listing]
     @State private var sortOrder: SortOrder = .addedDesc
     @State private var selectedListing: Listing?
-    @State private var filter = ListingFilter()
-    @State private var showFilterSheet = false
+    /// OOUI: タブごとに独立したフィルタ状態を持つ（中古/新築/お気に入りで干渉しない）
+    @State private var filterStore = FilterStore()
     @State private var showErrorAlert = false
+    @State private var comparisonListings: [Listing] = []
+    @State private var showComparison = false
+    @State private var isCompareMode = false
+    @State private var searchText = ""
 
     /// お気に入りタブの掲載状態フィルタ
     enum DelistFilter: String, CaseIterable {
@@ -90,39 +71,58 @@ struct ListingListView: View {
 
         // フィルタ
         // 新築は価格帯（priceMan〜priceMaxMan）を持つため、範囲交差で判定する
-        if let min = filter.priceMin {
+        if let min = filterStore.filter.priceMin {
             list = list.filter {
                 let upper = $0.priceMaxMan ?? $0.priceMan ?? 0
                 return upper >= min
             }
         }
-        if let max = filter.priceMax {
+        if let max = filterStore.filter.priceMax {
             list = list.filter {
                 let lower = $0.priceMan ?? 0
                 return lower <= max
             }
         }
-        if !filter.layouts.isEmpty {
-            list = list.filter { filter.layouts.contains($0.layout ?? "") }
+        if !filterStore.filter.layouts.isEmpty {
+            list = list.filter { filterStore.filter.layouts.contains($0.layout ?? "") }
         }
-        if !filter.stations.isEmpty {
-            list = list.filter { filter.stations.contains($0.stationName ?? "") }
+        if !filterStore.filter.wards.isEmpty {
+            list = list.filter { listing in
+                guard let ward = ListingFilter.extractWard(from: listing.address) else { return false }
+                return filterStore.filter.wards.contains(ward)
+            }
         }
-        if let max = filter.walkMax {
+        if let max = filterStore.filter.walkMax {
             list = list.filter { ($0.walkMin ?? 99) <= max }
         }
-        if let min = filter.areaMin {
+        if let min = filterStore.filter.areaMin {
             list = list.filter { ($0.areaM2 ?? 0) >= min }
         }
-        if !filter.ownershipTypes.isEmpty {
+        if !filterStore.filter.ownershipTypes.isEmpty {
             list = list.filter { listing in
                 let o = listing.ownership ?? ""
-                return filter.ownershipTypes.contains { type in
+                return filterStore.filter.ownershipTypes.contains { type in
                     switch type {
                     case .ownership: return o.contains("所有権")
                     case .leasehold: return o.contains("借地")
                     }
                 }
+            }
+        }
+
+        // 駅名フィルタ
+        if !filterStore.filter.stations.isEmpty {
+            list = list.filter { listing in
+                let listingStations = listing.parsedStations.map(\.stationName)
+                return filterStore.filter.stations.contains(where: { listingStations.contains($0) })
+            }
+        }
+
+        // テキスト検索（物件名のみ）
+        if isSearchActive {
+            let query = searchText.lowercased().trimmingCharacters(in: .whitespaces)
+            list = list.filter { listing in
+                listing.name.lowercased().contains(query)
             }
         }
 
@@ -154,6 +154,10 @@ struct ListingListView: View {
         return list
     }
 
+    private var isSearchActive: Bool {
+        !searchText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     private var navTitle: String {
         if favoritesOnly { return "お気に入り" }
         switch propertyTypeFilter {
@@ -163,89 +167,140 @@ struct ListingListView: View {
         }
     }
 
+    /// お気に入り物件を CSV 形式でエクスポートする
+    private func exportFavoritesCSV() -> String {
+        let header = "物件名,価格,住所,最寄駅,間取り,面積,築年,URL"
+        let rows = filteredAndSorted.map { listing in
+            let fields = [
+                listing.name,
+                listing.priceDisplay,
+                listing.address ?? "",
+                listing.primaryStationDisplay,
+                listing.layout ?? "",
+                listing.areaDisplay,
+                listing.builtAgeDisplay,
+                listing.url
+            ].map { field in
+                // CSV エスケープ: ダブルクォートを含む場合はエスケープ
+                let escaped = field.replacingOccurrences(of: "\"", with: "\"\"")
+                return "\"\(escaped)\""
+            }
+            return fields.joined(separator: ",")
+        }
+        return ([header] + rows).joined(separator: "\n")
+    }
+
     /// 一覧内に存在する間取りの一意リスト（フィルタシートの選択肢用）
     private var availableLayouts: [String] {
         let all = Set(baseList.compactMap(\.layout).filter { !$0.isEmpty })
         return all.sorted()
     }
 
-    /// 一覧内に存在する駅名を路線ごとにグルーピング（フィルタシートの選択肢用）
-    private var stationsByLine: [(line: String, stations: [String])] {
-        var dict: [String: Set<String>] = [:]
-        for listing in baseList {
-            guard let lineName = listing.lineName,
-                  let stationName = listing.stationName else { continue }
-            dict[lineName, default: []].insert(stationName)
-        }
-        return dict.keys.sorted().map { key in
-            (line: key, stations: dict[key]!.sorted())
-        }
+    /// 一覧内に存在する区名のセット（フィルタシートの選択肢用）
+    private var availableWards: Set<String> {
+        Set(baseList.compactMap { ListingFilter.extractWard(from: $0.address) })
+    }
+
+    /// 一覧内に存在する駅名の一意リスト（フィルタシートの選択肢用）
+    private var availableStations: [String] {
+        Set(baseList.flatMap { $0.parsedStations.map(\.stationName) }).sorted()
     }
 
     var body: some View {
         NavigationStack {
-            Group {
+            ZStack(alignment: .bottomTrailing) {
+                Group {
                 if baseList.isEmpty && !store.isRefreshing {
-                    VStack(spacing: 0) {
-                        if favoritesOnly { delistChipBar }
-                        emptyState
+                    emptyState
+                    } else if favoritesOnly && delistFilter != .all && filteredAndSorted.isEmpty && !baseList.isEmpty {
+                        delistFilterEmptyState
+                    } else if filteredAndSorted.isEmpty && filterStore.filter.isActive {
+                        filterEmptyState
+                    } else {
+                        listContent
                     }
-                } else if filteredAndSorted.isEmpty && filter.isActive {
-                    filterEmptyState
-                } else {
-                    listContent
                 }
-            }
-            .navigationTitle(navTitle)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    HStack(spacing: 12) {
-                        Button {
-                            Task { await store.refresh(modelContext: modelContext) }
-                        } label: {
-                            Image(systemName: "arrow.clockwise")
-                        }
-                        .disabled(store.isRefreshing)
-                        .accessibilityLabel("更新")
-
-                        Button {
-                            showFilterSheet = true
-                        } label: {
-                            Image(systemName: filter.isActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
-                        }
-                        .accessibilityLabel("フィルタ")
-
-                        Menu {
-                            ForEach(SortOrder.allCases, id: \.self) { order in
-                                Button(order.rawValue) { sortOrder = order }
+                .searchable(text: $searchText, prompt: "物件名で検索")
+                .navigationTitle(navTitle)
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        HStack(spacing: 12) {
+                            Button {
+                                if isCompareMode {
+                                    if comparisonListings.count >= 2 {
+                                        showComparison = true
+                                    }
+                                    isCompareMode = false
+                                    comparisonListings = []
+                                } else {
+                                    comparisonListings = []
+                                    isCompareMode = true
+                                }
+                            } label: {
+                                Image(systemName: isCompareMode ? "checkmark.square.fill" : "square")
+                                    .font(.title3)
+                                    .symbolRenderingMode(.hierarchical)
+                                    .overlay(alignment: .topTrailing) {
+                                        if isCompareMode && comparisonListings.count > 0 {
+                                            Text("\(comparisonListings.count)")
+                                                .font(.caption2.weight(.bold))
+                                                .foregroundStyle(.white)
+                                                .frame(width: 16, height: 16)
+                                                .background(Color.red)
+                                                .clipShape(Circle())
+                                                .offset(x: 8, y: -8)
+                                        }
+                                    }
                             }
-                        } label: {
-                            Image(systemName: "arrow.up.arrow.down.circle")
+                            .accessibilityLabel(isCompareMode ? "比較モード ON、\(comparisonListings.count)件選択中" : "比較モード")
+                            if favoritesOnly && !filteredAndSorted.isEmpty {
+                                ShareLink(
+                                    item: exportFavoritesCSV(),
+                                    subject: Text("お気に入り物件リスト"),
+                                    preview: SharePreview("お気に入り物件リスト.csv")
+                                ) {
+                                    Image(systemName: "square.and.arrow.up")
+                                }
+                                .accessibilityLabel("エクスポート")
+                            }
                         }
-                        .accessibilityLabel("並び順")
+                    }
+                    ToolbarItem(placement: .topBarLeading) {
+                        if isCompareMode {
+                            Button {
+                                showComparison = true
+                                isCompareMode = false
+                                comparisonListings = []
+                            } label: {
+                                Text("比較する")
+                                    .fontWeight(.semibold)
+                            }
+                            .disabled(comparisonListings.count < 2)
+                        } else if store.lastError != nil {
+                            Button {
+                                showErrorAlert = true
+                            } label: {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.orange)
+                            }
+                            .accessibilityLabel("エラーあり")
+                        }
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    if store.lastError != nil {
-                        Button {
-                            showErrorAlert = true
-                        } label: {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(.orange)
-                        }
-                        .accessibilityLabel("エラーあり")
-                    }
+                // フィルタ・並び替えボタン（右下・地図画面と同じ配置）
+                if !baseList.isEmpty {
+                    filterSortOverlayButtons
                 }
             }
-            .refreshable {
-                await store.refresh(modelContext: modelContext)
-            }
+            // 手動更新は無効化。データ更新はフォアグラウンド復帰時の自動更新（15分間隔）のみ。
             .sheet(item: $selectedListing) { listing in
                 ListingDetailView(listing: listing)
             }
-            .sheet(isPresented: $showFilterSheet) {
-                ListingFilterSheet(filter: $filter, availableLayouts: availableLayouts, stationsByLine: stationsByLine)
-                    .presentationDetents([.medium, .large])
+            .sheet(isPresented: $showComparison) {
+                ComparisonView(listings: comparisonListings)
+            }
+            .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableStations: availableStations, filteredCount: filteredAndSorted.count)
             }
             .alert("データ取得エラー", isPresented: $showErrorAlert) {
                 Button("OK", role: .cancel) { }
@@ -253,6 +308,44 @@ struct ListingListView: View {
                 Text(store.lastError ?? "不明なエラーが発生しました。")
             }
         }
+    }
+
+    /// 右下のフィルタ・並び替えオーバーレイ（地図画面の現在地ボタンと同様のスタイル）
+    @ViewBuilder
+    private var filterSortOverlayButtons: some View {
+        VStack(alignment: .trailing, spacing: 8) {
+            Menu {
+                ForEach(SortOrder.allCases, id: \.self) { order in
+                    Button(order.rawValue) { withAnimation { sortOrder = order } }
+                }
+            } label: {
+                Image(systemName: "arrow.up.arrow.down.circle")
+                    .font(.body)
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 40, height: 40)
+                    .background(Circle().fill(Color(.systemBackground).opacity(0.9)))
+                    .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
+            }
+            .accessibilityLabel("並び順")
+
+            Button {
+                filterStore.showFilterSheet = true
+            } label: {
+                Image(systemName: filterStore.filter.isActive
+                      ? "line.3.horizontal.decrease.circle.fill"
+                      : "line.3.horizontal.decrease.circle")
+                    .font(.body)
+                    .foregroundStyle(filterStore.filter.isActive ? .white : Color.accentColor)
+                    .frame(width: 40, height: 40)
+                    .background(
+                        Circle().fill(filterStore.filter.isActive ? Color.accentColor : Color(.systemBackground).opacity(0.9))
+                    )
+                    .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
+            }
+            .accessibilityLabel("フィルタ")
+        }
+        .padding(.trailing, 12)
+        .padding(.bottom, 20)
     }
 
     private var emptyState: some View {
@@ -265,7 +358,7 @@ struct ListingListView: View {
             Text(
                 favoritesOnly
                     ? "物件一覧でハートをタップするとここに表示されます。"
-                    : "更新ボタンをタップして最新の物件データを取得してください。"
+                    : "データは自動的に更新されます。しばらくお待ちください。"
             )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -279,7 +372,7 @@ struct ListingListView: View {
             Text("フィルタ条件を変更するか、リセットしてください。")
         } actions: {
             Button("フィルタをリセット") {
-                filter.reset()
+                filterStore.filter.reset()
             }
             .buttonStyle(.bordered)
         }
@@ -308,12 +401,12 @@ struct ListingListView: View {
                     HStack(spacing: 4) {
                         if chip == .delisted {
                             Image(systemName: "exclamationmark.triangle")
-                                .font(.system(size: 10, weight: .semibold))
+                                .font(.caption2.weight(.semibold))
                         }
                         Text(chip.rawValue)
-                            .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                            .font(.footnote.weight(isSelected ? .semibold : .regular))
                         Text("\(count)")
-                            .font(.system(size: 11, weight: .medium))
+                            .font(.caption2.weight(.medium))
                             .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
                     }
                     .padding(.horizontal, 12)
@@ -343,34 +436,62 @@ struct ListingListView: View {
             }
             Section {
                 HStack {
-                    if filter.isActive {
+                    if filterStore.filter.isActive {
                         Text("\(filteredAndSorted.count)/\(baseList.count)件")
                             .font(ListingObjectStyle.subtitle)
                             .foregroundStyle(.primary)
-                        Button("リセット") { filter.reset() }
+                        Button("リセット") { filterStore.filter.reset() }
                             .font(ListingObjectStyle.caption)
                     }
                     Spacer()
                     if let at = store.lastFetchedAt {
-                        Text("更新 ")
-                            .font(ListingObjectStyle.caption)
-                            .foregroundStyle(.secondary) +
-                        Text(at, style: .relative)
+                        Text("更新: \(at.formatted(.dateTime.hour().minute()))")
                             .font(ListingObjectStyle.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
             }
             ForEach(filteredAndSorted, id: \.url) { listing in
-                ListingRowView(
-                    listing: listing,
-                    onTap: { selectedListing = listing },
-                    onLikeTapped: {
-                        listing.isLiked.toggle()
-                        try? modelContext.save()
-                        FirebaseSyncService.shared.pushAnnotation(for: listing)
+                HStack(spacing: 0) {
+                    // 比較モード時のみカード左端にチェックボックスを表示
+                    if isCompareMode {
+                        let isSelected = comparisonListings.contains(where: { $0.url == listing.url })
+                        Button {
+                            if let idx = comparisonListings.firstIndex(where: { $0.url == listing.url }) {
+                                comparisonListings.remove(at: idx)
+                            } else if comparisonListings.count < 4 {
+                                comparisonListings.append(listing)
+                            }
+                        } label: {
+                            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                                .font(.title3)
+                                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.trailing, 8)
+                        .transition(.move(edge: .leading).combined(with: .opacity))
                     }
-                )
+                    ListingRowView(
+                        listing: listing,
+                        onTap: {
+                            if isCompareMode {
+                                if let idx = comparisonListings.firstIndex(where: { $0.url == listing.url }) {
+                                    comparisonListings.remove(at: idx)
+                                } else if comparisonListings.count < 4 {
+                                    comparisonListings.append(listing)
+                                }
+                            } else {
+                                selectedListing = listing
+                            }
+                        },
+                        onLikeTapped: {
+                            listing.isLiked.toggle()
+                            do { try modelContext.save() } catch { print("[ListingList] save 失敗: \(error)") }
+                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                        }
+                    )
+                }
+                .animation(.easeInOut(duration: 0.25), value: isCompareMode)
                 .listRowInsets(EdgeInsets(
                     top: DesignSystem.listRowVerticalPadding,
                     leading: DesignSystem.listRowHorizontalPadding,
@@ -384,15 +505,74 @@ struct ListingListView: View {
                 )
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel(accessibilityLabel(for: listing))
-                .accessibilityHint("タップで詳細。ハートでいいね")
+                .accessibilityHint(isCompareMode ? "タップで比較に追加・解除" : "タップで詳細。ハートでいいね")
+                // HIG: Swipe Action でクイック操作を提供（比較モード時は無効）
+                .swipeActions(edge: .trailing) {
+                    if !isCompareMode {
+                        Button {
+                            listing.isLiked.toggle()
+                            do { try modelContext.save() } catch { print("[ListingList] save 失敗: \(error)") }
+                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                        } label: {
+                            Label(
+                                listing.isLiked ? "いいね解除" : "いいね",
+                                systemImage: listing.isLiked ? "heart.slash" : "heart"
+                            )
+                        }
+                        .tint(listing.isLiked ? .gray : .red)
+                    }
+                }
+                .swipeActions(edge: .leading) {
+                    if !isCompareMode {
+                        Button {
+                            selectedListing = listing
+                        } label: {
+                            Label("詳細", systemImage: "info.circle")
+                        }
+                        .tint(.accentColor)
+                    }
+                }
             }
         }
         .listStyle(.plain)
-        .overlay {
+        .animation(.default, value: sortOrder)
+        // OOUI: 比較モード時にガイダンスバナーを表示
+        .safeAreaInset(edge: .top) {
+            if isCompareMode {
+                HStack(spacing: 8) {
+                    Image(systemName: "rectangle.on.rectangle")
+                        .font(.subheadline)
+                    Text("比較する物件を選択（\(comparisonListings.count)/4件）")
+                        .font(.subheadline)
+                    Spacer()
+                    Button("キャンセル") {
+                        isCompareMode = false
+                        comparisonListings = []
+                    }
+                    .font(.subheadline.weight(.medium))
+                }
+                .padding(12)
+                .background(Color.accentColor.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .padding(.horizontal, 16)
+                .padding(.top, 4)
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
             if store.isRefreshing {
-                ProgressView("更新中…")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.ultraThinMaterial)
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text("更新中…")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(.regularMaterial, in: Capsule())
+                .padding(.bottom, 8)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .animation(.easeInOut, value: store.isRefreshing)
             }
         }
     }
@@ -429,116 +609,219 @@ struct ListingRowView: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 5) {
-                // 1行目: 物件名（左）＋ 掲載終了 / いいね（右）
-                HStack(alignment: .top, spacing: 8) {
+            VStack(alignment: .leading, spacing: 4) {
+                // 1行目: 物件名 + 📷 + 💬 + ♥
+                HStack(alignment: .center, spacing: 6) {
                     Text(listing.name)
-                        .font(ListingObjectStyle.title)
-                        .lineLimit(2)
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
                         .foregroundStyle(listing.isDelisted ? .secondary : .primary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                    if listing.isDelisted {
-                        Text("掲載終了")
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.orange)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    Spacer(minLength: 0)
+
+                    // 写真インジケーター
+                    if listing.hasPhotos {
+                        HStack(spacing: 2) {
+                            Image(systemName: "camera.fill")
+                                .font(.caption2)
+                            Text("\(listing.photoCount)")
+                                .font(.caption2.weight(.medium))
+                        }
+                        .foregroundStyle(.secondary)
                     }
 
+                    // コメントインジケーター
+                    if listing.hasComments {
+                        HStack(spacing: 2) {
+                            Image(systemName: "bubble.left.fill")
+                                .font(.caption2)
+                            Text("\(listing.commentCount)")
+                                .font(.caption2.weight(.medium))
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+
+                    // いいねボタン
                     Button(action: onLikeTapped) {
                         Image(systemName: listing.isLiked ? "heart.fill" : "heart")
-                            .font(.body)
+                            .font(.subheadline)
                             .foregroundStyle(listing.isLiked ? .red : .secondary)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
                 }
 
-                // 2行目: 価格・間取り・面積・徒歩
-                HStack(spacing: 10) {
-                    Label(listing.priceDisplay, systemImage: "yensign.circle")
-                    Label(listing.layout ?? "—", systemImage: "rectangle.split.3x1")
-                    Label(listing.areaDisplay, systemImage: "square.dashed")
-                    Label(listing.walkDisplay, systemImage: "figure.walk")
-                }
-                .font(ListingObjectStyle.subtitle)
-                .foregroundStyle(.secondary)
+                // 2行目: 価格 + 騰落率/儲かる確率 + [掲載終了]
+                HStack(alignment: .center, spacing: 6) {
+                    Text(listing.priceDisplay)
+                        .font(.footnote.weight(.bold))
+                        .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
+                        .lineLimit(1)
+                        .layoutPriority(1)
 
-                // 3行目: 築年・階・権利・戸数
-                HStack(spacing: 10) {
+                    // 騰落率 / 儲かる確率バッジ
                     if listing.isShinchiku {
-                        Label(listing.deliveryDateDisplay, systemImage: "calendar")
-                    } else {
-                        Label(listing.builtAgeDisplay, systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
-                        Label(listing.floorDisplay, systemImage: "building")
-                        Label(listing.ownershipShort, systemImage: "doc.text")
+                        if let pct = listing.ssProfitPct {
+                            Text("儲かる \(pct)%")
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(Color.accentColor)
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 1)
+                                .background(Color.accentColor.opacity(0.10))
+                                .clipShape(RoundedRectangle(cornerRadius: 3))
+                        }
+                    } else if let rate = listing.ssAppreciationRate {
+                        let sign = rate >= 0 ? "↑" : "↓"
+                        let color: Color = rate >= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor
+                        Text("\(sign)\(Int(abs(rate)))%")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(color)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 1)
+                            .background(color.opacity(0.10))
+                            .clipShape(RoundedRectangle(cornerRadius: 3))
                     }
-                    Label(listing.totalUnitsDisplay, systemImage: "person.2")
-                }
-                .font(ListingObjectStyle.caption)
-                .foregroundStyle(.tertiary)
 
-                // 4行目: 路線・駅
-                if let line = listing.stationLine, !line.isEmpty {
+                    if listing.isDelisted {
+                        Text("掲載終了")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+                }
+
+                // 3行目: 間取り・面積・築年/入居・階・権利・戸数
+                // 徒歩は4行目の路線・駅に含まれるため、ここでは表示しない（重複防止）
+                HStack(spacing: 4) {
+                    Text(listing.layout ?? "—")
+                    Text(listing.areaDisplay)
+                    if listing.isShinchiku {
+                        Text(listing.deliveryDateDisplay)
+                        if listing.floorTotalDisplay != "—" {
+                            Text(listing.floorTotalDisplay)
+                        }
+                        Text(listing.totalUnitsDisplay)
+                    } else {
+                        Text(listing.builtAgeDisplay)
+                        Text(listing.floorDisplay)
+                        Text(listing.ownershipShort)
+                        Text(listing.totalUnitsDisplay)
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+
+                // 4行目: 路線・駅（メイン路線名に置換済み）
+                if let line = listing.displayStationLine, !line.isEmpty {
                     Text(line)
-                        .font(ListingObjectStyle.caption)
+                        .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .lineLimit(1)
                 }
 
-                // ハザードバッジ
-                if listing.hasHazardRisk {
-                    HazardBadgeRow(listing: listing)
-                }
-
-                // メモ
-                if let memo = listing.memo, !memo.isEmpty {
-                    Text(memo)
-                        .font(ListingObjectStyle.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                // ハザード＋通勤バッジ（1行に収まれば1行、収まらなければ2行）
+                if listing.hasHazardRisk || listing.hasCommuteInfo {
+                    BadgeRow(listing: listing)
                 }
             }
             .padding(.vertical, 4)
+            .opacity(listing.isDelisted ? 0.75 : 1.0)
         }
         .buttonStyle(.plain)
     }
 }
 
-/// 一覧カード内のハザードバッジ行
-private struct HazardBadgeRow: View {
+/// 一覧カード内のバッジ行（ハザード＋通勤時間）
+/// 1行に収まる場合はまとめて表示、収まらない場合はハザード行＋通勤時間行に分ける
+private struct BadgeRow: View {
     let listing: Listing
 
     var body: some View {
-        let hazard = listing.parsedHazardData
-        let labels = hazard.activeLabels
-        if !labels.isEmpty {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 4) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.orange)
-                    ForEach(Array(labels.enumerated()), id: \.offset) { _, item in
-                        HStack(spacing: 2) {
-                            Image(systemName: item.icon)
-                                .font(.system(size: 9))
-                            Text(item.label)
-                                .font(.system(size: 10, weight: .medium))
-                        }
-                        .foregroundStyle(item.severity == .danger ? Color.red : Color.orange)
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 2)
-                        .background(
-                            (item.severity == .danger ? Color.red : Color.orange).opacity(0.12)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
-                    }
+        ViewThatFits(in: .horizontal) {
+            // 1行で収まる場合
+            HStack(spacing: 4) {
+                hazardBadges
+                commuteBadges
+            }
+            // 改行が必要な場合：ハザード行＋通勤時間行
+            VStack(alignment: .leading, spacing: 3) {
+                if listing.hasHazardRisk {
+                    HStack(spacing: 4) { hazardBadges }
+                }
+                if listing.hasCommuteInfo {
+                    HStack(spacing: 8) { commuteBadges }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var hazardBadges: some View {
+        if listing.hasHazardRisk {
+            let labels = listing.parsedHazardData.activeLabels
+            ForEach(Array(labels.enumerated()), id: \.offset) { _, item in
+                HStack(spacing: 2) {
+                    Image(systemName: item.icon)
+                        .font(.caption2)
+                    Text(item.label)
+                        .font(.caption2.weight(.medium))
+                }
+                .foregroundStyle(item.severity == .danger ? Color.red : Color.orange)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 2)
+                .background(
+                    (item.severity == .danger ? Color.red : Color.orange).opacity(0.12)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var commuteBadges: some View {
+        if let pgMin = listing.commutePlaygroundDisplay {
+            Button {
+                CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
+            } label: {
+                HStack(spacing: 4) {
+                    Image("logo-playground")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 12)
+                    Text(pgMin)
+                        .font(.caption2.weight(.semibold))
+                }
+                .foregroundStyle(DesignSystem.commutePGColor)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(DesignSystem.commutePGColor.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+            }
+            .buttonStyle(.plain)
+        }
+        if let m3Min = listing.commuteM3CareerDisplay {
+            Button {
+                CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
+            } label: {
+                HStack(spacing: 4) {
+                    Image("logo-m3career")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 12)
+                    Text(m3Min)
+                        .font(.caption2.weight(.semibold))
+                }
+                .foregroundStyle(DesignSystem.commuteM3Color)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(DesignSystem.commuteM3Color.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+            }
+            .buttonStyle(.plain)
         }
     }
 }

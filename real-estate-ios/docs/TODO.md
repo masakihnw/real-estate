@@ -62,11 +62,11 @@
 ### Phase 11: 地域危険度 GeoJSON ✅ 完了
 - [x] `convert_risk_geojson.py` 実行 → GeoJSON 生成・コミット
 
-### Phase 12: アプリアイコン（一部完了）
+### Phase 12: アプリアイコン ✅ 完了
 - [x] カラースキーム選択 → A. Blue（#007AFF）を採用
 - [x] Gemini で画像生成（虫眼鏡+マンションシルエット、Blue #007AFF）
 - [x] 生成された 1024x1024 PNG を `Assets.xcassets/AppIcon.appiconset/` に配置し `Contents.json` を更新
-- [ ] 選択したカラースキームを `DesignSystem.swift` に適用
+- [x] DesignSystem セマンティックカラー適用（D1, D4, D5: 物件価格・通勤バッジ・値上がり/値下がり色の定数化）
 
 ### Phase 13: ハイブリッド改善（データ取得最適化） ✅ 完了
 - [x] デフォルト URL をアプリにハードコード（初回 URL 設定不要）
@@ -198,6 +198,67 @@
   - [x] B4: メモデバウンス Task を onDisappear でキャンセル + 最終状態を即同期
   - [x] U1: 地図ピン吹き出しボタンに VoiceOver アクセシビリティラベル追加
 
+- [x] **Phase 18: メモ → コメント機能（家族間共有・作成者表示）**
+  - [x] C1: `CommentData` 構造体追加（id, text, authorName, authorId, createdAt）
+  - [x] C2: `Listing` に `commentsJSON: String?` プロパティ追加（SwiftData 軽量マイグレーション）
+  - [x] C3: `FirebaseSyncService` をコメント対応にリライト
+    - `pushAnnotation` → `pushLikeState`（いいね専用に分離）
+    - `addComment(for:text:modelContext:)` 新規追加（楽観的更新 + Firestore map 書き込み）
+    - `deleteComment(for:commentId:modelContext:)` 新規追加（自分のコメントのみ削除可能）
+    - `pullAnnotations` でコメント map をパース、レガシー `memo` からの自動移行
+  - [x] C4: `ListingDetailView` のメモセクションをコメントセクションに差し替え
+    - コメント一覧（アバター・作成者名・相対時間・削除ボタン）
+    - テキスト入力 + 送信ボタン
+    - 未ログイン時はログイン促進メッセージ
+  - [x] C5: `ListingListView` のメモプレビューをコメントプレビューに変更
+  - [x] C6: `MapTabView` / `ListingListView` の `pushAnnotation` → `pushLikeState` に変更
+  - [x] C7: 掲載終了物件の削除保護にコメント有無チェックを追加
+  - [x] C8: Firestore データモデル: `annotations/{docID}.comments` を map 形式で保存
+    - `{ commentId: { text, authorName, authorId, createdAt } }` で同時書き込み安全
+
+- [x] **Phase 18: 包括的品質改善**
+  ### デザイン
+  - [x] D1: DesignSystem にセマンティックカラー定数を追加（物件価格・通勤バッジ・値上がり/値下がり）
+  - [x] D2: Dynamic Type 完全対応（`.system(size:)` → システムフォントスタイルに置換）
+  - [x] D4: 通勤バッジ色を DesignSystem 定数化
+  - [x] D5: 価格色を DesignSystem 定数化で一貫性確保
+
+  ### UI/UX
+  - [x] U2: タブ間でフィルタ状態を共有（FilterStore @Observable）
+  - [x] U3: コメントセクションを詳細画面下部に移動（物件情報を先に表示）
+  - [x] U4: 地図に現在地ボタンを追加
+  - [x] U5: 空状態の案内を強化（「今すぐ更新」ボタン追加）
+  - [x] U6: 更新時刻の表記を HH:mm 形式に改善
+  - [x] U8: お気に入り 0 件時のチップバー非表示
+
+  ### 機能
+  - [x] F1: テキスト検索（物件名のみ）
+  - [x] F2: 駅名フィルタ（FilterSheet にアコーディオン追加）
+  - [x] F3: 物件比較機能（最大4件の横並び比較）
+  - [x] F5: お気に入りリストの CSV エクスポート
+
+  ### 実装・アーキテクチャ
+  - [x] I1: Listing モデルの MARK セクション整理
+  - [x] I2: FlowLayout を共有コンポーネントに抽出
+  - [x] I3: 地図の新築価格帯フィルタを範囲交差判定に修正
+  - [x] I4: `try? modelContext.save()` → 全箇所でエラーログ出力に改善
+  - [x] I5: FirebaseSyncService の責務を MARK セクションで明確化
+
+  ### 非機能
+  - [x] C1: NSCameraUsageDescription / NSPhotoLibraryUsageDescription を Info.plist に追加
+  - [x] C2: CommuteTimeService の encode nil ガード
+  - [x] N2: GeocodingService のエラーハンドリング改善
+  - [x] N3: オフライン動作の文書化
+  - [x] N4: パフォーマンス最適化の文書化
+  - [x] N5: アクセシビリティ対応の文書化
+  - [x] U4: NSLocationWhenInUseUsageDescription を Info.plist に追加
+
+  ### スキップ
+  - D3: ダークモード対応（ユーザー指示により不要）
+  - F4: カラースキーム切り替え（D3 関連のため不要）
+  - N1: 単体テスト（今後の課題として残す）
+  - I6: 駅名パースのテスト（N1 依存のため今後の課題）
+
 ---
 
 ## 手動セットアップ手順
@@ -210,28 +271,8 @@
 - D. GitHub Actions シークレット（`FIREBASE_SERVICE_ACCOUNT`）
 - F. 地域危険度 GeoJSON 変換
 
-### 未対応: アプリアイコン設定
+### ✅ 完了済み: アプリアイコン設定（Phase 12 で対応済み）
 
-1. `real-estate-ios/color-preview/index.html` をブラウザで開いてカラースキームを選ぶ
-2. 選んだスキームのプロンプトで DALL-E / Midjourney でアイコン画像を生成
-3. 1024x1024 の PNG を `RealEstateApp/Assets.xcassets/AppIcon.appiconset/AppIcon.png` として保存
-4. `AppIcon.appiconset/Contents.json` を以下に更新:
-
-```json
-{
-  "images" : [
-    {
-      "filename" : "AppIcon.png",
-      "idiom" : "universal",
-      "platform" : "ios",
-      "size" : "1024x1024"
-    }
-  ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  }
-}
-```
-
-5. 選択したカラースキームを `DesignSystem.swift` に適用
+- カラースキーム A (Blue #007AFF) を採用
+- 1024x1024 PNG を `Assets.xcassets/AppIcon.appiconset/` に配置済み
+- `DesignSystem.swift` にセマンティックカラー適用済み

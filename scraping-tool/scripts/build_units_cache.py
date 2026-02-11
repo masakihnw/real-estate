@@ -79,12 +79,29 @@ def _write_html_cache(url: str, html: str, manifest: dict[str, str]) -> None:
 
 
 def fetch_detail(session: requests.Session, url: str) -> str:
-    """詳細ページの HTML を取得。"""
+    """詳細ページの HTML を取得。429/5xx 時はリトライする。"""
     session.headers["User-Agent"] = USER_AGENT
+    last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
         time.sleep(REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
+            # 429 Too Many Requests — Retry-After に従って待機
+            if r.status_code == 429:
+                retry_after = int(r.headers.get("Retry-After", 60))
+                if attempt < REQUEST_RETRIES - 1:
+                    time.sleep(retry_after)
+                    continue
+                raise requests.exceptions.HTTPError(
+                    f"429 Rate Limited after {REQUEST_RETRIES} attempts", response=r
+                )
+            # 5xx は一時的なサーバーエラーのためリトライ
+            if 500 <= r.status_code < 600 and attempt < REQUEST_RETRIES - 1:
+                last_error = requests.exceptions.HTTPError(
+                    f"Server error {r.status_code}", response=r
+                )
+                time.sleep(2)
+                continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
             return r.text
@@ -92,13 +109,17 @@ def fetch_detail(session: requests.Session, url: str) -> str:
             requests.exceptions.ReadTimeout,
             requests.exceptions.ConnectTimeout,
             requests.exceptions.ConnectionError,
-            requests.exceptions.HTTPError,
         ) as e:
+            last_error = e
             if attempt < REQUEST_RETRIES - 1:
                 time.sleep(2)
             else:
-                raise e
-    return ""
+                raise
+        except requests.exceptions.HTTPError as e:
+            raise
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError(f"全 {REQUEST_RETRIES} 回のリトライが失敗しました: {url}")
 
 
 def _detail_to_cache_entry(parsed: dict) -> dict:
@@ -139,8 +160,8 @@ def main() -> None:
                 raw = json.load(f)
             # 既存が URL → int の場合はそのまま。URL → dict もそのまま。
             existing = raw
-        except (json.JSONDecodeError, OSError):
-            pass
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"警告: building_units.json の読み込みに失敗（空キャッシュで続行）: {e}", file=sys.stderr)
 
     manifest = _load_manifest()
     # キャッシュにない URL 数＝初回は全件、2回目以降は新規・未キャッシュのみ
@@ -177,8 +198,11 @@ def main() -> None:
             if units is not None:
                 print(f"  {url[:60]}... → {units}戸", file=sys.stderr)
 
-    with open(BUILDING_UNITS_PATH, "w", encoding="utf-8") as f:
+    # 原子的書き込み
+    tmp_path = BUILDING_UNITS_PATH.with_suffix(".json.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
+    tmp_path.replace(BUILDING_UNITS_PATH)
     print(
         f"キャッシュ保存: {BUILDING_UNITS_PATH} ({len(existing)}件、今回{updated}件更新・HTML新規取得{fetched}件)",
         file=sys.stderr,

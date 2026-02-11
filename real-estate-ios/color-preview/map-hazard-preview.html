@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ハザードマップ重ね合わせプレビュー</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1c1c1e; }
+  #map { width: 100%; height: 100vh; }
+
+  /* Control panel */
+  .panel {
+    position: fixed; top: 12px; right: 12px; z-index: 1000;
+    background: rgba(255,255,255,0.97); backdrop-filter: blur(12px);
+    border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    width: 300px; max-height: calc(100vh - 24px); overflow-y: auto;
+    font-size: 13px; color: #1c1c1e;
+  }
+  .panel::-webkit-scrollbar { display: none; }
+  .panel-header {
+    padding: 14px 16px 10px; font-size: 17px; font-weight: 700;
+    border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0;
+    background: rgba(255,255,255,0.97); backdrop-filter: blur(12px);
+    border-radius: 14px 14px 0 0; display: flex; justify-content: space-between; align-items: center;
+  }
+  .panel-header .hint { font-size: 10px; color: #8e8e93; font-weight: 400; }
+  .section-title {
+    font-size: 10px; font-weight: 700; color: #8e8e93;
+    padding: 12px 16px 4px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .layer-row {
+    display: flex; align-items: center; padding: 6px 16px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .layer-row:hover { background: rgba(0,0,0,0.03); }
+  .layer-row .icon { width: 22px; text-align: center; font-size: 13px; margin-right: 6px; }
+  .layer-row .name { flex: 1; font-size: 12px; }
+  .layer-row .info-btn {
+    width: 18px; height: 18px; border-radius: 50%; border: none; background: none;
+    font-size: 12px; color: #8e8e93; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0; padding: 0;
+    margin-right: 4px;
+  }
+  .layer-row .info-btn:hover { color: #007AFF; }
+  .layer-row .toggle {
+    width: 38px; height: 22px; border-radius: 11px; background: #e9e9eb;
+    position: relative; transition: background 0.2s; flex-shrink: 0;
+  }
+  .layer-row .toggle.on { background: #007AFF; }
+  .layer-row .toggle::after {
+    content: ''; position: absolute; width: 18px; height: 18px;
+    border-radius: 9px; background: #fff; top: 2px; left: 2px;
+    transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .layer-row .toggle.on::after { transform: translateX(16px); }
+  /* Opacity slider row (shown when layer is ON) */
+  .opacity-row {
+    display: none; padding: 0 16px 4px 46px; align-items: center; gap: 6px;
+  }
+  .opacity-row.show { display: flex; }
+  .opacity-row input[type=range] {
+    flex: 1; height: 3px; -webkit-appearance: none; background: #ddd; border-radius: 2px; outline: none;
+  }
+  .opacity-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+    background: #007AFF; cursor: pointer; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .opacity-row .opacity-val { font-size: 10px; color: #8e8e93; width: 28px; text-align: right; }
+  .divider { height: 1px; background: rgba(0,0,0,0.06); margin: 0 16px; }
+
+  /* Info popup */
+  .info-popup {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 2000; background: #fff; border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2); width: 320px; max-height: 80vh;
+    overflow-y: auto; padding: 20px;
+  }
+  .info-overlay {
+    position: fixed; inset: 0; z-index: 1999; background: rgba(0,0,0,0.3);
+  }
+  .info-popup h4 { font-size: 15px; margin: 0 0 8px; display: flex; align-items: center; gap: 6px; }
+  .info-popup .desc { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 12px; }
+  .info-popup .legend-title { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+  .info-popup .legend-item { display: flex; align-items: center; gap: 8px; margin: 3px 0; font-size: 11px; }
+  .info-popup .legend-swatch { width: 24px; height: 14px; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.08); }
+  .info-popup .source { font-size: 10px; color: #bbb; margin-top: 10px; }
+  .info-popup .close-btn {
+    position: absolute; top: 12px; right: 12px; border: none; background: rgba(0,0,0,0.06);
+    border-radius: 50%; width: 26px; height: 26px; font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; color: #666;
+  }
+  .info-popup .close-btn:hover { background: rgba(0,0,0,0.1); }
+
+  /* Floating active legend (bottom-left) - M-1: 折りたたみ対応 */
+  .active-legend {
+    position: fixed; bottom: 60px; left: 16px; z-index: 1000;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+    border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    padding: 8px 12px; max-width: 220px; display: none;
+  }
+  .active-legend.show { display: block; }
+  .active-legend .al-title { font-size: 9px; font-weight: 700; color: #8e8e93; margin-bottom: 4px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .active-legend .al-title .toggle-btn { font-size: 10px; color: #007AFF; font-weight: 500; }
+  .active-legend.collapsed .al-body { display: none; }
+  .active-legend.collapsed .al-hint { display: none; }
+  .active-legend .al-item {
+    display: flex; align-items: center; gap: 5px; margin: 2px 0; font-size: 10px;
+    cursor: pointer; padding: 2px 0; border-radius: 4px; transition: background 0.15s;
+  }
+  .active-legend .al-item:hover { background: rgba(0,0,0,0.04); }
+  .active-legend .al-swatch { width: 12px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .active-legend .al-hint { font-size: 9px; color: #bbb; margin-top: 4px; }
+
+  /* Legend */
+  .legend-section { padding: 6px 16px 8px; }
+  .legend-row { display: flex; align-items: center; gap: 6px; margin: 2px 0; font-size: 11px; color: #666; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Pin count */
+  .pin-count {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+    padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12); color: #1c1c1e;
+  }
+
+  /* All layers button */
+  .btn-all {
+    display: block; margin: 6px 16px 8px; padding: 7px; border: none;
+    border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;
+    text-align: center; transition: all 0.2s;
+  }
+  .btn-on { background: #007AFF; color: #fff; }
+  .btn-off { background: rgba(0,122,255,0.08); color: #007AFF; }
+
+  /* Hazard identify popup on map */
+  .hazard-id-popup { font-family: -apple-system, sans-serif; }
+  .hazard-id-popup .hid-title { font-size: 11px; font-weight: 700; margin-bottom: 6px; color: #333; }
+  .hazard-id-popup .hid-chip {
+    display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px;
+    border-radius: 5px; font-size: 10px; font-weight: 600; margin: 2px 2px;
+  }
+  .hazard-id-popup .hid-none { font-size: 11px; color: #999; }
+
+  @media (max-width: 768px) { .panel { width: 260px; top: 8px; right: 8px; } }
+  @media (max-width: 480px) {
+    .panel { position: fixed; top: auto; bottom: 0; left: 0; right: 0; width: 100%; border-radius: 16px 16px 0 0; max-height: 50vh; }
+    .active-legend { bottom: 55vh; }
+  }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div class="panel">
+  <div class="panel-header">
+    <span>ハザードマップ</span>
+    <span class="hint">地図クリックで確認</span>
+  </div>
+
+  <div class="section-title">基本レイヤー</div>
+  <div class="layer-row" onclick="toggleLayer('flood')">
+    <span class="icon">🌊</span><span class="name">洪水浸水想定</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('flood')">ⓘ</button>
+    <span class="toggle" id="t-flood"></span>
+  </div>
+  <div class="opacity-row" id="o-flood"><input type="range" min="10" max="100" value="60" oninput="setOpacity('flood',this.value)"><span class="opacity-val">60%</span></div>
+
+  <div class="layer-row" onclick="toggleLayer('inlandWater')">
+    <span class="icon">💧</span><span class="name">内水浸水</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('inlandWater')">ⓘ</button>
+    <span class="toggle" id="t-inlandWater"></span>
+  </div>
+  <div class="opacity-row" id="o-inlandWater"><input type="range" min="10" max="100" value="60" oninput="setOpacity('inlandWater',this.value)"><span class="opacity-val">60%</span></div>
+
+  <div class="layer-row" onclick="toggleLayer('sediment')">
+    <span class="icon">⛰</span><span class="name">土砂災害警戒</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('sediment')">ⓘ</button>
+    <span class="toggle" id="t-sediment"></span>
+  </div>
+  <div class="opacity-row" id="o-sediment"><input type="range" min="10" max="100" value="60" oninput="setOpacity('sediment',this.value)"><span class="opacity-val">60%</span></div>
+
+  <div class="layer-row" onclick="toggleLayer('stormSurge')">
+    <span class="icon">🌊</span><span class="name">高潮浸水想定</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('stormSurge')">ⓘ</button>
+    <span class="toggle" id="t-stormSurge"></span>
+  </div>
+  <div class="opacity-row" id="o-stormSurge"><input type="range" min="10" max="100" value="60" oninput="setOpacity('stormSurge',this.value)"><span class="opacity-val">60%</span></div>
+
+  <div class="layer-row" onclick="toggleLayer('tsunami')">
+    <span class="icon">🌊</span><span class="name">津波浸水想定</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('tsunami')">ⓘ</button>
+    <span class="toggle" id="t-tsunami"></span>
+  </div>
+  <div class="opacity-row" id="o-tsunami"><input type="range" min="10" max="100" value="60" oninput="setOpacity('tsunami',this.value)"><span class="opacity-val">60%</span></div>
+
+  <div class="layer-row" onclick="toggleLayer('liquefaction')">
+    <span class="icon">〰</span><span class="name">液状化</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('liquefaction')">ⓘ</button>
+    <span class="toggle" id="t-liquefaction"></span>
+  </div>
+  <div class="opacity-row" id="o-liquefaction"><input type="range" min="10" max="100" value="60" oninput="setOpacity('liquefaction',this.value)"><span class="opacity-val">60%</span></div>
+
+  <div class="layer-row" onclick="toggleLayer('seismicRisk')">
+    <span class="icon">📊</span><span class="name">地盤の揺れやすさ</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('seismicRisk')">ⓘ</button>
+    <span class="toggle" id="t-seismicRisk"></span>
+  </div>
+  <div class="opacity-row" id="o-seismicRisk"><input type="range" min="10" max="100" value="50" oninput="setOpacity('seismicRisk',this.value)"><span class="opacity-val">50%</span></div>
+
+  <div class="divider"></div>
+  <div class="section-title">洪水詳細</div>
+  <div class="layer-row" onclick="toggleLayer('floodDuration')">
+    <span class="icon">⏱</span><span class="name">浸水継続時間</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('floodDuration')">ⓘ</button>
+    <span class="toggle" id="t-floodDuration"></span>
+  </div>
+  <div class="opacity-row" id="o-floodDuration"><input type="range" min="10" max="100" value="60" oninput="setOpacity('floodDuration',this.value)"><span class="opacity-val">60%</span></div>
+
+  <div class="layer-row" onclick="toggleLayer('buildingCollapse')">
+    <span class="icon">🏚</span><span class="name">家屋倒壊（氾濫流）</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('buildingCollapse')">ⓘ</button>
+    <span class="toggle" id="t-buildingCollapse"></span>
+  </div>
+  <div class="opacity-row" id="o-buildingCollapse"><input type="range" min="10" max="100" value="60" oninput="setOpacity('buildingCollapse',this.value)"><span class="opacity-val">60%</span></div>
+
+  <div class="layer-row" onclick="toggleLayer('bankErosion')">
+    <span class="icon">🏚</span><span class="name">家屋倒壊（河岸侵食）</span>
+    <button class="info-btn" onclick="event.stopPropagation();showInfo('bankErosion')">ⓘ</button>
+    <span class="toggle" id="t-bankErosion"></span>
+  </div>
+  <div class="opacity-row" id="o-bankErosion"><input type="range" min="10" max="100" value="60" oninput="setOpacity('bankErosion',this.value)"><span class="opacity-val">60%</span></div>
+
+  <button class="btn-all btn-on" id="btn-toggle-all" onclick="toggleAll()">全て ON</button>
+
+  <div class="divider"></div>
+  <div class="section-title">物件ピン</div>
+  <div class="legend-section">
+    <div class="legend-row"><span class="legend-dot" style="background:#007AFF;"></span>中古マンション</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#34C759;"></span>新築マンション</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#007AFF;border:2px solid #FF3B30;"></span>お気に入り</div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title">表示設定</div>
+  <div class="layer-row" onclick="toggleBaseMap()">
+    <span class="icon">🗺</span><span class="name">淡色地図</span>
+    <span class="toggle" id="t-basemap"></span>
+  </div>
+  <div style="padding:2px 16px 10px;font-size:10px;color:#8e8e93;line-height:1.4;">ハザード表示時は淡色地図の方がオーバーレイが見やすい</div>
+</div>
+
+<!-- Floating active legend -->
+<div class="active-legend" id="active-legend">
+  <div class="al-title" onclick="this.parentElement.classList.toggle('collapsed')">表示中のレイヤー <span class="toggle-btn">折りたたむ</span></div>
+  <div class="al-body">
+    <div id="al-items"></div>
+  </div>
+  <div class="al-hint">地図をクリックでハザード確認</div>
+</div>
+
+<div class="pin-count" id="pin-count">物件 12件 表示中</div>
+
+<script>
+// === Map setup ===
+const map = L.map('map', { zoomControl: false }).setView([35.6505, 139.7900], 14);
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+const stdMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>', maxZoom: 18
+});
+const paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>', maxZoom: 18
+});
+paleMap.addTo(map);
+let usingPale = true;
+function toggleBaseMap() {
+  if (usingPale) { map.removeLayer(paleMap); stdMap.addTo(map); }
+  else { map.removeLayer(stdMap); paleMap.addTo(map); }
+  usingPale = !usingPale;
+  document.getElementById('t-basemap').classList.toggle('on', !usingPale);
+}
+
+// === Hazard layers ===
+const hazardMeta = {
+  flood:            { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🌊', name: '洪水浸水',    color: '#3D70C2' },
+  inlandWater:      { url: 'https://disaportaldata.gsi.go.jp/raster/02_naisui_data/{z}/{x}/{y}.png',              opacity: 0.6, icon: '💧', name: '内水浸水',    color: '#66BAD9' },
+  sediment:         { url: 'https://disaportaldata.gsi.go.jp/raster/05_dosekiryukeikaikuiki/{z}/{x}/{y}.png',     opacity: 0.6, icon: '⛰',  name: '土砂災害',    color: '#E6A817' },
+  stormSurge:       { url: 'https://disaportaldata.gsi.go.jp/raster/03_hightide_l2_shinsuishin_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🌊', name: '高潮浸水', color: '#943D94' },
+  tsunami:          { url: 'https://disaportaldata.gsi.go.jp/raster/04_tsunami_newlegend_data/{z}/{x}/{y}.png',   opacity: 0.6, icon: '🌊', name: '津波浸水',    color: '#5B3DA4' },
+  liquefaction:     { url: 'https://disaportaldata.gsi.go.jp/raster/08_liquid/{z}/{x}/{y}.png',                   opacity: 0.6, icon: '〰',  name: '液状化',     color: '#F58C4D' },
+  seismicRisk:      { url: 'https://disaportaldata.gsi.go.jp/raster/13_jibanshindou/{z}/{x}/{y}.png',             opacity: 0.5, icon: '📊', name: '揺れやすさ',  color: '#E63333' },
+  floodDuration:    { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_keizoku_data/{z}/{x}/{y}.png',    opacity: 0.6, icon: '⏱',  name: '浸水継続',    color: '#3D70C2' },
+  buildingCollapse: { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_kaokutoukai_hanran_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🏚', name: '家屋倒壊(氾)', color: '#E63333' },
+  bankErosion:      { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_kaokutoukai_kagan_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🏚', name: '家屋倒壊(河)', color: '#CC4444' },
+};
+
+const hazardLayers = {};
+const layerState = {};
+for (const [key, cfg] of Object.entries(hazardMeta)) {
+  hazardLayers[key] = L.tileLayer(cfg.url, { opacity: cfg.opacity, maxZoom: 18, attribution: '国土地理院ハザードマップ' });
+  layerState[key] = false;
+}
+
+function toggleLayer(key) {
+  layerState[key] = !layerState[key];
+  if (layerState[key]) hazardLayers[key].addTo(map);
+  else map.removeLayer(hazardLayers[key]);
+  document.getElementById('t-' + key).classList.toggle('on', layerState[key]);
+  document.getElementById('o-' + key).classList.toggle('show', layerState[key]);
+  updateAllButton();
+  updateActiveLegend();
+}
+
+function setOpacity(key, val) {
+  const v = parseInt(val);
+  hazardLayers[key].setOpacity(v / 100);
+  document.querySelector(`#o-${key} .opacity-val`).textContent = v + '%';
+}
+
+function toggleAll() {
+  const anyOn = Object.values(layerState).some(v => v);
+  const newState = !anyOn;
+  for (const key of Object.keys(layerState)) {
+    layerState[key] = newState;
+    if (newState) hazardLayers[key].addTo(map);
+    else map.removeLayer(hazardLayers[key]);
+    document.getElementById('t-' + key).classList.toggle('on', newState);
+    document.getElementById('o-' + key).classList.toggle('show', newState);
+  }
+  updateAllButton();
+  updateActiveLegend();
+}
+
+function updateAllButton() {
+  const anyOn = Object.values(layerState).some(v => v);
+  const btn = document.getElementById('btn-toggle-all');
+  btn.textContent = anyOn ? '全て OFF' : '全て ON';
+  btn.className = 'btn-all ' + (anyOn ? 'btn-off' : 'btn-on');
+}
+
+// === Active layer legend ===
+function updateActiveLegend() {
+  const container = document.getElementById('al-items');
+  const wrapper = document.getElementById('active-legend');
+  const activeKeys = Object.keys(layerState).filter(k => layerState[k]);
+  if (activeKeys.length === 0) { wrapper.classList.remove('show'); return; }
+  wrapper.classList.add('show');
+  container.innerHTML = activeKeys.map(k => {
+    const m = hazardMeta[k];
+    return `<div class="al-item" onclick="showInfo('${k}')">
+      <span class="al-swatch" style="background:${m.color};"></span>
+      <span>${m.icon} ${m.name}</span>
+    </div>`;
+  }).join('');
+}
+
+// === Click to identify hazards ===
+map.on('click', function(e) {
+  const activeKeys = Object.keys(layerState).filter(k => layerState[k]);
+  if (activeKeys.length === 0) return;
+
+  // Check which layers have tile data at clicked point by loading tile pixels
+  const zoom = map.getZoom();
+  const point = map.project(e.latlng, zoom);
+  const tileSize = 256;
+  const tileX = Math.floor(point.x / tileSize);
+  const tileY = Math.floor(point.y / tileSize);
+  const pixelX = Math.floor(point.x % tileSize);
+  const pixelY = Math.floor(point.y % tileSize);
+
+  let results = [];
+  let pending = activeKeys.length;
+
+  activeKeys.forEach(key => {
+    const cfg = hazardMeta[key];
+    const tileUrl = cfg.url.replace('{z}', zoom).replace('{x}', tileX).replace('{y}', tileY);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = tileSize; canvas.height = tileSize;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      try {
+        const pixel = ctx.getImageData(pixelX, pixelY, 1, 1).data;
+        // If alpha > 10 the layer has data here
+        if (pixel[3] > 10) {
+          results.push({ key, meta: cfg, r: pixel[0], g: pixel[1], b: pixel[2], a: pixel[3] });
+        }
+      } catch(ex) {
+        // CORS blocked, assume layer has data if ON
+        results.push({ key, meta: cfg, r: 0, g: 0, b: 0, a: 255 });
+      }
+      pending--;
+      if (pending === 0) showHazardIdPopup(e.latlng, results);
+    };
+    img.onerror = function() {
+      // No tile = no data at this location
+      pending--;
+      if (pending === 0) showHazardIdPopup(e.latlng, results);
+    };
+    img.src = tileUrl;
+  });
+});
+
+function showHazardIdPopup(latlng, results) {
+  let html = '<div class="hazard-id-popup">';
+  html += '<div class="hid-title">この地点のハザード</div>';
+  if (results.length === 0) {
+    html += '<div class="hid-none">該当するハザードなし</div>';
+  } else {
+    results.forEach(r => {
+      const bgColor = `rgba(${r.r},${r.g},${r.b},0.15)`;
+      const textColor = r.meta.color;
+      html += `<span class="hid-chip" style="background:${bgColor};color:${textColor};">${r.meta.icon} ${r.meta.name}</span>`;
+    });
+    html += `<div style="font-size:9px;color:#999;margin-top:6px;">${results.length}種類のハザードが重なっています</div>`;
+  }
+  html += '</div>';
+  L.popup({ maxWidth: 260, closeButton: true })
+    .setLatLng(latlng)
+    .setContent(html)
+    .openOn(map);
+}
+
+// === Sample properties ===
+const properties = [
+  { name: 'パークシティ豊洲 B棟', lat: 35.6553, lng: 139.7938, type: 'chuko', liked: true, price: '8,980万円', layout: '3LDK', area: '72.5㎡', walk: '徒歩4分', age: '築18年' },
+  { name: 'ブリリアタワー東京', lat: 35.6485, lng: 139.7850, type: 'chuko', liked: false, price: '7,480万円', layout: '2LDK', area: '61.2㎡', walk: '徒歩6分', age: '築12年' },
+  { name: 'プラウド文京小石川', lat: 35.7130, lng: 139.7440, type: 'chuko', liked: false, price: '9,500万円', layout: '3LDK', area: '68.0㎡', walk: '徒歩3分', age: '築5年' },
+  { name: 'ザ・パークハウス晴海', lat: 35.6560, lng: 139.7820, type: 'chuko', liked: true, price: '6,280万円', layout: '2LDK', area: '55.3㎡', walk: '徒歩7分', age: '築8年' },
+  { name: 'シティタワー有明', lat: 35.6380, lng: 139.7890, type: 'chuko', liked: false, price: '5,980万円', layout: '2LDK', area: '58.1㎡', walk: '徒歩5分', age: '築10年' },
+  { name: 'グランドメゾン品川シーサイド', lat: 35.6090, lng: 139.7490, type: 'chuko', liked: false, price: '7,280万円', layout: '3LDK', area: '70.2㎡', walk: '徒歩3分', age: '築15年' },
+  { name: 'HARUMI FLAG SUN VILLAGE', lat: 35.6460, lng: 139.7830, type: 'shinchiku', liked: true, price: '6,000万〜1.2億', layout: '2LDK〜4LDK', area: '61〜100㎡', walk: '徒歩12分', age: '2025年入居' },
+  { name: 'ブランズタワー豊洲', lat: 35.6530, lng: 139.7960, type: 'shinchiku', liked: false, price: '7,500万〜1.5億', layout: '1LDK〜4LDK', area: '42〜86㎡', walk: '徒歩5分', age: '2026年入居' },
+  { name: 'パークタワー勝どき', lat: 35.6588, lng: 139.7760, type: 'shinchiku', liked: false, price: '8,000万〜2億', layout: '1LDK〜3LDK', area: '44〜82㎡', walk: '徒歩1分', age: '2025年入居' },
+  { name: 'ザ・タワー横浜北仲', lat: 35.6520, lng: 139.7750, type: 'chuko', liked: false, price: '8,500万円', layout: '2LDK', area: '65.0㎡', walk: '徒歩3分', age: '築7年' },
+  { name: 'プラウドタワー東雲', lat: 35.6410, lng: 139.8010, type: 'chuko', liked: false, price: '6,700万円', layout: '3LDK', area: '75.3㎡', walk: '徒歩8分', age: '築11年' },
+  { name: 'スカイズタワー&ガーデン', lat: 35.6350, lng: 139.7950, type: 'chuko', liked: true, price: '7,800万円', layout: '3LDK', area: '80.1㎡', walk: '徒歩10分', age: '築9年' },
+];
+
+function createIcon(type, liked) {
+  const color = type === 'shinchiku' ? '#34C759' : '#007AFF';
+  const border = liked ? 'border: 2px solid #FF3B30;' : '';
+  const size = liked ? '28px' : '24px';
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:${size};height:${size};border-radius:50%;background:${color};${border}display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;">
+      <span style="color:#fff;font-size:10px;font-weight:700;">${type === 'shinchiku' ? '✨' : '🏢'}</span>
+    </div>`,
+    iconSize: [parseInt(size), parseInt(size)],
+    iconAnchor: [parseInt(size)/2, parseInt(size)/2],
+  });
+}
+
+properties.forEach(p => {
+  const marker = L.marker([p.lat, p.lng], { icon: createIcon(p.type, p.liked) });
+  const likeIcon = p.liked ? '♥' : '♡';
+  const likeColor = p.liked ? '#FF3B30' : '#ccc';
+  marker.bindPopup(`
+    <div style="font-family:-apple-system,sans-serif;min-width:200px;">
+      <div style="display:flex;align-items:flex-start;gap:6px;">
+        <div style="font-size:14px;font-weight:700;flex:1;line-height:1.3;">${p.name}</div>
+        <span style="color:${likeColor};font-size:18px;flex-shrink:0;">${likeIcon}</span>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:${p.type==='shinchiku'?'#34C759':'#007AFF'};margin:4px 0;">${p.price}</div>
+      <div style="font-size:11px;color:#666;line-height:1.6;">${p.layout} ・ ${p.area} ・ ${p.walk}<br>${p.age}</div>
+    </div>
+  `, { maxWidth: 280, closeButton: true });
+  marker.addTo(map);
+});
+
+document.getElementById('pin-count').textContent = `物件 ${properties.length}件 表示中`;
+
+// === Layer info data ===
+const layerInfo = {
+  flood:            { icon: '🌊', title: '洪水浸水想定', desc: '河川が氾濫した場合に想定される浸水の深さ。想定最大規模の降雨（1000年に1回程度）に基づく。', legend: [{color:'#F5F597',label:'0.5m未満'},{color:'#A6DEDD',label:'0.5〜3m'},{color:'#66BAD9',label:'3〜5m'},{color:'#3D70C2',label:'5〜10m'},{color:'#943D94',label:'10〜20m'}]},
+  inlandWater:      { icon: '💧', title: '内水浸水想定', desc: '下水道等の排水能力を超える降雨時の浸水想定。いわゆる都市型水害。', legend: [{color:'#F5F597',label:'0.5m未満'},{color:'#66BAD9',label:'0.5〜1m'},{color:'#3D70C2',label:'1〜3m'},{color:'#943D94',label:'3m以上'}]},
+  sediment:         { icon: '⛰', title: '土砂災害警戒', desc: '土石流・地すべり・急傾斜地の崩壊リスク区域。', legend: [{color:'#FFD700',label:'警戒区域（イエロー）'},{color:'#FF0000',label:'特別警戒区域（レッド）'}]},
+  stormSurge:       { icon: '🌊', title: '高潮浸水想定', desc: '台風等による高潮の浸水想定。東京湾岸は広範囲で該当。', legend: [{color:'#F5F597',label:'0.5m未満'},{color:'#A6DEDD',label:'0.5〜3m'},{color:'#66BAD9',label:'3〜5m'},{color:'#3D70C2',label:'5〜10m'},{color:'#943D94',label:'10m以上'}]},
+  tsunami:          { icon: '🌊', title: '津波浸水想定', desc: '最大クラスの津波で想定される浸水の深さ。', legend: [{color:'#F5F597',label:'0.3m未満'},{color:'#A6DEDD',label:'0.3〜1m'},{color:'#66BAD9',label:'1〜2m'},{color:'#3D70C2',label:'2〜5m'},{color:'#943D94',label:'5m以上'}]},
+  liquefaction:     { icon: '〰', title: '液状化リスク', desc: '地震時の地盤液状化リスク。埋立地・河川沿いで高リスク。', legend: [{color:'#8CD18C',label:'可能性 低'},{color:'#F5E066',label:'可能性 中'},{color:'#F58C4D',label:'可能性 高'},{color:'#E63333',label:'可能性 極高'}]},
+  seismicRisk:      { icon: '📊', title: '地盤の揺れやすさ', desc: '表層地盤増幅率。大きいほど揺れが増幅。', legend: [{color:'#8CD18C',label:'増幅率 低い'},{color:'#F5E066',label:'やや大'},{color:'#F58C4D',label:'大きい'},{color:'#E63333',label:'非常に大'}]},
+  floodDuration:    { icon: '⏱', title: '浸水継続時間', desc: '河川氾濫後の浸水継続時間想定。', legend: [{color:'#F5F597',label:'12時間未満'},{color:'#A6DEDD',label:'1日未満'},{color:'#66BAD9',label:'3日未満'},{color:'#3D70C2',label:'1週間未満'},{color:'#943D94',label:'2週間以上'}]},
+  buildingCollapse: { icon: '🏚', title: '家屋倒壊（氾濫流）', desc: '氾濫流で家屋が倒壊するおそれがある区域。', legend: [{color:'#E63333',label:'倒壊危険区域'}]},
+  bankErosion:      { icon: '🏚', title: '家屋倒壊（河岸侵食）', desc: '河岸侵食で家屋が倒壊・流出するおそれがある区域。', legend: [{color:'#E63333',label:'倒壊危険区域'}]},
+};
+
+function showInfo(key) {
+  const info = layerInfo[key]; if (!info) return;
+  document.querySelectorAll('.info-overlay,.info-popup').forEach(e => e.remove());
+  const overlay = document.createElement('div');
+  overlay.className = 'info-overlay';
+  overlay.onclick = () => { overlay.remove(); popup.remove(); };
+  document.body.appendChild(overlay);
+  const popup = document.createElement('div');
+  popup.className = 'info-popup';
+  popup.innerHTML = `
+    <button class="close-btn" onclick="this.parentElement.remove();document.querySelector('.info-overlay')?.remove();">✕</button>
+    <h4>${info.icon} ${info.title}</h4>
+    <div class="desc">${info.desc}</div>
+    <div class="legend-title">凡例（色とリスクの対応）</div>
+    ${info.legend.map(l => `<div class="legend-item"><span class="legend-swatch" style="background:${l.color};"></span>${l.label}</div>`).join('')}
+    <div class="source">出典: 国土地理院ハザードマップポータルサイト</div>
+  `;
+  document.body.appendChild(popup);
+}
+
+// === URL parameter support ===
+function enableLayers(keys) {
+  for (const k of Object.keys(layerState)) {
+    if (layerState[k]) { map.removeLayer(hazardLayers[k]); layerState[k] = false; }
+    document.getElementById('t-' + k).classList.remove('on');
+    document.getElementById('o-' + k).classList.remove('show');
+  }
+  for (const k of keys) {
+    if (hazardLayers[k]) {
+      layerState[k] = true; hazardLayers[k].addTo(map);
+      document.getElementById('t-' + k).classList.add('on');
+      document.getElementById('o-' + k).classList.add('show');
+    }
+  }
+  updateAllButton(); updateActiveLegend();
+}
+const presets = {
+  all: Object.keys(hazardMeta),
+  basic: ['flood','inlandWater','sediment','stormSurge','tsunami','liquefaction'],
+  flood_only: ['flood'], storm_only: ['stormSurge'], tsunami_only: ['tsunami'],
+  liquefaction_only: ['liquefaction'], seismic_only: ['seismicRisk'],
+  flood_detail: ['flood','floodDuration','buildingCollapse','bankErosion'],
+};
+const params = new URLSearchParams(window.location.search);
+const preset = params.get('preset');
+if (preset && presets[preset]) setTimeout(() => enableLayers(presets[preset]), 500);
+else if (params.get('layers')) setTimeout(() => enableLayers(params.get('layers').split(',')), 500);
+</script>
+</body>
+</html>

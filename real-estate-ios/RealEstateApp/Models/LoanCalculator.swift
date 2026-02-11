@@ -60,9 +60,11 @@ enum LoanCalculator {
     /// 値上がりシミュレーション + 含み益の一括計算
     static func simulate(listing: Listing) -> SimulationResult? {
         guard listing.hasSimulationData else { return nil }
-        guard let purchasePrice = listing.priceMan ?? listing.ssOkiPrice70m2 else { return nil }
+        guard let purchasePrice = listing.priceMan ?? listing.ssOkiPrice70m2,
+              purchasePrice > 0 else { return nil }
 
         let principal = Double(purchasePrice - downPayment)
+        guard principal > 0 else { return nil }
 
         let balance5yr = loanBalance(principal: principal, afterYears: 5)
         let balance10yr = loanBalance(principal: principal, afterYears: 10)

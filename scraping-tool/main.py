@@ -23,6 +23,13 @@ from pathlib import Path
 # スクリプト配置が scraping-tool/ である前提
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+# Firestore からスクレイピング条件を取得（config を使用する全モジュールの import より前に実行）
+try:
+    from firestore_config_loader import load_config_from_firestore
+    load_config_from_firestore()
+except Exception as e:
+    print(f"[Config] Firestore 設定の読み込みに失敗（デフォルトを使用）: {e}", file=sys.stderr)
+
 from report_utils import listing_key
 
 
@@ -122,12 +129,13 @@ def main() -> None:
     if args.output:
         outpath = Path(args.output)
         outpath.parent.mkdir(parents=True, exist_ok=True)
-        if outpath.suffix.lower() == ".csv" and all_rows:
-            keys = list(all_rows[0].keys())
+        if outpath.suffix.lower() == ".csv":
+            keys = list(all_rows[0].keys()) if all_rows else []
             with open(outpath, "w", newline="", encoding="utf-8") as f:
                 w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
                 w.writeheader()
-                w.writerows(all_rows)
+                if all_rows:
+                    w.writerows(all_rows)
             print(f"Wrote {len(all_rows)} rows to {outpath}", file=sys.stderr)
         else:
             with open(outpath, "w", encoding="utf-8") as f:

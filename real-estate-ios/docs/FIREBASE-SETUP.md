@@ -71,9 +71,16 @@ service cloud.firestore {
       // 認証済みユーザーのみ読み書き可能
       allow read, write: if request.auth != null;
     }
+    match /scraping_config/{docId} {
+      // 認証済みユーザーのみ読み書き可能（設定画面からのスクレイピング条件編集用）
+      // GitHub Actions のサービスアカウントは読み取りのみ必要
+      allow read, write: if request.auth != null;
+    }
   }
 }
 ```
+
+**スクレイピング条件**: `scraping_config/default` に価格・専有面積・築年などの条件を保存します。設定画面で編集すると、次回の GitHub Actions 実行時にスクレイピングツールが読み込みます。Firebase Admin SDK（Python）はサービスアカウントで認証され、Firestore ルールの制約を受けないため、上記ルールで問題ありません。
 
 ---
 

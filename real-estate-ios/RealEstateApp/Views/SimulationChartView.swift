@@ -36,7 +36,7 @@ struct SimulationSectionView: View {
                 conditionFooter(purchasePrice: sim.purchasePrice)
             }
             .padding(14)
-            .listingGlassBackground()
+            .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
         }
     }
 
@@ -97,14 +97,14 @@ struct SimulationSectionView: View {
             // 標準
             simTableRow(
                 label: "標準",
-                color: .green,
+                color: DesignSystem.positiveColor,
                 yr5: sim.standardCase.yr5,
                 yr10: sim.standardCase.yr10
             )
             // ワースト
             simTableRow(
                 label: "ワースト",
-                color: .red,
+                color: DesignSystem.negativeColor,
                 yr5: sim.worstCase.yr5,
                 yr10: sim.worstCase.yr10
             )
@@ -155,13 +155,13 @@ struct SimulationSectionView: View {
             )
             simTableRow(
                 label: "標準",
-                color: .green,
+                color: DesignSystem.positiveColor,
                 yr5: sim.gainStandard.yr5,
                 yr10: sim.gainStandard.yr10
             )
             simTableRow(
                 label: "ワースト",
-                color: .red,
+                color: DesignSystem.negativeColor,
                 yr5: sim.gainWorst.yr5,
                 yr10: sim.gainWorst.yr10
             )
@@ -217,26 +217,17 @@ struct SimulationSectionView: View {
 
     @ViewBuilder
     private func conditionFooter(purchasePrice: Int) -> some View {
-        HStack(spacing: 4) {
-            Text("購入条件")
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundStyle(.white)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.accentColor.opacity(0.8))
-                .clipShape(RoundedRectangle(cornerRadius: 3))
-            Text("価格: \(formatMan(purchasePrice)) / 金利: 0.8% / 返済期間: 50年 / 頭金: 0万円")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-        }
-        .padding(.top, 4)
+        Text("購入条件 価格: \(formatMan(purchasePrice)) / 金利: 0.8% / 返済期間: 50年 / 頭金: 0万円")
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .padding(.top, 4)
     }
 
     // MARK: - ヘルパー
 
     private func formatMan(_ value: Int) -> String {
         let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "ja_JP")
         formatter.numberStyle = .decimal
         let formatted = formatter.string(from: NSNumber(value: value)) ?? "\(value)"
         return "\(formatted)万円"
@@ -266,8 +257,8 @@ struct AppreciationChartView: View {
         }
         .chartForegroundStyleScale([
             "ベスト": Color.blue,
-            "標準": Color.green,
-            "ワースト": Color.red,
+            "標準": DesignSystem.positiveColor,
+            "ワースト": DesignSystem.negativeColor,
             "ローン残高": Color.orange,
         ])
         .chartLegend(position: .bottom, spacing: 4)
@@ -277,7 +268,7 @@ struct AppreciationChartView: View {
                 AxisValueLabel {
                     if let intVal = value.as(Int.self) {
                         Text("\(intVal / 10000 > 0 ? "\(intVal)万" : "\(intVal)万")")
-                            .font(.system(size: 8))
+                            .font(.caption2)
                     }
                 }
             }
@@ -285,9 +276,15 @@ struct AppreciationChartView: View {
         .chartXAxis {
             AxisMarks { value in
                 AxisValueLabel()
-                    .font(.system(size: 9))
+                    .font(.caption)
             }
         }
+        // HIG: VoiceOver でチャートのデータサマリを提供
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("値上がりシミュレーションチャート")
+        .accessibilityValue(
+            "購入価格\(sim.purchasePrice)万円、5年後 標準\(sim.standardCase.yr5)万円、10年後 標準\(sim.standardCase.yr10)万円"
+        )
     }
 
     private func chartData() -> [ChartPoint] {
@@ -338,8 +335,8 @@ struct GainChartView: View {
         }
         .chartForegroundStyleScale([
             "ベスト": Color.blue,
-            "標準": Color.green,
-            "ワースト": Color.red,
+            "標準": DesignSystem.positiveColor,
+            "ワースト": DesignSystem.negativeColor,
         ])
         .chartLegend(position: .bottom, spacing: 4)
         .chartLegend(.visible)
@@ -348,7 +345,7 @@ struct GainChartView: View {
                 AxisValueLabel {
                     if let intVal = value.as(Int.self) {
                         Text("\(intVal)万")
-                            .font(.system(size: 8))
+                            .font(.caption2)
                     }
                 }
             }
@@ -356,9 +353,15 @@ struct GainChartView: View {
         .chartXAxis {
             AxisMarks { value in
                 AxisValueLabel()
-                    .font(.system(size: 9))
+                    .font(.caption)
             }
         }
+        // HIG: VoiceOver でチャートのデータサマリを提供
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("含み益シミュレーションチャート")
+        .accessibilityValue(
+            "5年後 標準\(sim.gainStandard.yr5)万円、10年後 標準\(sim.gainStandard.yr10)万円"
+        )
     }
 
     private func chartData() -> [ChartPoint] {

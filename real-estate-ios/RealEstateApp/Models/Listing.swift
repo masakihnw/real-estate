@@ -32,12 +32,19 @@ final class Listing {
     /// このリストに初めて追加された日時（同期では上書きしない）
     var addedAt: Date
 
-    /// ユーザーが付けたメモ・コメント（同期では上書きしない）
+    /// （レガシー）旧メモ。コメント機能に移行済み。
     var memo: String?
     /// いいね（同期では上書きしない）
     var isLiked: Bool
+    /// コメント JSON 文字列（Firestore から同期、ローカルキャッシュ）
+    /// フォーマット: [{"id":"...","text":"...","authorName":"...","authorId":"...","createdAt":"ISO8601"}]
+    var commentsJSON: String?
     /// サイトから掲載が終了した（JSON から消えた）物件
     var isDelisted: Bool
+
+    /// 内見写真メタデータ JSON 文字列（ローカル保存）
+    /// フォーマット: [{"id":"...","fileName":"...","createdAt":"ISO8601"}]
+    var photosJSON: String?
 
     // MARK: - 新築対応フィールド
 
@@ -85,6 +92,12 @@ final class Listing {
     ///       "liquefaction":true,"inland_water":false,"building_collapse":3,"fire":2,"combined":3}
     var hazardInfo: String?
 
+    // MARK: - 通勤時間
+    /// 通勤時間情報 JSON 文字列（MKDirections で計算、ローカルキャッシュ）
+    /// フォーマット: {"playground":{"minutes":25,"summary":"東京メトロ半蔵門線→半蔵門駅","calculatedAt":"ISO8601"},
+    ///              "m3career":{"minutes":30,"summary":"東京メトロ日比谷線→虎ノ門ヒルズ駅","calculatedAt":"ISO8601"}}
+    var commuteInfoJSON: String?
+
     // MARK: - 値上がりシミュレーション (万円)
     /// ベストケース 5年後
     var ssSimBest5yr: Int?
@@ -129,6 +142,7 @@ final class Listing {
         latitude: Double? = nil,
         longitude: Double? = nil,
         hazardInfo: String? = nil,
+        commuteInfoJSON: String? = nil,
         ssProfitPct: Int? = nil,
         ssOkiPrice70m2: Int? = nil,
         ssValueJudgment: String? = nil,
@@ -174,6 +188,7 @@ final class Listing {
         self.latitude = latitude
         self.longitude = longitude
         self.hazardInfo = hazardInfo
+        self.commuteInfoJSON = commuteInfoJSON
         self.ssProfitPct = ssProfitPct
         self.ssOkiPrice70m2 = ssOkiPrice70m2
         self.ssValueJudgment = ssValueJudgment
@@ -262,6 +277,104 @@ final class Listing {
         return nil
     }
 
+    // MARK: - メイン路線名置換
+
+    /// 複数路線が乗り入れる駅で、利用者数が最多のメイン路線名マッピング。
+    /// スクレイピングデータでマイナー路線名が入った場合にメイン路線名に置換して表示する。
+    /// キー: 駅名、値: 利用者数が最も多い代表路線名
+    static let preferredLineForStation: [String: String] = [
+        // --- ゆりかもめ沿線（他にメジャー路線がある駅） ---
+        "新橋": "ＪＲ山手線",
+        "汐留": "都営大江戸線",
+        "豊洲": "東京メトロ有楽町線",
+        "有明": "りんかい線",
+        // --- りんかい線沿線 ---
+        "大井町": "ＪＲ京浜東北線",
+        "大崎": "ＪＲ山手線",
+        // --- つくばエクスプレス沿線 ---
+        "秋葉原": "ＪＲ山手線",
+        "北千住": "東京メトロ日比谷線",
+        "南千住": "ＪＲ常磐線",
+        "浅草": "東京メトロ銀座線",
+        // --- 東京モノレール沿線 ---
+        "浜松町": "ＪＲ山手線",
+        // --- 日暮里・舎人ライナー沿線 ---
+        "日暮里": "ＪＲ山手線",
+        "西日暮里": "東京メトロ千代田線",
+        // --- 都電荒川線沿線 ---
+        "王子": "ＪＲ京浜東北線",
+        "大塚": "ＪＲ山手線",
+        "町屋": "東京メトロ千代田線",
+        // --- 主要ターミナル（JR山手線がメイン） ---
+        "東京": "ＪＲ山手線",
+        "品川": "ＪＲ山手線",
+        "渋谷": "ＪＲ山手線",
+        "新宿": "ＪＲ山手線",
+        "池袋": "ＪＲ山手線",
+        "上野": "ＪＲ山手線",
+        "目黒": "ＪＲ山手線",
+        "恵比寿": "ＪＲ山手線",
+        "五反田": "ＪＲ山手線",
+        "田町": "ＪＲ山手線",
+        "高田馬場": "ＪＲ山手線",
+        "目白": "ＪＲ山手線",
+        "巣鴨": "ＪＲ山手線",
+        "駒込": "ＪＲ山手線",
+        "代々木": "ＪＲ山手線",
+        "原宿": "ＪＲ山手線",
+        "神田": "ＪＲ山手線",
+        "有楽町": "ＪＲ山手線",
+        "御徒町": "ＪＲ山手線",
+        // --- メトロ・都営の主要乗換駅 ---
+        "飯田橋": "東京メトロ東西線",
+        "市ヶ谷": "東京メトロ有楽町線",
+        "四ツ谷": "東京メトロ丸ノ内線",
+        "御茶ノ水": "東京メトロ丸ノ内線",
+        "大手町": "東京メトロ丸ノ内線",
+        "霞ケ関": "東京メトロ丸ノ内線",
+        "表参道": "東京メトロ銀座線",
+        "六本木": "東京メトロ日比谷線",
+        "月島": "東京メトロ有楽町線",
+        "後楽園": "東京メトロ丸ノ内線",
+        "銀座": "東京メトロ銀座線",
+        "日本橋": "東京メトロ銀座線",
+        "九段下": "東京メトロ東西線",
+        "門前仲町": "東京メトロ東西線",
+        "清澄白河": "東京メトロ半蔵門線",
+        "住吉": "東京メトロ半蔵門線",
+        "押上": "東京メトロ半蔵門線",
+        "錦糸町": "ＪＲ総武線",
+        "両国": "ＪＲ総武線",
+        "亀戸": "ＪＲ総武線",
+        "中目黒": "東京メトロ日比谷線",
+        "春日": "都営三田線",
+    ]
+
+    /// 路線名テキストの1セグメントをメイン路線名に置換する。
+    /// 例: "ゆりかもめ「豊洲」徒歩4分" → "東京メトロ有楽町線「豊洲」徒歩4分"
+    static func replaceWithPreferredLine(_ text: String) -> String {
+        guard let start = text.firstIndex(of: "「"),
+              let end = text.firstIndex(of: "」"),
+              start < end else { return text }
+        let stName = String(text[text.index(after: start)..<end])
+        guard let preferred = preferredLineForStation[stName] else { return text }
+        let currentLine = String(text[text.startIndex..<start])
+        if currentLine == preferred { return text }
+        return preferred + String(text[start...])
+    }
+
+    /// 表示用: stationLine のメイン路線名置換版。
+    /// 複数路線が乗り入れる駅で、マイナー路線名がデータに入っている場合に
+    /// 利用者数が多いメイン路線名に置換して表示する。
+    var displayStationLine: String? {
+        guard let line = stationLine, !line.isEmpty else { return stationLine }
+        let segments = line.components(separatedBy: CharacterSet(charactersIn: "／/"))
+        let replaced = segments.map { Self.replaceWithPreferredLine($0.trimmingCharacters(in: .whitespaces)) }
+        return replaced.joined(separator: "／")
+    }
+
+    // MARK: - Station Parsing
+
     /// stationLine から全駅情報をパース（複数駅対応）
     /// 例: "ＪＲ山手線「目白」徒歩4分／東京メトロ副都心線「雑司が谷」徒歩8分"
     ///   → [("ＪＲ山手線「目白」徒歩4分", "目白", 4), ("東京メトロ副都心線「雑司が谷」徒歩8分", "雑司が谷", 8)]
@@ -331,6 +444,11 @@ final class Listing {
         return pos
     }
 
+    /// 表示用: 階建のみ（新築一覧用。何階建かだけ表示）
+    var floorTotalDisplay: String {
+        floorTotal.map { "\($0)階建" } ?? "—"
+    }
+
     /// 表示用: 権利形態（短縮: 所有権 or 定借）
     var ownershipShort: String {
         guard let o = ownership, !o.isEmpty else { return "—" }
@@ -348,6 +466,7 @@ final class Listing {
     /// 表示用: 追加日（static DateFormatter で毎回のアロケーションを回避）
     private static let addedAtFormatter: DateFormatter = {
         let f = DateFormatter()
+        f.locale = Locale(identifier: "ja_JP")
         f.dateFormat = "M/d"
         return f
     }()
@@ -462,6 +581,109 @@ final class Listing {
     var hasHazardRisk: Bool {
         parsedHazardData.hasAnyHazard
     }
+
+    // MARK: - コメント
+
+    /// パース済みコメントリスト（日時昇順）
+    var parsedComments: [CommentData] {
+        guard let json = commentsJSON,
+              let data = json.data(using: .utf8) else { return [] }
+        return (try? CommentData.decoder.decode([CommentData].self, from: data))?
+            .sorted { $0.createdAt < $1.createdAt } ?? []
+    }
+
+    /// コメント数
+    var commentCount: Int { parsedComments.count }
+
+    /// コメントがあるか
+    var hasComments: Bool { commentsJSON != nil && commentCount > 0 }
+
+    /// 一覧表示用: 最新コメントのプレビュー
+    var latestCommentPreview: String? {
+        guard let latest = parsedComments.last else { return nil }
+        return "\(latest.authorName): \(latest.text)"
+    }
+
+    // MARK: - 内見写真
+
+    /// パース済み写真メタデータリスト（日時昇順）
+    var parsedPhotos: [PhotoMeta] {
+        guard let json = photosJSON,
+              let data = json.data(using: .utf8) else { return [] }
+        return (try? PhotoMeta.decoder.decode([PhotoMeta].self, from: data))?
+            .sorted { $0.createdAt < $1.createdAt } ?? []
+    }
+
+    /// 写真枚数
+    var photoCount: Int { parsedPhotos.count }
+
+    /// 写真があるか
+    var hasPhotos: Bool { photosJSON != nil && photoCount > 0 }
+
+    // MARK: - 通勤時間
+
+    /// パース済み通勤時間データ
+    var parsedCommuteInfo: CommuteData {
+        guard let json = commuteInfoJSON,
+              let data = json.data(using: .utf8) else { return CommuteData() }
+        return (try? CommuteData.decoder.decode(CommuteData.self, from: data)) ?? CommuteData()
+    }
+
+    /// 通勤時間データがあるか
+    var hasCommuteInfo: Bool {
+        let info = parsedCommuteInfo
+        return info.playground != nil || info.m3career != nil
+    }
+
+    /// 一覧表示用: Playground 通勤時間
+    var commutePlaygroundDisplay: String? {
+        guard let pg = parsedCommuteInfo.playground else { return nil }
+        return "\(pg.minutes)分"
+    }
+
+    /// 一覧表示用: M3Career 通勤時間
+    var commuteM3CareerDisplay: String? {
+        guard let m3 = parsedCommuteInfo.m3career else { return nil }
+        return "\(m3.minutes)分"
+    }
+}
+
+// MARK: - 通勤時間データ
+
+/// 2つのオフィスへの通勤時間情報
+struct CommuteData: Codable {
+    var playground: CommuteDestination?
+    var m3career: CommuteDestination?
+
+    static let encoder: JSONEncoder = {
+        let e = JSONEncoder()
+        e.dateEncodingStrategy = .iso8601
+        return e
+    }()
+
+    static let decoder: JSONDecoder = {
+        let d = JSONDecoder()
+        d.dateDecodingStrategy = .iso8601
+        return d
+    }()
+
+    /// JSON 文字列にエンコード
+    func encode() -> String? {
+        guard let data = try? Self.encoder.encode(self) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+/// 1つの目的地への通勤時間情報
+struct CommuteDestination: Codable {
+    /// 所要時間（分）
+    var minutes: Int
+    /// 経路概要（例: "東京メトロ半蔵門線→半蔵門駅 徒歩5分"）
+    var summary: String
+    /// 乗り換え回数
+    var transfers: Int?
+    /// 計算日時
+    var calculatedAt: Date
 }
 
 // MARK: - JSON Decoding (latest.json / latest_shinchiku.json 形式)
@@ -554,6 +776,67 @@ extension Listing {
             ssSimWorst5yr: dto.ss_sim_worst_5yr,
             ssSimWorst10yr: dto.ss_sim_worst_10yr
         )
+    }
+}
+
+// MARK: - コメントデータ
+
+/// 物件に対する1件のコメント。Firestore で家族間共有される。
+struct CommentData: Codable, Identifiable {
+    var id: String
+    var text: String
+    var authorName: String
+    var authorId: String
+    var createdAt: Date
+    /// 編集された日時（nil なら未編集）
+    var editedAt: Date?
+
+    /// 編集済みかどうか
+    var isEdited: Bool { editedAt != nil }
+
+    static let encoder: JSONEncoder = {
+        let e = JSONEncoder()
+        e.dateEncodingStrategy = .iso8601
+        return e
+    }()
+
+    static let decoder: JSONDecoder = {
+        let d = JSONDecoder()
+        d.dateDecodingStrategy = .iso8601
+        return d
+    }()
+
+    /// コメント配列を JSON 文字列にエンコード
+    static func encode(_ comments: [CommentData]) -> String? {
+        guard let data = try? encoder.encode(comments) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+// MARK: - 内見写真メタデータ
+
+/// 物件に紐づく1枚の内見写真のメタデータ。画像ファイル自体はアプリの Documents ディレクトリに保存。
+struct PhotoMeta: Codable, Identifiable {
+    var id: String
+    var fileName: String
+    var createdAt: Date
+
+    static let encoder: JSONEncoder = {
+        let e = JSONEncoder()
+        e.dateEncodingStrategy = .iso8601
+        return e
+    }()
+
+    static let decoder: JSONDecoder = {
+        let d = JSONDecoder()
+        d.dateDecodingStrategy = .iso8601
+        return d
+    }()
+
+    /// 写真メタデータ配列を JSON 文字列にエンコード
+    static func encode(_ photos: [PhotoMeta]) -> String? {
+        guard let data = try? encoder.encode(photos) else { return nil }
+        return String(data: data, encoding: .utf8)
     }
 }
 

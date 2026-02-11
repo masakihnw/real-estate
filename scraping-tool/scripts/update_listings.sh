@@ -30,6 +30,10 @@ if [ ! -s "$CURRENT" ]; then
 fi
 
 COUNT=$(python3 -c "import json; print(len(json.load(open('$CURRENT'))))")
+if [ "$COUNT" -eq 0 ]; then
+    echo "エラー: 中古データが 0 件です（フィルタ設定を確認してください）" >&2
+    exit 1
+fi
 echo "中古取得件数: ${COUNT}件" >&2
 
 # 1.5. 新築データ取得（SUUMO + HOME'S）
@@ -111,6 +115,10 @@ python3 scripts/merge_detail_cache.py "${OUTPUT_DIR}/latest.json" || echo "詳�
 echo "物件マップを生成中..." >&2
 python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" || echo "地図の生成に失敗しました（続行）" >&2
 
+# 4.4.3. ジオコーディングキャッシュの座標を latest.json に埋め込み（hazard enricher で使用）
+echo "ジオコーディングを埋め込み中..." >&2
+python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest.json" || echo "embed_geocode に失敗しました（続行）" >&2
+
 echo "レポートを再生成（詳細キャッシュ・地図リンク反映）..." >&2
 if [ -f "${OUTPUT_DIR}/previous.json" ]; then
     python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
@@ -149,6 +157,15 @@ if [ -n "${SUMAI_USER:-}" ] && [ -n "${SUMAI_PASS:-}" ]; then
 else
     echo "住まいサーフィン: SUMAI_USER / SUMAI_PASS 未設定のためスキップ" >&2
 fi
+
+# 4.7b. enrichment 完了後にレポートを最終再生成（ハザード・住まいサーフィン情報を反映）
+echo "レポートを最終再生成（enrichment 反映）..." >&2
+if [ -f "${OUTPUT_DIR}/previous.json" ]; then
+    python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
+else
+    python3 generate_report.py "${OUTPUT_DIR}/latest.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
+fi
+cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
 
 # 4.8. リモートプッシュ通知（FIREBASE_SERVICE_ACCOUNT が設定されている場合のみ）
 if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
@@ -204,6 +221,8 @@ echo "最新（中古）: ${OUTPUT_DIR}/latest.json" >&2
 echo "最新（新築）: ${OUTPUT_DIR}/latest_shinchiku.json" >&2
 
 # 7. Git操作（オプション: --no-git でスキップ可能）
+# 変更検出は上記の check_changes.py（current vs latest.json）で行っており、--no-git とは独立。
+# --no-git 時もレポート・通知は実行済み。このブロックは commit/push のみスキップする。
 if [ "$1" != "--no-git" ]; then
     # リポジトリルートを探す（scraping-tool/ から親ディレクトリへ）
     REPO_ROOT="$SCRIPT_DIR"

@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- BGTaskSchedulerPermittedIdentifiers: managed by project.yml -->
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.hanawa.realestate.app.refresh</string>
@@ -22,6 +23,15 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.481688023840-pd1prakenbuqgl1phfpdgkf2cghurak6</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSApplicationCategoryType</key>
@@ -31,20 +41,21 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>comgooglemaps</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>内見写真を撮影するためにカメラを使用します</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>内見写真をカメラロールから選択するために使用します</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>現在地を地図に表示するために位置情報を使用します</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.481688023840-pd1prakenbuqgl1phfpdgkf2cghurak6</string>
-			</array>
-		</dict>
 	</array>
 </dict>
 </plist>

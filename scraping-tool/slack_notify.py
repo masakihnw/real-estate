@@ -80,7 +80,11 @@ def format_diff_message(
     if report_url:
         lines.append(f"📄 詳細: <{report_url}|レポートを確認>")
     else:
-        lines.append("📄 詳細: <https://github.com/masakihnw/dev-workspace/blob/main/personal/projects/real-estate/scraping-tool/results/report/report.md|レポートを確認>")
+        repo = os.environ.get("GITHUB_REPOSITORY", "masakihnw/dev-workspace")
+        ref = os.environ.get("GITHUB_REF_NAME") or (
+            (os.environ.get("GITHUB_REF") or "").replace("refs/heads/", "").replace("refs/tags/", "") or "main"
+        )
+        lines.append(f"📄 詳細: <https://github.com/{repo}/blob/{ref}/scraping-tool/results/report/report.md|レポートを確認>")
     if map_url:
         lines.append(f"📌 地図: <{map_url}|地図で見る（スマホ可）>")
 
@@ -159,7 +163,11 @@ def report_url_from_current_path(current_path: Path) -> Optional[str]:
         return None
     timestamp = stem[8:]  # 20260128_074236
     report_filename = f"report_{timestamp}.md"
-    base = "https://github.com/masakihnw/dev-workspace/blob/main/personal/projects/real-estate/scraping-tool/results"
+    repo = os.environ.get("GITHUB_REPOSITORY", "masakihnw/dev-workspace")
+    ref = os.environ.get("GITHUB_REF_NAME") or (
+        (os.environ.get("GITHUB_REF") or "").replace("refs/heads/", "").replace("refs/tags/", "") or "main"
+    )
+    base = f"https://github.com/{repo}/blob/{ref}/scraping-tool/results"
     return f"{base}/{report_filename}"
 
 
@@ -167,7 +175,11 @@ def report_url_from_report_path(report_path: Path) -> Optional[str]:
     """report_YYYYMMDD_HHMMSS.md のパスから GitHub URL を組み立てる。"""
     if not report_path or not report_path.name.startswith("report_") or not report_path.name.endswith(".md"):
         return None
-    base = "https://github.com/masakihnw/dev-workspace/blob/main/personal/projects/real-estate/scraping-tool/results"
+    repo = os.environ.get("GITHUB_REPOSITORY", "masakihnw/dev-workspace")
+    ref = os.environ.get("GITHUB_REF_NAME") or (
+        (os.environ.get("GITHUB_REF") or "").replace("refs/heads/", "").replace("refs/tags/", "") or "main"
+    )
+    base = f"https://github.com/{repo}/blob/{ref}/scraping-tool/results"
     return f"{base}/{report_path.name}"
 
 
