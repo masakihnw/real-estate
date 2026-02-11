@@ -1,6 +1,10 @@
 {
   "images" : [
     {
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
       "filename" : "logo-playground@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
@@ -16,7 +20,6 @@
     "version" : 1
   },
   "properties" : {
-    "preserves-vector-representation" : false,
     "template-rendering-intent" : "original"
   }
 }
