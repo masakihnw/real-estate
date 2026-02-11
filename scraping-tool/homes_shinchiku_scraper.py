@@ -160,7 +160,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
     """一覧ページのHTMLを取得。5xx/429/WAF/タイムアウト・接続エラー時はリトライする。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES + 2):  # WAF 対策で追加リトライ
-        time.sleep(REQUEST_DELAY_SEC)
+        time.sleep(HOMES_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             # 429 Too Many Requests — レートリミット対策
