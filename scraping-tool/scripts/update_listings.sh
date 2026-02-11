@@ -43,13 +43,35 @@ fi
 echo "新築取得件数: ${SHINCHIKU_COUNT}件" >&2
 echo "取得件数: ${COUNT}件" >&2
 
-# 2. 前回結果と比較し、変更がなければレポート・通知をスキップ（スクレイピングのみ実行）
+# 2. 前回結果と比較し、中古・新築いずれかに変更があればパイプラインを続行
+HAS_CHANGES=false
 if [ -f "${OUTPUT_DIR}/latest.json" ]; then
-    if ! python3 check_changes.py "$CURRENT" "${OUTPUT_DIR}/latest.json"; then
-        echo "変更なし（レポート・通知をスキップ）" >&2
-        rm -f "$CURRENT"
-        exit 0
+    if python3 check_changes.py "$CURRENT" "${OUTPUT_DIR}/latest.json"; then
+        echo "中古: 変更あり" >&2
+        HAS_CHANGES=true
+    else
+        echo "中古: 変更なし" >&2
     fi
+else
+    HAS_CHANGES=true  # 初回実行
+fi
+
+# 新築の変更チェック
+if [ -s "$CURRENT_SHINCHIKU" ] && [ -f "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    if python3 check_changes.py "$CURRENT_SHINCHIKU" "${OUTPUT_DIR}/latest_shinchiku.json"; then
+        echo "新築: 変更あり" >&2
+        HAS_CHANGES=true
+    else
+        echo "新築: 変更なし" >&2
+    fi
+elif [ -s "$CURRENT_SHINCHIKU" ]; then
+    HAS_CHANGES=true  # 新築初回
+fi
+
+if [ "$HAS_CHANGES" = false ]; then
+    echo "中古・新築ともに変更なし（レポート・通知をスキップ）" >&2
+    rm -f "$CURRENT" "$CURRENT_SHINCHIKU"
+    exit 0
 fi
 
 # GitHub Actions 実行時は results/report と物件マップへのリンク用 URL を渡す（スマホからも閲覧可）
@@ -110,6 +132,13 @@ if [ -s "$CURRENT_SHINCHIKU" ]; then
     echo "新築: ${OUTPUT_DIR}/latest_shinchiku.json に保存" >&2
 fi
 
+# 4.7a. ハザード enrichment（座標があれば GSI タイル + 東京地域危険度を判定）
+echo "ハザード enrichment 実行中..." >&2
+python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "ハザード enrichment (中古) 失敗（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "ハザード enrichment (新築) 失敗（続行）" >&2
+fi
+
 # 4.7. 住まいサーフィン enrichment（SUMAI_USER / SUMAI_PASS が設定されている場合のみ）
 if [ -n "${SUMAI_USER:-}" ] && [ -n "${SUMAI_PASS:-}" ]; then
     echo "住まいサーフィン enrichment 実行中..." >&2
@@ -119,6 +148,33 @@ if [ -n "${SUMAI_USER:-}" ] && [ -n "${SUMAI_PASS:-}" ]; then
     fi
 else
     echo "住まいサーフィン: SUMAI_USER / SUMAI_PASS 未設定のためスキップ" >&2
+fi
+
+# 4.8. リモートプッシュ通知（FIREBASE_SERVICE_ACCOUNT が設定されている場合のみ）
+if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
+    echo "プッシュ通知送信中..." >&2
+    # 新着件数を計算（前回との差分）
+    NEW_CHUKO=0
+    NEW_SHINCHIKU=0
+    if [ -f "${OUTPUT_DIR}/previous.json" ]; then
+        NEW_CHUKO=$(python3 -c "
+import json
+cur = {item.get('url','') for item in json.load(open('${OUTPUT_DIR}/latest.json'))}
+prev = {item.get('url','') for item in json.load(open('${OUTPUT_DIR}/previous.json'))}
+print(len(cur - prev))
+" 2>/dev/null || echo "0")
+    fi
+    if [ -f "${OUTPUT_DIR}/previous_shinchiku.json" ] && [ -f "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+        NEW_SHINCHIKU=$(python3 -c "
+import json
+cur = {item.get('url','') for item in json.load(open('${OUTPUT_DIR}/latest_shinchiku.json'))}
+prev = {item.get('url','') for item in json.load(open('${OUTPUT_DIR}/previous_shinchiku.json'))}
+print(len(cur - prev))
+" 2>/dev/null || echo "0")
+    fi
+    python3 scripts/send_push.py --new-count "$NEW_CHUKO" --shinchiku-count "$NEW_SHINCHIKU" || echo "プッシュ通知送信失敗（続行）" >&2
+else
+    echo "プッシュ通知: FIREBASE_SERVICE_ACCOUNT 未設定のためスキップ" >&2
 fi
 
 # 5. JSON は不要のため削除（md 生成に使った current_*.json を削除）

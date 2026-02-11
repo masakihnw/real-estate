@@ -41,6 +41,15 @@ struct ListingListView: View {
     @State private var selectedListing: Listing?
     @State private var filter = ListingFilter()
     @State private var showFilterSheet = false
+    @State private var showErrorAlert = false
+
+    /// お気に入りタブの掲載状態フィルタ
+    enum DelistFilter: String, CaseIterable {
+        case all = "すべて"
+        case active = "掲載中"
+        case delisted = "掲載終了"
+    }
+    @State private var delistFilter: DelistFilter = .all
 
     /// true のとき、いいね済みの物件だけ表示する（お気に入りタブ用）
     var favoritesOnly: Bool = false
@@ -59,11 +68,19 @@ struct ListingListView: View {
     private var baseList: [Listing] {
         var list: [Listing]
         if favoritesOnly {
+            // お気に入りタブ: いいね済み全て（掲載終了含む）
             list = listings.filter(\.isLiked)
+            // 掲載状態チップフィルタ
+            switch delistFilter {
+            case .all: break
+            case .active: list = list.filter { !$0.isDelisted }
+            case .delisted: list = list.filter(\.isDelisted)
+            }
         } else if let pt = propertyTypeFilter {
-            list = listings.filter { $0.propertyType == pt }
+            // 中古/新築タブ: 掲載終了を除外
+            list = listings.filter { $0.propertyType == pt && !$0.isDelisted }
         } else {
-            list = Array(listings)
+            list = listings.filter { !$0.isDelisted }
         }
         return list
     }
@@ -72,11 +89,18 @@ struct ListingListView: View {
         var list = baseList
 
         // フィルタ
+        // 新築は価格帯（priceMan〜priceMaxMan）を持つため、範囲交差で判定する
         if let min = filter.priceMin {
-            list = list.filter { ($0.priceMan ?? 0) >= min }
+            list = list.filter {
+                let upper = $0.priceMaxMan ?? $0.priceMan ?? 0
+                return upper >= min
+            }
         }
         if let max = filter.priceMax {
-            list = list.filter { ($0.priceMan ?? Int.max) <= max }
+            list = list.filter {
+                let lower = $0.priceMan ?? 0
+                return lower <= max
+            }
         }
         if !filter.layouts.isEmpty {
             list = list.filter { filter.layouts.contains($0.layout ?? "") }
@@ -102,18 +126,30 @@ struct ListingListView: View {
             }
         }
 
-        // ソート
+        // ソート（同値の場合は名前で安定ソート）
         switch sortOrder {
         case .addedDesc:
-            list.sort { $0.addedAt > $1.addedAt }
+            list.sort { $0.addedAt != $1.addedAt ? $0.addedAt > $1.addedAt : $0.name < $1.name }
         case .priceAsc:
-            list.sort { ($0.priceMan ?? 0) < ($1.priceMan ?? 0) }
+            list.sort {
+                let p0 = $0.priceMan ?? 0, p1 = $1.priceMan ?? 0
+                return p0 != p1 ? p0 < p1 : $0.name < $1.name
+            }
         case .priceDesc:
-            list.sort { ($0.priceMan ?? 0) > ($1.priceMan ?? 0) }
+            list.sort {
+                let p0 = $0.priceMan ?? 0, p1 = $1.priceMan ?? 0
+                return p0 != p1 ? p0 > p1 : $0.name < $1.name
+            }
         case .walkAsc:
-            list.sort { ($0.walkMin ?? 99) < ($1.walkMin ?? 99) }
+            list.sort {
+                let w0 = $0.walkMin ?? 99, w1 = $1.walkMin ?? 99
+                return w0 != w1 ? w0 < w1 : $0.name < $1.name
+            }
         case .areaDesc:
-            list.sort { ($0.areaM2 ?? 0) > ($1.areaM2 ?? 0) }
+            list.sort {
+                let a0 = $0.areaM2 ?? 0, a1 = $1.areaM2 ?? 0
+                return a0 != a1 ? a0 > a1 : $0.name < $1.name
+            }
         }
         return list
     }
@@ -150,7 +186,12 @@ struct ListingListView: View {
         NavigationStack {
             Group {
                 if baseList.isEmpty && !store.isRefreshing {
-                    emptyState
+                    VStack(spacing: 0) {
+                        if favoritesOnly { delistChipBar }
+                        emptyState
+                    }
+                } else if filteredAndSorted.isEmpty && filter.isActive {
+                    filterEmptyState
                 } else {
                     listContent
                 }
@@ -164,7 +205,7 @@ struct ListingListView: View {
                         } label: {
                             Image(systemName: "arrow.clockwise")
                         }
-                        .disabled(store.isRefreshing || store.listURL.isEmpty)
+                        .disabled(store.isRefreshing)
                         .accessibilityLabel("更新")
 
                         Button {
@@ -185,11 +226,14 @@ struct ListingListView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarLeading) {
-                    if let err = store.lastError {
-                        Text(err)
-                            .font(ListingObjectStyle.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
+                    if store.lastError != nil {
+                        Button {
+                            showErrorAlert = true
+                        } label: {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.orange)
+                        }
+                        .accessibilityLabel("エラーあり")
                     }
                 }
             }
@@ -202,6 +246,11 @@ struct ListingListView: View {
             .sheet(isPresented: $showFilterSheet) {
                 ListingFilterSheet(filter: $filter, availableLayouts: availableLayouts, stationsByLine: stationsByLine)
                     .presentationDetents([.medium, .large])
+            }
+            .alert("データ取得エラー", isPresented: $showErrorAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(store.lastError ?? "不明なエラーが発生しました。")
             }
         }
     }
@@ -216,15 +265,82 @@ struct ListingListView: View {
             Text(
                 favoritesOnly
                     ? "物件一覧でハートをタップするとここに表示されます。"
-                    : "「設定」タブで一覧JSONのURLを入力し、保存後に更新ボタンを押してください。"
+                    : "更新ボタンをタップして最新の物件データを取得してください。"
             )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .combine)
     }
 
+    private var filterEmptyState: some View {
+        ContentUnavailableView {
+            Label("条件に一致する物件がありません", systemImage: "line.3.horizontal.decrease.circle")
+        } description: {
+            Text("フィルタ条件を変更するか、リセットしてください。")
+        } actions: {
+            Button("フィルタをリセット") {
+                filter.reset()
+            }
+            .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// お気に入りタブ用：掲載状態チップフィルタバー
+    private var delistChipBar: some View {
+        HStack(spacing: 8) {
+            ForEach(DelistFilter.allCases, id: \.self) { chip in
+                let isSelected = delistFilter == chip
+                let count: Int = {
+                    let liked = listings.filter(\.isLiked)
+                    switch chip {
+                    case .all: return liked.count
+                    case .active: return liked.filter { !$0.isDelisted }.count
+                    case .delisted: return liked.filter(\.isDelisted).count
+                    }
+                }()
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        delistFilter = chip
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        if chip == .delisted {
+                            Image(systemName: "exclamationmark.triangle")
+                                .font(.system(size: 10, weight: .semibold))
+                        }
+                        Text(chip.rawValue)
+                            .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                        Text("\(count)")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .foregroundStyle(isSelected ? .white : .primary)
+                    .background(isSelected ? Color.accentColor : Color(.systemGray6))
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(chip.rawValue) \(count)件")
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+    }
+
     private var listContent: some View {
         List {
+            if favoritesOnly {
+                Section {
+                    delistChipBar
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                }
+            }
             Section {
                 HStack {
                     if filter.isActive {
@@ -288,7 +404,8 @@ struct ListingListView: View {
 
 // MARK: - Row Background (Liquid Glass / Material)
 
-/// リスト行の背景。iOS 26 では Liquid Glass、iOS 17–25 では .ultraThinMaterial。
+/// リスト行の背景。iOS 26 では Liquid Glass、iOS 17–25 ではセマンティックカラー。
+/// ダークモードで自動的に暗いカード色に切り替わる。
 private struct ListingRowBackground: View {
     var body: some View {
         if #available(iOS 26, *) {
@@ -297,7 +414,7 @@ private struct ListingRowBackground: View {
                 .glassEffect(.regular, in: .rect(cornerRadius: DesignSystem.cornerRadius))
         } else {
             RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
-                .fill(.ultraThinMaterial)
+                .fill(Color(.secondarySystemGroupedBackground))
         }
     }
 }
@@ -311,57 +428,117 @@ struct ListingRowView: View {
     var onLikeTapped: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Button(action: onTap) {
-                VStack(alignment: .leading, spacing: 6) {
+        Button(action: onTap) {
+            VStack(alignment: .leading, spacing: 5) {
+                // 1行目: 物件名（左）＋ 掲載終了 / いいね（右）
+                HStack(alignment: .top, spacing: 8) {
                     Text(listing.name)
                         .font(ListingObjectStyle.title)
                         .lineLimit(2)
-                        .foregroundStyle(.primary)
-                    HStack(spacing: 10) {
-                        Label(listing.priceDisplay, systemImage: "yensign.circle")
-                        Label(listing.layout ?? "—", systemImage: "rectangle.split.3x1")
-                        Label(listing.areaDisplay, systemImage: "square.dashed")
-                        Label(listing.walkDisplay, systemImage: "figure.walk")
+                        .foregroundStyle(listing.isDelisted ? .secondary : .primary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    if listing.isDelisted {
+                        Text("掲載終了")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
-                    .font(ListingObjectStyle.subtitle)
-                    .foregroundStyle(.secondary)
-                    HStack(spacing: 10) {
-                        if listing.isShinchiku {
-                            Label(listing.deliveryDateDisplay, systemImage: "calendar")
-                        } else {
-                            Label(listing.builtAgeDisplay, systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
-                            Label(listing.floorDisplay, systemImage: "building")
-                            Label(listing.ownershipShort, systemImage: "doc.text")
+
+                    Button(action: onLikeTapped) {
+                        Image(systemName: listing.isLiked ? "heart.fill" : "heart")
+                            .font(.body)
+                            .foregroundStyle(listing.isLiked ? .red : .secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
+                }
+
+                // 2行目: 価格・間取り・面積・徒歩
+                HStack(spacing: 10) {
+                    Label(listing.priceDisplay, systemImage: "yensign.circle")
+                    Label(listing.layout ?? "—", systemImage: "rectangle.split.3x1")
+                    Label(listing.areaDisplay, systemImage: "square.dashed")
+                    Label(listing.walkDisplay, systemImage: "figure.walk")
+                }
+                .font(ListingObjectStyle.subtitle)
+                .foregroundStyle(.secondary)
+
+                // 3行目: 築年・階・権利・戸数
+                HStack(spacing: 10) {
+                    if listing.isShinchiku {
+                        Label(listing.deliveryDateDisplay, systemImage: "calendar")
+                    } else {
+                        Label(listing.builtAgeDisplay, systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
+                        Label(listing.floorDisplay, systemImage: "building")
+                        Label(listing.ownershipShort, systemImage: "doc.text")
+                    }
+                    Label(listing.totalUnitsDisplay, systemImage: "person.2")
+                }
+                .font(ListingObjectStyle.caption)
+                .foregroundStyle(.tertiary)
+
+                // 4行目: 路線・駅
+                if let line = listing.stationLine, !line.isEmpty {
+                    Text(line)
+                        .font(ListingObjectStyle.caption)
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                }
+
+                // ハザードバッジ
+                if listing.hasHazardRisk {
+                    HazardBadgeRow(listing: listing)
+                }
+
+                // メモ
+                if let memo = listing.memo, !memo.isEmpty {
+                    Text(memo)
+                        .font(ListingObjectStyle.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// 一覧カード内のハザードバッジ行
+private struct HazardBadgeRow: View {
+    let listing: Listing
+
+    var body: some View {
+        let hazard = listing.parsedHazardData
+        let labels = hazard.activeLabels
+        if !labels.isEmpty {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 4) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                    ForEach(Array(labels.enumerated()), id: \.offset) { _, item in
+                        HStack(spacing: 2) {
+                            Image(systemName: item.icon)
+                                .font(.system(size: 9))
+                            Text(item.label)
+                                .font(.system(size: 10, weight: .medium))
                         }
-                        Label(listing.totalUnitsDisplay, systemImage: "person.2")
-                    }
-                    .font(ListingObjectStyle.caption)
-                    .foregroundStyle(.tertiary)
-                    if let line = listing.stationLine, !line.isEmpty {
-                        Text(line)
-                            .font(ListingObjectStyle.caption)
-                            .foregroundStyle(.tertiary)
-                            .lineLimit(1)
-                    }
-                    if let memo = listing.memo, !memo.isEmpty {
-                        Text(memo)
-                            .font(ListingObjectStyle.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
+                        .foregroundStyle(item.severity == .danger ? Color.red : Color.orange)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(
+                            (item.severity == .danger ? Color.red : Color.orange).opacity(0.12)
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 4)
             }
-            .buttonStyle(.plain)
-            Button(action: onLikeTapped) {
-                Image(systemName: listing.isLiked ? "heart.fill" : "heart")
-                    .font(.body)
-                    .foregroundStyle(listing.isLiked ? .red : .secondary)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
         }
     }
 }

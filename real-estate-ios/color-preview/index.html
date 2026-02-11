@@ -3,945 +3,453 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>物件情報アプリ - カラースキームプレビュー（白ベース）</title>
+<title>物件情報アプリ - カラースキームプレビュー</title>
 <style>
-  :root {
-    --phone-w: 375px;
-    --phone-h: 720px;
-  }
+  :root { --pw: 375px; --ph: 780px; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    background: #f5f5f5;
-    color: #1C1C1E;
-    min-height: 100vh;
-  }
-  header {
-    text-align: center;
-    padding: 40px 20px 20px;
-  }
-  header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: #1C1C1E;
-  }
-  header p {
-    margin-top: 8px;
-    color: #888;
-    font-size: 14px;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F0F0F0; color: #1C1C1E; min-height: 100vh; }
+  header { text-align: center; padding: 40px 20px 16px; }
+  header h1 { font-size: 26px; font-weight: 700; }
+  header p { margin-top: 6px; color: #888; font-size: 13px; line-height: 1.6; }
 
-  .tab-bar {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 20px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(245,245,245,0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  .tab-btn {
-    padding: 10px 20px;
-    border: 1px solid #ddd;
-    border-radius: 24px;
-    background: #fff;
-    color: #888;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  .tab-btn.active {
-    background: #1C1C1E;
-    color: #fff;
-    border-color: #1C1C1E;
-  }
-  .tab-btn:hover:not(.active) {
-    border-color: #999;
-    color: #555;
-  }
+  .tab-bar { display: flex; justify-content: center; gap: 8px; padding: 16px 20px; position: sticky; top: 0; z-index: 100; background: rgba(240,240,240,0.92); backdrop-filter: blur(12px); }
+  .tab-btn { padding: 10px 22px; border: 1px solid #ddd; border-radius: 24px; background: #fff; color: #888; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+  .tab-btn.active { background: #1C1C1E; color: #fff; border-color: #1C1C1E; }
+  .tab-btn:hover:not(.active) { border-color: #999; color: #555; }
 
-  .scheme-section {
-    display: none;
-    padding: 20px;
-    max-width: 1300px;
-    margin: 0 auto;
-  }
-  .scheme-section.active { display: block; }
+  .scheme { display: none; padding: 20px; max-width: 1400px; margin: 0 auto; }
+  .scheme.active { display: block; }
+  .sh { text-align: center; margin-bottom: 20px; }
+  .sh h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .sh p { color: #888; font-size: 13px; }
+  .rule { text-align: center; color: #999; font-size: 12px; margin-bottom: 20px; }
 
-  .scheme-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  .scheme-header h2 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .scheme-header p {
-    color: #888;
-    font-size: 13px;
-  }
+  .swatches { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; }
+  .sw { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .sw-c { width: 56px; height: 56px; border-radius: 14px; border: 2px solid rgba(0,0,0,0.06); }
+  .sw-l { font-size: 11px; color: #888; }
+  .sw-h { font-size: 10px; color: #aaa; font-family: 'SF Mono', monospace; }
+  .sw-sub { display: flex; gap: 6px; margin-top: 2px; }
+  .sw-sub div { width: 20px; height: 20px; border-radius: 6px; }
 
-  .swatches {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-  }
-  .swatch {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-  .swatch-color {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    border: 2px solid rgba(0,0,0,0.08);
-  }
-  .swatch-label {
-    font-size: 10px;
-    color: #888;
-    text-align: center;
-    max-width: 60px;
-  }
-  .swatch-hex {
-    font-size: 10px;
-    color: #aaa;
-    font-family: 'SF Mono', monospace;
-  }
+  .phones { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+  .pcol { text-align: center; }
+  .pcol h3 { font-size: 12px; font-weight: 600; color: #999; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .phone { width: var(--pw); height: var(--ph); border-radius: 40px; overflow: hidden; border: 3px solid #ddd; box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+  .ps { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .sbar { height: 52px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 6px; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .nav { padding: 6px 16px 10px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .nav-t { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .scr { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .scr::-webkit-scrollbar { display: none; }
+  .btab { height: 76px; display: flex; align-items: center; justify-content: space-around; padding-bottom: 14px; flex-shrink: 0; border-top: 1px solid rgba(0,0,0,0.05); }
+  .bt { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 9px; color: #999; }
+  .bt .ic { font-size: 18px; }
 
-  .phones {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-  }
-  .phone-wrapper {
-    text-align: center;
-  }
-  .phone-wrapper h3 {
-    font-size: 13px;
-    font-weight: 600;
-    color: #888;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .phone {
-    width: var(--phone-w);
-    height: var(--phone-h);
-    border-radius: 40px;
-    overflow: hidden;
-    position: relative;
-    border: 3px solid #ddd;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-  }
-  .phone-screen {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+  /* List card */
+  .lc { padding: 11px 12px; border-radius: 12px; margin-bottom: 6px; display: flex; gap: 8px; align-items: flex-start; }
+  .li { flex: 1; min-width: 0; }
+  .ln { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lm { display: flex; gap: 6px; font-size: 11px; flex-wrap: wrap; }
+  .ls { font-size: 10px; color: #999; margin-top: 2px; }
+  .le { display: flex; gap: 5px; margin-top: 3px; font-size: 10px; align-items: center; }
+  .lb { padding: 1px 5px; border-radius: 3px; font-weight: 600; font-size: 9px; }
+  .lh { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
 
-  .status-bar {
-    height: 54px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding: 0 24px 8px;
-    font-size: 12px;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
+  /* Detail grouped section */
+  .dn { font-size: 16px; font-weight: 700; line-height: 1.3; }
+  .da { font-size: 11px; color: #999; margin-top: 2px; }
+  .dm { font-size: 11px; color: #bbb; font-style: italic; padding: 6px 8px; border-radius: 6px; margin: 6px 0; }
+  .ds { border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+  .ds-t { font-size: 10px; font-weight: 700; color: #aaa; margin-bottom: 4px; letter-spacing: 0.3px; }
+  .dr { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 12px; }
+  .dr:last-child { border-bottom: none; }
+  .dr-l { color: #999; font-size: 11px; }
+  .dr-v { font-weight: 600; }
+  .ss { border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+  .ss-t { font-size: 10px; font-weight: 700; margin-bottom: 5px; }
+  .ss-big { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+  .ss-u { font-size: 12px; font-weight: 600; }
+  .ss-r { display: flex; gap: 6px; font-size: 10px; margin-bottom: 2px; }
+  .ss-r .l { color: #999; min-width: 56px; }
+  .ss-r .v { font-weight: 600; }
+  .ss-b { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+  .db { padding: 10px; border-radius: 10px; text-align: center; font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 5px; }
+  .db2 { padding: 8px; border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; margin-bottom: 5px; }
 
-  .nav-bar {
-    padding: 8px 16px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-  }
-  .nav-title {
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
-  .nav-icons {
-    display: flex;
-    gap: 16px;
-    font-size: 18px;
-  }
+  /* Filter accordion */
+  .fg { border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .fg:last-of-type { border-bottom: none; }
+  .fg-hd { display: flex; justify-content: space-between; align-items: center; padding: 9px 2px; cursor: pointer; }
+  .fg-t { font-size: 12px; font-weight: 600; }
+  .fg-val { font-size: 11px; font-weight: 500; }
+  .fg-arr { font-size: 9px; color: #bbb; transition: transform 0.2s; margin-left: 4px; }
+  .fg.open .fg-arr { transform: rotate(180deg); }
+  .fg-body { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+  .fg.open .fg-body { max-height: 300px; }
+  .fg-inner { padding: 0 2px 8px; }
+  .fc { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip { padding: 5px 10px; border-radius: 16px; font-size: 11px; border: 1px solid #e0e0e0; background: #fff; color: #666; }
+  .chip.on { color: #fff; border-color: transparent; }
+  .sld { height: 20px; border-radius: 10px; position: relative; margin: 4px 0 2px; }
+  .sld-f { position: absolute; top: 0; bottom: 0; border-radius: 10px; }
+  .sld-lb { display: flex; justify-content: space-between; font-size: 10px; color: #999; }
+  .sld-val { font-weight: 600; color: #1C1C1E; }
+  .wg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .wg-a { font-size: 9px; font-weight: 700; color: #aaa; margin: 4px 0 2px; grid-column: 1 / -1; }
+  .wg-i { padding: 4px 0; text-align: center; font-size: 10px; border: 1px solid #e8e8e8; border-radius: 6px; background: #fff; color: #666; }
 
-  .listings {
-    flex: 1;
-    overflow: hidden;
-    padding: 0 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .listing-card {
-    padding: 14px;
-    border-radius: 14px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  .listing-info { flex: 1; }
-  .listing-name {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 5px;
-    line-height: 1.3;
-  }
-  .listing-meta {
-    display: flex;
-    gap: 8px;
-    font-size: 11px;
-    margin-bottom: 3px;
-    flex-wrap: wrap;
-  }
-  .listing-sub {
-    display: flex;
-    gap: 8px;
-    font-size: 10px;
-    opacity: 0.55;
-  }
-  .listing-eval {
-    display: flex;
-    gap: 6px;
-    margin-top: 4px;
-    font-size: 10px;
-    align-items: center;
-  }
-  .listing-eval .badge {
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 10px;
-  }
-  .listing-heart {
-    font-size: 18px;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
+  .prompt-section { margin-top: 28px; padding: 20px; border-radius: 14px; background: #fff; border: 1px solid #e0e0e0; }
+  .prompt-section h3 { font-size: 13px; font-weight: 700; margin-bottom: 6px; color: #888; }
+  .prompt-text { font-size: 12px; line-height: 1.6; color: #666; white-space: pre-wrap; font-family: 'SF Mono','Menlo',monospace; background: #f8f8f8; padding: 14px; border-radius: 10px; }
+  .cpb { margin-top: 6px; padding: 5px 12px; border: 1px solid #ddd; border-radius: 6px; background: #fff; color: #888; font-size: 11px; cursor: pointer; }
+  .cpb:hover { background: #f0f0f0; color: #333; }
 
-  .bottom-tab {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding-bottom: 16px;
-    flex-shrink: 0;
-    border-top: 1px solid rgba(0,0,0,0.06);
-  }
-  .bottom-tab-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    font-size: 10px;
-  }
-  .bottom-tab-item .icon { font-size: 20px; }
-
-  /* Detail Screen */
-  .detail-scroll {
-    flex: 1;
-    overflow: hidden;
-    padding: 0 16px;
-  }
-  .detail-header {
-    padding: 16px 0 8px;
-  }
-  .detail-name {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .detail-addr {
-    font-size: 12px;
-    opacity: 0.5;
-  }
-  .detail-memo {
-    margin: 0 0 10px;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 12px;
-    min-height: 40px;
-    opacity: 0.6;
-  }
-  .detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .detail-item {
-    padding: 10px;
-    border-radius: 10px;
-  }
-  .detail-item-label {
-    font-size: 10px;
-    opacity: 0.5;
-    margin-bottom: 2px;
-  }
-  .detail-item-value {
-    font-size: 14px;
-    font-weight: 600;
-  }
-  /* Sumai-Surfin evaluation */
-  .ss-section {
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 12px;
-  }
-  .ss-section-title {
-    font-size: 11px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .ss-profit {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-  .ss-profit-label {
-    font-size: 11px;
-    opacity: 0.6;
-  }
-  .ss-profit-value {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -1px;
-  }
-  .ss-profit-unit {
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .ss-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 4px;
-    font-size: 11px;
-  }
-  .ss-row .label {
-    opacity: 0.5;
-    min-width: 72px;
-  }
-  .ss-row .value {
-    font-weight: 600;
-  }
-  .ss-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-  }
-  .detail-btn {
-    margin: 0 0 12px;
-    padding: 14px;
-    border-radius: 12px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .detail-btn-secondary {
-    margin: 0 0 12px;
-    padding: 10px;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    border: 1.5px solid;
-  }
-
-  .prompt-section {
-    margin-top: 40px;
-    padding: 24px;
-    border-radius: 16px;
-    background: #fff;
-    border: 1px solid #e8e8e8;
-  }
-  .prompt-section h3 {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: #888;
-  }
-  .prompt-text {
-    font-size: 13px;
-    line-height: 1.7;
-    color: #666;
-    white-space: pre-wrap;
-    font-family: 'SF Mono', 'Menlo', monospace;
-    background: #f8f8f8;
-    padding: 16px;
-    border-radius: 10px;
-  }
-  .copy-btn {
-    margin-top: 8px;
-    padding: 6px 14px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #fff;
-    color: #888;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .copy-btn:hover { background: #f0f0f0; color: #333; }
-
-  @media (max-width: 900px) {
-    :root { --phone-w: 320px; --phone-h: 620px; }
-    .phones { gap: 16px; }
-  }
+  @media (max-width: 1200px) { :root { --pw: 340px; --ph: 720px; } .phones { gap: 14px; } }
+  @media (max-width: 768px) { :root { --pw: 310px; --ph: 680px; } }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>物件情報アプリ カラースキーム プレビュー</h1>
-  <p>白ベース 4パターン -- 一覧画面・詳細画面（住まいサーフィン評価付き）を比較</p>
+  <h1>カラースキーム プレビュー</h1>
+  <p>白 + アクセント1色 ／ 一覧: カードスタイル ／ 詳細: グループセクション ／ フィルタ: アコーディオン+区選択</p>
 </header>
 
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="showScheme('a')">A. Clean Blue</button>
-  <button class="tab-btn" onclick="showScheme('b')">B. Warm Sage</button>
-  <button class="tab-btn" onclick="showScheme('c')">C. Slate Teal</button>
-  <button class="tab-btn" onclick="showScheme('d')">D. Soft Indigo</button>
+  <button class="tab-btn active" onclick="show('a',this)">A. Blue</button>
+  <button class="tab-btn" onclick="show('b',this)">B. Sage</button>
+  <button class="tab-btn" onclick="show('c',this)">C. Teal</button>
+  <button class="tab-btn" onclick="show('d',this)">D. Indigo</button>
 </div>
 
-<!-- ===================== SCHEME A: Clean Blue ===================== -->
-<section id="scheme-a" class="scheme-section active">
-  <div class="scheme-header">
-    <h2>A. Clean Blue</h2>
-    <p>iOS ネイティブの System Blue を基調とした、最も Apple らしいデザイン。信頼感と親しみやすさ。</p>
-  </div>
+<!-- ==================== SCHEME A: Blue ==================== -->
+<section id="s-a" class="scheme active">
+  <div class="sh"><h2>A. Blue</h2><p>iOS System Blue。最も Apple らしい信頼感。</p></div>
+  <div class="rule">白 #FFFFFF ／ アクセント #007AFF ／ カード背景 #F8F8FB</div>
   <div class="swatches">
-    <div class="swatch"><div class="swatch-color" style="background:#FFFFFF; border-color:rgba(0,0,0,0.12)"></div><div class="swatch-label">Background</div><div class="swatch-hex">#FFFFFF</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#007AFF"></div><div class="swatch-label">Accent</div><div class="swatch-hex">#007AFF</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#FF3B30"></div><div class="swatch-label">Highlight</div><div class="swatch-hex">#FF3B30</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#F2F2F7"></div><div class="swatch-label">Surface</div><div class="swatch-hex">#F2F2F7</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#1C1C1E"></div><div class="swatch-label">Text</div><div class="swatch-hex">#1C1C1E</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#8E8E93"></div><div class="swatch-label">Secondary</div><div class="swatch-hex">#8E8E93</div></div>
+    <div class="sw"><div class="sw-c" style="background:#FFFFFF;border-color:rgba(0,0,0,0.12)"></div><div class="sw-l">White</div><div class="sw-h">#FFFFFF</div></div>
+    <div class="sw"><div class="sw-c" style="background:#007AFF"></div><div class="sw-l">Accent</div><div class="sw-h">#007AFF</div><div class="sw-sub"><div style="background:rgba(0,122,255,0.15)"></div><div style="background:rgba(0,122,255,0.06)"></div></div></div>
   </div>
   <div class="phones">
-    <div class="phone-wrapper">
-      <h3>物件一覧</h3>
-      <div class="phone">
-        <div class="phone-screen" style="background:#FFFFFF; color:#1C1C1E;">
-          <div class="status-bar" style="color:#1C1C1E;"><span>9:41</span><span style="opacity:.4">&#x1F4F6; &#x1F50B;</span></div>
-          <div class="nav-bar">
-            <div class="nav-title">中古マンション</div>
-            <div class="nav-icons" style="color:#007AFF;">&#9776;</div>
+    <!-- LIST A -->
+    <div class="pcol"><h3>一覧</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div class="nav"><div class="nav-t">中古マンション</div><div style="color:#007AFF;font-size:16px;">☰</div></div>
+      <div class="scr" style="padding:0 12px;">
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">パークシティ豊洲 B棟</div><div class="lm"><span style="color:#007AFF;font-weight:700;">8,980万円</span><span style="color:#999;">3LDK</span><span style="color:#999;">72.5㎡</span><span style="color:#999;">徒歩4分</span></div><div class="ls">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑18%</span><span style="color:#999;">時価 8,200万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#007AFF;">♥</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">ブリリアタワー東京</div><div class="lm"><span style="color:#007AFF;font-weight:700;">7,480万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">61.2㎡</span><span style="color:#999;">徒歩6分</span></div><div class="ls">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑12%</span><span style="color:#999;">時価 7,800万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">プラウド文京小石川</div><div class="lm"><span style="color:#007AFF;font-weight:700;">9,500万円</span><span style="color:#999;">3LDK</span><span style="color:#999;">68.0㎡</span><span style="color:#999;">徒歩3分</span></div><div class="ls">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑25%</span><span style="color:#999;">時価 10,100万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">ザ・パークハウス晴海</div><div class="lm"><span style="color:#007AFF;font-weight:700;">6,280万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">55.3㎡</span><span style="color:#999;">徒歩7分</span></div><div class="ls">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div><div class="le"><span class="lb" style="background:rgba(255,59,48,0.08);color:#FF3B30;">↓3%</span><span style="color:#999;">時価 5,900万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#007AFF;">♥</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">シティタワー有明</div><div class="lm"><span style="color:#007AFF;font-weight:700;">5,980万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">58.1㎡</span><span style="color:#999;">徒歩5分</span></div><div class="ls">築10年 ・ 12階/33階建 ・ 所有権 ・ 486戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑8%</span><span style="color:#999;">時価 6,300万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+      </div>
+      <div class="btab" style="background:rgba(255,255,255,0.97);"><div class="bt" style="color:#007AFF;"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+    </div></div></div>
+    <!-- DETAIL A -->
+    <div class="pcol"><h3>詳細</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div class="nav"><span style="color:#007AFF;font-size:13px;">← 戻る</span><span style="font-size:18px;color:#007AFF;">♥</span></div>
+      <div class="scr" style="padding:0 14px;">
+        <div style="margin-bottom:6px;"><div class="dn">パークシティ豊洲 B棟</div><div class="da">東京都江東区豊洲5丁目</div></div>
+        <div class="dm" style="background:#F8F8FB;">メモを入力...</div>
+        <div class="ds" style="background:#F8F8FB;">
+          <div class="ds-t">物件情報</div>
+          <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:#007AFF;">8,980万円</span></div>
+          <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 72.5㎡</span></div>
+          <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2007年（築18年）</span></div>
+          <div class="dr"><span class="dr-l">所在階 / 階建</span><span class="dr-v">15階 / 20階建</span></div>
+          <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">660戸</span></div>
+        </div>
+        <div class="ds" style="background:#F8F8FB;">
+          <div class="ds-t">アクセス・権利</div>
+          <div class="dr"><span class="dr-l">路線・駅</span><span class="dr-v">ゆりかもめ「豊洲」徒歩4分</span></div>
+          <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+          <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
+        </div>
+        <div class="ss" style="background:rgba(0,122,255,0.03);border:1px solid rgba(0,122,255,0.08);">
+          <div class="ss-t" style="color:#007AFF;">📊 住まいサーフィン評価</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div><div style="font-size:9px;color:#999;">沖式中古時価（70㎡換算）</div><span class="ss-big" style="color:#007AFF;">8,200</span><span class="ss-u" style="color:rgba(0,122,255,0.5);">万円</span><div style="margin-top:2px;"><span class="ss-b" style="background:rgba(0,122,255,0.10);color:#007AFF;">割安</span></div></div>
+            <div style="text-align:right;"><div style="font-size:9px;color:#999;">中古値上がり率</div><span style="font-size:20px;font-weight:800;color:#34C759;">+18</span><span style="font-size:11px;font-weight:600;color:rgba(52,199,89,0.6);">%</span></div>
           </div>
-          <div class="listings">
-            <div class="listing-card" style="background:#F2F2F7;">
-              <div class="listing-info">
-                <div class="listing-name">パークシティ豊洲 B棟</div>
-                <div class="listing-meta" style="color:#8E8E93;"><span style="color:#FF3B30; font-weight:600;">8,980万円</span><span>3LDK</span><span>72.5㎡</span><span>徒歩4分</span></div>
-                <div class="listing-sub">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#E8F5E9;color:#2E7D32;">儲かる確率 82%</span><span style="color:#8E8E93;">沖式時価 8,200万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#FF3B30;">&#x2665;</div>
-            </div>
-            <div class="listing-card" style="background:#F2F2F7;">
-              <div class="listing-info">
-                <div class="listing-name">ブリリアタワー東京</div>
-                <div class="listing-meta" style="color:#8E8E93;"><span style="color:#FF3B30; font-weight:600;">7,480万円</span><span>2LDK</span><span>61.2㎡</span><span>徒歩6分</span></div>
-                <div class="listing-sub">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#FFF3E0;color:#E65100;">儲かる確率 58%</span><span style="color:#8E8E93;">沖式時価 7,800万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#C7C7CC;">&#x2661;</div>
-            </div>
-            <div class="listing-card" style="background:#F2F2F7;">
-              <div class="listing-info">
-                <div class="listing-name">プラウド文京小石川</div>
-                <div class="listing-meta" style="color:#8E8E93;"><span style="color:#FF3B30; font-weight:600;">9,500万円</span><span>3LDK</span><span>68.0㎡</span><span>徒歩3分</span></div>
-                <div class="listing-sub">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#E8F5E9;color:#2E7D32;">儲かる確率 91%</span><span style="color:#8E8E93;">沖式時価 10,100万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#C7C7CC;">&#x2661;</div>
-            </div>
-            <div class="listing-card" style="background:#F2F2F7;">
-              <div class="listing-info">
-                <div class="listing-name">ザ・パークハウス晴海</div>
-                <div class="listing-meta" style="color:#8E8E93;"><span style="color:#FF3B30; font-weight:600;">6,280万円</span><span>2LDK</span><span>55.3㎡</span><span>徒歩7分</span></div>
-                <div class="listing-sub">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#FFEBEE;color:#C62828;">儲かる確率 32%</span><span style="color:#8E8E93;">沖式時価 5,900万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#FF3B30;">&#x2665;</div>
-            </div>
+          <div style="margin:4px 0;padding:6px;background:rgba(0,122,255,0.02);border-radius:6px;">
+            <svg viewBox="0 0 200 170" style="width:100%;max-width:200px;display:block;margin:0 auto;"><polygon points="100,34 142,58 142,106 100,130 58,106 58,58" fill="none" stroke="#ddd" stroke-width="0.6"/><polygon points="100,50 128,66 128,98 100,114 72,98 72,66" fill="none" stroke="#ddd" stroke-width="0.4"/><polygon points="100,66 114,74 114,90 100,98 86,90 86,74" fill="none" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="100" y2="34" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="142" y2="58" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="142" y2="106" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="100" y2="130" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="58" y2="106" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="58" y2="58" stroke="#ddd" stroke-width="0.4"/><polygon points="100,62 116,73 117,92 100,97 81,93 84,73" fill="rgba(220,80,80,0.08)" stroke="rgba(220,80,80,0.5)" stroke-width="1"/><polygon points="100,38 130,65 120,94 100,108 63,103 68,63" fill="rgba(80,80,220,0.10)" stroke="rgba(80,80,220,0.7)" stroke-width="1.2"/><text x="100" y="27" text-anchor="middle" font-size="5.5" fill="#666">沖式中古時価m²単価</text><text x="148" y="57" text-anchor="start" font-size="5.5" fill="#666">築年数</text><text x="148" y="111" text-anchor="start" font-size="5.5" fill="#666">お気に入り数</text><text x="100" y="141" text-anchor="middle" font-size="5.5" fill="#666">中古値上がり率</text><text x="52" y="111" text-anchor="end" font-size="5.5" fill="#666">徒歩分数</text><text x="52" y="57" text-anchor="end" font-size="5.5" fill="#666">総戸数</text><rect x="52" y="153" width="12" height="6" rx="1" fill="rgba(80,80,220,0.15)" stroke="rgba(80,80,220,0.7)" stroke-width="0.6"/><text x="67" y="158.5" font-size="5" fill="#666">本物件</text><rect x="100" y="153" width="12" height="6" rx="1" fill="rgba(220,80,80,0.10)" stroke="rgba(220,80,80,0.5)" stroke-width="0.6"/><text x="115" y="158.5" font-size="5" fill="#666">行政区平均</text></svg>
           </div>
-          <div class="bottom-tab" style="background:rgba(255,255,255,0.95); backdrop-filter:blur(10px);">
-            <div class="bottom-tab-item" style="color:#007AFF;"><div class="icon">&#x1F3E2;</div>中古</div>
-            <div class="bottom-tab-item" style="color:#8E8E93;"><div class="icon">&#x2728;</div>新築</div>
-            <div class="bottom-tab-item" style="color:#8E8E93;"><div class="icon">&#x1F5FA;</div>地図</div>
-            <div class="bottom-tab-item" style="color:#8E8E93;"><div class="icon">&#x2665;</div>お気に入り</div>
-            <div class="bottom-tab-item" style="color:#8E8E93;"><div class="icon">&#x2699;</div>設定</div>
-          </div>
+          <div style="display:flex;gap:16px;"><div class="ss-r"><span class="l">駅ランキング</span><span class="v"><b>3位</b>/12件</span></div><div class="ss-r"><span class="l">区ランキング</span><span class="v"><b>8位</b>/45件</span></div></div>
+        </div>
+        <div class="db" style="background:#007AFF;">SUUMO/HOME'S で詳細を開く</div>
+        <div class="db2" style="color:#007AFF;border:1.5px solid rgba(0,122,255,0.18);">住まいサーフィンで詳しく見る</div>
+      </div>
+      <div class="btab" style="background:rgba(255,255,255,0.97);"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt" style="color:#007AFF;"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+    </div></div></div>
+    <!-- FILTER A -->
+    <div class="pcol"><h3>フィルタ</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div style="background:rgba(0,0,0,0.2);flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
+        <div style="background:#fff;border-radius:16px 16px 0 0;padding:16px;max-height:640px;overflow-y:auto;" class="scr">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:18px;font-weight:700;">フィルタ</span><span style="color:#007AFF;font-size:13px;font-weight:600;">リセット</span></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">価格帯</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#007AFF;">5,000万〜8,000万</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg open"><div class="fg-hd"><span class="fg-t">間取り</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#007AFF;">2LDK, 3LDK</span><span class="fg-arr">▼</span></div></div><div class="fg-body"><div class="fg-inner"><div class="fc"><div class="chip">1LDK</div><div class="chip on" style="background:#007AFF;">2LDK</div><div class="chip on" style="background:#007AFF;">3LDK</div><div class="chip">4LDK+</div></div></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">駅徒歩</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#007AFF;">5分以内</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">広さ</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#007AFF;">60㎡以上</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">権利形態</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#007AFF;">所有権</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg open"><div class="fg-hd"><span class="fg-t">エリア（区）</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#007AFF;">江東区, 中央区</span><span class="fg-arr">▼</span></div></div><div class="fg-body"><div class="fg-inner"><div class="wg"><div class="wg-a">都心</div><div class="wg-i">千代田区</div><div class="wg-i" style="background:rgba(0,122,255,0.08);color:#007AFF;border-color:rgba(0,122,255,0.3);font-weight:600;">中央区</div><div class="wg-i">港区</div><div class="wg-a">城東</div><div class="wg-i" style="background:rgba(0,122,255,0.08);color:#007AFF;border-color:rgba(0,122,255,0.3);font-weight:600;">江東区</div><div class="wg-i">墨田区</div><div class="wg-i">台東区</div><div class="wg-a">城南</div><div class="wg-i">品川区</div><div class="wg-i">大田区</div><div class="wg-i">目黒区</div></div></div></div></div>
+          <div style="margin-top:12px;padding:12px;border-radius:10px;background:#007AFF;color:#fff;text-align:center;font-weight:600;font-size:14px;">12件の物件を表示</div>
         </div>
       </div>
-    </div>
-    <div class="phone-wrapper">
-      <h3>物件詳細</h3>
-      <div class="phone">
-        <div class="phone-screen" style="background:#FFFFFF; color:#1C1C1E;">
-          <div class="status-bar" style="color:#1C1C1E;"><span>9:41</span><span style="opacity:.4">&#x1F4F6; &#x1F50B;</span></div>
-          <div class="nav-bar"><span style="color:#007AFF;">&larr; 閉じる</span><span></span></div>
-          <div class="detail-scroll">
-            <div class="detail-header">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div><div class="detail-name">パークシティ豊洲 B棟</div><div class="detail-addr" style="color:#8E8E93;">東京都江東区豊洲5丁目</div></div>
-                <span style="font-size:22px;color:#FF3B30;">&#x2665;</span>
-              </div>
-            </div>
-            <div class="detail-grid">
-              <div class="detail-item" style="background:#F2F2F7;"><div class="detail-item-label">価格</div><div class="detail-item-value" style="color:#FF3B30;">8,980万円</div></div>
-              <div class="detail-item" style="background:#F2F2F7;"><div class="detail-item-label">専有面積</div><div class="detail-item-value">72.5㎡</div></div>
-              <div class="detail-item" style="background:#F2F2F7;"><div class="detail-item-label">間取り</div><div class="detail-item-value">3LDK</div></div>
-              <div class="detail-item" style="background:#F2F2F7;"><div class="detail-item-label">築年</div><div class="detail-item-value">2007年</div></div>
-            </div>
-            <!-- Sumai-Surfin Section -->
-            <div class="ss-section" style="background:#F2F2F7; border:1px solid #E5E5EA;">
-              <div class="ss-section-title" style="color:#007AFF;">&#x1F4CA; 住まいサーフィン評価</div>
-              <div class="ss-profit">
-                <div>
-                  <div class="ss-profit-label">沖式儲かる確率</div>
-                  <div><span class="ss-profit-value" style="color:#34C759;">82</span><span class="ss-profit-unit" style="color:#34C759;">%</span></div>
-                </div>
-                <div style="margin-left:auto;">
-                  <div class="ss-row"><span class="label">沖式時価</span><span class="value">8,200万円</span></div>
-                  <div class="ss-row"><span class="label">割安判定</span><span class="ss-badge" style="background:#E8F5E9;color:#2E7D32;">割安</span></div>
-                </div>
-              </div>
-              <div class="ss-row"><span class="label">駅ランキング</span><span class="value">豊洲駅 3位 / 全12件</span></div>
-              <div class="ss-row"><span class="label">区ランキング</span><span class="value">江東区 8位 / 全45件</span></div>
-            </div>
-            <div class="detail-btn" style="background:#007AFF; color:#fff;">SUUMO/HOME'S で詳細を開く</div>
-            <div class="detail-btn-secondary" style="border-color:#007AFF; color:#007AFF;">住まいサーフィンで詳しく見る</div>
-          </div>
-          <div class="bottom-tab" style="background:rgba(255,255,255,0.95);">
-            <div class="bottom-tab-item" style="color:#8E8E93;"><div class="icon">&#x1F3E2;</div>中古</div>
-            <div class="bottom-tab-item" style="color:#8E8E93;"><div class="icon">&#x2728;</div>新築</div>
-            <div class="bottom-tab-item" style="color:#8E8E93;"><div class="icon">&#x1F5FA;</div>地図</div>
-            <div class="bottom-tab-item" style="color:#007AFF;"><div class="icon">&#x2665;</div>お気に入り</div>
-            <div class="bottom-tab-item" style="color:#8E8E93;"><div class="icon">&#x2699;</div>設定</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div></div></div>
   </div>
-  <div class="prompt-section">
-    <h3>アイコン画像生成プロンプト</h3>
-    <div class="prompt-text" id="prompt-a">A minimal iOS app icon, 1024x1024, flat design with subtle depth. A clean white background with a stylized magnifying glass containing a geometric building silhouette. The building uses iOS System Blue (#007AFF). A small red (#FF3B30) pin or heart accent. Clean, minimal, professional. No text, no border. Apple HIG style, modern Japanese real estate app aesthetic.</div>
-    <button class="copy-btn" onclick="copyPrompt('prompt-a')">コピー</button>
-  </div>
+  <div class="prompt-section"><h3>アイコン画像生成プロンプト</h3><div class="prompt-text" id="pa">A minimal iOS app icon, 1024x1024, flat design. Pure white background. A stylized magnifying glass with a geometric building silhouette inside, rendered in solid #007AFF blue. No text, no border, no gradient. Clean, Apple HIG style. Modern Japanese real estate app.</div><button class="cpb" onclick="cp('pa')">コピー</button></div>
 </section>
 
-<!-- ===================== SCHEME B: Warm Sage ===================== -->
-<section id="scheme-b" class="scheme-section">
-  <div class="scheme-header">
-    <h2>B. Warm Sage</h2>
-    <p>温かみのあるセージグリーン。家族で使うアプリに安心感と穏やかさを。自然体のデザイン。</p>
-  </div>
+<!-- ==================== SCHEME B: Sage ==================== -->
+<section id="s-b" class="scheme">
+  <div class="sh"><h2>B. Sage</h2><p>温かみのあるセージグリーン。安心感と穏やかさ。</p></div>
+  <div class="rule">白 #FAFAF8 ／ アクセント #5B8A72 ／ カード背景 #F5F6F4</div>
   <div class="swatches">
-    <div class="swatch"><div class="swatch-color" style="background:#FAFAF8; border-color:rgba(0,0,0,0.12)"></div><div class="swatch-label">Background</div><div class="swatch-hex">#FAFAF8</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#6B9080"></div><div class="swatch-label">Accent</div><div class="swatch-hex">#6B9080</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#C08B6B"></div><div class="swatch-label">Highlight</div><div class="swatch-hex">#C08B6B</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#F0F5F1"></div><div class="swatch-label">Surface</div><div class="swatch-hex">#F0F5F1</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#2C2C2E"></div><div class="swatch-label">Text</div><div class="swatch-hex">#2C2C2E</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#7A7A80"></div><div class="swatch-label">Secondary</div><div class="swatch-hex">#7A7A80</div></div>
+    <div class="sw"><div class="sw-c" style="background:#FAFAF8;border-color:rgba(0,0,0,0.12)"></div><div class="sw-l">White</div><div class="sw-h">#FAFAF8</div></div>
+    <div class="sw"><div class="sw-c" style="background:#5B8A72"></div><div class="sw-l">Accent</div><div class="sw-h">#5B8A72</div><div class="sw-sub"><div style="background:rgba(91,138,114,0.15)"></div><div style="background:rgba(91,138,114,0.06)"></div></div></div>
   </div>
   <div class="phones">
-    <div class="phone-wrapper">
-      <h3>物件一覧</h3>
-      <div class="phone">
-        <div class="phone-screen" style="background:#FAFAF8; color:#2C2C2E;">
-          <div class="status-bar" style="color:#2C2C2E;"><span>9:41</span><span style="opacity:.4">&#x1F4F6; &#x1F50B;</span></div>
-          <div class="nav-bar"><div class="nav-title">中古マンション</div><div class="nav-icons" style="color:#6B9080;">&#9776;</div></div>
-          <div class="listings">
-            <div class="listing-card" style="background:#F0F5F1;">
-              <div class="listing-info">
-                <div class="listing-name">パークシティ豊洲 B棟</div>
-                <div class="listing-meta" style="color:#7A7A80;"><span style="color:#C08B6B; font-weight:600;">8,980万円</span><span>3LDK</span><span>72.5㎡</span><span>徒歩4分</span></div>
-                <div class="listing-sub">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#E8F0EC;color:#4A7A62;">儲かる確率 82%</span><span style="color:#7A7A80;">沖式時価 8,200万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#E74C3C;">&#x2665;</div>
-            </div>
-            <div class="listing-card" style="background:#F0F5F1;">
-              <div class="listing-info">
-                <div class="listing-name">ブリリアタワー東京</div>
-                <div class="listing-meta" style="color:#7A7A80;"><span style="color:#C08B6B; font-weight:600;">7,480万円</span><span>2LDK</span><span>61.2㎡</span><span>徒歩6分</span></div>
-                <div class="listing-sub">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#FFF3E0;color:#BF6C00;">儲かる確率 58%</span><span style="color:#7A7A80;">沖式時価 7,800万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#bbb;">&#x2661;</div>
-            </div>
-            <div class="listing-card" style="background:#F0F5F1;">
-              <div class="listing-info">
-                <div class="listing-name">プラウド文京小石川</div>
-                <div class="listing-meta" style="color:#7A7A80;"><span style="color:#C08B6B; font-weight:600;">9,500万円</span><span>3LDK</span><span>68.0㎡</span><span>徒歩3分</span></div>
-                <div class="listing-sub">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#E8F0EC;color:#4A7A62;">儲かる確率 91%</span><span style="color:#7A7A80;">沖式時価 10,100万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#bbb;">&#x2661;</div>
-            </div>
-            <div class="listing-card" style="background:#F0F5F1;">
-              <div class="listing-info">
-                <div class="listing-name">ザ・パークハウス晴海</div>
-                <div class="listing-meta" style="color:#7A7A80;"><span style="color:#C08B6B; font-weight:600;">6,280万円</span><span>2LDK</span><span>55.3㎡</span><span>徒歩7分</span></div>
-                <div class="listing-sub">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#FCE4E4;color:#B71C1C;">儲かる確率 32%</span><span style="color:#7A7A80;">沖式時価 5,900万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#E74C3C;">&#x2665;</div>
-            </div>
+    <!-- LIST B -->
+    <div class="pcol"><h3>一覧</h3><div class="phone"><div class="ps" style="background:#FAFAF8;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div class="nav"><div class="nav-t">中古マンション</div><div style="color:#5B8A72;font-size:16px;">☰</div></div>
+      <div class="scr" style="padding:0 12px;">
+        <div class="lc" style="background:#F5F6F4;"><div class="li"><div class="ln">パークシティ豊洲 B棟</div><div class="lm"><span style="color:#5B8A72;font-weight:700;">8,980万円</span><span style="color:#999;">3LDK</span><span style="color:#999;">72.5㎡</span><span style="color:#999;">徒歩4分</span></div><div class="ls">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑18%</span><span style="color:#999;">時価 8,200万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#5B8A72;">♥</div></div>
+        <div class="lc" style="background:#F5F6F4;"><div class="li"><div class="ln">ブリリアタワー東京</div><div class="lm"><span style="color:#5B8A72;font-weight:700;">7,480万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">61.2㎡</span><span style="color:#999;">徒歩6分</span></div><div class="ls">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑12%</span><span style="color:#999;">時価 7,800万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+        <div class="lc" style="background:#F5F6F4;"><div class="li"><div class="ln">プラウド文京小石川</div><div class="lm"><span style="color:#5B8A72;font-weight:700;">9,500万円</span><span style="color:#999;">3LDK</span><span style="color:#999;">68.0㎡</span><span style="color:#999;">徒歩3分</span></div><div class="ls">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑25%</span><span style="color:#999;">時価 10,100万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+        <div class="lc" style="background:#F5F6F4;"><div class="li"><div class="ln">ザ・パークハウス晴海</div><div class="lm"><span style="color:#5B8A72;font-weight:700;">6,280万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">55.3㎡</span><span style="color:#999;">徒歩7分</span></div><div class="ls">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div><div class="le"><span class="lb" style="background:rgba(255,59,48,0.08);color:#FF3B30;">↓3%</span><span style="color:#999;">時価 5,900万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#5B8A72;">♥</div></div>
+        <div class="lc" style="background:#F5F6F4;"><div class="li"><div class="ln">シティタワー有明</div><div class="lm"><span style="color:#5B8A72;font-weight:700;">5,980万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">58.1㎡</span><span style="color:#999;">徒歩5分</span></div><div class="ls">築10年 ・ 12階/33階建 ・ 所有権 ・ 486戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑8%</span><span style="color:#999;">時価 6,300万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+      </div>
+      <div class="btab" style="background:rgba(250,250,248,0.97);"><div class="bt" style="color:#5B8A72;"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+    </div></div></div>
+    <!-- DETAIL B -->
+    <div class="pcol"><h3>詳細</h3><div class="phone"><div class="ps" style="background:#FAFAF8;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div class="nav"><span style="color:#5B8A72;font-size:13px;">← 戻る</span><span style="font-size:18px;color:#5B8A72;">♥</span></div>
+      <div class="scr" style="padding:0 14px;">
+        <div style="margin-bottom:6px;"><div class="dn">パークシティ豊洲 B棟</div><div class="da">東京都江東区豊洲5丁目</div></div>
+        <div class="dm" style="background:#F5F6F4;">メモを入力...</div>
+        <div class="ds" style="background:#F5F6F4;">
+          <div class="ds-t">物件情報</div>
+          <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:#5B8A72;">8,980万円</span></div>
+          <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 72.5㎡</span></div>
+          <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2007年（築18年）</span></div>
+          <div class="dr"><span class="dr-l">所在階 / 階建</span><span class="dr-v">15階 / 20階建</span></div>
+          <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">660戸</span></div>
+        </div>
+        <div class="ds" style="background:#F5F6F4;">
+          <div class="ds-t">アクセス・権利</div>
+          <div class="dr"><span class="dr-l">路線・駅</span><span class="dr-v">ゆりかもめ「豊洲」徒歩4分</span></div>
+          <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+          <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
+        </div>
+        <div class="ss" style="background:rgba(91,138,114,0.03);border:1px solid rgba(91,138,114,0.08);">
+          <div class="ss-t" style="color:#5B8A72;">📊 住まいサーフィン評価</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div><div style="font-size:9px;color:#999;">沖式中古時価（70㎡換算）</div><span class="ss-big" style="color:#5B8A72;">8,200</span><span class="ss-u" style="color:rgba(91,138,114,0.5);">万円</span><div style="margin-top:2px;"><span class="ss-b" style="background:rgba(91,138,114,0.10);color:#5B8A72;">割安</span></div></div>
+            <div style="text-align:right;"><div style="font-size:9px;color:#999;">中古値上がり率</div><span style="font-size:20px;font-weight:800;color:#34C759;">+18</span><span style="font-size:11px;font-weight:600;color:rgba(52,199,89,0.6);">%</span></div>
           </div>
-          <div class="bottom-tab" style="background:rgba(250,250,248,0.95);">
-            <div class="bottom-tab-item" style="color:#6B9080;"><div class="icon">&#x1F3E2;</div>中古</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2728;</div>新築</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x1F5FA;</div>地図</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2665;</div>お気に入り</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2699;</div>設定</div>
+          <div style="margin:4px 0;padding:6px;background:rgba(91,138,114,0.02);border-radius:6px;">
+            <svg viewBox="0 0 200 170" style="width:100%;max-width:200px;display:block;margin:0 auto;"><polygon points="100,34 142,58 142,106 100,130 58,106 58,58" fill="none" stroke="#ddd" stroke-width="0.6"/><polygon points="100,50 128,66 128,98 100,114 72,98 72,66" fill="none" stroke="#ddd" stroke-width="0.4"/><polygon points="100,66 114,74 114,90 100,98 86,90 86,74" fill="none" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="100" y2="34" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="142" y2="58" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="142" y2="106" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="100" y2="130" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="58" y2="106" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="58" y2="58" stroke="#ddd" stroke-width="0.4"/><polygon points="100,62 116,73 117,92 100,97 81,93 84,73" fill="rgba(220,80,80,0.08)" stroke="rgba(220,80,80,0.5)" stroke-width="1"/><polygon points="100,38 130,65 120,94 100,108 63,103 68,63" fill="rgba(80,80,220,0.10)" stroke="rgba(80,80,220,0.7)" stroke-width="1.2"/><text x="100" y="27" text-anchor="middle" font-size="5.5" fill="#666">沖式中古時価m²単価</text><text x="148" y="57" text-anchor="start" font-size="5.5" fill="#666">築年数</text><text x="148" y="111" text-anchor="start" font-size="5.5" fill="#666">お気に入り数</text><text x="100" y="141" text-anchor="middle" font-size="5.5" fill="#666">中古値上がり率</text><text x="52" y="111" text-anchor="end" font-size="5.5" fill="#666">徒歩分数</text><text x="52" y="57" text-anchor="end" font-size="5.5" fill="#666">総戸数</text><rect x="52" y="153" width="12" height="6" rx="1" fill="rgba(80,80,220,0.15)" stroke="rgba(80,80,220,0.7)" stroke-width="0.6"/><text x="67" y="158.5" font-size="5" fill="#666">本物件</text><rect x="100" y="153" width="12" height="6" rx="1" fill="rgba(220,80,80,0.10)" stroke="rgba(220,80,80,0.5)" stroke-width="0.6"/><text x="115" y="158.5" font-size="5" fill="#666">行政区平均</text></svg>
           </div>
+          <div style="display:flex;gap:16px;"><div class="ss-r"><span class="l">駅ランキング</span><span class="v"><b>3位</b>/12件</span></div><div class="ss-r"><span class="l">区ランキング</span><span class="v"><b>8位</b>/45件</span></div></div>
+        </div>
+        <div class="db" style="background:#5B8A72;">SUUMO/HOME'S で詳細を開く</div>
+        <div class="db2" style="color:#5B8A72;border:1.5px solid rgba(91,138,114,0.18);">住まいサーフィンで詳しく見る</div>
+      </div>
+      <div class="btab" style="background:rgba(250,250,248,0.97);"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt" style="color:#5B8A72;"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+    </div></div></div>
+    <!-- FILTER B -->
+    <div class="pcol"><h3>フィルタ</h3><div class="phone"><div class="ps" style="background:#FAFAF8;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div style="background:rgba(0,0,0,0.2);flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
+        <div style="background:#FAFAF8;border-radius:16px 16px 0 0;padding:16px;max-height:640px;overflow-y:auto;" class="scr">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:18px;font-weight:700;">フィルタ</span><span style="color:#5B8A72;font-size:13px;font-weight:600;">リセット</span></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">価格帯</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5B8A72;">5,000万〜8,000万</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg open"><div class="fg-hd"><span class="fg-t">間取り</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5B8A72;">2LDK, 3LDK</span><span class="fg-arr">▼</span></div></div><div class="fg-body"><div class="fg-inner"><div class="fc"><div class="chip">1LDK</div><div class="chip on" style="background:#5B8A72;">2LDK</div><div class="chip on" style="background:#5B8A72;">3LDK</div><div class="chip">4LDK+</div></div></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">駅徒歩</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5B8A72;">5分以内</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">広さ</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5B8A72;">60㎡以上</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">権利形態</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5B8A72;">所有権</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg open"><div class="fg-hd"><span class="fg-t">エリア（区）</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5B8A72;">江東区, 中央区</span><span class="fg-arr">▼</span></div></div><div class="fg-body"><div class="fg-inner"><div class="wg"><div class="wg-a">都心</div><div class="wg-i">千代田区</div><div class="wg-i" style="background:rgba(91,138,114,0.08);color:#5B8A72;border-color:rgba(91,138,114,0.3);font-weight:600;">中央区</div><div class="wg-i">港区</div><div class="wg-a">城東</div><div class="wg-i" style="background:rgba(91,138,114,0.08);color:#5B8A72;border-color:rgba(91,138,114,0.3);font-weight:600;">江東区</div><div class="wg-i">墨田区</div><div class="wg-i">台東区</div><div class="wg-a">城南</div><div class="wg-i">品川区</div><div class="wg-i">大田区</div><div class="wg-i">目黒区</div></div></div></div></div>
+          <div style="margin-top:12px;padding:12px;border-radius:10px;background:#5B8A72;color:#fff;text-align:center;font-weight:600;font-size:14px;">12件の物件を表示</div>
         </div>
       </div>
-    </div>
-    <div class="phone-wrapper">
-      <h3>物件詳細</h3>
-      <div class="phone">
-        <div class="phone-screen" style="background:#FAFAF8; color:#2C2C2E;">
-          <div class="status-bar" style="color:#2C2C2E;"><span>9:41</span><span style="opacity:.4">&#x1F4F6; &#x1F50B;</span></div>
-          <div class="nav-bar"><span style="color:#6B9080;">&larr; 閉じる</span><span></span></div>
-          <div class="detail-scroll">
-            <div class="detail-header">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div><div class="detail-name">パークシティ豊洲 B棟</div><div class="detail-addr" style="color:#7A7A80;">東京都江東区豊洲5丁目</div></div>
-                <span style="font-size:22px;color:#E74C3C;">&#x2665;</span>
-              </div>
-            </div>
-            <div class="detail-grid">
-              <div class="detail-item" style="background:#F0F5F1;"><div class="detail-item-label">価格</div><div class="detail-item-value" style="color:#C08B6B;">8,980万円</div></div>
-              <div class="detail-item" style="background:#F0F5F1;"><div class="detail-item-label">専有面積</div><div class="detail-item-value">72.5㎡</div></div>
-              <div class="detail-item" style="background:#F0F5F1;"><div class="detail-item-label">間取り</div><div class="detail-item-value">3LDK</div></div>
-              <div class="detail-item" style="background:#F0F5F1;"><div class="detail-item-label">築年</div><div class="detail-item-value">2007年</div></div>
-            </div>
-            <div class="ss-section" style="background:#F0F5F1; border:1px solid #D5E0D8;">
-              <div class="ss-section-title" style="color:#6B9080;">&#x1F4CA; 住まいサーフィン評価</div>
-              <div class="ss-profit">
-                <div>
-                  <div class="ss-profit-label">沖式儲かる確率</div>
-                  <div><span class="ss-profit-value" style="color:#4A7A62;">82</span><span class="ss-profit-unit" style="color:#4A7A62;">%</span></div>
-                </div>
-                <div style="margin-left:auto;">
-                  <div class="ss-row"><span class="label">沖式時価</span><span class="value">8,200万円</span></div>
-                  <div class="ss-row"><span class="label">割安判定</span><span class="ss-badge" style="background:#E8F0EC;color:#4A7A62;">割安</span></div>
-                </div>
-              </div>
-              <div class="ss-row"><span class="label">駅ランキング</span><span class="value">豊洲駅 3位 / 全12件</span></div>
-              <div class="ss-row"><span class="label">区ランキング</span><span class="value">江東区 8位 / 全45件</span></div>
-            </div>
-            <div class="detail-btn" style="background:#6B9080; color:#fff;">SUUMO/HOME'S で詳細を開く</div>
-            <div class="detail-btn-secondary" style="border-color:#6B9080; color:#6B9080;">住まいサーフィンで詳しく見る</div>
-          </div>
-          <div class="bottom-tab" style="background:rgba(250,250,248,0.95);">
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x1F3E2;</div>中古</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2728;</div>新築</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x1F5FA;</div>地図</div>
-            <div class="bottom-tab-item" style="color:#6B9080;"><div class="icon">&#x2665;</div>お気に入り</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2699;</div>設定</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div></div></div>
   </div>
-  <div class="prompt-section">
-    <h3>アイコン画像生成プロンプト</h3>
-    <div class="prompt-text" id="prompt-b">A minimal iOS app icon, 1024x1024, flat design. Warm white (#FAFAF8) background with a simple abstract city skyline made of geometric rectangles in soft sage green (#6B9080). One building highlighted with a terracotta (#C08B6B) window or star. Clean, warm, Japanese aesthetic. No text, no border. Apple HIG style.</div>
-    <button class="copy-btn" onclick="copyPrompt('prompt-b')">コピー</button>
-  </div>
+  <div class="prompt-section"><h3>アイコン画像生成プロンプト</h3><div class="prompt-text" id="pb">A minimal iOS app icon, 1024x1024, flat design. Warm white (#FAFAF8) background. An abstract city skyline of geometric rectangles rendered in solid sage green #5B8A72. No text, no border, no gradient. Apple HIG style. Warm, natural Japanese real estate aesthetic.</div><button class="cpb" onclick="cp('pb')">コピー</button></div>
 </section>
 
-<!-- ===================== SCHEME C: Slate Teal ===================== -->
-<section id="scheme-c" class="scheme-section">
-  <div class="scheme-header">
-    <h2>C. Slate Teal</h2>
-    <p>洗練されたティールとゴールドのアクセント。都会的で知的な印象。プロフェッショナルさと信頼感。</p>
-  </div>
+<!-- ==================== SCHEME C: Teal ==================== -->
+<section id="s-c" class="scheme">
+  <div class="sh"><h2>C. Teal</h2><p>洗練されたティール。都会的で知的な印象。</p></div>
+  <div class="rule">白 #FFFFFF ／ アクセント #1A8A8A ／ カード背景 #F8F8FB</div>
   <div class="swatches">
-    <div class="swatch"><div class="swatch-color" style="background:#FFFFFF; border-color:rgba(0,0,0,0.12)"></div><div class="swatch-label">Background</div><div class="swatch-hex">#FFFFFF</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#2B8C8C"></div><div class="swatch-label">Accent</div><div class="swatch-hex">#2B8C8C</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#D4A853"></div><div class="swatch-label">Highlight</div><div class="swatch-hex">#D4A853</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#F0F4F8"></div><div class="swatch-label">Surface</div><div class="swatch-hex">#F0F4F8</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#1C1C1E"></div><div class="swatch-label">Text</div><div class="swatch-hex">#1C1C1E</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#6B7B8D"></div><div class="swatch-label">Secondary</div><div class="swatch-hex">#6B7B8D</div></div>
+    <div class="sw"><div class="sw-c" style="background:#FFFFFF;border-color:rgba(0,0,0,0.12)"></div><div class="sw-l">White</div><div class="sw-h">#FFFFFF</div></div>
+    <div class="sw"><div class="sw-c" style="background:#1A8A8A"></div><div class="sw-l">Accent</div><div class="sw-h">#1A8A8A</div><div class="sw-sub"><div style="background:rgba(26,138,138,0.15)"></div><div style="background:rgba(26,138,138,0.06)"></div></div></div>
   </div>
   <div class="phones">
-    <div class="phone-wrapper">
-      <h3>物件一覧</h3>
-      <div class="phone">
-        <div class="phone-screen" style="background:#FFFFFF; color:#1C1C1E;">
-          <div class="status-bar" style="color:#1C1C1E;"><span>9:41</span><span style="opacity:.4">&#x1F4F6; &#x1F50B;</span></div>
-          <div class="nav-bar"><div class="nav-title">中古マンション</div><div class="nav-icons" style="color:#2B8C8C;">&#9776;</div></div>
-          <div class="listings">
-            <div class="listing-card" style="background:#F0F4F8;">
-              <div class="listing-info">
-                <div class="listing-name">パークシティ豊洲 B棟</div>
-                <div class="listing-meta" style="color:#6B7B8D;"><span style="color:#D4A853; font-weight:600;">8,980万円</span><span>3LDK</span><span>72.5㎡</span><span>徒歩4分</span></div>
-                <div class="listing-sub">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#E0F2F1;color:#00695C;">儲かる確率 82%</span><span style="color:#6B7B8D;">沖式時価 8,200万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#E74C3C;">&#x2665;</div>
-            </div>
-            <div class="listing-card" style="background:#F0F4F8;">
-              <div class="listing-info">
-                <div class="listing-name">ブリリアタワー東京</div>
-                <div class="listing-meta" style="color:#6B7B8D;"><span style="color:#D4A853; font-weight:600;">7,480万円</span><span>2LDK</span><span>61.2㎡</span><span>徒歩6分</span></div>
-                <div class="listing-sub">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#FFF3E0;color:#E65100;">儲かる確率 58%</span><span style="color:#6B7B8D;">沖式時価 7,800万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#bbb;">&#x2661;</div>
-            </div>
-            <div class="listing-card" style="background:#F0F4F8;">
-              <div class="listing-info">
-                <div class="listing-name">プラウド文京小石川</div>
-                <div class="listing-meta" style="color:#6B7B8D;"><span style="color:#D4A853; font-weight:600;">9,500万円</span><span>3LDK</span><span>68.0㎡</span><span>徒歩3分</span></div>
-                <div class="listing-sub">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#E0F2F1;color:#00695C;">儲かる確率 91%</span><span style="color:#6B7B8D;">沖式時価 10,100万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#bbb;">&#x2661;</div>
-            </div>
-            <div class="listing-card" style="background:#F0F4F8;">
-              <div class="listing-info">
-                <div class="listing-name">ザ・パークハウス晴海</div>
-                <div class="listing-meta" style="color:#6B7B8D;"><span style="color:#D4A853; font-weight:600;">6,280万円</span><span>2LDK</span><span>55.3㎡</span><span>徒歩7分</span></div>
-                <div class="listing-sub">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#FFEBEE;color:#C62828;">儲かる確率 32%</span><span style="color:#6B7B8D;">沖式時価 5,900万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#E74C3C;">&#x2665;</div>
-            </div>
+    <!-- LIST C -->
+    <div class="pcol"><h3>一覧</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div class="nav"><div class="nav-t">中古マンション</div><div style="color:#1A8A8A;font-size:16px;">☰</div></div>
+      <div class="scr" style="padding:0 12px;">
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">パークシティ豊洲 B棟</div><div class="lm"><span style="color:#1A8A8A;font-weight:700;">8,980万円</span><span style="color:#999;">3LDK</span><span style="color:#999;">72.5㎡</span><span style="color:#999;">徒歩4分</span></div><div class="ls">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑18%</span><span style="color:#999;">時価 8,200万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#1A8A8A;">♥</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">ブリリアタワー東京</div><div class="lm"><span style="color:#1A8A8A;font-weight:700;">7,480万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">61.2㎡</span><span style="color:#999;">徒歩6分</span></div><div class="ls">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑12%</span><span style="color:#999;">時価 7,800万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">プラウド文京小石川</div><div class="lm"><span style="color:#1A8A8A;font-weight:700;">9,500万円</span><span style="color:#999;">3LDK</span><span style="color:#999;">68.0㎡</span><span style="color:#999;">徒歩3分</span></div><div class="ls">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑25%</span><span style="color:#999;">時価 10,100万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">ザ・パークハウス晴海</div><div class="lm"><span style="color:#1A8A8A;font-weight:700;">6,280万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">55.3㎡</span><span style="color:#999;">徒歩7分</span></div><div class="ls">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div><div class="le"><span class="lb" style="background:rgba(255,59,48,0.08);color:#FF3B30;">↓3%</span><span style="color:#999;">時価 5,900万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#1A8A8A;">♥</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">シティタワー有明</div><div class="lm"><span style="color:#1A8A8A;font-weight:700;">5,980万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">58.1㎡</span><span style="color:#999;">徒歩5分</span></div><div class="ls">築10年 ・ 12階/33階建 ・ 所有権 ・ 486戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑8%</span><span style="color:#999;">時価 6,300万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+      </div>
+      <div class="btab" style="background:rgba(255,255,255,0.97);"><div class="bt" style="color:#1A8A8A;"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+    </div></div></div>
+    <!-- DETAIL C -->
+    <div class="pcol"><h3>詳細</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div class="nav"><span style="color:#1A8A8A;font-size:13px;">← 戻る</span><span style="font-size:18px;color:#1A8A8A;">♥</span></div>
+      <div class="scr" style="padding:0 14px;">
+        <div style="margin-bottom:6px;"><div class="dn">パークシティ豊洲 B棟</div><div class="da">東京都江東区豊洲5丁目</div></div>
+        <div class="dm" style="background:#F8F8FB;">メモを入力...</div>
+        <div class="ds" style="background:#F8F8FB;">
+          <div class="ds-t">物件情報</div>
+          <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:#1A8A8A;">8,980万円</span></div>
+          <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 72.5㎡</span></div>
+          <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2007年（築18年）</span></div>
+          <div class="dr"><span class="dr-l">所在階 / 階建</span><span class="dr-v">15階 / 20階建</span></div>
+          <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">660戸</span></div>
+        </div>
+        <div class="ds" style="background:#F8F8FB;">
+          <div class="ds-t">アクセス・権利</div>
+          <div class="dr"><span class="dr-l">路線・駅</span><span class="dr-v">ゆりかもめ「豊洲」徒歩4分</span></div>
+          <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+          <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
+        </div>
+        <div class="ss" style="background:rgba(26,138,138,0.03);border:1px solid rgba(26,138,138,0.08);">
+          <div class="ss-t" style="color:#1A8A8A;">📊 住まいサーフィン評価</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div><div style="font-size:9px;color:#999;">沖式中古時価（70㎡換算）</div><span class="ss-big" style="color:#1A8A8A;">8,200</span><span class="ss-u" style="color:rgba(26,138,138,0.5);">万円</span><div style="margin-top:2px;"><span class="ss-b" style="background:rgba(26,138,138,0.10);color:#1A8A8A;">割安</span></div></div>
+            <div style="text-align:right;"><div style="font-size:9px;color:#999;">中古値上がり率</div><span style="font-size:20px;font-weight:800;color:#34C759;">+18</span><span style="font-size:11px;font-weight:600;color:rgba(52,199,89,0.6);">%</span></div>
           </div>
-          <div class="bottom-tab" style="background:rgba(255,255,255,0.95);">
-            <div class="bottom-tab-item" style="color:#2B8C8C;"><div class="icon">&#x1F3E2;</div>中古</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2728;</div>新築</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x1F5FA;</div>地図</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2665;</div>お気に入り</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2699;</div>設定</div>
+          <div style="margin:4px 0;padding:6px;background:rgba(26,138,138,0.02);border-radius:6px;">
+            <svg viewBox="0 0 200 170" style="width:100%;max-width:200px;display:block;margin:0 auto;"><polygon points="100,34 142,58 142,106 100,130 58,106 58,58" fill="none" stroke="#ddd" stroke-width="0.6"/><polygon points="100,50 128,66 128,98 100,114 72,98 72,66" fill="none" stroke="#ddd" stroke-width="0.4"/><polygon points="100,66 114,74 114,90 100,98 86,90 86,74" fill="none" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="100" y2="34" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="142" y2="58" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="142" y2="106" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="100" y2="130" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="58" y2="106" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="58" y2="58" stroke="#ddd" stroke-width="0.4"/><polygon points="100,62 116,73 117,92 100,97 81,93 84,73" fill="rgba(220,80,80,0.08)" stroke="rgba(220,80,80,0.5)" stroke-width="1"/><polygon points="100,38 130,65 120,94 100,108 63,103 68,63" fill="rgba(80,80,220,0.10)" stroke="rgba(80,80,220,0.7)" stroke-width="1.2"/><text x="100" y="27" text-anchor="middle" font-size="5.5" fill="#666">沖式中古時価m²単価</text><text x="148" y="57" text-anchor="start" font-size="5.5" fill="#666">築年数</text><text x="148" y="111" text-anchor="start" font-size="5.5" fill="#666">お気に入り数</text><text x="100" y="141" text-anchor="middle" font-size="5.5" fill="#666">中古値上がり率</text><text x="52" y="111" text-anchor="end" font-size="5.5" fill="#666">徒歩分数</text><text x="52" y="57" text-anchor="end" font-size="5.5" fill="#666">総戸数</text><rect x="52" y="153" width="12" height="6" rx="1" fill="rgba(80,80,220,0.15)" stroke="rgba(80,80,220,0.7)" stroke-width="0.6"/><text x="67" y="158.5" font-size="5" fill="#666">本物件</text><rect x="100" y="153" width="12" height="6" rx="1" fill="rgba(220,80,80,0.10)" stroke="rgba(220,80,80,0.5)" stroke-width="0.6"/><text x="115" y="158.5" font-size="5" fill="#666">行政区平均</text></svg>
           </div>
+          <div style="display:flex;gap:16px;"><div class="ss-r"><span class="l">駅ランキング</span><span class="v"><b>3位</b>/12件</span></div><div class="ss-r"><span class="l">区ランキング</span><span class="v"><b>8位</b>/45件</span></div></div>
+        </div>
+        <div class="db" style="background:#1A8A8A;">SUUMO/HOME'S で詳細を開く</div>
+        <div class="db2" style="color:#1A8A8A;border:1.5px solid rgba(26,138,138,0.18);">住まいサーフィンで詳しく見る</div>
+      </div>
+      <div class="btab" style="background:rgba(255,255,255,0.97);"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt" style="color:#1A8A8A;"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+    </div></div></div>
+    <!-- FILTER C -->
+    <div class="pcol"><h3>フィルタ</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div style="background:rgba(0,0,0,0.2);flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
+        <div style="background:#fff;border-radius:16px 16px 0 0;padding:16px;max-height:640px;overflow-y:auto;" class="scr">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:18px;font-weight:700;">フィルタ</span><span style="color:#1A8A8A;font-size:13px;font-weight:600;">リセット</span></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">価格帯</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#1A8A8A;">5,000万〜8,000万</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg open"><div class="fg-hd"><span class="fg-t">間取り</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#1A8A8A;">2LDK, 3LDK</span><span class="fg-arr">▼</span></div></div><div class="fg-body"><div class="fg-inner"><div class="fc"><div class="chip">1LDK</div><div class="chip on" style="background:#1A8A8A;">2LDK</div><div class="chip on" style="background:#1A8A8A;">3LDK</div><div class="chip">4LDK+</div></div></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">駅徒歩</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#1A8A8A;">5分以内</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">広さ</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#1A8A8A;">60㎡以上</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">権利形態</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#1A8A8A;">所有権</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg open"><div class="fg-hd"><span class="fg-t">エリア（区）</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#1A8A8A;">江東区, 中央区</span><span class="fg-arr">▼</span></div></div><div class="fg-body"><div class="fg-inner"><div class="wg"><div class="wg-a">都心</div><div class="wg-i">千代田区</div><div class="wg-i" style="background:rgba(26,138,138,0.08);color:#1A8A8A;border-color:rgba(26,138,138,0.3);font-weight:600;">中央区</div><div class="wg-i">港区</div><div class="wg-a">城東</div><div class="wg-i" style="background:rgba(26,138,138,0.08);color:#1A8A8A;border-color:rgba(26,138,138,0.3);font-weight:600;">江東区</div><div class="wg-i">墨田区</div><div class="wg-i">台東区</div><div class="wg-a">城南</div><div class="wg-i">品川区</div><div class="wg-i">大田区</div><div class="wg-i">目黒区</div></div></div></div></div>
+          <div style="margin-top:12px;padding:12px;border-radius:10px;background:#1A8A8A;color:#fff;text-align:center;font-weight:600;font-size:14px;">12件の物件を表示</div>
         </div>
       </div>
-    </div>
-    <div class="phone-wrapper">
-      <h3>物件詳細</h3>
-      <div class="phone">
-        <div class="phone-screen" style="background:#FFFFFF; color:#1C1C1E;">
-          <div class="status-bar" style="color:#1C1C1E;"><span>9:41</span><span style="opacity:.4">&#x1F4F6; &#x1F50B;</span></div>
-          <div class="nav-bar"><span style="color:#2B8C8C;">&larr; 閉じる</span><span></span></div>
-          <div class="detail-scroll">
-            <div class="detail-header">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div><div class="detail-name">パークシティ豊洲 B棟</div><div class="detail-addr" style="color:#6B7B8D;">東京都江東区豊洲5丁目</div></div>
-                <span style="font-size:22px;color:#E74C3C;">&#x2665;</span>
-              </div>
-            </div>
-            <div class="detail-grid">
-              <div class="detail-item" style="background:#F0F4F8;"><div class="detail-item-label">価格</div><div class="detail-item-value" style="color:#D4A853;">8,980万円</div></div>
-              <div class="detail-item" style="background:#F0F4F8;"><div class="detail-item-label">専有面積</div><div class="detail-item-value">72.5㎡</div></div>
-              <div class="detail-item" style="background:#F0F4F8;"><div class="detail-item-label">間取り</div><div class="detail-item-value">3LDK</div></div>
-              <div class="detail-item" style="background:#F0F4F8;"><div class="detail-item-label">築年</div><div class="detail-item-value">2007年</div></div>
-            </div>
-            <div class="ss-section" style="background:#F0F4F8; border:1px solid #D8E2EC;">
-              <div class="ss-section-title" style="color:#2B8C8C;">&#x1F4CA; 住まいサーフィン評価</div>
-              <div class="ss-profit">
-                <div>
-                  <div class="ss-profit-label">沖式儲かる確率</div>
-                  <div><span class="ss-profit-value" style="color:#2B8C8C;">82</span><span class="ss-profit-unit" style="color:#2B8C8C;">%</span></div>
-                </div>
-                <div style="margin-left:auto;">
-                  <div class="ss-row"><span class="label">沖式時価</span><span class="value">8,200万円</span></div>
-                  <div class="ss-row"><span class="label">割安判定</span><span class="ss-badge" style="background:#E0F2F1;color:#00695C;">割安</span></div>
-                </div>
-              </div>
-              <div class="ss-row"><span class="label">駅ランキング</span><span class="value">豊洲駅 3位 / 全12件</span></div>
-              <div class="ss-row"><span class="label">区ランキング</span><span class="value">江東区 8位 / 全45件</span></div>
-            </div>
-            <div class="detail-btn" style="background:#2B8C8C; color:#fff;">SUUMO/HOME'S で詳細を開く</div>
-            <div class="detail-btn-secondary" style="border-color:#2B8C8C; color:#2B8C8C;">住まいサーフィンで詳しく見る</div>
-          </div>
-          <div class="bottom-tab" style="background:rgba(255,255,255,0.95);">
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x1F3E2;</div>中古</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2728;</div>新築</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x1F5FA;</div>地図</div>
-            <div class="bottom-tab-item" style="color:#2B8C8C;"><div class="icon">&#x2665;</div>お気に入り</div>
-            <div class="bottom-tab-item" style="color:#bbb;"><div class="icon">&#x2699;</div>設定</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div></div></div>
   </div>
-  <div class="prompt-section">
-    <h3>アイコン画像生成プロンプト</h3>
-    <div class="prompt-text" id="prompt-c">A minimal iOS app icon, 1024x1024, flat design. White background with a stylized magnifying glass in teal (#2B8C8C) containing a simple building outline. A golden (#D4A853) pin accent marks the building. Sophisticated, professional, modern. No text, no border. Apple HIG style, clean Japanese real estate aesthetic.</div>
-    <button class="copy-btn" onclick="copyPrompt('prompt-c')">コピー</button>
-  </div>
+  <div class="prompt-section"><h3>アイコン画像生成プロンプト</h3><div class="prompt-text" id="pc">A minimal iOS app icon, 1024x1024, flat design. White background. A stylized magnifying glass containing a building outline, rendered in solid teal #1A8A8A. No text, no border, no gradient. Apple HIG style. Sophisticated, modern Japanese real estate aesthetic.</div><button class="cpb" onclick="cp('pc')">コピー</button></div>
 </section>
 
-<!-- ===================== SCHEME D: Soft Indigo ===================== -->
-<section id="scheme-d" class="scheme-section">
-  <div class="scheme-header">
-    <h2>D. Soft Indigo</h2>
-    <p>エレガントなインディゴパープル。他にない独自性を保ちつつ、品のあるデザイン。</p>
-  </div>
+<!-- ==================== SCHEME D: Indigo ==================== -->
+<section id="s-d" class="scheme">
+  <div class="sh"><h2>D. Indigo</h2><p>エレガントなインディゴ。独自性と品の良さ。</p></div>
+  <div class="rule">白 #FFFFFF ／ アクセント #5856D6 ／ カード背景 #F8F8FB</div>
   <div class="swatches">
-    <div class="swatch"><div class="swatch-color" style="background:#FFFFFF; border-color:rgba(0,0,0,0.12)"></div><div class="swatch-label">Background</div><div class="swatch-hex">#FFFFFF</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#5856D6"></div><div class="swatch-label">Accent</div><div class="swatch-hex">#5856D6</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#FF6B6B"></div><div class="swatch-label">Highlight</div><div class="swatch-hex">#FF6B6B</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#F2F1FA"></div><div class="swatch-label">Surface</div><div class="swatch-hex">#F2F1FA</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#1C1C1E"></div><div class="swatch-label">Text</div><div class="swatch-hex">#1C1C1E</div></div>
-    <div class="swatch"><div class="swatch-color" style="background:#8E8E93"></div><div class="swatch-label">Secondary</div><div class="swatch-hex">#8E8E93</div></div>
+    <div class="sw"><div class="sw-c" style="background:#FFFFFF;border-color:rgba(0,0,0,0.12)"></div><div class="sw-l">White</div><div class="sw-h">#FFFFFF</div></div>
+    <div class="sw"><div class="sw-c" style="background:#5856D6"></div><div class="sw-l">Accent</div><div class="sw-h">#5856D6</div><div class="sw-sub"><div style="background:rgba(88,86,214,0.15)"></div><div style="background:rgba(88,86,214,0.06)"></div></div></div>
   </div>
   <div class="phones">
-    <div class="phone-wrapper">
-      <h3>物件一覧</h3>
-      <div class="phone">
-        <div class="phone-screen" style="background:#FFFFFF; color:#1C1C1E;">
-          <div class="status-bar" style="color:#1C1C1E;"><span>9:41</span><span style="opacity:.4">&#x1F4F6; &#x1F50B;</span></div>
-          <div class="nav-bar"><div class="nav-title">中古マンション</div><div class="nav-icons" style="color:#5856D6;">&#9776;</div></div>
-          <div class="listings">
-            <div class="listing-card" style="background:#F2F1FA;">
-              <div class="listing-info">
-                <div class="listing-name">パークシティ豊洲 B棟</div>
-                <div class="listing-meta" style="color:#8E8E93;"><span style="color:#FF6B6B; font-weight:600;">8,980万円</span><span>3LDK</span><span>72.5㎡</span><span>徒歩4分</span></div>
-                <div class="listing-sub">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#EDE7F6;color:#4527A0;">儲かる確率 82%</span><span style="color:#8E8E93;">沖式時価 8,200万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#FF6B6B;">&#x2665;</div>
-            </div>
-            <div class="listing-card" style="background:#F2F1FA;">
-              <div class="listing-info">
-                <div class="listing-name">ブリリアタワー東京</div>
-                <div class="listing-meta" style="color:#8E8E93;"><span style="color:#FF6B6B; font-weight:600;">7,480万円</span><span>2LDK</span><span>61.2㎡</span><span>徒歩6分</span></div>
-                <div class="listing-sub">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#FFF3E0;color:#E65100;">儲かる確率 58%</span><span style="color:#8E8E93;">沖式時価 7,800万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#C7C7CC;">&#x2661;</div>
-            </div>
-            <div class="listing-card" style="background:#F2F1FA;">
-              <div class="listing-info">
-                <div class="listing-name">プラウド文京小石川</div>
-                <div class="listing-meta" style="color:#8E8E93;"><span style="color:#FF6B6B; font-weight:600;">9,500万円</span><span>3LDK</span><span>68.0㎡</span><span>徒歩3分</span></div>
-                <div class="listing-sub">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#EDE7F6;color:#4527A0;">儲かる確率 91%</span><span style="color:#8E8E93;">沖式時価 10,100万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#C7C7CC;">&#x2661;</div>
-            </div>
-            <div class="listing-card" style="background:#F2F1FA;">
-              <div class="listing-info">
-                <div class="listing-name">ザ・パークハウス晴海</div>
-                <div class="listing-meta" style="color:#8E8E93;"><span style="color:#FF6B6B; font-weight:600;">6,280万円</span><span>2LDK</span><span>55.3㎡</span><span>徒歩7分</span></div>
-                <div class="listing-sub">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div>
-                <div class="listing-eval"><span class="badge" style="background:#FFEBEE;color:#C62828;">儲かる確率 32%</span><span style="color:#8E8E93;">沖式時価 5,900万</span></div>
-              </div>
-              <div class="listing-heart" style="color:#FF6B6B;">&#x2665;</div>
-            </div>
+    <!-- LIST D -->
+    <div class="pcol"><h3>一覧</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div class="nav"><div class="nav-t">中古マンション</div><div style="color:#5856D6;font-size:16px;">☰</div></div>
+      <div class="scr" style="padding:0 12px;">
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">パークシティ豊洲 B棟</div><div class="lm"><span style="color:#5856D6;font-weight:700;">8,980万円</span><span style="color:#999;">3LDK</span><span style="color:#999;">72.5㎡</span><span style="color:#999;">徒歩4分</span></div><div class="ls">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑18%</span><span style="color:#999;">時価 8,200万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#5856D6;">♥</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">ブリリアタワー東京</div><div class="lm"><span style="color:#5856D6;font-weight:700;">7,480万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">61.2㎡</span><span style="color:#999;">徒歩6分</span></div><div class="ls">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑12%</span><span style="color:#999;">時価 7,800万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">プラウド文京小石川</div><div class="lm"><span style="color:#5856D6;font-weight:700;">9,500万円</span><span style="color:#999;">3LDK</span><span style="color:#999;">68.0㎡</span><span style="color:#999;">徒歩3分</span></div><div class="ls">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑25%</span><span style="color:#999;">時価 10,100万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">ザ・パークハウス晴海</div><div class="lm"><span style="color:#5856D6;font-weight:700;">6,280万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">55.3㎡</span><span style="color:#999;">徒歩7分</span></div><div class="ls">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div><div class="le"><span class="lb" style="background:rgba(255,59,48,0.08);color:#FF3B30;">↓3%</span><span style="color:#999;">時価 5,900万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#5856D6;">♥</div></div>
+        <div class="lc" style="background:#F8F8FB;"><div class="li"><div class="ln">シティタワー有明</div><div class="lm"><span style="color:#5856D6;font-weight:700;">5,980万円</span><span style="color:#999;">2LDK</span><span style="color:#999;">58.1㎡</span><span style="color:#999;">徒歩5分</span></div><div class="ls">築10年 ・ 12階/33階建 ・ 所有権 ・ 486戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑8%</span><span style="color:#999;">時価 6,300万<small>(70㎡)</small></span></div></div><div class="lh" style="color:#C0C0C4;">♡</div></div>
+      </div>
+      <div class="btab" style="background:rgba(255,255,255,0.97);"><div class="bt" style="color:#5856D6;"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+    </div></div></div>
+    <!-- DETAIL D -->
+    <div class="pcol"><h3>詳細</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div class="nav"><span style="color:#5856D6;font-size:13px;">← 戻る</span><span style="font-size:18px;color:#5856D6;">♥</span></div>
+      <div class="scr" style="padding:0 14px;">
+        <div style="margin-bottom:6px;"><div class="dn">パークシティ豊洲 B棟</div><div class="da">東京都江東区豊洲5丁目</div></div>
+        <div class="dm" style="background:#F8F8FB;">メモを入力...</div>
+        <div class="ds" style="background:#F8F8FB;">
+          <div class="ds-t">物件情報</div>
+          <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:#5856D6;">8,980万円</span></div>
+          <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 72.5㎡</span></div>
+          <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2007年（築18年）</span></div>
+          <div class="dr"><span class="dr-l">所在階 / 階建</span><span class="dr-v">15階 / 20階建</span></div>
+          <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">660戸</span></div>
+        </div>
+        <div class="ds" style="background:#F8F8FB;">
+          <div class="ds-t">アクセス・権利</div>
+          <div class="dr"><span class="dr-l">路線・駅</span><span class="dr-v">ゆりかもめ「豊洲」徒歩4分</span></div>
+          <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+          <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
+        </div>
+        <div class="ss" style="background:rgba(88,86,214,0.03);border:1px solid rgba(88,86,214,0.08);">
+          <div class="ss-t" style="color:#5856D6;">📊 住まいサーフィン評価</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div><div style="font-size:9px;color:#999;">沖式中古時価（70㎡換算）</div><span class="ss-big" style="color:#5856D6;">8,200</span><span class="ss-u" style="color:rgba(88,86,214,0.5);">万円</span><div style="margin-top:2px;"><span class="ss-b" style="background:rgba(88,86,214,0.10);color:#5856D6;">割安</span></div></div>
+            <div style="text-align:right;"><div style="font-size:9px;color:#999;">中古値上がり率</div><span style="font-size:20px;font-weight:800;color:#34C759;">+18</span><span style="font-size:11px;font-weight:600;color:rgba(52,199,89,0.6);">%</span></div>
           </div>
-          <div class="bottom-tab" style="background:rgba(255,255,255,0.95);">
-            <div class="bottom-tab-item" style="color:#5856D6;"><div class="icon">&#x1F3E2;</div>中古</div>
-            <div class="bottom-tab-item" style="color:#C7C7CC;"><div class="icon">&#x2728;</div>新築</div>
-            <div class="bottom-tab-item" style="color:#C7C7CC;"><div class="icon">&#x1F5FA;</div>地図</div>
-            <div class="bottom-tab-item" style="color:#C7C7CC;"><div class="icon">&#x2665;</div>お気に入り</div>
-            <div class="bottom-tab-item" style="color:#C7C7CC;"><div class="icon">&#x2699;</div>設定</div>
+          <div style="margin:4px 0;padding:6px;background:rgba(88,86,214,0.02);border-radius:6px;">
+            <svg viewBox="0 0 200 170" style="width:100%;max-width:200px;display:block;margin:0 auto;"><polygon points="100,34 142,58 142,106 100,130 58,106 58,58" fill="none" stroke="#ddd" stroke-width="0.6"/><polygon points="100,50 128,66 128,98 100,114 72,98 72,66" fill="none" stroke="#ddd" stroke-width="0.4"/><polygon points="100,66 114,74 114,90 100,98 86,90 86,74" fill="none" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="100" y2="34" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="142" y2="58" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="142" y2="106" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="100" y2="130" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="58" y2="106" stroke="#ddd" stroke-width="0.4"/><line x1="100" y1="82" x2="58" y2="58" stroke="#ddd" stroke-width="0.4"/><polygon points="100,62 116,73 117,92 100,97 81,93 84,73" fill="rgba(220,80,80,0.08)" stroke="rgba(220,80,80,0.5)" stroke-width="1"/><polygon points="100,38 130,65 120,94 100,108 63,103 68,63" fill="rgba(80,80,220,0.10)" stroke="rgba(80,80,220,0.7)" stroke-width="1.2"/><text x="100" y="27" text-anchor="middle" font-size="5.5" fill="#666">沖式中古時価m²単価</text><text x="148" y="57" text-anchor="start" font-size="5.5" fill="#666">築年数</text><text x="148" y="111" text-anchor="start" font-size="5.5" fill="#666">お気に入り数</text><text x="100" y="141" text-anchor="middle" font-size="5.5" fill="#666">中古値上がり率</text><text x="52" y="111" text-anchor="end" font-size="5.5" fill="#666">徒歩分数</text><text x="52" y="57" text-anchor="end" font-size="5.5" fill="#666">総戸数</text><rect x="52" y="153" width="12" height="6" rx="1" fill="rgba(80,80,220,0.15)" stroke="rgba(80,80,220,0.7)" stroke-width="0.6"/><text x="67" y="158.5" font-size="5" fill="#666">本物件</text><rect x="100" y="153" width="12" height="6" rx="1" fill="rgba(220,80,80,0.10)" stroke="rgba(220,80,80,0.5)" stroke-width="0.6"/><text x="115" y="158.5" font-size="5" fill="#666">行政区平均</text></svg>
           </div>
+          <div style="display:flex;gap:16px;"><div class="ss-r"><span class="l">駅ランキング</span><span class="v"><b>3位</b>/12件</span></div><div class="ss-r"><span class="l">区ランキング</span><span class="v"><b>8位</b>/45件</span></div></div>
+        </div>
+        <div class="db" style="background:#5856D6;">SUUMO/HOME'S で詳細を開く</div>
+        <div class="db2" style="color:#5856D6;border:1.5px solid rgba(88,86,214,0.18);">住まいサーフィンで詳しく見る</div>
+      </div>
+      <div class="btab" style="background:rgba(255,255,255,0.97);"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt" style="color:#5856D6;"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+    </div></div></div>
+    <!-- FILTER D -->
+    <div class="pcol"><h3>フィルタ</h3><div class="phone"><div class="ps" style="background:#fff;color:#1C1C1E;">
+      <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+      <div style="background:rgba(0,0,0,0.2);flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
+        <div style="background:#fff;border-radius:16px 16px 0 0;padding:16px;max-height:640px;overflow-y:auto;" class="scr">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:18px;font-weight:700;">フィルタ</span><span style="color:#5856D6;font-size:13px;font-weight:600;">リセット</span></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">価格帯</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5856D6;">5,000万〜8,000万</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg open"><div class="fg-hd"><span class="fg-t">間取り</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5856D6;">2LDK, 3LDK</span><span class="fg-arr">▼</span></div></div><div class="fg-body"><div class="fg-inner"><div class="fc"><div class="chip">1LDK</div><div class="chip on" style="background:#5856D6;">2LDK</div><div class="chip on" style="background:#5856D6;">3LDK</div><div class="chip">4LDK+</div></div></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">駅徒歩</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5856D6;">5分以内</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">広さ</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5856D6;">60㎡以上</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg"><div class="fg-hd"><span class="fg-t">権利形態</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5856D6;">所有権</span><span class="fg-arr">▼</span></div></div></div>
+          <div class="fg open"><div class="fg-hd"><span class="fg-t">エリア（区）</span><div style="display:flex;align-items:center;gap:4px;"><span class="fg-val" style="color:#5856D6;">江東区, 中央区</span><span class="fg-arr">▼</span></div></div><div class="fg-body"><div class="fg-inner"><div class="wg"><div class="wg-a">都心</div><div class="wg-i">千代田区</div><div class="wg-i" style="background:rgba(88,86,214,0.08);color:#5856D6;border-color:rgba(88,86,214,0.3);font-weight:600;">中央区</div><div class="wg-i">港区</div><div class="wg-a">城東</div><div class="wg-i" style="background:rgba(88,86,214,0.08);color:#5856D6;border-color:rgba(88,86,214,0.3);font-weight:600;">江東区</div><div class="wg-i">墨田区</div><div class="wg-i">台東区</div><div class="wg-a">城南</div><div class="wg-i">品川区</div><div class="wg-i">大田区</div><div class="wg-i">目黒区</div></div></div></div></div>
+          <div style="margin-top:12px;padding:12px;border-radius:10px;background:#5856D6;color:#fff;text-align:center;font-weight:600;font-size:14px;">12件の物件を表示</div>
         </div>
       </div>
-    </div>
-    <div class="phone-wrapper">
-      <h3>物件詳細</h3>
-      <div class="phone">
-        <div class="phone-screen" style="background:#FFFFFF; color:#1C1C1E;">
-          <div class="status-bar" style="color:#1C1C1E;"><span>9:41</span><span style="opacity:.4">&#x1F4F6; &#x1F50B;</span></div>
-          <div class="nav-bar"><span style="color:#5856D6;">&larr; 閉じる</span><span></span></div>
-          <div class="detail-scroll">
-            <div class="detail-header">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div><div class="detail-name">パークシティ豊洲 B棟</div><div class="detail-addr" style="color:#8E8E93;">東京都江東区豊洲5丁目</div></div>
-                <span style="font-size:22px;color:#FF6B6B;">&#x2665;</span>
-              </div>
-            </div>
-            <div class="detail-grid">
-              <div class="detail-item" style="background:#F2F1FA;"><div class="detail-item-label">価格</div><div class="detail-item-value" style="color:#FF6B6B;">8,980万円</div></div>
-              <div class="detail-item" style="background:#F2F1FA;"><div class="detail-item-label">専有面積</div><div class="detail-item-value">72.5㎡</div></div>
-              <div class="detail-item" style="background:#F2F1FA;"><div class="detail-item-label">間取り</div><div class="detail-item-value">3LDK</div></div>
-              <div class="detail-item" style="background:#F2F1FA;"><div class="detail-item-label">築年</div><div class="detail-item-value">2007年</div></div>
-            </div>
-            <div class="ss-section" style="background:#F2F1FA; border:1px solid #DDD8F0;">
-              <div class="ss-section-title" style="color:#5856D6;">&#x1F4CA; 住まいサーフィン評価</div>
-              <div class="ss-profit">
-                <div>
-                  <div class="ss-profit-label">沖式儲かる確率</div>
-                  <div><span class="ss-profit-value" style="color:#5856D6;">82</span><span class="ss-profit-unit" style="color:#5856D6;">%</span></div>
-                </div>
-                <div style="margin-left:auto;">
-                  <div class="ss-row"><span class="label">沖式時価</span><span class="value">8,200万円</span></div>
-                  <div class="ss-row"><span class="label">割安判定</span><span class="ss-badge" style="background:#EDE7F6;color:#4527A0;">割安</span></div>
-                </div>
-              </div>
-              <div class="ss-row"><span class="label">駅ランキング</span><span class="value">豊洲駅 3位 / 全12件</span></div>
-              <div class="ss-row"><span class="label">区ランキング</span><span class="value">江東区 8位 / 全45件</span></div>
-            </div>
-            <div class="detail-btn" style="background:#5856D6; color:#fff;">SUUMO/HOME'S で詳細を開く</div>
-            <div class="detail-btn-secondary" style="border-color:#5856D6; color:#5856D6;">住まいサーフィンで詳しく見る</div>
-          </div>
-          <div class="bottom-tab" style="background:rgba(255,255,255,0.95);">
-            <div class="bottom-tab-item" style="color:#C7C7CC;"><div class="icon">&#x1F3E2;</div>中古</div>
-            <div class="bottom-tab-item" style="color:#C7C7CC;"><div class="icon">&#x2728;</div>新築</div>
-            <div class="bottom-tab-item" style="color:#C7C7CC;"><div class="icon">&#x1F5FA;</div>地図</div>
-            <div class="bottom-tab-item" style="color:#5856D6;"><div class="icon">&#x2665;</div>お気に入り</div>
-            <div class="bottom-tab-item" style="color:#C7C7CC;"><div class="icon">&#x2699;</div>設定</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div></div></div>
   </div>
-  <div class="prompt-section">
-    <h3>アイコン画像生成プロンプト</h3>
-    <div class="prompt-text" id="prompt-d">A minimal iOS app icon, 1024x1024, clean modern design. White background with a simple house floor plan outline in soft indigo (#5856D6). A small coral (#FF6B6B) location pin marks one room. Blueprint aesthetic but minimal and modern. No text, no border. Apple HIG style, elegant Japanese real estate aesthetic.</div>
-    <button class="copy-btn" onclick="copyPrompt('prompt-d')">コピー</button>
-  </div>
+  <div class="prompt-section"><h3>アイコン画像生成プロンプト</h3><div class="prompt-text" id="pd">A minimal iOS app icon, 1024x1024, clean modern design. White background. A simple house floor plan outline rendered in solid indigo #5856D6. No text, no border, no gradient. Apple HIG style. Elegant Japanese real estate aesthetic.</div><button class="cpb" onclick="cp('pd')">コピー</button></div>
 </section>
 
 <script>
-function showScheme(id) {
-  document.querySelectorAll('.scheme-section').forEach(s => s.classList.remove('active'));
+function show(id, btn) {
+  document.querySelectorAll('.scheme').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('scheme-' + id).classList.add('active');
-  event.target.classList.add('active');
+  document.getElementById('s-' + id).classList.add('active');
+  btn.classList.add('active');
 }
-
-function copyPrompt(id) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = event.target;
-    btn.textContent = 'コピーしました';
-    setTimeout(() => { btn.textContent = 'コピー'; }, 2000);
-  });
+function cp(id) {
+  const t = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t).then(() => { const b = event.target; b.textContent = 'コピーしました'; setTimeout(() => b.textContent = 'コピー', 2000); });
 }
 </script>
-
 </body>
 </html>

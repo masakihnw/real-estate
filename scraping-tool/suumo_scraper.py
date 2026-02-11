@@ -6,6 +6,7 @@ SUUMO 中古マンション一覧のスクレイピング（私的利用・軽�
 
 import json
 import re
+import sys
 import time
 from dataclasses import dataclass, asdict
 from pathlib import Path
@@ -183,6 +184,12 @@ def fetch_list_page(
         time.sleep(REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
+            # 429 Too Many Requests — レートリミット対策
+            if r.status_code == 429:
+                retry_after = int(r.headers.get("Retry-After", 60))
+                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                time.sleep(retry_after)
+                continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
             return r.text
@@ -199,8 +206,9 @@ def fetch_list_page(
                 time.sleep(2)
             else:
                 raise last_error
-    if last_error:
+    if last_error is not None:
         raise last_error
+    raise RuntimeError(f"全 {REQUEST_RETRIES} 回のリトライが失敗しました (429 Rate Limited): {url}")
 
 
 def parse_list_html(html: str, base_url: str = BASE_URL) -> list[SuumoListing]:

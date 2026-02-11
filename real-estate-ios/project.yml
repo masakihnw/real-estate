@@ -35,12 +35,10 @@ targets:
         product: FirebaseAuth
       - package: Firebase
         product: FirebaseFirestore
+      - package: Firebase
+        product: FirebaseMessaging
       - package: GoogleSignIn
         product: GoogleSignIn
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.hanawa.realestate.app
-        SWIFT_EMIT_LOC_STRINGS: "YES"
     info:
       path: RealEstateApp/Info.plist
       properties:
@@ -53,7 +51,21 @@ targets:
           - "com.hanawa.realestate.app.refresh"
         UIBackgroundModes:
           - fetch
+          - remote-notification
+        CFBundleURLTypes:
+          - CFBundleURLSchemes:
+              - "com.googleusercontent.apps.481688023840-pd1prakenbuqgl1phfpdgkf2cghurak6"
     entitlements:
       path: RealEstateApp/RealEstateApp.entitlements
       properties:
         com.apple.developer.usernotifications: true
+        aps-environment: $(APS_ENVIRONMENT)
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hanawa.realestate.app
+        SWIFT_EMIT_LOC_STRINGS: "YES"
+      configs:
+        Debug:
+          APS_ENVIRONMENT: development
+        Release:
+          APS_ENVIRONMENT: production

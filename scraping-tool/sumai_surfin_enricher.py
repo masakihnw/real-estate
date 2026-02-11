@@ -252,6 +252,25 @@ def parse_property_page(session: requests.Session, url: str) -> dict:
     if ward_rank:
         result["ss_ward_rank"] = ward_rank
 
+    # ── 中古値上がり率 (%) ──
+    appreciation = _extract_appreciation_rate(soup, html)
+    if appreciation is not None:
+        result["ss_appreciation_rate"] = appreciation
+
+    # ── お気に入り数 ──
+    fav_count = _extract_favorite_count(soup, html)
+    if fav_count is not None:
+        result["ss_favorite_count"] = fav_count
+
+    # ── 購入判定 ──
+    purchase_judgment = _extract_purchase_judgment(soup, html)
+    if purchase_judgment:
+        result["ss_purchase_judgment"] = purchase_judgment
+
+    # ── 値上がりシミュレーション (5年後/10年後 × ベスト/標準/ワースト) ──
+    sim_data = _extract_simulation_data(soup, html)
+    result.update(sim_data)
+
     return result
 
 
@@ -323,6 +342,168 @@ def _extract_rank(soup: BeautifulSoup, keyword: str, html: str) -> Optional[str]
     return None
 
 
+def _extract_appreciation_rate(soup: BeautifulSoup, html: str) -> Optional[float]:
+    """中古値上がり率 (%) を抽出。プラスなら +18.5、マイナスなら -3.2 のような float。"""
+    # パターン1: "中古値上がり率" 付近の "XX%" を探す
+    m = re.search(r"中古値上がり率.*?([+-]?\d+(?:\.\d+)?)\s*[%％]", html, re.DOTALL)
+    if m:
+        return float(m.group(1))
+
+    # パターン2: テーブル行の中で「値上がり率」ラベルの隣セルから取得
+    for el in soup.find_all(string=re.compile(r"値上がり率")):
+        parent = el.find_parent("td") or el.find_parent("th") or el.find_parent()
+        if parent:
+            # 隣の td を探す
+            next_td = parent.find_next_sibling("td")
+            if next_td:
+                num = re.search(r"([+-]?\d+(?:\.\d+)?)\s*[%％]", next_td.get_text())
+                if num:
+                    return float(num.group(1))
+            # 親コンテナ全体から数値を探す
+            container = parent.find_parent()
+            if container:
+                num = re.search(r"([+-]?\d+(?:\.\d+)?)\s*[%％]", container.get_text())
+                if num:
+                    return float(num.group(1))
+
+    # パターン3: "XX%" 表記でリンクテキスト内の値上がり率表
+    for row in soup.find_all("tr"):
+        cells = row.find_all(["td", "th"])
+        for i, cell in enumerate(cells):
+            if "値上がり率" in cell.get_text():
+                # 同じ行の次セルまたは同じセル内
+                for j in range(i + 1, len(cells)):
+                    num = re.search(r"([+-]?\d+(?:\.\d+)?)\s*[%％]", cells[j].get_text())
+                    if num:
+                        return float(num.group(1))
+    return None
+
+
+def _extract_favorite_count(soup: BeautifulSoup, html: str) -> Optional[int]:
+    """お気に入り数を抽出。"""
+    # パターン1: "お気に入り" のランキング偏差値テキストからスコアを取得
+    # 住まいサーフィンでは「お気に入りランキング XX.X点」のように表示される
+    m = re.search(r"お気に入りランキング.*?(\d+(?:\.\d+)?)\s*点", html, re.DOTALL)
+    if m:
+        # スコアを整数として返す（偏差値的な値）
+        return int(float(m.group(1)))
+
+    # パターン2: "お気に入り数" or "お気に入り件数" 付近の数値
+    m = re.search(r"お気に入り(?:数|件数).*?(\d+)", html, re.DOTALL)
+    if m:
+        return int(m.group(1))
+
+    # パターン3: "お気に入り" セクション内のスコア（ランキングの得点部分）
+    for el in soup.find_all(string=re.compile(r"お気に入り")):
+        parent = el.find_parent()
+        if parent:
+            container = parent.find_parent()
+            if container:
+                # "XX.X点" パターン
+                num = re.search(r"(\d+(?:\.\d+)?)\s*点", container.get_text())
+                if num:
+                    return int(float(num.group(1)))
+    return None
+
+
+def _extract_purchase_judgment(soup: BeautifulSoup, html: str) -> Optional[str]:
+    """購入判定（"購入が望ましい" 等）を抽出。"""
+    # パターン1: "購入判定" の近くのテキスト
+    m = re.search(r"購入判定.*?(購入[^\s<]{1,20})", html, re.DOTALL)
+    if m:
+        return m.group(1).strip()
+
+    # パターン2: テーブルや見出しの隣
+    for el in soup.find_all(string=re.compile(r"購入判定")):
+        parent = el.find_parent()
+        if parent:
+            # 隣の要素を探す
+            sibling = parent.find_next_sibling()
+            if sibling:
+                text = sibling.get_text(strip=True)
+                if text:
+                    return text
+            # 同じ親内のテキスト
+            container = parent.find_parent()
+            if container:
+                text = container.get_text(strip=True)
+                # "購入判定" を除去して残りを取得
+                text = text.replace("購入判定", "").strip()
+                if text:
+                    return text
+    return None
+
+
+def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
+    """
+    値上がりシミュレーションテーブルのデータを抽出。
+    返却例: {
+        "ss_sim_best_5yr": 7344,
+        "ss_sim_best_10yr": 7788,
+        "ss_sim_standard_5yr": 6744,
+        "ss_sim_standard_10yr": 6588,
+        "ss_sim_worst_5yr": 6144,
+        "ss_sim_worst_10yr": 5388,
+    }
+    """
+    result: dict = {}
+
+    # 値上がりシミュレーションのテーブルを探す
+    # テーブルは「ベストケース」「標準ケース」「ワーストケース」の行を持つ
+    tables = soup.find_all("table")
+
+    for table in tables:
+        text = table.get_text()
+        if "ベストケース" not in text and "標準ケース" not in text:
+            continue
+
+        rows = table.find_all("tr")
+        for row in rows:
+            cells = row.find_all(["td", "th"])
+            if len(cells) < 3:
+                continue
+
+            row_text = cells[0].get_text(strip=True)
+
+            # ケース判定
+            case_key = None
+            if "ベスト" in row_text:
+                case_key = "best"
+            elif "標準" in row_text:
+                case_key = "standard"
+            elif "ワースト" in row_text:
+                case_key = "worst"
+            else:
+                continue
+
+            # 5年後 (cells[1]) と 10年後 (cells[2]) の値を抽出
+            for idx, suffix in [(1, "5yr"), (2, "10yr")]:
+                if idx < len(cells):
+                    val_text = cells[idx].get_text(strip=True)
+                    num = re.search(r"([\d,]+)\s*万円", val_text)
+                    if num:
+                        result[f"ss_sim_{case_key}_{suffix}"] = int(num.group(1).replace(",", ""))
+
+    # テーブルが見つからなかった場合、正規表現でフォールバック
+    if not result:
+        case_patterns = {
+            "best": r"ベストケース",
+            "standard": r"標準ケース",
+            "worst": r"ワーストケース",
+        }
+        for case_key, case_pat in case_patterns.items():
+            # "ベストケース ... 7,344万円 ... 7,788万円" のようなパターン
+            m = re.search(
+                case_pat + r".*?([\d,]+)\s*万円.*?([\d,]+)\s*万円",
+                html, re.DOTALL,
+            )
+            if m:
+                result[f"ss_sim_{case_key}_5yr"] = int(m.group(1).replace(",", ""))
+                result[f"ss_sim_{case_key}_10yr"] = int(m.group(2).replace(",", ""))
+
+    return result
+
+
 # ──────────────────────────── メイン処理 ────────────────────────────
 
 def enrich_listings(input_path: str, output_path: str, session: requests.Session) -> None:
@@ -366,7 +547,14 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
 
         if any(k.startswith("ss_") and k != "ss_sumai_surfin_url" for k in data):
             enriched_count += 1
-            print(f"OK (儲かる確率: {data.get('ss_profit_pct', '?')}%)", file=sys.stderr)
+            parts = []
+            if data.get("ss_profit_pct") is not None:
+                parts.append(f"儲かる確率: {data['ss_profit_pct']}%")
+            if data.get("ss_appreciation_rate") is not None:
+                parts.append(f"値上がり率: {data['ss_appreciation_rate']}%")
+            if data.get("ss_favorite_count") is not None:
+                parts.append(f"お気に入り: {data['ss_favorite_count']}点")
+            print(f"OK ({', '.join(parts) or 'URL取得'})", file=sys.stderr)
         else:
             print("データなし", file=sys.stderr)
 

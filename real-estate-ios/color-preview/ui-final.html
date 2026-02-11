@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>物件情報アプリ - 全画面UIプレビュー</title>
+<style>
+  :root { --pw: 375px; --ph: 812px; --a: #007AFF; --bg: #FFFFFF; --card: #F8F8FB; --text: #1C1C1E; --sub: #999; --faint: #C0C0C4; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #E8E8ED; color: var(--text); }
+  header { text-align: center; padding: 36px 20px 8px; }
+  header h1 { font-size: 22px; font-weight: 700; }
+  header p { color: #888; font-size: 11px; margin-top: 4px; }
+
+  /* Screen nav */
+  .snav { display: flex; justify-content: center; gap: 6px; padding: 12px 10px; position: sticky; top: 0; z-index: 200; background: rgba(232,232,237,0.95); backdrop-filter: blur(12px); flex-wrap: wrap; }
+  .stab { padding: 7px 16px; border: 1px solid #ccc; border-radius: 18px; background: #fff; color: #888; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .stab.on { background: var(--text); color: #fff; border-color: var(--text); }
+  .stab:hover:not(.on) { border-color: #999; color: #555; }
+
+  .sec { display: none; padding: 20px; justify-content: center; gap: 28px; flex-wrap: wrap; max-width: 1500px; margin: 0 auto; }
+  .sec.on { display: flex; }
+
+  .pcol { text-align: center; }
+  .pcol h3 { font-size: 11px; font-weight: 700; color: #888; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
+  .phone { width: var(--pw); height: var(--ph); border-radius: 44px; overflow: hidden; border: 3px solid #d5d5d8; box-shadow: 0 8px 32px rgba(0,0,0,0.10); }
+  .ps { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); color: var(--text); }
+  .sbar { height: 54px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 6px; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .nav { padding: 6px 16px 10px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .nav-t { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .scr { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .scr::-webkit-scrollbar { display: none; }
+  .btab { height: 78px; display: flex; align-items: center; justify-content: space-around; padding-bottom: 16px; flex-shrink: 0; border-top: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.97); }
+  .bt { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 9px; color: var(--sub); }
+  .bt .ic { font-size: 18px; }
+  .bt.on { color: var(--a); }
+
+  /* ===== LIST ===== */
+  .lc { padding: 11px 12px; border-radius: 12px; background: var(--card); margin-bottom: 6px; }
+  .li { min-width: 0; }
+  .ln { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 3px; }
+  .ln-name { font-size: 13px; font-weight: 600; line-height: 1.3; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ln-badge { flex-shrink: 0; }
+  .ln-heart { font-size: 16px; flex-shrink: 0; line-height: 1; }
+  .lm { display: flex; gap: 6px; font-size: 11px; flex-wrap: wrap; }
+  .ls { font-size: 10px; color: var(--sub); margin-top: 2px; }
+  .le { display: flex; gap: 5px; margin-top: 3px; font-size: 10px; align-items: center; }
+  .lb { padding: 1px 5px; border-radius: 3px; font-weight: 600; font-size: 9px; background: rgba(0,122,255,0.10); color: var(--a); }
+  .lh { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ===== STATION DROPDOWN ===== */
+  .st-dd { border-radius: 10px; background: var(--card); overflow: hidden; margin-bottom: 8px; }
+  .st-dd-main { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; cursor: pointer; }
+  .st-dd-lbl { font-size: 10px; color: var(--sub); }
+  .st-dd-val { font-size: 12px; font-weight: 600; margin-top: 1px; }
+  .st-dd-more { font-size: 9px; color: var(--sub); text-align: right; }
+  .st-dd-arr { font-size: 10px; color: #bbb; transition: transform 0.2s; }
+  .st-dd.open .st-dd-arr { transform: rotate(180deg); }
+  .st-dd-body { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+  .st-dd.open .st-dd-body { max-height: 200px; }
+  .st-dd-item { display: flex; justify-content: space-between; padding: 6px 10px; font-size: 11px; border-top: 1px solid rgba(0,0,0,0.04); }
+  .st-dd-item .walk { font-size: 10px; color: var(--sub); font-weight: 600; }
+  .dark-mode .st-dd { background: var(--card); }
+  .dark-mode .st-dd-item { border-top-color: rgba(84,84,88,0.65); }
+
+  /* ===== HAZARD BADGES ===== */
+  .hz-row { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin-top: 3px; }
+  .hz-icon { font-size: 10px; color: #FF9500; }
+  .hz-chip { display: inline-flex; align-items: center; gap: 2px; padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+  .hz-chip.warn { background: rgba(255,159,10,0.12); color: #FF9500; }
+  .hz-chip.danger { background: rgba(255,59,48,0.10); color: #FF3B30; }
+  /* Detail hazard section */
+  .hz-sec { border-radius: 10px; padding: 10px; margin-bottom: 8px; background: rgba(255,159,10,0.04); border: 1px solid rgba(255,159,10,0.12); }
+  .hz-sec-t { font-size: 10px; font-weight: 700; color: #FF9500; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+  .hz-sub { font-size: 10px; color: var(--sub); margin-bottom: 4px; font-weight: 600; }
+  .hz-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .hz-chip-lg { display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 600; }
+  .hz-chip-lg.warn { background: rgba(255,159,10,0.12); color: #FF9500; }
+  .hz-chip-lg.danger { background: rgba(255,59,48,0.10); color: #FF3B30; }
+  .hz-rank { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 11px; }
+  .hz-rank-icon { width: 20px; text-align: center; }
+  .hz-rank-label { flex: 1; font-weight: 500; }
+  .hz-rank-bar { display: flex; gap: 2px; }
+  .hz-rank-bar span { width: 14px; height: 10px; border-radius: 2px; background: rgba(0,0,0,0.06); }
+  .hz-rank-bar span.g { background: #34C759; }
+  .hz-rank-bar span.y { background: #FFCC00; }
+  .hz-rank-bar span.o { background: #FF9500; }
+  .hz-rank-bar span.r { background: #FF3B30; }
+  .hz-note { font-size: 9px; color: var(--faint); margin-top: 4px; }
+  .dark-mode .hz-sec { background: rgba(255,159,10,0.06); border-color: rgba(255,159,10,0.15); }
+  .dark-mode .hz-sec-t { color: #FF9F0A; }
+  .dark-mode .hz-chip.warn, .dark-mode .hz-chip-lg.warn { background: rgba(255,159,10,0.18); color: #FF9F0A; }
+  .dark-mode .hz-chip.danger, .dark-mode .hz-chip-lg.danger { background: rgba(255,69,58,0.15); color: #FF453A; }
+  .dark-mode .hz-icon { color: #FF9F0A; }
+  .dark-mode .hz-rank-bar span { background: rgba(120,120,128,0.36); }
+
+  /* ===== DETAIL ===== */
+  .dn { font-size: 16px; font-weight: 700; line-height: 1.3; }
+  .da { font-size: 11px; color: var(--sub); margin-top: 2px; }
+  .dm { font-size: 11px; color: #bbb; font-style: italic; padding: 6px 8px; border-radius: 6px; background: var(--card); margin: 6px 0; }
+  .ds { background: var(--card); border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+  .ds-t { font-size: 10px; font-weight: 700; color: #aaa; margin-bottom: 4px; letter-spacing: 0.3px; }
+  .dr { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 12px; }
+  .dr:last-child { border-bottom: none; }
+  .dr-l { color: var(--sub); font-size: 11px; }
+  .dr-v { font-weight: 600; }
+  .ss { border-radius: 10px; padding: 10px; margin-bottom: 8px; background: rgba(0,122,255,0.03); border: 1px solid rgba(0,122,255,0.08); }
+  .ss-t { font-size: 10px; font-weight: 700; color: var(--a); margin-bottom: 5px; }
+  .ss-big { font-size: 24px; font-weight: 800; color: var(--a); letter-spacing: -1px; }
+  .ss-u { font-size: 12px; font-weight: 600; color: rgba(0,122,255,0.5); }
+  .ss-r { display: flex; gap: 6px; font-size: 10px; margin-bottom: 2px; }
+  .ss-r .l { color: var(--sub); min-width: 56px; }
+  .ss-r .v { font-weight: 600; }
+  .ss-b { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; background: rgba(0,122,255,0.10); color: var(--a); }
+  .db { padding: 10px; border-radius: 10px; text-align: center; font-size: 12px; font-weight: 600; color: #fff; background: var(--a); margin-bottom: 5px; }
+  .db2 { padding: 8px; border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--a); border: 1.5px solid rgba(0,122,255,0.18); margin-bottom: 5px; }
+
+  /* ===== FILTER ===== */
+  .fg { margin-bottom: 2px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .fg:last-of-type { border-bottom: none; }
+  .fg-hd { display: flex; justify-content: space-between; align-items: center; padding: 10px 2px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+  .fg-t { font-size: 12px; font-weight: 600; color: var(--text); }
+  .fg-val { font-size: 11px; color: var(--a); font-weight: 500; }
+  .fg-arr { font-size: 10px; color: #bbb; transition: transform 0.2s; }
+  .fg.open .fg-arr { transform: rotate(180deg); }
+  .fg-body { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+  .fg.open .fg-body { max-height: 400px; }
+  .fg-inner { padding: 0 2px 10px; }
+  .fc { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip { padding: 5px 10px; border-radius: 16px; font-size: 11px; border: 1px solid #e0e0e0; background: #fff; color: #666; }
+  .chip.on { background: var(--a); color: #fff; border-color: var(--a); }
+  .sld { height: 20px; background: var(--card); border-radius: 10px; position: relative; margin: 6px 0 2px; }
+  .sld-f { position: absolute; top: 0; bottom: 0; border-radius: 10px; background: rgba(0,122,255,0.22); }
+  .sld-lb { display: flex; justify-content: space-between; font-size: 10px; color: var(--sub); padding-top: 2px; }
+  .sld-val { font-weight: 600; color: var(--text); }
+
+  /* Spinner animation */
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Ward grid */
+  .wg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .wg-area { font-size: 9px; font-weight: 700; color: #aaa; margin: 4px 0 2px; letter-spacing: 0.3px; grid-column: 1 / -1; }
+  .wg-item { padding: 4px 0; text-align: center; font-size: 10px; border: 1px solid #e8e8e8; border-radius: 6px; background: #fff; color: #666; cursor: pointer; }
+  .wg-item.on { background: rgba(0,122,255,0.08); color: var(--a); border-color: rgba(0,122,255,0.3); font-weight: 600; }
+
+  /* ===== MAP ===== */
+  .map-bg { flex: 1; background: linear-gradient(135deg, #E8F0E8 0%, #D8E8D8 30%, #E0E8F0 60%, #D0D8E8 100%); position: relative; overflow: hidden; }
+  .map-bg::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cpath d='M0 40h200M0 80h200M0 120h200M0 160h200M40 0v200M80 0v200M120 0v200M160 0v200' stroke='%23ccc' stroke-width='.5' fill='none'/%3E%3C/svg%3E") repeat; opacity: 0.3; }
+  .pin { position: absolute; width: 24px; height: 24px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; font-size: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 5; }
+  .pin span { transform: rotate(45deg); }
+  .pin.blue { background: var(--a); color: #fff; }
+  .pin.green { background: #34C759; color: #fff; }
+  .pin.liked { box-shadow: 0 0 0 2px #FF3B30, 0 2px 6px rgba(0,0,0,0.2); }
+  .map-popup { position: absolute; z-index: 10; background: #fff; border-radius: 10px; padding: 10px 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); width: 230px; font-size: 11px; }
+  .map-popup::after { content: ''; position: absolute; bottom: -6px; left: 20px; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); box-shadow: 2px 2px 4px rgba(0,0,0,0.08); }
+  .map-ol { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; flex-direction: column; gap: 6px; }
+  .map-btn { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border: none; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .map-legend { position: absolute; bottom: 10px; left: 10px; z-index: 10; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-radius: 8px; padding: 6px 10px; font-size: 9px; display: flex; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .map-legend-item { display: flex; align-items: center; gap: 4px; }
+  .map-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ===== SETTINGS ===== */
+  .st-sec { background: var(--card); border-radius: 10px; margin-bottom: 10px; }
+  .st-h { font-size: 10px; font-weight: 700; color: #aaa; padding: 8px 12px 4px; letter-spacing: 0.3px; }
+  .st-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 13px; }
+  .st-row:last-child { border-bottom: none; }
+  .st-row .lbl { color: var(--text); }
+  .st-row .val { color: var(--sub); font-size: 12px; max-width: 180px; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .st-row .arr { color: #ccc; font-size: 12px; margin-left: 4px; }
+  .st-btn { text-align: center; padding: 10px 12px; font-size: 13px; font-weight: 600; }
+
+  /* ===== EMPTY ===== */
+  .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; color: #bbb; gap: 6px; padding: 40px; }
+  .empty .eic { font-size: 40px; opacity: 0.4; }
+  .empty .etx { font-size: 13px; font-weight: 600; }
+  .empty .esu { font-size: 11px; text-align: center; }
+
+  /* Prompt */
+  .prompt { max-width: 1200px; margin: 16px auto 40px; padding: 20px; background: #fff; border-radius: 14px; border: 1px solid #e0e0e0; }
+  .prompt h3 { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 8px; }
+  .prompt pre { font-size: 10px; line-height: 1.55; color: #555; white-space: pre-wrap; font-family: 'SF Mono','Menlo',monospace; background: #F8F8F8; padding: 14px; border-radius: 10px; max-height: 600px; overflow-y: auto; }
+  .cpb { margin-top: 6px; padding: 5px 12px; border: 1px solid #ddd; border-radius: 6px; background: #fff; color: #888; font-size: 11px; cursor: pointer; }
+  .cpb:hover { background: #f0f0f0; color: #333; }
+
+  @media (max-width: 1100px) { :root { --pw: 340px; --ph: 740px; } .sec { gap: 14px; } }
+  @media (max-width: 768px) { :root { --pw: 310px; --ph: 680px; } }
+
+  /* ===== DARK MODE (Apple HIG) ===== */
+  /* References: Apple Human Interface Guidelines — Dark Mode
+     systemBackground: #000000 | secondarySystemBackground: #1C1C1E | tertiarySystemBackground: #2C2C2E
+     label: #FFFFFF | secondaryLabel: rgba(235,235,245,0.6) | tertiaryLabel: rgba(235,235,245,0.3)
+     separator: rgba(84,84,88,0.65) | opaqueSeparator: #38383A
+     systemFill: rgba(120,120,128,0.36)
+     systemBlue: #0A84FF | systemGreen: #30D158 | systemRed: #FF453A | systemOrange: #FF9F0A
+     systemGray: #8E8E93 | systemGray4: #3A3A3C | systemGray5: #2C2C2E | systemGray6: #1C1C1E */
+  .dark-mode .ps {
+    --bg: #000000;        /* systemBackground */
+    --card: #1C1C1E;      /* secondarySystemBackground / systemGray6 */
+    --text: #FFFFFF;       /* label */
+    --sub: rgba(235,235,245,0.6);  /* secondaryLabel */
+    --faint: rgba(235,235,245,0.3); /* tertiaryLabel */
+    --a: #0A84FF;          /* systemBlue (dark) */
+    background: var(--bg); color: var(--text);
+  }
+  .dark-mode .btab { background: rgba(0,0,0,0.97); border-top-color: rgba(84,84,88,0.65); }
+  .dark-mode .nav { border-bottom-color: rgba(84,84,88,0.65); }
+  .dark-mode .dr { border-bottom-color: rgba(84,84,88,0.65); }
+  .dark-mode .fg { border-bottom-color: rgba(84,84,88,0.65); }
+  .dark-mode .chip { background: #2C2C2E; border-color: #3A3A3C; color: rgba(235,235,245,0.6); }
+  .dark-mode .chip.on { background: var(--a); color: #fff; border-color: var(--a); }
+  .dark-mode .ss { background: rgba(10,132,255,0.08); border-color: rgba(10,132,255,0.2); }
+  .dark-mode .ss-t { color: #0A84FF; }
+  .dark-mode .db { background: #0A84FF; }
+  .dark-mode .db2 { color: #0A84FF; border-color: rgba(10,132,255,0.3); }
+  .dark-mode .st-sec { background: var(--card); }
+  .dark-mode .map-popup { background: #1C1C1E; color: #FFFFFF; }
+  .dark-mode .map-popup::after { background: #1C1C1E; }
+  .dark-mode .map-btn { background: rgba(28,28,30,0.92); color: #FFFFFF; }
+  .dark-mode .map-legend { background: rgba(28,28,30,0.92); color: rgba(235,235,245,0.6); }
+  .dark-mode .dm { background: var(--card); color: rgba(235,235,245,0.3); }
+  .dark-mode .ds { background: var(--card); }
+  .dark-mode .ds-t { color: #8E8E93; }
+  .dark-mode .wg-item { background: #2C2C2E; border-color: #3A3A3C; color: rgba(235,235,245,0.6); }
+  .dark-mode .wg-item.on { background: rgba(10,132,255,0.15); color: #0A84FF; border-color: rgba(10,132,255,0.4); }
+  .dark-mode .sld { background: #2C2C2E; }
+  .dark-mode .sld-f { background: rgba(10,132,255,0.4); }
+  .dark-mode .sbar { color: #FFFFFF; }
+  .dark-mode .lc { background: var(--card); }
+  .dark-mode .ln-name { color: #FFFFFF; }
+  .dark-mode .ls { color: rgba(235,235,245,0.3); }
+  .dark-mode .lb { background: rgba(10,132,255,0.15); color: #0A84FF; }
+  .dark-mode .empty { color: rgba(235,235,245,0.3); }
+  .dark-mode .st-h { color: #8E8E93; }
+  .dark-mode .st-row { border-bottom-color: rgba(84,84,88,0.65); }
+  .dark-mode .st-row .lbl { color: #FFFFFF; }
+  .dark-mode .st-row .val { color: rgba(235,235,245,0.6); }
+  .dark-mode .fg-t { color: #FFFFFF; }
+  .dark-mode .fg-arr { color: #8E8E93; }
+  .dark-mode .sld-val { color: #FFFFFF; }
+
+  /* Dark mode toggle button */
+  .dm-toggle { position: fixed; top: 12px; right: 16px; z-index: 300; padding: 6px 14px; border-radius: 20px; border: 1px solid #ccc; background: #fff; color: #666; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .dm-toggle:hover { background: #f0f0f0; }
+  .dark-page .dm-toggle { background: #1C1C1E; color: #ddd; border-color: #3A3A3C; }
+  .dark-page { background: #000; }
+</style>
+</head>
+<body>
+
+<button class="dm-toggle" onclick="toggleDark()">🌙 ダークモード</button>
+
+<header>
+  <h1>全画面 UI プレビュー（確定版）</h1>
+  <p>カードリスト ／ グループセクション詳細 ／ スライダー+チップ+区フィルタ ／ 地図 ／ お気に入り ／ 設定</p>
+</header>
+
+<div class="snav">
+  <button class="stab on" onclick="showS('list',this)">一覧</button>
+  <button class="stab" onclick="showS('detail',this)">詳細</button>
+  <button class="stab" onclick="showS('filter',this)">フィルタ</button>
+  <button class="stab" onclick="showS('map',this)">地図</button>
+  <button class="stab" onclick="showS('fav',this)">お気に入り</button>
+  <button class="stab" onclick="showS('settings',this)">設定</button>
+  <button class="stab" onclick="showS('login',this)">ログイン</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- LIST -->
+<!-- ============================================================ -->
+<div id="s-list" class="sec on">
+  <div class="pcol"><h3>中古マンション</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><div class="nav-t">中古マンション</div><div style="color:var(--a);font-size:16px;display:flex;gap:12px;"><span>☰</span><span style="font-size:14px;">↑↓</span></div></div>
+    <div class="scr" style="padding:0 12px;">
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">パークシティ豊洲 B棟</span><span class="ln-heart" style="color:var(--a);">♥</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">8,980万円</span><span style="color:var(--sub);">3LDK</span><span style="color:var(--sub);">72.5㎡</span><span style="color:var(--sub);">徒歩4分</span></div><div class="ls">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑18%</span><span style="color:var(--sub);">時価 8,200万<small>(70㎡)</small></span></div><div class="hz-row"><span class="hz-icon">⚠</span><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">🌊 高潮浸水</span><span class="hz-chip warn">〰 液状化</span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">ブリリアタワー東京</span><span class="ln-heart" style="color:var(--faint);">♡</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">7,480万円</span><span style="color:var(--sub);">2LDK</span><span style="color:var(--sub);">61.2㎡</span><span style="color:var(--sub);">徒歩6分</span></div><div class="ls">築12年 ・ 8階/23階建 ・ 所有権 ・ 348戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑12%</span><span style="color:var(--sub);">時価 7,800万<small>(70㎡)</small></span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">プラウド文京小石川</span><span class="ln-heart" style="color:var(--faint);">♡</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">9,500万円</span><span style="color:var(--sub);">3LDK</span><span style="color:var(--sub);">68.0㎡</span><span style="color:var(--sub);">徒歩3分</span></div><div class="ls">築5年 ・ 10階/15階建 ・ 所有権 ・ 120戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑25%</span><span style="color:var(--sub);">時価 10,100万<small>(70㎡)</small></span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">ザ・パークハウス晴海</span><span class="ln-heart" style="color:var(--a);">♥</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">6,280万円</span><span style="color:var(--sub);">2LDK</span><span style="color:var(--sub);">55.3㎡</span><span style="color:var(--sub);">徒歩7分</span></div><div class="ls">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div><div class="le"><span class="lb" style="background:rgba(255,59,48,0.08);color:#FF3B30;">↓3%</span><span style="color:var(--sub);">時価 5,900万<small>(70㎡)</small></span></div><div class="hz-row"><span class="hz-icon">⚠</span><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span><span class="hz-chip danger">🔥 火災 ランク4</span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">シティタワー有明</span><span class="ln-heart" style="color:var(--faint);">♡</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">5,980万円</span><span style="color:var(--sub);">2LDK</span><span style="color:var(--sub);">58.1㎡</span><span style="color:var(--sub);">徒歩5分</span></div><div class="ls">築10年 ・ 12階/33階建 ・ 所有権 ・ 486戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑8%</span><span style="color:var(--sub);">時価 6,300万<small>(70㎡)</small></span></div><div class="hz-row"><span class="hz-icon">⚠</span><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">グランドメゾン品川シーサイド</span><span class="ln-heart" style="color:var(--faint);">♡</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">7,280万円</span><span style="color:var(--sub);">3LDK</span><span style="color:var(--sub);">70.2㎡</span><span style="color:var(--sub);">徒歩3分</span></div><div class="ls">築15年 ・ 11階/22階建 ・ 所有権 ・ 410戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">↑15%</span><span style="color:var(--sub);">時価 7,500万<small>(70㎡)</small></span></div></div></div>
+    </div>
+    <div class="btab"><div class="bt on"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+
+  <div class="pcol"><h3>新築マンション</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><div class="nav-t">新築マンション</div><div style="color:var(--a);font-size:16px;display:flex;gap:12px;"><span>☰</span><span style="font-size:14px;">↑↓</span></div></div>
+    <div class="scr" style="padding:0 12px;">
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">HARUMI FLAG SUN VILLAGE</span><span class="ln-heart" style="color:var(--a);">♥</span></div><div class="lm"><span style="color:#34C759;font-weight:700;">6,000万〜1.2億</span><span style="color:var(--sub);">2LDK〜4LDK</span><span style="color:var(--sub);">61〜100㎡</span></div><div class="ls">2025年入居 ・ 50階建 ・ 所有権 ・ 4,145戸 ・ 徒歩12分</div><div class="le"><span class="lb" style="background:rgba(0,122,255,0.10);color:var(--a);">儲かる確率 82%</span><span style="color:var(--sub);font-size:9px;">駅1位 / 区3位</span></div><div class="hz-row"><span class="hz-icon">⚠</span><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">🌊 高潮浸水</span><span class="hz-chip warn">〰 液状化</span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">ブランズタワー豊洲</span><span class="ln-heart" style="color:var(--faint);">♡</span></div><div class="lm"><span style="color:#34C759;font-weight:700;">7,500万〜1.5億</span><span style="color:var(--sub);">1LDK〜4LDK</span><span style="color:var(--sub);">42〜86㎡</span></div><div class="ls">2026年入居 ・ 48階建 ・ 所有権 ・ 1,152戸 ・ 徒歩5分</div><div class="le"><span class="lb" style="background:rgba(0,122,255,0.10);color:var(--a);">儲かる確率 76%</span><span style="color:var(--sub);font-size:9px;">駅2位 / 区8位</span></div><div class="hz-row"><span class="hz-icon">⚠</span><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">パークタワー勝どき</span><span class="ln-heart" style="color:var(--faint);">♡</span></div><div class="lm"><span style="color:#34C759;font-weight:700;">8,000万〜2億</span><span style="color:var(--sub);">1LDK〜3LDK</span><span style="color:var(--sub);">44〜82㎡</span></div><div class="ls">2025年入居 ・ 58階建 ・ 所有権 ・ 2,786戸 ・ 徒歩1分</div><div class="le"><span class="lb" style="background:rgba(0,122,255,0.10);color:var(--a);">儲かる確率 91%</span><span style="color:var(--sub);font-size:9px;">駅1位 / 区2位</span></div></div></div>
+    </div>
+    <div class="btab"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt on"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DETAIL -->
+<!-- ============================================================ -->
+<div id="s-detail" class="sec">
+  <div class="pcol"><h3>中古 詳細</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><span style="color:var(--a);font-size:13px;">← 戻る</span><span style="font-size:18px;color:var(--a);">♥</span></div>
+    <div class="scr" style="padding:0 14px;">
+      <div style="margin-bottom:6px;"><div class="dn">パークシティ豊洲 B棟</div><div class="da">東京都江東区豊洲5丁目</div></div>
+
+      <!-- ① メモ -->
+      <div class="dm">メモを入力...</div>
+
+      <!-- ② 住まいサーフィン評価 -->
+      <div class="ss"><div class="ss-t">📊 住まいサーフィン評価</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <div>
+            <div style="font-size:9px;color:var(--sub);">沖式中古時価（70㎡換算）</div>
+            <span class="ss-big">8,200</span><span class="ss-u">万円</span>
+            <div style="margin-top:2px;"><span class="ss-b">割安</span></div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:9px;color:var(--sub);">中古値上がり率</div>
+            <span style="font-size:20px;font-weight:800;color:#34C759;">+18</span><span style="font-size:11px;font-weight:600;color:rgba(52,199,89,0.6);">%</span>
+          </div>
+        </div>
+        <!-- Radar chart (6-axis: matching Sumai Surfin) -->
+        <div style="margin:6px 0;padding:8px;background:rgba(0,122,255,0.02);border-radius:8px;">
+          <svg viewBox="0 0 200 170" style="width:100%;max-width:220px;display:block;margin:0 auto;">
+            <!-- Grid hexagons -->
+            <polygon points="100,34 142,58 142,106 100,130 58,106 58,58" fill="none" stroke="#ddd" stroke-width="0.6"/>
+            <polygon points="100,50 128,66 128,98 100,114 72,98 72,66" fill="none" stroke="#ddd" stroke-width="0.4"/>
+            <polygon points="100,66 114,74 114,90 100,98 86,90 86,74" fill="none" stroke="#ddd" stroke-width="0.4"/>
+            <!-- Axis lines -->
+            <line x1="100" y1="82" x2="100" y2="34" stroke="#ddd" stroke-width="0.4"/>
+            <line x1="100" y1="82" x2="142" y2="58" stroke="#ddd" stroke-width="0.4"/>
+            <line x1="100" y1="82" x2="142" y2="106" stroke="#ddd" stroke-width="0.4"/>
+            <line x1="100" y1="82" x2="100" y2="130" stroke="#ddd" stroke-width="0.4"/>
+            <line x1="100" y1="82" x2="58" y2="106" stroke="#ddd" stroke-width="0.4"/>
+            <line x1="100" y1="82" x2="58" y2="58" stroke="#ddd" stroke-width="0.4"/>
+            <!-- 行政区平均 (red) -->
+            <polygon points="100,62 116,73 117,92 100,97 81,93 84,73" fill="rgba(220,80,80,0.08)" stroke="rgba(220,80,80,0.5)" stroke-width="1"/>
+            <!-- 本物件 (blue) -->
+            <polygon points="100,38 130,65 120,94 100,108 63,103 68,63" fill="rgba(80,80,220,0.10)" stroke="rgba(80,80,220,0.7)" stroke-width="1.2"/>
+            <!-- Labels -->
+            <text x="100" y="27" text-anchor="middle" font-size="5.5" fill="#666">沖式中古時価m²単価</text>
+            <text x="148" y="57" text-anchor="start" font-size="5.5" fill="#666">築年数</text>
+            <text x="148" y="111" text-anchor="start" font-size="5.5" fill="#666">お気に入り数</text>
+            <text x="100" y="141" text-anchor="middle" font-size="5.5" fill="#666">中古値上がり率</text>
+            <text x="52" y="111" text-anchor="end" font-size="5.5" fill="#666">徒歩分数</text>
+            <text x="52" y="57" text-anchor="end" font-size="5.5" fill="#666">総戸数</text>
+            <!-- Legend -->
+            <rect x="52" y="153" width="12" height="6" rx="1" fill="rgba(80,80,220,0.15)" stroke="rgba(80,80,220,0.7)" stroke-width="0.6"/>
+            <text x="67" y="158.5" font-size="5" fill="#666">本物件</text>
+            <rect x="100" y="153" width="12" height="6" rx="1" fill="rgba(220,80,80,0.10)" stroke="rgba(220,80,80,0.5)" stroke-width="0.6"/>
+            <text x="115" y="158.5" font-size="5" fill="#666">行政区平均</text>
+          </svg>
+        </div>
+        <div class="ss-r"><span class="l">駅ランキング</span><span class="v"><b>3位</b> / 12件</span></div>
+        <div class="ss-r"><span class="l">区ランキング</span><span class="v"><b>8位</b> / 45件</span></div>
+      </div>
+
+      <!-- ③ 物件情報（統合） -->
+      <div class="ds"><div class="ds-t">物件情報</div>
+        <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">8,980万円</span></div>
+        <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 72.5㎡</span></div>
+        <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2007年（築18年）</span></div>
+        <div class="dr"><span class="dr-l">所在階 / 階建</span><span class="dr-v">15階 / 20階建</span></div>
+        <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">660戸</span></div>
+        <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+        <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
+      </div>
+      <!-- 最寄駅（プルダウン） -->
+      <div class="st-dd open" onclick="this.classList.toggle('open')">
+        <div class="st-dd-main">
+          <div>
+            <div class="st-dd-lbl">最寄駅</div>
+            <div class="st-dd-val">ゆりかもめ「豊洲」徒歩4分</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="st-dd-more">他2駅</div>
+            <span class="st-dd-arr">▼</span>
+          </div>
+        </div>
+        <div class="st-dd-body">
+          <div class="st-dd-item"><span>東京メトロ有楽町線「豊洲」</span><span class="walk">徒歩5分</span></div>
+          <div class="st-dd-item"><span>東京メトロ有楽町線「月島」</span><span class="walk">徒歩12分</span></div>
+        </div>
+      </div>
+
+      <!-- ④ ハザード情報 -->
+      <div class="hz-sec">
+        <div class="hz-sec-t">⚠️ ハザード情報</div>
+        <div class="hz-sub">ハザードマップ該当</div>
+        <div class="hz-chips">
+          <span class="hz-chip-lg warn">💧 洪水浸水</span>
+          <span class="hz-chip-lg warn">🌊 高潮浸水</span>
+          <span class="hz-chip-lg warn">〰 液状化</span>
+        </div>
+        <div class="hz-sub">東京都地域危険度</div>
+        <div class="hz-rank">
+          <span class="hz-rank-icon">🏚</span>
+          <span class="hz-rank-label">建物倒壊 ランク2</span>
+          <span class="hz-rank-bar"><span class="g"></span><span class="y"></span><span></span><span></span><span></span></span>
+        </div>
+        <div class="hz-rank">
+          <span class="hz-rank-icon">🔥</span>
+          <span class="hz-rank-label">火災 ランク1</span>
+          <span class="hz-rank-bar"><span class="g"></span><span></span><span></span><span></span><span></span></span>
+        </div>
+        <div class="hz-rank">
+          <span class="hz-rank-icon">⚠</span>
+          <span class="hz-rank-label">総合危険度 ランク2</span>
+          <span class="hz-rank-bar"><span class="g"></span><span class="y"></span><span></span><span></span><span></span></span>
+        </div>
+        <div class="hz-note">※ 国土地理院ハザードマップ・東京都地域危険度データに基づく自動判定です</div>
+      </div>
+
+      <!-- ⑤ ボタン -->
+      <div class="db">SUUMO/HOME'S で詳細を開く</div>
+      <div class="db2">住まいサーフィンで詳しく見る</div>
+    </div>
+    <div class="btab"><div class="bt on"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+
+  <div class="pcol"><h3>新築 詳細</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><span style="color:var(--a);font-size:13px;">← 戻る</span><span style="font-size:18px;color:var(--faint);">♡</span></div>
+    <div class="scr" style="padding:0 14px;">
+      <div style="margin-bottom:6px;"><div class="dn">HARUMI FLAG SUN VILLAGE</div><div class="da">東京都中央区晴海5丁目</div></div>
+
+      <!-- ① メモ -->
+      <div class="dm">メモを入力...</div>
+
+      <!-- ② 住まいサーフィン評価 -->
+      <div class="ss"><div class="ss-t">📊 住まいサーフィン評価</div>
+        <!-- 儲かる確率 + ランキング -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <div>
+            <div style="font-size:9px;color:var(--sub);">沖式儲かる確率</div>
+            <span class="ss-big">76</span><span class="ss-u">%</span>
+          </div>
+          <div style="text-align:right;font-size:10px;">
+            <div style="color:var(--sub);margin-bottom:2px;">勝どき駅 <b style="color:var(--text);">1位</b>/3件</div>
+            <div style="color:var(--sub);">中央区 <b style="color:var(--text);">2位</b>/18件</div>
+          </div>
+        </div>
+        <!-- 10年後予測 -->
+        <div style="background:rgba(0,122,255,0.02);border-radius:8px;padding:8px;margin-bottom:6px;">
+          <div style="font-size:9px;font-weight:700;color:#aaa;margin-bottom:4px;">10年後予測詳細</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <span style="font-size:11px;">値上がり判定</span>
+            <span class="ss-b" style="background:rgba(52,199,89,0.12);color:#34C759;">値上がりが期待できます</span>
+          </div>
+          <div class="ss-r"><span class="l">沖式新築時価</span><span class="v">18,500万円<small style="color:var(--sub);"> (70㎡)</small></span></div>
+          <div class="ss-r"><span class="l">新築時m²単価</span><span class="v">264万円/㎡</span></div>
+          <div class="ss-r"><span class="l">10年後予測m²</span><span class="v">295万円/㎡</span></div>
+          <div class="ss-r"><span class="l">予測変動率</span><span class="v" style="color:#34C759;">+11.7%</span></div>
+        </div>
+        <!-- 値上がりシミュレーション -->
+        <div style="background:rgba(0,122,255,0.02);border-radius:8px;padding:8px;margin-bottom:6px;">
+          <div style="font-size:9px;font-weight:700;color:#aaa;margin-bottom:6px;">📈 値上がりシミュレーション</div>
+          <div style="display:flex;gap:4px;">
+            <table style="flex:1;font-size:8px;border-collapse:collapse;">
+              <tr style="color:#999;"><td></td><td style="text-align:center;">5年後</td><td style="text-align:center;">10年後</td></tr>
+              <tr><td><span style="background:#3478F6;color:#fff;padding:1px 4px;border-radius:2px;font-size:7px;">ベスト</span></td><td style="text-align:center;font-weight:600;">7,344万</td><td style="text-align:center;font-weight:600;">7,788万</td></tr>
+              <tr><td><span style="background:#34C759;color:#fff;padding:1px 4px;border-radius:2px;font-size:7px;">標準</span></td><td style="text-align:center;font-weight:600;">6,744万</td><td style="text-align:center;font-weight:600;">6,588万</td></tr>
+              <tr><td><span style="background:#FF3B30;color:#fff;padding:1px 4px;border-radius:2px;font-size:7px;">ワースト</span></td><td style="text-align:center;font-weight:600;">6,144万</td><td style="text-align:center;font-weight:600;">5,388万</td></tr>
+              <tr><td><span style="background:#FF9500;color:#fff;padding:1px 4px;border-radius:2px;font-size:7px;">ローン残高</span></td><td style="text-align:center;font-weight:600;">5,395万</td><td style="text-align:center;font-weight:600;">4,757万</td></tr>
+            </table>
+            <!-- SVG line chart -->
+            <svg viewBox="0 0 120 70" style="flex:1;max-height:70px;">
+              <text x="10" y="8" font-size="5" fill="#999">8000万</text>
+              <text x="10" y="30" font-size="5" fill="#999">6000万</text>
+              <text x="10" y="52" font-size="5" fill="#999">4000万</text>
+              <line x1="30" y1="5" x2="30" y2="55" stroke="#eee" stroke-width="0.5"/>
+              <line x1="70" y1="5" x2="70" y2="55" stroke="#eee" stroke-width="0.5"/>
+              <line x1="110" y1="5" x2="110" y2="55" stroke="#eee" stroke-width="0.5"/>
+              <text x="30" y="62" font-size="4.5" fill="#999" text-anchor="middle">購入時</text>
+              <text x="70" y="62" font-size="4.5" fill="#999" text-anchor="middle">5年後</text>
+              <text x="110" y="62" font-size="4.5" fill="#999" text-anchor="middle">10年後</text>
+              <!-- ベスト: 6000→7344→7788 -->
+              <polyline points="30,25 70,13 110,8" fill="none" stroke="#3478F6" stroke-width="1.5"/>
+              <!-- 標準: 6000→6744→6588 -->
+              <polyline points="30,25 70,18 110,20" fill="none" stroke="#34C759" stroke-width="1.5"/>
+              <!-- ワースト: 6000→6144→5388 -->
+              <polyline points="30,25 70,24 110,32" fill="none" stroke="#FF3B30" stroke-width="1.5"/>
+              <!-- ローン残高: 6000→5395→4757 -->
+              <polyline points="30,25 70,29 110,36" fill="none" stroke="#FF9500" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+        <!-- 含み益シミュレーション -->
+        <div style="background:rgba(0,122,255,0.02);border-radius:8px;padding:8px;">
+          <div style="font-size:9px;font-weight:700;color:#aaa;margin-bottom:2px;">💰 含み益シミュレーション</div>
+          <div style="font-size:7px;color:#bbb;margin-bottom:4px;">※(売却額−頭金)−ローン残高 = 含み益</div>
+          <div style="display:flex;gap:4px;">
+            <table style="flex:1;font-size:8px;border-collapse:collapse;">
+              <tr style="color:#999;"><td></td><td style="text-align:center;">5年後</td><td style="text-align:center;">10年後</td></tr>
+              <tr><td><span style="background:#3478F6;color:#fff;padding:1px 4px;border-radius:2px;font-size:7px;">ベスト</span></td><td style="text-align:center;font-weight:600;">1,949万</td><td style="text-align:center;font-weight:600;">3,031万</td></tr>
+              <tr><td><span style="background:#34C759;color:#fff;padding:1px 4px;border-radius:2px;font-size:7px;">標準</span></td><td style="text-align:center;font-weight:600;">1,349万</td><td style="text-align:center;font-weight:600;">1,831万</td></tr>
+              <tr><td><span style="background:#FF3B30;color:#fff;padding:1px 4px;border-radius:2px;font-size:7px;">ワースト</span></td><td style="text-align:center;font-weight:600;">749万</td><td style="text-align:center;font-weight:600;">631万</td></tr>
+            </table>
+            <svg viewBox="0 0 120 70" style="flex:1;max-height:70px;">
+              <text x="10" y="8" font-size="5" fill="#999">3000万</text>
+              <text x="10" y="30" font-size="5" fill="#999">1500万</text>
+              <text x="10" y="52" font-size="5" fill="#999">0万</text>
+              <line x1="30" y1="5" x2="30" y2="55" stroke="#eee" stroke-width="0.5"/>
+              <line x1="70" y1="5" x2="70" y2="55" stroke="#eee" stroke-width="0.5"/>
+              <line x1="110" y1="5" x2="110" y2="55" stroke="#eee" stroke-width="0.5"/>
+              <text x="30" y="62" font-size="4.5" fill="#999" text-anchor="middle">購入時</text>
+              <text x="70" y="62" font-size="4.5" fill="#999" text-anchor="middle">5年後</text>
+              <text x="110" y="62" font-size="4.5" fill="#999" text-anchor="middle">10年後</text>
+              <!-- ベスト: 0→1949→3031 -->
+              <polyline points="30,52 70,20 110,4" fill="none" stroke="#3478F6" stroke-width="1.5"/>
+              <!-- 標準: 0→1349→1831 -->
+              <polyline points="30,52 70,30 110,22" fill="none" stroke="#34C759" stroke-width="1.5"/>
+              <!-- ワースト: 0→749→631 -->
+              <polyline points="30,52 70,40 110,42" fill="none" stroke="#FF3B30" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div style="font-size:7px;color:#bbb;margin-top:4px;">
+            <span style="background:var(--a);color:#fff;padding:1px 4px;border-radius:2px;font-size:6px;">購入条件</span>
+            価格: 6,000万円 / 金利: 0.8% / 返済期間: 50年 / 頭金: 0万円
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ 物件情報（統合） -->
+      <div class="ds"><div class="ds-t">物件情報</div>
+        <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:#34C759;">6,000万〜1.2億</span></div>
+        <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">2LDK〜4LDK / 61〜100㎡</span></div>
+        <div class="dr"><span class="dr-l">入居時期</span><span class="dr-v">2025年3月</span></div>
+        <div class="dr"><span class="dr-l">階建</span><span class="dr-v">50階建</span></div>
+        <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">4,145戸</span></div>
+        <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+        <div class="dr"><span class="dr-l">種別</span><span class="dr-v">新築マンション</span></div>
+      </div>
+      <!-- 最寄駅（プルダウン） -->
+      <div class="st-dd" onclick="this.classList.toggle('open')">
+        <div class="st-dd-main">
+          <div>
+            <div class="st-dd-lbl">最寄駅</div>
+            <div class="st-dd-val">都営大江戸線「勝どき」徒歩12分</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="st-dd-more">他1駅</div>
+            <span class="st-dd-arr">▼</span>
+          </div>
+        </div>
+        <div class="st-dd-body">
+          <div class="st-dd-item"><span>東京BRT「勝どきBRT」</span><span class="walk">徒歩5分</span></div>
+        </div>
+      </div>
+
+      <!-- ④ ハザード情報 -->
+      <div class="hz-sec">
+        <div class="hz-sec-t">⚠️ ハザード情報</div>
+        <div class="hz-sub">ハザードマップ該当</div>
+        <div class="hz-chips">
+          <span class="hz-chip-lg warn">💧 洪水浸水</span>
+          <span class="hz-chip-lg warn">🌊 高潮浸水</span>
+          <span class="hz-chip-lg warn">〰 液状化</span>
+        </div>
+        <div class="hz-sub">東京都地域危険度</div>
+        <div class="hz-rank">
+          <span class="hz-rank-icon">🏚</span>
+          <span class="hz-rank-label">建物倒壊 ランク1</span>
+          <span class="hz-rank-bar"><span class="g"></span><span></span><span></span><span></span><span></span></span>
+        </div>
+        <div class="hz-rank">
+          <span class="hz-rank-icon">🔥</span>
+          <span class="hz-rank-label">火災 ランク1</span>
+          <span class="hz-rank-bar"><span class="g"></span><span></span><span></span><span></span><span></span></span>
+        </div>
+        <div class="hz-rank">
+          <span class="hz-rank-icon">⚠</span>
+          <span class="hz-rank-label">総合危険度 ランク1</span>
+          <span class="hz-rank-bar"><span class="g"></span><span></span><span></span><span></span><span></span></span>
+        </div>
+        <div class="hz-note">※ 国土地理院ハザードマップ・東京都地域危険度データに基づく自動判定です</div>
+      </div>
+
+      <!-- ⑤ ボタン -->
+      <div class="db">SUUMO で詳細を開く</div>
+      <div class="db2">住まいサーフィンで詳しく見る</div>
+    </div>
+    <div class="btab"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt on"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+
+  <!-- 掲載終了 詳細 -->
+  <div class="pcol"><h3>掲載終了 詳細</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><span style="color:var(--a);font-size:13px;">← 戻る</span><span style="font-size:18px;color:var(--a);">♥</span></div>
+    <div class="scr" style="padding:0 14px;">
+      <!-- 掲載終了バナー -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#FF9500;color:#fff;border-radius:10px;margin-bottom:8px;font-size:12px;font-weight:600;">
+        <span style="font-size:16px;">⚠</span>この物件はサイトから掲載終了しています
+      </div>
+      <div style="margin-bottom:6px;"><div class="dn">ブリリアタワー月島</div><div class="da">東京都中央区月島2丁目</div></div>
+      <div class="dm">立地がとても良い。管理費もリーズナブル。</div>
+      <div class="ds"><div class="ds-t">物件情報</div>
+        <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">7,480万円</span></div>
+        <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">2LDK / 58.2㎡</span></div>
+        <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2013年（築12年）</span></div>
+        <div class="dr"><span class="dr-l">所在階 / 階建</span><span class="dr-v">22階 / 32階建</span></div>
+        <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">350戸</span></div>
+      </div>
+      <div class="ds"><div class="ds-t">アクセス・権利</div>
+        <div class="dr"><span class="dr-l">路線・駅</span><span class="dr-v">有楽町線「月島」徒歩3分</span></div>
+        <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+        <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
+      </div>
+      <div style="margin-top:6px;padding:10px 12px;background:rgba(255,149,0,0.08);border-radius:8px;border:1px solid rgba(255,149,0,0.2);font-size:10px;color:var(--sub);text-align:center;">この物件はSUUMO/HOME'Sから削除されました。<br>掲載時の情報を表示しています。</div>
+    </div>
+    <div class="btab"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt on"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FILTER -->
+<!-- ============================================================ -->
+<div id="s-filter" class="sec">
+  <div class="pcol"><h3>フィルタ（閉じた状態）</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div style="background:rgba(0,0,0,0.2);flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
+      <div style="background:#fff;border-radius:16px 16px 0 0;padding:16px;" class="scr">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:18px;font-weight:700;">フィルタ</span>
+          <span style="color:var(--a);font-size:13px;font-weight:600;">リセット</span>
+        </div>
+        <!-- All collapsed -->
+        <div class="fg"><div class="fg-hd"><span class="fg-t">価格帯</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">5,000万〜8,000万</span><span class="fg-arr">▼</span></div></div></div>
+        <div class="fg"><div class="fg-hd"><span class="fg-t">間取り</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">2LDK, 3LDK</span><span class="fg-arr">▼</span></div></div></div>
+        <div class="fg"><div class="fg-hd"><span class="fg-t">駅徒歩</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">5分以内</span><span class="fg-arr">▼</span></div></div></div>
+        <div class="fg"><div class="fg-hd"><span class="fg-t">広さ</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">60㎡以上</span><span class="fg-arr">▼</span></div></div></div>
+        <div class="fg"><div class="fg-hd"><span class="fg-t">権利形態</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">所有権</span><span class="fg-arr">▼</span></div></div></div>
+        <div class="fg"><div class="fg-hd"><span class="fg-t">エリア（区）</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">江東区, 中央区</span><span class="fg-arr">▼</span></div></div></div>
+        <div style="margin-top:16px;padding:12px;border-radius:10px;background:var(--a);color:#fff;text-align:center;font-weight:600;font-size:14px;">12件の物件を表示</div>
+      </div>
+    </div>
+  </div></div></div>
+
+  <div class="pcol"><h3>フィルタ（展開状態）</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div style="background:rgba(0,0,0,0.2);flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
+      <div style="background:#fff;border-radius:16px 16px 0 0;padding:16px;max-height:680px;" class="scr">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:18px;font-weight:700;">フィルタ</span>
+          <span style="color:var(--a);font-size:13px;font-weight:600;">リセット</span>
+        </div>
+
+        <!-- Price: OPEN -->
+        <div class="fg open"><div class="fg-hd"><span class="fg-t">価格帯</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">5,000万〜8,000万</span><span class="fg-arr">▼</span></div></div>
+          <div class="fg-body"><div class="fg-inner">
+            <div class="sld"><div class="sld-f" style="left:18%;right:30%;"></div></div>
+            <div class="sld-lb"><span>3,000万</span><span class="sld-val">5,000万 〜 8,000万</span><span>1.5億</span></div>
+          </div></div>
+        </div>
+
+        <!-- Layout: OPEN -->
+        <div class="fg open"><div class="fg-hd"><span class="fg-t">間取り</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">2LDK, 3LDK</span><span class="fg-arr">▼</span></div></div>
+          <div class="fg-body"><div class="fg-inner">
+            <div class="fc"><div class="chip">1LDK</div><div class="chip on">2LDK</div><div class="chip on">3LDK</div><div class="chip">4LDK+</div></div>
+          </div></div>
+        </div>
+
+        <!-- Walk: collapsed -->
+        <div class="fg"><div class="fg-hd"><span class="fg-t">駅徒歩</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">5分以内</span><span class="fg-arr">▼</span></div></div></div>
+
+        <!-- Area: collapsed -->
+        <div class="fg"><div class="fg-hd"><span class="fg-t">広さ</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">60㎡以上</span><span class="fg-arr">▼</span></div></div></div>
+
+        <!-- Ownership: collapsed -->
+        <div class="fg"><div class="fg-hd"><span class="fg-t">権利形態</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">所有権</span><span class="fg-arr">▼</span></div></div></div>
+
+        <!-- Ward: OPEN -->
+        <div class="fg open"><div class="fg-hd"><span class="fg-t">エリア（区）</span><div style="display:flex;align-items:center;gap:6px;"><span class="fg-val">江東区, 中央区</span><span class="fg-arr">▼</span></div></div>
+          <div class="fg-body"><div class="fg-inner">
+            <div class="wg">
+              <div class="wg-area">都心エリア</div>
+              <div class="wg-item">千代田区</div><div class="wg-item on">中央区</div><div class="wg-item">港区</div>
+              <div class="wg-area">城東エリア</div>
+              <div class="wg-item on">江東区</div><div class="wg-item">墨田区</div><div class="wg-item">台東区</div><div class="wg-item">江戸川区</div><div class="wg-item">葛飾区</div><div class="wg-item">足立区</div>
+              <div class="wg-area">城南エリア</div>
+              <div class="wg-item">品川区</div><div class="wg-item">大田区</div><div class="wg-item">目黒区</div>
+              <div class="wg-area">城西エリア</div>
+              <div class="wg-item">渋谷区</div><div class="wg-item">新宿区</div><div class="wg-item">世田谷区</div>
+              <div class="wg-area">城北エリア</div>
+              <div class="wg-item">文京区</div><div class="wg-item">豊島区</div><div class="wg-item">北区</div><div class="wg-item">板橋区</div><div class="wg-item">練馬区</div><div class="wg-item">荒川区</div>
+              <div class="wg-area">多摩エリア</div>
+              <div class="wg-item">杉並区</div><div class="wg-item">中野区</div><div class="wg-item">武蔵野市</div>
+            </div>
+          </div></div>
+        </div>
+
+        <div style="margin-top:12px;padding:12px;border-radius:10px;background:var(--a);color:#fff;text-align:center;font-weight:600;font-size:14px;">12件の物件を表示</div>
+      </div>
+    </div>
+  </div></div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MAP -->
+<!-- ============================================================ -->
+<div id="s-map" class="sec">
+  <div class="pcol"><h3>地図（物件ピン＋ハザード）<br><span style="font-size:9px;color:#bbb;text-transform:none;letter-spacing:0;">※実機ではMapKitの地図が表示されます</span></h3><div class="phone"><div class="ps">
+    <div class="sbar" style="position:absolute;top:0;left:0;right:0;z-index:20;"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="map-bg">
+      <!-- Hazard overlay hint -->
+      <div style="position:absolute;inset:0;background:rgba(255,180,100,0.08);z-index:1;"></div>
+      <!-- Pins -->
+      <div class="pin blue" style="top:35%;left:42%;"><span>🏢</span></div>
+      <div class="pin blue liked" style="top:42%;left:55%;"><span>♥</span></div>
+      <div class="pin green" style="top:28%;left:60%;"><span>✨</span></div>
+      <div class="pin blue" style="top:55%;left:38%;"><span>🏢</span></div>
+      <div class="pin green" style="top:50%;left:65%;"><span>✨</span></div>
+      <div class="pin blue" style="top:65%;left:50%;"><span>🏢</span></div>
+      <!-- Popup -->
+      <div class="map-popup" style="top:8%;left:28%;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div style="font-weight:700;font-size:12px;flex:1;">パークシティ豊洲 B棟</div>
+          <span style="color:var(--a);font-size:16px;margin-left:6px;flex-shrink:0;">♥</span>
+        </div>
+        <div style="color:var(--a);font-weight:700;font-size:13px;margin:3px 0;">8,980万円</div>
+        <div style="color:var(--sub);font-size:9px;line-height:1.5;">3LDK ・ 72.5㎡ ・ 徒歩4分<br>築18年 ・ 15階/20階建 ・ 所有権</div>
+      </div>
+      <!-- Overlay buttons -->
+      <div class="map-ol">
+        <div class="map-btn">☰</div>
+        <div class="map-btn">🗺</div>
+      </div>
+      <!-- Legend -->
+      <div class="map-legend">
+        <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--a);"></div>中古</div>
+        <div class="map-legend-item"><div class="map-legend-dot" style="background:#34C759;"></div>新築</div>
+        <div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(255,180,100,0.4);"></div>洪水</div>
+      </div>
+    </div>
+    <div class="btab"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt on"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+
+  <div class="pcol"><h3>ハザードレイヤー選択</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div style="background:rgba(0,0,0,0.2);flex:1;display:flex;flex-direction:column;justify-content:flex-end;">
+      <div style="background:#fff;border-radius:16px 16px 0 0;padding:16px;" class="scr">
+        <div style="font-size:18px;font-weight:700;margin-bottom:14px;">ハザードマップ</div>
+        <div class="ds"><div class="ds-t">基本レイヤー</div>
+          <div class="dr"><span class="dr-l">🌊 洪水浸水想定</span><span class="dr-v" style="color:var(--a);">ON</span></div>
+          <div class="dr"><span class="dr-l">⛰ 土砂災害</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+          <div class="dr"><span class="dr-l">🌊 高潮浸水想定</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+          <div class="dr"><span class="dr-l">🌊 津波浸水想定</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+          <div class="dr"><span class="dr-l">💧 液状化</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+        </div>
+        <div class="ds"><div class="ds-t">洪水詳細</div>
+          <div class="dr"><span class="dr-l">💧 内水浸水</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+          <div class="dr"><span class="dr-l">⏱ 浸水継続時間</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+          <div class="dr"><span class="dr-l">🏚 家屋倒壊（氾濫流）</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+          <div class="dr"><span class="dr-l">🏚 家屋倒壊（河岸侵食）</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+        </div>
+        <div class="ds"><div class="ds-t">地域危険度（東京都）</div>
+          <div class="dr"><span class="dr-l">🏗 建物倒壊</span><span class="dr-v" style="color:var(--a);">ON</span></div>
+          <div class="dr"><span class="dr-l">🔥 火災</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+          <div class="dr"><span class="dr-l">📊 総合</span><span class="dr-v" style="color:var(--sub);">OFF</span></div>
+          <div style="display:flex;gap:4px;margin-top:6px;font-size:9px;align-items:center;">
+            <span style="color:#aaa;">凡例:</span>
+            <span style="background:#2ECC71;color:#fff;padding:1px 5px;border-radius:3px;">1</span>
+            <span style="background:#A8D65C;color:#fff;padding:1px 5px;border-radius:3px;">2</span>
+            <span style="background:#F5D63D;color:#333;padding:1px 5px;border-radius:3px;">3</span>
+            <span style="background:#F5A623;color:#fff;padding:1px 5px;border-radius:3px;">4</span>
+            <span style="background:#E74C3C;color:#fff;padding:1px 5px;border-radius:3px;">5</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FAVORITES -->
+<!-- ============================================================ -->
+<div id="s-fav" class="sec">
+  <div class="pcol"><h3>お気に入り（データあり）</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><div class="nav-t">お気に入り</div><div style="color:var(--a);font-size:16px;">☰</div></div>
+    <div class="scr" style="padding:0 12px;">
+      <!-- 掲載状態チップフィルタ -->
+      <div style="display:flex;gap:6px;padding:8px 0 4px;">
+        <span style="display:inline-flex;align-items:center;gap:3px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600;color:#fff;background:var(--a);">すべて <span style="font-size:10px;opacity:0.8;">4</span></span>
+        <span style="display:inline-flex;align-items:center;gap:3px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:400;color:var(--text);background:var(--card);">掲載中 <span style="font-size:10px;color:var(--sub);">3</span></span>
+        <span style="display:inline-flex;align-items:center;gap:3px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:400;color:var(--text);background:var(--card);">⚠ 掲載終了 <span style="font-size:10px;color:var(--sub);">1</span></span>
+      </div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">パークシティ豊洲 B棟</span><span class="ln-heart" style="color:var(--a);">♥</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">8,980万円</span><span style="color:var(--sub);">3LDK</span><span style="color:var(--sub);">72.5㎡</span><span style="color:var(--sub);">徒歩4分</span></div><div class="ls">築18年 ・ 15階/20階建 ・ 所有権 ・ 660戸</div><div class="le"><span class="lb">82%</span><span style="color:var(--sub);">沖式時価 8,200万</span></div><div class="hz-row"><span class="hz-icon">⚠</span><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">🌊 高潮浸水</span><span class="hz-chip warn">〰 液状化</span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">ザ・パークハウス晴海</span><span class="ln-heart" style="color:var(--a);">♥</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">6,280万円</span><span style="color:var(--sub);">2LDK</span><span style="color:var(--sub);">55.3㎡</span><span style="color:var(--sub);">徒歩7分</span></div><div class="ls">築8年 ・ 6階/18階建 ・ 定借 ・ 200戸</div><div class="le"><span class="lb" style="background:rgba(0,0,0,0.03);color:var(--sub);">32%</span><span style="color:var(--sub);">沖式時価 5,900万</span></div><div class="hz-row"><span class="hz-icon">⚠</span><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip danger">🔥 火災 ランク4</span></div></div></div>
+      <div class="lc"><div class="li"><div class="ln"><span class="ln-name">HARUMI FLAG SUN VILLAGE</span><span class="ln-heart" style="color:var(--a);">♥</span></div><div class="lm"><span style="color:#34C759;font-weight:700;">6,000万〜1.2億</span><span style="color:var(--sub);">2LDK〜4LDK</span><span style="color:var(--sub);">61〜100㎡</span></div><div class="ls">2025年入居 ・ 50階建 ・ 所有権 ・ 4,145戸</div><div class="le"><span class="lb" style="background:rgba(52,199,89,0.10);color:#34C759;">新築</span><span style="color:var(--sub);">徒歩12分</span></div><div class="hz-row"><span class="hz-icon">⚠</span><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span></div></div></div>
+      <!-- 掲載終了物件 -->
+      <div class="lc" style="opacity:0.75;"><div class="li"><div class="ln"><span class="ln-name" style="color:var(--sub);">ブリリアタワー月島</span><span class="ln-badge" style="display:inline-block;font-size:9px;font-weight:700;color:#fff;background:#FF9500;padding:1px 6px;border-radius:4px;">掲載終了</span><span class="ln-heart" style="color:var(--a);">♥</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">7,480万円</span><span style="color:var(--sub);">2LDK</span><span style="color:var(--sub);">58.2㎡</span><span style="color:var(--sub);">徒歩3分</span></div><div class="ls">築12年 ・ 22階/32階建 ・ 所有権 ・ 350戸</div></div></div>
+    </div>
+    <div class="btab"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt on"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+
+  <div class="pcol"><h3>お気に入り（掲載終了のみ）</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><div class="nav-t">お気に入り</div><div style="color:var(--a);font-size:16px;">☰</div></div>
+    <div class="scr" style="padding:0 12px;">
+      <!-- 掲載状態チップフィルタ（掲載終了選択中） -->
+      <div style="display:flex;gap:6px;padding:8px 0 4px;">
+        <span style="display:inline-flex;align-items:center;gap:3px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:400;color:var(--text);background:var(--card);">すべて <span style="font-size:10px;color:var(--sub);">4</span></span>
+        <span style="display:inline-flex;align-items:center;gap:3px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:400;color:var(--text);background:var(--card);">掲載中 <span style="font-size:10px;color:var(--sub);">3</span></span>
+        <span style="display:inline-flex;align-items:center;gap:3px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600;color:#fff;background:var(--a);">⚠ 掲載終了 <span style="font-size:10px;opacity:0.8;">1</span></span>
+      </div>
+      <div class="lc" style="opacity:0.75;"><div class="li"><div class="ln"><span class="ln-name" style="color:var(--sub);">ブリリアタワー月島</span><span class="ln-badge" style="display:inline-block;font-size:9px;font-weight:700;color:#fff;background:#FF9500;padding:1px 6px;border-radius:4px;">掲載終了</span><span class="ln-heart" style="color:var(--a);">♥</span></div><div class="lm"><span style="color:var(--a);font-weight:700;">7,480万円</span><span style="color:var(--sub);">2LDK</span><span style="color:var(--sub);">58.2㎡</span><span style="color:var(--sub);">徒歩3分</span></div><div class="ls">築12年 ・ 22階/32階建 ・ 所有権 ・ 350戸</div></div></div>
+    </div>
+    <div class="btab"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt on"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+
+  <div class="pcol"><h3>お気に入り（空）</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><div class="nav-t">お気に入り</div></div>
+    <div class="empty">
+      <div class="eic">♡</div>
+      <div class="etx">お気に入りがありません</div>
+      <div class="esu">物件一覧や地図から<br>ハートをタップして追加してください</div>
+    </div>
+    <div class="btab"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt on"><div class="ic">♥</div>お気に入り</div><div class="bt"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SETTINGS -->
+<!-- ============================================================ -->
+<div id="s-settings" class="sec">
+  <div class="pcol"><h3>設定</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><div class="nav-t">設定</div></div>
+    <div class="scr" style="padding:0 14px;">
+      <div class="st-sec">
+        <div class="st-h">データソース</div>
+        <div class="st-row"><span class="lbl">中古 JSON URL</span><span class="arr">›</span></div>
+        <div class="st-row"><span class="lbl">新築 JSON URL</span><span class="arr">›</span></div>
+        <div class="st-row"><span class="lbl">最終更新</span><span class="val">2026/02/06 10:30</span></div>
+      </div>
+      <div class="st-sec">
+        <div class="st-btn" style="color:var(--a);">今すぐ更新</div>
+      </div>
+      <div class="st-sec">
+        <div class="st-h">参考リンク</div>
+        <div class="st-row"><span class="lbl">SUUMO</span><span class="arr" style="color:var(--a);">↗</span></div>
+        <div class="st-row"><span class="lbl">HOME'S</span><span class="arr" style="color:var(--a);">↗</span></div>
+        <div class="st-row"><span class="lbl">住まいサーフィン</span><span class="arr" style="color:var(--a);">↗</span></div>
+      </div>
+      <div class="st-sec">
+        <div class="st-h">アカウント</div>
+        <div class="st-row"><span class="lbl">ユーザー名</span><span class="val">redacted</span></div>
+        <div class="st-row"><span class="lbl">メール</span><span class="val">redacted@...</span></div>
+      </div>
+      <div class="st-sec">
+        <div class="st-btn" style="color:#FF3B30;">ログアウト</div>
+      </div>
+      <div style="text-align:center;padding:16px;font-size:10px;color:#ccc;">v1.0.0</div>
+    </div>
+    <div class="btab"><div class="bt"><div class="ic">🏢</div>中古</div><div class="bt"><div class="ic">✨</div>新築</div><div class="bt"><div class="ic">🗺</div>地図</div><div class="bt"><div class="ic">♥</div>お気に入り</div><div class="bt on"><div class="ic">⚙</div>設定</div></div>
+  </div></div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- LOGIN -->
+<!-- ============================================================ -->
+<div id="s-login" class="sec">
+  <!-- ログイン画面（通常） -->
+  <div class="pcol"><h3>ログイン</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;">
+      <div style="flex:1;"></div>
+      <!-- App Icon & Title -->
+      <div style="text-align:center;margin-bottom:40px;">
+        <div style="width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg, var(--a), #5856D6);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(0,122,255,0.25);">
+          <span style="font-size:32px;filter:brightness(0) invert(1);">🏢</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;letter-spacing:-0.5px;">物件情報</div>
+        <div style="font-size:13px;color:var(--sub);margin-top:8px;line-height:1.5;">家族で物件情報を共有しましょう</div>
+      </div>
+      <div style="flex:1;"></div>
+      <!-- Google Sign-In Button (Light Theme - Branding Guidelines) -->
+      <div style="width:100%;padding:0 16px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:12px;background:#fff;color:#1F1F1F;font-size:15px;font-weight:500;font-family:'Roboto',sans-serif;cursor:pointer;border:1px solid #747775;">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.14.76-4.59L2.28 13.22A23.94 23.94 0 0 0 0 24c0 3.77.9 7.34 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Google でログイン
+        </div>
+        <div style="text-align:center;margin-top:24px;font-size:11px;color:#ccc;line-height:1.6;">
+          ログインすると、家族間で<br>いいね・メモを共有できます
+        </div>
+      </div>
+      <div style="height:60px;"></div>
+    </div>
+  </div></div></div>
+
+  <!-- ログイン画面（読込中） -->
+  <div class="pcol"><h3>ログイン（読込中）</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;">
+      <div style="flex:1;"></div>
+      <div style="text-align:center;margin-bottom:40px;">
+        <div style="width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg, var(--a), #5856D6);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(0,122,255,0.25);">
+          <span style="font-size:32px;filter:brightness(0) invert(1);">🏢</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;letter-spacing:-0.5px;">物件情報</div>
+        <div style="font-size:13px;color:var(--sub);margin-top:8px;line-height:1.5;">家族で物件情報を共有しましょう</div>
+      </div>
+      <div style="flex:1;"></div>
+      <div style="width:100%;padding:0 16px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:12px;background:#fff;color:#1F1F1F;font-size:15px;font-weight:500;font-family:'Roboto',sans-serif;border:1px solid #747775;opacity:0.5;pointer-events:none;">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.14.76-4.59L2.28 13.22A23.94 23.94 0 0 0 0 24c0 3.77.9 7.34 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Google でログイン
+        </div>
+        <!-- Loading spinner -->
+        <div style="display:flex;justify-content:center;margin-top:16px;">
+          <div style="width:24px;height:24px;border:3px solid rgba(0,122,255,0.15);border-top-color:var(--a);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        </div>
+        <div style="text-align:center;margin-top:16px;font-size:11px;color:#ccc;line-height:1.6;">
+          ログインすると、家族間で<br>いいね・メモを共有できます
+        </div>
+      </div>
+      <div style="height:60px;"></div>
+    </div>
+  </div></div></div>
+
+  <!-- ログイン画面（エラー） -->
+  <div class="pcol"><h3>ログイン（エラー）</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;">
+      <div style="flex:1;"></div>
+      <div style="text-align:center;margin-bottom:40px;">
+        <div style="width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg, var(--a), #5856D6);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(0,122,255,0.25);">
+          <span style="font-size:32px;filter:brightness(0) invert(1);">🏢</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;letter-spacing:-0.5px;">物件情報</div>
+        <div style="font-size:13px;color:var(--sub);margin-top:8px;line-height:1.5;">家族で物件情報を共有しましょう</div>
+      </div>
+      <div style="flex:1;"></div>
+      <div style="width:100%;padding:0 16px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:12px;background:#fff;color:#1F1F1F;font-size:15px;font-weight:500;font-family:'Roboto',sans-serif;cursor:pointer;border:1px solid #747775;">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.14.76-4.59L2.28 13.22A23.94 23.94 0 0 0 0 24c0 3.77.9 7.34 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Google でログイン
+        </div>
+        <!-- Error message -->
+        <div style="text-align:center;margin-top:16px;font-size:12px;color:#FF3B30;line-height:1.5;padding:10px 12px;background:rgba(255,59,48,0.06);border-radius:8px;">
+          ネットワークエラーが発生しました。<br>接続を確認して再度お試しください。
+        </div>
+        <div style="text-align:center;margin-top:16px;font-size:11px;color:#ccc;line-height:1.6;">
+          ログインすると、家族間で<br>いいね・メモを共有できます
+        </div>
+      </div>
+      <div style="height:60px;"></div>
+    </div>
+  </div></div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PROMPTS -->
+<!-- ============================================================ -->
+<div class="prompt">
+  <h3>SwiftUI 実装プロンプト（全画面分）</h3>
+  <pre id="p-all">以下の確定UIデザインを SwiftUI で実装してください。
+アクセントカラー: #007AFF（iOS System Blue）
+カード/セクション背景: Color(white: 0.973) ≈ #F8F8FB
+
+===================================
+■ 一覧画面（ListingRowView.swift / ListingListView.swift）
+===================================
+カードスタイル。白背景の上に薄グレーカード。
+
+- ForEach + LazyVStack(spacing: 6) 内に各カード
+- カード: HStack(alignment: .top, spacing: 8)
+  - VStack(alignment: .leading, spacing: 3):
+    - 物件名: .font(.subheadline).fontWeight(.semibold) 1行 truncate
+    - メタ行: HStack { 価格(.accentColor.bold) 間取り(.secondary) 面積(.secondary) 徒歩(.secondary) } .font(.footnote)
+    - サブ行: "築N年 ・ NF/NF建 ・ 所有権 ・ N戸" .font(.caption2).foregroundStyle(.secondary)
+    - 評価行: HStack { 儲かる確率バッジ 沖式時価(.secondary) } .font(.caption2)
+  - ハートボタン .font(.callout)
+- .padding(11).background(Color.cardBackground).clipShape(RoundedRectangle(cornerRadius: 12))
+- ツールバー右: フィルタボタン + ソートボタン
+
+===================================
+■ 詳細画面（ListingDetailView.swift）
+===================================
+グループセクション（Apple Settings 風）。
+
+- ScrollView > VStack(alignment: .leading, spacing: 8):
+  - ヘッダー: 物件名(.headline) + 住所(.caption.secondary)
+  - メモ: TextEditor .font(.footnote) .background(Color.cardBackground)
+  - セクション「物件情報」:
+    VStack(spacing: 0) { sectionHeader + detailRow × N }.background(Color.cardBackground).cornerRadius(10)
+  - セクション「アクセス・権利」: 同構造
+  - 住まいサーフィン評価セクション（アクセントカラー薄背景 + ボーダー）
+  - Link ボタン（.borderedProminent / .bordered）
+- .padding(.horizontal, 14)
+
+===================================
+■ フィルタ画面（ListingFilterSheet.swift）
+===================================
+アコーディオン折りたたみ式。各セクションのヘッダーをタップで展開/閉じ。
+
+【重要な変更】駅フィルタ → エリア（区）フィルタに変更:
+- ListingFilter の stations: Set&lt;String&gt; を wards: Set&lt;String&gt; に変更
+- フィルタロジック: listing.address から区名を抽出して比較
+
+構造:
+  .presentationDetents([.medium, .large])
+  ScrollView {
+    VStack(spacing: 0) {
+      // 各フィルタセクション: DisclosureGroup スタイル
+      FilterAccordion("価格帯", summary: priceSummary) {
+        CustomRangeSlider(...)
+      }
+      FilterAccordion("間取り", summary: layoutSummary) {
+        FlowLayout { ForEach(layouts) { FilterChip(...) } }
+      }
+      FilterAccordion("駅徒歩", summary: walkSummary) {
+        Slider(...)
+      }
+      FilterAccordion("広さ", summary: areaSummary) {
+        Slider(...)
+      }
+      FilterAccordion("権利形態", summary: ownershipSummary) {
+        FlowLayout { FilterChip("所有権") FilterChip("定期借地") }
+      }
+      FilterAccordion("エリア（区）", summary: wardSummary) {
+        // エリアごとにグループ化した 3列グリッド
+        ForEach(wardGroups) { group in
+          Text(group.area).font(.caption2).foregroundStyle(.tertiary)
+          LazyVGrid(columns: 3) {
+            ForEach(group.wards) { ward in
+              WardToggleButton(ward, isSelected: ...)
+            }
+          }
+        }
+      }
+    }
+  }
+  .safeAreaInset(edge: .bottom) {
+    Button("\(count)件の物件を表示") { dismiss() }
+  }
+
+FilterAccordion コンポーネント:
+  @State var isExpanded = false
+  VStack(spacing: 0) {
+    Button { withAnimation { isExpanded.toggle() } } label: {
+      HStack {
+        Text(title).font(.subheadline).fontWeight(.semibold)
+        Spacer()
+        Text(summary).font(.footnote).foregroundStyle(.accentColor)
+        Image(systemName: "chevron.down")
+          .rotationEffect(.degrees(isExpanded ? 180 : 0))
+      }
+    }.padding(.vertical, 10)
+    if isExpanded { content }
+    Divider()
+  }
+
+区グループデータ:
+  let wardGroups = [
+    ("都心エリア", ["千代田区","中央区","港区"]),
+    ("城東エリア", ["江東区","墨田区","台東区","江戸川区","葛飾区","足立区"]),
+    ("城南エリア", ["品川区","大田区","目黒区"]),
+    ("城西エリア", ["渋谷区","新宿区","世田谷区"]),
+    ("城北エリア", ["文京区","豊島区","北区","板橋区","練馬区","荒川区"]),
+    ("多摩エリア", ["杉並区","中野区","武蔵野市"]),
+  ]
+
+===================================
+■ 地図画面（MapTabView.swift）
+===================================
+既存実装を維持。変更点:
+- フィルタの stations → wards 変更に追随
+- ピンのフィルタリングも ward ベースに
+
+===================================
+■ お気に入り画面
+===================================
+既存の ListingListView(favoritesOnly: true) を維持。
+空状態: ContentUnavailableView("お気に入りがありません", systemImage: "heart.slash", description: "...")
+
+===================================
+■ 設定画面（SettingsView.swift）
+===================================
+Apple Settings 風グループセクション。既存実装を維持。
+- セクション背景: Color.cardBackground
+- cornerRadius: 10
+
+===================================
+■ 共通
+===================================
+extension Color {
+  static let cardBackground = Color(white: 0.973) // #F8F8FB
+}</pre>
+  <button class="cpb" onclick="copyP('p-all')">コピー</button>
+</div>
+
+<script>
+function showS(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.stab').forEach(b => b.classList.remove('on'));
+  document.getElementById('s-' + id).classList.add('on');
+  if (btn) btn.classList.add('on');
+  else { const map = {list:0,detail:1,filter:2,map:3,fav:4,settings:5,login:6}; const idx = map[id]; if(idx!==undefined) document.querySelectorAll('.stab')[idx]?.classList.add('on'); }
+}
+// Hash routing
+(function(){
+  const h = location.hash.replace('#s-','');
+  if(h && document.getElementById('s-'+h)) setTimeout(()=>showS(h),50);
+})();
+function copyP(id) {
+  const t = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t).then(() => { const b = event.target; b.textContent = 'コピーしました'; setTimeout(() => b.textContent = 'コピー', 2000); });
+}
+function toggleDark() {
+  const phones = document.querySelectorAll('.ps');
+  const btn = document.querySelector('.dm-toggle');
+  const isDark = phones[0] && phones[0].classList.contains('dark-mode');
+  phones.forEach(p => p.classList.toggle('dark-mode', !isDark));
+  document.body.classList.toggle('dark-page', !isDark);
+  btn.textContent = isDark ? '🌙 ダークモード' : '☀️ ライトモード';
+}
+</script>
+</body>
+</html>

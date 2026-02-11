@@ -10,3 +10,6 @@ __pycache__/
 .venv/
 venv/
 .env
+
+# Large data files
+scraping-tool/results/risk_geojson/

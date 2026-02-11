@@ -11,13 +11,13 @@
 | 項目 | 決定 |
 |------|------|
 | **データ取得** | 中古・新築それぞれの JSON URL（GitHub raw 等）から取得。DB はアプリ内のみ。詳細は [DB-STRATEGY.md](DB-STRATEGY.md) 参照。 |
-| **プッシュ通知** | **ローカル通知**を採用。BGAppRefreshTask でバックグラウンド自動取得し、新規を検出したらアプリから通知。リモートプッシュは Phase 2 で検討。 |
+| **プッシュ通知** | **ローカル通知**（BGAppRefreshTask）+ **リモートプッシュ通知**（FCM via GitHub Actions）。GitHub Actions でスクレイピング後、新着があれば FCM HTTP v1 API でトピック `new_listings` にプッシュ。 |
 | **Notion** | 本アプリでは**連携しない**。Notion は別物として扱い、DB 機能はアプリに寄せる。 |
 | **Slack** | 本アプリでは**連携しない**。アプリから通知できれば十分。 |
 | **対象** | iOS 17 以降。iPad は対象外（iPhone のみ）。 |
 | **ユーザー** | 自分用。家族だけインストールできる配布（TestFlight 等）を想定。 |
 | **デザイン** | Human Interface Guidelines（HIG）・OOUI に厳密に則る。iOS 26 では Liquid Glass デザインシステムに対応し、iOS 17–25 では既存のシステムスタイルにフォールバック。 |
-| **共有** | いいね・メモは **Firebase Firestore** で家族間共有。匿名認証。[セットアップ手順](FIREBASE-SETUP.md) 参照。 |
+| **共有** | いいね・メモは **Firebase Firestore** で家族間共有。**Google サインイン**認証。[セットアップ手順](FIREBASE-SETUP.md) 参照。 |
 | **物件種別** | **中古マンション**と**新築マンション**の両方をサポート。ボトムタブで分離。 |
 | **地図** | **MapKit** で物件ピン表示。ハザードマップ（国土地理院タイル全種）・地域危険度（東京都）をオーバーレイ。 |
 
@@ -48,9 +48,12 @@
   - 中古一覧と同じフィルタ条件でフィルタ可能。
   - 新築/中古を色分けして両方表示。
 - **ハザードマップオーバーレイ**: 国土地理院 WMS タイルを地図に重ねる。
-  - 洪水浸水想定、土砂災害警戒区域、高潮浸水想定、津波浸水想定、液状化リスク。
+  - 基本: 洪水浸水想定、内水浸水想定、土砂災害警戒区域、高潮浸水想定、津波浸水想定、液状化リスク。
+  - 洪水詳細: 浸水継続時間、家屋倒壊（氾濫流）、家屋倒壊（河岸侵食）。
   - レイヤーの表示/非表示切替。
-- **地域危険度オーバーレイ**: 東京都都市整備局の地域危険度データ（建物倒壊、火災、総合）を重ねる。
+- **地域危険度オーバーレイ（GSI）**: 国土地理院配信の地盤振動タイル。
+- **地域危険度オーバーレイ（東京都）**: 東京都都市整備局の地域危険度データ（建物倒壊、火災、総合）を GeoJSON → MKPolygon でランク 1-5 色分け表示。
+- **リモートプッシュ通知**: FCM (Firebase Cloud Messaging) を GitHub Actions から直接送信。トピック `new_listings` を購読し、スクレイピングで新着検出時にプッシュ。
 
 ### 3.3 一覧に表示する情報
 
@@ -68,8 +71,7 @@
 
 ### 3.4 あるとよい（未実装）
 
-- カラースキームのカスタマイズ（3案検討中、[プレビュー](../color-preview/index.html)）。
-- リモートプッシュ通知（Phase 2）。
+- カラースキームのカスタマイズ（4案検討中、[プレビュー](../color-preview/index.html)）。
 
 ---
 
@@ -104,9 +106,9 @@
 
 - **アプリ**: SwiftUI、SwiftData でローカル永続化。タブ構成: 中古一覧・新築一覧・地図・お気に入り・設定。HIG・OOUI・Liquid Glass（iOS 26）／Material フォールバック（iOS 17–25）。
 - **データ同期**: 設定で保存した一覧 JSON の URL（中古用・新築用）から取得し、SwiftData を更新。同一物件は `identityKey` でマッチして更新、新規は挿入、一覧から消えたものはローカルから削除。
-- **通知**: BGAppRefreshTask でバックグラウンド自動取得（約30分間隔、OS判断）。新規検出でローカル通知。
-- **共有**: Firebase Firestore（匿名認証）。いいね・メモを `annotations` コレクションに保存。
-- **地図**: MapKit + MKTileOverlay（国土地理院ハザードタイル）+ CLGeocoder / MapKit ジオコーディング。
+- **通知**: BGAppRefreshTask でバックグラウンド自動取得（約30分間隔、OS判断）+ FCM リモートプッシュ通知（GitHub Actions → FCM HTTP v1 API → トピック送信）。
+- **共有**: Firebase Firestore（Google サインイン認証）。いいね・メモを `annotations` コレクションに保存。
+- **地図**: MapKit + MKTileOverlay（国土地理院ハザードタイル 10 種）+ MKPolygon（東京都地域危険度 GeoJSON）+ CLGeocoder / MapKit ジオコーディング。
 - **スクレイピング**: SUUMO + HOME'S の中古・新築を GitHub Actions で日次取得。`latest.json`（中古）と `latest_shinchiku.json`（新築）に分離出力。
 
 ---

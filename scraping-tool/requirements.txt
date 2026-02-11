@@ -6,3 +6,6 @@ lxml>=4.9.0
 # 価格予測（price_predictor.py）用。将来 XGBoost 等を使う場合は sklearn を追加
 pandas>=2.0.0
 pytest>=7.0.0
+# FCM プッシュ通知（send_push.py）用
+PyJWT>=2.8.0
+cryptography>=41.0.0
