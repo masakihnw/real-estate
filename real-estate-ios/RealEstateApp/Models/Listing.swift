@@ -86,6 +86,10 @@ final class Listing: @unchecked Sendable {
     /// 購入判定 (e.g. "購入が望ましい")
     var ssPurchaseJudgment: String?
 
+    /// レーダーチャート偏差値 JSON 文字列（住まいサーフィン由来）
+    /// 例: {"asset_value":65.3,"favorites":58.2,"access_count":52.1,"oki_price_m2":70.5,"appreciation_rate":62.8,"walk_min":55.4}
+    var ssRadarData: String?
+
     // MARK: - ハザード情報
     /// ハザード情報 JSON 文字列
     /// 例: {"flood":true,"sediment":false,"storm_surge":true,"tsunami":false,
@@ -152,6 +156,7 @@ final class Listing: @unchecked Sendable {
         ssAppreciationRate: Double? = nil,
         ssFavoriteCount: Int? = nil,
         ssPurchaseJudgment: String? = nil,
+        ssRadarData: String? = nil,
         ssSimBest5yr: Int? = nil,
         ssSimBest10yr: Int? = nil,
         ssSimStandard5yr: Int? = nil,
@@ -198,6 +203,7 @@ final class Listing: @unchecked Sendable {
         self.ssAppreciationRate = ssAppreciationRate
         self.ssFavoriteCount = ssFavoriteCount
         self.ssPurchaseJudgment = ssPurchaseJudgment
+        self.ssRadarData = ssRadarData
         self.ssSimBest5yr = ssSimBest5yr
         self.ssSimBest10yr = ssSimBest10yr
         self.ssSimStandard5yr = ssSimStandard5yr
@@ -225,13 +231,51 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - Display Properties
 
-    /// 表示用: 価格（万円）— 新築は帯表示対応
+    // MARK: - 価格フォーマット
+
+    /// 万円の数値をカンマ区切り ＋ 億変換で表示文字列にする
+    /// - Parameter man: 万円の値
+    /// - Parameter suffix: 末尾に付ける文字列（"万円" / "万" など）
+    /// - Returns: 例: 9800 → "9,800万", 12000 → "1.2億"
+    private static let priceFormatter: NumberFormatter = {
+        let f = NumberFormatter()
+        f.numberStyle = .decimal
+        f.groupingSeparator = ","
+        return f
+    }()
+
+    private static func formatPriceMan(_ man: Int, unit: String = "万") -> String {
+        if man >= 10000 {
+            let oku = Double(man) / 10000.0
+            // 整数なら小数点なし（"2億"）、そうでなければ小数1桁（"1.2億"）
+            if oku == oku.rounded(.down) && oku.truncatingRemainder(dividingBy: 1) == 0 {
+                return "\(Int(oku))億"
+            }
+            return String(format: "%.1f億", oku)
+        }
+        let formatted = priceFormatter.string(from: NSNumber(value: man)) ?? "\(man)"
+        return "\(formatted)\(unit)"
+    }
+
+    /// 表示用: 価格（万円）— 新築は帯表示対応（詳細画面用: 万円 付き）
     var priceDisplay: String {
         if let lo = priceMan {
             if let hi = priceMaxMan, hi != lo {
-                return "\(lo)万〜\(hi)万円"
+                return "\(Self.formatPriceMan(lo, unit: "万"))〜\(Self.formatPriceMan(hi, unit: "万円"))"
             }
-            return "\(lo)万円"
+            return Self.formatPriceMan(lo, unit: "万円")
+        }
+        return isShinchiku ? "価格未定" : "—"
+    }
+
+    /// 表示用: 価格コンパクト（一覧カード用: 円 なし）
+    /// HTML デザイン準拠: "9,800万", "6,000万〜1.2億"
+    var priceDisplayCompact: String {
+        if let lo = priceMan {
+            if let hi = priceMaxMan, hi != lo {
+                return "\(Self.formatPriceMan(lo))〜\(Self.formatPriceMan(hi))"
+            }
+            return Self.formatPriceMan(lo)
         }
         return isShinchiku ? "価格未定" : "—"
     }
@@ -487,6 +531,103 @@ final class Listing: @unchecked Sendable {
             || ssSimBest5yr != nil
     }
 
+    // MARK: - レーダーチャートデータ
+
+    /// レーダーチャートの6軸データ（偏差値ベース、0-100）
+    struct RadarData {
+        var assetValue: Double     // 資産性
+        var favorites: Double      // お気に入り
+        var accessCount: Double    // アクセス数
+        var okiPriceM2: Double     // 沖式時価m²単価
+        var appreciationRate: Double // 値上がり率
+        var walkMin: Double        // 徒歩分数
+
+        /// 6軸を配列で返す（描画用）
+        var values: [Double] { [assetValue, favorites, accessCount, okiPriceM2, appreciationRate, walkMin] }
+
+        /// 軸ラベル
+        static let labels = ["資産性", "お気に入り", "アクセス数", "沖式時価m²単価", "値上がり率", "徒歩分数"]
+    }
+
+    /// ssRadarData JSON をパースしてレーダーチャートデータを返す。
+    /// 対応形式:
+    ///   1. named-key 形式: {"asset_value":65.3, "favorites":58.2, ...}
+    ///   2. labels/values 形式 (旧): {"labels":["資産性",...], "values":[65.3,...]}
+    /// JSON がない場合は既存フィールドからフォールバック計算する。
+    var parsedRadarData: RadarData? {
+        // まず JSON パースを試行
+        if let json = ssRadarData,
+           let data = json.data(using: .utf8),
+           let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+
+            // labels/values 配列形式（旧 enricher 出力）を named-key に変換
+            if let labels = dict["labels"] as? [String],
+               let values = dict["values"] as? [Double] {
+                let labelToKey: [String: String] = [
+                    "資産性": "asset_value", "お気に入り": "favorites",
+                    "アクセス数": "access_count", "沖式時価m²単価": "oki_price_m2",
+                    "沖式時価": "oki_price_m2", "値上がり率": "appreciation_rate",
+                    "中古値上がり率": "appreciation_rate", "徒歩分数": "walk_min",
+                ]
+                var mapped: [String: Double] = [:]
+                for (i, label) in labels.enumerated() where i < values.count {
+                    if let key = labelToKey[label] { mapped[key] = values[i] }
+                }
+                return RadarData(
+                    assetValue: mapped["asset_value"] ?? 50,
+                    favorites: mapped["favorites"] ?? 50,
+                    accessCount: mapped["access_count"] ?? 50,
+                    okiPriceM2: mapped["oki_price_m2"] ?? 50,
+                    appreciationRate: mapped["appreciation_rate"] ?? 50,
+                    walkMin: mapped["walk_min"] ?? 50
+                )
+            }
+
+            // named-key 形式（新 enricher 出力）
+            return RadarData(
+                assetValue: (dict["asset_value"] as? Double) ?? 50,
+                favorites: (dict["favorites"] as? Double) ?? 50,
+                accessCount: (dict["access_count"] as? Double) ?? 50,
+                okiPriceM2: (dict["oki_price_m2"] as? Double) ?? 50,
+                appreciationRate: (dict["appreciation_rate"] as? Double) ?? 50,
+                walkMin: (dict["walk_min"] as? Double) ?? 50
+            )
+        }
+
+        // フォールバック: 既存データから推定（大まかな偏差値近似）
+        guard hasSumaiSurfinData else { return nil }
+
+        // 値上がり率 → 偏差値（0% = 50, ±10% = ±10）
+        let rateVal: Double = {
+            guard let rate = ssAppreciationRate else { return 50 }
+            return min(80, max(20, 50 + rate))
+        }()
+
+        // 沖式時価: 有無で推定
+        let okiVal: Double = ssOkiPrice70m2 != nil ? 55 : 50
+
+        // お気に入りカウント → 偏差値
+        let favVal: Double = {
+            guard let fav = ssFavoriteCount else { return 50 }
+            return min(80, max(20, 50 + Double(fav) / 5.0))
+        }()
+
+        // 徒歩分数 → 偏差値（短いほど高い。5分=65, 10分=50, 15分=35）
+        let walkVal: Double = {
+            guard let walk = walkMin else { return 50 }
+            return min(80, max(20, 65 - Double(walk - 5) * 3))
+        }()
+
+        return RadarData(
+            assetValue: rateVal,
+            favorites: favVal,
+            accessCount: 50,  // アクセス数はフォールバック不可
+            okiPriceM2: okiVal,
+            appreciationRate: rateVal,
+            walkMin: walkVal
+        )
+    }
+
     /// 値上がりシミュレーションデータがあるか（新築のみ。住まいサーフィンの値上がりシミュレーションは新築物件ページにのみ存在する）
     var hasSimulationData: Bool {
         isShinchiku
@@ -522,13 +663,19 @@ final class Listing: @unchecked Sendable {
         var fire: Int = 0               // 火災危険度
         var combined: Int = 0           // 総合危険度
 
-        /// 何らかのハザードに該当するか
+        /// 何らかの重大なハザードリスクがあるか（一覧バッジ表示用）
         var hasAnyHazard: Bool {
             flood || sediment || stormSurge || tsunami || liquefaction || inlandWater
                 || buildingCollapse >= 3 || fire >= 3 || combined >= 3
         }
 
-        /// 該当するハザード種別のラベル配列
+        /// ハザードデータが存在するか（詳細画面セクション表示用 — 低ランクでも表示）
+        var hasAnyData: Bool {
+            flood || sediment || stormSurge || tsunami || liquefaction || inlandWater
+                || buildingCollapse > 0 || fire > 0 || combined > 0
+        }
+
+        /// 該当するハザード種別のラベル配列（一覧バッジ用 — 重大リスクのみ）
         var activeLabels: [(icon: String, label: String, severity: HazardSeverity)] {
             var results: [(String, String, HazardSeverity)] = []
             if flood { results.append(("drop.fill", "洪水浸水", .warning)) }
@@ -551,11 +698,36 @@ final class Listing: @unchecked Sendable {
             }
             return results
         }
+
+        /// 全ハザード種別のラベル配列（詳細画面用 — 全ランク表示）
+        var allLabels: [(icon: String, label: String, severity: HazardSeverity)] {
+            var results: [(String, String, HazardSeverity)] = []
+            if flood { results.append(("drop.fill", "洪水浸水", .warning)) }
+            if inlandWater { results.append(("drop.fill", "内水浸水", .warning)) }
+            if sediment { results.append(("mountain.2.fill", "土砂災害", .danger)) }
+            if stormSurge { results.append(("wind", "高潮浸水", .warning)) }
+            if tsunami { results.append(("water.waves", "津波浸水", .danger)) }
+            if liquefaction { results.append(("waveform.path.ecg", "液状化", .warning)) }
+            if buildingCollapse > 0 {
+                let sev: HazardSeverity = buildingCollapse >= 4 ? .danger : (buildingCollapse >= 3 ? .warning : .info)
+                results.append(("building.2.crop.circle", "建物倒壊 ランク\(buildingCollapse)", sev))
+            }
+            if fire > 0 {
+                let sev: HazardSeverity = fire >= 4 ? .danger : (fire >= 3 ? .warning : .info)
+                results.append(("flame.fill", "火災 ランク\(fire)", sev))
+            }
+            if combined > 0 {
+                let sev: HazardSeverity = combined >= 4 ? .danger : (combined >= 3 ? .warning : .info)
+                results.append(("exclamationmark.triangle.fill", "総合危険度 ランク\(combined)", sev))
+            }
+            return results
+        }
     }
 
     enum HazardSeverity {
-        case warning  // 注意（黄〜オレンジ）
-        case danger   // 危険（赤）
+        case info     // 低リスク（緑〜グレー: ランク1-2）
+        case warning  // 注意（黄〜オレンジ: ランク3）
+        case danger   // 危険（赤: ランク4-5）
     }
 
     /// hazardInfo JSON をパースして HazardData を返す
@@ -578,9 +750,14 @@ final class Listing: @unchecked Sendable {
         return h
     }
 
-    /// ハザードに該当するかどうか（一覧でのバッジ表示用）
+    /// 重大なハザードリスクがあるか（一覧バッジ表示用）
     var hasHazardRisk: Bool {
         parsedHazardData.hasAnyHazard
+    }
+
+    /// ハザードデータが存在するか（詳細画面セクション表示用 — 低ランクでも表示）
+    var hasHazardData: Bool {
+        hazardInfo != nil && parsedHazardData.hasAnyData
     }
 
     // MARK: - コメント
@@ -712,6 +889,10 @@ struct ListingDTO: Codable {
     var ownership: String?
     var list_ward_roman: String?
 
+    // ジオコーディング済み座標（パイプライン側で付与）
+    var latitude: Double?
+    var longitude: Double?
+
     // ハザード情報
     var hazard_info: String?
 
@@ -725,6 +906,7 @@ struct ListingDTO: Codable {
     var ss_appreciation_rate: Double?
     var ss_favorite_count: Int?
     var ss_purchase_judgment: String?
+    var ss_radar_data: String?
     var ss_sim_best_5yr: Int?
     var ss_sim_best_10yr: Int?
     var ss_sim_standard_5yr: Int?
@@ -760,6 +942,8 @@ extension Listing {
             priceMaxMan: dto.price_max_man,
             areaMaxM2: dto.area_max_m2,
             deliveryDate: dto.delivery_date,
+            latitude: dto.latitude,
+            longitude: dto.longitude,
             hazardInfo: dto.hazard_info,
             ssProfitPct: dto.ss_profit_pct,
             ssOkiPrice70m2: dto.ss_oki_price_70m2,
@@ -770,6 +954,7 @@ extension Listing {
             ssAppreciationRate: dto.ss_appreciation_rate,
             ssFavoriteCount: dto.ss_favorite_count,
             ssPurchaseJudgment: dto.ss_purchase_judgment,
+            ssRadarData: dto.ss_radar_data,
             ssSimBest5yr: dto.ss_sim_best_5yr,
             ssSimBest10yr: dto.ss_sim_best_10yr,
             ssSimStandard5yr: dto.ss_sim_standard_5yr,

@@ -37,6 +37,13 @@ enum DesignSystem {
     static let commuteM3Color = Color(red: 0.55, green: 0.24, blue: 0.78)
 }
 
+// MARK: - カード背景色（プロンプト準拠）
+
+extension Color {
+    /// カード/セクション背景: Color(white: 0.973) ≈ #F8F8FB
+    static let cardBackground = Color(white: 0.973)
+}
+
 // MARK: - Liquid Glass (iOS 26+) / Material fallback (iOS 17–25)
 
 extension View {

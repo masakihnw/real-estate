@@ -30,7 +30,7 @@ from config import (
     TOTAL_UNITS_MIN,
     STATION_PASSENGERS_MIN,
     ALLOWED_LINE_KEYWORDS,
-    REQUEST_DELAY_SEC,
+    HOMES_REQUEST_DELAY_SEC,
     REQUEST_TIMEOUT_SEC,
     REQUEST_RETRIES,
     USER_AGENT,
@@ -147,24 +147,39 @@ def _parse_floor_total(text: str) -> Optional[int]:
 
 # ---------- ページ取得 ----------
 
+def _is_waf_challenge(html: str) -> bool:
+    """AWS WAF のボット検知チャレンジページかどうかを判定。"""
+    if len(html) < 5000 and "awsWafCookieDomainList" in html:
+        return True
+    if len(html) < 5000 and "gokuProps" in html:
+        return True
+    return False
+
+
 def fetch_list_page(session: requests.Session, url: str) -> str:
-    """一覧ページのHTMLを取得。5xx/429/タイムアウト・接続エラー時はリトライする。"""
+    """一覧ページのHTMLを取得。5xx/429/WAF/タイムアウト・接続エラー時はリトライする。"""
     last_error: Optional[Exception] = None
-    for attempt in range(REQUEST_RETRIES):
+    for attempt in range(REQUEST_RETRIES + 2):  # WAF 対策で追加リトライ
         time.sleep(REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             # 429 Too Many Requests — レートリミット対策
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
-                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})", file=sys.stderr)
                 time.sleep(retry_after)
                 continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
-            return r.text
+            html = r.text
+            # AWS WAF チャレンジページの検出
+            if _is_waf_challenge(html):
+                wait = min(30 * (attempt + 1), 120)
+                print(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            return html
         except requests.exceptions.HTTPError as e:
-            # 500/502/503 は一時的なサーバーエラーのためリトライ
             if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
                 last_error = e
                 time.sleep(2)
@@ -176,7 +191,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
                 time.sleep(2)
     if last_error is not None:
         raise last_error
-    raise RuntimeError(f"全 {REQUEST_RETRIES} 回のリトライが失敗しました (429 Rate Limited): {url}")
+    raise RuntimeError(f"全リトライが失敗しました (WAF/Rate Limited): {url}")
 
 
 # ---------- HTMLパース ----------
@@ -224,15 +239,113 @@ def _parse_jsonld_itemlist(html: str) -> list[dict[str, Any]]:
     return []
 
 
+def _extract_card_listings(soup: BeautifulSoup) -> list[HomesShinchikuListing]:
+    """2026年リニューアル後のカード型一覧からパース。
+    各物件はテーブル（価格/間取り/所在地/専有面積/交通/完成予定）を含むブロック。
+    """
+    items: list[HomesShinchikuListing] = []
+    seen_urls: set[str] = set()
+
+    # 物件詳細リンク /mansion/b-{id}/ を探す
+    detail_links = soup.find_all("a", href=re.compile(r"/mansion/b-\d+/?$"))
+    for link in detail_links:
+        href = link.get("href", "")
+        url = urljoin(BASE_URL, href)
+        if url in seen_urls:
+            continue
+        # 物件ブロックを探す: リンクを含む最も近いコンテナ
+        container = link
+        for _ in range(15):
+            container = container.parent
+            if container is None or container.name in ("body", "html", "[document]"):
+                container = None
+                break
+            text = container.get_text() or ""
+            if ("所在地" in text and "交通" in text) or ("所在地" in text and "完成" in text):
+                if container.find("table") or container.find(["dt", "th"]):
+                    break
+        if container is None:
+            continue
+        seen_urls.add(url)
+
+        text = container.get_text(separator="\n")
+
+        # 物件名: h2/h3/h4
+        name = ""
+        for tag in ("h2", "h3", "h4"):
+            el = container.find(tag)
+            if el:
+                name = (el.get_text(strip=True) or "").strip()
+                # 「新築マンション」「分譲予定」などのプレフィックスを除去
+                name = re.sub(r"^(?:新築)?マンション\s*分譲(?:予定|中)?\s*", "", name).strip()
+                if name:
+                    break
+
+        # テーブルからの情報抽出
+        def _table_value(label: str) -> str:
+            for tbl in container.find_all("table"):
+                for tr in tbl.find_all("tr"):
+                    ths = tr.find_all(["th", "dt"])
+                    tds = tr.find_all(["td", "dd"])
+                    for i, th in enumerate(ths):
+                        if label in (th.get_text() or ""):
+                            if i < len(tds):
+                                return (tds[i].get_text(strip=True) or "").strip()
+            dt = container.find(["dt", "th"], string=re.compile(re.escape(label)))
+            if dt:
+                sibling = dt.find_next_sibling(["dd", "td"])
+                if sibling:
+                    return (sibling.get_text(strip=True) or "").strip()
+            return ""
+
+        address = _table_value("所在地")
+        station_line = _table_value("交通")
+        layout = _table_value("間取り") or _table_value("間取")
+        # 「一般販売住戸：」等のプレフィックスを除去
+        layout = re.sub(r"^一般販売住戸[：:]\s*", "", layout).strip()
+        area_str = _table_value("専有面積") or _table_value("面積")
+        area_str = re.sub(r"^一般販売住戸[：:]\s*", "", area_str).strip()
+        price_str = _table_value("価格")
+        price_str = re.sub(r"^一般販売住戸[：:]\s*", "", price_str).strip()
+        delivery_date = _table_value("完成予定") or _table_value("完成") or _table_value("引渡")
+
+        price_man, price_max_man = _parse_price_range(price_str) if price_str else (None, None)
+        area_m2, area_max_m2 = _parse_area_range(area_str) if area_str else (None, None)
+        walk_min = _parse_walk_min(station_line or text)
+        total_units = _parse_total_units(text)
+        floor_total = _parse_floor_total(text)
+
+        if not name and not url:
+            continue
+
+        items.append(HomesShinchikuListing(
+            url=url,
+            name=name,
+            price_man=price_man,
+            price_max_man=price_max_man,
+            address=address,
+            station_line=station_line,
+            walk_min=walk_min,
+            area_m2=area_m2,
+            area_max_m2=area_max_m2,
+            layout=layout,
+            delivery_date=delivery_date,
+            total_units=total_units,
+            floor_total=floor_total,
+        ))
+    return items
+
+
 def parse_list_html(html: str) -> list[HomesShinchikuListing]:
-    """HOME'S 新築マンション一覧HTMLから物件リストをパース。"""
+    """HOME'S 新築マンション一覧HTMLから物件リストをパース。
+    2026年リニューアル後はカード型パーサーにフォールバック。"""
     soup = BeautifulSoup(html, "lxml")
     items: list[HomesShinchikuListing] = []
 
     # JSON-LD があればベースデータとして使用
     jsonld_items = _parse_jsonld_itemlist(html)
 
-    # HTML パース: 新築ページ固有のブロック
+    # HTML パース: 新築ページ固有のブロック（旧構造）
     # HOME'S 新築は mod-mergeBuilding--new や mod-buildingSummary 等のクラスを使う可能性
     for block in soup.find_all(["div", "section", "li"], class_=True):
         text = block.get_text()
@@ -251,6 +364,13 @@ def parse_list_html(html: str) -> list[HomesShinchikuListing]:
         listing = _parse_homes_block(block)
         if listing and listing.name:
             items.append(listing)
+
+    # 旧構造で0件、または大半が名前不明の場合、カード型パーサーを試行
+    named_count = sum(1 for it in items if it.name and it.name != "（不明）")
+    if not items or (items and named_count < len(items) * 0.5):
+        card_items = _extract_card_listings(soup)
+        if card_items:
+            items = card_items
 
     # JSON-LD データで補完
     if jsonld_items:

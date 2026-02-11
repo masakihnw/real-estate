@@ -32,6 +32,8 @@ jobs:
         working-directory: scraping-tool
         run: |
           pip install -r requirements.txt
+          # 東京都地域危険度 GeoJSON 変換用（初回のみ使用、失敗しても続行可能）
+          pip install geopandas shapely fiona || echo "geopandas インストール失敗（GeoJSON 変換はスキップ）"
 
       - name: Run update script
         id: scrape
@@ -91,6 +93,8 @@ jobs:
           [ -f scraping-tool/data/building_units.json ] && git add scraping-tool/data/building_units.json
           [ -f scraping-tool/data/geocode_cache.json ] && git add scraping-tool/data/geocode_cache.json
           [ -f scraping-tool/data/sumai_surfin_cache.json ] && git add scraping-tool/data/sumai_surfin_cache.json
+          # 東京都地域危険度 GeoJSON（初回生成時のみ）
+          [ -d scraping-tool/results/risk_geojson ] && git add scraping-tool/results/risk_geojson/
           git commit -m "Update listings: ${DATE}
 
           取得件数: ${COUNT}件

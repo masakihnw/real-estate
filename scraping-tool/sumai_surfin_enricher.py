@@ -587,6 +587,21 @@ def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
 
 # ──────────────────────────── レーダーチャート ────────────────────────────
 
+# 住まいサーフィンのラベル → iOS RadarData の named-key マッピング
+RADAR_LABEL_TO_KEY: dict[str, str] = {
+    "資産性": "asset_value",
+    "お気に入り": "favorites",
+    "アクセス数": "access_count",
+    "沖式時価m²単価": "oki_price_m2",
+    "沖式時価": "oki_price_m2",
+    "中古沖式時価m²単価": "oki_price_m2",
+    "値上がり率": "appreciation_rate",
+    "中古値上がり率": "appreciation_rate",
+    "値上り率": "appreciation_rate",
+    "徒歩分数": "walk_min",
+    "徒歩分": "walk_min",
+}
+
 
 def _extract_radar_chart_data(soup: BeautifulSoup, html: str) -> Optional[dict]:
     """
@@ -596,11 +611,12 @@ def _extract_radar_chart_data(soup: BeautifulSoup, html: str) -> Optional[dict]:
       1) <script> タグ内の Chart.js / Highcharts の radar 設定を探す
       2) 見つからなければ、ページ上のランキング偏差値スコアを構築する
 
-    返却形式 (成功時):
+    返却形式 (成功時): iOS 互換の named-key 形式
       {
-        "labels":   ["資産性", "お気に入り", "アクセス数"],
-        "values":   [38.4, 47.1, 40.7],
-        "avg":      [50.0, 50.0, 50.0]
+        "asset_value":   38.4,
+        "favorites":     47.1,
+        "access_count":  40.7,
+        ...
       }
     偏差値 50 = 行政区平均
     """
@@ -617,7 +633,7 @@ def _extract_radar_chart_data(soup: BeautifulSoup, html: str) -> Optional[dict]:
 def _try_extract_chartjs_radar(soup: BeautifulSoup, html: str) -> Optional[dict]:
     """
     <script> タグから Chart.js の type:'radar' 設定を探し、
-    labels / datasets を抽出する。
+    labels / datasets を抽出して iOS named-key 形式で返す。
     """
     for script in soup.find_all("script"):
         src = script.string
@@ -660,20 +676,21 @@ def _try_extract_chartjs_radar(soup: BeautifulSoup, html: str) -> Optional[dict]
         if len(data_arrays) < 1:
             continue
 
-        # 1 番目 = 本物件, 2 番目 = 行政区平均（あれば）
+        # 1 番目 = 本物件
         property_values = [float(v.strip()) for v in data_arrays[0].split(",") if v.strip()]
-        ward_avg = (
-            [float(v.strip()) for v in data_arrays[1].split(",") if v.strip()]
-            if len(data_arrays) >= 2
-            else [50.0] * len(labels)  # 偏差値 50 = 平均
-        )
 
-        if len(property_values) == len(labels):
-            return {
-                "labels": labels,
-                "values": property_values,
-                "avg": ward_avg[:len(labels)],
-            }
+        if len(property_values) != len(labels):
+            continue
+
+        # labels → iOS named-key に変換
+        result: dict[str, float] = {}
+        for lbl, val in zip(labels, property_values):
+            key = RADAR_LABEL_TO_KEY.get(lbl)
+            if key:
+                result[key] = val
+
+        if len(result) >= 2:
+            return result
 
     return None
 
@@ -681,40 +698,96 @@ def _try_extract_chartjs_radar(soup: BeautifulSoup, html: str) -> Optional[dict]
 def _build_radar_from_rankings(soup: BeautifulSoup, html: str) -> Optional[dict]:
     """
     ページ上のランキングセクションから偏差値スコアを抽出し、
-    レーダーチャート用データを構築する。
-    行政区平均は偏差値 50 とする。
-
-    対象ランキング:
-      - 資産性ランキング (XX.X点)
-      - お気に入りランキング (XX.X点)
-      - アクセス数ランキング (XX.X点)
+    iOS named-key 形式のレーダーチャートデータを構築する。
     """
     ranking_defs = [
-        ("資産性", r"資産性ランキング.*?(\d+(?:\.\d+)?)\s*点"),
-        ("お気に入り", r"お気に入りランキング.*?(\d+(?:\.\d+)?)\s*点"),
-        ("アクセス数", r"アクセス数ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("asset_value", r"資産性ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("favorites", r"お気に入りランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("access_count", r"アクセス数ランキング.*?(\d+(?:\.\d+)?)\s*点"),
     ]
 
-    labels: list[str] = []
-    values: list[float] = []
+    result: dict[str, float] = {}
 
-    for label, pattern in ranking_defs:
+    for key, pattern in ranking_defs:
         m = re.search(pattern, html, re.DOTALL)
         if m:
-            labels.append(label)
-            values.append(float(m.group(1)))
+            result[key] = float(m.group(1))
 
-    if len(labels) < 2:
+    if len(result) < 2:
         return None
 
-    # 行政区平均 = 偏差値 50.0
-    avg = [50.0] * len(labels)
+    return result
 
-    return {
-        "labels": labels,
-        "values": values,
-        "avg": avg,
-    }
+
+def _finalize_radar_data(listing: dict) -> None:
+    """
+    listing の ss_radar_data を iOS 互換の named-key 形式に正規化し、
+    不足軸を ss_* フィールドや walk_min から補完する。
+
+    iOS RadarData の 6 軸（偏差値 20-80, 50=平均）:
+      asset_value       資産性
+      favorites         お気に入り
+      access_count      アクセス数
+      oki_price_m2      沖式時価m²単価
+      appreciation_rate  値上がり率
+      walk_min          徒歩分数
+    """
+    ios_data: dict[str, float] = {}
+
+    # 1) 既存 ss_radar_data をパース（旧 labels/values 形式 or named-key 形式）
+    raw = listing.get("ss_radar_data")
+    if raw:
+        try:
+            parsed = json.loads(raw) if isinstance(raw, str) else raw
+        except (json.JSONDecodeError, TypeError):
+            parsed = None
+
+        if isinstance(parsed, dict):
+            if "labels" in parsed and "values" in parsed:
+                # 旧形式: {"labels": [...], "values": [...]} → named-key に変換
+                for lbl, val in zip(parsed["labels"], parsed["values"]):
+                    key = RADAR_LABEL_TO_KEY.get(lbl)
+                    if key and isinstance(val, (int, float)):
+                        ios_data[key] = float(val)
+            else:
+                # 既に named-key 形式
+                for k in ("asset_value", "favorites", "access_count",
+                          "oki_price_m2", "appreciation_rate", "walk_min"):
+                    if k in parsed and isinstance(parsed[k], (int, float)):
+                        ios_data[k] = float(parsed[k])
+
+    # 2) ss_* フィールドから不足軸を補完
+    if "appreciation_rate" not in ios_data:
+        rate = listing.get("ss_appreciation_rate")
+        if rate is not None:
+            ios_data["appreciation_rate"] = min(80.0, max(20.0, 50.0 + float(rate)))
+
+    if "asset_value" not in ios_data and "appreciation_rate" in ios_data:
+        ios_data["asset_value"] = ios_data["appreciation_rate"]
+
+    if "oki_price_m2" not in ios_data:
+        oki = listing.get("ss_oki_price_70m2")
+        if oki is not None:
+            ios_data["oki_price_m2"] = 55.0
+
+    if "favorites" not in ios_data:
+        fav = listing.get("ss_favorite_count")
+        if fav is not None:
+            ios_data["favorites"] = min(80.0, max(20.0, 50.0 + float(fav) / 5.0))
+
+    if "walk_min" not in ios_data:
+        walk = listing.get("walk_min")
+        if walk is not None:
+            try:
+                w = int(walk)
+                ios_data["walk_min"] = min(80.0, max(20.0, 65.0 - (w - 5) * 3.0))
+            except (ValueError, TypeError):
+                pass
+
+    # 3) 2 軸以上あれば iOS 互換 JSON としてセット
+    if len(ios_data) >= 2:
+        listing["ss_radar_data"] = json.dumps(ios_data, ensure_ascii=False)
+    # 元々のデータが旧形式だった場合でも、上で変換済み
 
 
 # ──────────────────────────── メイン処理 ────────────────────────────
@@ -777,6 +850,16 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
     # キャッシュ保存
     save_cache(cache)
 
+    # 全物件のレーダーデータを iOS 互換形式に正規化・不足軸を補完
+    radar_count = 0
+    for listing in listings:
+        had_radar = listing.get("ss_radar_data") is not None
+        _finalize_radar_data(listing)
+        if not had_radar and listing.get("ss_radar_data") is not None:
+            radar_count += 1
+    if radar_count:
+        print(f"レーダーデータ補完: {radar_count}件（既存 ss_*/walk_min から生成）", file=sys.stderr)
+
     # 出力（原子的書き込み）
     tmp_path = output_path.with_suffix(".json.tmp")
     with open(tmp_path, "w", encoding="utf-8") as f:
@@ -786,23 +869,63 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
     print(f"住まいサーフィン enrichment 完了: {enriched_count}件追加, {skip_count}件スキップ", file=sys.stderr)
 
 
+def finalize_radar_only(input_path: str, output_path: str) -> None:
+    """
+    Web スクレイピングなしで、既存 ss_* / walk_min からレーダーデータを補完する。
+    SUMAI_USER / SUMAI_PASS が不要。
+    """
+    output_path_p = Path(output_path)
+
+    with open(input_path, "r", encoding="utf-8") as f:
+        listings = json.load(f)
+
+    if not isinstance(listings, list):
+        print("住まいサーフィン: 入力が配列ではありません", file=sys.stderr)
+        return
+
+    radar_count = 0
+    for listing in listings:
+        had_radar = listing.get("ss_radar_data") is not None
+        _finalize_radar_data(listing)
+        if not had_radar and listing.get("ss_radar_data") is not None:
+            radar_count += 1
+
+    # 原子的書き込み
+    tmp_path = output_path_p.with_suffix(".json.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(listings, f, ensure_ascii=False, indent=2)
+    tmp_path.replace(output_path_p)
+
+    print(f"レーダーデータ補完: {radar_count}件生成（既存フィールドから）", file=sys.stderr)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="住まいサーフィンの評価データで物件 JSON を enrichment する")
     ap.add_argument("--input", "-i", required=True, help="入力 JSON ファイル")
     ap.add_argument("--output", "-o", required=True, help="出力 JSON ファイル")
+    ap.add_argument("--finalize-radar-only", action="store_true",
+                    help="Web スクレイピングなしでレーダーデータのみ補完する（SUMAI_USER/PASS 不要）")
     args = ap.parse_args()
+
+    if args.finalize_radar_only:
+        finalize_radar_only(args.input, args.output)
+        return
 
     user = os.environ.get("SUMAI_USER", "")
     password = os.environ.get("SUMAI_PASS", "")
 
     if not user or not password:
         print("住まいサーフィン: SUMAI_USER / SUMAI_PASS が未設定のためスキップ", file=sys.stderr)
+        # 認証不要のレーダーデータ補完だけ実行
+        finalize_radar_only(args.input, args.output)
         return
 
     session = _create_session()
 
     if not login(session, user, password):
         print("住まいサーフィン: ログインに失敗したためスキップ", file=sys.stderr)
+        # ログイン失敗でもレーダーデータ補完は実行
+        finalize_radar_only(args.input, args.output)
         return
 
     enrich_listings(args.input, args.output, session)

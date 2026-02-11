@@ -29,23 +29,23 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             ListingListView(propertyTypeFilter: "chuko")
-                .tabItem { Label("中古", image: "tab-chuko") }
+                .tabItem { Label("中古", systemImage: "building.2") }
                 .tag(0)
                 .accessibilityLabel("中古マンション")
             ListingListView(propertyTypeFilter: "shinchiku")
-                .tabItem { Label("新築", image: "tab-shinchiku") }
+                .tabItem { Label("新築", systemImage: "sparkles") }
                 .tag(1)
                 .accessibilityLabel("新築マンション")
             MapTabView()
-                .tabItem { Label("地図", image: "tab-map") }
+                .tabItem { Label("地図", systemImage: "map") }
                 .tag(2)
                 .accessibilityLabel("地図で探す")
             ListingListView(favoritesOnly: true)
-                .tabItem { Label("お気に入り", image: "tab-favorites") }
+                .tabItem { Label("お気に入り", systemImage: "heart") }
                 .tag(3)
                 .accessibilityLabel("お気に入り物件")
             SettingsView()
-                .tabItem { Label("設定", image: "tab-settings") }
+                .tabItem { Label("設定", systemImage: "gearshape") }
                 .tag(4)
                 .accessibilityLabel("アプリ設定")
         }

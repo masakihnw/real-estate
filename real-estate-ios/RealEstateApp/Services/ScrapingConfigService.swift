@@ -144,15 +144,31 @@ final class ScrapingConfigService {
 
     /// Firestore に設定を保存
     func save(_ newConfig: ScrapingConfig) async throws {
-        guard isAuthenticated, let user = Auth.auth().currentUser else {
+        guard let user = Auth.auth().currentUser else {
             throw NSError(domain: "ScrapingConfigService", code: 401, userInfo: [NSLocalizedDescriptionKey: "ログインが必要です"])
+        }
+
+        // 認証トークンを強制リフレッシュ（期限切れによる permission-denied を防止）
+        do {
+            _ = try await user.getIDToken(forcingRefresh: true)
+        } catch {
+            throw NSError(domain: "ScrapingConfigService", code: 401, userInfo: [NSLocalizedDescriptionKey: "認証トークンの更新に失敗しました。再ログインしてください。"])
         }
 
         var data = newConfig.toFirestoreData()
         data["updatedBy"] = user.uid
         data["updatedByName"] = user.displayName ?? user.email ?? ""
 
-        try await db.collection(collectionName).document(documentId).setData(data, merge: true)
+        do {
+            try await db.collection(collectionName).document(documentId).setData(data, merge: true)
+        } catch {
+            let nsError = error as NSError
+            if nsError.domain == "FIRFirestoreErrorDomain" && nsError.code == 7 {
+                // PERMISSION_DENIED
+                throw NSError(domain: "ScrapingConfigService", code: 403, userInfo: [NSLocalizedDescriptionKey: "書き込み権限がありません。Firestore のセキュリティルールを確認してください。"])
+            }
+            throw error
+        }
 
         await MainActor.run {
             config = newConfig

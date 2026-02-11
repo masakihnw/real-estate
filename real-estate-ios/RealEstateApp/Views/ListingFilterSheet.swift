@@ -25,13 +25,10 @@ struct ListingFilterSheet: View {
     @Binding var filter: ListingFilter
     let availableLayouts: [String]
     let availableWards: Set<String>
-    let availableStations: [String]
     let filteredCount: Int
 
     // ローカル編集用（「適用」ではなく下部ボタンで反映）
     @State private var editFilter = ListingFilter()
-    /// 駅名フィルタの検索テキスト
-    @State private var stationSearchText = ""
 
     // 価格の範囲
     private let priceRange: ClosedRange<Double> = 5000...15000
@@ -77,14 +74,6 @@ struct ListingFilterSheet: View {
                         summary: areaSummary
                     ) {
                         areaSliderContent
-                    }
-
-                    // 駅名
-                    FilterAccordion(
-                        title: "駅名",
-                        summary: stationSummary
-                    ) {
-                        stationChipsContent
                     }
 
                     // 権利形態
@@ -177,13 +166,6 @@ struct ListingFilterSheet: View {
         let sorted = editFilter.wards.sorted()
         if sorted.count <= 3 { return sorted.joined(separator: ", ") }
         return "\(sorted.prefix(2).joined(separator: ", ")) 他\(sorted.count - 2)区"
-    }
-
-    private var stationSummary: String {
-        if editFilter.stations.isEmpty { return "指定なし" }
-        let sorted = editFilter.stations.sorted()
-        if sorted.count <= 3 { return sorted.joined(separator: ", ") }
-        return "\(sorted.prefix(2).joined(separator: ", ")) 他\(sorted.count - 2)駅"
     }
 
     // MARK: - Price Slider
@@ -293,64 +275,6 @@ struct ListingFilterSheet: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 70, alignment: .trailing)
-            }
-        }
-    }
-
-    // MARK: - Station Chips
-
-    @ViewBuilder
-    private var filteredStations: [String] {
-        let query = stationSearchText.trimmingCharacters(in: .whitespaces)
-        guard !query.isEmpty else { return availableStations }
-        return availableStations.filter { $0.localizedCaseInsensitiveContains(query) }
-    }
-
-    private var stationChipsContent: some View {
-        VStack(spacing: 8) {
-            if availableStations.isEmpty {
-                Text("駅データがありません")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-            } else {
-                // HTML準拠: 駅名検索入力フィールド
-                HStack(spacing: 6) {
-                    Image(systemName: "magnifyingglass")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    TextField("駅名で検索...", text: $stationSearchText)
-                        .font(.caption)
-                        .textFieldStyle(.plain)
-                    if !stationSearchText.isEmpty {
-                        Button {
-                            stationSearchText = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(8)
-                .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-
-                FlowLayout(spacing: 6) {
-                    ForEach(filteredStations, id: \.self) { station in
-                        FilterChip(
-                            label: station,
-                            isSelected: editFilter.stations.contains(station)
-                        ) {
-                            toggleSet(&editFilter.stations, value: station)
-                        }
-                    }
-                }
-
-                if filteredStations.isEmpty && !stationSearchText.isEmpty {
-                    Text("該当する駅がありません")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
             }
         }
     }
@@ -471,11 +395,13 @@ private struct FilterAccordion<Content: View>: View {
             if isExpanded {
                 content()
                     .padding(.bottom, 12)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .transition(.opacity)
             }
 
             Divider()
         }
+        .clipped()
     }
 }
 
@@ -510,7 +436,6 @@ private struct FilterChip: View {
         filter: .constant(ListingFilter()),
         availableLayouts: ["1LDK", "2LDK", "3LDK", "4LDK+"],
         availableWards: ["江東区", "中央区", "港区"],
-        availableStations: ["目白", "雑司が谷", "豊洲", "有明"],
         filteredCount: 12
     )
 }

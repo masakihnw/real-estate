@@ -115,9 +115,12 @@ python3 scripts/merge_detail_cache.py "${OUTPUT_DIR}/latest.json" || echo "詳�
 echo "物件マップを生成中..." >&2
 python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" || echo "地図の生成に失敗しました（続行）" >&2
 
-# 4.4.3. ジオコーディングキャッシュの座標を latest.json に埋め込み（hazard enricher で使用）
+# 4.4.3. ジオコーディングキャッシュの座標を latest.json / latest_shinchiku.json に埋め込み（hazard enricher で使用）
 echo "ジオコーディングを埋め込み中..." >&2
-python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest.json" || echo "embed_geocode に失敗しました（続行）" >&2
+python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest.json" || echo "embed_geocode (中古) に失敗しました（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest_shinchiku.json" || echo "embed_geocode (新築) に失敗しました（続行）" >&2
+fi
 
 echo "レポートを再生成（詳細キャッシュ・地図リンク反映）..." >&2
 if [ -f "${OUTPUT_DIR}/previous.json" ]; then
@@ -140,6 +143,15 @@ if [ -s "$CURRENT_SHINCHIKU" ]; then
     echo "新築: ${OUTPUT_DIR}/latest_shinchiku.json に保存" >&2
 fi
 
+# 4.6b. 東京都地域危険度 GeoJSON 生成（初回のみ。geopandas がインストールされている場合）
+RISK_GEOJSON_DIR="${OUTPUT_DIR}/risk_geojson"
+if [ ! -f "${RISK_GEOJSON_DIR}/building_collapse_risk.geojson" ]; then
+    echo "東京都地域危険度 GeoJSON を生成中（初回のみ）..." >&2
+    python3 scripts/convert_risk_geojson.py 2>&1 || echo "GeoJSON 変換失敗（geopandas 未インストール？ GSI タイルのみでハザード判定を続行）" >&2
+else
+    echo "東京都地域危険度 GeoJSON: 生成済み（スキップ）" >&2
+fi
+
 # 4.7a. ハザード enrichment（座標があれば GSI タイル + 東京地域危険度を判定）
 echo "ハザード enrichment 実行中..." >&2
 python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "ハザード enrichment (中古) 失敗（続行）" >&2
@@ -147,15 +159,13 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
     python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "ハザード enrichment (新築) 失敗（続行）" >&2
 fi
 
-# 4.7. 住まいサーフィン enrichment（SUMAI_USER / SUMAI_PASS が設定されている場合のみ）
-if [ -n "${SUMAI_USER:-}" ] && [ -n "${SUMAI_PASS:-}" ]; then
-    echo "住まいサーフィン enrichment 実行中..." >&2
-    python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
-    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-        python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
-    fi
-else
-    echo "住まいサーフィン: SUMAI_USER / SUMAI_PASS 未設定のためスキップ" >&2
+# 4.7b. 住まいサーフィン enrichment
+#   SUMAI_USER / SUMAI_PASS 設定時: Web スクレイピング + レーダーデータ生成
+#   未設定時: 既存 ss_*/walk_min からレーダーデータのみ補完（ログイン不要）
+echo "住まいサーフィン enrichment 実行中..." >&2
+python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
 fi
 
 # 4.7b. enrichment 完了後にレポートを最終再生成（ハザード・住まいサーフィン情報を反映）
