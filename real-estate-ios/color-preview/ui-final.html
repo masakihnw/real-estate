@@ -424,8 +424,125 @@
     <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
     <div class="nav"><span style="color:var(--a);font-size:13px;">閉じる</span><div style="display:flex;align-items:center;gap:12px;"><span style="display:inline-flex;align-items:center;color:var(--a);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><span style="font-size:18px;color:#FF3B30;">♥</span></div></div>
     <div class="scr" style="padding:0 14px;">
-      <div style="margin-bottom:6px;"><div class="dn">パークシティ豊洲 B棟</div><div class="da">東京都江東区豊洲5丁目</div></div>
+      <!-- ① 物件名 -->
+      <div style="margin-bottom:2px;"><div class="dn">パークシティ豊洲 B棟</div></div>
+      <!-- ② 住所（Google Maps ボタン） -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:9px 12px;background:var(--card);border-radius:10px;cursor:pointer;" onclick="window.open('https://www.google.com/maps/search/?api=1&query=パークシティ豊洲+B棟','_blank')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--a)" stroke="none"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+        <span class="da" style="margin:0;flex:1;">東京都江東区豊洲5丁目</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </div>
 
+      <!-- ③ コメント -->
+      <!-- ① コメント（長押しで編集・削除メニュー / 編集済みラベル対応 / A-3: 削除確認ダイアログ） -->
+      <div class="cmt">
+        <div class="cmt-hd"><span class="cmt-hd-t">💬 コメント</span><span class="cmt-hd-c">(2)</span></div>
+        <div class="cmt-item"><div class="cmt-av" style="background:var(--a);">M</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">Masaki</span><span class="cmt-edited">(編集済み)</span><span class="cmt-time">3時間前</span></div><div class="cmt-text">眺望良さそう。週末内見したい！15階の角部屋</div></div><div class="cmt-actions"><span title="編集"><svg viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></span><span title="削除" style="cursor:pointer;" onclick="document.getElementById('comment-delete-modal').style.display='flex'"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span></div></div>
+        <div class="cmt-item"><div class="cmt-av" style="background:#34C759;">Y</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">Yuki</span><span class="cmt-time">1時間前</span></div><div class="cmt-text">豊洲駅近いのがいいね！</div></div></div>
+        <div class="cmt-input"><div class="cmt-input-f">コメントを入力...</div><span class="cmt-send"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span></div>
+      </div>
+
+      <!-- A-3: コメント削除確認ダイアログ（HIG: 破壊的操作は確認が必要） -->
+      <div id="comment-delete-modal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.35);z-index:100;align-items:center;justify-content:center;border-radius:44px;">
+        <div style="background:#fff;border-radius:14px;width:270px;overflow:hidden;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+          <div style="padding:20px 16px 8px;">
+            <div style="font-size:17px;font-weight:600;margin-bottom:4px;">コメントを削除しますか？</div>
+            <div style="font-size:13px;color:var(--sub);line-height:1.4;">この操作は取り消せません。</div>
+          </div>
+          <div style="border-top:1px solid #e5e5ea;display:flex;">
+            <div style="flex:1;padding:11px;font-size:17px;color:var(--a);cursor:pointer;border-right:1px solid #e5e5ea;" onclick="document.getElementById('comment-delete-modal').style.display='none'">キャンセル</div>
+            <div style="flex:1;padding:11px;font-size:17px;color:#FF3B30;font-weight:600;cursor:pointer;" onclick="document.getElementById('comment-delete-modal').style.display='none'">削除</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ④ 内見写真 -->
+      <!-- ①-b 内見写真 -->
+      <div class="photo-sec">
+        <div class="photo-hd">
+          <div class="photo-hd-left">
+            <span class="photo-hd-t"><span class="sf" style="margin-right:3px;"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke-width:2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>内見写真</span>
+            <span class="photo-hd-c">(3)</span>
+          </div>
+          <div class="photo-hd-btns">
+            <span class="photo-hd-btn sf" title="カメラロールから選択"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg></span>
+            <span class="photo-hd-btn sf" title="カメラで撮影"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+          </div>
+        </div>
+        <div class="photo-scroll">
+          <div class="photo-thumb">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e8d8c8' width='80' height='80'/%3E%3Crect fill='%23d4c4b0' x='0' y='40' width='80' height='40'/%3E%3Crect fill='%23c0b098' x='10' y='20' width='25' height='20' rx='2'/%3E%3Crect fill='%23a0c4e0' x='0' y='0' width='80' height='25'/%3E%3Ctext x='40' y='65' text-anchor='middle' font-size='8' fill='%23998877'%3Eリビング%3C/text%3E%3C/svg%3E" alt="リビング">
+            <span class="photo-thumb-del"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+          </div>
+          <div class="photo-thumb">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e0e8d8' width='80' height='80'/%3E%3Crect fill='%23b8c8a8' x='5' y='30' width='70' height='10' rx='1'/%3E%3Crect fill='%23c8d0c0' x='0' y='50' width='80' height='30'/%3E%3Crect fill='%23a0c4e0' x='0' y='0' width='80' height='20'/%3E%3Ctext x='40' y='72' text-anchor='middle' font-size='8' fill='%23889878'%3E眺望%3C/text%3E%3C/svg%3E" alt="眺望">
+            <span class="photo-thumb-del"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+          </div>
+          <div class="photo-thumb">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e8e0d0' width='80' height='80'/%3E%3Crect fill='%23d8d0c0' x='10' y='25' width='60' height='35' rx='2'/%3E%3Crect fill='%23f0e8d8' x='15' y='30' width='50' height='25' rx='1'/%3E%3Ctext x='40' y='72' text-anchor='middle' font-size='8' fill='%23998877'%3Eキッチン%3C/text%3E%3C/svg%3E" alt="キッチン">
+            <span class="photo-thumb-del"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑤ 物件情報 -->
+      <!-- ③ 物件情報（最寄駅が先頭） -->
+      <div class="ds"><div class="ds-t">物件情報</div>
+        <!-- 最寄駅（DetailRowと同じレイアウト + プルダウン） -->
+        <div class="st-dd open" onclick="this.classList.toggle('open')" style="margin:0 0 2px 0;border-radius:10px;background:var(--card);overflow:hidden;font-size:12px;">
+          <div style="padding:10px 12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="dr-l">最寄駅</span>
+              <span style="font-size:9px;color:var(--sub);">他2駅 <span class="st-dd-arr">▼</span></span>
+            </div>
+            <div class="dr-v" style="margin-top:2px;">東京メトロ有楽町線「豊洲」徒歩4分</div>
+          </div>
+          <div class="st-dd-body">
+            <div class="st-dd-item"><span>ゆりかもめ「豊洲」</span><span class="walk">徒歩4分</span></div>
+            <div class="st-dd-item"><span>東京メトロ有楽町線「月島」</span><span class="walk">徒歩12分</span></div>
+          </div>
+        </div>
+        <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">8,980万円</span></div>
+        <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 72.5㎡</span></div>
+        <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2007年（築18年）</span></div>
+        <div class="dr"><span class="dr-l">所在階 / 階建</span><span class="dr-v">15階 / 20階建</span></div>
+        <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">660戸</span></div>
+        <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+        <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
+      </div>
+
+      <!-- ⑤-b 通勤時間 -->
+      <!-- ③-b 通勤時間 -->
+      <div class="cm-sec">
+        <div class="cm-sec-t">🏢 通勤時間</div>
+        <div class="cm-card pg">
+          <div class="cm-card-top">
+            <div class="cm-card-info">
+              <div class="cm-card-name"><img class="cm-card-logo" src="data:image/png;base64,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" alt="PG"> Playground株式会社</div>
+            </div>
+            <div class="cm-card-time">
+              <span class="cm-card-min pg">32</span><span class="cm-card-unit pg">分</span>
+              <div class="cm-card-transfers">乗換1回</div>
+            </div>
+          </div>
+          <div class="cm-card-route">↳ 有楽町線 豊洲→永田町 → 半蔵門線 永田町→半蔵門 → 徒歩5分 <span class="cm-card-exticon pg">↗</span></div>
+        </div>
+        <div class="cm-card m3">
+          <div class="cm-card-top">
+            <div class="cm-card-info">
+              <div class="cm-card-name"><img class="cm-card-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAARGVYSWZNTQAqAAAACAABh2kABAAAAAEAAAAaAAAAAAADoAEAAwAAAAEAAQAAoAIABAAAAAEAAAAYoAMABAAAAAEAAAAYAAAAAOI1da0AAAHJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA2LjAuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIj4KICAgICAgICAgPGV4aWY6Q29sb3JTcGFjZT4xPC9leGlmOkNvbG9yU3BhY2U+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4xNjwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xNjwvZXhpZjpQaXhlbFlEaW1lbnNpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpqX31VAAADvklEQVRIDdVVTWxbRRD+Znbfe3Zqx00dOyHKT0kQFCI1EglwiwxCtKIXhIADF25wRuKEEPKNK0dAHLhwijhUhQMKByPUolTKBdEAUitFoQQnJmkc27j2e2+HsfOvHJqGC6z03s7uzH47883sLvB/b+ZIANNve3gizVh+hoAlOaI75UCBdpuCD2UnrjhCFb6sl6/d/wUouj31aXs+WDjkOYlfFRddQuhmMAl7oDu9tLvB6yYV1FMK8zwIs3DxNHp7j9J3yj26Xg5empqGYCYCvUIOFw3sk8Dvp4Q8uqy7gRMZ0mRclCi+ajwMi0gbQWY3yUUevIxRF3pNicNGpVSso1BMnEUmsVV6t5orFM8oZCf6Tqt39Tty99+liBznIXyBXVSNRGoi3Nq3mV41aJmnyMXnI5s4p4nnvPEyga2NYLLoxb7tc6nkKBn/UeW0X+f8/bUqdHlOT7wwTiwDdku+jnt4mEGjDeduDDx+JeixmWHy5XMYmvFJxmr5ez+kgsRbIP4o3WNuG8ZzNpLLAvcmjBnv7eNMPZj9DZVS3NlIKSpy5LhpSDZW/U3JR+csMYKOsllrBMkACYj3s/IVxY79/lRmUqOtaDFcdUYKEGqRkxU29icXu6Rry1j/oP+SDBTXLeMv7pSjGrZEcK/Du4ANgX20quT3ekEU2B4SuQ5xd/RTU+9pOFcmjr/USKeYKGmMt1TeaH2ha28R0VlLMuuzmSKYUZsf9PqcuCSwU7FsRaOKEsAITKuZ1QXnQ19usqMx9foC2L0Hkk/WvnUf5wruNc1wtFxbjbH4WVgpFL9Tx77vRI9K5DCcjRUsHleXe7RMt5HcEIkGrPLrY3vbhI8kU5bD/jhMLEjQrpvYrRnhv1nkJvChq5S0arpou79SMVKp8+20290cmAknsMbIFlaygmEwKelIJAw4SivH2a1WvInsY3cx98YSpj/9EeN9J75CLFjyBFqXtqwip2fY0ZZGs4KEHrm95jVDBe9WBRbfCbG4p3hwrzlCTsR5GkMDpVvCsYRKQTN1hpNWZJBJJlDbTdCD8Y5ZsHqbY7KGAq4Dk0LEoRhqcq3RC1Bey2okl/43GxBShLhavrb4q54J57gdit4JybR9ueMOg7+pJDfCY66dcEIZwFdaekvAXJdjI8EmOXtXE/+iQAJ9H64jVT6ojBMC75nZ8vwHc3uDTt+KWpt+Aiscec/qcGFt/v2Fw/qHlY/d+feXS61GVKimc/6qYXujdmf+z4cFPWx/6EXbnxYso62jxSgK/9if/a8K/wD6HodIH4bcuwAAAABJRU5ErkJggg==" alt="M3"> エムスリーキャリア株式会社</div>
+            </div>
+            <div class="cm-card-time">
+              <span class="cm-card-min m3">25</span><span class="cm-card-unit m3">分</span>
+              <div class="cm-card-transfers">乗換0回</div>
+            </div>
+          </div>
+          <div class="cm-card-route">↳ 有楽町線 豊洲→桜田門 → 徒歩8分 <span class="cm-card-exticon m3">↗</span></div>
+        </div>
+        <div class="cm-note">※ Apple Maps の公共交通機関経路に基づく自動計算です<br>※ 平日朝 8:00 出発での最適経路</div>
+      </div>
+
+      <!-- ⑥ 住まいサーフィン評価 -->
       <!-- ② 住まいサーフィン評価 -->
       <div class="ss"><div class="ss-t">📊 住まいサーフィン評価</div>
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
@@ -475,6 +592,7 @@
         <div class="ss-r"><span class="l">区ランキング</span><span class="v"><b>8位</b> / 45件中</span></div>
       </div>
 
+      <!-- ⑥-b シミュレーション -->
       <!-- ②-b シミュレーション（値上がり・含み益） -->
       <div class="ss"><div class="ss-t">📈 値上がり・含み益シミュレーション</div>
         <div style="display:flex;gap:6px;margin-bottom:6px;">
@@ -492,61 +610,7 @@
         <div style="font-size:9px;color:var(--sub);text-align:center;">※ 頭金500万・金利0.5%・35年ローン前提</div>
       </div>
 
-      <!-- ③ 物件情報（最寄駅が先頭） -->
-      <div class="ds"><div class="ds-t">物件情報</div>
-        <!-- 最寄駅（DetailRowと同じレイアウト + プルダウン） -->
-        <div class="st-dd open" onclick="this.classList.toggle('open')" style="margin:0 0 2px 0;border-radius:10px;background:var(--card);overflow:hidden;font-size:12px;">
-          <div style="padding:10px 12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span class="dr-l">最寄駅</span>
-              <span style="font-size:9px;color:var(--sub);">他2駅 <span class="st-dd-arr">▼</span></span>
-            </div>
-            <div class="dr-v" style="margin-top:2px;">東京メトロ有楽町線「豊洲」徒歩4分</div>
-          </div>
-          <div class="st-dd-body">
-            <div class="st-dd-item"><span>ゆりかもめ「豊洲」</span><span class="walk">徒歩4分</span></div>
-            <div class="st-dd-item"><span>東京メトロ有楽町線「月島」</span><span class="walk">徒歩12分</span></div>
-          </div>
-        </div>
-        <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">8,980万円</span></div>
-        <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 72.5㎡</span></div>
-        <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2007年（築18年）</span></div>
-        <div class="dr"><span class="dr-l">所在階 / 階建</span><span class="dr-v">15階 / 20階建</span></div>
-        <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">660戸</span></div>
-        <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
-        <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
-      </div>
-
-      <!-- ③-b 通勤時間 -->
-      <div class="cm-sec">
-        <div class="cm-sec-t">🏢 通勤時間</div>
-        <div class="cm-card pg">
-          <div class="cm-card-top">
-            <div class="cm-card-info">
-              <div class="cm-card-name"><img class="cm-card-logo" src="data:image/png;base64,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" alt="PG"> Playground株式会社</div>
-            </div>
-            <div class="cm-card-time">
-              <span class="cm-card-min pg">32</span><span class="cm-card-unit pg">分</span>
-              <div class="cm-card-transfers">乗換1回</div>
-            </div>
-          </div>
-          <div class="cm-card-route">↳ 有楽町線 豊洲→永田町 → 半蔵門線 永田町→半蔵門 → 徒歩5分 <span class="cm-card-exticon pg">↗</span></div>
-        </div>
-        <div class="cm-card m3">
-          <div class="cm-card-top">
-            <div class="cm-card-info">
-              <div class="cm-card-name"><img class="cm-card-logo" src="data:image/png;base64,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" alt="M3"> エムスリーキャリア株式会社</div>
-            </div>
-            <div class="cm-card-time">
-              <span class="cm-card-min m3">25</span><span class="cm-card-unit m3">分</span>
-              <div class="cm-card-transfers">乗換0回</div>
-            </div>
-          </div>
-          <div class="cm-card-route">↳ 有楽町線 豊洲→桜田門 → 徒歩8分 <span class="cm-card-exticon m3">↗</span></div>
-        </div>
-        <div class="cm-note">※ Apple Maps の公共交通機関経路に基づく自動計算です<br>※ 平日朝 8:00 出発での最適経路</div>
-      </div>
-
+      <!-- ⑦ ハザード情報 -->
       <!-- ④ ハザード情報 -->
       <div class="hz-sec">
         <div class="hz-sec-t">⚠️ ハザード情報</div>
@@ -575,55 +639,7 @@
         <div class="hz-note">※ 国土地理院ハザードマップ・東京都地域危険度データに基づく自動判定です</div>
       </div>
 
-      <!-- ①-b 内見写真 -->
-      <div class="photo-sec">
-        <div class="photo-hd">
-          <div class="photo-hd-left">
-            <span class="photo-hd-t"><span class="sf" style="margin-right:3px;"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke-width:2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>内見写真</span>
-            <span class="photo-hd-c">(3)</span>
-          </div>
-          <div class="photo-hd-btns">
-            <span class="photo-hd-btn sf" title="カメラロールから選択"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg></span>
-            <span class="photo-hd-btn sf" title="カメラで撮影"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
-          </div>
-        </div>
-        <div class="photo-scroll">
-          <div class="photo-thumb">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e8d8c8' width='80' height='80'/%3E%3Crect fill='%23d4c4b0' x='0' y='40' width='80' height='40'/%3E%3Crect fill='%23c0b098' x='10' y='20' width='25' height='20' rx='2'/%3E%3Crect fill='%23a0c4e0' x='0' y='0' width='80' height='25'/%3E%3Ctext x='40' y='65' text-anchor='middle' font-size='8' fill='%23998877'%3Eリビング%3C/text%3E%3C/svg%3E" alt="リビング">
-            <span class="photo-thumb-del"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-          </div>
-          <div class="photo-thumb">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e0e8d8' width='80' height='80'/%3E%3Crect fill='%23b8c8a8' x='5' y='30' width='70' height='10' rx='1'/%3E%3Crect fill='%23c8d0c0' x='0' y='50' width='80' height='30'/%3E%3Crect fill='%23a0c4e0' x='0' y='0' width='80' height='20'/%3E%3Ctext x='40' y='72' text-anchor='middle' font-size='8' fill='%23889878'%3E眺望%3C/text%3E%3C/svg%3E" alt="眺望">
-            <span class="photo-thumb-del"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-          </div>
-          <div class="photo-thumb">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e8e0d0' width='80' height='80'/%3E%3Crect fill='%23d8d0c0' x='10' y='25' width='60' height='35' rx='2'/%3E%3Crect fill='%23f0e8d8' x='15' y='30' width='50' height='25' rx='1'/%3E%3Ctext x='40' y='72' text-anchor='middle' font-size='8' fill='%23998877'%3Eキッチン%3C/text%3E%3C/svg%3E" alt="キッチン">
-            <span class="photo-thumb-del"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ① コメント（長押しで編集・削除メニュー / 編集済みラベル対応 / A-3: 削除確認ダイアログ） -->
-      <div class="cmt">
-        <div class="cmt-hd"><span class="cmt-hd-t">💬 コメント</span><span class="cmt-hd-c">(2)</span></div>
-        <div class="cmt-item"><div class="cmt-av" style="background:var(--a);">M</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">Masaki</span><span class="cmt-edited">(編集済み)</span><span class="cmt-time">3時間前</span></div><div class="cmt-text">眺望良さそう。週末内見したい！15階の角部屋</div></div><div class="cmt-actions"><span title="編集"><svg viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></span><span title="削除" style="cursor:pointer;" onclick="document.getElementById('comment-delete-modal').style.display='flex'"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span></div></div>
-        <div class="cmt-item"><div class="cmt-av" style="background:#34C759;">Y</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">Yuki</span><span class="cmt-time">1時間前</span></div><div class="cmt-text">豊洲駅近いのがいいね！</div></div></div>
-        <div class="cmt-input"><div class="cmt-input-f">コメントを入力...</div><span class="cmt-send"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span></div>
-      </div>
-      <!-- A-3: コメント削除確認ダイアログ（HIG: 破壊的操作は確認が必要） -->
-      <div id="comment-delete-modal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.35);z-index:100;align-items:center;justify-content:center;border-radius:44px;">
-        <div style="background:#fff;border-radius:14px;width:270px;overflow:hidden;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
-          <div style="padding:20px 16px 8px;">
-            <div style="font-size:17px;font-weight:600;margin-bottom:4px;">コメントを削除しますか？</div>
-            <div style="font-size:13px;color:var(--sub);line-height:1.4;">この操作は取り消せません。</div>
-          </div>
-          <div style="border-top:1px solid #e5e5ea;display:flex;">
-            <div style="flex:1;padding:11px;font-size:17px;color:var(--a);cursor:pointer;border-right:1px solid #e5e5ea;" onclick="document.getElementById('comment-delete-modal').style.display='none'">キャンセル</div>
-            <div style="flex:1;padding:11px;font-size:17px;color:#FF3B30;font-weight:600;cursor:pointer;" onclick="document.getElementById('comment-delete-modal').style.display='none'">削除</div>
-          </div>
-        </div>
-      </div>
-
+      <!-- ⑧ 外部ボタン -->
       <!-- ⑤ ボタン -->
       <div class="db">SUUMO/HOME'S で詳細を開く</div>
       <div class="db2">住まいサーフィンで詳しく見る</div>
@@ -635,8 +651,95 @@
     <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
     <div class="nav"><span style="color:var(--a);font-size:13px;">閉じる</span><div style="display:flex;align-items:center;gap:12px;"><span style="display:inline-flex;align-items:center;color:var(--a);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><span style="font-size:18px;color:var(--faint);">♡</span></div></div>
     <div class="scr" style="padding:0 14px;">
-      <div style="margin-bottom:6px;"><div class="dn">HARUMI FLAG SUN VILLAGE</div><div class="da">東京都中央区晴海5丁目</div></div>
+      <!-- ① 物件名 -->
+      <div style="margin-bottom:2px;"><div class="dn">HARUMI FLAG SUN VILLAGE</div></div>
+      <!-- ② 住所（Google Maps ボタン） -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:9px 12px;background:var(--card);border-radius:10px;cursor:pointer;" onclick="window.open('https://www.google.com/maps/search/?api=1&query=HARUMI+FLAG+SUN+VILLAGE','_blank')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--a)" stroke="none"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+        <span class="da" style="margin:0;flex:1;">東京都中央区晴海5丁目</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </div>
 
+      <!-- ③ コメント -->
+      <!-- ① コメント -->
+      <div class="cmt">
+        <div class="cmt-hd"><span class="cmt-hd-t">💬 コメント</span><span class="cmt-hd-c">(0)</span></div>
+        <div class="cmt-input"><div class="cmt-input-f">コメントを入力...</div><span class="cmt-send"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span></div>
+      </div>
+
+      <!-- ④ 内見写真 -->
+      <!-- ①-b 内見写真（まだなし） -->
+      <div class="photo-sec">
+        <div class="photo-hd">
+          <div class="photo-hd-left">
+            <span class="photo-hd-t"><span class="sf" style="margin-right:3px;"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke-width:2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>内見写真</span>
+            <span class="photo-hd-c">(0)</span>
+          </div>
+          <div class="photo-hd-btns">
+            <span class="photo-hd-btn sf" title="カメラロールから選択"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg></span>
+            <span class="photo-hd-btn sf" title="カメラで撮影"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+          </div>
+        </div>
+        <div class="photo-empty">内見写真はまだありません</div>
+      </div>
+
+      <!-- ⑤ 物件情報 -->
+      <!-- ③ 物件情報（最寄駅が先頭） -->
+      <div class="ds"><div class="ds-t">物件情報</div>
+        <!-- 最寄駅（DetailRowと同じレイアウト + プルダウン） -->
+        <div class="st-dd" onclick="this.classList.toggle('open')" style="margin:0 0 2px 0;border-radius:10px;background:var(--card);overflow:hidden;font-size:12px;">
+          <div style="padding:10px 12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="dr-l">最寄駅</span>
+              <span style="font-size:9px;color:var(--sub);">他1駅 <span class="st-dd-arr">▼</span></span>
+            </div>
+            <div class="dr-v" style="margin-top:2px;">都営大江戸線「勝どき」徒歩12分</div>
+          </div>
+          <div class="st-dd-body">
+            <div class="st-dd-item"><span>東京BRT「勝どきBRT」</span><span class="walk">徒歩5分</span></div>
+          </div>
+        </div>
+        <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:#34C759;">6,000万〜1.2億</span></div>
+        <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">2LDK〜4LDK / 61〜100㎡</span></div>
+        <div class="dr"><span class="dr-l">入居時期</span><span class="dr-v">2025年3月</span></div>
+        <div class="dr"><span class="dr-l">階建</span><span class="dr-v">50階建</span></div>
+        <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">4,145戸</span></div>
+        <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+        <div class="dr"><span class="dr-l">種別</span><span class="dr-v">新築マンション</span></div>
+      </div>
+
+      <!-- ⑤-b 通勤時間 -->
+      <!-- ③-b 通勤時間 -->
+      <div class="cm-sec">
+        <div class="cm-sec-t">🏢 通勤時間</div>
+        <div class="cm-card pg">
+          <div class="cm-card-top">
+            <div class="cm-card-info">
+              <div class="cm-card-name"><img class="cm-card-logo" src="data:image/png;base64,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" alt="PG"> Playground株式会社</div>
+            </div>
+            <div class="cm-card-time">
+              <span class="cm-card-min pg">38</span><span class="cm-card-unit pg">分</span>
+              <div class="cm-card-transfers">乗換1回</div>
+            </div>
+          </div>
+          <div class="cm-card-route">↳ 大江戸線 勝どき→青山一丁目 → 半蔵門線 青山一丁目→半蔵門 → 徒歩5分 <span class="cm-card-exticon pg">↗</span></div>
+        </div>
+        <div class="cm-card m3">
+          <div class="cm-card-top">
+            <div class="cm-card-info">
+              <div class="cm-card-name"><img class="cm-card-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAARGVYSWZNTQAqAAAACAABh2kABAAAAAEAAAAaAAAAAAADoAEAAwAAAAEAAQAAoAIABAAAAAEAAAAYoAMABAAAAAEAAAAYAAAAAOI1da0AAAHJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA2LjAuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIj4KICAgICAgICAgPGV4aWY6Q29sb3JTcGFjZT4xPC9leGlmOkNvbG9yU3BhY2U+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4xNjwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xNjwvZXhpZjpQaXhlbFlEaW1lbnNpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpqX31VAAADvklEQVRIDdVVTWxbRRD+Znbfe3Zqx00dOyHKT0kQFCI1EglwiwxCtKIXhIADF25wRuKEEPKNK0dAHLhwijhUhQMKByPUolTKBdEAUitFoQQnJmkc27j2e2+HsfOvHJqGC6z03s7uzH47883sLvB/b+ZIANNve3gizVh+hoAlOaI75UCBdpuCD2UnrjhCFb6sl6/d/wUouj31aXs+WDjkOYlfFRddQuhmMAl7oDu9tLvB6yYV1FMK8zwIs3DxNHp7j9J3yj26Xg5empqGYCYCvUIOFw3sk8Dvp4Q8uqy7gRMZ0mRclCi+ajwMi0gbQWY3yUUevIxRF3pNicNGpVSso1BMnEUmsVV6t5orFM8oZCf6Tqt39Tty99+liBznIXyBXVSNRGoi3Nq3mV41aJmnyMXnI5s4p4nnvPEyga2NYLLoxb7tc6nkKBn/UeW0X+f8/bUqdHlOT7wwTiwDdku+jnt4mEGjDeduDDx+JeixmWHy5XMYmvFJxmr5ez+kgsRbIP4o3WNuG8ZzNpLLAvcmjBnv7eNMPZj9DZVS3NlIKSpy5LhpSDZW/U3JR+csMYKOsllrBMkACYj3s/IVxY79/lRmUqOtaDFcdUYKEGqRkxU29icXu6Rry1j/oP+SDBTXLeMv7pSjGrZEcK/Du4ANgX20quT3ekEU2B4SuQ5xd/RTU+9pOFcmjr/USKeYKGmMt1TeaH2ha28R0VlLMuuzmSKYUZsf9PqcuCSwU7FsRaOKEsAITKuZ1QXnQ19usqMx9foC2L0Hkk/WvnUf5wruNc1wtFxbjbH4WVgpFL9Tx77vRI9K5DCcjRUsHleXe7RMt5HcEIkGrPLrY3vbhI8kU5bD/jhMLEjQrpvYrRnhv1nkJvChq5S0arpou79SMVKp8+20290cmAknsMbIFlaygmEwKelIJAw4SivH2a1WvInsY3cx98YSpj/9EeN9J75CLFjyBFqXtqwip2fY0ZZGs4KEHrm95jVDBe9WBRbfCbG4p3hwrzlCTsR5GkMDpVvCsYRKQTN1hpNWZJBJJlDbTdCD8Y5ZsHqbY7KGAq4Dk0LEoRhqcq3RC1Bey2okl/43GxBShLhavrb4q54J57gdit4JybR9ueMOg7+pJDfCY66dcEIZwFdaekvAXJdjI8EmOXtXE/+iQAJ9H64jVT6ojBMC75nZ8vwHc3uDTt+KWpt+Aiscec/qcGFt/v2Fw/qHlY/d+feXS61GVKimc/6qYXujdmf+z4cFPWx/6EXbnxYso62jxSgK/9if/a8K/wD6HodIH4bcuwAAAABJRU5ErkJggg==" alt="M3"> エムスリーキャリア株式会社</div>
+            </div>
+            <div class="cm-card-time">
+              <span class="cm-card-min m3">30</span><span class="cm-card-unit m3">分</span>
+              <div class="cm-card-transfers">乗換1回</div>
+            </div>
+          </div>
+          <div class="cm-card-route">↳ 大江戸線 勝どき→大門 → 日比谷線 大門→虎ノ門ヒルズ → 徒歩3分 <span class="cm-card-exticon m3">↗</span></div>
+        </div>
+        <div class="cm-note">※ Apple Maps の公共交通機関経路に基づく自動計算です<br>※ 平日朝 8:00 出発での最適経路</div>
+      </div>
+
+      <!-- ⑥ 住まいサーフィン評価 -->
       <!-- ② 住まいサーフィン評価 -->
       <div class="ss"><div class="ss-t">📊 住まいサーフィン評価</div>
         <!-- 儲かる確率 + ランキング -->
@@ -730,60 +833,7 @@
         </div>
       </div>
 
-      <!-- ③ 物件情報（最寄駅が先頭） -->
-      <div class="ds"><div class="ds-t">物件情報</div>
-        <!-- 最寄駅（DetailRowと同じレイアウト + プルダウン） -->
-        <div class="st-dd" onclick="this.classList.toggle('open')" style="margin:0 0 2px 0;border-radius:10px;background:var(--card);overflow:hidden;font-size:12px;">
-          <div style="padding:10px 12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span class="dr-l">最寄駅</span>
-              <span style="font-size:9px;color:var(--sub);">他1駅 <span class="st-dd-arr">▼</span></span>
-            </div>
-            <div class="dr-v" style="margin-top:2px;">都営大江戸線「勝どき」徒歩12分</div>
-          </div>
-          <div class="st-dd-body">
-            <div class="st-dd-item"><span>東京BRT「勝どきBRT」</span><span class="walk">徒歩5分</span></div>
-          </div>
-        </div>
-        <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:#34C759;">6,000万〜1.2億</span></div>
-        <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">2LDK〜4LDK / 61〜100㎡</span></div>
-        <div class="dr"><span class="dr-l">入居時期</span><span class="dr-v">2025年3月</span></div>
-        <div class="dr"><span class="dr-l">階建</span><span class="dr-v">50階建</span></div>
-        <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">4,145戸</span></div>
-        <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
-        <div class="dr"><span class="dr-l">種別</span><span class="dr-v">新築マンション</span></div>
-      </div>
-
-      <!-- ③-b 通勤時間 -->
-      <div class="cm-sec">
-        <div class="cm-sec-t">🏢 通勤時間</div>
-        <div class="cm-card pg">
-          <div class="cm-card-top">
-            <div class="cm-card-info">
-              <div class="cm-card-name"><img class="cm-card-logo" src="data:image/png;base64,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" alt="PG"> Playground株式会社</div>
-            </div>
-            <div class="cm-card-time">
-              <span class="cm-card-min pg">38</span><span class="cm-card-unit pg">分</span>
-              <div class="cm-card-transfers">乗換1回</div>
-            </div>
-          </div>
-          <div class="cm-card-route">↳ 大江戸線 勝どき→青山一丁目 → 半蔵門線 青山一丁目→半蔵門 → 徒歩5分 <span class="cm-card-exticon pg">↗</span></div>
-        </div>
-        <div class="cm-card m3">
-          <div class="cm-card-top">
-            <div class="cm-card-info">
-              <div class="cm-card-name"><img class="cm-card-logo" src="data:image/png;base64,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" alt="M3"> エムスリーキャリア株式会社</div>
-            </div>
-            <div class="cm-card-time">
-              <span class="cm-card-min m3">30</span><span class="cm-card-unit m3">分</span>
-              <div class="cm-card-transfers">乗換1回</div>
-            </div>
-          </div>
-          <div class="cm-card-route">↳ 大江戸線 勝どき→大門 → 日比谷線 大門→虎ノ門ヒルズ → 徒歩3分 <span class="cm-card-exticon m3">↗</span></div>
-        </div>
-        <div class="cm-note">※ Apple Maps の公共交通機関経路に基づく自動計算です<br>※ 平日朝 8:00 出発での最適経路</div>
-      </div>
-
+      <!-- ⑦ ハザード情報 -->
       <!-- ④ ハザード情報 -->
       <div class="hz-sec">
         <div class="hz-sec-t">⚠️ ハザード情報</div>
@@ -812,27 +862,7 @@
         <div class="hz-note">※ 国土地理院ハザードマップ・東京都地域危険度データに基づく自動判定です</div>
       </div>
 
-      <!-- ①-b 内見写真（まだなし） -->
-      <div class="photo-sec">
-        <div class="photo-hd">
-          <div class="photo-hd-left">
-            <span class="photo-hd-t"><span class="sf" style="margin-right:3px;"><svg width="11" height="11" viewBox="0 0 24 24" style="stroke-width:2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>内見写真</span>
-            <span class="photo-hd-c">(0)</span>
-          </div>
-          <div class="photo-hd-btns">
-            <span class="photo-hd-btn sf" title="カメラロールから選択"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg></span>
-            <span class="photo-hd-btn sf" title="カメラで撮影"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
-          </div>
-        </div>
-        <div class="photo-empty">内見写真はまだありません</div>
-      </div>
-
-      <!-- ① コメント -->
-      <div class="cmt">
-        <div class="cmt-hd"><span class="cmt-hd-t">💬 コメント</span><span class="cmt-hd-c">(0)</span></div>
-        <div class="cmt-input"><div class="cmt-input-f">コメントを入力...</div><span class="cmt-send"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span></div>
-      </div>
-
+      <!-- ⑧ 外部ボタン -->
       <!-- ⑤ ボタン -->
       <div class="db">SUUMO で詳細を開く</div>
       <div class="db2">住まいサーフィンで詳しく見る</div>
@@ -849,8 +879,25 @@
       <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#FF9500;color:#fff;border-radius:10px;margin-bottom:8px;font-size:12px;font-weight:600;">
         <span style="font-size:16px;">⚠</span>この物件はサイトから掲載終了しています
       </div>
-      <div style="margin-bottom:6px;"><div class="dn">ブリリアタワー月島</div><div class="da">東京都中央区月島2丁目</div></div>
+      <!-- ① 物件名 -->
+      <div style="margin-bottom:2px;"><div class="dn">ブリリアタワー月島</div></div>
+      <!-- ② 住所（Google Maps ボタン） -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:9px 12px;background:var(--card);border-radius:10px;cursor:pointer;" onclick="window.open('https://www.google.com/maps/search/?api=1&query=ブリリアタワー月島','_blank')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--a)" stroke="none"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+        <span class="da" style="margin:0;flex:1;">東京都中央区月島2丁目</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </div>
 
+      <!-- ③ コメント -->
+      <!-- ① コメント（編集モード表示例） -->
+      <div class="cmt">
+        <div class="cmt-hd"><span class="cmt-hd-t">💬 コメント</span><span class="cmt-hd-c">(1)</span></div>
+        <div class="cmt-item"><div class="cmt-av" style="background:var(--a);">M</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">Masaki</span><span class="cmt-time">2日前</span></div><div class="cmt-text">立地がとても良い。管理費もリーズナブル。</div></div><div class="cmt-actions"><span title="編集"><svg viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></span><span title="削除"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span></div></div>
+        <div class="cmt-edit-bar"><span class="sf" style="gap:3px;"><svg width="10" height="10" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> コメントを編集中</span><span class="cmt-edit-cancel sf"><svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none" opacity="0.2"/><path d="M15 9l-6 6M9 9l6 6" stroke-width="2"/></svg></span></div>
+        <div class="cmt-input editing"><div class="cmt-input-f has-text">立地がとても良い。管理費もリーズナブル。</div><span class="cmt-send"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+      </div>
+
+      <!-- ④ 内見写真 -->
       <!-- ①-b 内見写真（掲載終了物件にも写真あり） -->
       <div class="photo-sec">
         <div class="photo-hd">
@@ -875,6 +922,7 @@
         </div>
       </div>
 
+      <!-- ⑤ 物件情報 -->
       <!-- ③ 物件情報（マージ済み） -->
       <div class="ds"><div class="ds-t">物件情報</div>
         <!-- 最寄駅 -->
@@ -895,14 +943,7 @@
         <div class="dr"><span class="dr-l">種別</span><span class="dr-v">中古マンション</span></div>
       </div>
 
-      <!-- ① コメント（編集モード表示例） -->
-      <div class="cmt">
-        <div class="cmt-hd"><span class="cmt-hd-t">💬 コメント</span><span class="cmt-hd-c">(1)</span></div>
-        <div class="cmt-item"><div class="cmt-av" style="background:var(--a);">M</div><div class="cmt-body"><div class="cmt-meta"><span class="cmt-name">Masaki</span><span class="cmt-time">2日前</span></div><div class="cmt-text">立地がとても良い。管理費もリーズナブル。</div></div><div class="cmt-actions"><span title="編集"><svg viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></span><span title="削除"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span></div></div>
-        <div class="cmt-edit-bar"><span class="sf" style="gap:3px;"><svg width="10" height="10" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> コメントを編集中</span><span class="cmt-edit-cancel sf"><svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none" opacity="0.2"/><path d="M15 9l-6 6M9 9l6 6" stroke-width="2"/></svg></span></div>
-        <div class="cmt-input editing"><div class="cmt-input-f has-text">立地がとても良い。管理費もリーズナブル。</div><span class="cmt-send"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
-      </div>
-
+      <!-- ⑨ 掲載終了メッセージ -->
       <!-- ⑤ 掲載終了メッセージ（外部ボタンなし） -->
       <div style="margin-top:6px;padding:10px 12px;background:rgba(255,149,0,0.08);border-radius:8px;border:1px solid rgba(255,149,0,0.2);font-size:10px;color:var(--sub);text-align:center;">この物件はSUUMO/HOME'Sから削除されました。<br>掲載時の情報を表示しています。</div>
     </div>
@@ -1627,7 +1668,7 @@ updatePrice(); updateCount();
 グループセクション（Apple Settings 風）。セクション順序:
 ① 掲載終了バナー（isDelisted のみ）
 ② 物件名 + ♥ボタン
-③ 住所（Google Maps アイコン付き。タップで物件名を Google Maps 検索。arrow.up.right.square アイコンで外部リンクを示唆）
+③ 住所（カード型ボタン: 左に map.fill アイコン（accentColor）+ 住所テキスト + 右端に arrow.up.right.square 外部リンクアイコン。タップで https://www.google.com/maps/search/?api=1&query=物件名 を開く）
 ④ コメント（コメント一覧 + 入力フィールド。作成者名・アバター・相対時間表示。家族間共有）
 ⑤ 内見写真（PhotoSectionView: カメラロール選択 + カメラ撮影。横スクロールサムネイル。タップでフルスクリーン。✕で削除確認）
 ⑥ 物件情報（1列リスト: DetailRow 左ラベル/右値。間取り/面積、所在階/階建を統合）

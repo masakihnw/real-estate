@@ -380,6 +380,23 @@ struct ListingListView: View {
         .accessibilityElement(children: .combine)
     }
 
+    private var delistFilterEmptyState: some View {
+        ContentUnavailableView {
+            Label("該当する物件がありません", systemImage: "tray")
+        } description: {
+            Text("選択中の掲載状態に一致する物件がありません。\nフィルタを「すべて」に切り替えてください。")
+        } actions: {
+            Button("すべて表示") {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    delistFilter = .all
+                }
+            }
+            .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+
     /// お気に入りタブ用：掲載状態チップフィルタバー
     private var delistChipBar: some View {
         HStack(spacing: 8) {

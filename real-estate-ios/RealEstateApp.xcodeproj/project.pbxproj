@@ -39,6 +39,7 @@
 		F1E2A3B4C5D6E7F8A9B0C1D2 /* FilterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A3B4C5D6E7F8A9B0C1D3 /* FilterStore.swift */; };
 		C0M1P2A3R4I5S6O7N8V9I0E1 /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0M1P2A3R4I5S6O7N8V9I0E2 /* ComparisonView.swift */; };
 		F105169E54EE4FDD30D61D04 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7391AC642FF221BD72EBEB /* AuthService.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* ListingFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F3 /* ListingFilter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +73,7 @@
 		EA3890AAC58D1F45D703CF33 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		F2A3B4C5D6E7F8A9B0C1D2E3 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		EA5549338A98AC303BCC728D /* ListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingStore.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8C9D0E1F3 /* ListingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilter.swift; sourceTree = "<group>"; };
 		F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +113,7 @@
 			children = (
 				7BC96D67CAA5AB454825D2D8 /* Listing.swift */,
 				F1E2A3B4C5D6E7F8A9B0C1D3 /* FilterStore.swift */,
+				A1B2C3D4E5F6A7B8C9D0E1F3 /* ListingFilter.swift */,
 				853FEEF66F713933C5CC415D /* LoanCalculator.swift */,
 			);
 			path = Models;
@@ -260,6 +263,7 @@
 				575E06F0173318384B77E526 /* FirebaseSyncService.swift in Sources */,
 				E90E0D85B2F8D6947FC40CA2 /* Listing.swift in Sources */,
 				F1E2A3B4C5D6E7F8A9B0C1D2 /* FilterStore.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* ListingFilter.swift in Sources */,
 				57D00827C4D651167096FF9C /* ListingDetailView.swift in Sources */,
 				28F22887EDD883FDBE3CF7E7 /* ListingFilterSheet.swift in Sources */,
 				D0CB8E0312FD2887D70458A7 /* ListingListView.swift in Sources */,
