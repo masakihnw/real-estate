@@ -263,7 +263,7 @@ struct ListingFilterSheet: View {
                     step: 1
                 )
                 .tint(.accentColor)
-                Text(editFilter.walkMax != nil ? "\(editFilter.walkMax!)分以内" : "指定なし")
+                Text(editFilter.walkMax.map { "\($0)分以内" } ?? "指定なし")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 70, alignment: .trailing)
@@ -287,7 +287,7 @@ struct ListingFilterSheet: View {
                     step: 5
                 )
                 .tint(.accentColor)
-                Text(editFilter.areaMin != nil ? "\(Int(editFilter.areaMin!))㎡以上" : "指定なし")
+                Text(editFilter.areaMin.map { "\(Int($0))㎡以上" } ?? "指定なし")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 70, alignment: .trailing)

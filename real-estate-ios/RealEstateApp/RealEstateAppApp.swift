@@ -29,7 +29,9 @@ struct RealEstateAppApp: App {
             do {
                 return try ModelContainer(for: schema, configurations: [memoryConfig])
             } catch {
-                fatalError("ModelContainer の作成に失敗しました: \(error.localizedDescription)")
+                // インメモリ作成も失敗 = システムレベルの異常（メモリ不足等）
+                // SwiftData 必須アプリのため回復不可; Apple テンプレート準拠
+                fatalError("[RealEstateApp] ModelContainer の作成に完全に失敗: \(error.localizedDescription)")
             }
         }
     }()

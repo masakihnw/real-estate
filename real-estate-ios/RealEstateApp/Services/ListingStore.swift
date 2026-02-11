@@ -120,7 +120,7 @@ final class ListingStore {
         totalNew += shinResult.newCount
         if shinResult.hadChanges { lastRefreshHadChanges = true }
         if let err = shinResult.error {
-            lastError = (lastError != nil) ? "\(lastError!); \(err)" : err
+            lastError = lastError.map { "\($0); \(err)" } ?? err
         }
 
         let fetchedAt = Date()

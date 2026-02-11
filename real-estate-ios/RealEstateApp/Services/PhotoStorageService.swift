@@ -19,10 +19,10 @@ final class PhotoStorageService {
     private let fileManager = FileManager.default
 
     /// 写真保存ルートディレクトリ（Documents/listing-photos/）
+    /// Documents が取得できない場合は tmp にフォールバック
     private var photosRootURL: URL {
-        guard let docs = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            fatalError("[PhotoStorage] Documents ディレクトリが取得できません")
-        }
+        let docs = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first
+            ?? URL(fileURLWithPath: NSTemporaryDirectory())
         return docs.appendingPathComponent("listing-photos", isDirectory: true)
     }
 
