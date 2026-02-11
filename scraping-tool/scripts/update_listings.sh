@@ -15,18 +15,32 @@ DATE=$(TZ=Asia/Tokyo date +%Y%m%d_%H%M%S)
 CURRENT="${OUTPUT_DIR}/current_${DATE}.json"
 REPORT="${REPORT_DIR}/report.md"
 
+CURRENT_SHINCHIKU="${OUTPUT_DIR}/current_shinchiku_${DATE}.json"
+
 echo "=== 物件情報取得開始 ===" >&2
 echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
 
-# 1. データ取得（SUUMO + HOME'S、結果がなくなるまで全ページ取得）
-python3 main.py --source both -o "$CURRENT"
+# 1. データ取得（中古: SUUMO + HOME'S、結果がなくなるまで全ページ取得）
+echo "--- 中古マンション取得 ---" >&2
+python3 main.py --source both --property-type chuko -o "$CURRENT"
 
 if [ ! -s "$CURRENT" ]; then
-    echo "エラー: データが取得できませんでした" >&2
+    echo "エラー: 中古データが取得できませんでした" >&2
     exit 1
 fi
 
 COUNT=$(python3 -c "import json; print(len(json.load(open('$CURRENT'))))")
+echo "中古取得件数: ${COUNT}件" >&2
+
+# 1.5. 新築データ取得（SUUMO + HOME'S）
+echo "--- 新築マンション取得 ---" >&2
+python3 main.py --source both --property-type shinchiku -o "$CURRENT_SHINCHIKU" || echo "新築取得エラー（中古は続行）" >&2
+
+SHINCHIKU_COUNT=0
+if [ -s "$CURRENT_SHINCHIKU" ]; then
+    SHINCHIKU_COUNT=$(python3 -c "import json; print(len(json.load(open('$CURRENT_SHINCHIKU'))))")
+fi
+echo "新築取得件数: ${SHINCHIKU_COUNT}件" >&2
 echo "取得件数: ${COUNT}件" >&2
 
 # 2. 前回結果と比較し、変更がなければレポート・通知をスキップ（スクレイピングのみ実行）
@@ -89,8 +103,15 @@ if [ -n "${NOTION_TOKEN:-}" ] && [ -n "${NOTION_DATABASE_ID:-}" ]; then
     python3 notion-tool/sync_to_notion.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" || echo "Notion 同期は失敗しました（レポート・コミットは続行）" >&2
 fi
 
+# 4.6. 新築結果を latest_shinchiku.json に保存
+if [ -s "$CURRENT_SHINCHIKU" ]; then
+    cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/previous_shinchiku.json" 2>/dev/null || true
+    cp "$CURRENT_SHINCHIKU" "${OUTPUT_DIR}/latest_shinchiku.json"
+    echo "新築: ${OUTPUT_DIR}/latest_shinchiku.json に保存" >&2
+fi
+
 # 5. JSON は不要のため削除（md 生成に使った current_*.json を削除）
-rm -f "$CURRENT"
+rm -f "$CURRENT" "$CURRENT_SHINCHIKU"
 for f in "${OUTPUT_DIR}"/current_*.json; do
     [ -f "$f" ] || continue
     rm -f "$f" 2>/dev/null || true
@@ -112,7 +133,8 @@ done
 
 echo "=== 完了 ===" >&2
 echo "レポート: $REPORT" >&2
-echo "最新: ${OUTPUT_DIR}/latest.json" >&2
+echo "最新（中古）: ${OUTPUT_DIR}/latest.json" >&2
+echo "最新（新築）: ${OUTPUT_DIR}/latest_shinchiku.json" >&2
 
 # 7. Git操作（オプション: --no-git でスキップ可能）
 if [ "$1" != "--no-git" ]; then

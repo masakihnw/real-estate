@@ -11,32 +11,40 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ListingStore.self) private var store
-    @State private var urlInput: String = ""
+    @State private var chukoURLInput: String = ""
+    @State private var shinchikuURLInput: String = ""
     @State private var showSaveConfirmation = false
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("一覧JSONのURL", text: $urlInput)
+                    TextField("中古マンション JSON URL", text: $chukoURLInput)
                         .keyboardType(.URL)
                         .autocapitalization(.none)
                         .autocorrectionDisabled()
-                        .onAppear { urlInput = store.listURL }
+                    TextField("新築マンション JSON URL", text: $shinchikuURLInput)
+                        .keyboardType(.URL)
+                        .autocapitalization(.none)
+                        .autocorrectionDisabled()
                 } header: {
                     Text("データソース")
                 } footer: {
-                    Text("scraping-tool の results/latest.json を配信しているURL（GitHub raw や Gist など）を指定してください。")
+                    Text("scraping-tool の results/latest.json（中古）と results/latest_shinchiku.json（新築）を配信しているURLを指定してください。")
                 }
 
                 Section {
                     Button {
-                        store.listURL = urlInput.trimmingCharacters(in: .whitespaces)
+                        store.listURL = chukoURLInput.trimmingCharacters(in: .whitespaces)
+                        store.shinchikuListURL = shinchikuURLInput.trimmingCharacters(in: .whitespaces)
                         showSaveConfirmation = true
                     } label: {
                         Label("URLを保存", systemImage: "checkmark.circle")
                     }
-                    .disabled(urlInput.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(
+                        chukoURLInput.trimmingCharacters(in: .whitespaces).isEmpty &&
+                        shinchikuURLInput.trimmingCharacters(in: .whitespaces).isEmpty
+                    )
 
                     Button {
                         Task {
@@ -45,7 +53,9 @@ struct SettingsView: View {
                     } label: {
                         Label("今すぐ更新", systemImage: "arrow.clockwise")
                     }
-                    .disabled(store.listURL.isEmpty || store.isRefreshing)
+                    .disabled(
+                        (store.listURL.isEmpty && store.shinchikuListURL.isEmpty) || store.isRefreshing
+                    )
                 }
 
                 if let at = store.lastFetchedAt {
@@ -60,14 +70,30 @@ struct SettingsView: View {
                     }
                 }
 
+                if let err = store.lastError {
+                    Section {
+                        Text(err)
+                            .foregroundStyle(.red)
+                            .font(ListingObjectStyle.caption)
+                    } header: {
+                        Text("エラー")
+                    }
+                }
+
                 Section {
                     Link("SUUMO 中古マンション", destination: URL(string: "https://suumo.jp/ms/chuko/")!)
-                    Link("HOME'S 中古マンション", destination: URL(string: "https://www.homes.co.jp/chintai/kanto/city/")!)
+                    Link("SUUMO 新築マンション", destination: URL(string: "https://suumo.jp/ms/shinchiku/")!)
+                    Link("HOME'S 中古マンション", destination: URL(string: "https://www.homes.co.jp/mansion/chuko/")!)
+                    Link("HOME'S 新築マンション", destination: URL(string: "https://www.homes.co.jp/mansion/shinchiku/")!)
                 } header: {
                     Text("参考リンク")
                 }
             }
             .navigationTitle("設定")
+            .onAppear {
+                chukoURLInput = store.listURL
+                shinchikuURLInput = store.shinchikuListURL
+            }
             .alert("保存しました", isPresented: $showSaveConfirmation) {
                 Button("OK", role: .cancel) { }
             } message: {

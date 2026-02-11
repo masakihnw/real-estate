@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """
 REINS以外の物件サイト（SUUMO / HOME'S）から、10年住み替え前提の中古マンション条件に
-合う候補をスクレイピングし、CSV/JSON で出力する。
+合う候補をスクレイピングし、CSV/JSON で出力する。新築マンションにも対応。
 
 利用規約: terms-check.md を参照。私的利用・軽負荷を前提とする。
-  python main.py              # SUUMO のみ、1ページ、条件フィルタあり
-  python main.py --max-pages 2 --no-filter  # フィルタなしで2ページ取得
+
+  python main.py                                  # 中古 SUUMO のみ
+  python main.py --source both                    # 中古 SUUMO + HOME'S
+  python main.py --property-type shinchiku        # 新築 SUUMO のみ
+  python main.py --property-type shinchiku --source both  # 新築 SUUMO + HOME'S
+  python main.py --max-pages 2 --no-filter        # フィルタなしで2ページ取得
   python main.py --output result.json
 """
 
@@ -19,7 +23,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from report_utils import listing_key
-from suumo_scraper import scrape_suumo
 
 
 def dedupe_listings(rows: list[dict]) -> list[dict]:
@@ -36,24 +39,46 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="中古マンション条件に合う物件を SUUMO/HOME'S から取得（REINS除く）")
+    ap = argparse.ArgumentParser(description="マンション条件に合う物件を SUUMO/HOME'S から取得（中古・新築対応）")
     ap.add_argument("--source", choices=["suumo", "homes", "both"], default="suumo", help="取得元")
+    ap.add_argument("--property-type", choices=["chuko", "shinchiku"], default="chuko", help="物件種別（中古 or 新築）")
     ap.add_argument("--max-pages", type=int, default=0, help="最大ページ数。0=結果がなくなるまで全ページ取得（デフォルト）")
     ap.add_argument("--no-filter", action="store_true", help="条件フィルタをかけずに全件出力")
     ap.add_argument("--output", "-o", default="", help="出力ファイル（.csv / .json）。未指定なら stdout に JSON")
     args = ap.parse_args()
 
     all_rows: list[dict] = []
-    if args.source in ("suumo", "both"):
-        for row in scrape_suumo(max_pages=args.max_pages, apply_filter=not args.no_filter):
-            all_rows.append(row.to_dict())
-    if args.source in ("homes", "both"):
-        try:
-            from homes_scraper import scrape_homes
-            for row in scrape_homes(max_pages=args.max_pages, apply_filter=not args.no_filter):
+
+    if args.property_type == "chuko":
+        # 中古マンション
+        if args.source in ("suumo", "both"):
+            from suumo_scraper import scrape_suumo
+            for row in scrape_suumo(max_pages=args.max_pages, apply_filter=not args.no_filter):
+                d = row.to_dict()
+                d["property_type"] = "chuko"
+                all_rows.append(d)
+        if args.source in ("homes", "both"):
+            try:
+                from homes_scraper import scrape_homes
+                for row in scrape_homes(max_pages=args.max_pages, apply_filter=not args.no_filter):
+                    d = row.to_dict()
+                    d["property_type"] = "chuko"
+                    all_rows.append(d)
+            except Exception as e:
+                print(f"# HOME'S 中古取得エラー: {e}", file=sys.stderr)
+    else:
+        # 新築マンション
+        if args.source in ("suumo", "both"):
+            from suumo_shinchiku_scraper import scrape_suumo_shinchiku
+            for row in scrape_suumo_shinchiku(max_pages=args.max_pages, apply_filter=not args.no_filter):
                 all_rows.append(row.to_dict())
-        except Exception as e:
-            print(f"# HOME'S 取得は未実装またはエラー: {e}", file=sys.stderr)
+        if args.source in ("homes", "both"):
+            try:
+                from homes_shinchiku_scraper import scrape_homes_shinchiku
+                for row in scrape_homes_shinchiku(max_pages=args.max_pages, apply_filter=not args.no_filter):
+                    all_rows.append(row.to_dict())
+            except Exception as e:
+                print(f"# HOME'S 新築取得エラー: {e}", file=sys.stderr)
 
     # 同一物件（名前・間取り・広さ・価格・住所・築年・駅徒歩が全て一致）を1件にまとめる
     all_rows = dedupe_listings(all_rows)
