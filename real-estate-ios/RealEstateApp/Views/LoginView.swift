@@ -50,7 +50,7 @@ struct LoginView: View {
                         .accessibilityHidden(true)
 
                     Text("物件情報")
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.title.bold())
                         .foregroundStyle(Color.accentColor)
                 }
 
@@ -83,7 +83,7 @@ struct LoginView: View {
                             googleGLogo
                                 .frame(width: 20, height: 20)
                             Text("Google でログイン")
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.body.weight(.semibold))
                         }
                         .frame(maxWidth: .infinity)
                         .frame(height: 52)

@@ -229,9 +229,10 @@ struct ListingListView: View {
                                 if isCompareMode {
                                     if comparisonListings.count >= 2 {
                                         showComparison = true
+                                    } else {
+                                        isCompareMode = false
+                                        comparisonListings = []
                                     }
-                                    isCompareMode = false
-                                    comparisonListings = []
                                 } else {
                                     comparisonListings = []
                                     isCompareMode = true
@@ -269,8 +270,6 @@ struct ListingListView: View {
                         if isCompareMode {
                             Button {
                                 showComparison = true
-                                isCompareMode = false
-                                comparisonListings = []
                             } label: {
                                 Text("比較する")
                                     .fontWeight(.semibold)
@@ -296,7 +295,10 @@ struct ListingListView: View {
             .sheet(item: $selectedListing) { listing in
                 ListingDetailView(listing: listing)
             }
-            .sheet(isPresented: $showComparison) {
+            .sheet(isPresented: $showComparison, onDismiss: {
+                isCompareMode = false
+                comparisonListings = []
+            }) {
                 ComparisonView(listings: comparisonListings)
             }
             .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
