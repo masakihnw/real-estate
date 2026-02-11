@@ -1202,13 +1202,13 @@ struct MapTabView: View {
             }
 
             // 最小・最大ラベル
-            if items.count >= 2 {
+            if let first = items.first, let last = items.last, items.count >= 2 {
                 HStack {
-                    Text(items.first!.label)
+                    Text(first.label)
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                     Spacer()
-                    Text(items.last!.label)
+                    Text(last.label)
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }
