@@ -63,11 +63,12 @@ targets:
     entitlements:
       path: RealEstateApp/RealEstateApp.entitlements
       properties:
-        com.apple.developer.usernotifications: true
         aps-environment: $(APS_ENVIRONMENT)
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hanawa.realestate.app
+        DEVELOPMENT_TEAM: YRP5KV2X62
+        CODE_SIGN_STYLE: Automatic
         SWIFT_EMIT_LOC_STRINGS: "YES"
       configs:
         Debug:
