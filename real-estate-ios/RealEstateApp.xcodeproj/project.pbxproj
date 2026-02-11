@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,7 +15,6 @@
 		27560686B331DE043F6A5E92 /* MapTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6454CFFAE2040D4976E28754 /* MapTabView.swift */; };
 		28F22887EDD883FDBE3CF7E7 /* ListingFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9C33FED1E45B0380B14506 /* ListingFilterSheet.swift */; };
 		41B090E076423A0A468A44E3 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3890AAC58D1F45D703CF33 /* DesignSystem.swift */; };
-		F1A2B3C4D5E6F7A8B9C0D1E2 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A3B4C5D6E7F8A9B0C1D2E3 /* FlowLayout.swift */; };
 		575E06F0173318384B77E526 /* FirebaseSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */; };
 		57D00827C4D651167096FF9C /* ListingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C995EEEF715507A0F81387E /* ListingDetailView.swift */; };
 		64926D72AB7CE11BD647EE11 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 9F468C9C4D49EF296C8F4478 /* FirebaseMessaging */; };
@@ -25,23 +24,24 @@
 		7040BD509BB73F81C2B3CD3D /* LoanCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853FEEF66F713933C5CC415D /* LoanCalculator.swift */; };
 		72188035EBF232524AD778B9 /* SimulationChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8462396154DCAD49363D09 /* SimulationChartView.swift */; };
 		812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */; };
-		C1A2B3C4D5E6F7A8B9001122 /* SaveErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4D5E6F7A8B9001100 /* SaveErrorHandler.swift */; };
-		C1A2B3C4D5E6F7A8B9003344 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4D5E6F7A8B9003300 /* NetworkMonitor.swift */; };
 		8C4E91A0F2B7D8E31A5C6F03 /* CommuteTimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7F52B1C9D4E6A80B2E1F94 /* CommuteTimeService.swift */; };
 		8EE4894DFCD5C7C657DD928E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E93033C63E637E6276CAC6 /* ContentView.swift */; };
 		9ADBC2C61259A3B927778797 /* RealEstateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291B37863ADE9217F18FD55 /* RealEstateAppApp.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* ListingFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F3 /* ListingFilter.swift */; };
 		A4CBD4C7F34B166222CCED63 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */; };
 		B3DED758AAB9646802BDDAC5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743ACD98A09AC230E7A67B19 /* SettingsView.swift */; };
 		B7C8D9E0F1A2B3C4D5E6F7A8 /* ScrapingConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D9E0F1A2B3C4D5E6F7A8B9 /* ScrapingConfigService.swift */; };
 		B9E1F2A3B4C5D6E7F8A9B0C1 /* ScrapingConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F3A4B5C6D7E8F9A0B1C2D3 /* ScrapingConfigView.swift */; };
 		BB733BB9BB4EF0FEC253805F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */; };
+		C0M1P2A3R4I5S6O7N8V9I0E1 /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0M1P2A3R4I5S6O7N8V9I0E2 /* ComparisonView.swift */; };
+		C1A2B3C4D5E6F7A8B9001122 /* SaveErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4D5E6F7A8B9001100 /* SaveErrorHandler.swift */; };
+		C1A2B3C4D5E6F7A8B9003344 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4D5E6F7A8B9003300 /* NetworkMonitor.swift */; };
 		D0CB8E0312FD2887D70458A7 /* ListingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607511ACC91ACD538F163E71 /* ListingListView.swift */; };
 		DB0AB520BA62A5369467B414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97732299FBD4E61C33F84F0E /* Assets.xcassets */; };
 		E90E0D85B2F8D6947FC40CA2 /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC96D67CAA5AB454825D2D8 /* Listing.swift */; };
-		F1E2A3B4C5D6E7F8A9B0C1D2 /* FilterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A3B4C5D6E7F8A9B0C1D3 /* FilterStore.swift */; };
-		C0M1P2A3R4I5S6O7N8V9I0E1 /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0M1P2A3R4I5S6O7N8V9I0E2 /* ComparisonView.swift */; };
 		F105169E54EE4FDD30D61D04 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7391AC642FF221BD72EBEB /* AuthService.swift */; };
-		A1B2C3D4E5F6A7B8C9D0E1F2 /* ListingFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F3 /* ListingFilter.swift */; };
+		F1A2B3C4D5E6F7A8B9C0D1E2 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A3B4C5D6E7F8A9B0C1D2E3 /* FlowLayout.swift */; };
+		F1E2A3B4C5D6E7F8A9B0C1D2 /* FilterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A3B4C5D6E7F8A9B0C1D3 /* FilterStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,34 +50,34 @@
 		0E59A9E4A8BFE0ABFF87EBAE /* RealEstateApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RealEstateApp.entitlements; sourceTree = "<group>"; };
 		18F421EAE268593C2F547849 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
 		1FD386389CA29A884559D46A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		283EFC574DD3B5C822974FB1 /* RealEstateApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RealEstateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		283EFC574DD3B5C822974FB1 /* RealEstateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealEstateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A8462396154DCAD49363D09 /* SimulationChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationChartView.swift; sourceTree = "<group>"; };
-		3A7F52B1C9D4E6A80B2E1F94 /* CommuteTimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteTimeService.swift; sourceTree = "<group>"; };
 		32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseSyncService.swift; sourceTree = "<group>"; };
+		3A7F52B1C9D4E6A80B2E1F94 /* CommuteTimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteTimeService.swift; sourceTree = "<group>"; };
 		438CDAB54F0C420E60FF2E31 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		4C995EEEF715507A0F81387E /* ListingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingDetailView.swift; sourceTree = "<group>"; };
 		607511ACC91ACD538F163E71 /* ListingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingListView.swift; sourceTree = "<group>"; };
 		6454CFFAE2040D4976E28754 /* MapTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTabView.swift; sourceTree = "<group>"; };
 		743ACD98A09AC230E7A67B19 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		7BC96D67CAA5AB454825D2D8 /* Listing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Listing.swift; sourceTree = "<group>"; };
-		F1E2A3B4C5D6E7F8A9B0C1D3 /* FilterStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterStore.swift; sourceTree = "<group>"; };
-		C0M1P2A3R4I5S6O7N8V9I0E2 /* ComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonView.swift; sourceTree = "<group>"; };
 		7BEA489E06E9E2D64C98F3B0 /* PushNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
 		853FEEF66F713933C5CC415D /* LoanCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoanCalculator.swift; sourceTree = "<group>"; };
 		8F9C33FED1E45B0380B14506 /* ListingFilterSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilterSheet.swift; sourceTree = "<group>"; };
 		97732299FBD4E61C33F84F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8C9D0E1F3 /* ListingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilter.swift; sourceTree = "<group>"; };
 		A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduleService.swift; sourceTree = "<group>"; };
 		B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStorageService.swift; sourceTree = "<group>"; };
-		C1A2B3C4D5E6F7A8B9001100 /* SaveErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveErrorHandler.swift; sourceTree = "<group>"; };
-		C1A2B3C4D5E6F7A8B9003300 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		B8D9E0F1A2B3C4D5E6F7A8B9 /* ScrapingConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingConfigService.swift; sourceTree = "<group>"; };
 		C0F3A4B5C6D7E8F9A0B1C2D3 /* ScrapingConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingConfigView.swift; sourceTree = "<group>"; };
+		C0M1P2A3R4I5S6O7N8V9I0E2 /* ComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonView.swift; sourceTree = "<group>"; };
+		C1A2B3C4D5E6F7A8B9001100 /* SaveErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveErrorHandler.swift; sourceTree = "<group>"; };
+		C1A2B3C4D5E6F7A8B9003300 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		CD7391AC642FF221BD72EBEB /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EA3890AAC58D1F45D703CF33 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
-		F2A3B4C5D6E7F8A9B0C1D2E3 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		EA5549338A98AC303BCC728D /* ListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingStore.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F6A7B8C9D0E1F3 /* ListingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilter.swift; sourceTree = "<group>"; };
+		F1E2A3B4C5D6E7F8A9B0C1D3 /* FilterStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterStore.swift; sourceTree = "<group>"; };
+		F2A3B4C5D6E7F8A9B0C1D2E3 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -233,7 +233,6 @@
 				F99C1729A50AEF5AD6680EF3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				1AD7A8512D0C59E5EC4A918B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -366,13 +365,16 @@
 				APS_ENVIRONMENT = development;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = RealEstateApp/RealEstateApp.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YRP5KV2X62;
 				INFOPLIST_FILE = RealEstateApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hanawa.realestate.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -385,13 +387,16 @@
 				APS_ENVIRONMENT = production;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = RealEstateApp/RealEstateApp.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YRP5KV2X62;
 				INFOPLIST_FILE = RealEstateApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hanawa.realestate.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
