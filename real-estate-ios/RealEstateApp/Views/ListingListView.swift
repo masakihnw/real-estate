@@ -220,7 +220,32 @@ struct ListingListView: View {
                         listContent
                     }
                 }
-                .searchable(text: $searchText, prompt: "物件名で検索")
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    // HTML準拠: 常時表示グレーピル型検索バー
+                    HStack(spacing: 6) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        TextField("物件名で検索", text: $searchText)
+                            .font(.subheadline)
+                            .textFieldStyle(.plain)
+                        if !searchText.isEmpty {
+                            Button {
+                                searchText = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 8)
+                }
                 .navigationTitle(navTitle)
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {

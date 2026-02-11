@@ -30,6 +30,8 @@ struct ListingFilterSheet: View {
 
     // ローカル編集用（「適用」ではなく下部ボタンで反映）
     @State private var editFilter = ListingFilter()
+    /// 駅名フィルタの検索テキスト
+    @State private var stationSearchText = ""
 
     // 価格の範囲
     private let priceRange: ClosedRange<Double> = 5000...15000
@@ -298,20 +300,56 @@ struct ListingFilterSheet: View {
     // MARK: - Station Chips
 
     @ViewBuilder
+    private var filteredStations: [String] {
+        let query = stationSearchText.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else { return availableStations }
+        return availableStations.filter { $0.localizedCaseInsensitiveContains(query) }
+    }
+
     private var stationChipsContent: some View {
-        if availableStations.isEmpty {
-            Text("駅データがありません")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
-        } else {
-            FlowLayout(spacing: 6) {
-                ForEach(availableStations, id: \.self) { station in
-                    FilterChip(
-                        label: station,
-                        isSelected: editFilter.stations.contains(station)
-                    ) {
-                        toggleSet(&editFilter.stations, value: station)
+        VStack(spacing: 8) {
+            if availableStations.isEmpty {
+                Text("駅データがありません")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            } else {
+                // HTML準拠: 駅名検索入力フィールド
+                HStack(spacing: 6) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextField("駅名で検索...", text: $stationSearchText)
+                        .font(.caption)
+                        .textFieldStyle(.plain)
+                    if !stationSearchText.isEmpty {
+                        Button {
+                            stationSearchText = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .buttonStyle(.plain)
                     }
+                }
+                .padding(8)
+                .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+                FlowLayout(spacing: 6) {
+                    ForEach(filteredStations, id: \.self) { station in
+                        FilterChip(
+                            label: station,
+                            isSelected: editFilter.stations.contains(station)
+                        ) {
+                            toggleSet(&editFilter.stations, value: station)
+                        }
+                    }
+                }
+
+                if filteredStations.isEmpty && !stationSearchText.isEmpty {
+                    Text("該当する駅がありません")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
                 }
             }
         }

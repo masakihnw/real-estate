@@ -44,26 +44,11 @@ struct ListingDetailView: View {
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous))
                     }
 
-                    // ① 物件名 ＋ いいね
-                    HStack(alignment: .top, spacing: 12) {
-                        Text(listing.name)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Spacer(minLength: 0)
-                        Button {
-                            listing.isLiked.toggle()
-                            saveContext()
-                            FirebaseSyncService.shared.pushLikeState(for: listing)
-                        } label: {
-                            Image(systemName: listing.isLiked ? "heart.fill" : "heart")
-                                .font(.title2)
-                                .foregroundStyle(listing.isLiked ? .red : .secondary)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
-                    }
-                    .accessibilityElement(children: .combine)
+                    // ① 物件名（いいねボタンはナビバーに移動）
+                    Text(listing.name)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                     // ② 住所（Google Maps アイコンボタン）
                     if let addr = listing.address, !addr.isEmpty {
@@ -150,15 +135,29 @@ struct ListingDetailView: View {
                     Button("閉じる") { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if let shareURL = URL(string: listing.url) {
-                        ShareLink(
-                            item: shareURL,
-                            subject: Text(listing.name),
-                            message: Text("\(listing.name) - \(listing.priceDisplay)")
-                        ) {
-                            Image(systemName: "square.and.arrow.up")
+                    HStack(spacing: 12) {
+                        if let shareURL = URL(string: listing.url) {
+                            ShareLink(
+                                item: shareURL,
+                                subject: Text(listing.name),
+                                message: Text("\(listing.name) - \(listing.priceDisplay)")
+                            ) {
+                                Image(systemName: "square.and.arrow.up")
+                            }
+                            .accessibilityLabel("共有")
                         }
-                        .accessibilityLabel("共有")
+                        // HTML準拠: ナビバー右に♥ボタン
+                        Button {
+                            listing.isLiked.toggle()
+                            saveContext()
+                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                        } label: {
+                            Image(systemName: listing.isLiked ? "heart.fill" : "heart")
+                                .font(.title3)
+                                .foregroundStyle(listing.isLiked ? .red : .secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
                     }
                 }
             }
