@@ -185,26 +185,33 @@ struct ListingDetailView: View {
         // 最寄駅（物件情報の先頭項目として表示）
         stationSection
 
-        LazyVGrid(columns: [
-            GridItem(.flexible()),
-            GridItem(.flexible())
-        ], spacing: DesignSystem.detailGridSpacing) {
-            DetailItem(title: "価格", value: listing.priceDisplay)
-            DetailItem(title: "専有面積", value: listing.areaDisplay)
-            DetailItem(title: "間取り", value: listing.layout ?? "—")
+        VStack(spacing: 0) {
+            DetailRow(title: "価格", value: listing.priceDisplay, accentValue: true)
+            DetailRow(title: "間取り / 面積", value: {
+                let layout = listing.layout ?? "—"
+                let area = listing.areaDisplay
+                return "\(layout) / \(area)"
+            }())
             if listing.isShinchiku {
-                DetailItem(title: "引渡時期", value: listing.deliveryDateDisplay)
+                DetailRow(title: "入居時期", value: listing.deliveryDateDisplay)
             } else {
-                DetailItem(title: "築年", value: listing.builtDisplay)
-                DetailItem(title: "所在階", value: listing.floorPosition.map { "\($0)階" } ?? "—")
+                DetailRow(title: "築年", value: listing.builtDisplay)
+                DetailRow(title: "所在階 / 階建", value: {
+                    let floor = listing.floorPosition.map { "\($0)階" } ?? "—"
+                    let total = listing.floorTotal.map { "\($0)階建" } ?? "—"
+                    return "\(floor) / \(total)"
+                }())
             }
-            DetailItem(title: "階建", value: listing.floorTotal.map { "\($0)階建" } ?? "—")
-            DetailItem(title: "総戸数", value: listing.totalUnits.map { "\($0)戸" } ?? "—")
+            if listing.isShinchiku {
+                DetailRow(title: "階建", value: listing.floorTotal.map { "\($0)階建" } ?? "—")
+            }
+            DetailRow(title: "総戸数", value: listing.totalUnits.map { "\($0)戸" } ?? "—")
             if let ownership = listing.ownership, !ownership.isEmpty {
-                DetailItem(title: "権利形態", value: ownership)
+                DetailRow(title: "権利形態", value: ownership)
             }
-            DetailItem(title: "種別", value: listing.isShinchiku ? "新築" : "中古")
+            DetailRow(title: "種別", value: listing.isShinchiku ? "新築マンション" : "中古マンション")
         }
+        .listingGlassBackground()
 
         // 月額支払いシミュレーション（中古のみ）
         if !listing.isShinchiku, let priceMan = listing.priceMan, priceMan > 0 {
@@ -217,7 +224,7 @@ struct ListingDetailView: View {
         let stations = listing.parsedStations
         if !stations.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                // メイン行：ラベル左、駅名+徒歩右（DetailItem と同じレイアウト）
+                // メイン行：ラベル左、駅名+徒歩右（DetailRow と同じレイアウト）
                 Button {
                     if stations.count > 1 {
                         withAnimation(.easeInOut(duration: 0.25)) {
@@ -1082,22 +1089,25 @@ private struct HazardChip: View {
     }
 }
 
-/// 詳細画面の1属性（ラベル＋値）。HIG: セマンティックな階層。背景は Material で Liquid Glass 風に。
-private struct DetailItem: View {
+/// 詳細画面の1行（左ラベル / 右値）。HTML 準拠の1列リストレイアウト。
+private struct DetailRow: View {
     let title: String
     let value: String
+    var accentValue: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        HStack {
             Text(title)
                 .font(ListingObjectStyle.detailLabel)
                 .foregroundStyle(.secondary)
+            Spacer()
             Text(value)
                 .font(ListingObjectStyle.detailValue)
+                .foregroundStyle(accentValue ? Color.accentColor : .primary)
+                .multilineTextAlignment(.trailing)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .listingGlassBackground()
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
     }
 }
 
