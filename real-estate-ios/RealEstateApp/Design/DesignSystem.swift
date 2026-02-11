@@ -26,7 +26,8 @@ enum DesignSystem {
 // MARK: - Liquid Glass (iOS 26) / Material fallback (iOS 17–25)
 
 extension View {
-    /// カード用の背景。iOS 26 では Liquid Glass、それ以前は .ultraThinMaterial。
+    /// カード用の背景。iOS 26 では Liquid Glass、それ以前はセマンティックカラー。
+    /// ダークモードでは #1C1C1E (secondarySystemGroupedBackground) に自動適応。
     @ViewBuilder
     func listingGlassBackground() -> some View {
         if #available(iOS 26, *) {
@@ -34,12 +35,12 @@ extension View {
         } else {
             self.background(
                 RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(Color(.secondarySystemGroupedBackground))
             )
         }
     }
 
-    /// リスト行背景用。iOS 26 では Liquid Glass、それ以前は .ultraThinMaterial。
+    /// リスト行背景用。iOS 26 では Liquid Glass、それ以前はセマンティックカラー。
     @ViewBuilder
     func listingRowGlassBackground() -> some View {
         if #available(iOS 26, *) {
@@ -47,7 +48,7 @@ extension View {
         } else {
             self.background(
                 RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(Color(.secondarySystemGroupedBackground))
             )
         }
     }

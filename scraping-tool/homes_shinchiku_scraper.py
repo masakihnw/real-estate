@@ -11,6 +11,7 @@ HOME'S（LIFULL HOME'S）新築マンション一覧のスクレイピング。
 
 import json
 import re
+import sys
 import time
 from dataclasses import dataclass, asdict
 from pathlib import Path
@@ -147,19 +148,35 @@ def _parse_floor_total(text: str) -> Optional[int]:
 # ---------- ページ取得 ----------
 
 def fetch_list_page(session: requests.Session, url: str) -> str:
+    """一覧ページのHTMLを取得。5xx/429/タイムアウト・接続エラー時はリトライする。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
         time.sleep(REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
+            # 429 Too Many Requests — レートリミット対策
+            if r.status_code == 429:
+                retry_after = int(r.headers.get("Retry-After", 60))
+                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                time.sleep(retry_after)
+                continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
             return r.text
+        except requests.exceptions.HTTPError as e:
+            # 500/502/503 は一時的なサーバーエラーのためリトライ
+            if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
+                last_error = e
+                time.sleep(2)
+            else:
+                raise
         except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as e:
             last_error = e
             if attempt < REQUEST_RETRIES - 1:
                 time.sleep(2)
-    raise last_error
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError(f"全 {REQUEST_RETRIES} 回のリトライが失敗しました (429 Rate Limited): {url}")
 
 
 # ---------- HTMLパース ----------

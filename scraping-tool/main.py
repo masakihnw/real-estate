@@ -17,6 +17,7 @@ import argparse
 import csv
 import json
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 # スクリプト配置が scraping-tool/ である前提
@@ -38,6 +39,46 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
     return out
 
 
+def _scrape_suumo_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
+    """SUUMO 中古スクレイピング（スレッド用）"""
+    from suumo_scraper import scrape_suumo
+    rows = []
+    for row in scrape_suumo(max_pages=max_pages, apply_filter=apply_filter):
+        d = row.to_dict()
+        d["property_type"] = "chuko"
+        rows.append(d)
+    return rows
+
+
+def _scrape_homes_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
+    """HOME'S 中古スクレイピング（スレッド用）"""
+    from homes_scraper import scrape_homes
+    rows = []
+    for row in scrape_homes(max_pages=max_pages, apply_filter=apply_filter):
+        d = row.to_dict()
+        d["property_type"] = "chuko"
+        rows.append(d)
+    return rows
+
+
+def _scrape_suumo_shinchiku(max_pages: int, apply_filter: bool) -> list[dict]:
+    """SUUMO 新築スクレイピング（スレッド用）"""
+    from suumo_shinchiku_scraper import scrape_suumo_shinchiku
+    rows = []
+    for row in scrape_suumo_shinchiku(max_pages=max_pages, apply_filter=apply_filter):
+        rows.append(row.to_dict())
+    return rows
+
+
+def _scrape_homes_shinchiku(max_pages: int, apply_filter: bool) -> list[dict]:
+    """HOME'S 新築スクレイピング（スレッド用）"""
+    from homes_shinchiku_scraper import scrape_homes_shinchiku
+    rows = []
+    for row in scrape_homes_shinchiku(max_pages=max_pages, apply_filter=apply_filter):
+        rows.append(row.to_dict())
+    return rows
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="マンション条件に合う物件を SUUMO/HOME'S から取得（中古・新築対応）")
     ap.add_argument("--source", choices=["suumo", "homes", "both"], default="suumo", help="取得元")
@@ -49,36 +90,31 @@ def main() -> None:
 
     all_rows: list[dict] = []
 
+    # SUUMO と HOME'S を並列スクレイピング（--source both の場合）
     if args.property_type == "chuko":
-        # 中古マンション
-        if args.source in ("suumo", "both"):
-            from suumo_scraper import scrape_suumo
-            for row in scrape_suumo(max_pages=args.max_pages, apply_filter=not args.no_filter):
-                d = row.to_dict()
-                d["property_type"] = "chuko"
-                all_rows.append(d)
-        if args.source in ("homes", "both"):
-            try:
-                from homes_scraper import scrape_homes
-                for row in scrape_homes(max_pages=args.max_pages, apply_filter=not args.no_filter):
-                    d = row.to_dict()
-                    d["property_type"] = "chuko"
-                    all_rows.append(d)
-            except Exception as e:
-                print(f"# HOME'S 中古取得エラー: {e}", file=sys.stderr)
+        tasks = {}
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            if args.source in ("suumo", "both"):
+                tasks["suumo"] = executor.submit(_scrape_suumo_chuko, args.max_pages, not args.no_filter)
+            if args.source in ("homes", "both"):
+                tasks["homes"] = executor.submit(_scrape_homes_chuko, args.max_pages, not args.no_filter)
+            for name, future in tasks.items():
+                try:
+                    all_rows.extend(future.result())
+                except Exception as e:
+                    print(f"# {name} 中古取得エラー: {e}", file=sys.stderr)
     else:
-        # 新築マンション
-        if args.source in ("suumo", "both"):
-            from suumo_shinchiku_scraper import scrape_suumo_shinchiku
-            for row in scrape_suumo_shinchiku(max_pages=args.max_pages, apply_filter=not args.no_filter):
-                all_rows.append(row.to_dict())
-        if args.source in ("homes", "both"):
-            try:
-                from homes_shinchiku_scraper import scrape_homes_shinchiku
-                for row in scrape_homes_shinchiku(max_pages=args.max_pages, apply_filter=not args.no_filter):
-                    all_rows.append(row.to_dict())
-            except Exception as e:
-                print(f"# HOME'S 新築取得エラー: {e}", file=sys.stderr)
+        tasks = {}
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            if args.source in ("suumo", "both"):
+                tasks["suumo"] = executor.submit(_scrape_suumo_shinchiku, args.max_pages, not args.no_filter)
+            if args.source in ("homes", "both"):
+                tasks["homes"] = executor.submit(_scrape_homes_shinchiku, args.max_pages, not args.no_filter)
+            for name, future in tasks.items():
+                try:
+                    all_rows.extend(future.result())
+                except Exception as e:
+                    print(f"# {name} 新築取得エラー: {e}", file=sys.stderr)
 
     # 同一物件（名前・間取り・広さ・価格・住所・築年・駅徒歩が全て一致）を1件にまとめる
     all_rows = dedupe_listings(all_rows)

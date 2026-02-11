@@ -8,14 +8,22 @@
 import SwiftUI
 import SwiftData
 import FirebaseCore
+import FirebaseMessaging
 import GoogleSignIn
 
 @main
 struct RealEstateAppApp: App {
+    // FCM 用 AppDelegate
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([Listing.self])
         let config = ModelConfiguration(isStoredInMemoryOnly: false)
-        return try! ModelContainer(for: schema, configurations: [config])
+        do {
+            return try ModelContainer(for: schema, configurations: [config])
+        } catch {
+            fatalError("ModelContainer の作成に失敗しました: \(error.localizedDescription)")
+        }
     }()
 
     init() {

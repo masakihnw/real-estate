@@ -5,6 +5,10 @@
 //  物件一覧の取得・永続化・差分検出（新規→プッシュ用）
 //  中古 (latest.json) と新築 (latest_shinchiku.json) の2ソースをサポート。
 //
+//  ハイブリッド改善:
+//  - デフォルト URL をハードコード（初回設定不要）
+//  - ETag ベース差分チェック（未変更ならダウンロードスキップ）
+//
 
 import Foundation
 import SwiftData
@@ -14,25 +18,61 @@ import UserNotifications
 final class ListingStore {
     static let shared = ListingStore()
 
+    // MARK: - デフォルト URL（GitHub raw）
+    // ユーザーが未設定の場合はこの URL から自動取得する。
+    // Settings 画面でカスタム URL に上書き可能。
+    static let defaultChukoURL = "https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/latest.json"
+    static let defaultShinchikuURL = "https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/latest_shinchiku.json"
+
     private(set) var isRefreshing = false
     private(set) var lastError: String?
     private(set) var lastFetchedAt: Date?
+    /// 最後の更新で新着データがあったか（ETag 判定用の表示に使う）
+    private(set) var lastRefreshHadChanges = true
+
+    /// タイムアウト付き URLSession（リクエスト30秒、リソース60秒）
+    private static let session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 60
+        return URLSession(configuration: config)
+    }()
 
     private let defaults = UserDefaults.standard
     private let chukoURLKey = "realestate.listURL"
     private let shinchikuURLKey = "realestate.shinchikuListURL"
     private let lastFetchedKey = "realestate.lastFetchedAt"
+    private let chukoETagKey = "realestate.etag.chuko"
+    private let shinchikuETagKey = "realestate.etag.shinchiku"
 
-    /// 中古マンション JSON URL
+    /// 中古マンション JSON URL（空ならデフォルトを使う）
     var listURL: String {
         get { defaults.string(forKey: chukoURLKey) ?? "" }
         set { defaults.set(newValue, forKey: chukoURLKey) }
     }
 
-    /// 新築マンション JSON URL
+    /// 新築マンション JSON URL（空ならデフォルトを使う）
     var shinchikuListURL: String {
         get { defaults.string(forKey: shinchikuURLKey) ?? "" }
         set { defaults.set(newValue, forKey: shinchikuURLKey) }
+    }
+
+    /// 実際に使用される中古 URL（カスタムが空ならデフォルト）
+    var effectiveChukoURL: String {
+        let custom = listURL.trimmingCharacters(in: .whitespaces)
+        return custom.isEmpty ? Self.defaultChukoURL : custom
+    }
+
+    /// 実際に使用される新築 URL（カスタムが空ならデフォルト）
+    var effectiveShinchikuURL: String {
+        let custom = shinchikuListURL.trimmingCharacters(in: .whitespaces)
+        return custom.isEmpty ? Self.defaultShinchikuURL : custom
+    }
+
+    /// カスタム URL を使用中かどうか
+    var isUsingCustomURL: Bool {
+        !listURL.trimmingCharacters(in: .whitespaces).isEmpty ||
+        !shinchikuListURL.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     private init() {
@@ -40,32 +80,47 @@ final class ListingStore {
     }
 
     /// 中古・新築の両方を取得し、SwiftData に反映。新規があればローカル通知を発火。
+    /// ETag チェックにより、サーバー上のデータが未変更ならダウンロードをスキップする。
     func refresh(modelContext: ModelContext) async {
+        // P6: 二重実行ガード — 既に更新中なら何もしない
+        guard !isRefreshing else { return }
         await MainActor.run { isRefreshing = true }
         lastError = nil
+        lastRefreshHadChanges = false
+
+        // P2: 中古・新築を並列取得（ネットワーク待ちを半減）
+        // NOTE: fetchAndSync 内の SwiftData 操作は同一 modelContext なので
+        //       ネットワーク取得＋デコードを並列化し、DB 書き込みは逐次実行
+        let chukoURL = effectiveChukoURL
+        let shinchikuURL = effectiveShinchikuURL
+
+        // ネットワーク取得 + デコードを並列実行
+        async let chukoData = fetchData(urlString: chukoURL, etagKey: chukoETagKey)
+        async let shinData = fetchData(urlString: shinchikuURL, etagKey: shinchikuETagKey)
+
+        let (chukoFetch, shinFetch) = await (chukoData, shinData)
 
         var totalNew = 0
 
-        // 中古
-        let chukoURL = listURL.trimmingCharacters(in: .whitespaces)
-        if !chukoURL.isEmpty {
-            let result = await fetchAndSync(urlString: chukoURL, propertyType: "chuko", modelContext: modelContext)
-            totalNew += result.newCount
-            if let err = result.error { lastError = err }
-        }
+        // DB 書き込みは逐次（ModelContext はスレッドセーフでないため）
+        let chukoResult = syncToDatabase(
+            fetchResult: chukoFetch,
+            propertyType: "chuko",
+            modelContext: modelContext
+        )
+        totalNew += chukoResult.newCount
+        if chukoResult.hadChanges { lastRefreshHadChanges = true }
+        if let err = chukoResult.error { lastError = err }
 
-        // 新築
-        let shinURL = shinchikuListURL.trimmingCharacters(in: .whitespaces)
-        if !shinURL.isEmpty {
-            let result = await fetchAndSync(urlString: shinURL, propertyType: "shinchiku", modelContext: modelContext)
-            totalNew += result.newCount
-            if let err = result.error {
-                lastError = (lastError != nil) ? "\(lastError!); \(err)" : err
-            }
-        }
-
-        if chukoURL.isEmpty && shinURL.isEmpty {
-            lastError = "一覧URLを設定してください"
+        let shinResult = syncToDatabase(
+            fetchResult: shinFetch,
+            propertyType: "shinchiku",
+            modelContext: modelContext
+        )
+        totalNew += shinResult.newCount
+        if shinResult.hadChanges { lastRefreshHadChanges = true }
+        if let err = shinResult.error {
+            lastError = (lastError != nil) ? "\(lastError!); \(err)" : err
         }
 
         let fetchedAt = Date()
@@ -83,61 +138,123 @@ final class ListingStore {
         await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext)
     }
 
+    /// 保存済み ETag をクリアして次回フルフェッチを強制する
+    func clearETags() {
+        defaults.removeObject(forKey: chukoETagKey)
+        defaults.removeObject(forKey: shinchikuETagKey)
+    }
+
     // MARK: - Private
 
     private struct SyncResult {
         var newCount: Int = 0
+        var hadChanges: Bool = false
         var error: String?
     }
 
-    private func fetchAndSync(urlString: String, propertyType: String, modelContext: ModelContext) async -> SyncResult {
+    /// ネットワーク取得結果
+    private enum FetchDataResult {
+        case notModified
+        case data([ListingDTO])
+        case error(String)
+    }
+
+    /// ネットワーク取得 + JSON デコード（並列実行可能な純粋なデータ取得）
+    private func fetchData(urlString: String, etagKey: String) async -> FetchDataResult {
         guard let url = URL(string: urlString) else {
-            return SyncResult(error: "\(propertyType) URL が不正です")
+            return .error("URL が不正です")
         }
 
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let dtos = try JSONDecoder().decode([ListingDTO].self, from: data)
-            let fetchedAt = Date()
+            var request = URLRequest(url: url)
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+            if let savedETag = defaults.string(forKey: etagKey) {
+                request.setValue(savedETag, forHTTPHeaderField: "If-None-Match")
+            }
 
-            // 同じ propertyType の既存レコードを取得
-            let descriptor = FetchDescriptor<Listing>()
-            let allExisting = try modelContext.fetch(descriptor)
-            let existing = allExisting.filter { $0.propertyType == propertyType }
-            let existingKeys = Set(existing.map(\.identityKey))
+            let (data, response) = try await Self.session.data(for: request)
 
-            var newCount = 0
-            var incomingKeys = Set<String>()
-
-            for dto in dtos {
-                guard var listing = Listing.from(dto: dto, fetchedAt: fetchedAt) else { continue }
-                listing.propertyType = propertyType
-                let key = listing.identityKey
-                incomingKeys.insert(key)
-
-                if !existingKeys.contains(key) {
-                    newCount += 1
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 304 {
+                    return .notModified
                 }
-
-                if let same = existing.first(where: { $0.identityKey == key }) {
-                    update(same, from: listing)
-                } else {
-                    modelContext.insert(listing)
+                if let newETag = httpResponse.value(forHTTPHeaderField: "ETag") {
+                    defaults.set(newETag, forKey: etagKey)
                 }
             }
 
-            // 一覧から消えた物件はローカルから削除
-            for e in existing {
-                if !incomingKeys.contains(e.identityKey) {
-                    modelContext.delete(e)
-                }
-            }
+            // P3: JSON デコードをバックグラウンドで実行
+            let dtos = try await Task.detached(priority: .userInitiated) {
+                try JSONDecoder().decode([ListingDTO].self, from: data)
+            }.value
+            return .data(dtos)
 
-            try modelContext.save()
-            return SyncResult(newCount: newCount)
-
+        } catch let urlError as URLError where urlError.code == .notConnectedToInternet || urlError.code == .networkConnectionLost || urlError.code == .dataNotAllowed {
+            return .error("オフラインのため取得できません。接続を確認してください。")
+        } catch let urlError as URLError where urlError.code == .timedOut {
+            return .error("タイムアウトしました。通信環境を確認してください。")
         } catch {
-            return SyncResult(error: "\(propertyType): \(error.localizedDescription)")
+            return .error(error.localizedDescription)
+        }
+    }
+
+    /// 取得済みデータを SwiftData に同期（ModelContext 操作のため逐次実行が必要）
+    private func syncToDatabase(fetchResult: FetchDataResult, propertyType: String, modelContext: ModelContext) -> SyncResult {
+        switch fetchResult {
+        case .notModified:
+            return SyncResult(hadChanges: false)
+        case .error(let msg):
+            return SyncResult(error: "\(propertyType): \(msg)")
+        case .data(let dtos):
+            do {
+                let fetchedAt = Date()
+                let predicate = #Predicate<Listing> { $0.propertyType == propertyType }
+                let descriptor = FetchDescriptor<Listing>(predicate: predicate)
+                let existing = try modelContext.fetch(descriptor)
+                // P1: Dictionary で O(1) ルックアップ
+                let existingByKey = Dictionary(existing.map { ($0.identityKey, $0) }, uniquingKeysWith: { first, _ in first })
+
+                var newCount = 0
+                var incomingKeys = Set<String>()
+
+                for dto in dtos {
+                    guard var listing = Listing.from(dto: dto, fetchedAt: fetchedAt) else { continue }
+                    listing.propertyType = propertyType
+                    let key = listing.identityKey
+                    incomingKeys.insert(key)
+
+                    if let same = existingByKey[key] {
+                        // 再掲載された物件の掲載終了フラグを解除
+                        if same.isDelisted { same.isDelisted = false }
+                        update(same, from: listing)
+                    } else {
+                        newCount += 1
+                        modelContext.insert(listing)
+                    }
+                }
+
+                // JSON から消えた物件の処理
+                for e in existing where !incomingKeys.contains(e.identityKey) {
+                    let hasMemo = !(e.memo ?? "").isEmpty
+                    if e.isLiked || hasMemo {
+                        // いいね/メモ付き → 掲載終了としてマーク（お気に入りタブで残す）
+                        if !e.isDelisted { e.isDelisted = true }
+                    } else {
+                        // それ以外 → 削除
+                        modelContext.delete(e)
+                    }
+                }
+
+                do {
+                    try modelContext.save()
+                } catch {
+                    print("[ListingStore] SwiftData save 失敗 (\(propertyType)): \(error)")
+                    return SyncResult(newCount: 0, hadChanges: false, error: "\(propertyType): データ保存に失敗しました")
+                }
+                return SyncResult(newCount: newCount, hadChanges: true)
+            } catch {
+                return SyncResult(error: "\(propertyType): \(error.localizedDescription)")
+            }
         }
     }
 
@@ -165,6 +282,8 @@ final class ListingStore {
         existing.priceMaxMan = new.priceMaxMan
         existing.areaMaxM2 = new.areaMaxM2
         existing.deliveryDate = new.deliveryDate
+        // ハザード情報（JSON 由来なので上書き）
+        existing.hazardInfo = new.hazardInfo
         // 住まいサーフィン評価データ（JSON 由来なので上書き）
         existing.ssProfitPct = new.ssProfitPct
         existing.ssOkiPrice70m2 = new.ssOkiPrice70m2
@@ -172,6 +291,15 @@ final class ListingStore {
         existing.ssStationRank = new.ssStationRank
         existing.ssWardRank = new.ssWardRank
         existing.ssSumaiSurfinURL = new.ssSumaiSurfinURL
+        existing.ssAppreciationRate = new.ssAppreciationRate
+        existing.ssFavoriteCount = new.ssFavoriteCount
+        existing.ssPurchaseJudgment = new.ssPurchaseJudgment
+        existing.ssSimBest5yr = new.ssSimBest5yr
+        existing.ssSimBest10yr = new.ssSimBest10yr
+        existing.ssSimStandard5yr = new.ssSimStandard5yr
+        existing.ssSimStandard10yr = new.ssSimStandard10yr
+        existing.ssSimWorst5yr = new.ssSimWorst5yr
+        existing.ssSimWorst10yr = new.ssSimWorst10yr
         // existing.memo, existing.isLiked, existing.addedAt, existing.latitude, existing.longitude はそのまま
     }
 

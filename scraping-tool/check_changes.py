@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
 現在結果と前回結果を比較し、差分があれば exit 0、なければ exit 1 で終了する。
-同一物件は identity_key（名前・間取り・広さ・住所・築年・駅徒歩。価格は除く）で判定し、価格差分は updated としてカウントする。
+同一物件は identity_key（名前・間取り・広さ・住所・築年・駅徒歩。価格は除く）で判定。
+Notion に同期する全プロパティ（価格・階数・総戸数・権利形態など）の変更を updated としてカウントする。
 update_listings.sh で「変更時のみレポート・通知」するために使用。
 """
 import sys
 from pathlib import Path
 
-from report_utils import identity_key, load_json
+from report_utils import identity_key, listing_has_property_changes, load_json
 
 
 def main() -> None:
@@ -34,7 +35,7 @@ def main() -> None:
     updated = sum(
         1
         for k in curr_by_key
-        if k in prev_by_key and curr_by_key[k].get("price_man") != prev_by_key[k].get("price_man")
+        if k in prev_by_key and listing_has_property_changes(curr_by_key[k], prev_by_key[k])
     )
 
     has_changes = new > 0 or removed > 0 or updated > 0

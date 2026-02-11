@@ -51,8 +51,9 @@ final class FirebaseSyncService {
 
     // MARK: - Pull（Firestore → ローカル SwiftData）
 
-    /// Firestore の全アノテーションを取得し、ローカル SwiftData にマージする。
-    /// Firestore 側の `updatedAt` がローカルより新しい場合のみ上書き。
+    /// Firestore のアノテーションを取得し、ローカル SwiftData にマージする。
+    /// ローカルに存在する物件の docID のみを対象にバッチ取得する。
+    @MainActor
     func pullAnnotations(modelContext: ModelContext) async {
         guard isAuthenticated else {
             print("[FirebaseSync] 未認証のため pull をスキップ")
@@ -62,36 +63,45 @@ final class FirebaseSyncService {
         defer { isSyncing = false }
 
         do {
-            let snapshot = try await db.collection(collectionName).getDocuments()
-
-            // Firestore のドキュメントを docID → data の辞書にする
-            var remoteMap: [String: (isLiked: Bool, memo: String?)] = [:]
-            for doc in snapshot.documents {
-                let data = doc.data()
-                let isLiked = data["isLiked"] as? Bool ?? false
-                let memo = data["memo"] as? String
-                remoteMap[doc.documentID] = (isLiked: isLiked, memo: (memo?.isEmpty == true) ? nil : memo)
-            }
-
-            // ローカルの全物件を取得
+            // ローカルの全物件を取得し、docID → Listing のマップを構築
             let descriptor = FetchDescriptor<Listing>()
             let localListings = try modelContext.fetch(descriptor)
 
+            var docIDToListings: [String: [Listing]] = [:]
             for listing in localListings {
                 let docID = documentID(for: listing.identityKey)
-                guard let remote = remoteMap[docID] else { continue }
+                docIDToListings[docID, default: []].append(listing)
+            }
 
-                // Firestore の値をローカルに反映
-                var changed = false
-                if listing.isLiked != remote.isLiked {
-                    listing.isLiked = remote.isLiked
-                    changed = true
+            let allDocIDs = Array(docIDToListings.keys)
+            guard !allDocIDs.isEmpty else { return }
+
+            // Firestore の IN クエリは最大30件ずつ
+            let batchSize = 30
+            for batchStart in stride(from: 0, to: allDocIDs.count, by: batchSize) {
+                let batchEnd = min(batchStart + batchSize, allDocIDs.count)
+                let batchIDs = Array(allDocIDs[batchStart..<batchEnd])
+
+                let snapshot = try await db.collection(collectionName)
+                    .whereField(FieldPath.documentID(), in: batchIDs)
+                    .getDocuments()
+
+                for doc in snapshot.documents {
+                    let data = doc.data()
+                    let isLiked = data["isLiked"] as? Bool ?? false
+                    let memo = data["memo"] as? String
+                    let cleanMemo = (memo?.isEmpty == true) ? nil : memo
+
+                    guard let listings = docIDToListings[doc.documentID] else { continue }
+                    for listing in listings {
+                        if listing.isLiked != isLiked {
+                            listing.isLiked = isLiked
+                        }
+                        if listing.memo != cleanMemo {
+                            listing.memo = cleanMemo
+                        }
+                    }
                 }
-                if listing.memo != remote.memo {
-                    listing.memo = remote.memo
-                    changed = true
-                }
-                _ = changed  // suppress unused warning
             }
 
             try modelContext.save()

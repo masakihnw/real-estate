@@ -25,7 +25,11 @@ final class BackgroundRefreshManager {
     private init() {
         let schema = Schema([Listing.self])
         let config = ModelConfiguration(isStoredInMemoryOnly: false)
-        self.modelContainer = try! ModelContainer(for: schema, configurations: [config])
+        do {
+            self.modelContainer = try ModelContainer(for: schema, configurations: [config])
+        } catch {
+            fatalError("BackgroundRefreshManager: ModelContainer の作成に失敗しました: \(error.localizedDescription)")
+        }
     }
 
     // MARK: - Public
@@ -64,7 +68,8 @@ final class BackgroundRefreshManager {
         // 次回を先にスケジュール（このタスクが完了しても次が予約される）
         scheduleNextRefresh()
 
-        let refreshTask = Task {
+        // ModelContext はスレッドセーフではないため、MainActor 上で作成・使用する
+        let refreshTask = Task { @MainActor in
             let context = ModelContext(modelContainer)
             await ListingStore.shared.refresh(modelContext: context)
         }
@@ -74,10 +79,14 @@ final class BackgroundRefreshManager {
             refreshTask.cancel()
         }
 
-        // 完了を通知
+        // 完了を通知（キャンセル時やエラー時も正しく処理）
         Task {
-            _ = await refreshTask.result
-            task.setTaskCompleted(success: !refreshTask.isCancelled)
+            do {
+                _ = try await refreshTask.value
+                task.setTaskCompleted(success: true)
+            } catch {
+                task.setTaskCompleted(success: false)
+            }
         }
     }
 }

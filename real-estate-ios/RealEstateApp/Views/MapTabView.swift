@@ -17,12 +17,18 @@ import CoreLocation
 
 /// 国土地理院ハザードマップ WMS タイルレイヤー + 東京都地域危険度
 enum HazardLayer: String, CaseIterable, Identifiable {
+    // 基本レイヤー
     case flood = "洪水浸水想定"
     case sediment = "土砂災害警戒"
     case stormSurge = "高潮浸水想定"
     case tsunami = "津波浸水想定"
     case liquefaction = "液状化リスク"
-    case seismicRisk = "地域危険度"
+    case seismicRisk = "地域危険度（地盤振動）"
+    // 追加レイヤー
+    case inlandWater = "内水浸水想定"
+    case floodDuration = "浸水継続時間"
+    case buildingCollapse = "家屋倒壊（氾濫流）"
+    case bankErosion = "家屋倒壊（河岸侵食）"
 
     var id: String { rawValue }
 
@@ -40,8 +46,15 @@ enum HazardLayer: String, CaseIterable, Identifiable {
         case .liquefaction:
             return "https://disaportaldata.gsi.go.jp/raster/08_liquid/{z}/{x}/{y}.png"
         case .seismicRisk:
-            // 東京都地域危険度（重ねるハザードマップ）— 国土地理院配信
             return "https://disaportaldata.gsi.go.jp/raster/13_jibanshindou/{z}/{x}/{y}.png"
+        case .inlandWater:
+            return "https://disaportaldata.gsi.go.jp/raster/02_naisui_data/{z}/{x}/{y}.png"
+        case .floodDuration:
+            return "https://disaportaldata.gsi.go.jp/raster/01_flood_l2_keizoku_data/{z}/{x}/{y}.png"
+        case .buildingCollapse:
+            return "https://disaportaldata.gsi.go.jp/raster/01_flood_l2_kaokutoukai_hanran_data/{z}/{x}/{y}.png"
+        case .bankErosion:
+            return "https://disaportaldata.gsi.go.jp/raster/01_flood_l2_kaokutoukai_kagan_data/{z}/{x}/{y}.png"
         }
     }
 
@@ -53,7 +66,216 @@ enum HazardLayer: String, CaseIterable, Identifiable {
         case .tsunami: return "water.waves.and.arrow.up"
         case .liquefaction: return "waveform.path"
         case .seismicRisk: return "exclamationmark.triangle"
+        case .inlandWater: return "cloud.rain"
+        case .floodDuration: return "clock.arrow.circlepath"
+        case .buildingCollapse: return "house.lodge"
+        case .bankErosion: return "arrow.left.arrow.right"
         }
+    }
+
+    /// 基本ハザードレイヤー（洪水・土砂・高潮・津波・液状化）
+    static var basicLayers: [HazardLayer] {
+        [.flood, .inlandWater, .sediment, .stormSurge, .tsunami, .liquefaction]
+    }
+
+    /// 洪水詳細レイヤー
+    static var floodDetailLayers: [HazardLayer] {
+        [.floodDuration, .buildingCollapse, .bankErosion]
+    }
+}
+
+// MARK: - Tokyo Regional Risk Layer
+
+/// 東京都地域危険度レイヤー（GeoJSON ベース）
+enum TokyoRiskLayer: String, CaseIterable, Identifiable {
+    case buildingCollapse = "建物倒壊危険度"
+    case fire = "火災危険度"
+    case combined = "総合危険度"
+
+    var id: String { rawValue }
+
+    var systemImage: String {
+        switch self {
+        case .buildingCollapse: return "building.2.crop.circle"
+        case .fire: return "flame"
+        case .combined: return "exclamationmark.shield"
+        }
+    }
+
+    /// GeoJSON ファイル名
+    var filename: String {
+        switch self {
+        case .buildingCollapse: return "building_collapse_risk.geojson"
+        case .fire: return "fire_risk.geojson"
+        case .combined: return "combined_risk.geojson"
+        }
+    }
+}
+
+/// ランク (1-5) に対応する色
+func riskColor(for rank: Int) -> UIColor {
+    switch rank {
+    case 1: return UIColor.systemGreen.withAlphaComponent(0.35)
+    case 2: return UIColor.systemYellow.withAlphaComponent(0.35)
+    case 3: return UIColor.systemOrange.withAlphaComponent(0.40)
+    case 4: return UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: 0.45)
+    case 5: return UIColor.systemRed.withAlphaComponent(0.50)
+    default: return UIColor.systemGray.withAlphaComponent(0.15)
+    }
+}
+
+/// GeoJSON の Feature → MKPolygon に変換し rank を保持するサブクラス
+final class RankedPolygon: MKPolygon {
+    var rank: Int = 0
+    var riskLayerID: String = ""
+}
+
+/// 東京都地域危険度 GeoJSON のフェッチ・パース
+@Observable
+final class TokyoRiskService {
+    static let shared = TokyoRiskService()
+
+    private(set) var isLoading = false
+    /// layerID → [RankedPolygon]
+    private var cache: [String: [RankedPolygon]] = [:]
+
+    private let defaults = UserDefaults.standard
+    private let baseURLKey = "realestate.tokyoRiskBaseURL"
+
+    /// GeoJSON の基底 URL（デフォルト: GitHub raw）
+    static let defaultBaseURL = "https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/risk_geojson/"
+
+    /// GeoJSON の基底 URL（空ならデフォルトを使う）
+    var baseURL: String {
+        get { defaults.string(forKey: baseURLKey) ?? "" }
+        set { defaults.set(newValue, forKey: baseURLKey) }
+    }
+
+    /// 実際に使用される基底 URL（カスタムが空ならデフォルト）
+    var effectiveBaseURL: String {
+        let custom = baseURL.trimmingCharacters(in: .whitespaces)
+        return custom.isEmpty ? Self.defaultBaseURL : custom
+    }
+
+    func polygons(for layer: TokyoRiskLayer) -> [RankedPolygon] {
+        cache[layer.id] ?? []
+    }
+
+    func fetchIfNeeded(_ layer: TokyoRiskLayer) async {
+        guard cache[layer.id] == nil else { return }
+        let base = effectiveBaseURL
+        guard !base.isEmpty else { return }
+
+        let urlString = base.hasSuffix("/")
+            ? "\(base)\(layer.filename)"
+            : "\(base)/\(layer.filename)"
+        guard let url = URL(string: urlString) else { return }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            // P7: GeoJSON デコードをバックグラウンドで実行（地図 UI のフリーズ防止）
+            let geojson = try await Task.detached(priority: .userInitiated) {
+                try JSONDecoder().decode(GeoJSONFeatureCollection.self, from: data)
+            }.value
+            let polygons = geojson.features.compactMap { feature -> RankedPolygon? in
+                guard let coords = feature.geometry.polygonCoordinates else { return nil }
+                let points = coords.map { CLLocationCoordinate2D(latitude: $0[1], longitude: $0[0]) }
+                let polygon = RankedPolygon(coordinates: points, count: points.count)
+                polygon.rank = feature.properties.rank
+                polygon.riskLayerID = layer.id
+                return polygon
+            }
+            cache[layer.id] = polygons
+        } catch {
+            print("[TokyoRisk] Fetch failed for \(layer.filename): \(error)")
+        }
+    }
+
+    func clearCache() {
+        cache.removeAll()
+    }
+}
+
+// MARK: - GeoJSON Decoding (Minimal)
+
+private struct GeoJSONFeatureCollection: Codable {
+    let type: String
+    let features: [GeoJSONFeature]
+}
+
+private struct GeoJSONFeature: Codable {
+    let type: String
+    let properties: GeoJSONProperties
+    let geometry: GeoJSONGeometry
+}
+
+private struct GeoJSONProperties: Codable {
+    let rank: Int
+    let label: String?
+    let name: String?
+
+    enum CodingKeys: String, CodingKey {
+        case rank, label, name
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rank = (try? c.decode(Int.self, forKey: .rank)) ?? 0
+        label = try? c.decode(String.self, forKey: .label)
+        name = try? c.decode(String.self, forKey: .name)
+    }
+}
+
+private struct GeoJSONGeometry: Codable {
+    let type: String
+    let coordinates: AnyCodable
+
+    /// Polygon / MultiPolygon の外周座標を返す
+    var polygonCoordinates: [[Double]]? {
+        switch type {
+        case "Polygon":
+            // coordinates: [[[lon,lat], ...]]
+            if let rings = coordinates.value as? [[[Double]]], let outer = rings.first {
+                return outer
+            }
+        case "MultiPolygon":
+            // coordinates: [[[[lon,lat], ...]]]
+            if let polys = coordinates.value as? [[[[Double]]]], let first = polys.first, let outer = first.first {
+                return outer
+            }
+        default:
+            break
+        }
+        return nil
+    }
+}
+
+/// JSON の任意型をデコードするラッパー
+private struct AnyCodable: Codable {
+    let value: Any
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let arr = try? container.decode([AnyCodable].self) {
+            value = arr.map(\.value)
+        } else if let num = try? container.decode(Double.self) {
+            value = num
+        } else if let str = try? container.decode(String.self) {
+            value = str
+        } else if let bool = try? container.decode(Bool.self) {
+            value = bool
+        } else {
+            value = NSNull()
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        // 読み込み専用なので encode は最小実装
+        var container = encoder.singleValueContainer()
+        try container.encodeNil()
     }
 }
 
@@ -62,27 +284,40 @@ enum HazardLayer: String, CaseIterable, Identifiable {
 @Observable
 final class GeocodingService {
     static let shared = GeocodingService()
-    private let geocoder = CLGeocoder()
     private var isGeocoding = false
-    private var queue: [Listing] = []
 
-    /// バッチジオコーディング（未ジオコーディングの物件をまとめて処理）
+    /// 並列バッチジオコーディング（未ジオコーディングの物件をまとめて処理）
+    /// Apple Geocoder のレート制限を考慮し、最大2並列で実行する。
     func geocodeBatch(_ listings: [Listing], modelContext: ModelContext) async {
         let toGeocode = listings.filter { !$0.hasCoordinate && $0.address != nil && !($0.address ?? "").isEmpty }
-        for listing in toGeocode {
-            guard let address = listing.address else { continue }
-            do {
-                let placemarks = try await geocoder.geocodeAddressString(address)
-                if let loc = placemarks.first?.location {
-                    await MainActor.run {
-                        listing.latitude = loc.coordinate.latitude
-                        listing.longitude = loc.coordinate.longitude
+        guard !toGeocode.isEmpty else { return }
+
+        // 最大2並列（Apple Geocoder のレート制限対策）
+        let maxConcurrency = 2
+        await withTaskGroup(of: Void.self) { group in
+            var index = 0
+            for listing in toGeocode {
+                if index >= maxConcurrency {
+                    await group.next()
+                }
+                index += 1
+                group.addTask {
+                    guard let address = listing.address else { return }
+                    let geocoder = CLGeocoder()
+                    do {
+                        let placemarks = try await geocoder.geocodeAddressString(address)
+                        if let loc = placemarks.first?.location {
+                            await MainActor.run {
+                                listing.latitude = loc.coordinate.latitude
+                                listing.longitude = loc.coordinate.longitude
+                            }
+                        }
+                        // Apple Geocoder rate limit: ~1 req/sec per geocoder instance
+                        try await Task.sleep(for: .milliseconds(300))
+                    } catch {
+                        // ジオコーディング失敗はスキップ
                     }
                 }
-                // Apple Geocoder rate limit: ~1 req/sec
-                try await Task.sleep(for: .milliseconds(500))
-            } catch {
-                continue
             }
         }
         try? modelContext.save()
@@ -111,11 +346,14 @@ final class ListingAnnotation: NSObject, MKAnnotation {
 
 // MARK: - MKMapView UIViewRepresentable
 
-/// UIViewRepresentable wrapper to support MKTileOverlay for hazard maps
+/// UIViewRepresentable wrapper to support MKTileOverlay + MKPolygon for hazard maps
 struct HazardMapView: UIViewRepresentable {
     let listings: [Listing]
     let activeHazardLayers: Set<HazardLayer>
+    let activeRiskLayers: Set<TokyoRiskLayer>
     @Binding var selectedListing: Listing?
+    /// いいねトグル時に SwiftData を保存するためのコールバック
+    var onLikeTapped: ((Listing) -> Void)?
 
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self)
@@ -145,19 +383,32 @@ struct HazardMapView: UIViewRepresentable {
     func updateUIView(_ mapView: MKMapView, context: Context) {
         context.coordinator.parent = self
 
-        // --- タイルオーバーレイの更新 ---
-        updateOverlays(mapView)
+        // --- タイル + ポリゴンオーバーレイの差分更新 ---
+        updateOverlays(mapView, coordinator: context.coordinator)
 
         // --- アノテーション（物件ピン）の更新 ---
         updateAnnotations(mapView)
     }
 
-    private func updateOverlays(_ mapView: MKMapView) {
-        // 既存のタイルオーバーレイを削除
-        let existingOverlays = mapView.overlays.compactMap { $0 as? MKTileOverlay }
-        mapView.removeOverlays(existingOverlays)
+    private func updateOverlays(_ mapView: MKMapView, coordinator: Coordinator) {
+        // レイヤーが変更されていなければスキップ（P4: 差分更新）
+        let currentHazard = activeHazardLayers
+        let currentRisk = activeRiskLayers
+        if coordinator.previousHazardLayers == currentHazard && coordinator.previousRiskLayers == currentRisk {
+            return
+        }
+        coordinator.previousHazardLayers = currentHazard
+        coordinator.previousRiskLayers = currentRisk
 
-        // アクティブなレイヤーのタイルオーバーレイを追加
+        // 既存のタイルオーバーレイを削除
+        let existingTiles = mapView.overlays.compactMap { $0 as? MKTileOverlay }
+        mapView.removeOverlays(existingTiles)
+
+        // 既存のポリゴンオーバーレイ (RankedPolygon) を削除
+        let existingPolygons = mapView.overlays.compactMap { $0 as? RankedPolygon }
+        mapView.removeOverlays(existingPolygons)
+
+        // アクティブな GSI タイルオーバーレイを追加
         for layer in activeHazardLayers {
             guard let urlTemplate = layer.tileURLTemplate else { continue }
             let tileOverlay = MKTileOverlay(urlTemplate: urlTemplate)
@@ -165,6 +416,15 @@ struct HazardMapView: UIViewRepresentable {
             tileOverlay.minimumZ = 2
             tileOverlay.maximumZ = 17
             mapView.addOverlay(tileOverlay, level: .aboveRoads)
+        }
+
+        // アクティブな東京都地域危険度ポリゴンオーバーレイを追加
+        let riskService = TokyoRiskService.shared
+        for layer in activeRiskLayers {
+            let polygons = riskService.polygons(for: layer)
+            if !polygons.isEmpty {
+                mapView.addOverlays(polygons, level: .aboveRoads)
+            }
         }
     }
 
@@ -187,6 +447,9 @@ struct HazardMapView: UIViewRepresentable {
 
     final class Coordinator: NSObject, MKMapViewDelegate {
         var parent: HazardMapView
+        /// 前回のオーバーレイ状態（差分更新用）
+        var previousHazardLayers: Set<HazardLayer>?
+        var previousRiskLayers: Set<TokyoRiskLayer>?
 
         init(parent: HazardMapView) {
             self.parent = parent
@@ -195,6 +458,13 @@ struct HazardMapView: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let tileOverlay = overlay as? MKTileOverlay {
                 return MKTileOverlayRenderer(overlay: tileOverlay)
+            }
+            if let rankedPolygon = overlay as? RankedPolygon {
+                let renderer = MKPolygonRenderer(polygon: rankedPolygon)
+                renderer.fillColor = riskColor(for: rankedPolygon.rank)
+                renderer.strokeColor = riskColor(for: rankedPolygon.rank).withAlphaComponent(0.6)
+                renderer.lineWidth = 0.5
+                return renderer
             }
             return MKOverlayRenderer(overlay: overlay)
         }
@@ -220,6 +490,7 @@ struct HazardMapView: UIViewRepresentable {
 
             // カスタム callout
             let detailButton = UIButton(type: .detailDisclosure)
+            detailButton.accessibilityLabel = "詳細を表示"
             view.rightCalloutAccessoryView = detailButton
 
             // callout 内のいいねボタン
@@ -229,6 +500,7 @@ struct HazardMapView: UIViewRepresentable {
                 : UIImage(systemName: "heart")?.withTintColor(.secondaryLabel, renderingMode: .alwaysOriginal)
             likeButton.setImage(heartImage, for: .normal)
             likeButton.frame = CGRect(x: 0, y: 0, width: 32, height: 32)
+            likeButton.accessibilityLabel = listing.isLiked ? "いいねを解除" : "いいねする"
             view.leftCalloutAccessoryView = likeButton
 
             return view
@@ -241,10 +513,10 @@ struct HazardMapView: UIViewRepresentable {
                 // 詳細ボタン → 詳細画面へ遷移
                 parent.selectedListing = listingAnnotation.listing
             } else if control == view.leftCalloutAccessoryView {
-                // いいねボタン
+                // いいねボタン — コールバック経由で modelContext.save() を呼ぶ
                 let listing = listingAnnotation.listing
                 listing.isLiked.toggle()
-                FirebaseSyncService.shared.pushAnnotation(for: listing)
+                parent.onLikeTapped?(listing)
 
                 // ピンの表示を更新
                 if let markerView = view as? MKMarkerAnnotationView {
@@ -273,10 +545,17 @@ struct MapTabView: View {
     @State private var showHazardSheet = false
     @State private var filter = ListingFilter()
     @State private var activeHazardLayers: Set<HazardLayer> = []
+    @State private var activeRiskLayers: Set<TokyoRiskLayer> = []
     @State private var hasStartedGeocoding = false
 
+    /// 座標未取得の物件数（ジオコーディング待ち or 失敗）
+    private var ungeocodedCount: Int {
+        listings.filter { !$0.hasCoordinate }.count
+    }
+
     private var filteredListings: [Listing] {
-        var list = listings.filter { $0.hasCoordinate }
+        // 掲載終了物件は地図に表示しない
+        var list = listings.filter { $0.hasCoordinate && !$0.isDelisted }
 
         if let min = filter.priceMin {
             list = list.filter { ($0.priceMan ?? 0) >= min }
@@ -336,6 +615,14 @@ struct MapTabView: View {
                 ToolbarItem(placement: .primaryAction) {
                     HStack(spacing: 12) {
                         Button {
+                            Task { await store.refresh(modelContext: modelContext) }
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                        .disabled(store.isRefreshing)
+                        .accessibilityLabel("更新")
+
+                        Button {
                             showHazardSheet = true
                         } label: {
                             Image(systemName: activeHazardLayers.isEmpty
@@ -378,7 +665,12 @@ struct MapTabView: View {
         HazardMapView(
             listings: filteredListings,
             activeHazardLayers: activeHazardLayers,
-            selectedListing: $selectedListing
+            activeRiskLayers: activeRiskLayers,
+            selectedListing: $selectedListing,
+            onLikeTapped: { listing in
+                try? modelContext.save()
+                FirebaseSyncService.shared.pushAnnotation(for: listing)
+            }
         )
         .ignoresSafeArea(edges: .bottom)
     }
@@ -406,14 +698,22 @@ struct MapTabView: View {
             )
 
             // アクティブレイヤー表示
-            if !activeHazardLayers.isEmpty {
+            if !activeHazardLayers.isEmpty || !activeRiskLayers.isEmpty {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(Array(activeHazardLayers).sorted(by: { $0.rawValue < $1.rawValue })) { layer in
                         HStack(spacing: 4) {
                             Image(systemName: layer.systemImage)
-                                .font(.system(size: 9))
+                                .font(.caption2)
                             Text(layer.rawValue)
-                                .font(.system(size: 9))
+                                .font(.caption2)
+                        }
+                    }
+                    ForEach(Array(activeRiskLayers).sorted(by: { $0.rawValue < $1.rawValue })) { layer in
+                        HStack(spacing: 4) {
+                            Image(systemName: layer.systemImage)
+                                .font(.caption2)
+                            Text(layer.rawValue)
+                                .font(.caption2)
                         }
                     }
                 }
@@ -424,15 +724,27 @@ struct MapTabView: View {
                 )
             }
 
-            // フィルタ情報
-            if filter.isActive {
-                Text("\(filteredListings.count)件")
-                    .font(.caption2)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(
-                        Capsule().fill(.ultraThinMaterial)
-                    )
+            // フィルタ情報 & 座標なし物件案内
+            VStack(alignment: .trailing, spacing: 4) {
+                if filter.isActive {
+                    Text("\(filteredListings.count)件")
+                        .font(.caption2)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule().fill(.ultraThinMaterial)
+                        )
+                }
+                if ungeocodedCount > 0 {
+                    Label("\(ungeocodedCount)件 座標取得中", systemImage: "location.slash")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule().fill(.ultraThinMaterial)
+                        )
+                }
             }
         }
         .padding(.top, 8)
@@ -445,16 +757,46 @@ struct MapTabView: View {
     private var hazardLayerSheet: some View {
         NavigationStack {
             List {
-                Section("ハザードマップ（国土地理院）") {
-                    ForEach(HazardLayer.allCases.filter { $0 != .seismicRisk }) { layer in
+                Section("ハザードマップ（基本）") {
+                    ForEach(HazardLayer.basicLayers) { layer in
                         hazardToggleRow(layer)
                     }
                 }
-                Section("地域危険度") {
+                Section("洪水詳細") {
+                    ForEach(HazardLayer.floodDetailLayers) { layer in
+                        hazardToggleRow(layer)
+                    }
+                }
+                Section("地域危険度（国土地理院）") {
                     hazardToggleRow(.seismicRisk)
-                    Text("地震に関する地域の揺れやすさを表すデータです。国土地理院配信タイルを利用。")
+                    Text("地盤の揺れやすさを示すタイルデータ。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+                Section("地域危険度（東京都）") {
+                    ForEach(TokyoRiskLayer.allCases) { layer in
+                        riskToggleRow(layer)
+                    }
+                    Text("東京都都市整備局の地域危険度測定調査データ。町丁目単位でランク1〜5を色分け表示。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    // ランク凡例
+                    HStack(spacing: 8) {
+                        ForEach(1...5, id: \.self) { rank in
+                            HStack(spacing: 3) {
+                                Circle()
+                                    .fill(Color(uiColor: riskColor(for: rank)))
+                                    .frame(width: 10, height: 10)
+                                Text("\(rank)")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Spacer()
+                        Text("低←→高")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
                 Section {
                     VStack(alignment: .leading, spacing: 4) {
@@ -463,7 +805,7 @@ struct MapTabView: View {
                         Text("国土地理院ハザードマップポータルサイトのタイルデータを利用しています。")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Text("© 国土地理院")
+                        Text("© 国土地理院 / 東京都都市整備局")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -477,7 +819,7 @@ struct MapTabView: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 
     @ViewBuilder
@@ -488,6 +830,37 @@ struct MapTabView: View {
                 activeHazardLayers.remove(layer)
             } else {
                 activeHazardLayers.insert(layer)
+            }
+        } label: {
+            HStack {
+                Image(systemName: layer.systemImage)
+                    .foregroundColor(isActive ? .accentColor : .secondary)
+                    .frame(width: 28)
+                Text(layer.rawValue)
+                    .foregroundStyle(.primary)
+                Spacer()
+                if isActive {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.accentColor)
+                        .fontWeight(.semibold)
+                }
+            }
+        }
+        .accessibilityAddTraits(isActive ? .isSelected : [])
+    }
+
+    @ViewBuilder
+    private func riskToggleRow(_ layer: TokyoRiskLayer) -> some View {
+        let isActive = activeRiskLayers.contains(layer)
+        Button {
+            if isActive {
+                activeRiskLayers.remove(layer)
+            } else {
+                activeRiskLayers.insert(layer)
+                // フェッチ
+                Task {
+                    await TokyoRiskService.shared.fetchIfNeeded(layer)
+                }
             }
         } label: {
             HStack {
