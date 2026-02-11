@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Listing {
+final class Listing: @unchecked Sendable {
     var source: String?
     var url: String
     var name: String

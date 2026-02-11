@@ -18,6 +18,9 @@ final class PhotoStorageService {
 
     private let fileManager = FileManager.default
 
+    /// インメモリ画像キャッシュ（NSCache はスレッドセーフ・メモリ圧でAutoEvict）
+    private let imageCache = NSCache<NSString, UIImage>()
+
     /// 写真保存ルートディレクトリ（Documents/listing-photos/）
     /// Documents が取得できない場合は tmp にフォールバック
     private var photosRootURL: URL {
@@ -27,6 +30,10 @@ final class PhotoStorageService {
     }
 
     private init() {
+        // キャッシュ設定（最大50枚 / 50MB）
+        imageCache.countLimit = 50
+        imageCache.totalCostLimit = 50 * 1024 * 1024
+
         // ルートディレクトリを作成
         do {
             try fileManager.createDirectory(at: photosRootURL, withIntermediateDirectories: true)
@@ -79,7 +86,7 @@ final class PhotoStorageService {
         var photos = listing.parsedPhotos
         photos.append(PhotoMeta(id: photoId, fileName: fileName, createdAt: .now))
         listing.photosJSON = PhotoMeta.encode(photos)
-        do { try modelContext.save() } catch { print("[PhotoStorage] save 失敗: \(error)") }
+        SaveErrorHandler.shared.save(modelContext, source: "PhotoStorage")
     }
 
     // MARK: - 写真の読み込み
@@ -89,13 +96,29 @@ final class PhotoStorageService {
         directoryURL(for: listing).appendingPathComponent(meta.fileName)
     }
 
-    /// 写真メタデータから UIImage を読み込む
-    /// - Note: 同期でファイル I/O を行うため、UI スレッドで大量呼び出しすると応答性が低下する可能性があります。
-    ///   可能であれば呼び出し元でバックグラウンドコンテキスト（Task.detached や別スレッド）から利用してください。
-    func loadImage(for meta: PhotoMeta, listing: Listing) -> UIImage? {
+    /// 写真メタデータから UIImage を非同期に読み込む（バックグラウンド I/O + インメモリキャッシュ）
+    func loadImage(for meta: PhotoMeta, listing: Listing) async -> UIImage? {
+        let cacheKey = meta.id as NSString
+        if let cached = imageCache.object(forKey: cacheKey) {
+            return cached
+        }
         let url = photoURL(for: meta, listing: listing)
-        guard let data = try? Data(contentsOf: url) else { return nil }
-        return UIImage(data: data)
+        return await Task.detached(priority: .userInitiated) { [imageCache] in
+            guard let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else { return nil as UIImage? }
+            imageCache.setObject(image, forKey: cacheKey, cost: data.count)
+            return image
+        }.value
+    }
+
+    /// キャッシュから画像を即座に取得（キャッシュミス時は nil）
+    func cachedImage(for meta: PhotoMeta) -> UIImage? {
+        imageCache.object(forKey: meta.id as NSString)
+    }
+
+    /// キャッシュから指定写真を除去
+    func evictCache(for meta: PhotoMeta) {
+        imageCache.removeObject(forKey: meta.id as NSString)
     }
 
     // MARK: - 写真の削除
@@ -113,7 +136,7 @@ final class PhotoStorageService {
         var photos = listing.parsedPhotos
         photos.removeAll { $0.id == meta.id }
         listing.photosJSON = photos.isEmpty ? nil : PhotoMeta.encode(photos)
-        do { try modelContext.save() } catch { print("[PhotoStorage] save 失敗: \(error)") }
+        SaveErrorHandler.shared.save(modelContext, source: "PhotoStorage")
     }
 
     /// 物件に紐づく全写真を削除する
@@ -127,6 +150,6 @@ final class PhotoStorageService {
         }
 
         listing.photosJSON = nil
-        do { try modelContext.save() } catch { print("[PhotoStorage] save 失敗: \(error)") }
+        SaveErrorHandler.shared.save(modelContext, source: "PhotoStorage")
     }
 }

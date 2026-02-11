@@ -13,6 +13,8 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(ListingStore.self) private var store
+    @Environment(SaveErrorHandler.self) private var saveErrorHandler
+    private let networkMonitor = NetworkMonitor.shared
     /// 通知タップ時のディープリンク用。コメント通知で渡される listingIdentityKey に該当する物件を探す。
     /// identityKey は computed プロパティ（name/layout/area 等の組み合わせ）のため、FetchDescriptor の
     /// predicate では検索できず、全件インメモリで first(where:) する必要がある。将来的に identityKey を
@@ -29,20 +31,42 @@ struct ContentView: View {
             ListingListView(propertyTypeFilter: "chuko")
                 .tabItem { Label("中古", image: "tab-chuko") }
                 .tag(0)
+                .accessibilityLabel("中古マンション")
             ListingListView(propertyTypeFilter: "shinchiku")
                 .tabItem { Label("新築", image: "tab-shinchiku") }
                 .tag(1)
+                .accessibilityLabel("新築マンション")
             MapTabView()
                 .tabItem { Label("地図", image: "tab-map") }
                 .tag(2)
+                .accessibilityLabel("地図で探す")
             ListingListView(favoritesOnly: true)
                 .tabItem { Label("お気に入り", image: "tab-favorites") }
                 .tag(3)
+                .accessibilityLabel("お気に入り物件")
             SettingsView()
                 .tabItem { Label("設定", image: "tab-settings") }
                 .tag(4)
+                .accessibilityLabel("アプリ設定")
         }
         .tint(.accentColor)
+        .overlay(alignment: .top) {
+            if !networkMonitor.isConnected {
+                HStack(spacing: 6) {
+                    Image(systemName: "wifi.slash")
+                        .font(.caption)
+                    Text("オフラインです — データの更新にはインターネット接続が必要です")
+                        .font(.caption)
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity)
+                .background(Color.orange)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .animation(.easeInOut(duration: 0.3), value: networkMonitor.isConnected)
+            }
+        }
         .task {
             // F3: 初回起動時、データが空 or 最終取得が nil なら自動更新
             store.requestNotificationPermission()
@@ -74,6 +98,14 @@ struct ContentView: View {
         }
         .sheet(item: $notificationListing) { listing in
             ListingDetailView(listing: listing)
+        }
+        .alert("保存エラー", isPresented: Binding(
+            get: { saveErrorHandler.showSaveError },
+            set: { saveErrorHandler.showSaveError = $0 }
+        )) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(saveErrorHandler.lastSaveError ?? "データの保存に失敗しました")
         }
     }
 }

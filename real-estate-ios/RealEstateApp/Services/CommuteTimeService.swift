@@ -107,7 +107,7 @@ final class CommuteTimeService {
             try? await Task.sleep(nanoseconds: 500_000_000) // 0.5秒
         }
 
-        do { try modelContext.save() } catch { print("[CommuteTime] save 失敗: \(error)") }
+        await MainActor.run { SaveErrorHandler.shared.save(modelContext, source: "CommuteTime") }
     }
 
     /// 単一物件の通勤時間を計算

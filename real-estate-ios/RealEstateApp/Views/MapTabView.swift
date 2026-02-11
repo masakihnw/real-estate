@@ -400,21 +400,22 @@ final class GeocodingService {
 
     /// 並列バッチジオコーディング（未ジオコーディングの物件をまとめて処理）
     /// Apple Geocoder のレート制限を考慮し、最大2並列で実行する。
-    func geocodeBatch(_ listings: [Listing], modelContext: ModelContext) async {
+    /// - Returns: ジオコーディングに失敗した件数
+    func geocodeBatch(_ listings: [Listing], modelContext: ModelContext) async -> Int {
         let toGeocode = listings.filter { !$0.hasCoordinate && $0.address != nil && !($0.address ?? "").isEmpty }
-        guard !toGeocode.isEmpty else { return }
+        guard !toGeocode.isEmpty else { return 0 }
 
         // 最大2並列（Apple Geocoder のレート制限対策）
         let maxConcurrency = 2
-        await withTaskGroup(of: Void.self) { group in
+        let failureCount = await withTaskGroup(of: Bool.self, returning: Int.self) { group in
             var index = 0
             for listing in toGeocode {
                 if index >= maxConcurrency {
                     await group.next()
                 }
                 index += 1
-                group.addTask {
-                    guard let address = listing.address else { return }
+                group.addTask { @Sendable in
+                    guard let address = listing.address else { return false }
                     let geocoder = CLGeocoder()
                     do {
                         let placemarks = try await geocoder.geocodeAddressString(address)
@@ -426,15 +427,20 @@ final class GeocodingService {
                         }
                         // Apple Geocoder rate limit: ~1 req/sec per geocoder instance
                         try await Task.sleep(for: .milliseconds(300))
+                        return false
                     } catch {
-                        // ジオコーディング失敗はスキップ
+                        return true // failure
                     }
                 }
             }
+            var count = 0
+            for await failed in group where failed { count += 1 }
+            return count
         }
         await MainActor.run {
-            do { try modelContext.save() } catch { print("[Geocoding] save 失敗: \(error)") }
+            SaveErrorHandler.shared.save(modelContext, source: "Geocoding")
         }
+        return failureCount
     }
 }
 
@@ -756,6 +762,10 @@ struct MapTabView: View {
     @State private var showsUserLocation = false
     /// HIG: 凡例の折りたたみ状態（画面圧迫を防ぐ）
     @State private var isLegendExpanded = true
+    /// ジオコーディング失敗件数
+    @State private var geocodingFailureCount = 0
+    /// データ取得エラー表示
+    @State private var showErrorAlert = false
 
     /// 座標未取得の物件数（ジオコーディング待ち or 失敗）
     private var ungeocodedCount: Int {
@@ -913,6 +923,43 @@ struct MapTabView: View {
             .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
                 ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableStations: availableStations, filteredCount: filteredListings.count)
             }
+            .overlay(alignment: .top) {
+                VStack(spacing: 4) {
+                    // データ取得エラー
+                    if let error = store.lastError {
+                        HStack(spacing: 6) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.yellow)
+                            Text(error)
+                                .font(.caption)
+                                .lineLimit(2)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .padding(.horizontal, 16)
+                        .onTapGesture { showErrorAlert = true }
+                    }
+                    // ジオコーディング失敗
+                    if geocodingFailureCount > 0 {
+                        Text("\(geocodingFailureCount)件の住所を地図に表示できませんでした")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(.ultraThinMaterial, in: Capsule())
+                    }
+                }
+                .padding(.top, 4)
+            }
+            .alert("データ取得エラー", isPresented: $showErrorAlert) {
+                Button("再取得") {
+                    Task { await store.refresh(modelContext: modelContext) }
+                }
+                Button("閉じる", role: .cancel) { }
+            } message: {
+                Text(store.lastError ?? "")
+            }
             .sheet(isPresented: $showHazardSheet) {
                 hazardLayerSheet
             }
@@ -937,7 +984,7 @@ struct MapTabView: View {
             showsUserLocation: showsUserLocation,
             selectedListing: $selectedListing,
             onLikeTapped: { listing in
-                do { try modelContext.save() } catch { print("[MapTab] save 失敗: \(error)") }
+                SaveErrorHandler.shared.save(modelContext, source: "MapTab")
                 FirebaseSyncService.shared.pushLikeState(for: listing)
             }
         )
@@ -1529,7 +1576,8 @@ struct MapTabView: View {
         let toGeocode = listings.filter { !$0.hasCoordinate && $0.address != nil && !($0.address ?? "").isEmpty }
         guard !toGeocode.isEmpty else { return }
 
-        await GeocodingService.shared.geocodeBatch(toGeocode, modelContext: modelContext)
+        let failures = await GeocodingService.shared.geocodeBatch(toGeocode, modelContext: modelContext)
+        geocodingFailureCount = failures
     }
 }
 

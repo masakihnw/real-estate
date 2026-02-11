@@ -25,6 +25,8 @@
 		7040BD509BB73F81C2B3CD3D /* LoanCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853FEEF66F713933C5CC415D /* LoanCalculator.swift */; };
 		72188035EBF232524AD778B9 /* SimulationChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8462396154DCAD49363D09 /* SimulationChartView.swift */; };
 		812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */; };
+		C1A2B3C4D5E6F7A8B9001122 /* SaveErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4D5E6F7A8B9001100 /* SaveErrorHandler.swift */; };
+		C1A2B3C4D5E6F7A8B9003344 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4D5E6F7A8B9003300 /* NetworkMonitor.swift */; };
 		8C4E91A0F2B7D8E31A5C6F03 /* CommuteTimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7F52B1C9D4E6A80B2E1F94 /* CommuteTimeService.swift */; };
 		8EE4894DFCD5C7C657DD928E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E93033C63E637E6276CAC6 /* ContentView.swift */; };
 		9ADBC2C61259A3B927778797 /* RealEstateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291B37863ADE9217F18FD55 /* RealEstateAppApp.swift */; };
@@ -66,6 +68,8 @@
 		97732299FBD4E61C33F84F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduleService.swift; sourceTree = "<group>"; };
 		B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStorageService.swift; sourceTree = "<group>"; };
+		C1A2B3C4D5E6F7A8B9001100 /* SaveErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveErrorHandler.swift; sourceTree = "<group>"; };
+		C1A2B3C4D5E6F7A8B9003300 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		B8D9E0F1A2B3C4D5E6F7A8B9 /* ScrapingConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingConfigService.swift; sourceTree = "<group>"; };
 		C0F3A4B5C6D7E8F9A0B1C2D3 /* ScrapingConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingConfigView.swift; sourceTree = "<group>"; };
 		CD7391AC642FF221BD72EBEB /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
@@ -101,8 +105,10 @@
 				32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */,
 				EA5549338A98AC303BCC728D /* ListingStore.swift */,
 				A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */,
+				C1A2B3C4D5E6F7A8B9003300 /* NetworkMonitor.swift */,
 				B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */,
 				7BEA489E06E9E2D64C98F3B0 /* PushNotificationService.swift */,
+				C1A2B3C4D5E6F7A8B9001100 /* SaveErrorHandler.swift */,
 				B8D9E0F1A2B3C4D5E6F7A8B9 /* ScrapingConfigService.swift */,
 			);
 			path = Services;
@@ -273,7 +279,9 @@
 				27560686B331DE043F6A5E92 /* MapTabView.swift in Sources */,
 				13F2D3B8066ED1C37940E12B /* NotificationScheduleService.swift in Sources */,
 				01AC50EEF3497F0AB63CDE10 /* PhotoSectionView.swift in Sources */,
+				C1A2B3C4D5E6F7A8B9003344 /* NetworkMonitor.swift in Sources */,
 				812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */,
+				C1A2B3C4D5E6F7A8B9001122 /* SaveErrorHandler.swift in Sources */,
 				0E04EDAC2E32A4D19103DC14 /* PushNotificationService.swift in Sources */,
 				9ADBC2C61259A3B927778797 /* RealEstateAppApp.swift in Sources */,
 				B7C8D9E0F1A2B3C4D5E6F7A8 /* ScrapingConfigService.swift in Sources */,

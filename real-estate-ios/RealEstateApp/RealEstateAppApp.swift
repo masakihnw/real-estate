@@ -51,6 +51,7 @@ struct RealEstateAppApp: App {
                 .environment(ListingStore.shared)
                 .environment(FirebaseSyncService.shared)
                 .environment(AuthService.shared)
+                .environment(SaveErrorHandler.shared)
                 .preferredColorScheme(.light) // ライトモード固定
                 .onOpenURL { url in
                     // Google Sign-In のコールバック URL を処理
