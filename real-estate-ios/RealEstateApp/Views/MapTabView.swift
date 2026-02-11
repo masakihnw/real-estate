@@ -461,7 +461,7 @@ final class ListingAnnotation: NSObject, MKAnnotation {
     }
 
     var title: String? { listing.name }
-    var subtitle: String? { listing.priceDisplay }
+    var subtitle: String? { listing.priceDisplayCompact }
 }
 
 // MARK: - MKMapView UIViewRepresentable
@@ -769,8 +769,7 @@ struct MapTabView: View {
     @State private var usePaleBaseMap = false
     @State private var hasStartedGeocoding = false
     @State private var showsUserLocation = false
-    /// HIG: 凡例の折りたたみ状態（画面圧迫を防ぐ）
-    @State private var isLegendExpanded = true
+    // 凡例はピンのみのコンパクト表示に変更（折りたたみ不要）
     /// ジオコーディング失敗件数
     @State private var geocodingFailureCount = 0
     /// データ取得エラー表示
@@ -824,12 +823,6 @@ struct MapTabView: View {
                 }
             }
         }
-        if !filterStore.filter.stations.isEmpty {
-            list = list.filter { listing in
-                let listingStations = listing.parsedStations.map(\.stationName)
-                return filterStore.filter.stations.contains(where: { listingStations.contains($0) })
-            }
-        }
         return list
     }
 
@@ -839,10 +832,6 @@ struct MapTabView: View {
 
     private var availableWards: Set<String> {
         Set(listings.compactMap { ListingFilter.extractWard(from: $0.address) })
-    }
-
-    private var availableStations: [String] {
-        Set(listings.flatMap { $0.parsedStations.map(\.stationName) }).sorted()
     }
 
     var body: some View {
@@ -929,8 +918,9 @@ struct MapTabView: View {
                     }
                 }
             }
-            .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableStations: availableStations, filteredCount: filteredListings.count)
+            .sheet(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, filteredCount: filteredListings.count)
+                    .presentationDetents([.medium, .large])
             }
             .overlay(alignment: .top) {
                 VStack(spacing: 4) {
@@ -1166,72 +1156,23 @@ struct MapTabView: View {
     // MARK: - 地図凡例（ピン + ハザードレイヤー動的）
 
     /// 地図上に表示する凡例ビュー
-    /// - ピン色（中古/新築）は常時表示
-    /// - 選択中のハザードレイヤーの色凡例を動的に表示
-    /// HIG: 折りたたみ可能な凡例ビュー（画面圧迫を防止）
+    /// - ピン色（中古/新築/いいね）のみ表示（コンパクト）
+    /// - ハザードレイヤー凡例はシート内で確認可能なので地図上では省略
     @ViewBuilder
     private var mapLegendView: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            // 凡例ヘッダー（タップで折りたたみ切替）
-            Button {
-                withAnimation(.easeInOut(duration: 0.2)) { isLegendExpanded.toggle() }
-            } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: "map")
-                        .font(.caption2)
-                    Text("凡例")
-                        .font(.caption2.weight(.semibold))
-                    Spacer(minLength: 4)
-                    Image(systemName: isLegendExpanded ? "chevron.up" : "chevron.down")
-                        .font(.caption2)
-                }
-                .foregroundStyle(.secondary)
+        // ピン凡例のみ — HTML準拠: 中古/新築/♥いいね
+        HStack(spacing: 10) {
+            HStack(spacing: 4) {
+                Circle().fill(.blue).frame(width: 8, height: 8)
+                Text("中古").font(.caption2)
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("凡例")
-            .accessibilityHint(isLegendExpanded ? "タップで折りたたみ" : "タップで展開")
-
-            if isLegendExpanded {
-                // ピン凡例（常時表示）— HTML準拠: 中古/新築/♥いいね
-                HStack(spacing: 10) {
-                    HStack(spacing: 4) {
-                        Circle().fill(.blue).frame(width: 8, height: 8)
-                        Text("中古").font(.caption2)
-                    }
-                    HStack(spacing: 4) {
-                        Circle().fill(.green).frame(width: 8, height: 8)
-                        Text("新築").font(.caption2)
-                    }
-                    HStack(spacing: 4) {
-                        Circle().fill(.red).frame(width: 8, height: 8)
-                        Text("♥いいね").font(.caption2)
-                    }
-                }
-
-                // ハザードレイヤー凡例（選択中のみ表示）
-                let sortedHazard = Array(activeHazardLayers).sorted { $0.rawValue < $1.rawValue }
-                let sortedRisk = Array(activeRiskLayers).sorted { $0.rawValue < $1.rawValue }
-
-                if !sortedHazard.isEmpty || !sortedRisk.isEmpty {
-                    Divider()
-
-                    ForEach(Array(sortedHazard.enumerated()), id: \.element.id) { idx, layer in
-                        if idx > 0 {
-                            Divider().padding(.leading, 4)
-                        }
-                        hazardLegendSection(title: layer.rawValue,
-                                            icon: layer.systemImage,
-                                            items: layer.legendItems)
-                    }
-
-                    ForEach(Array(sortedRisk.enumerated()), id: \.element.id) { idx, layer in
-                        if !sortedHazard.isEmpty || idx > 0 {
-                            Divider().padding(.leading, 4)
-                        }
-                        riskLegendSection(title: layer.rawValue,
-                                          icon: layer.systemImage)
-                    }
-                }
+            HStack(spacing: 4) {
+                Circle().fill(.green).frame(width: 8, height: 8)
+                Text("新築").font(.caption2)
+            }
+            HStack(spacing: 4) {
+                Circle().fill(.red).frame(width: 8, height: 8)
+                Text("♥いいね").font(.caption2)
             }
         }
         .padding(8)
@@ -1239,79 +1180,6 @@ struct MapTabView: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .fill(.ultraThinMaterial)
         )
-        .animation(.easeInOut(duration: 0.25), value: activeHazardLayers)
-        .animation(.easeInOut(duration: 0.25), value: activeRiskLayers)
-        .animation(.easeInOut(duration: 0.25), value: isLegendExpanded)
-    }
-
-    /// ハザードレイヤー凡例セクション（色バー + ラベル）
-    @ViewBuilder
-    private func hazardLegendSection(title: String, icon: String, items: [(color: Color, label: String)]) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(spacing: 3) {
-                Image(systemName: icon)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                Text(title)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
-
-            // カラーバー（グラデーション風に横並び）
-            HStack(spacing: 1) {
-                ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(item.color)
-                        .frame(height: 8)
-                }
-            }
-
-            // 最小・最大ラベル
-            if let first = items.first, let last = items.last, items.count >= 2 {
-                HStack {
-                    Text(first.label)
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                    Spacer()
-                    Text(last.label)
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-        }
-    }
-
-    /// 東京都地域危険度レイヤー凡例（ランク1-5共通）
-    @ViewBuilder
-    private func riskLegendSection(title: String, icon: String) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(spacing: 3) {
-                Image(systemName: icon)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                Text(title)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 1) {
-                ForEach(1...5, id: \.self) { rank in
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color(uiColor: riskColor(for: rank)))
-                        .frame(height: 8)
-                }
-            }
-
-            HStack {
-                Text("ランク1 低")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                Spacer()
-                Text("ランク5 高")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-            }
-        }
     }
 
     /// 全ON/OFF トグルボタン（シート上部に目立つように配置）

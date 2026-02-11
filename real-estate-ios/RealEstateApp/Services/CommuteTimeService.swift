@@ -17,18 +17,33 @@ final class CommuteTimeService {
 
     // MARK: - 目的地定義
 
-    /// Playground株式会社（千代田区一番町15-1 一番町ファーストビル）
-    static let playgroundCoordinate = CLLocationCoordinate2D(latitude: 35.6863, longitude: 139.7385)
+    /// Playground株式会社（〒102-0082 千代田区一番町4-6）
+    static let playgroundCoordinate = CLLocationCoordinate2D(latitude: 35.688449, longitude: 139.743415)
     static let playgroundName = "Playground株式会社"
 
-    /// エムスリーキャリア株式会社（虎ノ門4-1-28 虎ノ門タワーズオフィス）
-    static let m3careerCoordinate = CLLocationCoordinate2D(latitude: 35.6620, longitude: 139.7497)
+    /// エムスリーキャリア株式会社（〒105-0001 港区虎ノ門4丁目1-28）
+    static let m3careerCoordinate = CLLocationCoordinate2D(latitude: 35.666018, longitude: 139.743807)
     static let m3careerName = "エムスリーキャリア"
 
     /// 経路計算中かどうか
     private(set) var isCalculating = false
 
-    private init() {}
+    /// オフィス座標変更時にキャッシュを無効化するためのバージョン。
+    /// 座標を更新した場合はこの値をインクリメントする。
+    private static let coordinateVersion = 2
+    private static let coordinateVersionKey = "commuteTime.coordinateVersion"
+
+    private init() {
+        // 座標バージョンが古い場合、全物件の通勤時間キャッシュを再計算対象にする
+        let saved = UserDefaults.standard.integer(forKey: Self.coordinateVersionKey)
+        if saved < Self.coordinateVersion {
+            UserDefaults.standard.set(Self.coordinateVersion, forKey: Self.coordinateVersionKey)
+            needsRecalculation = true
+        }
+    }
+
+    /// 座標更新で全件再計算が必要かどうか
+    private(set) var needsRecalculation = false
 
     // MARK: - Google Maps ディープリンク
 
@@ -90,8 +105,11 @@ final class CommuteTimeService {
             return
         }
 
+        let forceAll = needsRecalculation
         let targets = listings.filter { listing in
             guard listing.hasCoordinate else { return false }
+            // 座標更新時は全件再計算
+            if forceAll { return true }
             // 未計算 or 7日以上経過で再計算
             let info = listing.parsedCommuteInfo
             if let pg = info.playground, let m3 = info.m3career {
@@ -100,6 +118,7 @@ final class CommuteTimeService {
             }
             return true
         }
+        if forceAll { needsRecalculation = false }
 
         for listing in targets {
             await calculateForListing(listing, modelContext: modelContext)
@@ -186,28 +205,49 @@ final class CommuteTimeService {
         let transitMinutes = Int(ceil(distanceKm * 1.4 / 25.0 * 60.0)) + 15 // 乗車時間 + 徒歩
         return CommuteDestination(
             minutes: transitMinutes,
-            summary: "\(destinationName)まで約\(String(format: "%.1f", distanceKm))km（概算）",
+            summary: "直線\(String(format: "%.1f", distanceKm))kmから概算（経路情報取得不可）",
             transfers: nil,
             calculatedAt: Date()
         )
     }
 
     /// 経路情報からサマリーテキストを生成
+    /// 物件→（徒歩）→路線1「駅名」→路線2「駅名」→（徒歩）→目的地 形式
     private func buildRouteSummary(route: MKRoute, destinationName: String) -> String {
-        let minutes = Int(ceil(route.expectedTravelTime / 60.0))
-
-        // MKRoute の steps から乗り換え情報を抽出
         let steps = route.steps.filter { !$0.instructions.isEmpty }
         if steps.isEmpty {
+            let minutes = Int(ceil(route.expectedTravelTime / 60.0))
             return "\(destinationName)まで\(minutes)分"
         }
 
-        // 主要なステップを結合（最大3つ）
-        let mainSteps = steps.prefix(3).map { $0.instructions }
-        return mainSteps.joined(separator: " → ")
+        // 公共交通機関のステップのみ抽出（徒歩区間を除外）
+        let transitSteps = steps.filter { $0.transportType == .transit }
+
+        if transitSteps.isEmpty {
+            // 全て徒歩の場合
+            let walkMin = Int(ceil(route.expectedTravelTime / 60.0))
+            return "徒歩\(walkMin)分"
+        }
+
+        // 各交通機関ステップから路線名を抽出して連結
+        var routeParts: [String] = []
+        for step in transitSteps {
+            let instruction = step.instructions
+            routeParts.append(instruction)
+        }
+
+        // 最大4ステップまで表示（見やすさのため）
+        let displayParts = routeParts.prefix(4)
+        var summary = displayParts.joined(separator: " → ")
+
+        if routeParts.count > 4 {
+            summary += " 他"
+        }
+
+        return summary
     }
 
-    /// 乗り換え回数をカウント（概算: ステップ数 - 2 で徒歩区間を除く）
+    /// 乗り換え回数をカウント
     private func countTransfers(route: MKRoute) -> Int {
         let transitSteps = route.steps.filter {
             $0.transportType == .transit

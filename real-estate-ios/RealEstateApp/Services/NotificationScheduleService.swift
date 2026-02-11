@@ -55,7 +55,10 @@ final class NotificationScheduleService {
             let clamped = max(0, min(6, newValue))
             defaults.set(clamped, forKey: notifCountKey)
             adjustScheduleTimes(to: clamped)
-            rescheduleNotifications()
+            // UI スレッドをブロックしないよう非同期で再スケジュール
+            Task.detached(priority: .utility) { [self] in
+                rescheduleNotifications()
+            }
         }
     }
 
@@ -104,7 +107,9 @@ final class NotificationScheduleService {
             if let data = try? JSONEncoder().encode(newValue) {
                 defaults.set(data, forKey: customTimesKey)
             }
-            rescheduleNotifications()
+            Task.detached(priority: .utility) { [self] in
+                rescheduleNotifications()
+            }
         }
     }
 

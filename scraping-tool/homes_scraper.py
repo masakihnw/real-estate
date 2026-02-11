@@ -27,7 +27,7 @@ from config import (
     TOTAL_UNITS_MIN,
     STATION_PASSENGERS_MIN,
     ALLOWED_LINE_KEYWORDS,
-    REQUEST_DELAY_SEC,
+    HOMES_REQUEST_DELAY_SEC,
     REQUEST_TIMEOUT_SEC,
     REQUEST_RETRIES,
     USER_AGENT,
@@ -36,8 +36,9 @@ from config import (
 
 BASE_URL = "https://www.homes.co.jp"
 
-# 東京23区・中古マンション一覧（1頁目は /tokyo/23ku/、2頁目以降は /tokyo/23ku/list/?page=N）
-LIST_URL_FIRST = "https://www.homes.co.jp/mansion/chuko/tokyo/23ku/"
+# 東京23区・中古マンション一覧（全ページ /tokyo/23ku/list/?page=N）
+# ※2026年2月確認: /tokyo/23ku/ はナビゲーションページに変更されたため /list/ パスを使用
+LIST_URL_FIRST = "https://www.homes.co.jp/mansion/chuko/tokyo/23ku/list/"
 LIST_URL_PAGE = "https://www.homes.co.jp/mansion/chuko/tokyo/23ku/list/?page={page}"
 # 全ページ取得時の安全上限（無限ループ防止）
 HOMES_MAX_PAGES_SAFETY = 100
@@ -118,22 +119,38 @@ def _layout_ok(layout: str) -> bool:
     ) and ("LDK" in layout or "DK" in layout or "K" in layout)
 
 
+def _is_waf_challenge(html: str) -> bool:
+    """AWS WAF のボット検知チャレンジページかどうかを判定。"""
+    if len(html) < 5000 and "awsWafCookieDomainList" in html:
+        return True
+    if len(html) < 5000 and "gokuProps" in html:
+        return True
+    return False
+
+
 def fetch_list_page(session: requests.Session, url: str) -> str:
-    """一覧ページのHTMLを取得。5xx/429/タイムアウト・接続エラー時はリトライする。"""
+    """一覧ページのHTMLを取得。5xx/429/WAF/タイムアウト・接続エラー時はリトライする。"""
     last_error: Optional[Exception] = None
-    for attempt in range(REQUEST_RETRIES):
-        time.sleep(REQUEST_DELAY_SEC)
+    for attempt in range(REQUEST_RETRIES + 2):  # WAF 対策で追加リトライ
+        time.sleep(HOMES_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             # 429 Too Many Requests — レートリミット対策
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
-                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})", file=sys.stderr)
                 time.sleep(retry_after)
                 continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
-            return r.text
+            html = r.text
+            # AWS WAF チャレンジページの検出
+            if _is_waf_challenge(html):
+                wait = min(30 * (attempt + 1), 120)
+                print(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            return html
         except requests.exceptions.HTTPError as e:
             # 500/502/503 は一時的なサーバーエラーのためリトライ
             if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
@@ -147,7 +164,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
                 time.sleep(2)
     if last_error is not None:
         raise last_error
-    raise RuntimeError(f"全 {REQUEST_RETRIES} 回のリトライが失敗しました (429 Rate Limited): {url}")
+    raise RuntimeError(f"全リトライが失敗しました (WAF/Rate Limited): {url}")
 
 
 def _parse_jsonld_itemlist(html: str) -> list[dict[str, Any]]:
@@ -351,8 +368,126 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
     return by_url
 
 
+def _extract_card_listings(soup: BeautifulSoup, base_url: str) -> list[HomesListing]:
+    """2026年リニューアル後のカード型一覧からパース。
+    各物件はテーブル（価格/間取り/所在地/専有面積/交通 等）を含むブロック。
+    """
+    items: list[HomesListing] = []
+    seen_urls: set[str] = set()
+
+    # 物件詳細リンク /mansion/b-{id}/ を探す
+    detail_links = soup.find_all("a", href=re.compile(r"/mansion/b-\d+/?$"))
+    for link in detail_links:
+        href = link.get("href", "")
+        url = urljoin(base_url, href)
+        if url in seen_urls:
+            continue
+        # リンクのテキストが「詳細を見る」等でない場合はスキップ
+        # 物件ブロックを探す: リンクを含む最も近いコンテナ
+        container = link
+        for _ in range(15):
+            container = container.parent
+            if container is None or container.name in ("body", "html", "[document]"):
+                container = None
+                break
+            text = container.get_text() or ""
+            # 所在地と価格の両方を含むブロックを探す
+            if "所在地" in text or ("万円" in text and ("m²" in text or "㎡" in text)):
+                # テーブルが含まれるか、またはカード情報がある
+                if container.find("table") or container.find(["dt", "th"]):
+                    break
+        if container is None:
+            continue
+        seen_urls.add(url)
+
+        text = container.get_text(separator="\n")
+
+        # 物件名: h2/h3/h4 または最初のリンクテキスト
+        name = ""
+        for tag in ("h2", "h3", "h4"):
+            el = container.find(tag)
+            if el:
+                name = (el.get_text(strip=True) or "").strip()
+                if name:
+                    break
+        if not name:
+            a = container.find("a", href=re.compile(r"/mansion/b-"))
+            if a:
+                t = (a.get_text(strip=True) or "").strip()
+                if t and "詳細" not in t and "資料" not in t:
+                    name = t
+
+        # テーブルからの情報抽出
+        def _table_value(label: str) -> str:
+            for tbl in container.find_all("table"):
+                for tr in tbl.find_all("tr"):
+                    ths = tr.find_all(["th", "dt"])
+                    tds = tr.find_all(["td", "dd"])
+                    for i, th in enumerate(ths):
+                        if label in (th.get_text() or ""):
+                            if i < len(tds):
+                                return (tds[i].get_text(strip=True) or "").strip()
+            # dt/dd フォールバック
+            dt = container.find(["dt", "th"], string=re.compile(re.escape(label)))
+            if dt:
+                sibling = dt.find_next_sibling(["dd", "td"])
+                if sibling:
+                    return (sibling.get_text(strip=True) or "").strip()
+            return ""
+
+        address = _table_value("所在地")
+        station_line = _table_value("交通")
+        layout = _table_value("間取り") or _table_value("間取")
+        area_str = _table_value("専有面積") or _table_value("面積")
+        price_str = _table_value("価格")
+        built_str = _table_value("築年月") or _table_value("完成")
+
+        price_man = _parse_price(price_str) if price_str else None
+        area_m2 = _parse_area_m2(area_str) if area_str else None
+        walk_min = _parse_walk_min(station_line or text)
+        built_year = _parse_built_year(built_str or text)
+        total_units = _parse_total_units(text)
+        floor_total = _parse_floor_total(text)
+        floor_position = _parse_floor_position(text)
+
+        # テキストからの価格フォールバック
+        if price_man is None:
+            for line in text.split("\n"):
+                line = line.strip()
+                if "万円" in line and len(line) < 40:
+                    price_man = _parse_price(line)
+                    if price_man is not None:
+                        break
+
+        # テキストからの面積フォールバック
+        if area_m2 is None:
+            area_m2 = _parse_area_m2(text)
+
+        if not name and not url:
+            continue
+
+        items.append(HomesListing(
+            source="homes",
+            url=url,
+            name=name,
+            price_man=price_man,
+            address=address,
+            station_line=station_line,
+            walk_min=walk_min,
+            area_m2=area_m2,
+            layout=layout,
+            built_str=built_str or (f"{built_year}年" if built_year else ""),
+            built_year=built_year,
+            total_units=total_units,
+            floor_position=floor_position,
+            floor_total=floor_total,
+        ))
+    return items
+
+
 def parse_list_html(html: str, base_url: str = BASE_URL) -> list[HomesListing]:
-    """HOME'S 一覧HTMLから物件リストをパース。JSON-LD を主とし、HTML から間取り・徒歩・路線を補完。"""
+    """HOME'S 一覧HTMLから物件リストをパース。JSON-LD を主とし、HTML から間取り・徒歩・路線を補完。
+    2026年リニューアル後はカード型パーサーにフォールバック。"""
     soup = BeautifulSoup(html, "lxml")
     rows_ld = _parse_jsonld_itemlist(html)
     html_map = _extract_html_layout_walk(soup, base_url)
@@ -384,6 +519,11 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[HomesListing]:
             floor_total=floor_total,
             ownership=extra.get("ownership") if isinstance(extra.get("ownership"), str) else None,
         ))
+
+    # フォールバック: JSON-LD + 旧HTMLセレクタで0件の場合、カード型パーサーを試行
+    if not items:
+        items = _extract_card_listings(soup, base_url)
+
     return items
 
 
@@ -476,10 +616,14 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
     page = 1
     while page <= limit:
         url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
-        html = fetch_list_page(session, url)
+        try:
+            html = fetch_list_page(session, url)
+        except Exception as e:
+            print(f"HOME'S: ページ{page}でエラー（WAF/ネットワーク）: {e}", file=sys.stderr)
+            break
         rows = parse_list_html(html)
         if not rows:
-            print(f"HOME'S: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。", file=__import__("sys").stderr)
+            print(f"HOME'S: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。", file=sys.stderr)
             break
         passed = 0
         for row in rows:
@@ -492,5 +636,5 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
                 yield row
                 passed += 1
         if apply_filter and rows and passed == 0:
-            print(f"HOME'S: ページ{page}で{len(rows)}件パースしたが条件通過0件（価格・地域・間取り等で除外）。", file=__import__("sys").stderr)
+            print(f"HOME'S: ページ{page}で{len(rows)}件パースしたが条件通過0件（価格・地域・間取り等で除外）。", file=sys.stderr)
         page += 1

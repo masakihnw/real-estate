@@ -60,7 +60,17 @@ struct ScrapingConfigView: View {
                     }
                 }
             }
-            .onAppear {
+            .task {
+                // Firestore からの fetch 完了を待ってから反映
+                if scrapingService.isLoading {
+                    // 読み込み中なら完了を待つ
+                    try? await Task.sleep(for: .milliseconds(100))
+                    // fetch が完了するまでポーリング（最大3秒）
+                    for _ in 0..<30 {
+                        if !scrapingService.isLoading { break }
+                        try? await Task.sleep(for: .milliseconds(100))
+                    }
+                }
                 config = scrapingService.config
             }
             .alert("保存しました", isPresented: $showSaveSuccess) {

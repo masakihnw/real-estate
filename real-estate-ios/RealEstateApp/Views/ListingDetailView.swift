@@ -112,8 +112,8 @@ struct ListingDetailView: View {
                         SimulationSectionView(listing: listing)
                     }
 
-                    // ⑦ ハザード情報
-                    if listing.hasHazardRisk {
+                    // ⑦ ハザード情報（低ランクでもデータがあれば表示）
+                    if listing.hasHazardData {
                         Divider()
                         hazardSection
                     }
@@ -127,7 +127,7 @@ struct ListingDetailView: View {
                         externalLinksSection
                     }
                 }
-                .padding()
+                .padding(.horizontal, 14)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -665,7 +665,7 @@ struct ListingDetailView: View {
             .foregroundStyle(.tertiary)
         }
         .padding(14)
-        .listingGlassBackground()
+        .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
     }
 
     @ViewBuilder
@@ -765,7 +765,7 @@ struct ListingDetailView: View {
             .buttonStyle(.bordered)
         }
         .padding(14)
-        .listingGlassBackground()
+        .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
     }
 
     // MARK: - ハザード情報セクション
@@ -773,7 +773,7 @@ struct ListingDetailView: View {
     @ViewBuilder
     private var hazardSection: some View {
         let hazard = listing.parsedHazardData
-        let labels = hazard.activeLabels
+        let labels = hazard.allLabels  // 全ランク表示（低リスクも含む）
 
         VStack(alignment: .leading, spacing: 12) {
             // セクションヘッダー
@@ -814,7 +814,7 @@ struct ListingDetailView: View {
                         HStack(spacing: 8) {
                             Image(systemName: item.icon)
                                 .font(.body)
-                                .foregroundStyle(item.severity == .danger ? .red : .orange)
+                                .foregroundStyle(hazardIconColor(item.severity))
                                 .frame(width: 24)
                             Text(item.label)
                                 .font(.subheadline)
@@ -840,7 +840,15 @@ struct ListingDetailView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(14)
-        .listingGlassBackground()
+        .tintedGlassBackground(tint: .orange, tintOpacity: 0.03, borderOpacity: 0.08)
+    }
+
+    private func hazardIconColor(_ severity: Listing.HazardSeverity) -> Color {
+        switch severity {
+        case .danger: return .red
+        case .warning: return .orange
+        case .info: return .secondary
+        }
     }
 
     private func extractRank(from label: String) -> Int {
@@ -894,7 +902,7 @@ struct ListingDetailView: View {
             }
         }
         .padding(14)
-        .listingGlassBackground()
+        .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
     }
 
     // MARK: - 中古マンション: 沖式中古時価 + 値上がり率 + レーダーチャート
@@ -945,6 +953,13 @@ struct ListingDetailView: View {
                     }
                 }
             }
+        }
+
+        // レーダーチャート（偏差値ベース: 本物件 vs 行政区平均）
+        if let radar = listing.parsedRadarData {
+            RadarChartView(data: radar)
+                .frame(maxWidth: 260)
+                .frame(maxWidth: .infinity) // 中央寄せ
         }
     }
 
@@ -1066,6 +1081,14 @@ private struct HazardChip: View {
     let label: String
     let severity: Listing.HazardSeverity
 
+    private var chipColor: Color {
+        switch severity {
+        case .danger: return .red
+        case .warning: return .orange
+        case .info: return .secondary
+        }
+    }
+
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: icon)
@@ -1074,11 +1097,11 @@ private struct HazardChip: View {
                 .font(.caption)
                 .fontWeight(.medium)
         }
-        .foregroundStyle(severity == .danger ? Color.red : Color.orange)
+        .foregroundStyle(chipColor)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
         .background(
-            (severity == .danger ? Color.red : Color.orange).opacity(0.12)
+            chipColor.opacity(0.12)
         )
         .clipShape(RoundedRectangle(cornerRadius: 6))
     }

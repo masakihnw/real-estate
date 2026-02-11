@@ -56,6 +56,8 @@ STATION_PASSENGERS_MIN = 0
 
 # リクエスト間隔（秒）: 負荷軽減のため
 REQUEST_DELAY_SEC = 2
+# HOME'S 専用のリクエスト間隔（秒）: AWS WAF ボット検知対策のため長めに設定
+HOMES_REQUEST_DELAY_SEC = 5
 
 # リクエストタイムアウト（秒）: 全ページ取得時は回数が増えるため余裕を持たせる
 REQUEST_TIMEOUT_SEC = 60

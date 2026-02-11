@@ -16,7 +16,10 @@
     "floor_total": 16,
     "floor_structure": "RC16階地下3階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存35年、借地権設定登記不可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可",
-    "list_ward_roman": "shibuya"
+    "list_ward_roman": "shibuya",
+    "latitude": 35.6705829,
+    "longitude": 139.7066608,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -35,7 +38,10 @@
     "floor_total": 7,
     "floor_structure": "RC7階建",
     "ownership": "所有権",
-    "list_ward_roman": "sumida"
+    "list_ward_roman": "sumida",
+    "latitude": 35.711971,
+    "longitude": 139.818183,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 5, \"fire\": 5, \"combined\": 5}"
   },
   {
     "source": "suumo",
@@ -54,7 +60,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存59年7ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -73,7 +82,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存60年3ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -92,7 +104,10 @@
     "floor_total": 17,
     "floor_structure": "RC17階建",
     "ownership": "所有権",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6634824,
+    "longitude": 139.8077876,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -111,7 +126,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存59年8ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -130,7 +148,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存60年、借地権設定登記相談、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -149,7 +170,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存59年7ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -168,7 +192,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存59年7ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -187,7 +214,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存59年8ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -206,7 +236,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存59年11ヶ月、借地権設定登記可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -225,7 +258,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存59年7ヶ月、借地権設定登記相談、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -244,7 +280,10 @@
     "floor_total": 20,
     "floor_structure": "SRC20階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6615806,
+    "longitude": 139.8317778,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -263,7 +302,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存59年6ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6743164,
+    "longitude": 139.8262215,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -282,7 +324,10 @@
     "floor_total": 44,
     "floor_structure": "RC44階建",
     "ownership": "所有権",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6441411,
+    "longitude": 139.8022923,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -301,7 +346,10 @@
     "floor_total": 20,
     "floor_structure": "SRC20階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6615806,
+    "longitude": 139.8317778,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -320,7 +368,10 @@
     "floor_total": 15,
     "floor_structure": "RC15階建",
     "ownership": "所有権",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6890372,
+    "longitude": 139.8293526,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -339,7 +390,10 @@
     "floor_total": 5,
     "floor_structure": "RC5階建",
     "ownership": "所有権",
-    "list_ward_roman": "koto"
+    "list_ward_roman": "koto",
+    "latitude": 35.6899027,
+    "longitude": 139.8350597,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -358,7 +412,10 @@
     "floor_total": 8,
     "floor_structure": "RC8階建",
     "ownership": "所有権",
-    "list_ward_roman": "adachi"
+    "list_ward_roman": "adachi",
+    "latitude": 35.7751304,
+    "longitude": 139.7879781,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -377,7 +434,10 @@
     "floor_total": 8,
     "floor_structure": "RC8階建",
     "ownership": "所有権",
-    "list_ward_roman": "adachi"
+    "list_ward_roman": "adachi",
+    "latitude": 35.7751304,
+    "longitude": 139.7879781,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -396,7 +456,10 @@
     "floor_total": 8,
     "floor_structure": "RC8階建",
     "ownership": "所有権",
-    "list_ward_roman": "adachi"
+    "list_ward_roman": "adachi",
+    "latitude": 35.7751304,
+    "longitude": 139.7879781,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -415,7 +478,10 @@
     "floor_total": 14,
     "floor_structure": "RC14階建",
     "ownership": "所有権",
-    "list_ward_roman": "adachi"
+    "list_ward_roman": "adachi",
+    "latitude": 35.7751304,
+    "longitude": 139.7879781,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -434,7 +500,10 @@
     "floor_total": 6,
     "floor_structure": "RC6階建",
     "ownership": "所有権",
-    "list_ward_roman": "adachi"
+    "list_ward_roman": "adachi",
+    "latitude": 35.7942511,
+    "longitude": 139.7918556,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -453,7 +522,10 @@
     "floor_total": 8,
     "floor_structure": "RC8階建",
     "ownership": "所有権",
-    "list_ward_roman": "adachi"
+    "list_ward_roman": "adachi",
+    "latitude": 35.7785388,
+    "longitude": 139.8333733,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -472,7 +544,10 @@
     "floor_total": 9,
     "floor_structure": "RC9階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "edogawa"
+    "list_ward_roman": "edogawa",
+    "latitude": 35.6838309,
+    "longitude": 139.864297,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -491,7 +566,10 @@
     "floor_total": 15,
     "floor_structure": "RC15階建",
     "ownership": "所有権",
-    "list_ward_roman": "edogawa"
+    "list_ward_roman": "edogawa",
+    "latitude": 35.6638877,
+    "longitude": 139.8687474,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -510,7 +588,10 @@
     "floor_total": 12,
     "floor_structure": "RC12階建",
     "ownership": "所有権",
-    "list_ward_roman": "edogawa"
+    "list_ward_roman": "edogawa",
+    "latitude": 35.6838309,
+    "longitude": 139.864297,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -529,7 +610,10 @@
     "floor_total": 22,
     "floor_structure": "SRC22階地下2階建",
     "ownership": "一般定期借地権（地上権）、借地期間残存31年3ヶ月、敷地権利については確認中です。、借地権設定登記相談、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可",
-    "list_ward_roman": "shinagawa"
+    "list_ward_roman": "shinagawa",
+    "latitude": 35.6172643,
+    "longitude": 139.7488637,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -548,7 +632,10 @@
     "floor_total": 3,
     "floor_structure": "RC3階地下2階建",
     "ownership": "所有権",
-    "list_ward_roman": "meguro"
+    "list_ward_roman": "meguro",
+    "latitude": 35.6303197,
+    "longitude": 139.6914353,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -567,7 +654,10 @@
     "floor_total": 5,
     "floor_structure": "RC5階建",
     "ownership": "所有権",
-    "list_ward_roman": "ota"
+    "list_ward_roman": "ota",
+    "latitude": 35.5961963,
+    "longitude": 139.7154876,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -586,7 +676,10 @@
     "floor_total": 8,
     "floor_structure": "RC8階建",
     "ownership": "所有権",
-    "list_ward_roman": "ota"
+    "list_ward_roman": "ota",
+    "latitude": 35.5639836,
+    "longitude": 139.6932882,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -605,7 +698,10 @@
     "floor_total": 9,
     "floor_structure": "RC9階建",
     "ownership": "所有権",
-    "list_ward_roman": "ota"
+    "list_ward_roman": "ota",
+    "latitude": 35.5949455,
+    "longitude": 139.706635,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -624,7 +720,10 @@
     "floor_total": 17,
     "floor_structure": "SRC17階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "ota"
+    "list_ward_roman": "ota",
+    "latitude": 35.5511001,
+    "longitude": 139.7317797,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -643,7 +742,10 @@
     "floor_total": 6,
     "floor_structure": "RC6階建",
     "ownership": "所有権",
-    "list_ward_roman": "ota"
+    "list_ward_roman": "ota",
+    "latitude": 35.5639836,
+    "longitude": 139.6932882,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -662,7 +764,10 @@
     "floor_total": 12,
     "floor_structure": "RC12階建",
     "ownership": "所有権",
-    "list_ward_roman": "ota"
+    "list_ward_roman": "ota",
+    "latitude": 35.5828893,
+    "longitude": 139.7373,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -681,7 +786,10 @@
     "floor_total": 5,
     "floor_structure": "RC5階地下2階建",
     "ownership": "所有権",
-    "list_ward_roman": "setagaya"
+    "list_ward_roman": "setagaya",
+    "latitude": 35.6589853,
+    "longitude": 139.6500287,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -700,7 +808,10 @@
     "floor_total": 9,
     "floor_structure": "RC9階建",
     "ownership": "所有権",
-    "list_ward_roman": "setagaya"
+    "list_ward_roman": "setagaya",
+    "latitude": 35.6628538,
+    "longitude": 139.6075808,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -719,7 +830,10 @@
     "floor_total": 12,
     "floor_structure": "RC12階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "setagaya"
+    "list_ward_roman": "setagaya",
+    "latitude": 35.6689793,
+    "longitude": 139.6007466,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -738,7 +852,10 @@
     "floor_total": 10,
     "floor_structure": "RC10階建",
     "ownership": "所有権",
-    "list_ward_roman": "setagaya"
+    "list_ward_roman": "setagaya",
+    "latitude": 35.6689793,
+    "longitude": 139.6007466,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -757,7 +874,10 @@
     "floor_total": 14,
     "floor_structure": "RC14階建",
     "ownership": "所有権",
-    "list_ward_roman": "nakano"
+    "list_ward_roman": "nakano",
+    "latitude": 35.7153431,
+    "longitude": 139.6701011,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -776,7 +896,10 @@
     "floor_total": 3,
     "floor_structure": "RC3階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "suginami"
+    "list_ward_roman": "suginami",
+    "latitude": 35.6847034,
+    "longitude": 139.6121869,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -795,7 +918,10 @@
     "floor_total": 6,
     "floor_structure": "RC6階建",
     "ownership": "所有権",
-    "list_ward_roman": "suginami"
+    "list_ward_roman": "suginami",
+    "latitude": 35.6816115,
+    "longitude": 139.6274386,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -814,7 +940,10 @@
     "floor_total": 12,
     "floor_structure": "RC12階建",
     "ownership": "所有権",
-    "list_ward_roman": "suginami"
+    "list_ward_roman": "suginami",
+    "latitude": 35.6935241,
+    "longitude": 139.6576038,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -833,7 +962,10 @@
     "floor_total": 3,
     "floor_structure": "RC3階建",
     "ownership": "所有権",
-    "list_ward_roman": "nerima"
+    "list_ward_roman": "nerima",
+    "latitude": 35.7517409,
+    "longitude": 139.6413347,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -852,7 +984,10 @@
     "floor_total": 3,
     "floor_structure": "RC3階建",
     "ownership": "所有権",
-    "list_ward_roman": "nerima"
+    "list_ward_roman": "nerima",
+    "latitude": 35.7517409,
+    "longitude": 139.6413347,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -871,7 +1006,10 @@
     "floor_total": 26,
     "floor_structure": "RC26階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "nerima"
+    "list_ward_roman": "nerima",
+    "latitude": 35.7495045,
+    "longitude": 139.5865223,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -890,7 +1028,10 @@
     "floor_total": 26,
     "floor_structure": "RC26階建",
     "ownership": "所有権",
-    "list_ward_roman": "nerima"
+    "list_ward_roman": "nerima",
+    "latitude": 35.7495045,
+    "longitude": 139.5865223,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -909,7 +1050,10 @@
     "floor_total": 10,
     "floor_structure": "RC10階建",
     "ownership": "所有権",
-    "list_ward_roman": "nerima"
+    "list_ward_roman": "nerima",
+    "latitude": 35.7436117,
+    "longitude": 139.6043049,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -928,7 +1072,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存36年6ヶ月、借地権設定登記可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "toshima"
+    "list_ward_roman": "toshima",
+    "latitude": 35.7157717,
+    "longitude": 139.712324,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -947,7 +1094,10 @@
     "floor_total": 7,
     "floor_structure": "RC7階建",
     "ownership": "所有権",
-    "list_ward_roman": "toshima"
+    "list_ward_roman": "toshima",
+    "latitude": 35.7315657,
+    "longitude": 139.6846593,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 4, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -966,7 +1116,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存36年5ヶ月、借地期間満了時に更地返却要。建物買取請求、契約更新および改築等による期間延長不可。借地権の譲渡、転貸可。ただし地主の承諾要。保証金は期間満了時に無利息にて全額返還。、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料要)",
-    "list_ward_roman": "toshima"
+    "list_ward_roman": "toshima",
+    "latitude": 35.7157717,
+    "longitude": 139.712324,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -985,7 +1138,10 @@
     "floor_total": 10,
     "floor_structure": "RC10階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.6583131,
+    "longitude": 139.7980009,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -1004,7 +1160,10 @@
     "floor_total": 22,
     "floor_structure": "RC22階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.7855026,
+    "longitude": 139.723336,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1023,7 +1182,10 @@
     "floor_total": 23,
     "floor_structure": "RC23階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.7855026,
+    "longitude": 139.723336,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1042,7 +1204,10 @@
     "floor_total": 11,
     "floor_structure": "RC11階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.7779045,
+    "longitude": 139.7325256,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 5, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1061,7 +1226,10 @@
     "floor_total": 10,
     "floor_structure": "RC10階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.6583131,
+    "longitude": 139.7980009,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -1080,7 +1248,10 @@
     "floor_total": 15,
     "floor_structure": "SRC15階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.7630169,
+    "longitude": 139.7488159,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1099,7 +1270,10 @@
     "floor_total": 15,
     "floor_structure": "SRC15階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.7630169,
+    "longitude": 139.7488159,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1118,7 +1292,10 @@
     "floor_total": 23,
     "floor_structure": "RC23階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.7855026,
+    "longitude": 139.723336,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1137,7 +1314,10 @@
     "floor_total": 23,
     "floor_structure": "RC23階建",
     "ownership": "所有権",
-    "list_ward_roman": "kita"
+    "list_ward_roman": "kita",
+    "latitude": 35.7855026,
+    "longitude": 139.723336,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1156,7 +1336,10 @@
     "floor_total": 13,
     "floor_structure": "RC13階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.7598345,
+    "longitude": 139.708538,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -1175,7 +1358,10 @@
     "floor_total": 8,
     "floor_structure": "RC8階建",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.777686,
+    "longitude": 139.6330024,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1194,7 +1380,10 @@
     "floor_total": 11,
     "floor_structure": "RC11階建",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.7852052,
+    "longitude": 139.6821549,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1213,7 +1402,10 @@
     "floor_total": 8,
     "floor_structure": "RC8階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.7573255,
+    "longitude": 139.6884023,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1232,7 +1424,10 @@
     "floor_total": 19,
     "floor_structure": "RC19階建",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.7648164,
+    "longitude": 139.7068162,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -1251,7 +1446,10 @@
     "floor_total": 11,
     "floor_structure": "RC11階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.761537,
+    "longitude": 139.6855991,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1270,7 +1468,10 @@
     "floor_total": 10,
     "floor_structure": "RC10階建",
     "ownership": "一般定期借地権（賃借権）、借地期間残存72年5ヶ月、解体準備保証金：解体準備金の6カ月分/10年毎更新　地代保証金・解体準備保証金については、購入者様にもご負担いただきます。なお、保証金は返還されません。、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.7530064,
+    "longitude": 139.6975348,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1289,7 +1490,10 @@
     "floor_total": 5,
     "floor_structure": "RC5階建",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.777686,
+    "longitude": 139.6330024,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1308,7 +1512,10 @@
     "floor_total": 10,
     "floor_structure": "RC10階地下1階建",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.775992,
+    "longitude": 139.631253,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -1327,6 +1534,9 @@
     "floor_total": 19,
     "floor_structure": "RC19階建一部RC",
     "ownership": "所有権",
-    "list_ward_roman": "itabashi"
+    "list_ward_roman": "itabashi",
+    "latitude": 35.7553466,
+    "longitude": 139.7098504,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   }
 ]

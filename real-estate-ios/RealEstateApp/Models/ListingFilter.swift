@@ -25,14 +25,13 @@ struct ListingFilter: Equatable {
     var walkMax: Int? = nil               // 分以内
     var areaMin: Double? = nil            // ㎡以上
     var ownershipTypes: Set<OwnershipType> = []  // 空 = 全て
-    var stations: Set<String> = []        // 空 = 全て（駅名: "目白" 等）
 
     var isActive: Bool {
-        priceMin != nil || priceMax != nil || !layouts.isEmpty || !wards.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty || !stations.isEmpty
+        priceMin != nil || priceMax != nil || !layouts.isEmpty || !wards.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty
     }
 
     mutating func reset() {
-        priceMin = nil; priceMax = nil; layouts = []; wards = []; walkMax = nil; areaMin = nil; ownershipTypes = []; stations = []
+        priceMin = nil; priceMax = nil; layouts = []; wards = []; walkMax = nil; areaMin = nil; ownershipTypes = []
     }
 
     /// 住所から区名を抽出（例: "東京都江東区豊洲5丁目" → "江東区"）

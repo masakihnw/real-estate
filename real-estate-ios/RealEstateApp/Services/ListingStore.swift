@@ -178,6 +178,10 @@ final class ListingStore {
                 if httpResponse.statusCode == 304 {
                     return .notModified
                 }
+                // HTTP エラーステータスのチェック（404, 403 等）
+                guard (200...299).contains(httpResponse.statusCode) else {
+                    return .error("サーバーエラー (HTTP \(httpResponse.statusCode))。URL を確認してください。")
+                }
                 if let newETag = httpResponse.value(forHTTPHeaderField: "ETag") {
                     defaults.set(newETag, forKey: etagKey)
                 }
@@ -193,6 +197,8 @@ final class ListingStore {
             return .error("オフラインのため取得できません。接続を確認してください。")
         } catch let urlError as URLError where urlError.code == .timedOut {
             return .error("タイムアウトしました。通信環境を確認してください。")
+        } catch is DecodingError {
+            return .error("データ形式が不正です。JSON の構造を確認してください。")
         } catch {
             return .error(error.localizedDescription)
         }
@@ -299,6 +305,7 @@ final class ListingStore {
         existing.ssAppreciationRate = new.ssAppreciationRate
         existing.ssFavoriteCount = new.ssFavoriteCount
         existing.ssPurchaseJudgment = new.ssPurchaseJudgment
+        existing.ssRadarData = new.ssRadarData
         existing.ssSimBest5yr = new.ssSimBest5yr
         existing.ssSimBest10yr = new.ssSimBest10yr
         existing.ssSimStandard5yr = new.ssSimStandard5yr

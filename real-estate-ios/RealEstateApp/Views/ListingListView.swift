@@ -110,14 +110,6 @@ struct ListingListView: View {
             }
         }
 
-        // 駅名フィルタ
-        if !filterStore.filter.stations.isEmpty {
-            list = list.filter { listing in
-                let listingStations = listing.parsedStations.map(\.stationName)
-                return filterStore.filter.stations.contains(where: { listingStations.contains($0) })
-            }
-        }
-
         // テキスト検索（物件名のみ）
         if isSearchActive {
             let query = searchText.lowercased().trimmingCharacters(in: .whitespaces)
@@ -201,11 +193,6 @@ struct ListingListView: View {
         Set(baseList.compactMap { ListingFilter.extractWard(from: $0.address) })
     }
 
-    /// 一覧内に存在する駅名の一意リスト（フィルタシートの選択肢用）
-    private var availableStations: [String] {
-        Set(baseList.flatMap { $0.parsedStations.map(\.stationName) }).sorted()
-    }
-
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottomTrailing) {
@@ -247,6 +234,7 @@ struct ListingListView: View {
                     .padding(.bottom, 8)
                 }
                 .navigationTitle(navTitle)
+                .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         HStack(spacing: 12) {
@@ -327,7 +315,7 @@ struct ListingListView: View {
                 ComparisonView(listings: comparisonListings)
             }
             .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableStations: availableStations, filteredCount: filteredAndSorted.count)
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, filteredCount: filteredAndSorted.count)
             }
             .alert("データ取得エラー", isPresented: $showErrorAlert) {
                 Button("OK", role: .cancel) { }
@@ -697,7 +685,7 @@ struct ListingRowView: View {
 
                 // 2行目: 価格 + 騰落率/儲かる確率 + [掲載終了]
                 HStack(alignment: .center, spacing: 6) {
-                    Text(listing.priceDisplay)
+                    Text(listing.priceDisplayCompact)
                         .font(.footnote.weight(.bold))
                         .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
                         .lineLimit(1)

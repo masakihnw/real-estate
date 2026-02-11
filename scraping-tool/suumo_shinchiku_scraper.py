@@ -380,7 +380,12 @@ def _extract_layout_area(text: str) -> tuple[str, Optional[float], Optional[floa
     for line in lines:
         line = line.strip()
         if not layout and re.search(r"[0-9]+[LDKS]", line) and "タイプ" not in line:
-            layout = line
+            # 行全体ではなく間取りパターンだけ抽出（マーケティングテキスト混入を防止）
+            m = re.search(
+                r"(\d[LDKS（納戸）R+・]+(?:\s*[～〜]\s*\d[LDKS（納戸）R+・]+)?)",
+                line,
+            )
+            layout = m.group(1).strip() if m else line[:40]
         if area_min is None and re.search(r"[0-9.]+\s*(?:m2|㎡)", line, re.I):
             area_min, area_max = _parse_area_range(line)
     return (layout, area_min, area_max)

@@ -54,11 +54,11 @@ struct SettingsView: View {
                 // MARK: - データ
                 dataSection
 
-                // MARK: - アカウント（HIG: 重要な設定を上部に配置）
-                accountSection
-
                 // MARK: - 詳細設定
                 advancedSection
+
+                // MARK: - アカウント
+                accountSection
 
                 // MARK: - このアプリについて
                 aboutSection
