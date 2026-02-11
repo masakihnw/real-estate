@@ -218,7 +218,7 @@ final class ListingStore {
                 var incomingKeys = Set<String>()
 
                 for dto in dtos {
-                    guard var listing = Listing.from(dto: dto, fetchedAt: fetchedAt) else { continue }
+                    guard let listing = Listing.from(dto: dto, fetchedAt: fetchedAt) else { continue }
                     listing.propertyType = propertyType
                     let key = listing.identityKey
                     incomingKeys.insert(key)
@@ -248,8 +248,13 @@ final class ListingStore {
                 do {
                     try modelContext.save()
                 } catch {
+                    let msg = "\(propertyType): データ保存に失敗しました"
                     print("[ListingStore] SwiftData save 失敗 (\(propertyType)): \(error)")
-                    return SyncResult(newCount: 0, hadChanges: false, error: "\(propertyType): データ保存に失敗しました")
+                    Task { @MainActor in
+                        SaveErrorHandler.shared.lastSaveError = msg
+                        SaveErrorHandler.shared.showSaveError = true
+                    }
+                    return SyncResult(newCount: 0, hadChanges: false, error: msg)
                 }
                 return SyncResult(newCount: newCount, hadChanges: true)
             } catch {

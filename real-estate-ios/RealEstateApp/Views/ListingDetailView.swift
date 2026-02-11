@@ -1057,11 +1057,7 @@ struct ListingDetailView: View {
     }
 
     private func saveContext() {
-        do {
-            try modelContext.save()
-        } catch {
-            print("[ListingDetail] modelContext.save() 失敗: \(error)")
-        }
+        SaveErrorHandler.shared.save(modelContext, source: "ListingDetail")
     }
 }
 

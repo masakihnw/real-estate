@@ -154,12 +154,13 @@ private struct PhotoThumbnailView: View {
     var onDelete: () -> Void
 
     private let photoStorage = PhotoStorageService.shared
+    @State private var loadedImage: UIImage?
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Button(action: onTap) {
                 Group {
-                    if let image = photoStorage.loadImage(for: photo, listing: listing) {
+                    if let image = loadedImage {
                         Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
@@ -167,8 +168,7 @@ private struct PhotoThumbnailView: View {
                         Rectangle()
                             .fill(Color(.systemGray5))
                             .overlay {
-                                Image(systemName: "photo")
-                                    .foregroundStyle(.tertiary)
+                                ProgressView()
                             }
                     }
                 }
@@ -188,6 +188,13 @@ private struct PhotoThumbnailView: View {
             .offset(x: 4, y: -4)
             .accessibilityLabel("写真を削除")
         }
+        .task {
+            if let cached = photoStorage.cachedImage(for: photo) {
+                loadedImage = cached
+            } else {
+                loadedImage = await photoStorage.loadImage(for: photo, listing: listing)
+            }
+        }
     }
 }
 
@@ -205,6 +212,7 @@ private struct PhotoFullscreenView: View {
     let initialIndex: Int
     @Environment(\.dismiss) private var dismiss
     @State private var currentIndex: Int
+    @State private var loadedImages: [String: UIImage] = [:]
 
     init(photos: [PhotoMeta], listing: Listing, initialIndex: Int) {
         self.photos = photos
@@ -219,19 +227,20 @@ private struct PhotoFullscreenView: View {
         NavigationStack {
             TabView(selection: $currentIndex) {
                 ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
-                    if let image = photoStorage.loadImage(for: photo, listing: listing) {
+                    if let image = loadedImages[photo.id] {
                         Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .tag(index)
                     } else {
                         Color(.systemGray6)
-                            .overlay {
-                                Image(systemName: "photo")
-                                    .font(.largeTitle)
-                                    .foregroundStyle(.tertiary)
-                            }
+                            .overlay { ProgressView() }
                             .tag(index)
+                            .task {
+                                if let img = await photoStorage.loadImage(for: photo, listing: listing) {
+                                    loadedImages[photo.id] = img
+                                }
+                            }
                     }
                 }
             }

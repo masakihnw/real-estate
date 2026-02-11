@@ -88,7 +88,7 @@ final class FirebaseSyncService {
             createdAt: now
         ))
         listing.commentsJSON = CommentData.encode(comments)
-        do { try modelContext.save() } catch { print("[FirebaseSync] save 失敗: \(error)") }
+        SaveErrorHandler.shared.save(modelContext, source: "FirebaseSync")
 
         // 2. Firestore に書き込み（コメントは map 形式で保存）
         let docID = documentID(for: listing.identityKey)
@@ -123,7 +123,7 @@ final class FirebaseSyncService {
         comments[index].text = trimmed
         comments[index].editedAt = now
         listing.commentsJSON = CommentData.encode(comments)
-        do { try modelContext.save() } catch { print("[FirebaseSync] save 失敗: \(error)") }
+        SaveErrorHandler.shared.save(modelContext, source: "FirebaseSync")
 
         // 2. Firestore に書き込み
         let docID = documentID(for: listing.identityKey)
@@ -149,7 +149,7 @@ final class FirebaseSyncService {
         var updatedComments = comments
         updatedComments.removeAll { $0.id == commentId }
         listing.commentsJSON = updatedComments.isEmpty ? nil : CommentData.encode(updatedComments)
-        do { try modelContext.save() } catch { print("[FirebaseSync] save 失敗: \(error)") }
+        SaveErrorHandler.shared.save(modelContext, source: "FirebaseSync")
 
         // 3. Firestore から削除
         let docID = documentID(for: listing.identityKey)
@@ -239,7 +239,7 @@ final class FirebaseSyncService {
                 }
             }
 
-            try modelContext.save()
+            SaveErrorHandler.shared.save(modelContext, source: "FirebaseSync")
         } catch {
             print("[FirebaseSync] Pull 失敗: \(error.localizedDescription)")
         }

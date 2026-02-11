@@ -505,7 +505,7 @@ struct ListingListView: View {
                         },
                         onLikeTapped: {
                             listing.isLiked.toggle()
-                            do { try modelContext.save() } catch { print("[ListingList] save 失敗: \(error)") }
+                            SaveErrorHandler.shared.save(modelContext, source: "ListingList")
                             FirebaseSyncService.shared.pushLikeState(for: listing)
                         }
                     )
@@ -530,7 +530,7 @@ struct ListingListView: View {
                     if !isCompareMode {
                         Button {
                             listing.isLiked.toggle()
-                            do { try modelContext.save() } catch { print("[ListingList] save 失敗: \(error)") }
+                            SaveErrorHandler.shared.save(modelContext, source: "ListingList")
                             FirebaseSyncService.shared.pushLikeState(for: listing)
                         } label: {
                             Label(

@@ -220,6 +220,8 @@ struct SettingsView: View {
                         Text(notifService.notificationCount == 0 ? "OFF" : "1日\(notifService.notificationCount)回")
                     }
                 }
+                .accessibilityLabel("通知頻度")
+                .accessibilityValue(notifService.notificationCount == 0 ? "オフ" : "1日\(notifService.notificationCount)回")
 
                 // スケジュール時刻（0回以外で表示）
                 if notifService.notificationCount > 0 {
@@ -235,6 +237,7 @@ struct SettingsView: View {
                             ),
                             displayedComponents: .hourAndMinute
                         )
+                        .accessibilityLabel("\(index + 1)回目の通知時刻")
                     }
 
                 }
@@ -246,6 +249,8 @@ struct SettingsView: View {
                 )) {
                     Text("コメント通知")
                 }
+                .accessibilityLabel("コメント通知")
+                .accessibilityHint("他のユーザーのコメント時に通知を受け取ります")
 
             case .denied:
                 Button {
