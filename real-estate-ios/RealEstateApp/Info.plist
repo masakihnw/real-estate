@@ -2,7 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- BGTaskSchedulerPermittedIdentifiers: managed by project.yml -->
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.hanawa.realestate.app.refresh</string>
@@ -33,38 +32,29 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>1</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.lifestyle</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>comgooglemaps</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>内見写真を撮影するためにカメラを使用します</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>内見写真をカメラロールから選択するために使用します</string>
+	<string>内見時の物件写真撮影に使用します</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>現在地を地図に表示するために位置情報を使用します</string>
+	<string>地図上で現在地を表示するために使用します</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>内見写真の保存・読み込みに使用します</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
-	<key>UIRequiresFullScreen</key>
-	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 </dict>
 </plist>
