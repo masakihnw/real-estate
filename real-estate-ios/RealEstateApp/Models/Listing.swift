@@ -56,6 +56,21 @@ final class Listing {
     /// ジオコーディング済み経度（キャッシュ用）
     var longitude: Double?
 
+    // MARK: - 住まいサーフィン評価データ
+
+    /// 沖式儲かる確率 (%)
+    var ssProfitPct: Int?
+    /// 沖式新築時価 or 沖式時価 (万円, 70m2換算)
+    var ssOkiPrice70m2: Int?
+    /// 割安判定 ("割安"/"適正"/"割高")
+    var ssValueJudgment: String?
+    /// 駅ランキング (e.g. "3/12")
+    var ssStationRank: String?
+    /// 区ランキング (e.g. "8/45")
+    var ssWardRank: String?
+    /// 住まいサーフィンページURL
+    var ssSumaiSurfinURL: String?
+
     init(
         source: String? = nil,
         url: String,
@@ -83,7 +98,13 @@ final class Listing {
         areaMaxM2: Double? = nil,
         deliveryDate: String? = nil,
         latitude: Double? = nil,
-        longitude: Double? = nil
+        longitude: Double? = nil,
+        ssProfitPct: Int? = nil,
+        ssOkiPrice70m2: Int? = nil,
+        ssValueJudgment: String? = nil,
+        ssStationRank: String? = nil,
+        ssWardRank: String? = nil,
+        ssSumaiSurfinURL: String? = nil
     ) {
         self.source = source
         self.url = url
@@ -112,6 +133,12 @@ final class Listing {
         self.deliveryDate = deliveryDate
         self.latitude = latitude
         self.longitude = longitude
+        self.ssProfitPct = ssProfitPct
+        self.ssOkiPrice70m2 = ssOkiPrice70m2
+        self.ssValueJudgment = ssValueJudgment
+        self.ssStationRank = ssStationRank
+        self.ssWardRank = ssWardRank
+        self.ssSumaiSurfinURL = ssSumaiSurfinURL
     }
 
     // MARK: - Identity
@@ -240,6 +267,23 @@ final class Listing {
     var hasCoordinate: Bool {
         latitude != nil && longitude != nil
     }
+
+    /// 住まいサーフィンのデータがあるかどうか
+    var hasSumaiSurfinData: Bool {
+        ssProfitPct != nil || ssOkiPrice70m2 != nil || ssValueJudgment != nil
+    }
+
+    /// 表示用: 沖式儲かる確率
+    var ssProfitDisplay: String {
+        guard let pct = ssProfitPct else { return "—" }
+        return "\(pct)%"
+    }
+
+    /// 表示用: 沖式時価
+    var ssOkiPriceDisplay: String {
+        guard let price = ssOkiPrice70m2 else { return "—" }
+        return "\(price)万円"
+    }
 }
 
 // MARK: - JSON Decoding (latest.json / latest_shinchiku.json 形式)
@@ -266,6 +310,14 @@ struct ListingDTO: Codable {
     var floor_structure: String?
     var ownership: String?
     var list_ward_roman: String?
+
+    // 住まいサーフィン評価データ
+    var ss_profit_pct: Int?
+    var ss_oki_price_70m2: Int?
+    var ss_value_judgment: String?
+    var ss_station_rank: String?
+    var ss_ward_rank: String?
+    var ss_sumai_surfin_url: String?
 }
 
 extension Listing {
@@ -294,7 +346,13 @@ extension Listing {
             propertyType: dto.property_type ?? "chuko",
             priceMaxMan: dto.price_max_man,
             areaMaxM2: dto.area_max_m2,
-            deliveryDate: dto.delivery_date
+            deliveryDate: dto.delivery_date,
+            ssProfitPct: dto.ss_profit_pct,
+            ssOkiPrice70m2: dto.ss_oki_price_70m2,
+            ssValueJudgment: dto.ss_value_judgment,
+            ssStationRank: dto.ss_station_rank,
+            ssWardRank: dto.ss_ward_rank,
+            ssSumaiSurfinURL: dto.ss_sumai_surfin_url
         )
     }
 }

@@ -96,6 +96,12 @@ struct ListingDetailView: View {
                         DetailItem(title: "権利形態", value: ownership)
                     }
 
+                    // 住まいサーフィン評価セクション
+                    if listing.hasSumaiSurfinData {
+                        Divider()
+                        sumaiSurfinSection
+                    }
+
                     Divider()
 
                     // 動詞: 詳細を開く（OOUI: オブジェクトに対するアクション）
@@ -111,6 +117,21 @@ struct ListingDetailView: View {
                         .buttonStyle(.borderedProminent)
                         .accessibilityLabel("SUUMO または HOME'S で詳細を開く")
                     }
+
+                    // 住まいサーフィンへのリンク
+                    if let ssURL = listing.ssSumaiSurfinURL,
+                       let url = URL(string: ssURL) {
+                        Link(destination: url) {
+                            HStack {
+                                Image(systemName: "chart.bar.xaxis")
+                                Text("住まいサーフィンで詳しく見る")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                        }
+                        .buttonStyle(.bordered)
+                        .accessibilityLabel("住まいサーフィンで詳しく見る")
+                    }
                 }
                 .padding()
             }
@@ -123,6 +144,138 @@ struct ListingDetailView: View {
             .onAppear {
                 editableMemo = listing.memo ?? ""
             }
+        }
+    }
+
+    // MARK: - 住まいサーフィン評価セクション
+
+    @ViewBuilder
+    private var sumaiSurfinSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // セクションヘッダー
+            Label("住まいサーフィン評価", systemImage: "chart.bar.xaxis")
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundStyle(Color.accentColor)
+
+            // 儲かる確率（大きく表示）
+            if let pct = listing.ssProfitPct {
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("沖式儲かる確率")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        HStack(alignment: .firstTextBaseline, spacing: 2) {
+                            Text("\(pct)")
+                                .font(.system(size: 36, weight: .heavy, design: .rounded))
+                                .foregroundStyle(profitColor(pct))
+                            Text("%")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(profitColor(pct))
+                        }
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 6) {
+                        if let price = listing.ssOkiPrice70m2 {
+                            VStack(alignment: .trailing, spacing: 1) {
+                                Text(listing.isShinchiku ? "沖式新築時価" : "沖式時価")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                Text("\(price)万円")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                            }
+                        }
+                        if let judgment = listing.ssValueJudgment {
+                            Text(judgment)
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(judgmentColor(judgment).opacity(0.15))
+                                .foregroundStyle(judgmentColor(judgment))
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                        }
+                    }
+                }
+            } else if let price = listing.ssOkiPrice70m2 {
+                // 儲かる確率がない場合でも沖式時価があれば表示
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(listing.isShinchiku ? "沖式新築時価" : "沖式時価")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text("\(price)万円")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                    }
+                    Spacer()
+                    if let judgment = listing.ssValueJudgment {
+                        Text(judgment)
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(judgmentColor(judgment).opacity(0.15))
+                            .foregroundStyle(judgmentColor(judgment))
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                    }
+                }
+            }
+
+            // ランキング
+            if listing.ssStationRank != nil || listing.ssWardRank != nil {
+                HStack(spacing: 16) {
+                    if let stRank = listing.ssStationRank {
+                        rankItem(label: "駅ランキング", value: stRank)
+                    }
+                    if let wRank = listing.ssWardRank {
+                        rankItem(label: "区ランキング", value: wRank)
+                    }
+                    Spacer()
+                }
+            }
+        }
+        .padding(14)
+        .listingGlassBackground()
+    }
+
+    private func rankItem(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            let parts = value.split(separator: "/")
+            if parts.count == 2 {
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    Text(String(parts[0]))
+                        .font(.headline)
+                        .fontWeight(.bold)
+                    Text("/ \(parts[1])件")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                Text(value)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+            }
+        }
+    }
+
+    private func profitColor(_ pct: Int) -> Color {
+        if pct >= 70 { return .green }
+        if pct >= 40 { return .orange }
+        return .red
+    }
+
+    private func judgmentColor(_ judgment: String) -> Color {
+        switch judgment {
+        case "割安": return .green
+        case "適正": return .secondary
+        case "割高": return .red
+        default: return .secondary
         }
     }
 

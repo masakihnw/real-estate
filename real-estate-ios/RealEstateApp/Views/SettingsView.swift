@@ -11,9 +11,11 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ListingStore.self) private var store
+    @Environment(AuthService.self) private var authService
     @State private var chukoURLInput: String = ""
     @State private var shinchikuURLInput: String = ""
     @State private var showSaveConfirmation = false
+    @State private var showSignOutConfirmation = false
 
     var body: some View {
         NavigationStack {
@@ -88,6 +90,34 @@ struct SettingsView: View {
                 } header: {
                     Text("参考リンク")
                 }
+
+                // アカウント情報 & ログアウト
+                Section {
+                    if let name = authService.userDisplayName {
+                        HStack {
+                            Text("アカウント")
+                            Spacer()
+                            Text(name)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    if let email = authService.userEmail {
+                        HStack {
+                            Text("メール")
+                            Spacer()
+                            Text(email)
+                                .foregroundStyle(.secondary)
+                                .font(ListingObjectStyle.caption)
+                        }
+                    }
+                    Button(role: .destructive) {
+                        showSignOutConfirmation = true
+                    } label: {
+                        Label("ログアウト", systemImage: "rectangle.portrait.and.arrow.right")
+                    }
+                } header: {
+                    Text("アカウント")
+                }
             }
             .navigationTitle("設定")
             .onAppear {
@@ -99,6 +129,14 @@ struct SettingsView: View {
             } message: {
                 Text("一覧の更新時にこのURLから取得します。")
             }
+            .alert("ログアウトしますか？", isPresented: $showSignOutConfirmation) {
+                Button("ログアウト", role: .destructive) {
+                    authService.signOut()
+                }
+                Button("キャンセル", role: .cancel) { }
+            } message: {
+                Text("再度 Google アカウントでログインする必要があります。")
+            }
         }
     }
 }
@@ -106,5 +144,6 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
         .environment(ListingStore.shared)
+        .environment(AuthService.shared)
         .modelContainer(for: Listing.self, inMemory: true)
 }

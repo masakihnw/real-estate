@@ -165,6 +165,13 @@ final class ListingStore {
         existing.priceMaxMan = new.priceMaxMan
         existing.areaMaxM2 = new.areaMaxM2
         existing.deliveryDate = new.deliveryDate
+        // 住まいサーフィン評価データ（JSON 由来なので上書き）
+        existing.ssProfitPct = new.ssProfitPct
+        existing.ssOkiPrice70m2 = new.ssOkiPrice70m2
+        existing.ssValueJudgment = new.ssValueJudgment
+        existing.ssStationRank = new.ssStationRank
+        existing.ssWardRank = new.ssWardRank
+        existing.ssSumaiSurfinURL = new.ssSumaiSurfinURL
         // existing.memo, existing.isLiked, existing.addedAt, existing.latitude, existing.longitude はそのまま
     }
 

@@ -1,6 +1,7 @@
 # Firebase セットアップ手順
 
 いいね・メモを家族間で共有するために Firebase Firestore を使用しています。
+認証方式は **Google アカウントログイン** です。
 以下の手順で Firebase プロジェクトを作成し、アプリと接続してください。
 
 ---
@@ -26,11 +27,27 @@
 
 ---
 
-## 3. Authentication（匿名認証）を有効化
+## 3. Authentication（Google ログイン）を有効化
 
 1. Firebase Console → 左メニュー「Authentication」
 2. 「始める」→「Sign-in method」タブ
-3. 「匿名」を選択 → **有効にする** → 保存
+3. 「Google」を選択 → **有効にする**
+4. プロジェクトのサポートメール（自分の Gmail）を選択 → 保存
+
+### GoogleService-Info.plist の再ダウンロード（重要）
+
+Google ログインを有効化すると、plist に `CLIENT_ID` と `REVERSED_CLIENT_ID` が追加されます。
+
+1. Firebase Console → プロジェクト設定（⚙） → 「全般」タブ
+2. 「マイアプリ」セクション → iOS アプリの `GoogleService-Info.plist` を**再ダウンロード**
+3. `RealEstateApp/GoogleService-Info.plist` を再度上書き
+
+### URL Scheme の設定（重要）
+
+1. 再ダウンロードした `GoogleService-Info.plist` を開く
+2. `REVERSED_CLIENT_ID` の値をコピー（例: `com.googleusercontent.apps.481688023840-xxxxxxxxxxxx`）
+3. `RealEstateApp/Info.plist` を開く
+4. `CFBundleURLTypes` → `CFBundleURLSchemes` の `REPLACE_WITH_REVERSED_CLIENT_ID` を、コピーした値に**置換**
 
 ---
 
@@ -63,14 +80,17 @@ service cloud.firestore {
 ## 5. 動作確認
 
 1. Xcode でビルド・実行
-2. 物件を「いいね」またはメモを入力
-3. 別の端末で同じアプリを起動 → 更新ボタンを押す
-4. いいね・メモが共有されていることを確認
+2. Google アカウントでログイン
+3. 物件を「いいね」またはメモを入力
+4. 別の端末で同じアプリを起動 → 同じ Google アカウントでログイン
+5. いいね・メモが共有されていることを確認
 
 ---
 
 ## トラブルシューティング
 
 - **起動時にクラッシュする**: `GoogleService-Info.plist` がプレースホルダーのままの可能性。正しいファイルで上書きしてください。
-- **いいねが共有されない**: Firebase Console → Authentication で匿名認証が有効か確認。Firestore のルールを確認。
+- **「Firebase Client ID が見つかりません」エラー**: Google ログインを有効化した後に GoogleService-Info.plist を再ダウンロードしていない可能性。ステップ3の「再ダウンロード」を実行してください。
+- **Google ログインが開かない / コールバックが戻らない**: Info.plist の URL Scheme に正しい `REVERSED_CLIENT_ID` が設定されているか確認してください。
+- **いいねが共有されない**: Firebase Console → Firestore のルールを確認。
 - **`GoogleService-Info.plist` の BUNDLE_ID が違う**: plist 内の `BUNDLE_ID` が `com.hanawa.realestate.app` であることを確認。
