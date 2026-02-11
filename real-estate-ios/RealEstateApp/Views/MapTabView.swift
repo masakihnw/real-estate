@@ -828,31 +828,39 @@ struct MapTabView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .topTrailing) {
+            ZStack {
                 mapContent
-                overlayButtons
-                // 現在地ボタン（左下）
+
+                // 右上: フィルタ情報・座標なし物件案内
                 VStack {
-                    Spacer()
                     HStack {
-                        Button {
-                            showsUserLocation.toggle()
-                        } label: {
-                            Image(systemName: showsUserLocation ? "location.fill" : "location")
-                                .font(.body)
-                                .foregroundStyle(showsUserLocation ? .white : .accentColor)
-                                .frame(width: 40, height: 40)
-                                .background(
-                                    Circle().fill(showsUserLocation ? Color.accentColor : Color(.systemBackground).opacity(0.9))
-                                )
-                                .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
-                        }
-                        .accessibilityLabel(showsUserLocation ? "現在地を非表示" : "現在地を表示")
-                        .padding(.leading, 12)
-                        .padding(.bottom, 20)
                         Spacer()
+                        overlayButtons
                     }
+                    Spacer()
                 }
+
+                // 左下: 凡例 + 現在地ボタン
+                VStack(alignment: .leading, spacing: 8) {
+                    Spacer()
+                    mapLegendView
+                    Button {
+                        showsUserLocation.toggle()
+                    } label: {
+                        Image(systemName: showsUserLocation ? "location.fill" : "location")
+                            .font(.body)
+                            .foregroundStyle(showsUserLocation ? .white : .accentColor)
+                            .frame(width: 40, height: 40)
+                            .background(
+                                Circle().fill(showsUserLocation ? Color.accentColor : Color(.systemBackground).opacity(0.9))
+                            )
+                            .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
+                    }
+                    .accessibilityLabel(showsUserLocation ? "現在地を非表示" : "現在地を表示")
+                }
+                .padding(.leading, 12)
+                .padding(.bottom, 20)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 if store.isRefreshing {
                     VStack {
                         Spacer()
@@ -950,9 +958,6 @@ struct MapTabView: View {
     @ViewBuilder
     private var overlayButtons: some View {
         VStack(spacing: 8) {
-            // 凡例（ピン + ハザードレイヤー動的凡例）
-            mapLegendView
-
             // フィルタ情報 & 座標なし物件案内
             VStack(alignment: .trailing, spacing: 4) {
                 if filterStore.filter.isActive {

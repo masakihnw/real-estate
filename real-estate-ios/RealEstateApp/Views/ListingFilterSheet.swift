@@ -108,7 +108,7 @@ struct ListingFilterSheet: View {
                     filter = editFilter
                     dismiss()
                 } label: {
-                    Text("\(filteredCount)件の物件を表示")
+                    Text(filteredCount > 0 ? "\(filteredCount)件の物件を表示" : "該当する物件がありません")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
