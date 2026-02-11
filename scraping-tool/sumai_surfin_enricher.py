@@ -26,9 +26,11 @@ from urllib.parse import quote_plus
 import requests
 from bs4 import BeautifulSoup
 
-from config import REQUEST_DELAY_SEC, USER_AGENT
+from config import REQUEST_DELAY_SEC, REQUEST_RETRIES, USER_AGENT
 
 # ──────────────────────────── 定数 ────────────────────────────
+
+HTTP_BACKOFF_SEC = 2
 
 BASE_URL = "https://www.sumai-surfin.com"
 LOGIN_URL = "https://account.sumai-surfin.com/login"
@@ -54,9 +56,28 @@ def _create_session() -> requests.Session:
 def login(session: requests.Session, user: str, password: str) -> bool:
     """住まいサーフィンにログインし、セッション Cookie を取得する。"""
     try:
-        # ログインページを取得して CSRF トークン等を確認
-        resp = session.get(LOGIN_URL, timeout=30)
-        resp.raise_for_status()
+        # ログインページを取得して CSRF トークン等を確認（リトライ付き）
+        resp = None
+        for attempt in range(REQUEST_RETRIES):
+            try:
+                resp = session.get(LOGIN_URL, timeout=30)
+                if resp.status_code == 429:
+                    wait = int(resp.headers.get("Retry-After", 60))
+                    if attempt < REQUEST_RETRIES - 1:
+                        time.sleep(wait)
+                        continue
+                if 500 <= resp.status_code < 600 and attempt < REQUEST_RETRIES - 1:
+                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+                    continue
+                resp.raise_for_status()
+                break
+            except requests.RequestException as e:
+                if attempt < REQUEST_RETRIES - 1:
+                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+                else:
+                    raise
+        if resp is None:
+            return False
 
         soup = BeautifulSoup(resp.text, "lxml")
 
@@ -85,7 +106,7 @@ def login(session: requests.Session, user: str, password: str) -> bool:
         form_data[username_field] = user
         form_data[password_field] = password
 
-        # POST でログイン
+        # POST でログイン（リトライ付き）
         action = LOGIN_URL
         if form_tag and form_tag.get("action"):
             a = form_tag["action"]
@@ -94,7 +115,27 @@ def login(session: requests.Session, user: str, password: str) -> bool:
             elif a.startswith("/"):
                 action = "https://account.sumai-surfin.com" + a
 
-        resp2 = session.post(action, data=form_data, timeout=30, allow_redirects=True)
+        resp2 = None
+        for attempt in range(REQUEST_RETRIES):
+            try:
+                resp2 = session.post(action, data=form_data, timeout=30, allow_redirects=True)
+                if resp2.status_code == 429:
+                    wait = int(resp2.headers.get("Retry-After", 60))
+                    if attempt < REQUEST_RETRIES - 1:
+                        time.sleep(wait)
+                        continue
+                if 500 <= resp2.status_code < 600 and attempt < REQUEST_RETRIES - 1:
+                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+                    continue
+                resp2.raise_for_status()
+                break
+            except requests.RequestException as e:
+                if attempt < REQUEST_RETRIES - 1:
+                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+                else:
+                    raise
+        if resp2 is None:
+            return False
 
         # ログイン成功判定: マイページ or ログアウトリンクがある
         if "ログアウト" in resp2.text or "mypage" in resp2.url:
@@ -115,8 +156,8 @@ def load_cache() -> dict:
     if CACHE_PATH.exists():
         try:
             return json.loads(CACHE_PATH.read_text(encoding="utf-8"))
-        except Exception:
-            pass
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"[SumaiSurfin] キャッシュ読み込み失敗（空キャッシュで続行）: {e}", file=sys.stderr)
     return {}
 
 
@@ -144,8 +185,27 @@ def search_property(session: requests.Session, name: str, cache: dict) -> Option
 
     try:
         params = {"q": name}
-        resp = session.get(SEARCH_URL, params=params, timeout=30)
-        resp.raise_for_status()
+        resp = None
+        for attempt in range(REQUEST_RETRIES):
+            try:
+                resp = session.get(SEARCH_URL, params=params, timeout=30)
+                if resp.status_code == 429:
+                    wait = int(resp.headers.get("Retry-After", 60))
+                    if attempt < REQUEST_RETRIES - 1:
+                        time.sleep(wait)
+                        continue
+                if 500 <= resp.status_code < 600 and attempt < REQUEST_RETRIES - 1:
+                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+                    continue
+                resp.raise_for_status()
+                break
+            except requests.RequestException as e:
+                if attempt < REQUEST_RETRIES - 1:
+                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+                else:
+                    raise
+        if resp is None:
+            return None
 
         soup = BeautifulSoup(resp.text, "lxml")
 
@@ -219,8 +279,24 @@ def parse_property_page(session: requests.Session, url: str) -> dict:
     time.sleep(DELAY)
 
     try:
-        resp = session.get(url, timeout=30)
-        resp.raise_for_status()
+        resp = None
+        for attempt in range(REQUEST_RETRIES):
+            try:
+                resp = session.get(url, timeout=30)
+                if resp.status_code == 429:
+                    wait = int(resp.headers.get("Retry-After", 60))
+                    if attempt < REQUEST_RETRIES - 1:
+                        time.sleep(wait)
+                        continue
+                resp.raise_for_status()
+                break
+            except (requests.RequestException, requests.exceptions.HTTPError) as e:
+                if attempt < REQUEST_RETRIES - 1:
+                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+                else:
+                    raise
+        if resp is None:
+            return result
         html = resp.text
         soup = BeautifulSoup(html, "lxml")
     except Exception as e:
@@ -270,6 +346,11 @@ def parse_property_page(session: requests.Session, url: str) -> dict:
     # ── 値上がりシミュレーション (5年後/10年後 × ベスト/標準/ワースト) ──
     sim_data = _extract_simulation_data(soup, html)
     result.update(sim_data)
+
+    # ── レーダーチャート用データ（ランキング偏差値 + JS チャート） ──
+    radar_data = _extract_radar_chart_data(soup, html)
+    if radar_data:
+        result["ss_radar_data"] = json.dumps(radar_data, ensure_ascii=False)
 
     return result
 
@@ -504,10 +585,143 @@ def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
     return result
 
 
+# ──────────────────────────── レーダーチャート ────────────────────────────
+
+
+def _extract_radar_chart_data(soup: BeautifulSoup, html: str) -> Optional[dict]:
+    """
+    住まいサーフィンのレーダーチャートデータを抽出する。
+
+    戦略:
+      1) <script> タグ内の Chart.js / Highcharts の radar 設定を探す
+      2) 見つからなければ、ページ上のランキング偏差値スコアを構築する
+
+    返却形式 (成功時):
+      {
+        "labels":   ["資産性", "お気に入り", "アクセス数"],
+        "values":   [38.4, 47.1, 40.7],
+        "avg":      [50.0, 50.0, 50.0]
+      }
+    偏差値 50 = 行政区平均
+    """
+
+    # ── 戦略 1: <script> タグ内の Chart.js radar config を探す ──
+    radar = _try_extract_chartjs_radar(soup, html)
+    if radar:
+        return radar
+
+    # ── 戦略 2: ランキング偏差値スコアをパースして構築 ──
+    return _build_radar_from_rankings(soup, html)
+
+
+def _try_extract_chartjs_radar(soup: BeautifulSoup, html: str) -> Optional[dict]:
+    """
+    <script> タグから Chart.js の type:'radar' 設定を探し、
+    labels / datasets を抽出する。
+    """
+    for script in soup.find_all("script"):
+        src = script.string
+        if not src:
+            continue
+
+        # Chart.js radar 判定
+        if "radar" not in src:
+            continue
+
+        # type: 'radar' or type: "radar"
+        if not re.search(r"""type\s*:\s*['"]radar['"]""", src):
+            continue
+
+        # labels 抽出: labels: ['a', 'b', ...]
+        labels_m = re.search(
+            r"labels\s*:\s*\[(.*?)\]", src, re.DOTALL
+        )
+        if not labels_m:
+            continue
+
+        raw_labels = labels_m.group(1)
+        labels = re.findall(r"""['"]([^'"]+)['"]""", raw_labels)
+        if len(labels) < 3:
+            continue
+
+        # datasets 抽出: datasets: [{...data:[...]...}, {....}]
+        datasets_m = re.search(
+            r"datasets\s*:\s*\[(.*)\]", src, re.DOTALL
+        )
+        if not datasets_m:
+            continue
+
+        # 各 dataset の data 配列を取得
+        data_arrays = re.findall(
+            r"data\s*:\s*\[([\d.,\s-]+)\]",
+            datasets_m.group(1),
+        )
+
+        if len(data_arrays) < 1:
+            continue
+
+        # 1 番目 = 本物件, 2 番目 = 行政区平均（あれば）
+        property_values = [float(v.strip()) for v in data_arrays[0].split(",") if v.strip()]
+        ward_avg = (
+            [float(v.strip()) for v in data_arrays[1].split(",") if v.strip()]
+            if len(data_arrays) >= 2
+            else [50.0] * len(labels)  # 偏差値 50 = 平均
+        )
+
+        if len(property_values) == len(labels):
+            return {
+                "labels": labels,
+                "values": property_values,
+                "avg": ward_avg[:len(labels)],
+            }
+
+    return None
+
+
+def _build_radar_from_rankings(soup: BeautifulSoup, html: str) -> Optional[dict]:
+    """
+    ページ上のランキングセクションから偏差値スコアを抽出し、
+    レーダーチャート用データを構築する。
+    行政区平均は偏差値 50 とする。
+
+    対象ランキング:
+      - 資産性ランキング (XX.X点)
+      - お気に入りランキング (XX.X点)
+      - アクセス数ランキング (XX.X点)
+    """
+    ranking_defs = [
+        ("資産性", r"資産性ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("お気に入り", r"お気に入りランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("アクセス数", r"アクセス数ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+    ]
+
+    labels: list[str] = []
+    values: list[float] = []
+
+    for label, pattern in ranking_defs:
+        m = re.search(pattern, html, re.DOTALL)
+        if m:
+            labels.append(label)
+            values.append(float(m.group(1)))
+
+    if len(labels) < 2:
+        return None
+
+    # 行政区平均 = 偏差値 50.0
+    avg = [50.0] * len(labels)
+
+    return {
+        "labels": labels,
+        "values": values,
+        "avg": avg,
+    }
+
+
 # ──────────────────────────── メイン処理 ────────────────────────────
 
 def enrich_listings(input_path: str, output_path: str, session: requests.Session) -> None:
     """JSON ファイルの各物件に住まいサーフィンの評価データを付加する。"""
+    output_path = Path(output_path)
 
     with open(input_path, "r", encoding="utf-8") as f:
         listings = json.load(f)
@@ -554,6 +768,8 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                 parts.append(f"値上がり率: {data['ss_appreciation_rate']}%")
             if data.get("ss_favorite_count") is not None:
                 parts.append(f"お気に入り: {data['ss_favorite_count']}点")
+            if data.get("ss_radar_data"):
+                parts.append("レーダー✓")
             print(f"OK ({', '.join(parts) or 'URL取得'})", file=sys.stderr)
         else:
             print("データなし", file=sys.stderr)
@@ -561,9 +777,11 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
     # キャッシュ保存
     save_cache(cache)
 
-    # 出力
-    with open(output_path, "w", encoding="utf-8") as f:
+    # 出力（原子的書き込み）
+    tmp_path = output_path.with_suffix(".json.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
+    tmp_path.replace(output_path)
 
     print(f"住まいサーフィン enrichment 完了: {enriched_count}件追加, {skip_count}件スキップ", file=sys.stderr)
 

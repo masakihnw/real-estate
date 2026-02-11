@@ -14,6 +14,8 @@ import FirebaseMessaging
 /// プッシュ通知タップ時に画面遷移するための通知名
 extension Notification.Name {
     static let didTapPushNotification = Notification.Name("didTapPushNotification")
+    /// コメント通知タップ → 該当物件の詳細画面へ遷移
+    static let didTapCommentNotification = Notification.Name("didTapCommentNotification")
 }
 
 /// AppDelegate — FCM のデバイストークン登録とリモート通知受信を処理
@@ -84,21 +86,47 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
+        // スケジュール通知が表示された → カウントリセット
+        if notification.request.identifier.hasPrefix("scheduled-listing-") {
+            NotificationScheduleService.shared.resetAccumulatedCount()
+        }
         completionHandler([.banner, .sound, .badge])
     }
 
-    /// 通知タップ時の処理 — 中古タブ（tag: 0）に遷移する
+    /// 通知タップ時の処理
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        // NotificationCenter 経由で ContentView に遷移先を通知
-        NotificationCenter.default.post(
-            name: .didTapPushNotification,
-            object: nil,
-            userInfo: ["tab": 0]  // 0 = 中古タブ
-        )
+        let userInfo = response.notification.request.content.userInfo
+
+        // スケジュール通知がタップされた → カウントリセット
+        if response.notification.request.identifier.hasPrefix("scheduled-listing-") {
+            NotificationScheduleService.shared.resetAccumulatedCount()
+            NotificationCenter.default.post(
+                name: .didTapPushNotification,
+                object: nil,
+                userInfo: ["tab": 0]
+            )
+        }
+        // コメント通知がタップされた → 該当物件の詳細画面へ
+        else if userInfo["type"] as? String == "comment",
+                let identityKey = userInfo["listingIdentityKey"] as? String {
+            NotificationCenter.default.post(
+                name: .didTapCommentNotification,
+                object: nil,
+                userInfo: ["listingIdentityKey": identityKey]
+            )
+        }
+        // その他 → 中古タブに遷移
+        else {
+            NotificationCenter.default.post(
+                name: .didTapPushNotification,
+                object: nil,
+                userInfo: ["tab": 0]
+            )
+        }
         completionHandler()
     }
 }

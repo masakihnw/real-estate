@@ -5,6 +5,7 @@
 Notion に同期する全プロパティ（価格・階数・総戸数・権利形態など）の変更を updated としてカウントする。
 update_listings.sh で「変更時のみレポート・通知」するために使用。
 """
+import json
 import sys
 from pathlib import Path
 
@@ -24,8 +25,18 @@ def main() -> None:
     if not previous_path.exists():
         sys.exit(0)
 
-    current = load_json(current_path)
-    previous = load_json(previous_path)
+    try:
+        current = load_json(current_path)
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"エラー: current JSON の読み込みに失敗: {e}", file=sys.stderr)
+        sys.exit(2)
+
+    try:
+        previous = load_json(previous_path)
+    except (json.JSONDecodeError, OSError) as e:
+        # previous が壊れている場合は「変更あり」として続行
+        print(f"警告: previous JSON の読み込みに失敗（変更ありとして続行）: {e}", file=sys.stderr)
+        sys.exit(0)
 
     curr_by_key = {identity_key(r): r for r in current}
     prev_by_key = {identity_key(r): r for r in previous}

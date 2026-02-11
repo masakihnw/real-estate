@@ -13,14 +13,17 @@ struct ListingDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     let listing: Listing
-    @State private var editableMemo: String = ""
-    @FocusState private var isMemoFocused: Bool
-    /// Firestore 書き込みのデバウンス用タスク
-    @State private var memoDebounceTask: Task<Void, Never>?
+    /// コメント入力テキスト
+    @State private var newCommentText: String = ""
+    @FocusState private var isCommentFocused: Bool
+    /// 編集中のコメントID（nil なら新規投稿モード）
+    @State private var editingCommentId: String?
     /// 駅プルダウン展開状態
     @State private var isStationsExpanded: Bool = false
     /// SFSafariViewController 表示用
     @State private var safariURL: URL?
+    /// HIG: 破壊的操作の確認用（コメント削除）
+    @State private var deletingCommentId: String?
 
     var body: some View {
         NavigationStack {
@@ -41,24 +44,17 @@ struct ListingDetailView: View {
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous))
                     }
 
-                    // オブジェクトの識別: 名前・住所 ＋ いいね
+                    // ① 物件名 ＋ いいね
                     HStack(alignment: .top, spacing: 12) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(listing.name)
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                            if let addr = listing.address, !addr.isEmpty {
-                                Text(addr)
-                                    .font(ListingObjectStyle.subtitle)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(listing.name)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         Spacer(minLength: 0)
                         Button {
                             listing.isLiked.toggle()
                             saveContext()
-                            FirebaseSyncService.shared.pushAnnotation(for: listing)
+                            FirebaseSyncService.shared.pushLikeState(for: listing)
                         } label: {
                             Image(systemName: listing.isLiked ? "heart.fill" : "heart")
                                 .font(.title2)
@@ -69,34 +65,59 @@ struct ListingDetailView: View {
                     }
                     .accessibilityElement(children: .combine)
 
-                    Divider()
-
-                    // ① メモ
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("メモ")
-                            .font(ListingObjectStyle.detailLabel)
-                            .foregroundStyle(.secondary)
-                        TextEditor(text: $editableMemo)
-                            .font(ListingObjectStyle.detailValue)
-                            .frame(minHeight: 80)
-                            .padding(8)
-                            .listingGlassBackground()
-                            .focused($isMemoFocused)
-                            .onChange(of: editableMemo) { _, newValue in
-                                listing.memo = newValue.isEmpty ? nil : newValue
-                                saveContext()
-                                memoDebounceTask?.cancel()
-                                memoDebounceTask = Task {
-                                    try? await Task.sleep(for: .milliseconds(800))
-                                    guard !Task.isCancelled else { return }
-                                    FirebaseSyncService.shared.pushAnnotation(for: listing)
+                    // ② 住所（Google Maps アイコンボタン）
+                    if let addr = listing.address, !addr.isEmpty {
+                        HStack(spacing: 8) {
+                            Text(addr)
+                                .font(ListingObjectStyle.subtitle)
+                                .foregroundStyle(.secondary)
+                            Spacer(minLength: 0)
+                            Button {
+                                let query = listing.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? listing.name
+                                if let url = URL(string: "https://www.google.com/maps/search/?api=1&query=\(query)") {
+                                    UIApplication.shared.open(url)
                                 }
+                            } label: {
+                                Image(systemName: "map.fill")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(Color.accentColor)
+                                    .frame(width: 30, height: 30)
+                                    .background(Color.accentColor.opacity(0.1))
+                                    .clipShape(Circle())
                             }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Google Maps で物件を検索")
+                        }
                     }
 
-                    // ② 住まいサーフィン評価
-                    if listing.hasSumaiSurfinData {
+                    Divider()
+
+                    // ③ コメント（家族間共有）
+                    commentSection
+
+                    Divider()
+
+                    // ④ 内見写真
+                    PhotoSectionView(listing: listing)
+
+                    Divider()
+
+                    // ⑤ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
+                    propertyInfoSection
+
+                    // ⑤-b 通勤時間
+                    if listing.hasCommuteInfo {
                         Divider()
+                        commuteSection
+                    } else if listing.hasCoordinate {
+                        Divider()
+                        commuteCalculateSection
+                    }
+
+                    Divider()
+
+                    // ⑥ 住まいサーフィン評価
+                    if listing.hasSumaiSurfinData {
                         sumaiSurfinSection
                     }
 
@@ -106,12 +127,7 @@ struct ListingDetailView: View {
                         SimulationSectionView(listing: listing)
                     }
 
-                    Divider()
-
-                    // ③ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
-                    propertyInfoSection
-
-                    // ④ ハザード情報
+                    // ⑦ ハザード情報
                     if listing.hasHazardRisk {
                         Divider()
                         hazardSection
@@ -119,8 +135,12 @@ struct ListingDetailView: View {
 
                     Divider()
 
-                    // ⑤ 外部サイトボタン（SFSafariViewController でログイン状態を共有）
-                    externalLinksSection
+                    // ⑧ 外部サイトボタン or 掲載終了メッセージ
+                    if listing.isDelisted {
+                        delistedNotice
+                    } else {
+                        externalLinksSection
+                    }
                 }
                 .padding()
             }
@@ -129,7 +149,7 @@ struct ListingDetailView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("閉じる") { dismiss() }
                 }
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .topBarTrailing) {
                     if let shareURL = URL(string: listing.url) {
                         ShareLink(
                             item: shareURL,
@@ -142,15 +162,9 @@ struct ListingDetailView: View {
                     }
                 }
             }
-            .onAppear {
-                editableMemo = listing.memo ?? ""
-            }
-            .onDisappear {
-                memoDebounceTask?.cancel()
-                memoDebounceTask = nil
-                if listing.memo != nil || !(editableMemo.isEmpty) {
-                    FirebaseSyncService.shared.pushAnnotation(for: listing)
-                }
+            .onTapGesture {
+                // コメント入力以外をタップでキーボードを閉じる
+                isCommentFocused = false
             }
             .sheet(isPresented: Binding(
                 get: { safariURL != nil },
@@ -164,10 +178,13 @@ struct ListingDetailView: View {
         }
     }
 
-    // MARK: - ③ 物件情報（統合セクション + 駅プルダウン）
+    // MARK: - ③ 物件情報（最寄駅 + 属性グリッド）
 
     @ViewBuilder
     private var propertyInfoSection: some View {
+        // 最寄駅（物件情報の先頭項目として表示）
+        stationSection
+
         LazyVGrid(columns: [
             GridItem(.flexible()),
             GridItem(.flexible())
@@ -188,9 +205,6 @@ struct ListingDetailView: View {
             }
             DetailItem(title: "種別", value: listing.isShinchiku ? "新築" : "中古")
         }
-
-        // 路線・駅（プルダウン式：最寄駅を表示し、タップで他駅を展開）
-        stationSection
     }
 
     @ViewBuilder
@@ -198,32 +212,32 @@ struct ListingDetailView: View {
         let stations = listing.parsedStations
         if !stations.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                // 最寄駅（常に表示）
+                // メイン行：ラベル左、駅名+徒歩右（DetailItem と同じレイアウト）
                 Button {
-                    withAnimation(.easeInOut(duration: 0.25)) {
-                        isStationsExpanded.toggle()
+                    if stations.count > 1 {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            isStationsExpanded.toggle()
+                        }
                     }
                 } label: {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack {
                             Text("最寄駅")
                                 .font(ListingObjectStyle.detailLabel)
                                 .foregroundStyle(.secondary)
-                            Text(stations[0].fullText)
-                                .font(ListingObjectStyle.detailValue)
-                                .foregroundStyle(.primary)
-                        }
-                        Spacer()
-                        if stations.count > 1 {
-                            VStack(spacing: 2) {
-                                Text("他\(stations.count - 1)駅")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                                Image(systemName: isStationsExpanded ? "chevron.up" : "chevron.down")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                            Spacer()
+                            if stations.count > 1 {
+                                HStack(spacing: 4) {
+                                    Text("他\(stations.count - 1)駅")
+                                        .font(.caption2)
+                                    Image(systemName: isStationsExpanded ? "chevron.up" : "chevron.down")
+                                        .font(.caption2)
+                                }
+                                .foregroundStyle(.secondary)
                             }
                         }
+                        Text(stations[0].fullText)
+                            .font(ListingObjectStyle.detailValue)
                     }
                     .padding(12)
                     .listingGlassBackground()
@@ -257,6 +271,253 @@ struct ListingDetailView: View {
                 }
             }
         }
+    }
+
+    // MARK: - ① コメントセクション
+
+    @ViewBuilder
+    private var commentSection: some View {
+        let comments = listing.parsedComments
+        let currentUserId = FirebaseSyncService.shared.currentUserId
+
+        VStack(alignment: .leading, spacing: 10) {
+            // ヘッダー
+            HStack {
+                Label("コメント", systemImage: "bubble.left.and.bubble.right")
+                    .font(ListingObjectStyle.detailLabel)
+                    .foregroundStyle(.secondary)
+                if !comments.isEmpty {
+                    Text("(\(comments.count))")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+
+            // コメント一覧
+            if comments.isEmpty {
+                Text("コメントはまだありません")
+                    .font(.subheadline)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 8)
+            } else {
+                VStack(spacing: 0) {
+                    ForEach(comments) { comment in
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack(alignment: .top, spacing: 8) {
+                                // アバター（名前の頭文字）
+                                Text(String(comment.authorName.prefix(1)))
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 28, height: 28)
+                                    .background(avatarColor(for: comment.authorId))
+                                    .clipShape(Circle())
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    HStack {
+                                        Text(comment.authorName)
+                                            .font(.caption)
+                                            .fontWeight(.semibold)
+                                        if comment.isEdited {
+                                            Text("(編集済み)")
+                                                .font(.caption2)
+                                                .foregroundStyle(.tertiary)
+                                        }
+                                        Spacer()
+                                        Text(relativeTime(comment.isEdited ? (comment.editedAt ?? comment.createdAt) : comment.createdAt))
+                                            .font(.caption2)
+                                            .foregroundStyle(.tertiary)
+                                    }
+                                    Text(comment.text)
+                                        .font(.subheadline)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                                // 自分のコメントのみ編集・削除ボタン
+                                if comment.authorId == currentUserId {
+                                    HStack(spacing: 12) {
+                                        Button {
+                                            editingCommentId = comment.id
+                                            newCommentText = comment.text
+                                            isCommentFocused = true
+                                        } label: {
+                                            Image(systemName: "pencil")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .accessibilityLabel("コメントを編集")
+
+                                        Button {
+                                            deletingCommentId = comment.id
+                                        } label: {
+                                            Image(systemName: "trash")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .accessibilityLabel("コメントを削除")
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 4)
+
+                        if comment.id != comments.last?.id {
+                            Divider()
+                        }
+                    }
+                }
+                .padding(8)
+                .listingGlassBackground()
+            }
+
+            // 入力欄（認証済みの場合のみ）— iMessage 風カプセル入力バー
+            if FirebaseSyncService.shared.isAuthenticated {
+                VStack(alignment: .leading, spacing: 6) {
+                    // 編集中インジケーター
+                    if editingCommentId != nil {
+                        HStack(spacing: 4) {
+                            Image(systemName: "pencil")
+                                .font(.caption2)
+                            Text("コメントを編集中")
+                                .font(.caption2)
+                            Spacer()
+                            Button {
+                                cancelEditing()
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .foregroundStyle(Color.accentColor)
+                        .padding(.horizontal, 4)
+                    }
+
+                    HStack(alignment: .bottom, spacing: 6) {
+                        TextField(editingCommentId != nil ? "コメントを編集..." : "コメントを入力...", text: $newCommentText, axis: .vertical)
+                            .font(.subheadline)
+                            .lineLimit(1...4)
+                            .focused($isCommentFocused)
+
+                        Button {
+                            if let commentId = editingCommentId {
+                                // 編集モード: 既存コメントを更新
+                                FirebaseSyncService.shared.editComment(
+                                    for: listing,
+                                    commentId: commentId,
+                                    newText: newCommentText,
+                                    modelContext: modelContext
+                                )
+                            } else {
+                                // 新規投稿モード
+                                FirebaseSyncService.shared.addComment(
+                                    for: listing,
+                                    text: newCommentText,
+                                    modelContext: modelContext
+                                )
+                            }
+                            newCommentText = ""
+                            editingCommentId = nil
+                            isCommentFocused = false
+                        } label: {
+                            Image(systemName: editingCommentId != nil ? "checkmark.circle.fill" : "arrow.up.circle.fill")
+                                .font(.system(size: 28))
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(
+                                    .white,
+                                    newCommentText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                        ? Color(.systemGray4)
+                                        : Color.accentColor
+                                )
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(newCommentText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .accessibilityLabel(editingCommentId != nil ? "編集を保存" : "コメントを送信")
+                    }
+                    .padding(.leading, 12)
+                    .padding(.trailing, 4)
+                    .padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .stroke(editingCommentId != nil ? Color.accentColor : Color(.systemGray4), lineWidth: 1)
+                    )
+                }
+            } else {
+                Text("コメントするにはログインしてください")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        // HIG: 破壊的操作には確認ダイアログを表示
+        .alert("コメントを削除しますか？", isPresented: Binding(
+            get: { deletingCommentId != nil },
+            set: { if !$0 { deletingCommentId = nil } }
+        )) {
+            Button("削除", role: .destructive) {
+                if let commentId = deletingCommentId {
+                    FirebaseSyncService.shared.deleteComment(
+                        for: listing,
+                        commentId: commentId,
+                        modelContext: modelContext
+                    )
+                }
+                deletingCommentId = nil
+            }
+            Button("キャンセル", role: .cancel) {
+                deletingCommentId = nil
+            }
+        } message: {
+            Text("この操作は取り消せません。")
+        }
+    }
+
+    /// 編集モードをキャンセルして新規投稿モードに戻す
+    private func cancelEditing() {
+        editingCommentId = nil
+        newCommentText = ""
+        isCommentFocused = false
+    }
+
+    /// ユーザー ID から一貫したアバター色を生成
+    private func avatarColor(for userId: String) -> Color {
+        guard !userId.isEmpty else { return .gray }
+        let hash = abs(userId.hashValue)
+        let colors: [Color] = [.blue, .green, .orange, .purple, .pink, .teal, .indigo, .mint]
+        return colors[hash % colors.count]
+    }
+
+    /// 相対時間表示（例: "3時間前", "昨日"）
+    private func relativeTime(_ date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.locale = Locale(identifier: "ja_JP")
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: date, relativeTo: .now)
+    }
+
+    // MARK: - 掲載終了メッセージ
+
+    @ViewBuilder
+    private var delistedNotice: some View {
+        VStack(spacing: 4) {
+            Text("この物件はSUUMO/HOME'Sから削除されました。")
+            Text("掲載時の情報を表示しています。")
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
+        .padding(12)
+        .background(Color.orange.opacity(0.08))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.orange.opacity(0.2), lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
     // MARK: - ⑤ 外部サイトボタン（SFSafariViewController）
@@ -295,6 +556,167 @@ struct ListingDetailView: View {
                 .accessibilityLabel("住まいサーフィンで詳しく見る")
             }
         }
+    }
+
+    // MARK: - 通勤時間セクション
+
+    @ViewBuilder
+    private var commuteSection: some View {
+        let commute = listing.parsedCommuteInfo
+
+        VStack(alignment: .leading, spacing: 12) {
+            // セクションヘッダー
+            Label("通勤時間", systemImage: "tram.fill")
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundStyle(Color.accentColor)
+
+            // Playground
+            if let pg = commute.playground {
+                Button {
+                    CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
+                } label: {
+                    commuteDestinationCard(
+                        name: "Playground株式会社",
+                        minutes: pg.minutes,
+                        summary: pg.summary,
+                        transfers: pg.transfers,
+                        color: DesignSystem.commutePGColor,
+                        logoImage: "logo-playground"
+                    )
+                }
+                .buttonStyle(CommuteCardButtonStyle())
+                .accessibilityLabel("Playground株式会社への通勤経路を Google Maps で開く")
+            }
+
+            // エムスリーキャリア
+            if let m3 = commute.m3career {
+                Button {
+                    CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
+                } label: {
+                    commuteDestinationCard(
+                        name: "エムスリーキャリア株式会社",
+                        minutes: m3.minutes,
+                        summary: m3.summary,
+                        transfers: m3.transfers,
+                        color: DesignSystem.commuteM3Color,
+                        logoImage: "logo-m3career"
+                    )
+                }
+                .buttonStyle(CommuteCardButtonStyle())
+                .accessibilityLabel("エムスリーキャリアへの通勤経路を Google Maps で開く")
+            }
+
+            // 注釈
+            VStack(alignment: .leading, spacing: 2) {
+                Text("※ Apple Maps の公共交通機関経路に基づく自動計算です")
+                Text("※ 平日朝 8:00 出発での最適経路")
+            }
+            .font(.caption2)
+            .foregroundStyle(.tertiary)
+        }
+        .padding(14)
+        .listingGlassBackground()
+    }
+
+    @ViewBuilder
+    private func commuteDestinationCard(
+        name: String,
+        minutes: Int,
+        summary: String,
+        transfers: Int?,
+        color: Color,
+        logoImage: String
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // 会社名
+            HStack(alignment: .center, spacing: 8) {
+                Image(logoImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 20)
+
+                Text(name)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                Spacer()
+
+                // 所要時間（大きく表示）
+                VStack(alignment: .trailing, spacing: 0) {
+                    HStack(alignment: .firstTextBaseline, spacing: 2) {
+                        Text("\(minutes)")
+                            .font(.system(.title2, design: .rounded).weight(.heavy))
+                            .foregroundStyle(color)
+                        Text("分")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(color.opacity(0.7))
+                    }
+                    if let t = transfers, t > 0 {
+                        Text("乗換\(t)回")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            // 経路概要
+            if !summary.isEmpty {
+                HStack(spacing: 4) {
+                    Image(systemName: "arrow.triangle.turn.up.right.diamond")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text(summary)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                    Spacer(minLength: 0)
+                    // 外部リンクアイコン（タップ可能であることを示す）
+                    Image(systemName: "arrow.up.right.square")
+                        .font(.system(size: 12))
+                        .foregroundStyle(color.opacity(0.45))
+                }
+                .padding(.leading, 32)
+            }
+        }
+        .padding(10)
+        .background(color.opacity(0.04))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(color.opacity(0.15), lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .contentShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    /// 通勤時間が未計算の場合の計算ボタン
+    @ViewBuilder
+    private var commuteCalculateSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("通勤時間", systemImage: "tram.fill")
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundStyle(.secondary)
+
+            Button {
+                Task {
+                    await CommuteTimeService.shared.calculateForListing(listing, modelContext: modelContext)
+                    saveContext()
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                    Text("通勤時間を計算する")
+                }
+                .font(.subheadline)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(14)
+        .listingGlassBackground()
     }
 
     // MARK: - ハザード情報セクション
@@ -382,10 +804,10 @@ struct ListingDetailView: View {
 
     private func rankBarColor(_ rank: Int) -> Color {
         switch rank {
-        case 1: return .green
+        case 1: return DesignSystem.positiveColor
         case 2: return .yellow
         case 3: return .orange
-        case 4, 5: return .red
+        case 4, 5: return DesignSystem.negativeColor
         default: return .gray
         }
     }
@@ -396,17 +818,10 @@ struct ListingDetailView: View {
     private var sumaiSurfinSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             // セクションヘッダー
-            Label(
-                listing.isShinchiku ? "住まいサーフィン評価（新築）" : "住まいサーフィン評価（中古）",
-                systemImage: "chart.bar.xaxis"
-            )
-            .font(.subheadline)
-            .fontWeight(.bold)
-            .foregroundStyle(Color.accentColor)
-
-            Text("※住まいサーフィンから自動取得したデータです")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+            Label("住まいサーフィン評価", systemImage: "chart.bar.xaxis")
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundStyle(Color.accentColor)
 
             if listing.isShinchiku {
                 // ── 新築: 儲かる確率 + ランキング ──
@@ -473,11 +888,11 @@ struct ListingDetailView: View {
                     HStack(alignment: .firstTextBaseline, spacing: 1) {
                         Text(rate >= 0 ? "+\(String(format: "%.1f", rate))" : String(format: "%.1f", rate))
                             .font(.system(.title2, design: .rounded).weight(.heavy))
-                            .foregroundStyle(rate >= 0 ? Color.green : Color.red)
+                            .foregroundStyle(rate >= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
                         Text("%")
                             .font(.caption)
                             .fontWeight(.semibold)
-                            .foregroundStyle(rate >= 0 ? Color.green.opacity(0.6) : Color.red.opacity(0.6))
+                            .foregroundStyle(rate >= 0 ? DesignSystem.positiveColor.opacity(0.6) : DesignSystem.negativeColor.opacity(0.6))
                     }
                 }
             }
@@ -577,22 +992,26 @@ struct ListingDetailView: View {
     }
 
     private func profitColor(_ pct: Int) -> Color {
-        if pct >= 70 { return .green }
+        if pct >= 70 { return DesignSystem.positiveColor }
         if pct >= 40 { return .orange }
-        return .red
+        return DesignSystem.negativeColor
     }
 
     private func judgmentColor(_ judgment: String) -> Color {
         switch judgment {
-        case "割安": return .green
+        case "割安": return DesignSystem.positiveColor
         case "適正": return .secondary
-        case "割高": return .red
+        case "割高": return DesignSystem.negativeColor
         default: return .secondary
         }
     }
 
     private func saveContext() {
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            print("[ListingDetail] modelContext.save() 失敗: \(error)")
+        }
     }
 }
 
@@ -617,46 +1036,6 @@ private struct HazardChip: View {
             (severity == .danger ? Color.red : Color.orange).opacity(0.12)
         )
         .clipShape(RoundedRectangle(cornerRadius: 6))
-    }
-}
-
-/// 折り返しレイアウト（iOS 16+ 対応）
-private struct FlowLayout: Layout {
-    var spacing: CGFloat = 6
-
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let result = arrange(proposal: proposal, subviews: subviews)
-        return result.size
-    }
-
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = arrange(proposal: ProposedViewSize(width: bounds.width, height: bounds.height), subviews: subviews)
-        for (index, origin) in result.origins.enumerated() {
-            subviews[index].place(at: CGPoint(x: bounds.minX + origin.x, y: bounds.minY + origin.y), proposal: .unspecified)
-        }
-    }
-
-    private func arrange(proposal: ProposedViewSize, subviews: Subviews) -> (size: CGSize, origins: [CGPoint]) {
-        let maxWidth = proposal.width ?? .infinity
-        var origins: [CGPoint] = []
-        var x: CGFloat = 0
-        var y: CGFloat = 0
-        var rowHeight: CGFloat = 0
-        var maxX: CGFloat = 0
-
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            if x + size.width > maxWidth && x > 0 {
-                x = 0
-                y += rowHeight + spacing
-                rowHeight = 0
-            }
-            origins.append(CGPoint(x: x, y: y))
-            rowHeight = max(rowHeight, size.height)
-            x += size.width + spacing
-            maxX = max(maxX, x - spacing)
-        }
-        return (CGSize(width: maxX, height: y + rowHeight), origins)
     }
 }
 
@@ -697,25 +1076,43 @@ struct SafariView: UIViewControllerRepresentable {
     func updateUIViewController(_ vc: SFSafariViewController, context: Context) {}
 }
 
+/// 通勤カードのボタンスタイル: 押下時にスケール + 透明度で視覚フィードバック
+private struct CommuteCardButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .opacity(configuration.isPressed ? 0.75 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Listing.self, configurations: config)
-    let sample = Listing(
-        url: "https://example.com/1",
-        name: "サンプルマンション",
-        priceMan: 8000,
-        address: "東京都渋谷区〇〇1-2-3",
-        stationLine: "JR山手線「原宿」徒歩6分／東京メトロ副都心線「明治神宮前」徒歩8分／東京メトロ千代田線「表参道」徒歩12分",
-        walkMin: 6,
-        areaM2: 65,
-        layout: "2LDK",
-        builtYear: 2010,
-        totalUnits: 100,
-        floorPosition: 5,
-        floorTotal: 10,
-        ownership: "所有権"
-    )
-    container.mainContext.insert(sample)
-    return ListingDetailView(listing: sample)
-        .modelContainer(container)
+    do {
+        let container = try ModelContainer(for: Listing.self, configurations: config)
+        let sample = Listing(
+            url: "https://example.com/1",
+            name: "サンプルマンション",
+            priceMan: 8000,
+            address: "東京都渋谷区〇〇1-2-3",
+            stationLine: "JR山手線「原宿」徒歩6分／東京メトロ副都心線「明治神宮前」徒歩8分／東京メトロ千代田線「表参道」徒歩12分",
+            walkMin: 6,
+            areaM2: 65,
+            layout: "2LDK",
+            builtYear: 2010,
+            totalUnits: 100,
+            floorPosition: 5,
+            floorTotal: 10,
+            ownership: "所有権"
+        )
+        container.mainContext.insert(sample)
+        return ListingDetailView(listing: sample)
+            .modelContainer(container)
+    } catch {
+        return ContentUnavailableView {
+            Label("プレビューエラー", systemImage: "exclamationmark.triangle")
+        } description: {
+            Text(error.localizedDescription)
+        }
+    }
 }

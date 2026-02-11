@@ -13,7 +13,14 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(ListingStore.self) private var store
+    /// 通知タップ時のディープリンク用。コメント通知で渡される listingIdentityKey に該当する物件を探す。
+    /// identityKey は computed プロパティ（name/layout/area 等の組み合わせ）のため、FetchDescriptor の
+    /// predicate では検索できず、全件インメモリで first(where:) する必要がある。将来的に identityKey を
+    /// ストアド属性にすれば predicate による targeted fetch で最適化可能。
+    @Query private var allListings: [Listing]
     @SceneStorage("selectedTab") private var selectedTab = 0
+    /// 通知タップで詳細表示する物件
+    @State private var notificationListing: Listing?
     /// フォアグラウンド復帰時の自動更新を抑制する最小間隔（秒）
     private let autoRefreshInterval: TimeInterval = 15 * 60  // 15分
 
@@ -32,7 +39,7 @@ struct ContentView: View {
                 .tabItem { Label("お気に入り", image: "tab-favorites") }
                 .tag(3)
             SettingsView()
-                .tabItem { Label("設定", systemImage: "gearshape") }
+                .tabItem { Label("設定", image: "tab-settings") }
                 .tag(4)
         }
         .tint(.accentColor)
@@ -58,6 +65,15 @@ struct ContentView: View {
             if let tab = notification.userInfo?["tab"] as? Int {
                 selectedTab = tab
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .didTapCommentNotification)) { notification in
+            if let key = notification.userInfo?["listingIdentityKey"] as? String,
+               let listing = allListings.first(where: { $0.identityKey == key }) {
+                notificationListing = listing
+            }
+        }
+        .sheet(item: $notificationListing) { listing in
+            ListingDetailView(listing: listing)
         }
     }
 }

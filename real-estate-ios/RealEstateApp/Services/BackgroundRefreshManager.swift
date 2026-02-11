@@ -20,16 +20,16 @@ final class BackgroundRefreshManager {
     /// OS が実際に起動するタイミングはユーザーの使用パターンに依存する。
     private let minimumInterval: TimeInterval = 30 * 60  // 30分
 
-    private let modelContainer: ModelContainer
+    /// アプリ起動時に configure(modelContainer:) で設定される共有コンテナ。
+    /// バックグラウンドタスクとメインアプリで同一の ModelContainer を使用し、
+    /// データの整合性を保つ。
+    private var modelContainer: ModelContainer?
 
-    private init() {
-        let schema = Schema([Listing.self])
-        let config = ModelConfiguration(isStoredInMemoryOnly: false)
-        do {
-            self.modelContainer = try ModelContainer(for: schema, configurations: [config])
-        } catch {
-            fatalError("BackgroundRefreshManager: ModelContainer の作成に失敗しました: \(error.localizedDescription)")
-        }
+    private init() {}
+
+    /// アプリ起動時に呼び出し、共有 ModelContainer を設定する。
+    func configure(modelContainer: ModelContainer) {
+        self.modelContainer = modelContainer
     }
 
     // MARK: - Public
@@ -67,6 +67,12 @@ final class BackgroundRefreshManager {
     private func handleAppRefresh(task: BGAppRefreshTask) {
         // 次回を先にスケジュール（このタスクが完了しても次が予約される）
         scheduleNextRefresh()
+
+        guard let modelContainer else {
+            print("[BGRefresh] ModelContainer が未設定のためスキップ")
+            task.setTaskCompleted(success: false)
+            return
+        }
 
         // ModelContext はスレッドセーフではないため、MainActor 上で作成・使用する
         let refreshTask = Task { @MainActor in

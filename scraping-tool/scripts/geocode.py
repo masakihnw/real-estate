@@ -30,8 +30,11 @@ def _load_cache() -> dict:
 
 def _save_cache(cache: dict) -> None:
     CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(CACHE_PATH, "w", encoding="utf-8") as f:
+    # 原子的書き込み
+    tmp_path = CACHE_PATH.with_suffix(".json.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump({k: list(v) for k, v in cache.items()}, f, ensure_ascii=False, indent=0)
+    tmp_path.replace(CACHE_PATH)
 
 
 def _address_to_nominatim_query(address: str, strip_number: bool = False) -> str:
@@ -56,6 +59,10 @@ def _address_to_nominatim_query(address: str, strip_number: bool = False) -> str
     return f"{s} Japan"
 
 
+GEOCODE_RETRIES = 3
+GEOCODE_BACKOFF_SEC = 2
+
+
 def geocode(address: str) -> Optional[Tuple[float, float]]:
     """
     住所文字列を (lat, lon) に変換。キャッシュにあればそれを返し、なければ Nominatim に問い合わせる。
@@ -70,17 +77,22 @@ def geocode(address: str) -> Optional[Tuple[float, float]]:
         query = _address_to_nominatim_query(key, strip_number=strip_num)
         params = {"q": query, "format": "json", "limit": 1}
         headers = {"User-Agent": USER_AGENT}
-        try:
-            time.sleep(RATE_LIMIT_SEC)
-            r = requests.get(NOMINATIM_URL, params=params, headers=headers, timeout=10)
-            r.raise_for_status()
-            data = r.json()
-            if data:
-                lat = float(data[0]["lat"])
-                lon = float(data[0]["lon"])
-                cache[key] = (lat, lon)
-                _save_cache(cache)
-                return (lat, lon)
-        except (requests.RequestException, (KeyError, ValueError, TypeError)):
-            pass
+        for attempt in range(GEOCODE_RETRIES):
+            try:
+                time.sleep(RATE_LIMIT_SEC)
+                r = requests.get(NOMINATIM_URL, params=params, headers=headers, timeout=10)
+                r.raise_for_status()
+                data = r.json()
+                if data:
+                    lat = float(data[0]["lat"])
+                    lon = float(data[0]["lon"])
+                    cache[key] = (lat, lon)
+                    _save_cache(cache)
+                    return (lat, lon)
+                break  # 空結果ならリトライ不要
+            except (requests.RequestException, KeyError, ValueError, TypeError):
+                if attempt < GEOCODE_RETRIES - 1:
+                    time.sleep(GEOCODE_BACKOFF_SEC * (attempt + 1))
+                else:
+                    break
     return None

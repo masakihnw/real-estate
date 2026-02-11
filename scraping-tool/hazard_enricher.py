@@ -113,20 +113,26 @@ def _latlng_to_tile(lat: float, lng: float, zoom: int) -> tuple[int, int, int, i
     return tile_x, tile_y, px_x, px_y
 
 
+TILE_FETCH_RETRIES = 3
+TILE_FETCH_BACKOFF_SEC = 2
+
+
 def _fetch_tile(url: str) -> Optional[bytes]:
-    """タイル画像を取得（キャッシュ付き）。404/エラーなら None。"""
+    """タイル画像を取得（キャッシュ付き）。404/エラーなら None。2–3回リトライしてから None をキャッシュ。"""
     if url in _tile_cache:
         return _tile_cache[url]
-    try:
-        resp = _session.get(url, timeout=10)
-        if resp.status_code == 200 and len(resp.content) > 100:
-            _tile_cache[url] = resp.content
-            return resp.content
-        _tile_cache[url] = None
-        return None
-    except requests.RequestException:
-        _tile_cache[url] = None
-        return None
+    for attempt in range(TILE_FETCH_RETRIES):
+        try:
+            resp = _session.get(url, timeout=10)
+            if resp.status_code == 200 and len(resp.content) > 100:
+                _tile_cache[url] = resp.content
+                return resp.content
+        except requests.RequestException:
+            pass
+        if attempt < TILE_FETCH_RETRIES - 1:
+            time.sleep(TILE_FETCH_BACKOFF_SEC * (attempt + 1))
+    _tile_cache[url] = None
+    return None
 
 
 def _check_tile_pixel(tile_data: bytes, px_x: int, px_y: int) -> bool:
@@ -348,8 +354,11 @@ def main() -> None:
 
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
+    # 原子的書き込み: tmp に書いてからリネームし、途中クラッシュでも既存ファイルを壊さない
+    tmp_path = output_path.with_suffix(".json.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
+    tmp_path.replace(output_path)
 
     print(f"保存: {output_path}", file=sys.stderr)
 

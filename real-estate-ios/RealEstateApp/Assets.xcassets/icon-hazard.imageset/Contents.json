@@ -1,0 +1,22 @@
+{
+  "images" : [
+    {
+      "filename" : "icon-hazard@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "icon-hazard@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : false,
+    "template-rendering-intent" : "template"
+  }
+}

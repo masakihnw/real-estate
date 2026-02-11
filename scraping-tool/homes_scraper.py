@@ -90,7 +90,7 @@ def _parse_price(s: str) -> Optional[int]:
 def _parse_area_m2(s: str) -> Optional[float]:
     if not s:
         return None
-    m = re.search(r"([0-9.]+)\s*m2|㎡|m\s*2", s, re.I)
+    m = re.search(r"([0-9.]+)\s*(?:m2|㎡|m\s*2)", s, re.I)
     return float(m.group(1)) if m else None
 
 

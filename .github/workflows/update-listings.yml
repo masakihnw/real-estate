@@ -5,13 +5,9 @@ name: Update Listings
 
 on:
   schedule:
-    # 1日4回実行: JST 06:00 / 12:00 / 19:00 / 00:00
-    # 朝・昼・夕方・深夜に最新物件を反映
-    # タイムゾーン: https://crontab.guru/ で確認可能
-    - cron: '0 21 * * *'  # JST 06:00（朝）
-    - cron: '0 3 * * *'   # JST 12:00（昼）
-    - cron: '0 10 * * *'  # JST 19:00（夕方）
-    - cron: '0 15 * * *'  # JST 00:00（深夜）
+    # 2時間ごとに実行（1日12回）
+    # 元サイトへの負荷はスクレイパー内のレートリミットで制御済み
+    - cron: '0 */2 * * *'
   workflow_dispatch:  # 手動実行も可能（GitHub Actions タブから実行）
 
 jobs:
@@ -36,10 +32,6 @@ jobs:
         working-directory: scraping-tool
         run: |
           pip install -r requirements.txt
-
-      - name: Install push dependencies
-        run: pip install PyJWT cryptography
-        continue-on-error: true
 
       - name: Run update script
         id: scrape
@@ -108,9 +100,9 @@ jobs:
           git pull --rebase origin ${{ github.ref_name }}
           git push origin HEAD:refs/heads/${{ github.ref_name }}
 
-      # スクレイピング失敗時に Slack で通知（SLACK_WEBHOOK_URL が設定されている場合のみ）
+      # ワークフロー失敗時に Slack で通知（SLACK_WEBHOOK_URL が設定されている場合のみ）
       - name: Notify failure to Slack
-        if: failure() && steps.scrape.outcome == 'failure'
+        if: failure()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |

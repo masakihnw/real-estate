@@ -25,6 +25,9 @@ final class AuthService {
 
     private var authStateHandle: AuthStateDidChangeListenerHandle?
 
+    /// サインアウトなどで発生した直近のエラー（UI で表示可能）
+    private(set) var lastError: String?
+
     private init() {
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             self?.currentUser = user
@@ -33,11 +36,18 @@ final class AuthService {
         }
     }
 
+    deinit {
+        if let handle = authStateHandle {
+            Auth.auth().removeStateDidChangeListener(handle)
+        }
+    }
+
     // MARK: - Google Sign-In
 
     /// Google アカウントでサインインする。
     @MainActor
     func signInWithGoogle() async throws {
+        lastError = nil
         guard let clientID = FirebaseApp.app()?.options.clientID else {
             throw AuthError.missingClientID
         }
@@ -68,10 +78,12 @@ final class AuthService {
 
     /// サインアウトする。
     func signOut() {
+        lastError = nil
         do {
             try Auth.auth().signOut()
             GIDSignIn.sharedInstance.signOut()
         } catch {
+            lastError = error.localizedDescription
             print("[Auth] サインアウト失敗: \(error.localizedDescription)")
         }
     }

@@ -131,7 +131,7 @@ final class ListingStore {
         }
 
         if totalNew > 0 {
-            await notifyNewListings(count: totalNew)
+            NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
         }
 
         // Firestore からアノテーション（いいね・メモ）を取得してマージ
@@ -235,9 +235,9 @@ final class ListingStore {
 
                 // JSON から消えた物件の処理
                 for e in existing where !incomingKeys.contains(e.identityKey) {
-                    let hasMemo = !(e.memo ?? "").isEmpty
-                    if e.isLiked || hasMemo {
-                        // いいね/メモ付き → 掲載終了としてマーク（お気に入りタブで残す）
+                    let hasUserData = e.isLiked || e.hasComments || e.hasPhotos || !(e.memo ?? "").isEmpty
+                    if hasUserData {
+                        // いいね/コメント付き → 掲載終了としてマーク（お気に入りタブで残す）
                         if !e.isDelisted { e.isDelisted = true }
                     } else {
                         // それ以外 → 削除
@@ -300,23 +300,19 @@ final class ListingStore {
         existing.ssSimStandard10yr = new.ssSimStandard10yr
         existing.ssSimWorst5yr = new.ssSimWorst5yr
         existing.ssSimWorst10yr = new.ssSimWorst10yr
-        // existing.memo, existing.isLiked, existing.addedAt, existing.latitude, existing.longitude はそのまま
-    }
-
-    private func notifyNewListings(count: Int) async {
-        let content = UNMutableNotificationContent()
-        content.title = "新着物件"
-        content.body = "\(count)件の新規物件が追加されました。"
-        content.sound = .default
-        let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
-            content: content,
-            trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        )
-        try? await UNUserNotificationCenter.current().add(request)
+        // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
+        if let lat = new.latitude { existing.latitude = lat }
+        if let lon = new.longitude { existing.longitude = lon }
+        // existing.memo, existing.isLiked, existing.commentsJSON, existing.photosJSON, existing.addedAt, existing.commuteInfoJSON はそのまま（ユーザーデータ）
     }
 
     func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print("[ListingStore] 通知許可エラー: \(error.localizedDescription)")
+            } else {
+                print("[ListingStore] 通知許可: \(granted ? "許可" : "拒否")")
+            }
+        }
     }
 }
