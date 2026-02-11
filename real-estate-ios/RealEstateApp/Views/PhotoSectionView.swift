@@ -19,7 +19,7 @@ struct PhotoSectionView: View {
     /// カメラ表示フラグ
     @State private var showCamera = false
     /// フルスクリーン表示する写真のインデックス
-    @State private var fullscreenPhotoIndex: Int?
+    @State private var fullscreenPhotoIndex: IdentifiableIndex?
     /// 削除確認ダイアログ用
     @State private var photoToDelete: PhotoMeta?
 
@@ -81,7 +81,7 @@ struct PhotoSectionView: View {
                             PhotoThumbnailView(
                                 photo: photo,
                                 listing: listing,
-                                onTap: { fullscreenPhotoIndex = index },
+                                onTap: { fullscreenPhotoIndex = IdentifiableIndex(id: index) },
                                 onDelete: { photoToDelete = photo }
                             )
                         }
@@ -103,11 +103,11 @@ struct PhotoSectionView: View {
             }
             .ignoresSafeArea()
         }
-        .fullScreenCover(item: $fullscreenPhotoIndex) { index in
+        .fullScreenCover(item: $fullscreenPhotoIndex) { item in
             PhotoFullscreenView(
                 photos: listing.parsedPhotos,
                 listing: listing,
-                initialIndex: index
+                initialIndex: item.value
             )
         }
         .alert("写真を削除", isPresented: Binding(
@@ -193,8 +193,10 @@ private struct PhotoThumbnailView: View {
 
 // MARK: - フルスクリーン写真表示
 
-extension Int: @retroactive Identifiable {
-    public var id: Int { self }
+/// Int のラッパー型（sheet/fullScreenCover の item 用）
+private struct IdentifiableIndex: Identifiable {
+    let id: Int
+    var value: Int { id }
 }
 
 private struct PhotoFullscreenView: View {

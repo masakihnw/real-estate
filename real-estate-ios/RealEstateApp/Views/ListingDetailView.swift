@@ -205,6 +205,11 @@ struct ListingDetailView: View {
             }
             DetailItem(title: "種別", value: listing.isShinchiku ? "新築" : "中古")
         }
+
+        // 月額支払いシミュレーション（中古のみ）
+        if !listing.isShinchiku, let priceMan = listing.priceMan, priceMan > 0 {
+            monthlyPaymentSimulation(priceMan: priceMan)
+        }
     }
 
     @ViewBuilder
@@ -271,6 +276,40 @@ struct ListingDetailView: View {
                 }
             }
         }
+    }
+
+    // MARK: - 月額支払いシミュレーション
+
+    @ViewBuilder
+    private func monthlyPaymentSimulation(priceMan: Int) -> some View {
+        let monthly = LoanCalculator.monthlyPayment(principal: Double(priceMan))
+        let monthlyYen = Int(round(monthly * 10000))
+
+        VStack(alignment: .leading, spacing: 8) {
+            Label("月額支払いシミュレーション", systemImage: "yensign.circle")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.accentColor)
+
+            HStack(alignment: .firstTextBaseline) {
+                Text("月額返済額（目安）")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text("\(monthlyYen.formatted())円")
+                    .font(.system(.title3, design: .rounded).weight(.bold))
+                    .foregroundStyle(Color.accentColor)
+                Text("/月")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Text("※ 金利\(String(format: "%.1f", LoanCalculator.annualRate))%・返済\(LoanCalculator.termYears)年・頭金\(LoanCalculator.downPayment)円で計算（住まいサーフィン準拠）")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(12)
+        .listingGlassBackground()
     }
 
     // MARK: - ① コメントセクション
@@ -492,11 +531,15 @@ struct ListingDetailView: View {
     }
 
     /// 相対時間表示（例: "3時間前", "昨日"）
-    private func relativeTime(_ date: Date) -> String {
+    private static let relativeFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.locale = Locale(identifier: "ja_JP")
         formatter.unitsStyle = .short
-        return formatter.localizedString(for: date, relativeTo: .now)
+        return formatter
+    }()
+
+    private func relativeTime(_ date: Date) -> String {
+        Self.relativeFormatter.localizedString(for: date, relativeTo: .now)
     }
 
     // MARK: - 掲載終了メッセージ

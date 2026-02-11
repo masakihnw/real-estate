@@ -487,9 +487,10 @@ final class Listing {
             || ssSimBest5yr != nil
     }
 
-    /// 値上がりシミュレーションデータがあるか
+    /// 値上がりシミュレーションデータがあるか（新築のみ。住まいサーフィンの値上がりシミュレーションは新築物件ページにのみ存在する）
     var hasSimulationData: Bool {
-        ssSimBest5yr != nil && ssSimStandard5yr != nil && ssSimWorst5yr != nil
+        isShinchiku
+            && ssSimBest5yr != nil && ssSimStandard5yr != nil && ssSimWorst5yr != nil
     }
 
     /// 表示用: 沖式儲かる確率
@@ -840,8 +841,4 @@ struct PhotoMeta: Codable, Identifiable {
     }
 }
 
-// MARK: - Listing Identifiable for sheet (stable id = url)
-
-extension Listing: @retroactive Identifiable {
-    var id: String { url }
-}
+// MARK: - @Model は PersistentModel 経由で Identifiable に自動準拠
