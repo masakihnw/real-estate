@@ -77,11 +77,16 @@ struct ListingDetailView: View {
                         DetailItem(title: "価格", value: listing.priceDisplay)
                         DetailItem(title: "専有面積", value: listing.areaDisplay)
                         DetailItem(title: "間取り", value: listing.layout ?? "—")
-                        DetailItem(title: "築年", value: listing.builtDisplay)
+                        if listing.isShinchiku {
+                            DetailItem(title: "引渡時期", value: listing.deliveryDateDisplay)
+                        } else {
+                            DetailItem(title: "築年", value: listing.builtDisplay)
+                            DetailItem(title: "所在階", value: listing.floorPosition.map { "\($0)階" } ?? "—")
+                        }
                         DetailItem(title: "駅徒歩", value: listing.walkDisplay)
-                        DetailItem(title: "所在階", value: listing.floorPosition.map { "\($0)階" } ?? "—")
                         DetailItem(title: "階建", value: listing.floorTotal.map { "\($0)階建" } ?? "—")
                         DetailItem(title: "総戸数", value: listing.totalUnits.map { "\($0)戸" } ?? "—")
+                        DetailItem(title: "種別", value: listing.isShinchiku ? "新築" : "中古")
                     }
 
                     if let line = listing.stationLine, !line.isEmpty {

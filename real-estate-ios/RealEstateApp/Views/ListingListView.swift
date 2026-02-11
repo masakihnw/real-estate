@@ -45,6 +45,9 @@ struct ListingListView: View {
     /// true のとき、いいね済みの物件だけ表示する（お気に入りタブ用）
     var favoritesOnly: Bool = false
 
+    /// 物件種別フィルタ: nil = 全て、"chuko" = 中古のみ、"shinchiku" = 新築のみ
+    var propertyTypeFilter: String? = nil
+
     enum SortOrder: String, CaseIterable {
         case addedDesc = "追加日（新しい順）"
         case priceAsc = "価格の安い順"
@@ -54,7 +57,15 @@ struct ListingListView: View {
     }
 
     private var baseList: [Listing] {
-        favoritesOnly ? listings.filter(\.isLiked) : Array(listings)
+        var list: [Listing]
+        if favoritesOnly {
+            list = listings.filter(\.isLiked)
+        } else if let pt = propertyTypeFilter {
+            list = listings.filter { $0.propertyType == pt }
+        } else {
+            list = Array(listings)
+        }
+        return list
     }
 
     var filteredAndSorted: [Listing] {
@@ -107,6 +118,15 @@ struct ListingListView: View {
         return list
     }
 
+    private var navTitle: String {
+        if favoritesOnly { return "お気に入り" }
+        switch propertyTypeFilter {
+        case "shinchiku": return "新築マンション"
+        case "chuko": return "中古マンション"
+        default: return "物件一覧"
+        }
+    }
+
     /// 一覧内に存在する間取りの一意リスト（フィルタシートの選択肢用）
     private var availableLayouts: [String] {
         let all = Set(baseList.compactMap(\.layout).filter { !$0.isEmpty })
@@ -135,7 +155,7 @@ struct ListingListView: View {
                     listContent
                 }
             }
-            .navigationTitle(favoritesOnly ? "お気に入り" : "物件一覧")
+            .navigationTitle(navTitle)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     HStack(spacing: 12) {
@@ -307,9 +327,13 @@ struct ListingRowView: View {
                     .font(ListingObjectStyle.subtitle)
                     .foregroundStyle(.secondary)
                     HStack(spacing: 10) {
-                        Label(listing.builtAgeDisplay, systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
-                        Label(listing.floorDisplay, systemImage: "building")
-                        Label(listing.ownershipShort, systemImage: "doc.text")
+                        if listing.isShinchiku {
+                            Label(listing.deliveryDateDisplay, systemImage: "calendar")
+                        } else {
+                            Label(listing.builtAgeDisplay, systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
+                            Label(listing.floorDisplay, systemImage: "building")
+                            Label(listing.ownershipShort, systemImage: "doc.text")
+                        }
                         Label(listing.totalUnitsDisplay, systemImage: "person.2")
                     }
                     .font(ListingObjectStyle.caption)
@@ -342,11 +366,6 @@ struct ListingRowView: View {
     }
 }
 
-// MARK: - Listing Identifiable for sheet (stable id = url)
-
-extension Listing: @retroactive Identifiable {
-    var id: String { url }
-}
 
 #Preview {
     ListingListView()

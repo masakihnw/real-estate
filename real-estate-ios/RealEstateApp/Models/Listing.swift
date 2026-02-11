@@ -2,7 +2,7 @@
 //  Listing.swift
 //  RealEstateApp
 //
-//  scraping-tool/results/latest.json の1件と対応するモデル
+//  scraping-tool/results/latest.json / latest_shinchiku.json の1件と対応するモデル
 //
 
 import Foundation
@@ -37,6 +37,25 @@ final class Listing {
     /// いいね（同期では上書きしない）
     var isLiked: Bool
 
+    // MARK: - 新築対応フィールド
+
+    /// 物件種別: "chuko" or "shinchiku"
+    var propertyType: String
+
+    /// 価格帯上限（万円）— 新築の価格レンジ用。中古は nil。
+    var priceMaxMan: Int?
+
+    /// 面積幅上限（㎡）— 新築の面積レンジ用。中古は nil。
+    var areaMaxM2: Double?
+
+    /// 引渡時期 — 新築のみ（例: "2027年9月上旬予定"）。中古は nil。
+    var deliveryDate: String?
+
+    /// ジオコーディング済み緯度（キャッシュ用）
+    var latitude: Double?
+    /// ジオコーディング済み経度（キャッシュ用）
+    var longitude: Double?
+
     init(
         source: String? = nil,
         url: String,
@@ -58,7 +77,13 @@ final class Listing {
         fetchedAt: Date = .now,
         addedAt: Date = .now,
         memo: String? = nil,
-        isLiked: Bool = false
+        isLiked: Bool = false,
+        propertyType: String = "chuko",
+        priceMaxMan: Int? = nil,
+        areaMaxM2: Double? = nil,
+        deliveryDate: String? = nil,
+        latitude: Double? = nil,
+        longitude: Double? = nil
     ) {
         self.source = source
         self.url = url
@@ -81,7 +106,15 @@ final class Listing {
         self.addedAt = addedAt
         self.memo = memo
         self.isLiked = isLiked
+        self.propertyType = propertyType
+        self.priceMaxMan = priceMaxMan
+        self.areaMaxM2 = areaMaxM2
+        self.deliveryDate = deliveryDate
+        self.latitude = latitude
+        self.longitude = longitude
     }
+
+    // MARK: - Identity
 
     /// 同一物件判定用（report_utils.identity_key 相当）。価格は含めない。
     var identityKey: String {
@@ -96,16 +129,30 @@ final class Listing {
         ].joined(separator: "|")
     }
 
-    /// 表示用: 価格（万円）
+    var isShinchiku: Bool { propertyType == "shinchiku" }
+
+    // MARK: - Display Properties
+
+    /// 表示用: 価格（万円）— 新築は帯表示対応
     var priceDisplay: String {
-        guard let p = priceMan else { return "—" }
-        return "\(p)万円"
+        if let lo = priceMan {
+            if let hi = priceMaxMan, hi != lo {
+                return "\(lo)万〜\(hi)万円"
+            }
+            return "\(lo)万円"
+        }
+        return isShinchiku ? "価格未定" : "—"
     }
 
-    /// 表示用: 専有面積
+    /// 表示用: 専有面積 — 新築は幅表示対応
     var areaDisplay: String {
-        guard let a = areaM2 else { return "—" }
-        return String(format: "%.1f㎡", a)
+        if let lo = areaM2 {
+            if let hi = areaMaxM2, hi != lo {
+                return String(format: "%.0f〜%.0f㎡", lo, hi)
+            }
+            return String(format: "%.1f㎡", lo)
+        }
+        return "—"
     }
 
     /// 表示用: 駅徒歩
@@ -123,12 +170,19 @@ final class Listing {
         return String(line[line.index(after: start)..<end])
     }
 
-    /// stationLine から路線名だけを抽出（例: "東京メトロ南北線「王子」徒歩4分" → "東京メトロ南北線"）
+    /// stationLine から路線名だけを抽出
     var lineName: String? {
-        guard let line = stationLine,
-              let bracket = line.firstIndex(of: "「") else { return nil }
-        let name = line[line.startIndex..<bracket].trimmingCharacters(in: .whitespaces)
-        return name.isEmpty ? nil : name
+        guard let line = stationLine else { return nil }
+        // "路線名/駅名 徒歩N分" パターン対応
+        if let slash = line.firstIndex(of: "/") {
+            let name = line[line.startIndex..<slash].trimmingCharacters(in: .whitespaces)
+            return name.isEmpty ? nil : name
+        }
+        if let bracket = line.firstIndex(of: "「") {
+            let name = line[line.startIndex..<bracket].trimmingCharacters(in: .whitespaces)
+            return name.isEmpty ? nil : name
+        }
+        return nil
     }
 
     /// 表示用: 築年
@@ -139,10 +193,16 @@ final class Listing {
 
     /// 表示用: 築年数（現在年 − 竣工年）
     var builtAgeDisplay: String {
+        if isShinchiku { return "新築" }
         guard let y = builtYear else { return "—" }
         let age = Calendar.current.component(.year, from: .now) - y
         if age <= 0 { return "新築" }
         return "築\(age)年"
+    }
+
+    /// 表示用: 引渡時期（新築のみ）
+    var deliveryDateDisplay: String {
+        deliveryDate ?? "—"
     }
 
     /// 表示用: 階数（○階/○階建）
@@ -175,22 +235,31 @@ final class Listing {
         f.dateFormat = "M/d"
         return f.string(from: addedAt)
     }
+
+    /// ジオコーディング済みかどうか
+    var hasCoordinate: Bool {
+        latitude != nil && longitude != nil
+    }
 }
 
-// MARK: - JSON Decoding (latest.json 形式)
+// MARK: - JSON Decoding (latest.json / latest_shinchiku.json 形式)
 
 struct ListingDTO: Codable {
     var source: String?
+    var property_type: String?
     var url: String?
     var name: String?
     var price_man: Int?
+    var price_max_man: Int?
     var address: String?
     var station_line: String?
     var walk_min: Int?
     var area_m2: Double?
+    var area_max_m2: Double?
     var layout: String?
     var built_str: String?
     var built_year: Int?
+    var delivery_date: String?
     var total_units: Int?
     var floor_position: Int?
     var floor_total: Int?
@@ -221,7 +290,17 @@ extension Listing {
             floorStructure: dto.floor_structure,
             ownership: dto.ownership,
             listWardRoman: dto.list_ward_roman,
-            fetchedAt: fetchedAt
+            fetchedAt: fetchedAt,
+            propertyType: dto.property_type ?? "chuko",
+            priceMaxMan: dto.price_max_man,
+            areaMaxM2: dto.area_max_m2,
+            deliveryDate: dto.delivery_date
         )
     }
+}
+
+// MARK: - Listing Identifiable for sheet (stable id = url)
+
+extension Listing: @retroactive Identifiable {
+    var id: String { url }
 }
