@@ -5,10 +5,21 @@ name: Update Listings
 
 on:
   schedule:
-    # 2時間ごとに実行（1日12回）
+    # 2時間ごとに実行（1日12回）- スクレイピングのみ（Slack通知なし）
     # 元サイトへの負荷はスクレイパー内のレートリミットで制御済み
     - cron: '0 */2 * * *'
+    # 毎朝 6:30 JST（21:30 UTC）に実行 - この回のみ Slack 通知を送信
+    - cron: '30 21 * * *'
   workflow_dispatch:  # 手動実行も可能（GitHub Actions タブから実行）
+    inputs:
+      send_slack:
+        description: 'Slack通知を送信する（デフォルト: true）'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 jobs:
   update:
@@ -57,8 +68,27 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
+      # Slack 通知は 1日1回 朝6:30 JST（21:30 UTC）のみ。手動実行時は inputs.send_slack で制御。
+      - name: Check if Slack notification time
+        id: slack_time
+        run: |
+          CURRENT_HOUR=$(date -u +%H)
+          CURRENT_MIN=$(date -u +%M)
+          echo "Current UTC time: ${CURRENT_HOUR}:${CURRENT_MIN}"
+          # 21:25-21:45 UTC（6:25-6:45 JST）の範囲なら Slack 通知タイム
+          if [ "$CURRENT_HOUR" = "21" ] && [ "$CURRENT_MIN" -ge 25 ] && [ "$CURRENT_MIN" -le 45 ]; then
+            echo "is_slack_time=true" >> $GITHUB_OUTPUT
+            echo "→ Slack通知タイム（6:30 JST 前後）"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.send_slack }}" != "false" ]; then
+            echo "is_slack_time=true" >> $GITHUB_OUTPUT
+            echo "→ 手動実行（Slack通知あり）"
+          else
+            echo "is_slack_time=false" >> $GITHUB_OUTPUT
+            echo "→ Slack通知タイム外（スキップ）"
+          fi
+
       - name: Send Slack notification
-        if: steps.check.outputs.changed == 'true'
+        if: steps.check.outputs.changed == 'true' && steps.slack_time.outputs.is_slack_time == 'true'
         working-directory: scraping-tool
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
