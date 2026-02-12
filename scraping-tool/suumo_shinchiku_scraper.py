@@ -180,6 +180,36 @@ def _parse_floor_total(text: str) -> Optional[int]:
     return int(m.group(1)) if m else None
 
 
+def _parse_ownership_from_text(text: str) -> Optional[str]:
+    """テキストから権利形態を推定。
+    新築では「所有権」「定期借地権」「一般定期借地権」などが記載されることが多い。
+    """
+    if not text:
+        return None
+    # 「権利形態」ラベル近辺から取得を試みる
+    m = re.search(r"権利(?:形態)?[：:\s]*([^\n,、]+)", text)
+    if m:
+        val = m.group(1).strip()
+        if val and len(val) <= 50:
+            return val
+    # ラベルなしで直接パターンマッチ
+    for pattern in [
+        r"(一般定期借地権[^\n]*)",
+        r"(定期借地権[^\n]*)",
+        r"(普通借地権[^\n]*)",
+        r"(旧法借地権[^\n]*)",
+    ]:
+        m = re.search(pattern, text)
+        if m:
+            val = m.group(1).strip()
+            if val and len(val) <= 80:
+                return val
+    # 「所有権」は単独で出現することが多い
+    if re.search(r"所有権", text):
+        return "所有権"
+    return None
+
+
 def _extract_ward_from_url(url: str) -> Optional[str]:
     """detail URL /ms/shinchiku/tokyo/sc_{ward}/nc_{id}/ から ward を抽出。"""
     m = re.search(r"/sc_([a-z]+)/", url)
@@ -313,6 +343,11 @@ def _parse_listing_block(container, detail_url: str) -> Optional[SuumoShinchikuL
         # 階数: 説明文から
         floor_total = _parse_floor_total(text)
 
+        # 権利形態: DT/DD または テキストから
+        ownership = get_dd("権利形態") or get_dd("敷地の権利形態") or get_dd("権利")
+        if not ownership:
+            ownership = _parse_ownership_from_text(text)
+
         # ward: detail URL から
         ward = _extract_ward_from_url(detail_url)
 
@@ -331,6 +366,7 @@ def _parse_listing_block(container, detail_url: str) -> Optional[SuumoShinchikuL
             total_units=total_units,
             floor_total=floor_total,
             list_ward_roman=ward,
+            ownership=ownership or None,
         )
     except Exception:
         return None

@@ -101,12 +101,12 @@ private let walkthroughPages: [WalkthroughPage] = [
         icon: "doc.text.magnifyingglass",
         iconColors: [Color(red: 0.55, green: 0.30, blue: 0.85), Color(red: 0.75, green: 0.50, blue: 1.0)],
         title: "物件の詳細情報",
-        subtitle: "物件タップで詳細画面へ。\n通勤時間やスマイサーフィン情報も確認。",
+        subtitle: "物件タップで詳細画面へ。\n通勤時間や住まいサーフィン情報も確認。",
         features: [
             WalkthroughFeature(icon: "bubble.left.and.bubble.right.fill", iconColor: .blue, title: "家族でコメント共有", description: "家族間でコメントを残し、意見を共有"),
             WalkthroughFeature(icon: "camera.fill", iconColor: .gray, title: "写真を追加", description: "カメラやアルバムから内覧写真を保存"),
             WalkthroughFeature(icon: "car.fill", iconColor: DesignSystem.commutePGColor, title: "通勤時間", description: "Playground・M3Career への所要時間を自動計算"),
-            WalkthroughFeature(icon: "chart.pie.fill", iconColor: .purple, title: "スマイサーフィン", description: "レーダーチャート・値上がり率・含み益表示"),
+            WalkthroughFeature(icon: "chart.pie.fill", iconColor: .purple, title: "住まいサーフィン", description: "レーダーチャート・値上がり率・含み益表示"),
         ]
     ),
     // Page 6: Notifications & Smart Features
