@@ -88,6 +88,20 @@ final class ListingStore {
         lastError = nil
         lastRefreshHadChanges = false
 
+        // SwiftData が空の場合は ETag をクリアしてフルフェッチを強制する。
+        // アプリの再インストール/リビルドで SwiftData はクリアされるが
+        // UserDefaults（ETag）が残っていると 304 が返り、データが 0 件になる問題を防ぐ。
+        do {
+            let chukoDescriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == "chuko" })
+            let shinchikuDescriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == "shinchiku" })
+            let chukoCount = (try? modelContext.fetchCount(chukoDescriptor)) ?? 0
+            let shinchikuCount = (try? modelContext.fetchCount(shinchikuDescriptor)) ?? 0
+            if chukoCount == 0 || shinchikuCount == 0 {
+                clearETags()
+                print("[ListingStore] SwiftData が空のため ETag をクリアしてフルフェッチを実行します")
+            }
+        }
+
         // P2: 中古・新築を並列取得（ネットワーク待ちを半減）
         // NOTE: fetchAndSync 内の SwiftData 操作は同一 modelContext なので
         //       ネットワーク取得＋デコードを並列化し、DB 書き込みは逐次実行
