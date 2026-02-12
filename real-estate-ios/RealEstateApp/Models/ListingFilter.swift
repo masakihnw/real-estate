@@ -47,12 +47,10 @@ struct ListingFilter: Equatable {
     /// 住所から区名を抽出（例: "東京都江東区豊洲5丁目" → "江東区"）
     static func extractWard(from address: String?) -> String? {
         guard let addr = address else { return nil }
-        if let range = addr.range(of: #"[^\d]+[区市]"#, options: .regularExpression) {
-            let matched = addr[range]
-            // "東京都江東区" → "江東区" のように最後の区/市名を取り出す
-            if let kuRange = matched.range(of: #"[\p{Han}]+[区市]$"#, options: .regularExpression) {
-                return String(matched[kuRange])
-            }
+        // 都道府県（都/道/府/県）の直後に続く区/市名を lazy match で最短抽出
+        // 例: "東京都江東区豊洲5丁目" → lookbehind で「都」の後から → "江東区"
+        if let range = addr.range(of: #"(?<=[都道府県])\p{Han}+?[区市]"#, options: .regularExpression) {
+            return String(addr[range])
         }
         return nil
     }

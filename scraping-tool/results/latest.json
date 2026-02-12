@@ -2601,8 +2601,8 @@
     "list_ward_roman": "ota",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 34.9741067,
-    "longitude": 135.7516775,
+    "latitude": 35.5463823,
+    "longitude": 139.7046187,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 0, \"fire\": 0, \"combined\": 0}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/38451/",
     "ss_oki_price_70m2": 5000,
@@ -4059,8 +4059,8 @@
     "list_ward_roman": "kita",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6583131,
-    "longitude": 139.7980009,
+    "latitude": 35.7609612,
+    "longitude": 139.7311443,
     "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/32167/",
     "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 王子神谷駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 王子神谷駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}"
@@ -4394,8 +4394,8 @@
     "list_ward_roman": "kita",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6583131,
-    "longitude": 139.7980009,
+    "latitude": 35.7609612,
+    "longitude": 139.7311443,
     "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/32167/",
     "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 王子神谷駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 王子神谷駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}"
@@ -4423,8 +4423,8 @@
     "alt_urls": [
       "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20077704/"
     ],
-    "latitude": 35.6583131,
-    "longitude": 139.7980009,
+    "latitude": 35.7609612,
+    "longitude": 139.7311443,
     "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/32167/",
     "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 東十条駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩7分 + 東十条駅から30分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}"
