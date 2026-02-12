@@ -24,6 +24,7 @@ struct SettingsView: View {
     @State private var showSignOutConfirmation = false
     @State private var showFullRefreshConfirmation = false
     @State private var showScrapingConfig = false
+    @State private var showScrapingLog = false
     @State private var showWalkthrough = false
 
     // カスタム URL
@@ -75,6 +76,9 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showScrapingConfig) {
                 ScrapingConfigView(initialConfig: ScrapingConfigService.shared.config)
+            }
+            .sheet(isPresented: $showScrapingLog) {
+                ScrapingLogView()
             }
             .fullScreenCover(isPresented: $showWalkthrough) {
                 WalkthroughView {
@@ -313,6 +317,26 @@ struct SettingsView: View {
                 }
             }
 
+            Button {
+                showScrapingLog = true
+            } label: {
+                HStack {
+                    Label("スクレイピングログ", systemImage: "doc.text.magnifyingglass")
+                    Spacer()
+                    if ScrapingLogService.shared.isLoading {
+                        ProgressView()
+                    }
+                    if let log = ScrapingLogService.shared.latestLog {
+                        Image(systemName: log.statusIcon)
+                            .foregroundStyle(log.status == "success" ? .green : log.status == "error" ? .red : .secondary)
+                            .font(.caption)
+                    }
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+
             DisclosureGroup(isExpanded: $showAdvancedURL) {
                 TextField("中古マンション JSON URL", text: $chukoURLInput)
                     .keyboardType(.URL)
@@ -357,7 +381,7 @@ struct SettingsView: View {
         } header: {
             Text("詳細設定")
         } footer: {
-            Text("スクレイピング条件で価格・専有面積などを編集できます。通常はデフォルト URL（GitHub）から自動取得します。")
+            Text("スクレイピング条件で価格・専有面積などを編集できます。ログから最新の実行結果を確認・コピーできます。")
         }
         .alert("カスタム URL 設定について", isPresented: $showCustomURLInfo) {
             Button("OK", role: .cancel) { }

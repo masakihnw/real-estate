@@ -17,6 +17,19 @@ REPORT="${REPORT_DIR}/report.md"
 
 CURRENT_SHINCHIKU="${OUTPUT_DIR}/current_shinchiku_${DATE}.json"
 
+# ログキャプチャ: 全 stderr 出力をファイルにも記録（iOS アプリからコピー可能）
+LOG_FILE="${OUTPUT_DIR}/scraping_log.txt"
+exec 3>&2  # 元の stderr を fd3 に退避
+exec 2> >(tee -a "$LOG_FILE" >&3)  # stderr を tee でファイルとコンソールに分岐
+
+# ログファイル初期化
+echo "=== スクレイピングログ ===" > "$LOG_FILE"
+echo "実行日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >> "$LOG_FILE"
+echo "==========================================" >> "$LOG_FILE"
+
+# エラー時もログを Firestore にアップロード（問題の診断に使えるように）
+trap 'echo "=== エラーにより中断 ===" >> "$LOG_FILE"; python3 upload_scraping_log.py "$LOG_FILE" --status error 2>/dev/null || true' ERR
+
 echo "=== 物件情報取得開始 ===" >&2
 echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
 
@@ -229,6 +242,10 @@ echo "=== 完了 ===" >&2
 echo "レポート: $REPORT" >&2
 echo "最新（中古）: ${OUTPUT_DIR}/latest.json" >&2
 echo "最新（新築）: ${OUTPUT_DIR}/latest_shinchiku.json" >&2
+
+# ログを Firestore にアップロード（iOS アプリから閲覧・コピー可能にする）
+echo "ログを Firestore にアップロード中..." >&2
+python3 upload_scraping_log.py "$LOG_FILE" --status success 2>&1 || echo "ログアップロード失敗（続行）" >&2
 
 # 7. Git操作（オプション: --no-git でスキップ可能）
 # 変更検出は上記の check_changes.py（current vs latest.json）で行っており、--no-git とは独立。

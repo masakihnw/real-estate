@@ -13,3 +13,6 @@ venv/
 
 # Large data files (risk_geojson は CI でのハザード判定に必要なため追跡対象)
 # scraping-tool/results/risk_geojson/
+
+# Scraping log (Firestore にアップロードされるためリポジトリに含めない)
+scraping-tool/results/scraping_log.txt
