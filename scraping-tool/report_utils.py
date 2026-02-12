@@ -81,8 +81,8 @@ def identity_key(r: dict) -> tuple:
     )
 
 
-# Notion に同期するプロパティに対応するキー。いずれかが前回と異なれば「updated」とする
-NOTION_SYNC_KEYS = (
+# 差分検出で比較するプロパティキー。いずれかが前回と異なれば「updated」とする
+PROPERTY_CHANGE_KEYS = (
     "name", "url", "address", "price_man", "area_m2", "walk_min",
     "floor_position", "ownership", "built_year", "total_units",
     "station_line", "layout", "floor_total", "list_ward_roman",
@@ -102,8 +102,8 @@ def _norm_prop(v: Any) -> Any:
 
 
 def listing_has_property_changes(curr: dict, prev: dict) -> bool:
-    """Notion に送るプロパティのいずれかが curr と prev で異なれば True。"""
-    for key in NOTION_SYNC_KEYS:
+    """差分検出で比較するプロパティのいずれかが curr と prev で異なれば True。"""
+    for key in PROPERTY_CHANGE_KEYS:
         if _norm_prop(curr.get(key)) != _norm_prop(prev.get(key)):
             return True
     return False
@@ -126,7 +126,7 @@ def listing_key(r: dict) -> tuple:
 
 
 def compare_listings(current: list[dict], previous: Optional[list[dict]] = None) -> dict[str, Any]:
-    """前回結果と比較して差分を検出。同一物件は identity_key で判定し、価格や総戸数など Notion 同期項目の変更があれば updated とする。"""
+    """前回結果と比較して差分を検出。同一物件は identity_key で判定し、価格や総戸数などのプロパティ変更があれば updated とする。"""
     if not previous:
         return {
             "new": current,
