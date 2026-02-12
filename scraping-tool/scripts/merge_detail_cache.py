@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 building_units.json（詳細キャッシュ）の内容を listings JSON にマージする。
-SUUMO 物件で、listing の total_units / floor_position / floor_total / floor_structure / ownership が
-None または無い場合にのみ、キャッシュの値で上書きする。
+SUUMO 物件で、listing の total_units / floor_position / floor_total / floor_structure / ownership /
+management_fee / repair_reserve_fund が None または無い場合にのみ、キャッシュの値で上書きする。
 
 使い方:
   python scripts/merge_detail_cache.py results/latest.json
@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = ROOT / "data" / "building_units.json"
-KEYS = ("total_units", "floor_position", "floor_total", "floor_structure", "ownership")
+KEYS = ("total_units", "floor_position", "floor_total", "floor_structure", "ownership", "management_fee", "repair_reserve_fund")
 
 
 def main() -> None:
