@@ -6,11 +6,8 @@ name: Update MLIT & e-Stat Cache
 
 on:
   schedule:
-    # 四半期ごと: 1月/4月/7月/10月の15日 6:00 UTC (15:00 JST)
-    # データ公開から数日後を想定
-    - cron: '0 6 15 1,4,7,10 *'
-    # 年次: 4月1日 6:00 UTC — 地価公示（3月公表）+ e-Stat 人口データ
-    - cron: '0 6 1 4 *'
+    # 毎週月曜 6:00 UTC (15:00 JST)
+    - cron: '0 6 * * 1'
   workflow_dispatch:  # 手動実行
     inputs:
       target:
