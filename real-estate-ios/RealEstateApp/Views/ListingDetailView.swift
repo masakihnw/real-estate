@@ -103,6 +103,12 @@ struct ListingDetailView: View {
                         commuteCalculateSection
                     }
 
+                    // ⑤-c 成約相場との比較（不動産情報ライブラリ）
+                    if listing.hasMarketData {
+                        Divider()
+                        MarketDataSectionView(listing: listing)
+                    }
+
                     Divider()
 
                     // ⑥ 住まいサーフィン評価

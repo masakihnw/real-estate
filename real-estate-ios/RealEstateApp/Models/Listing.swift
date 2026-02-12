@@ -109,6 +109,14 @@ final class Listing: @unchecked Sendable {
     ///              "m3career":{"minutes":30,"summary":"東京メトロ日比谷線→虎ノ門ヒルズ駅","calculatedAt":"ISO8601"}}
     var commuteInfoJSON: String?
 
+    // MARK: - 不動産情報ライブラリ（MLIT）相場データ
+    /// 不動産情報ライブラリの成約価格相場データ JSON 文字列
+    /// フォーマット: {"ward":"千代田区","ward_median_m2_price":1285000,"price_ratio":1.08,
+    ///              "price_diff_man":620,"sample_count":42,"trend":"up","yoy_change_pct":3.2,
+    ///              "quarterly_m2_prices":[{"quarter":"2024Q1","median_m2_price":980000,"count":30},...],
+    ///              "data_source":"不動産情報ライブラリ（国土交通省）"}
+    var reinfolibMarketData: String?
+
     // MARK: - 値上がりシミュレーション (万円)
     /// ベストケース 5年後
     var ssSimBest5yr: Int?
@@ -207,7 +215,8 @@ final class Listing: @unchecked Sendable {
         ssForecastChangeRate: Double? = nil,
         ssPastMarketTrends: String? = nil,
         ssSurroundingProperties: String? = nil,
-        ssPriceJudgments: String? = nil
+        ssPriceJudgments: String? = nil,
+        reinfolibMarketData: String? = nil
     ) {
         self.source = source
         self.url = url
@@ -266,6 +275,7 @@ final class Listing: @unchecked Sendable {
         self.ssPastMarketTrends = ssPastMarketTrends
         self.ssSurroundingProperties = ssSurroundingProperties
         self.ssPriceJudgments = ssPriceJudgments
+        self.reinfolibMarketData = reinfolibMarketData
     }
 
     // MARK: - Identity
@@ -1050,6 +1060,117 @@ final class Listing: @unchecked Sendable {
         guard let m3 = parsedCommuteInfo.m3career else { return nil }
         return "\(m3.minutes)分"
     }
+
+    // MARK: - 不動産情報ライブラリ相場データ
+
+    /// 相場データの解析済み構造体
+    struct MarketData {
+        var ward: String
+        var wardMedianM2Price: Int         // 円/m²
+        var wardMeanM2Price: Int?          // 円/m²
+        var priceRatio: Double?            // 掲載価格÷相場 (1.0=相場並み)
+        var priceDiffMan: Int?             // 差額（万円, 正=割高）
+        var sampleCount: Int
+        var trend: String                  // "up" / "flat" / "down"
+        var yoyChangePct: Double?          // 前年同期比変動率 (%)
+        var quarterlyM2Prices: [QuarterlyPrice]
+        var dataSource: String
+
+        struct QuarterlyPrice {
+            var quarter: String            // "2024Q3"
+            var medianM2Price: Int          // 円/m²
+            var count: Int
+        }
+
+        /// 相場との乖離率テキスト（例: "+8%（割高）", "−5%（割安）", "相場並み"）
+        var priceRatioDisplay: String {
+            guard let ratio = priceRatio else { return "—" }
+            let pct = (ratio - 1.0) * 100
+            if abs(pct) < 2.0 {
+                return "相場並み"
+            } else if pct > 0 {
+                return String(format: "+%.0f%%（割高）", pct)
+            } else {
+                return String(format: "%.0f%%（割安）", pct)
+            }
+        }
+
+        /// 差額テキスト（例: "+620万", "−350万"）
+        var priceDiffDisplay: String {
+            guard let diff = priceDiffMan else { return "—" }
+            if diff == 0 { return "±0万" }
+            return diff > 0 ? "+\(diff)万" : "\(diff)万"
+        }
+
+        /// トレンドアイコン名
+        var trendIconName: String {
+            switch trend {
+            case "up": return "arrow.up.right"
+            case "down": return "arrow.down.right"
+            default: return "arrow.right"
+            }
+        }
+
+        /// トレンド表示テキスト
+        var trendDisplay: String {
+            switch trend {
+            case "up": return "上昇傾向"
+            case "down": return "下降傾向"
+            default: return "横ばい"
+            }
+        }
+
+        /// m² 単価の万円表示
+        var wardMedianM2PriceManDisplay: String {
+            let man = Double(wardMedianM2Price) / 10000.0
+            return String(format: "%.1f万/m²", man)
+        }
+
+        /// YoY 表示テキスト
+        var yoyDisplay: String {
+            guard let yoy = yoyChangePct else { return "—" }
+            return String(format: "%+.1f%%", yoy)
+        }
+    }
+
+    /// reinfolibMarketData JSON を解析
+    var parsedMarketData: MarketData? {
+        guard let json = reinfolibMarketData, !json.isEmpty,
+              let data = json.data(using: .utf8),
+              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return nil
+        }
+
+        let ward = dict["ward"] as? String ?? ""
+        guard let medianM2 = dict["ward_median_m2_price"] as? Int else { return nil }
+
+        let quarterlyRaw = dict["quarterly_m2_prices"] as? [[String: Any]] ?? []
+        let quarterly = quarterlyRaw.compactMap { q -> MarketData.QuarterlyPrice? in
+            guard let quarter = q["quarter"] as? String,
+                  let price = q["median_m2_price"] as? Int else { return nil }
+            return MarketData.QuarterlyPrice(
+                quarter: quarter,
+                medianM2Price: price,
+                count: q["count"] as? Int ?? 0
+            )
+        }
+
+        return MarketData(
+            ward: ward,
+            wardMedianM2Price: medianM2,
+            wardMeanM2Price: dict["ward_mean_m2_price"] as? Int,
+            priceRatio: dict["price_ratio"] as? Double,
+            priceDiffMan: dict["price_diff_man"] as? Int,
+            sampleCount: dict["sample_count"] as? Int ?? 0,
+            trend: dict["trend"] as? String ?? "flat",
+            yoyChangePct: dict["yoy_change_pct"] as? Double,
+            quarterlyM2Prices: quarterly,
+            dataSource: dict["data_source"] as? String ?? "不動産情報ライブラリ（国土交通省）"
+        )
+    }
+
+    /// 不動産情報ライブラリの相場データがあるか
+    var hasMarketData: Bool { parsedMarketData != nil }
 }
 
 // MARK: - 通勤時間データ
@@ -1155,6 +1276,9 @@ struct ListingDTO: Codable {
 
     // 通勤時間（駅ベース概算、パイプライン側で付与）
     var commute_info: String?
+
+    // 不動産情報ライブラリ相場データ（パイプライン側で付与）
+    var reinfolib_market_data: String?
 }
 
 extension Listing {
@@ -1233,7 +1357,8 @@ extension Listing {
             ssForecastChangeRate: dto.ss_forecast_change_rate,
             ssPastMarketTrends: dto.ss_past_market_trends,
             ssSurroundingProperties: dto.ss_surrounding_properties,
-            ssPriceJudgments: dto.ss_price_judgments
+            ssPriceJudgments: dto.ss_price_judgments,
+            reinfolibMarketData: dto.reinfolib_market_data
         )
     }
 }

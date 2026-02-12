@@ -72,9 +72,11 @@ struct ContentView: View {
             }
         }
         .task {
-            // F3: 初回起動時、データが空 or 最終取得が nil なら自動更新
+            // F3: 初回起動時 or SwiftData が空なら自動更新
+            // lastFetchedAt は UserDefaults に保存されるため、スキーマ変更で SwiftData が
+            // リセットされても nil にならない。件数チェックで空状態を確実に検出する。
             store.requestNotificationPermission()
-            if store.lastFetchedAt == nil {
+            if store.lastFetchedAt == nil || allListings.isEmpty {
                 await store.refresh(modelContext: modelContext)
             }
         }

@@ -183,7 +183,18 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
     python3 commute_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "通勤時間 enrichment (新築) 失敗（続行）" >&2
 fi
 
-# 4.7d. enrichment 完了後にレポートを最終再生成（ハザード・住まいサーフィン情報を反映）
+# 4.7d. 不動産情報ライブラリ enrichment（区別成約価格相場の付与。API は叩かず、事前構築キャッシュを参照）
+if [ -f "data/reinfolib_prices.json" ]; then
+    echo "不動産情報ライブラリ enrichment 実行中..." >&2
+    python3 reinfolib_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "不動産情報ライブラリ enrichment (中古) 失敗（続行）" >&2
+    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+        python3 reinfolib_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "不動産情報ライブラリ enrichment (新築) 失敗（続行）" >&2
+    fi
+else
+    echo "不動産情報ライブラリ enrichment: data/reinfolib_prices.json が未生成のためスキップ" >&2
+fi
+
+# 4.7e. enrichment 完了後にレポートを最終再生成（ハザード・住まいサーフィン・不動産情報ライブラリ情報を反映）
 echo "レポートを最終再生成（enrichment 反映）..." >&2
 if [ -f "${OUTPUT_DIR}/previous.json" ]; then
     python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG

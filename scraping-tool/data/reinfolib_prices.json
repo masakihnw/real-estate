@@ -1,0 +1,564 @@
+{
+  "by_ward": {
+    "千代田区": {
+      "ward_code": "13101",
+      "median_m2_price": 1585714,
+      "mean_m2_price": 1850603,
+      "sample_count": 358,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1400000,
+          "count": 79
+        },
+        "2025Q1": {
+          "median_m2_price": 1600000,
+          "count": 89
+        },
+        "2025Q2": {
+          "median_m2_price": 1777778,
+          "count": 100
+        },
+        "2025Q3": {
+          "median_m2_price": 1629167,
+          "count": 90
+        }
+      }
+    },
+    "中央区": {
+      "ward_code": "13102",
+      "median_m2_price": 1771429,
+      "mean_m2_price": 1756900,
+      "sample_count": 400,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1633333,
+          "count": 100
+        },
+        "2025Q1": {
+          "median_m2_price": 1761616,
+          "count": 100
+        },
+        "2025Q2": {
+          "median_m2_price": 1857143,
+          "count": 100
+        },
+        "2025Q3": {
+          "median_m2_price": 1839744,
+          "count": 100
+        }
+      }
+    },
+    "港区": {
+      "ward_code": "13103",
+      "median_m2_price": 2040000,
+      "mean_m2_price": 2257877,
+      "sample_count": 394,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1955000,
+          "count": 100
+        },
+        "2025Q1": {
+          "median_m2_price": 2000000,
+          "count": 99
+        },
+        "2025Q2": {
+          "median_m2_price": 2194444,
+          "count": 98
+        },
+        "2025Q3": {
+          "median_m2_price": 2333333,
+          "count": 97
+        }
+      }
+    },
+    "新宿区": {
+      "ward_code": "13104",
+      "median_m2_price": 1234848,
+      "mean_m2_price": 1331164,
+      "sample_count": 374,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1200000,
+          "count": 95
+        },
+        "2025Q1": {
+          "median_m2_price": 1131884,
+          "count": 94
+        },
+        "2025Q2": {
+          "median_m2_price": 1379167,
+          "count": 92
+        },
+        "2025Q3": {
+          "median_m2_price": 1160000,
+          "count": 93
+        }
+      }
+    },
+    "文京区": {
+      "ward_code": "13105",
+      "median_m2_price": 1220202,
+      "mean_m2_price": 1272729,
+      "sample_count": 354,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1022222,
+          "count": 92
+        },
+        "2025Q1": {
+          "median_m2_price": 1226667,
+          "count": 87
+        },
+        "2025Q2": {
+          "median_m2_price": 1142857,
+          "count": 89
+        },
+        "2025Q3": {
+          "median_m2_price": 1398333,
+          "count": 86
+        }
+      }
+    },
+    "台東区": {
+      "ward_code": "13106",
+      "median_m2_price": 1022222,
+      "mean_m2_price": 1066672,
+      "sample_count": 391,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1090000,
+          "count": 98
+        },
+        "2025Q1": {
+          "median_m2_price": 1016667,
+          "count": 98
+        },
+        "2025Q2": {
+          "median_m2_price": 1000000,
+          "count": 99
+        },
+        "2025Q3": {
+          "median_m2_price": 960000,
+          "count": 96
+        }
+      }
+    },
+    "墨田区": {
+      "ward_code": "13107",
+      "median_m2_price": 900000,
+      "mean_m2_price": 916338,
+      "sample_count": 348,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 947619,
+          "count": 90
+        },
+        "2025Q1": {
+          "median_m2_price": 836364,
+          "count": 87
+        },
+        "2025Q2": {
+          "median_m2_price": 857143,
+          "count": 83
+        },
+        "2025Q3": {
+          "median_m2_price": 963095,
+          "count": 88
+        }
+      }
+    },
+    "江東区": {
+      "ward_code": "13108",
+      "median_m2_price": 1400000,
+      "mean_m2_price": 1345519,
+      "sample_count": 378,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1400000,
+          "count": 97
+        },
+        "2025Q1": {
+          "median_m2_price": 1333333,
+          "count": 99
+        },
+        "2025Q2": {
+          "median_m2_price": 1446154,
+          "count": 91
+        },
+        "2025Q3": {
+          "median_m2_price": 1480000,
+          "count": 91
+        }
+      }
+    },
+    "品川区": {
+      "ward_code": "13109",
+      "median_m2_price": 1250000,
+      "mean_m2_price": 1441638,
+      "sample_count": 352,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1310000,
+          "count": 96
+        },
+        "2025Q1": {
+          "median_m2_price": 1210000,
+          "count": 86
+        },
+        "2025Q2": {
+          "median_m2_price": 1160000,
+          "count": 85
+        },
+        "2025Q3": {
+          "median_m2_price": 1250000,
+          "count": 85
+        }
+      }
+    },
+    "目黒区": {
+      "ward_code": "13110",
+      "median_m2_price": 1240000,
+      "mean_m2_price": 1285175,
+      "sample_count": 341,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1248571,
+          "count": 84
+        },
+        "2025Q1": {
+          "median_m2_price": 1250000,
+          "count": 89
+        },
+        "2025Q2": {
+          "median_m2_price": 1225000,
+          "count": 82
+        },
+        "2025Q3": {
+          "median_m2_price": 1220000,
+          "count": 86
+        }
+      }
+    },
+    "大田区": {
+      "ward_code": "13111",
+      "median_m2_price": 842105,
+      "mean_m2_price": 831450,
+      "sample_count": 325,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 853939,
+          "count": 82
+        },
+        "2025Q1": {
+          "median_m2_price": 823529,
+          "count": 81
+        },
+        "2025Q2": {
+          "median_m2_price": 811111,
+          "count": 83
+        },
+        "2025Q3": {
+          "median_m2_price": 854545,
+          "count": 79
+        }
+      }
+    },
+    "世田谷区": {
+      "ward_code": "13112",
+      "median_m2_price": 888312,
+      "mean_m2_price": 920847,
+      "sample_count": 272,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 781818,
+          "count": 71
+        },
+        "2025Q1": {
+          "median_m2_price": 880000,
+          "count": 75
+        },
+        "2025Q2": {
+          "median_m2_price": 929825,
+          "count": 68
+        },
+        "2025Q3": {
+          "median_m2_price": 947727,
+          "count": 58
+        }
+      }
+    },
+    "渋谷区": {
+      "ward_code": "13113",
+      "median_m2_price": 1733333,
+      "mean_m2_price": 1858957,
+      "sample_count": 379,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1628571,
+          "count": 97
+        },
+        "2025Q1": {
+          "median_m2_price": 1625000,
+          "count": 97
+        },
+        "2025Q2": {
+          "median_m2_price": 1728571,
+          "count": 92
+        },
+        "2025Q3": {
+          "median_m2_price": 1818182,
+          "count": 93
+        }
+      }
+    },
+    "中野区": {
+      "ward_code": "13114",
+      "median_m2_price": 1000000,
+      "mean_m2_price": 1069575,
+      "sample_count": 311,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 1033333,
+          "count": 86
+        },
+        "2025Q1": {
+          "median_m2_price": 840000,
+          "count": 73
+        },
+        "2025Q2": {
+          "median_m2_price": 1116667,
+          "count": 73
+        },
+        "2025Q3": {
+          "median_m2_price": 1050000,
+          "count": 79
+        }
+      }
+    },
+    "杉並区": {
+      "ward_code": "13115",
+      "median_m2_price": 869697,
+      "mean_m2_price": 912539,
+      "sample_count": 270,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 875000,
+          "count": 68
+        },
+        "2025Q1": {
+          "median_m2_price": 846154,
+          "count": 71
+        },
+        "2025Q2": {
+          "median_m2_price": 980000,
+          "count": 61
+        },
+        "2025Q3": {
+          "median_m2_price": 856250,
+          "count": 70
+        }
+      }
+    },
+    "豊島区": {
+      "ward_code": "13116",
+      "median_m2_price": 1017778,
+      "mean_m2_price": 1148199,
+      "sample_count": 344,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 963636,
+          "count": 85
+        },
+        "2025Q1": {
+          "median_m2_price": 1066667,
+          "count": 87
+        },
+        "2025Q2": {
+          "median_m2_price": 1000000,
+          "count": 86
+        },
+        "2025Q3": {
+          "median_m2_price": 1094444,
+          "count": 86
+        }
+      }
+    },
+    "北区": {
+      "ward_code": "13117",
+      "median_m2_price": 800000,
+      "mean_m2_price": 841082,
+      "sample_count": 308,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 780833,
+          "count": 88
+        },
+        "2025Q1": {
+          "median_m2_price": 846667,
+          "count": 76
+        },
+        "2025Q2": {
+          "median_m2_price": 746667,
+          "count": 67
+        },
+        "2025Q3": {
+          "median_m2_price": 840000,
+          "count": 77
+        }
+      }
+    },
+    "荒川区": {
+      "ward_code": "13118",
+      "median_m2_price": 775000,
+      "mean_m2_price": 828029,
+      "sample_count": 335,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 815385,
+          "count": 85
+        },
+        "2025Q1": {
+          "median_m2_price": 721970,
+          "count": 86
+        },
+        "2025Q2": {
+          "median_m2_price": 737500,
+          "count": 81
+        },
+        "2025Q3": {
+          "median_m2_price": 876923,
+          "count": 83
+        }
+      }
+    },
+    "板橋区": {
+      "ward_code": "13119",
+      "median_m2_price": 720000,
+      "mean_m2_price": 725771,
+      "sample_count": 316,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 671429,
+          "count": 85
+        },
+        "2025Q1": {
+          "median_m2_price": 714286,
+          "count": 84
+        },
+        "2025Q2": {
+          "median_m2_price": 741429,
+          "count": 78
+        },
+        "2025Q3": {
+          "median_m2_price": 738462,
+          "count": 69
+        }
+      }
+    },
+    "練馬区": {
+      "ward_code": "13120",
+      "median_m2_price": 685714,
+      "mean_m2_price": 714556,
+      "sample_count": 243,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 770330,
+          "count": 68
+        },
+        "2025Q1": {
+          "median_m2_price": 696154,
+          "count": 60
+        },
+        "2025Q2": {
+          "median_m2_price": 627273,
+          "count": 61
+        },
+        "2025Q3": {
+          "median_m2_price": 692857,
+          "count": 54
+        }
+      }
+    },
+    "足立区": {
+      "ward_code": "13121",
+      "median_m2_price": 528571,
+      "mean_m2_price": 567824,
+      "sample_count": 259,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 551923,
+          "count": 74
+        },
+        "2025Q1": {
+          "median_m2_price": 500000,
+          "count": 59
+        },
+        "2025Q2": {
+          "median_m2_price": 496154,
+          "count": 66
+        },
+        "2025Q3": {
+          "median_m2_price": 540179,
+          "count": 60
+        }
+      }
+    },
+    "葛飾区": {
+      "ward_code": "13122",
+      "median_m2_price": 562500,
+      "mean_m2_price": 629814,
+      "sample_count": 279,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 614286,
+          "count": 77
+        },
+        "2025Q1": {
+          "median_m2_price": 558571,
+          "count": 66
+        },
+        "2025Q2": {
+          "median_m2_price": 545000,
+          "count": 72
+        },
+        "2025Q3": {
+          "median_m2_price": 551923,
+          "count": 64
+        }
+      }
+    },
+    "江戸川区": {
+      "ward_code": "13123",
+      "median_m2_price": 546667,
+      "mean_m2_price": 566120,
+      "sample_count": 181,
+      "quarterly": {
+        "2024Q4": {
+          "median_m2_price": 553333,
+          "count": 60
+        },
+        "2025Q1": {
+          "median_m2_price": 560000,
+          "count": 51
+        },
+        "2025Q2": {
+          "median_m2_price": 477778,
+          "count": 39
+        },
+        "2025Q3": {
+          "median_m2_price": 626667,
+          "count": 31
+        }
+      }
+    }
+  },
+  "updated_at": "2026-02-13T00:02:54",
+  "periods_covered": [
+    "2024Q4",
+    "2025Q1",
+    "2025Q2",
+    "2025Q3"
+  ],
+  "data_source": "不動産情報ライブラリ（国土交通省）"
+}

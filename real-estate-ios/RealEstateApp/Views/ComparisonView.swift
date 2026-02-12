@@ -44,6 +44,15 @@ struct ComparisonView: View {
                         if listings.contains(where: { $0.ssValueJudgment != nil }) {
                             labelCell("割安判定").accessibilityLabel("項目、割安判定")
                         }
+                        if listings.contains(where: { $0.hasMarketData }) {
+                            labelCell("成約相場比").accessibilityLabel("項目、成約相場比")
+                        }
+                        if listings.contains(where: { $0.hasMarketData }) {
+                            labelCell("相場差額").accessibilityLabel("項目、相場差額")
+                        }
+                        if listings.contains(where: { $0.hasMarketData }) {
+                            labelCell("エリア傾向").accessibilityLabel("項目、エリア傾向")
+                        }
                     }
                     .frame(width: 90)
 
@@ -87,6 +96,15 @@ struct ComparisonView: View {
                             }
                             if listings.contains(where: { $0.ssValueJudgment != nil }) {
                                 valueCell(listing.ssValueJudgment ?? "—")
+                            }
+                            if listings.contains(where: { $0.hasMarketData }) {
+                                valueCell(listing.parsedMarketData?.priceRatioDisplay ?? "—")
+                            }
+                            if listings.contains(where: { $0.hasMarketData }) {
+                                valueCell(listing.parsedMarketData?.priceDiffDisplay ?? "—")
+                            }
+                            if listings.contains(where: { $0.hasMarketData }) {
+                                valueCell(listing.parsedMarketData?.trendDisplay ?? "—")
                             }
                         }
                         .frame(width: 140)
