@@ -57,6 +57,17 @@ jobs:
           chmod +x scripts/update_listings.sh
           ./scripts/update_listings.sh --no-git  # レポート・latest/previous まで。Notion は次ステップで実行
 
+      # パイプライン失敗時もログを Firestore にアップロード（ERR trap が効かないケース用のフォールバック）
+      - name: Upload scraping log on failure
+        if: failure()
+        working-directory: scraping-tool
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -f results/scraping_log.txt ]; then
+            python3 upload_scraping_log.py results/scraping_log.txt --status error || echo "ログアップロード失敗"
+          fi
+
       # スクリプトで「変更なし」と判断されると早期終了し、latest.json/report を更新しない。
       # その場合 git に変更が残らないため changed=false となり、Slack・コミットはスキップされる。
       - name: Check for changes
