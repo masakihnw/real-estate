@@ -675,19 +675,77 @@ struct HazardMapView: UIViewRepresentable {
                 stack.addArrangedSubview(detailLabel)
             }
 
-            // 階数・権利形態
-            let subParts = [
+            // 階数・総戸数
+            let subTextParts = [
                 listing.floorDisplay != "—" ? listing.floorDisplay : nil,
-                listing.ownershipShort != "—" ? listing.ownershipShort : nil,
                 listing.totalUnitsDisplay != "—" ? listing.totalUnitsDisplay : nil
             ].compactMap { $0 }
-            if !subParts.isEmpty {
+
+            // 所有権/定借バッジ付き行
+            let subRowStack = UIStackView()
+            subRowStack.axis = .horizontal
+            subRowStack.spacing = 4
+            subRowStack.alignment = .center
+
+            if !subTextParts.isEmpty {
                 let subLabel = UILabel()
-                subLabel.text = subParts.joined(separator: " ・ ")
+                subLabel.text = subTextParts.joined(separator: " ・ ")
                 subLabel.font = .systemFont(ofSize: 10)
                 subLabel.textColor = .tertiaryLabel
                 subLabel.numberOfLines = 1
-                stack.addArrangedSubview(subLabel)
+                subRowStack.addArrangedSubview(subLabel)
+            }
+
+            // 所有権/定借バッジ（アイコン＋テキスト）
+            let ownershipType = listing.ownershipType
+            if ownershipType != .unknown {
+                let badgeStack = UIStackView()
+                badgeStack.axis = .horizontal
+                badgeStack.spacing = 2
+                badgeStack.alignment = .center
+
+                let iconName = ownershipType == .owned ? "shield.checkered" : "clock.arrow.circlepath"
+                let badgeColor: UIColor = ownershipType == .owned ? .systemBlue : .systemOrange
+                let badgeText = ownershipType == .owned ? "所有権" : "定借"
+
+                let iconView = UIImageView(image: UIImage(systemName: iconName, withConfiguration: UIImage.SymbolConfiguration(pointSize: 8, weight: .bold)))
+                iconView.tintColor = badgeColor
+                iconView.translatesAutoresizingMaskIntoConstraints = false
+                iconView.widthAnchor.constraint(equalToConstant: 10).isActive = true
+                iconView.heightAnchor.constraint(equalToConstant: 10).isActive = true
+                iconView.contentMode = .scaleAspectFit
+                badgeStack.addArrangedSubview(iconView)
+
+                let textLabel = UILabel()
+                textLabel.text = badgeText
+                textLabel.font = .systemFont(ofSize: 9, weight: .semibold)
+                textLabel.textColor = badgeColor
+                badgeStack.addArrangedSubview(textLabel)
+
+                // バッジ背景
+                let badgeContainer = UIView()
+                badgeContainer.backgroundColor = badgeColor.withAlphaComponent(0.10)
+                badgeContainer.layer.cornerRadius = 4
+                badgeContainer.translatesAutoresizingMaskIntoConstraints = false
+                badgeStack.translatesAutoresizingMaskIntoConstraints = false
+                badgeContainer.addSubview(badgeStack)
+                NSLayoutConstraint.activate([
+                    badgeStack.leadingAnchor.constraint(equalTo: badgeContainer.leadingAnchor, constant: 5),
+                    badgeStack.trailingAnchor.constraint(equalTo: badgeContainer.trailingAnchor, constant: -5),
+                    badgeStack.topAnchor.constraint(equalTo: badgeContainer.topAnchor, constant: 1),
+                    badgeStack.bottomAnchor.constraint(equalTo: badgeContainer.bottomAnchor, constant: -1),
+                ])
+
+                subRowStack.addArrangedSubview(badgeContainer)
+            }
+
+            // スペーサーで左寄せ
+            let spacer = UIView()
+            spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+            subRowStack.addArrangedSubview(spacer)
+
+            if subRowStack.arrangedSubviews.count > 1 { // spacer以外がある場合のみ追加
+                stack.addArrangedSubview(subRowStack)
             }
 
             // ハザード情報

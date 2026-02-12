@@ -209,7 +209,12 @@ struct ListingDetailView: View {
             }
             DetailRow(title: "総戸数", value: listing.totalUnits.map { "\($0)戸" } ?? "—")
             if let ownership = listing.ownership, !ownership.isEmpty {
-                DetailRow(title: "権利形態", value: ownership)
+                HStack {
+                    Text("権利形態")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    OwnershipBadge(listing: listing, size: .large)
+                }
             }
             DetailRow(title: "種別", value: listing.isShinchiku ? "新築マンション" : "中古マンション")
         }
@@ -841,9 +846,88 @@ struct ListingDetailView: View {
             Text("※ 国土地理院ハザードマップ・東京都地域危険度データに基づく自動判定です")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
+
+            // 総合危険度の見方ガイド
+            hazardGuide
         }
         .padding(14)
         .tintedGlassBackground(tint: .orange, tintOpacity: 0.03, borderOpacity: 0.08)
+    }
+
+    /// ハザード解説ガイド — 各ランク・各ハザード項目の実際の影響度を説明
+    @ViewBuilder
+    private var hazardGuide: some View {
+        DisclosureGroup {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("建物倒壊危険度と火災危険度を総合的に評価した東京都の公式指標です。地震発生時の相対的な危険性を5段階で示します。")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    hazardRankRow(rank: 1, color: DesignSystem.positiveColor, text: "危険性が低い — 特段の心配は不要")
+                    hazardRankRow(rank: 2, color: .yellow, text: "やや注意 — 平均的なリスク。一般的な備えで十分")
+                    hazardRankRow(rank: 3, color: .orange, text: "注意が必要 — 耐震性・周辺環境を要確認")
+                    hazardRankRow(rank: 4, color: DesignSystem.negativeColor, text: "危険 — 木造密集地・狭い道路が多い地域。保険の検討を推奨")
+                    hazardRankRow(rank: 5, color: DesignSystem.negativeColor, text: "非常に危険 — 最優先で防災対策が必要な地域")
+                }
+
+                Divider()
+
+                Text("ハザードマップ各項目の影響")
+                    .font(.caption.weight(.semibold))
+
+                VStack(alignment: .leading, spacing: 4) {
+                    hazardItemRow(icon: "drop.fill", text: "洪水浸水 — 河川氾濫時の浸水想定区域。高層階なら直接被害は限定的だが、1階・地下駐車場に注意")
+                    hazardItemRow(icon: "water.waves", text: "高潮浸水 — 台風等による高潮の浸水想定区域。湾岸エリアで該当が多い")
+                    hazardItemRow(icon: "waveform.path", text: "液状化 — 地震時に地盤が液状化するリスク。杭基礎のマンションなら建物自体の倒壊リスクは低いが、周辺インフラに影響")
+                    hazardItemRow(icon: "mountain.2.fill", text: "土砂災害 — 崖崩れ・土石流の警戒区域。該当する場合は重大リスク")
+                    hazardItemRow(icon: "tsunami", text: "津波浸水 — 津波による浸水想定区域。高層階への避難が可能か要確認")
+                }
+            }
+            .padding(.top, 6)
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "book.fill")
+                    .font(.caption2)
+                Text("総合危険度の見方")
+                    .font(.caption.weight(.semibold))
+                Text("— 東京都都市整備局")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            .foregroundStyle(.orange)
+        }
+    }
+
+    private func hazardRankRow(rank: Int, color: Color, text: String) -> some View {
+        HStack(alignment: .top, spacing: 6) {
+            Text("ランク\(rank)")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(color)
+                .padding(.horizontal, 4)
+                .padding(.vertical, 1)
+                .background(color.opacity(0.15))
+                .clipShape(RoundedRectangle(cornerRadius: 3))
+                .frame(width: 48)
+            Text(text)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func hazardItemRow(icon: String, text: String) -> some View {
+        HStack(alignment: .top, spacing: 6) {
+            Image(systemName: icon)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .frame(width: 14)
+            Text(text)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     private func hazardIconColor(_ severity: Listing.HazardSeverity) -> Color {

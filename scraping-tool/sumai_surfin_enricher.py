@@ -53,29 +53,41 @@ def _create_session() -> requests.Session:
     return s
 
 
-def login(session: requests.Session, user: str, password: str) -> bool:
-    """住まいサーフィンにログインし、セッション Cookie を取得する。"""
-    try:
-        # ログインページを取得して CSRF トークン等を確認（リトライ付き）
-        resp = None
-        for attempt in range(REQUEST_RETRIES):
-            try:
-                resp = session.get(LOGIN_URL, timeout=30)
-                if resp.status_code == 429:
-                    wait = int(resp.headers.get("Retry-After", 60))
-                    if attempt < REQUEST_RETRIES - 1:
-                        time.sleep(wait)
-                        continue
-                if 500 <= resp.status_code < 600 and attempt < REQUEST_RETRIES - 1:
-                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
-                    continue
-                resp.raise_for_status()
-                break
-            except requests.RequestException as e:
+def _request_with_retry(session: requests.Session, method: str, url: str, **kwargs) -> Optional[requests.Response]:
+    """リトライ付き HTTP リクエスト（GET/POST 共通ヘルパー）。"""
+    resp = None
+    for attempt in range(REQUEST_RETRIES):
+        try:
+            resp = session.request(method, url, timeout=30, **kwargs)
+            if resp.status_code == 429:
+                wait = int(resp.headers.get("Retry-After", 60))
                 if attempt < REQUEST_RETRIES - 1:
-                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
-                else:
-                    raise
+                    time.sleep(wait)
+                    continue
+            if 500 <= resp.status_code < 600 and attempt < REQUEST_RETRIES - 1:
+                time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+                continue
+            resp.raise_for_status()
+            break
+        except requests.RequestException:
+            if attempt < REQUEST_RETRIES - 1:
+                time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
+            else:
+                raise
+    return resp
+
+
+def login(session: requests.Session, user: str, password: str) -> bool:
+    """住まいサーフィンにログインし、セッション Cookie を取得する。
+
+    認証フロー:
+      1. account.sumai-surfin.com/login に POST → ssan Cookie 取得
+      2. www.sumai-surfin.com/member/ にアクセス → OAuth authorize
+         → auth code → code exchange → www 側セッション確立
+    """
+    try:
+        # ── Step 1: ログインページを取得して CSRF トークン等を確認 ──
+        resp = _request_with_retry(session, "GET", LOGIN_URL)
         if resp is None:
             return False
 
@@ -106,7 +118,7 @@ def login(session: requests.Session, user: str, password: str) -> bool:
         form_data[username_field] = user
         form_data[password_field] = password
 
-        # POST でログイン（リトライ付き）
+        # POST 先
         action = LOGIN_URL
         if form_tag and form_tag.get("action"):
             a = form_tag["action"]
@@ -115,34 +127,36 @@ def login(session: requests.Session, user: str, password: str) -> bool:
             elif a.startswith("/"):
                 action = "https://account.sumai-surfin.com" + a
 
-        resp2 = None
-        for attempt in range(REQUEST_RETRIES):
-            try:
-                resp2 = session.post(action, data=form_data, timeout=30, allow_redirects=True)
-                if resp2.status_code == 429:
-                    wait = int(resp2.headers.get("Retry-After", 60))
-                    if attempt < REQUEST_RETRIES - 1:
-                        time.sleep(wait)
-                        continue
-                if 500 <= resp2.status_code < 600 and attempt < REQUEST_RETRIES - 1:
-                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
-                    continue
-                resp2.raise_for_status()
-                break
-            except requests.RequestException as e:
-                if attempt < REQUEST_RETRIES - 1:
-                    time.sleep(HTTP_BACKOFF_SEC * (attempt + 1))
-                else:
-                    raise
+        # ── Step 2: POST でログイン（リダイレクトは手動制御） ──
+        resp2 = _request_with_retry(session, "POST", action, data=form_data, allow_redirects=False)
         if resp2 is None:
             return False
 
-        # ログイン成功判定: マイページ or ログアウトリンクがある
-        if "ログアウト" in resp2.text or "mypage" in resp2.url:
+        # POST 成功判定: 302 かつ ssan Cookie が存在
+        ssan_present = any(
+            c.name == "ssan" and "account" in c.domain
+            for c in session.cookies
+        )
+        if resp2.status_code not in (301, 302) and not ssan_present:
+            # リダイレクトなし & ssan Cookie もない → 認証失敗
+            print("住まいサーフィン: ログイン失敗（認証 Cookie が取得できません）", file=sys.stderr)
+            return False
+
+        # ── Step 3: OAuth SSO フローで www 側セッションを確立 ──
+        # www.sumai-surfin.com/member/ → account の /auth/authorize
+        # → auth code → www の /member/auth/code.php → セッション Cookie 設定
+        sso_resp = _request_with_retry(
+            session, "GET", f"{BASE_URL}/member/", allow_redirects=True,
+        )
+        if sso_resp is None:
+            print("住まいサーフィン: SSO フロー失敗（/member/ にアクセスできません）", file=sys.stderr)
+            return False
+
+        if "ログアウト" in sso_resp.text or "mypage" in sso_resp.url:
             print("住まいサーフィン: ログイン成功", file=sys.stderr)
             return True
 
-        print("住まいサーフィン: ログイン失敗（ログアウトリンクが見つかりません）", file=sys.stderr)
+        print("住まいサーフィン: ログイン失敗（SSO 後にログアウトリンクが見つかりません）", file=sys.stderr)
         return False
 
     except Exception as e:
