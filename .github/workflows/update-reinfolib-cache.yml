@@ -64,10 +64,10 @@ jobs:
               echo "run_population=false" >> $GITHUB_OUTPUT
             fi
           else
-            echo "run_prices=$( [ '$TARGET' = 'prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
-            echo "run_station_prices=$( [ '$TARGET' = 'station_prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
-            echo "run_land_prices=$( [ '$TARGET' = 'land_prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
-            echo "run_population=$( [ '$TARGET' = 'population' ] && echo true || echo false )" >> $GITHUB_OUTPUT
+            echo "run_prices=$( [ "$TARGET" = 'prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
+            echo "run_station_prices=$( [ "$TARGET" = 'station_prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
+            echo "run_land_prices=$( [ "$TARGET" = 'land_prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
+            echo "run_population=$( [ "$TARGET" = 'population' ] && echo true || echo false )" >> $GITHUB_OUTPUT
           fi
 
       - name: Build prices cache (成約価格)
@@ -91,7 +91,8 @@ jobs:
           if [ -n "$REINFOLIB_API_KEY" ]; then
             python3 scripts/fetch_station_prices.py --direct-api --resume --workers 8
           else
-            echo "REINFOLIB_API_KEY 未設定のためスキップ"
+            echo "REINFOLIB_API_KEY 未設定 → MCP経由で取得"
+            python3 scripts/fetch_station_prices.py --resume --workers 8
           fi
 
       - name: Build land prices cache (地価公示)
