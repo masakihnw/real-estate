@@ -12,11 +12,11 @@ from pathlib import Path
 from typing import Optional, Tuple, List
 
 # 未登録駅時の概算: 最寄り駅→会社最寄り駅のデフォルト分数＋会社最寄り駅→会社の徒歩
-# M3: 虎ノ門駅が会社最寄り（0分）、PG: 半蔵門駅が会社最寄り（2分）
+# M3: 神谷町駅が会社最寄り（7分）、PG: 半蔵門駅が会社最寄り（5分）
 ESTIMATE_STATION_TO_OFFICE_M3_MIN = 30
-ESTIMATE_OFFICE_STATION_WALK_M3_MIN = 0
+ESTIMATE_OFFICE_STATION_WALK_M3_MIN = 7
 ESTIMATE_STATION_TO_OFFICE_PG_MIN = 30
-ESTIMATE_OFFICE_STATION_WALK_PG_MIN = 2
+ESTIMATE_OFFICE_STATION_WALK_PG_MIN = 5
 
 # 徒歩時間の補正係数
 # 不動産表示基準は 80m/分（直線的）だが、Google Maps の実測値は
