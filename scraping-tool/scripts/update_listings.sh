@@ -176,12 +176,19 @@ fi
 #   SUMAI_USER / SUMAI_PASS 設定時: Web スクレイピング + レーダーデータ生成
 #   未設定時: 既存 ss_*/walk_min からレーダーデータのみ補完（ログイン不要）
 echo "住まいサーフィン enrichment 実行中..." >&2
-python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
+python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" --property-type chuko || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
 if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
+    python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" --property-type shinchiku || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
 fi
 
-# 4.7b. enrichment 完了後にレポートを最終再生成（ハザード・住まいサーフィン情報を反映）
+# 4.7c. 通勤時間 enrichment（駅名ベースの概算通勤時間を付与。iOS で MKDirections 計算前のデフォルト値）
+echo "通勤時間 enrichment 実行中..." >&2
+python3 commute_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "通勤時間 enrichment (中古) 失敗（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 commute_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "通勤時間 enrichment (新築) 失敗（続行）" >&2
+fi
+
+# 4.7d. enrichment 完了後にレポートを最終再生成（ハザード・住まいサーフィン情報を反映）
 echo "レポートを最終再生成（enrichment 反映）..." >&2
 if [ -f "${OUTPUT_DIR}/previous.json" ]; then
     python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG

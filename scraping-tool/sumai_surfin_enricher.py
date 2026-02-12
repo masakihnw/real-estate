@@ -21,7 +21,7 @@ import sys
 import time
 from pathlib import Path
 from typing import Optional
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus  # noqa: F401 — 将来の拡張用に保持
 
 import requests
 from bs4 import BeautifulSoup
@@ -34,7 +34,12 @@ HTTP_BACKOFF_SEC = 2
 
 BASE_URL = "https://www.sumai-surfin.com"
 LOGIN_URL = "https://account.sumai-surfin.com/login"
-SEARCH_URL = f"{BASE_URL}/search/"
+# 2026-02 サイトリニューアルで検索 URL が変更:
+#   旧: /search/?q=NAME
+#   新: /search/result/?prefecture_id=13&keyword=NAME
+SEARCH_RESULT_URL = f"{BASE_URL}/search/result/"
+# 東京都の prefecture_id（全物件が東京都前提）
+TOKYO_PREFECTURE_ID = "13"
 
 CACHE_PATH = Path(__file__).parent / "data" / "sumai_surfin_cache.json"
 
@@ -103,20 +108,31 @@ def login(session: requests.Session, user: str, password: str) -> bool:
                 if name:
                     form_data[name] = val
 
-        # ユーザー名・パスワードフィールド名を検出
-        username_field = "username"
-        password_field = "password"
-        if form_tag:
-            for inp in form_tag.find_all("input"):
-                t = inp.get("type", "").lower()
-                n = inp.get("name", "")
-                if t == "text" and n:
-                    username_field = n
-                elif t == "password" and n:
-                    password_field = n
+        # ユーザー名・パスワードフィールド名
+        # 2026-02: サイトリニューアルで JS ベースのログインに変更された。
+        # フォームタグの有無に関係なく、実際のフィールド名を使用する。
+        # 検出を試みるが、失敗時は既知のフィールド名にフォールバック。
+        username_field = None
+        password_field = None
+        # form タグ内、または form タグがなければページ全体から検出
+        search_root = form_tag or soup
+        for inp in search_root.find_all("input"):
+            t = inp.get("type", "").lower()
+            n = inp.get("name", "")
+            if t == "text" and n and not username_field:
+                username_field = n
+            elif t == "password" and n and not password_field:
+                password_field = n
+        # フォールバック: 住まいサーフィンの既知フィールド名
+        if not username_field:
+            username_field = "login_name"
+        if not password_field:
+            password_field = "login_password"
 
         form_data[username_field] = user
         form_data[password_field] = password
+
+        print(f"住まいサーフィン: ログイン試行 (user_field={username_field}, pass_field={password_field})", file=sys.stderr)
 
         # POST 先
         action = LOGIN_URL
@@ -132,14 +148,22 @@ def login(session: requests.Session, user: str, password: str) -> bool:
         if resp2 is None:
             return False
 
-        # POST 成功判定: 302 かつ ssan Cookie が存在
+        # POST 後のリダイレクトを手動で追跡（JS ベースログインの場合もリダイレクトが発生し得る）
+        if resp2.status_code in (301, 302, 303, 307):
+            redirect_url = resp2.headers.get("Location", "")
+            if redirect_url:
+                if redirect_url.startswith("/"):
+                    redirect_url = "https://account.sumai-surfin.com" + redirect_url
+                _request_with_retry(session, "GET", redirect_url, allow_redirects=True)
+
+        # POST 成功判定: ssan Cookie が存在
         ssan_present = any(
             c.name == "ssan" and "account" in c.domain
             for c in session.cookies
         )
-        if resp2.status_code not in (301, 302) and not ssan_present:
-            # リダイレクトなし & ssan Cookie もない → 認証失敗
-            print("住まいサーフィン: ログイン失敗（認証 Cookie が取得できません）", file=sys.stderr)
+
+        if not ssan_present and resp2.status_code not in (200, 301, 302, 303, 307):
+            print(f"住まいサーフィン: ログイン失敗（HTTP {resp2.status_code}、ssan Cookie なし）", file=sys.stderr)
             return False
 
         # ── Step 3: OAuth SSO フローで www 側セッションを確立 ──
@@ -156,11 +180,21 @@ def login(session: requests.Session, user: str, password: str) -> bool:
             print("住まいサーフィン: ログイン成功", file=sys.stderr)
             return True
 
+        # フォールバック: 検索ページでログイン状態を確認
+        check_resp = _request_with_retry(session, "GET", f"{BASE_URL}/search/", allow_redirects=True)
+        if check_resp and "ログアウト" in check_resp.text:
+            print("住まいサーフィン: ログイン成功（検索ページで確認）", file=sys.stderr)
+            return True
+
         print("住まいサーフィン: ログイン失敗（SSO 後にログアウトリンクが見つかりません）", file=sys.stderr)
+        print(f"  → ssan Cookie: {ssan_present}, total cookies: {len(session.cookies)}", file=sys.stderr)
+        print(f"  → SSO URL: {sso_resp.url}", file=sys.stderr)
         return False
 
     except Exception as e:
         print(f"住まいサーフィン: ログインエラー: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
         return False
 
 
@@ -186,6 +220,8 @@ def search_property(session: requests.Session, name: str, cache: dict) -> Option
     """
     物件名で住まいサーフィンを検索し、/re/{id}/ の URL を返す。
     見つからなければ None。
+
+    2026-02 更新: 検索 URL が /search/?q= から /search/result/?prefecture_id=13&keyword= に変更。
     """
     # キャッシュ確認
     clean_name = _normalize_name(name)
@@ -198,11 +234,14 @@ def search_property(session: requests.Session, name: str, cache: dict) -> Option
     time.sleep(DELAY)
 
     try:
-        params = {"q": name}
+        params = {
+            "prefecture_id": TOKYO_PREFECTURE_ID,
+            "keyword": name,
+        }
         resp = None
         for attempt in range(REQUEST_RETRIES):
             try:
-                resp = session.get(SEARCH_URL, params=params, timeout=30)
+                resp = session.get(SEARCH_RESULT_URL, params=params, timeout=30)
                 if resp.status_code == 429:
                     wait = int(resp.headers.get("Retry-After", 60))
                     if attempt < REQUEST_RETRIES - 1:
@@ -248,6 +287,12 @@ def search_property(session: requests.Session, name: str, cache: dict) -> Option
         # 閾値: 50% 以上の一致で採用
         if best_score >= 0.5 and best_url:
             cache[clean_name] = best_url
+
+            # 検索結果カードからインラインデータを抽出（値上がり率等）
+            inline = _extract_search_result_inline(soup, best_url)
+            if inline:
+                cache[clean_name + "__inline"] = inline
+
             return best_url
 
         # 見つからなかった
@@ -257,6 +302,20 @@ def search_property(session: requests.Session, name: str, cache: dict) -> Option
     except Exception as e:
         print(f"住まいサーフィン: 検索エラー ({name}): {e}", file=sys.stderr)
         return None
+
+
+def _extract_search_result_inline(soup: BeautifulSoup, prop_url: str) -> dict:
+    """検索結果カードから値上がり率・沖式中古時価をインライン抽出する。"""
+    result: dict = {}
+    page_text = soup.get_text()
+
+    # 検索結果カードの値上がり率: "値上がり率 79.2%" or "値上がり率 XX.X%"
+    # ただし "XX.X%" は非ログイン時のマスク値なので除外
+    m = re.search(r"値上(?:が|り)り率\s*(\d+(?:\.\d+)?)\s*[%％]", page_text)
+    if m:
+        result["appreciation_rate"] = float(m.group(1))
+
+    return result
 
 
 def _normalize_name(s: str) -> str:
@@ -283,10 +342,13 @@ def _name_similarity(a: str, b: str) -> float:
 
 # ──────────────────────────── ページパース ────────────────────────────
 
-def parse_property_page(session: requests.Session, url: str) -> dict:
+def parse_property_page(session: requests.Session, url: str,
+                        property_type: str = "chuko") -> dict:
     """
     住まいサーフィンの物件ページ (/re/{id}/) をパースし、
     評価データの dict を返す。
+
+    property_type: "chuko" (中古) or "shinchiku" (新築)
     """
     result: dict = {"ss_sumai_surfin_url": url}
 
@@ -317,17 +379,18 @@ def parse_property_page(session: requests.Session, url: str) -> dict:
         print(f"住まいサーフィン: ページ取得エラー ({url}): {e}", file=sys.stderr)
         return result
 
-    # ── 沖式儲かる確率 ──
-    profit_pct = _extract_profit_pct(soup, html)
-    if profit_pct is not None:
-        result["ss_profit_pct"] = profit_pct
+    # ── 沖式儲かる確率（新築のみ — 中古には存在しない） ──
+    if property_type == "shinchiku":
+        profit_pct = _extract_profit_pct(soup, html)
+        if profit_pct is not None:
+            result["ss_profit_pct"] = profit_pct
 
     # ── 沖式新築時価 / 沖式時価 (70m2換算) ──
     oki_price = _extract_oki_price(soup, html)
     if oki_price is not None:
         result["ss_oki_price_70m2"] = oki_price
 
-    # ── 割安判定 ──
+    # ── 固定費判定（割安/適正/割高） ──
     value_judgment = _extract_value_judgment(soup, html)
     if value_judgment:
         result["ss_value_judgment"] = value_judgment
@@ -342,7 +405,7 @@ def parse_property_page(session: requests.Session, url: str) -> dict:
     if ward_rank:
         result["ss_ward_rank"] = ward_rank
 
-    # ── 中古値上がり率 (%) ──
+    # ── 中古値上がり率 (%) — 沖式資産性評価セクションから取得 ──
     appreciation = _extract_appreciation_rate(soup, html)
     if appreciation is not None:
         result["ss_appreciation_rate"] = appreciation
@@ -360,6 +423,11 @@ def parse_property_page(session: requests.Session, url: str) -> dict:
     # ── 値上がりシミュレーション (5年後/10年後 × ベスト/標準/ワースト) ──
     sim_data = _extract_simulation_data(soup, html)
     result.update(sim_data)
+
+    # ── 過去の相場推移テーブル ──
+    past_trends = _extract_past_market_trends(soup, html)
+    if past_trends:
+        result["ss_past_market_trends"] = json.dumps(past_trends, ensure_ascii=False)
 
     # ── レーダーチャート用データ（ランキング偏差値 + JS チャート） ──
     radar_data = _extract_radar_chart_data(soup, html)
@@ -405,15 +473,26 @@ def _extract_oki_price(soup: BeautifulSoup, html: str) -> Optional[int]:
 
 
 def _extract_value_judgment(soup: BeautifulSoup, html: str) -> Optional[str]:
-    """割安判定を抽出。"""
-    for keyword in ("割安", "適正", "割高"):
-        # 判定結果としてキーワードが含まれるか
-        m = re.search(rf"割安判定.*?({keyword})", html, re.DOTALL)
-        if m:
+    """
+    固定費判定（割安/適正/割高）を抽出する。
+    HTML 上の「【沖式】固定費判定★-円★割安」等のパターンから取得。
+    ※ 販売価格の割安判定はエビデンス提出が必要で自動取得不可。
+    """
+    # ── パターン1: 「固定費判定」セクションの判定結果 ──
+    # HTML 例: 固定費判定★-円★割安  or  固定費判定 16,900円 割安
+    m = re.search(
+        r"固定費判定.{0,60}?(やや割安|やや割高|割安|割高|適正)",
+        html, re.DOTALL,
+    )
+    if m:
+        return m.group(1)
+
+    # ── パターン2: 「沖式」を含む判定結果（ページ上半分のみ検索） ──
+    half = html[:len(html) // 2]
+    for keyword in ("やや割安", "やや割高", "割安", "割高", "適正"):
+        if re.search(rf"沖式.*?判定.{{0,80}}?{keyword}", half, re.DOTALL):
             return keyword
-    # 「お買い得」系の表現
-    if re.search(r"お買い得", html):
-        return "割安"
+
     return None
 
 
@@ -438,39 +517,39 @@ def _extract_rank(soup: BeautifulSoup, keyword: str, html: str) -> Optional[str]
 
 
 def _extract_appreciation_rate(soup: BeautifulSoup, html: str) -> Optional[float]:
-    """中古値上がり率 (%) を抽出。プラスなら +18.5、マイナスなら -3.2 のような float。"""
-    # パターン1: "中古値上がり率" 付近の "XX%" を探す
-    m = re.search(r"中古値上がり率.*?([+-]?\d+(?:\.\d+)?)\s*[%％]", html, re.DOTALL)
+    """
+    中古値上がり率 (%) を抽出。
+    「沖式資産性評価」セクションから当該物件固有の値を取得する。
+    （周辺マンション比較テーブルの値を誤マッチしないよう注意）
+    """
+    # ── 戦略 1: 「沖式資産性評価」セクション内の値上がり率 ──
+    # 売却タブの「沖式資産性評価」見出し以降にある「中古値上がり率 XX%」
+    oki_pos = html.find("沖式資産性評価")
+    if oki_pos >= 0:
+        # セクション開始から 500 文字以内を検索（他セクションに入らないよう制限）
+        search_area = html[oki_pos:oki_pos + 500]
+        m = re.search(r"中古値上がり率.*?(\d+(?:\.\d+)?)\s*[%％]", search_area, re.DOTALL)
+        if m:
+            return float(m.group(1))
+
+    # ── 戦略 2: 「過去の相場推移」セクション周辺 ──
+    # 過去の相場推移見出しの直前にある値上がり率
+    trend_pos = html.find("過去の相場推移")
+    if trend_pos > 200:
+        # 見出しの 300 文字前から見出しまでの区間を検索
+        search_area = html[max(0, trend_pos - 300):trend_pos]
+        m = re.search(r"値上がり率.*?(\d+(?:\.\d+)?)\s*[%％]", search_area, re.DOTALL)
+        if m:
+            return float(m.group(1))
+
+    # ── 戦略 3: 周辺マンションテーブルの前にある値上がり率 ──
+    # 「周辺の中古マンション相場」セクションより前の部分だけを検索
+    surround_pos = html.find("周辺の中古マンション相場")
+    search_area = html[:surround_pos] if surround_pos > 0 else html[:5000]
+    m = re.search(r"中古値上がり率.*?(\d+(?:\.\d+)?)\s*[%％]", search_area, re.DOTALL)
     if m:
         return float(m.group(1))
 
-    # パターン2: テーブル行の中で「値上がり率」ラベルの隣セルから取得
-    for el in soup.find_all(string=re.compile(r"値上がり率")):
-        parent = el.find_parent("td") or el.find_parent("th") or el.find_parent()
-        if parent:
-            # 隣の td を探す
-            next_td = parent.find_next_sibling("td")
-            if next_td:
-                num = re.search(r"([+-]?\d+(?:\.\d+)?)\s*[%％]", next_td.get_text())
-                if num:
-                    return float(num.group(1))
-            # 親コンテナ全体から数値を探す
-            container = parent.find_parent()
-            if container:
-                num = re.search(r"([+-]?\d+(?:\.\d+)?)\s*[%％]", container.get_text())
-                if num:
-                    return float(num.group(1))
-
-    # パターン3: "XX%" 表記でリンクテキスト内の値上がり率表
-    for row in soup.find_all("tr"):
-        cells = row.find_all(["td", "th"])
-        for i, cell in enumerate(cells):
-            if "値上がり率" in cell.get_text():
-                # 同じ行の次セルまたは同じセル内
-                for j in range(i + 1, len(cells)):
-                    num = re.search(r"([+-]?\d+(?:\.\d+)?)\s*[%％]", cells[j].get_text())
-                    if num:
-                        return float(num.group(1))
     return None
 
 
@@ -527,6 +606,70 @@ def _extract_purchase_judgment(soup: BeautifulSoup, html: str) -> Optional[str]:
                 if text:
                     return text
     return None
+
+
+def _extract_past_market_trends(soup: BeautifulSoup, html: str) -> Optional[list]:
+    """
+    過去の相場推移テーブルからデータを抽出する。
+    返却形式:
+      [
+        {"period": "2015年以前", "price_man": 11934, "area_m2": 70.2, "unit_price_man": 170},
+        {"period": "2016～2017年", "price_man": 11162, ...},
+        ...
+      ]
+    """
+    results: list = []
+
+    # 「過去の相場推移」セクションのテーブルを探す
+    # ページ内に 2 つ存在する場合があるので最初の 1 つを使用
+    for heading in soup.find_all(string=re.compile(r"過去の相場推移")):
+        parent = heading.find_parent()
+        if not parent:
+            continue
+
+        # 見出し以降の最も近い <table> を探す
+        table = parent.find_next("table")
+        if not table:
+            continue
+
+        rows = table.find_all("tr")
+        for row in rows:
+            cells = row.find_all(["td", "th"])
+            if len(cells) < 2:
+                continue
+
+            period = cells[0].get_text(strip=True)
+            price_text = cells[1].get_text(strip=True)
+
+            # 年代パターン: "2015年以前", "2016～2017年", "2022年～"
+            if not re.search(r"\d{4}年", period):
+                continue
+
+            entry: dict = {"period": period}
+
+            # 価格: "11,934万円/70.2㎡（㎡単価：170万）"
+            price_m = re.search(r"([\d,]+)万円", price_text)
+            if price_m:
+                entry["price_man"] = int(price_m.group(1).replace(",", ""))
+
+            # 面積: "70.2㎡"
+            area_m = re.search(r"(\d+(?:\.\d+)?)(?:㎡|m)", price_text)
+            if area_m:
+                entry["area_m2"] = float(area_m.group(1))
+
+            # ㎡単価: "㎡単価：170万"
+            unit_m = re.search(r"㎡単価[：:]?\s*(\d+)万", price_text)
+            if unit_m:
+                entry["unit_price_man"] = int(unit_m.group(1))
+
+            if "price_man" in entry:
+                results.append(entry)
+
+        # 最初のテーブルだけ処理
+        if results:
+            break
+
+    return results if results else None
 
 
 def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
@@ -806,8 +949,12 @@ def _finalize_radar_data(listing: dict) -> None:
 
 # ──────────────────────────── メイン処理 ────────────────────────────
 
-def enrich_listings(input_path: str, output_path: str, session: requests.Session) -> None:
-    """JSON ファイルの各物件に住まいサーフィンの評価データを付加する。"""
+def enrich_listings(input_path: str, output_path: str, session: requests.Session,
+                    property_type: str = "chuko") -> None:
+    """
+    JSON ファイルの各物件に住まいサーフィンの評価データを付加する。
+    property_type: "chuko" (中古) or "shinchiku" (新築)
+    """
     output_path = Path(output_path)
 
     with open(input_path, "r", encoding="utf-8") as f:
@@ -830,7 +977,12 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             continue
 
         # 既に enrichment 済みならスキップ
-        if listing.get("ss_profit_pct") is not None or listing.get("ss_oki_price_70m2") is not None:
+        # 新築は ss_profit_pct、中古は ss_oki_price_70m2 で判定
+        if property_type == "shinchiku":
+            already = listing.get("ss_profit_pct") is not None or listing.get("ss_oki_price_70m2") is not None
+        else:
+            already = listing.get("ss_oki_price_70m2") is not None or listing.get("ss_appreciation_rate") is not None
+        if already:
             skip_count += 1
             continue
 
@@ -842,8 +994,16 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             not_found_count += 1
             continue
 
+        # 検索結果ページのインラインデータを取得（値上がり率等のフォールバック用）
+        clean_name = _normalize_name(name)
+        inline_data = cache.get(clean_name + "__inline", {})
+
         # ページパース
-        data = parse_property_page(session, prop_url)
+        data = parse_property_page(session, prop_url, property_type=property_type)
+
+        # 検索結果のインラインデータで補完（detail ページで取得できなかった場合）
+        if "ss_appreciation_rate" not in data and inline_data.get("appreciation_rate"):
+            data["ss_appreciation_rate"] = inline_data["appreciation_rate"]
 
         # データをマージ
         for k, v in data.items():
@@ -856,6 +1016,10 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                 parts.append(f"儲かる確率: {data['ss_profit_pct']}%")
             if data.get("ss_appreciation_rate") is not None:
                 parts.append(f"値上がり率: {data['ss_appreciation_rate']}%")
+            if data.get("ss_value_judgment"):
+                parts.append(f"判定: {data['ss_value_judgment']}")
+            if data.get("ss_past_market_trends"):
+                parts.append("相場推移✓")
             if data.get("ss_favorite_count") is not None:
                 parts.append(f"お気に入り: {data['ss_favorite_count']}点")
             if data.get("ss_radar_data"):
@@ -925,9 +1089,21 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="住まいサーフィンの評価データで物件 JSON を enrichment する")
     ap.add_argument("--input", "-i", required=True, help="入力 JSON ファイル")
     ap.add_argument("--output", "-o", required=True, help="出力 JSON ファイル")
+    ap.add_argument("--property-type", choices=["chuko", "shinchiku"], default=None,
+                    help="物件タイプ（未指定時はファイル名から自動判定）")
     ap.add_argument("--finalize-radar-only", action="store_true",
                     help="Web スクレイピングなしでレーダーデータのみ補完する（SUMAI_USER/PASS 不要）")
     args = ap.parse_args()
+
+    # 物件タイプの自動判定
+    if args.property_type:
+        prop_type = args.property_type
+    elif "shinchiku" in args.input.lower():
+        prop_type = "shinchiku"
+    else:
+        prop_type = "chuko"
+
+    print(f"住まいサーフィン: 物件タイプ = {prop_type}", file=sys.stderr)
 
     if args.finalize_radar_only:
         finalize_radar_only(args.input, args.output)
@@ -950,7 +1126,7 @@ def main() -> None:
         finalize_radar_only(args.input, args.output)
         return
 
-    enrich_listings(args.input, args.output, session)
+    enrich_listings(args.input, args.output, session, property_type=prop_type)
 
 
 if __name__ == "__main__":
