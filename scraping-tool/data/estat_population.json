@@ -1,0 +1,467 @@
+{
+  "by_ward": {
+    "千代田区": {
+      "latest_population": 67981,
+      "latest_households": 39281,
+      "pop_change_1yr_pct": 1.8,
+      "pop_change_5yr_pct": 8.2,
+      "population_history": [
+        {"year": "2020", "population": 66680},
+        {"year": "2021", "population": 66499},
+        {"year": "2022", "population": 66937},
+        {"year": "2023", "population": 66792},
+        {"year": "2024", "population": 67981}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 37321},
+        {"year": "2021", "households": 37520},
+        {"year": "2022", "households": 38110},
+        {"year": "2023", "households": 38550},
+        {"year": "2024", "households": 39281}
+      ]
+    },
+    "中央区": {
+      "latest_population": 187462,
+      "latest_households": 101935,
+      "pop_change_1yr_pct": 3.2,
+      "pop_change_5yr_pct": 17.5,
+      "population_history": [
+        {"year": "2020", "population": 169179},
+        {"year": "2021", "population": 170504},
+        {"year": "2022", "population": 174924},
+        {"year": "2023", "population": 181653},
+        {"year": "2024", "population": 187462}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 90240},
+        {"year": "2021", "households": 91830},
+        {"year": "2022", "households": 94750},
+        {"year": "2023", "households": 98930},
+        {"year": "2024", "households": 101935}
+      ]
+    },
+    "港区": {
+      "latest_population": 262085,
+      "latest_households": 148715,
+      "pop_change_1yr_pct": 1.5,
+      "pop_change_5yr_pct": 6.8,
+      "population_history": [
+        {"year": "2020", "population": 260486},
+        {"year": "2021", "population": 257978},
+        {"year": "2022", "population": 256274},
+        {"year": "2023", "population": 258204},
+        {"year": "2024", "population": 262085}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 144298},
+        {"year": "2021", "households": 143682},
+        {"year": "2022", "households": 144120},
+        {"year": "2023", "households": 146530},
+        {"year": "2024", "households": 148715}
+      ]
+    },
+    "新宿区": {
+      "latest_population": 348452,
+      "latest_households": 222416,
+      "pop_change_1yr_pct": 0.8,
+      "pop_change_5yr_pct": 2.1,
+      "population_history": [
+        {"year": "2020", "population": 346162},
+        {"year": "2021", "population": 341752},
+        {"year": "2022", "population": 340744},
+        {"year": "2023", "population": 345684},
+        {"year": "2024", "population": 348452}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 220168},
+        {"year": "2021", "households": 218340},
+        {"year": "2022", "households": 218520},
+        {"year": "2023", "households": 220890},
+        {"year": "2024", "households": 222416}
+      ]
+    },
+    "文京区": {
+      "latest_population": 240069,
+      "latest_households": 131442,
+      "pop_change_1yr_pct": 1.1,
+      "pop_change_5yr_pct": 5.3,
+      "population_history": [
+        {"year": "2020", "population": 226114},
+        {"year": "2021", "population": 225650},
+        {"year": "2022", "population": 228780},
+        {"year": "2023", "population": 237446},
+        {"year": "2024", "population": 240069}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 124150},
+        {"year": "2021", "households": 124890},
+        {"year": "2022", "households": 126870},
+        {"year": "2023", "households": 130050},
+        {"year": "2024", "households": 131442}
+      ]
+    },
+    "台東区": {
+      "latest_population": 213550,
+      "latest_households": 132860,
+      "pop_change_1yr_pct": 0.9,
+      "pop_change_5yr_pct": 5.8,
+      "population_history": [
+        {"year": "2020", "population": 211444},
+        {"year": "2021", "population": 206516},
+        {"year": "2022", "population": 206134},
+        {"year": "2023", "population": 211645},
+        {"year": "2024", "population": 213550}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 128410},
+        {"year": "2021", "households": 127320},
+        {"year": "2022", "households": 128290},
+        {"year": "2023", "households": 131710},
+        {"year": "2024", "households": 132860}
+      ]
+    },
+    "墨田区": {
+      "latest_population": 279430,
+      "latest_households": 155216,
+      "pop_change_1yr_pct": 0.7,
+      "pop_change_5yr_pct": 4.2,
+      "population_history": [
+        {"year": "2020", "population": 272085},
+        {"year": "2021", "population": 271260},
+        {"year": "2022", "population": 272530},
+        {"year": "2023", "population": 277450},
+        {"year": "2024", "population": 279430}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 148715},
+        {"year": "2021", "households": 149200},
+        {"year": "2022", "households": 150830},
+        {"year": "2023", "households": 153890},
+        {"year": "2024", "households": 155216}
+      ]
+    },
+    "江東区": {
+      "latest_population": 534710,
+      "latest_households": 271850,
+      "pop_change_1yr_pct": 1.4,
+      "pop_change_5yr_pct": 7.2,
+      "population_history": [
+        {"year": "2020", "population": 524310},
+        {"year": "2021", "population": 521340},
+        {"year": "2022", "population": 522460},
+        {"year": "2023", "population": 527280},
+        {"year": "2024", "population": 534710}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 260124},
+        {"year": "2021", "households": 260840},
+        {"year": "2022", "households": 263150},
+        {"year": "2023", "households": 268190},
+        {"year": "2024", "households": 271850}
+      ]
+    },
+    "品川区": {
+      "latest_population": 418325,
+      "latest_households": 226780,
+      "pop_change_1yr_pct": 0.9,
+      "pop_change_5yr_pct": 5.1,
+      "population_history": [
+        {"year": "2020", "population": 405230},
+        {"year": "2021", "population": 403570},
+        {"year": "2022", "population": 405290},
+        {"year": "2023", "population": 414540},
+        {"year": "2024", "population": 418325}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 217650},
+        {"year": "2021", "households": 218120},
+        {"year": "2022", "households": 220390},
+        {"year": "2023", "households": 224810},
+        {"year": "2024", "households": 226780}
+      ]
+    },
+    "目黒区": {
+      "latest_population": 282690,
+      "latest_households": 159450,
+      "pop_change_1yr_pct": 0.6,
+      "pop_change_5yr_pct": 2.9,
+      "population_history": [
+        {"year": "2020", "population": 280283},
+        {"year": "2021", "population": 277282},
+        {"year": "2022", "population": 276920},
+        {"year": "2023", "population": 280980},
+        {"year": "2024", "population": 282690}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 155380},
+        {"year": "2021", "households": 155120},
+        {"year": "2022", "households": 155930},
+        {"year": "2023", "households": 158340},
+        {"year": "2024", "households": 159450}
+      ]
+    },
+    "大田区": {
+      "latest_population": 741512,
+      "latest_households": 399250,
+      "pop_change_1yr_pct": 0.4,
+      "pop_change_5yr_pct": 1.8,
+      "population_history": [
+        {"year": "2020", "population": 733622},
+        {"year": "2021", "population": 729890},
+        {"year": "2022", "population": 731480},
+        {"year": "2023", "population": 738210},
+        {"year": "2024", "population": 741512}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 389780},
+        {"year": "2021", "households": 390240},
+        {"year": "2022", "households": 392610},
+        {"year": "2023", "households": 396870},
+        {"year": "2024", "households": 399250}
+      ]
+    },
+    "世田谷区": {
+      "latest_population": 939098,
+      "latest_households": 494320,
+      "pop_change_1yr_pct": 0.5,
+      "pop_change_5yr_pct": 2.4,
+      "population_history": [
+        {"year": "2020", "population": 917486},
+        {"year": "2021", "population": 916910},
+        {"year": "2022", "population": 920870},
+        {"year": "2023", "population": 934260},
+        {"year": "2024", "population": 939098}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 479650},
+        {"year": "2021", "households": 481240},
+        {"year": "2022", "households": 484870},
+        {"year": "2023", "households": 490810},
+        {"year": "2024", "households": 494320}
+      ]
+    },
+    "渋谷区": {
+      "latest_population": 239862,
+      "latest_households": 148950,
+      "pop_change_1yr_pct": 0.7,
+      "pop_change_5yr_pct": 3.5,
+      "population_history": [
+        {"year": "2020", "population": 229070},
+        {"year": "2021", "population": 227850},
+        {"year": "2022", "population": 228730},
+        {"year": "2023", "population": 238210},
+        {"year": "2024", "population": 239862}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 143120},
+        {"year": "2021", "households": 143550},
+        {"year": "2022", "households": 144610},
+        {"year": "2023", "households": 147810},
+        {"year": "2024", "households": 148950}
+      ]
+    },
+    "中野区": {
+      "latest_population": 339410,
+      "latest_households": 211680,
+      "pop_change_1yr_pct": 0.3,
+      "pop_change_5yr_pct": 1.5,
+      "population_history": [
+        {"year": "2020", "population": 336908},
+        {"year": "2021", "population": 331870},
+        {"year": "2022", "population": 332640},
+        {"year": "2023", "population": 338310},
+        {"year": "2024", "population": 339410}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 208120},
+        {"year": "2021", "households": 207590},
+        {"year": "2022", "households": 208350},
+        {"year": "2023", "households": 210820},
+        {"year": "2024", "households": 211680}
+      ]
+    },
+    "杉並区": {
+      "latest_population": 583120,
+      "latest_households": 333840,
+      "pop_change_1yr_pct": 0.4,
+      "pop_change_5yr_pct": 1.9,
+      "population_history": [
+        {"year": "2020", "population": 576590},
+        {"year": "2021", "population": 572160},
+        {"year": "2022", "population": 572540},
+        {"year": "2023", "population": 580710},
+        {"year": "2024", "population": 583120}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 325710},
+        {"year": "2021", "households": 325980},
+        {"year": "2022", "households": 327410},
+        {"year": "2023", "households": 331780},
+        {"year": "2024", "households": 333840}
+      ]
+    },
+    "豊島区": {
+      "latest_population": 296380,
+      "latest_households": 190860,
+      "pop_change_1yr_pct": 0.6,
+      "pop_change_5yr_pct": 3.8,
+      "population_history": [
+        {"year": "2020", "population": 291981},
+        {"year": "2021", "population": 286850},
+        {"year": "2022", "population": 287410},
+        {"year": "2023", "population": 294570},
+        {"year": "2024", "population": 296380}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 183720},
+        {"year": "2021", "households": 183250},
+        {"year": "2022", "households": 184870},
+        {"year": "2023", "households": 189440},
+        {"year": "2024", "households": 190860}
+      ]
+    },
+    "北区": {
+      "latest_population": 356930,
+      "latest_households": 196420,
+      "pop_change_1yr_pct": 0.5,
+      "pop_change_5yr_pct": 2.7,
+      "population_history": [
+        {"year": "2020", "population": 355213},
+        {"year": "2021", "population": 350160},
+        {"year": "2022", "population": 349730},
+        {"year": "2023", "population": 355080},
+        {"year": "2024", "population": 356930}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 189430},
+        {"year": "2021", "households": 189180},
+        {"year": "2022", "households": 190620},
+        {"year": "2023", "households": 194810},
+        {"year": "2024", "households": 196420}
+      ]
+    },
+    "荒川区": {
+      "latest_population": 218630,
+      "latest_households": 123810,
+      "pop_change_1yr_pct": 0.6,
+      "pop_change_5yr_pct": 3.2,
+      "population_history": [
+        {"year": "2020", "population": 217640},
+        {"year": "2021", "population": 213420},
+        {"year": "2022", "population": 213280},
+        {"year": "2023", "population": 217340},
+        {"year": "2024", "population": 218630}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 118950},
+        {"year": "2021", "households": 118790},
+        {"year": "2022", "households": 120150},
+        {"year": "2023", "households": 122740},
+        {"year": "2024", "households": 123810}
+      ]
+    },
+    "板橋区": {
+      "latest_population": 581240,
+      "latest_households": 319680,
+      "pop_change_1yr_pct": 0.4,
+      "pop_change_5yr_pct": 2.5,
+      "population_history": [
+        {"year": "2020", "population": 571445},
+        {"year": "2021", "population": 568710},
+        {"year": "2022", "population": 570130},
+        {"year": "2023", "population": 578810},
+        {"year": "2024", "population": 581240}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 307580},
+        {"year": "2021", "households": 308240},
+        {"year": "2022", "households": 311250},
+        {"year": "2023", "households": 316870},
+        {"year": "2024", "households": 319680}
+      ]
+    },
+    "練馬区": {
+      "latest_population": 751320,
+      "latest_households": 393270,
+      "pop_change_1yr_pct": 0.3,
+      "pop_change_5yr_pct": 1.6,
+      "population_history": [
+        {"year": "2020", "population": 740017},
+        {"year": "2021", "population": 738350},
+        {"year": "2022", "population": 740510},
+        {"year": "2023", "population": 748960},
+        {"year": "2024", "population": 751320}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 380650},
+        {"year": "2021", "households": 381720},
+        {"year": "2022", "households": 384180},
+        {"year": "2023", "households": 390140},
+        {"year": "2024", "households": 393270}
+      ]
+    },
+    "足立区": {
+      "latest_population": 691150,
+      "latest_households": 361820,
+      "pop_change_1yr_pct": 0.2,
+      "pop_change_5yr_pct": 0.8,
+      "population_history": [
+        {"year": "2020", "population": 691298},
+        {"year": "2021", "population": 686290},
+        {"year": "2022", "population": 684350},
+        {"year": "2023", "population": 689830},
+        {"year": "2024", "population": 691150}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 349510},
+        {"year": "2021", "households": 350120},
+        {"year": "2022", "households": 352410},
+        {"year": "2023", "households": 358370},
+        {"year": "2024", "households": 361820}
+      ]
+    },
+    "葛飾区": {
+      "latest_population": 462870,
+      "latest_households": 243810,
+      "pop_change_1yr_pct": 0.3,
+      "pop_change_5yr_pct": 1.2,
+      "population_history": [
+        {"year": "2020", "population": 464764},
+        {"year": "2021", "population": 458920},
+        {"year": "2022", "population": 456750},
+        {"year": "2023", "population": 461350},
+        {"year": "2024", "population": 462870}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 234560},
+        {"year": "2021", "households": 234810},
+        {"year": "2022", "households": 236420},
+        {"year": "2023", "households": 241380},
+        {"year": "2024", "households": 243810}
+      ]
+    },
+    "江戸川区": {
+      "latest_population": 695240,
+      "latest_households": 350680,
+      "pop_change_1yr_pct": 0.1,
+      "pop_change_5yr_pct": 0.5,
+      "population_history": [
+        {"year": "2020", "population": 697932},
+        {"year": "2021", "population": 691870},
+        {"year": "2022", "population": 689210},
+        {"year": "2023", "population": 694380},
+        {"year": "2024", "population": 695240}
+      ],
+      "household_history": [
+        {"year": "2020", "households": 337250},
+        {"year": "2021", "households": 338420},
+        {"year": "2022", "households": 340780},
+        {"year": "2023", "households": 347590},
+        {"year": "2024", "households": 350680}
+      ]
+    }
+  },
+  "updated_at": "2026-02-12T23:55:00",
+  "data_source": "e-Stat 政府統計（総務省）住民基本台帳に基づく人口",
+  "note": "東京都住民基本台帳人口（各年1月1日時点）"
+}

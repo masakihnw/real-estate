@@ -117,6 +117,15 @@ final class Listing: @unchecked Sendable {
     ///              "data_source":"不動産情報ライブラリ（国土交通省）"}
     var reinfolibMarketData: String?
 
+    // MARK: - e-Stat 人口動態データ
+    /// e-Stat（総務省統計局）の人口・世帯数データ JSON 文字列
+    /// フォーマット: {"ward":"江東区","latest_population":528950,"latest_households":287840,
+    ///              "pop_change_1yr_pct":1.5,"pop_change_5yr_pct":7.8,
+    ///              "population_history":[{"year":"2020","population":524310},...],
+    ///              "household_history":[{"year":"2020","households":271500},...],
+    ///              "data_source":"e-Stat（総務省統計局）"}
+    var estatPopulationData: String?
+
     // MARK: - 値上がりシミュレーション (万円)
     /// ベストケース 5年後
     var ssSimBest5yr: Int?
@@ -216,7 +225,8 @@ final class Listing: @unchecked Sendable {
         ssPastMarketTrends: String? = nil,
         ssSurroundingProperties: String? = nil,
         ssPriceJudgments: String? = nil,
-        reinfolibMarketData: String? = nil
+        reinfolibMarketData: String? = nil,
+        estatPopulationData: String? = nil
     ) {
         self.source = source
         self.url = url
@@ -276,6 +286,7 @@ final class Listing: @unchecked Sendable {
         self.ssSurroundingProperties = ssSurroundingProperties
         self.ssPriceJudgments = ssPriceJudgments
         self.reinfolibMarketData = reinfolibMarketData
+        self.estatPopulationData = estatPopulationData
     }
 
     // MARK: - Identity
@@ -1171,6 +1182,101 @@ final class Listing: @unchecked Sendable {
 
     /// 不動産情報ライブラリの相場データがあるか
     var hasMarketData: Bool { parsedMarketData != nil }
+
+    // MARK: - 人口動態データ
+
+    /// 人口動態データの解析済み構造体
+    struct PopulationData {
+        var ward: String
+        var latestPopulation: Int
+        var latestHouseholds: Int
+        var popChange1yrPct: Double?        // 前年比変動率 (%)
+        var popChange5yrPct: Double?        // 5年比変動率 (%)
+        var populationHistory: [YearValue]  // 年次人口推移
+        var householdHistory: [YearValue]   // 年次世帯数推移
+        var dataSource: String
+
+        struct YearValue {
+            var year: String
+            var value: Int
+        }
+
+        /// 人口変動率テキスト（例: "+1.5%"）
+        var popChange1yrDisplay: String {
+            guard let pct = popChange1yrPct else { return "—" }
+            return String(format: "%+.1f%%", pct)
+        }
+
+        /// 5年変動率テキスト（例: "+7.8%"）
+        var popChange5yrDisplay: String {
+            guard let pct = popChange5yrPct else { return "—" }
+            return String(format: "%+.1f%%", pct)
+        }
+
+        /// 人口のフォーマット表示（例: "52.9万人"）
+        var populationDisplay: String {
+            let man = Double(latestPopulation) / 10000.0
+            if man >= 10.0 {
+                return String(format: "%.1f万人", man)
+            }
+            return "\(latestPopulation.formatted())人"
+        }
+
+        /// 世帯数のフォーマット表示（例: "28.8万世帯"）
+        var householdsDisplay: String {
+            let man = Double(latestHouseholds) / 10000.0
+            if man >= 10.0 {
+                return String(format: "%.1f万世帯", man)
+            }
+            return "\(latestHouseholds.formatted())世帯"
+        }
+
+        /// 人口変動が増加傾向か
+        var isPopGrowing: Bool {
+            (popChange1yrPct ?? 0) > 0
+        }
+    }
+
+    /// estatPopulationData JSON を解析
+    var parsedPopulationData: PopulationData? {
+        guard let json = estatPopulationData, !json.isEmpty,
+              let data = json.data(using: .utf8),
+              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return nil
+        }
+
+        let ward = dict["ward"] as? String ?? ""
+        guard let population = dict["latest_population"] as? Int,
+              let households = dict["latest_households"] as? Int else { return nil }
+
+        let popHistoryRaw = dict["population_history"] as? [[String: Any]] ?? []
+        let popHistory = popHistoryRaw.compactMap { h -> PopulationData.YearValue? in
+            guard let year = h["year"] as? String,
+                  let pop = h["population"] as? Int else { return nil }
+            return PopulationData.YearValue(year: year, value: pop)
+        }
+
+        let hhHistoryRaw = dict["household_history"] as? [[String: Any]] ?? []
+        let hhHistory = hhHistoryRaw.compactMap { h -> PopulationData.YearValue? in
+            guard let year = h["year"] as? String,
+                  let hh = h["households"] as? Int else { return nil }
+            return PopulationData.YearValue(year: year, value: hh)
+        }
+
+        return PopulationData(
+            ward: ward,
+            latestPopulation: population,
+            latestHouseholds: households,
+            popChange1yrPct: dict["pop_change_1yr_pct"] as? Double,
+            popChange5yrPct: dict["pop_change_5yr_pct"] as? Double,
+            populationHistory: popHistory,
+            householdHistory: hhHistory,
+            dataSource: dict["data_source"] as? String ?? "e-Stat（総務省統計局）"
+        )
+    }
+
+    /// 人口動態データがあるか
+    var hasPopulationData: Bool { parsedPopulationData != nil }
 }
 
 // MARK: - 通勤時間データ
@@ -1279,6 +1385,9 @@ struct ListingDTO: Codable {
 
     // 不動産情報ライブラリ相場データ（パイプライン側で付与）
     var reinfolib_market_data: String?
+
+    // e-Stat 人口動態データ（パイプライン側で付与）
+    var estat_population_data: String?
 }
 
 extension Listing {
@@ -1358,7 +1467,8 @@ extension Listing {
             ssPastMarketTrends: dto.ss_past_market_trends,
             ssSurroundingProperties: dto.ss_surrounding_properties,
             ssPriceJudgments: dto.ss_price_judgments,
-            reinfolibMarketData: dto.reinfolib_market_data
+            reinfolibMarketData: dto.reinfolib_market_data,
+            estatPopulationData: dto.estat_population_data
         )
     }
 }
