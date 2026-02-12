@@ -1106,7 +1106,7 @@ struct ListingDetailView: View {
                                 .foregroundStyle(Color.accentColor.opacity(0.6))
                         }
                     }
-                    if let judgment = listing.ssValueJudgment {
+                    if let judgment = listing.computedPriceJudgment {
                         Text(judgment)
                             .font(.caption)
                             .fontWeight(.bold)
@@ -1233,7 +1233,7 @@ struct ListingDetailView: View {
                             }
                         }
                     }
-                    if let judgment = listing.ssValueJudgment {
+                    if let judgment = listing.computedPriceJudgment {
                         Text(judgment)
                             .font(.caption)
                             .fontWeight(.bold)
@@ -1261,7 +1261,7 @@ struct ListingDetailView: View {
                     }
                 }
                 Spacer()
-                if let judgment = listing.ssValueJudgment {
+                if let judgment = listing.computedPriceJudgment {
                     Text(judgment)
                         .font(.caption)
                         .fontWeight(.bold)

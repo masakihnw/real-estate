@@ -660,7 +660,7 @@ final class Listing: @unchecked Sendable {
     /// 住まいサーフィンのデータがあるかどうか
     var hasSumaiSurfinData: Bool {
         ssProfitPct != nil || ssOkiPrice70m2 != nil || ssM2Discount != nil
-            || ssValueJudgment != nil || ssAppreciationRate != nil
+            || computedPriceJudgment != nil || ssAppreciationRate != nil
             || ssFavoriteCount != nil || ssSimBest5yr != nil
     }
 
@@ -943,6 +943,72 @@ final class Listing: @unchecked Sendable {
         return "\(price)万円"
     }
 
+    /// 販売価格判定
+    ///
+    /// 優先順位:
+    ///   1. `ssValueJudgment` — ブラウザ自動化 or enricher で設定済みの値
+    ///   2. `ssPriceJudgments` — 住戸ごとの判定から掲載価格に最も近い住戸を採用
+    ///   3. 沖式中古時価との比較で推定（フォールバック）
+    var computedPriceJudgment: String? {
+        // 1. enricher / ブラウザ自動化で設定済みならそれを使用
+        if let j = ssValueJudgment, !j.isEmpty {
+            return j
+        }
+        // 2. 住戸ごとの割安判定から掲載価格に最も近い住戸を採用
+        if let j = bestMatchingPriceJudgment {
+            return j
+        }
+        // 3. 中古のみ: 沖式中古時価との比較で計算（フォールバック）
+        guard !isShinchiku,
+              let okiForArea = ssOkiPriceForArea, okiForArea > 0,
+              let price = priceMan, price > 0 else {
+            return nil
+        }
+        let ratio = Double(price) / Double(okiForArea)
+        if ratio <= 0.95 {
+            return "割安"
+        } else if ratio <= 1.10 {
+            return "適正"
+        } else {
+            return "割高"
+        }
+    }
+
+    /// ssPriceJudgments の住戸から掲載価格に最も近い住戸の judgment を返す
+    private var bestMatchingPriceJudgment: String? {
+        let units = parsedPriceJudgments
+        guard !units.isEmpty else { return nil }
+
+        let withJudgment = units.filter { $0.judgment != nil && !($0.judgment?.isEmpty ?? true) }
+        guard !withJudgment.isEmpty else { return nil }
+
+        // 住戸が1つなら即採用
+        if withJudgment.count == 1 {
+            return withJudgment[0].judgment
+        }
+
+        // 掲載価格に最も近い住戸を探す
+        if let listingPrice = priceMan {
+            var best: PriceJudgmentUnit?
+            var bestDiff = Int.max
+            for unit in withJudgment {
+                if let unitPrice = unit.priceMan {
+                    let diff = abs(unitPrice - listingPrice)
+                    if diff < bestDiff {
+                        bestDiff = diff
+                        best = unit
+                    }
+                }
+            }
+            if let best = best {
+                return best.judgment
+            }
+        }
+
+        // フォールバック: 最初の住戸
+        return withJudgment[0].judgment
+    }
+
     // MARK: - ハザード情報解析
 
     /// パース済みハザードデータ
@@ -1138,10 +1204,17 @@ final class Listing: @unchecked Sendable {
         var yoyChangePct: Double?          // 前年同期比変動率 (%)
         var quarterlyM2Prices: [QuarterlyPrice]
         var sameBuildingTransactions: [SameBuildingTransaction]
+        var station: StationMarketData?    // 駅レベル比較
         var dataSource: String
 
         struct QuarterlyPrice {
             var quarter: String            // "2024Q3"
+            var medianM2Price: Int          // 円/m²
+            var count: Int
+        }
+
+        struct YearlyPrice {
+            var year: String               // "2024"
             var medianM2Price: Int          // 円/m²
             var count: Int
         }
@@ -1183,6 +1256,68 @@ final class Listing: @unchecked Sendable {
                 default: months = ""
                 }
                 return "\(year)年\(months)"
+            }
+        }
+
+        /// 駅レベル比較データ
+        struct StationMarketData {
+            var name: String                    // "品川"
+            var medianM2Price: Int              // 円/m²
+            var meanM2Price: Int?               // 円/m²
+            var sampleCount: Int
+            var priceRatio: Double?             // 掲載価格÷駅相場
+            var priceDiffMan: Int?              // 差額（万円）
+            var trend: String                   // "up" / "flat" / "down"
+            var yoyChangePct: Double?           // 前年比変動率 (%)
+            var quarterlyM2Prices: [QuarterlyPrice]
+            var yearlyM2Prices: [YearlyPrice]
+            var lines: [String]                 // 路線名リスト
+
+            /// m²単価の万円表示
+            var medianM2PriceManDisplay: String {
+                let man = Double(medianM2Price) / 10000.0
+                return String(format: "%.1f万/m²", man)
+            }
+
+            /// 乖離率テキスト
+            var priceRatioDisplay: String {
+                guard let ratio = priceRatio else { return "—" }
+                let pct = (ratio - 1.0) * 100
+                if abs(pct) < 2.0 { return "相場並み" }
+                return pct > 0
+                    ? String(format: "+%.0f%%（割高）", pct)
+                    : String(format: "%.0f%%（割安）", pct)
+            }
+
+            /// 差額テキスト
+            var priceDiffDisplay: String {
+                guard let diff = priceDiffMan else { return "—" }
+                if diff == 0 { return "±0万" }
+                return diff > 0 ? "+\(diff)万" : "\(diff)万"
+            }
+
+            /// トレンドアイコン名
+            var trendIconName: String {
+                switch trend {
+                case "up": return "arrow.up.right"
+                case "down": return "arrow.down.right"
+                default: return "arrow.right"
+                }
+            }
+
+            /// トレンド表示テキスト
+            var trendDisplay: String {
+                switch trend {
+                case "up": return "上昇傾向"
+                case "down": return "下降傾向"
+                default: return "横ばい"
+                }
+            }
+
+            /// YoY 表示テキスト
+            var yoyDisplay: String {
+                guard let yoy = yoyChangePct else { return "—" }
+                return String(format: "%+.1f%%", yoy)
             }
         }
 
@@ -1282,6 +1417,45 @@ final class Listing: @unchecked Sendable {
             )
         }
 
+        // 駅レベル比較
+        var stationData: MarketData.StationMarketData?
+        if let stDict = dict["station"] as? [String: Any],
+           let stMedian = stDict["median_m2_price"] as? Int,
+           let stName = stDict["name"] as? String, !stName.isEmpty {
+
+            let stQuarterly = (stDict["quarterly_m2_prices"] as? [[String: Any]] ?? [])
+                .compactMap { sq -> MarketData.QuarterlyPrice? in
+                    guard let q = sq["quarter"] as? String,
+                          let p = sq["median_m2_price"] as? Int else { return nil }
+                    return MarketData.QuarterlyPrice(
+                        quarter: q, medianM2Price: p, count: sq["count"] as? Int ?? 0
+                    )
+                }
+
+            let stYearly = (stDict["yearly_m2_prices"] as? [[String: Any]] ?? [])
+                .compactMap { sy -> MarketData.YearlyPrice? in
+                    guard let y = sy["year"] as? String,
+                          let p = sy["median_m2_price"] as? Int else { return nil }
+                    return MarketData.YearlyPrice(
+                        year: y, medianM2Price: p, count: sy["count"] as? Int ?? 0
+                    )
+                }
+
+            stationData = MarketData.StationMarketData(
+                name: stName,
+                medianM2Price: stMedian,
+                meanM2Price: stDict["mean_m2_price"] as? Int,
+                sampleCount: stDict["sample_count"] as? Int ?? 0,
+                priceRatio: stDict["price_ratio"] as? Double,
+                priceDiffMan: stDict["price_diff_man"] as? Int,
+                trend: stDict["trend"] as? String ?? "flat",
+                yoyChangePct: stDict["yoy_change_pct"] as? Double,
+                quarterlyM2Prices: stQuarterly,
+                yearlyM2Prices: stYearly,
+                lines: stDict["lines"] as? [String] ?? []
+            )
+        }
+
         return MarketData(
             ward: ward,
             wardMedianM2Price: medianM2,
@@ -1295,6 +1469,7 @@ final class Listing: @unchecked Sendable {
             yoyChangePct: dict["yoy_change_pct"] as? Double,
             quarterlyM2Prices: quarterly,
             sameBuildingTransactions: sameBuildingTxs,
+            station: stationData,
             dataSource: dict["data_source"] as? String ?? "不動産情報ライブラリ（国土交通省）"
         )
     }

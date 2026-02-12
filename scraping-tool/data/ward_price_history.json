@@ -1,0 +1,492 @@
+{
+  "by_ward": {
+    "世田谷区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 750000,
+          "mean_m2_price": 781695,
+          "count": 81
+        },
+        "2022Q1": {
+          "median_m2_price": 827619,
+          "mean_m2_price": 834499,
+          "count": 80
+        },
+        "2023Q1": {
+          "median_m2_price": 829947,
+          "mean_m2_price": 849303,
+          "count": 76
+        }
+      }
+    },
+    "中央区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 1028571,
+          "mean_m2_price": 1017731,
+          "count": 100
+        },
+        "2021Q2": {
+          "median_m2_price": 1181746,
+          "mean_m2_price": 1108520,
+          "count": 32
+        },
+        "2022Q1": {
+          "median_m2_price": 1200000,
+          "mean_m2_price": 1198770,
+          "count": 100
+        },
+        "2023Q1": {
+          "median_m2_price": 1218182,
+          "mean_m2_price": 1223438,
+          "count": 99
+        },
+        "2025Q3": {
+          "median_m2_price": 1839744,
+          "mean_m2_price": 1794254,
+          "count": 100
+        }
+      }
+    },
+    "中野区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 725000,
+          "mean_m2_price": 767219,
+          "count": 83
+        },
+        "2022Q1": {
+          "median_m2_price": 866667,
+          "mean_m2_price": 861307,
+          "count": 85
+        },
+        "2023Q1": {
+          "median_m2_price": 900000,
+          "mean_m2_price": 853525,
+          "count": 87
+        }
+      }
+    },
+    "北区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 644444,
+          "mean_m2_price": 662240,
+          "count": 79
+        },
+        "2021Q2": {
+          "median_m2_price": 706593,
+          "mean_m2_price": 763967,
+          "count": 10
+        },
+        "2022Q1": {
+          "median_m2_price": 720000,
+          "mean_m2_price": 712227,
+          "count": 87
+        },
+        "2023Q1": {
+          "median_m2_price": 763333,
+          "mean_m2_price": 771437,
+          "count": 90
+        }
+      }
+    },
+    "千代田区": {
+      "quarters": {
+        "2021Q2": {
+          "median_m2_price": 1230682,
+          "mean_m2_price": 1283347,
+          "count": 136
+        },
+        "2022Q1": {
+          "median_m2_price": 1309524,
+          "mean_m2_price": 1385120,
+          "count": 72
+        },
+        "2022Q2": {
+          "median_m2_price": 1250000,
+          "mean_m2_price": 1424235,
+          "count": 107
+        },
+        "2023Q1": {
+          "median_m2_price": 1300000,
+          "mean_m2_price": 1353398,
+          "count": 63
+        },
+        "2023Q2": {
+          "median_m2_price": 1380000,
+          "mean_m2_price": 1564672,
+          "count": 103
+        },
+        "2025Q2": {
+          "median_m2_price": 1777778,
+          "mean_m2_price": 2020526,
+          "count": 100
+        }
+      }
+    },
+    "台東区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 844444,
+          "mean_m2_price": 855020,
+          "count": 91
+        },
+        "2021Q2": {
+          "median_m2_price": 1233333,
+          "mean_m2_price": 1196129,
+          "count": 6
+        },
+        "2022Q1": {
+          "median_m2_price": 904545,
+          "mean_m2_price": 879358,
+          "count": 98
+        },
+        "2023Q1": {
+          "median_m2_price": 903333,
+          "mean_m2_price": 904923,
+          "count": 98
+        }
+      }
+    },
+    "品川区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 1048182,
+          "mean_m2_price": 1116601,
+          "count": 86
+        },
+        "2022Q1": {
+          "median_m2_price": 983333,
+          "mean_m2_price": 1051314,
+          "count": 94
+        },
+        "2023Q1": {
+          "median_m2_price": 1123077,
+          "mean_m2_price": 1213066,
+          "count": 91
+        }
+      }
+    },
+    "墨田区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 725000,
+          "mean_m2_price": 708409,
+          "count": 97
+        },
+        "2022Q1": {
+          "median_m2_price": 777949,
+          "mean_m2_price": 794976,
+          "count": 96
+        },
+        "2023Q1": {
+          "median_m2_price": 869697,
+          "mean_m2_price": 839468,
+          "count": 92
+        }
+      }
+    },
+    "大田区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 632051,
+          "mean_m2_price": 623244,
+          "count": 86
+        },
+        "2022Q1": {
+          "median_m2_price": 757143,
+          "mean_m2_price": 774643,
+          "count": 85
+        },
+        "2023Q1": {
+          "median_m2_price": 800000,
+          "mean_m2_price": 807743,
+          "count": 90
+        }
+      }
+    },
+    "文京区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 941176,
+          "mean_m2_price": 945969,
+          "count": 90
+        },
+        "2022Q1": {
+          "median_m2_price": 1091608,
+          "mean_m2_price": 1101276,
+          "count": 94
+        },
+        "2023Q1": {
+          "median_m2_price": 1083333,
+          "mean_m2_price": 1064520,
+          "count": 95
+        }
+      }
+    },
+    "新宿区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 1029167,
+          "mean_m2_price": 1004642,
+          "count": 94
+        },
+        "2022Q1": {
+          "median_m2_price": 1046667,
+          "mean_m2_price": 1034109,
+          "count": 96
+        },
+        "2023Q1": {
+          "median_m2_price": 1016667,
+          "mean_m2_price": 1054379,
+          "count": 95
+        },
+        "2025Q3": {
+          "median_m2_price": 1160000,
+          "mean_m2_price": 1360443,
+          "count": 93
+        }
+      }
+    },
+    "杉並区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 727273,
+          "mean_m2_price": 746361,
+          "count": 63
+        },
+        "2022Q1": {
+          "median_m2_price": 827885,
+          "mean_m2_price": 831550,
+          "count": 74
+        },
+        "2023Q1": {
+          "median_m2_price": 850000,
+          "mean_m2_price": 859645,
+          "count": 72
+        }
+      }
+    },
+    "板橋区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 547727,
+          "mean_m2_price": 550923,
+          "count": 84
+        },
+        "2022Q1": {
+          "median_m2_price": 560000,
+          "mean_m2_price": 565646,
+          "count": 87
+        },
+        "2023Q1": {
+          "median_m2_price": 623077,
+          "mean_m2_price": 619763,
+          "count": 74
+        }
+      }
+    },
+    "江戸川区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 510000,
+          "mean_m2_price": 521111,
+          "count": 70
+        },
+        "2022Q1": {
+          "median_m2_price": 526786,
+          "mean_m2_price": 565435,
+          "count": 64
+        },
+        "2023Q1": {
+          "median_m2_price": 586667,
+          "mean_m2_price": 578105,
+          "count": 72
+        }
+      }
+    },
+    "江東区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 716667,
+          "mean_m2_price": 728835,
+          "count": 95
+        },
+        "2022Q1": {
+          "median_m2_price": 750000,
+          "mean_m2_price": 761771,
+          "count": 97
+        },
+        "2023Q1": {
+          "median_m2_price": 1000000,
+          "mean_m2_price": 979490,
+          "count": 97
+        }
+      }
+    },
+    "渋谷区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 1085714,
+          "mean_m2_price": 1164635,
+          "count": 97
+        },
+        "2022Q1": {
+          "median_m2_price": 1165714,
+          "mean_m2_price": 1353145,
+          "count": 98
+        },
+        "2023Q1": {
+          "median_m2_price": 1157895,
+          "mean_m2_price": 1250776,
+          "count": 93
+        }
+      }
+    },
+    "港区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 1416667,
+          "mean_m2_price": 1415127,
+          "count": 99
+        },
+        "2022Q1": {
+          "median_m2_price": 1207143,
+          "mean_m2_price": 1346456,
+          "count": 98
+        },
+        "2023Q1": {
+          "median_m2_price": 1550000,
+          "mean_m2_price": 1558408,
+          "count": 98
+        }
+      }
+    },
+    "目黒区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 1018182,
+          "mean_m2_price": 1032820,
+          "count": 83
+        },
+        "2022Q1": {
+          "median_m2_price": 1096667,
+          "mean_m2_price": 1099983,
+          "count": 92
+        },
+        "2023Q1": {
+          "median_m2_price": 1092308,
+          "mean_m2_price": 1123643,
+          "count": 87
+        }
+      }
+    },
+    "練馬区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 572381,
+          "mean_m2_price": 592682,
+          "count": 72
+        },
+        "2022Q1": {
+          "median_m2_price": 614286,
+          "mean_m2_price": 639291,
+          "count": 77
+        },
+        "2023Q1": {
+          "median_m2_price": 661905,
+          "mean_m2_price": 670762,
+          "count": 78
+        }
+      }
+    },
+    "荒川区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 666667,
+          "mean_m2_price": 684883,
+          "count": 67
+        },
+        "2021Q2": {
+          "median_m2_price": 604545,
+          "mean_m2_price": 602261,
+          "count": 24
+        },
+        "2022Q1": {
+          "median_m2_price": 644444,
+          "mean_m2_price": 680354,
+          "count": 79
+        },
+        "2022Q2": {
+          "median_m2_price": 645249,
+          "mean_m2_price": 704515,
+          "count": 10
+        },
+        "2023Q1": {
+          "median_m2_price": 727273,
+          "mean_m2_price": 730591,
+          "count": 85
+        }
+      }
+    },
+    "葛飾区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 471429,
+          "mean_m2_price": 476305,
+          "count": 77
+        },
+        "2022Q1": {
+          "median_m2_price": 511688,
+          "mean_m2_price": 529171,
+          "count": 70
+        },
+        "2023Q1": {
+          "median_m2_price": 527922,
+          "mean_m2_price": 552433,
+          "count": 72
+        }
+      }
+    },
+    "豊島区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 845000,
+          "mean_m2_price": 903691,
+          "count": 92
+        },
+        "2022Q1": {
+          "median_m2_price": 850000,
+          "mean_m2_price": 910723,
+          "count": 87
+        },
+        "2023Q1": {
+          "median_m2_price": 885000,
+          "mean_m2_price": 876121,
+          "count": 92
+        }
+      }
+    },
+    "足立区": {
+      "quarters": {
+        "2021Q1": {
+          "median_m2_price": 446154,
+          "mean_m2_price": 447296,
+          "count": 73
+        },
+        "2022Q1": {
+          "median_m2_price": 480000,
+          "mean_m2_price": 497417,
+          "count": 81
+        },
+        "2023Q1": {
+          "median_m2_price": 480000,
+          "mean_m2_price": 491210,
+          "count": 73
+        }
+      }
+    }
+  },
+  "data_source": "不動産情報ライブラリ（国土交通省）"
+}

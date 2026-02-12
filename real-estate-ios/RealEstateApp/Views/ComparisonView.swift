@@ -41,7 +41,7 @@ struct ComparisonView: View {
                         if listings.contains(where: { $0.ssAppreciationRate != nil }) {
                             labelCell("値上がり率").accessibilityLabel("項目、値上がり率")
                         }
-                        if listings.contains(where: { $0.ssValueJudgment != nil }) {
+                        if listings.contains(where: { $0.computedPriceJudgment != nil }) {
                             labelCell("割安判定").accessibilityLabel("項目、割安判定")
                         }
                         if listings.contains(where: { $0.hasMarketData }) {
@@ -100,8 +100,8 @@ struct ComparisonView: View {
                             if listings.contains(where: { $0.ssAppreciationRate != nil }) {
                                 valueCell(listing.ssAppreciationRate.map { String(format: "%.1f%%", $0) } ?? "—")
                             }
-                            if listings.contains(where: { $0.ssValueJudgment != nil }) {
-                                valueCell(listing.ssValueJudgment ?? "—")
+                            if listings.contains(where: { $0.computedPriceJudgment != nil }) {
+                                valueCell(listing.computedPriceJudgment ?? "—")
                             }
                             if listings.contains(where: { $0.hasMarketData }) {
                                 valueCell(listing.parsedMarketData?.priceRatioDisplay ?? "—")

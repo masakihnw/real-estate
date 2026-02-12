@@ -46,6 +46,45 @@ CACHE_PATH = Path(__file__).parent / "data" / "sumai_surfin_cache.json"
 DELAY = max(REQUEST_DELAY_SEC, 1.5)  # 住まいサーフィンへは最低 1.5 秒間隔
 
 
+# ──────────────────────────── 販売価格判定（計算ベース） ────────────────────────────
+
+def compute_price_judgment(price_man: Optional[int],
+                           oki_price_70m2: Optional[int],
+                           area_m2: Optional[float]) -> Optional[str]:
+    """沖式中古時価(70㎡換算)と実面積から販売価格の割安/適正/割高を推定する。
+
+    計算方法:
+      oki_for_area = oki_price_70m2 / 70 × area_m2  (実面積換算の沖式時価)
+      ratio = price_man / oki_for_area
+
+    判定閾値:
+      ratio ≤ 0.95  → 割安  （掲載価格が沖式時価より 5%以上安い）
+      0.95 < ratio ≤ 1.10 → 適正（掲載価格が沖式時価の -5%〜+10% 以内）
+      ratio > 1.10  → 割高  （掲載価格が沖式時価より 10%以上高い）
+
+    ※ 70㎡換算の沖式時価はマンション全体の平均値であり、住戸固有の階数・向き等は
+      反映されていない。そのため住まいサーフィンの住戸別判定とは異なる場合がある。
+      割高側の閾値を +10% と広めに設定し、誤判定を軽減している。
+    """
+    if price_man is None or oki_price_70m2 is None or area_m2 is None:
+        return None
+    if oki_price_70m2 <= 0 or area_m2 <= 0:
+        return None
+
+    oki_for_area = oki_price_70m2 / 70.0 * area_m2
+    if oki_for_area <= 0:
+        return None
+
+    ratio = price_man / oki_for_area
+
+    if ratio <= 0.95:
+        return "割安"
+    elif ratio <= 1.10:
+        return "適正"
+    else:
+        return "割高"
+
+
 # ──────────────────────────── セッション ────────────────────────────
 
 def _create_session() -> requests.Session:
@@ -463,10 +502,10 @@ def parse_chuko_page(session: requests.Session, url: str) -> dict:
     if oki_price is not None:
         result["ss_oki_price_70m2"] = oki_price
 
-    # ── 固定費判定（割安/適正/割高） ──
-    value_judgment = _extract_value_judgment(soup, html)
-    if value_judgment:
-        result["ss_value_judgment"] = value_judgment
+    # ── 固定費判定 → 廃止 ──
+    # ss_value_judgment は sumai_surfin_browser.py のブラウザ自動化
+    # （「販売価格が割安か判定する」ボタン）で設定する。
+    # 静的HTMLの _extract_value_judgment は説明文を誤マッチするため使用しない。
 
     # ── 駅ランキング ──
     station_rank = _extract_rank(soup, "駅", html)
@@ -559,10 +598,7 @@ def parse_shinchiku_page(session: requests.Session, url: str) -> dict:
     if m2_discount is not None:
         result["ss_m2_discount"] = m2_discount
 
-    # ── 固定費判定（割安/適正/割高） ──
-    value_judgment = _extract_value_judgment(soup, html)
-    if value_judgment:
-        result["ss_value_judgment"] = value_judgment
+    # ── 固定費判定 → 廃止（中古と同じ理由: 説明文誤マッチ回避） ──
 
     # ── 駅ランキング ──
     station_rank = _extract_rank(soup, "駅", html)
@@ -781,21 +817,25 @@ def _extract_value_judgment(soup: BeautifulSoup, html: str) -> Optional[str]:
     固定費判定（割安/適正/割高）を抽出する。
     HTML 上の「【沖式】固定費判定★-円★割安」等のパターンから取得。
     ※ 販売価格の割安判定はエビデンス提出が必要で自動取得不可。
+    ※ 固定費判定の結果はJS動的読み込みまたはログイン後のみ表示されるケースがあり、
+      静的HTMLからは取得できない場合がある（その場合は None を返す）。
     """
-    # ── パターン1: 「固定費判定」セクションの判定結果 ──
+    # ── パターン1: 「固定費判定」直後の判定キーワード ──
     # HTML 例: 固定費判定★-円★割安  or  固定費判定 16,900円 割安
+    # ⚠ 説明文「割安か割高か判定」「割高だと」に誤マッチしないよう、
+    #    判定キーワードの直後に「か」「だと」が続く場合は除外する。
     m = re.search(
-        r"固定費判定.{0,60}?(やや割安|やや割高|割安|割高|適正)",
+        r"固定費判定.{0,200}?(やや割安|やや割高|割安|割高|適正)(?!か|だと)",
         html, re.DOTALL,
     )
     if m:
         return m.group(1)
 
-    # ── パターン2: 「沖式」を含む判定結果（ページ上半分のみ検索） ──
-    half = html[:len(html) // 2]
-    for keyword in ("やや割安", "やや割高", "割安", "割高", "適正"):
-        if re.search(rf"沖式.*?判定.{{0,80}}?{keyword}", half, re.DOTALL):
-            return keyword
+    # ── パターン2 は廃止 ──
+    # 旧実装は「沖式.*?判定」の緩いパターンで説明文中の「固定費が割高だと」等を
+    # 誤マッチし、全物件が「割高」になるバグがあったため削除。
+    # 静的HTMLに判定結果がない場合は None を返し、呼び出し元で
+    # 沖式中古時価との比較による販売価格判定を計算する。
 
     return None
 
@@ -1538,6 +1578,12 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         # データをマージ
         for k, v in data.items():
             listing[k] = v
+
+        # ── 販売価格判定 ──
+        # ss_value_judgment は sumai_surfin_browser.py のブラウザ自動化
+        # （「販売価格が割安か判定する」ボタン）で取得するのが正。
+        # 静的HTMLの固定費判定は誤マッチしやすいため使用しない。
+        # ブラウザ自動化未実行時は iOS 側で沖式時価比較のフォールバック計算を行う。
 
         # 住まいサーフィンの住所を正として listing の address を上書き
         if data.get("ss_address"):
