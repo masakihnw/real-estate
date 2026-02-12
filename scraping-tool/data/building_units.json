@@ -1293,5 +1293,681 @@
     "floor_total": 15,
     "floor_structure": "SRC15階建",
     "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_minato/nc_20042644/": {
+    "total_units": 828,
+    "floor_position": 21,
+    "floor_total": 43,
+    "floor_structure": "RC43階建",
+    "ownership": "一般定期借地権（地上権）、借地期間残存54年7ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_78624962/": {
+    "total_units": 39,
+    "floor_position": 7,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20028187/": {
+    "floor_position": 2,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "一般定期借地権（地上権）、借地期間残存56年、借地権設定登記不可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_79171254/": {
+    "total_units": 65,
+    "floor_position": 6,
+    "floor_total": 14,
+    "floor_structure": "RC14階地下1階建",
+    "ownership": "賃借権（普）、借地期間残存36年9ヶ月、▼普通賃借権について・契約期間：２０１２年７月３１日～２０６２年７月３０日迄・月額地代：１０７５０円・譲渡承諾料：５０万円（売却時）・更新料：土地更地価格（賃借権の負担の無い状態）×８％準共有持分割合（ただし、１０円未満は切上げ）・地代の改定：３年毎に、本件土地に対する租税その他の公課の増減により、本件土地の価格の上昇・低下、金利・期待利回りその他の経済事情の変動により、又は近傍類似の土地の賃料等に比較して不相当となったときは、契約条件にかかわらず、協議の上、将来に向かって賃料の額の増減を請求することが、できるものとする。"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79027280/": {
+    "total_units": 160,
+    "floor_position": 9,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20184045/": {
+    "total_units": 160,
+    "floor_position": 9,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78993824/": {
+    "total_units": 160,
+    "floor_position": 9,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20155309/": {
+    "total_units": 160,
+    "floor_position": 9,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20131805/": {
+    "floor_position": 5,
+    "floor_total": 10,
+    "floor_structure": "RC10階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_79009025/": {
+    "total_units": 219,
+    "floor_position": 7,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20192897/": {
+    "total_units": 131,
+    "floor_position": 8,
+    "floor_total": 17,
+    "floor_structure": "RC17階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78820068/": {
+    "total_units": 41,
+    "floor_position": 14,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20059948/": {
+    "total_units": 483,
+    "floor_position": 10,
+    "floor_total": 33,
+    "floor_structure": "RC33階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78848171/": {
+    "total_units": 117,
+    "floor_position": 5,
+    "floor_total": 15,
+    "floor_structure": "RC15階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78929721/": {
+    "total_units": 127,
+    "floor_position": 5,
+    "floor_total": 11,
+    "floor_structure": "RC11階建",
+    "ownership": "一般定期借地権（地上権）、借地期間残存64年2ヶ月、借地権設定登記可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78907522/": {
+    "total_units": 119,
+    "floor_position": 9,
+    "floor_total": 15,
+    "floor_structure": "RC15階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20161024/": {
+    "total_units": 144,
+    "floor_position": 10,
+    "floor_total": 15,
+    "floor_structure": "RC15階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20094618/": {
+    "total_units": 133,
+    "floor_position": 5,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_79188835/": {
+    "total_units": 57,
+    "floor_position": 2,
+    "floor_total": 15,
+    "floor_structure": "RC15階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_78931536/": {
+    "total_units": 44,
+    "floor_position": 9,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_20022888/": {
+    "total_units": 57,
+    "floor_position": 2,
+    "floor_total": 15,
+    "floor_structure": "RC15階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_78809873/": {
+    "total_units": 635,
+    "floor_position": 6,
+    "floor_total": 20,
+    "floor_structure": "SRC20階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_78134636/": {
+    "total_units": 44,
+    "floor_position": 9,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_78200541/": {
+    "total_units": 44,
+    "floor_position": 9,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_20132794/": {
+    "total_units": 44,
+    "floor_position": 9,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_20013277/": {
+    "total_units": 56,
+    "floor_position": 10,
+    "floor_total": 15,
+    "floor_structure": "RC15階建一部RC",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_78619862/": {
+    "floor_position": 6,
+    "floor_total": 7,
+    "floor_structure": "RC7階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_79163332/": {
+    "total_units": 30,
+    "floor_position": 11,
+    "floor_total": 11,
+    "floor_structure": "RC11階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_79141778/": {
+    "total_units": 30,
+    "floor_position": 11,
+    "floor_total": 11,
+    "floor_structure": "RC11階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_79106491/": {
+    "total_units": 84,
+    "floor_position": 3,
+    "floor_total": 15,
+    "floor_structure": "SRC15階建一部RC",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_20023796/": {
+    "total_units": 71,
+    "floor_position": 4,
+    "floor_total": 19,
+    "floor_structure": "RC19階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_20171573/": {
+    "total_units": 48,
+    "floor_position": 11,
+    "floor_total": 15,
+    "floor_structure": "RC15階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_79095486/": {
+    "total_units": 81,
+    "floor_position": 4,
+    "floor_total": 9,
+    "floor_structure": "RC9階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20141460/": {
+    "total_units": 40,
+    "floor_position": 10,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20091531/": {
+    "total_units": 610,
+    "floor_position": 3,
+    "floor_total": 19,
+    "floor_structure": "RC19階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_79197099/": {
+    "total_units": 610,
+    "floor_position": 12,
+    "floor_total": 19,
+    "floor_structure": "RC19階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20133259/": {
+    "total_units": 610,
+    "floor_position": 7,
+    "floor_total": 19,
+    "floor_structure": "RC19階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_79136738/": {
+    "total_units": 610,
+    "floor_position": 11,
+    "floor_total": 19,
+    "floor_structure": "RC19階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20066459/": {
+    "total_units": 610,
+    "floor_position": 5,
+    "floor_total": 19,
+    "floor_structure": "RC19階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20066460/": {
+    "total_units": 610,
+    "floor_position": 13,
+    "floor_total": 19,
+    "floor_structure": "RC19階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_79024026/": {
+    "total_units": 24,
+    "floor_position": 9,
+    "floor_total": 9,
+    "floor_structure": "RC9階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_78483362/": {
+    "total_units": 358,
+    "floor_position": 2,
+    "floor_total": 19,
+    "floor_structure": "RC19階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_20108537/": {
+    "total_units": 357,
+    "floor_position": 3,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_78109304/": {
+    "total_units": 31,
+    "floor_position": 1,
+    "floor_total": 4,
+    "floor_structure": "RC4階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_78106569/": {
+    "total_units": 31,
+    "floor_position": 1,
+    "floor_total": 4,
+    "floor_structure": "RC4階地下1階建一部RC",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20138484/": {
+    "total_units": 33,
+    "floor_position": 4,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_79193570/": {
+    "total_units": 30,
+    "floor_position": 3,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_79059269/": {
+    "total_units": 105,
+    "floor_position": 6,
+    "floor_total": 9,
+    "floor_structure": "RC9階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20178841/": {
+    "total_units": 466,
+    "floor_position": 8,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_78950498/": {
+    "total_units": 183,
+    "floor_position": 7,
+    "floor_total": 14,
+    "floor_structure": "RC14階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_79073176/": {
+    "floor_position": 5,
+    "floor_total": 5,
+    "floor_structure": "RC5階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_79152566/": {
+    "total_units": 74,
+    "floor_position": 2,
+    "floor_total": 7,
+    "floor_structure": "RC7階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_78661883/": {
+    "total_units": 55,
+    "floor_position": 3,
+    "floor_total": 7,
+    "floor_structure": "RC7階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_78158157/": {
+    "total_units": 87,
+    "floor_position": 2,
+    "floor_total": 8,
+    "floor_structure": "RC8階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_78035081/": {
+    "total_units": 14,
+    "floor_position": 2,
+    "floor_total": 3,
+    "floor_structure": "RC3階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_79116433/": {
+    "total_units": 120,
+    "floor_position": 3,
+    "floor_total": 9,
+    "floor_structure": "RC9階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_78991276/": {
+    "total_units": 25,
+    "floor_position": 1,
+    "floor_total": 5,
+    "floor_structure": "RC5階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_20049792/": {
+    "total_units": 33,
+    "floor_position": 3,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79002110/": {
+    "floor_position": 3,
+    "floor_total": 11,
+    "floor_structure": "RC11階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20156191/": {
+    "total_units": 24,
+    "floor_position": 3,
+    "floor_total": 3,
+    "floor_structure": "RC3階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20190889/": {
+    "total_units": 684,
+    "floor_position": 8,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_20069292/": {
+    "total_units": 73,
+    "floor_position": 4,
+    "floor_total": 7,
+    "floor_structure": "RC7階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_20114931/": {
+    "total_units": 62,
+    "floor_position": 1,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_20156088/": {
+    "total_units": 38,
+    "floor_position": 2,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_78716522/": {
+    "total_units": 45,
+    "floor_position": 3,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_78747927/": {
+    "total_units": 44,
+    "floor_position": 5,
+    "floor_total": 8,
+    "floor_structure": "RC8階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_78771337/": {
+    "total_units": 72,
+    "floor_position": 6,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_78881863/": {
+    "total_units": 76
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_79191187/": {
+    "total_units": 32,
+    "floor_position": 5,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_79112997/": {
+    "total_units": 257,
+    "floor_position": 15,
+    "floor_total": 29,
+    "floor_structure": "RC29階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_79121147/": {
+    "total_units": 81,
+    "floor_position": 4,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78334015/": {
+    "total_units": 41,
+    "floor_position": 3,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "一般定期借地権（賃借権）、借地期間残存62年11ヶ月、借地権設定登記可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_77917288/": {
+    "total_units": 41,
+    "floor_position": 3,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "賃借権（普）、借地期間残存62年10ヶ月"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_77770804/": {
+    "total_units": 41,
+    "floor_position": 5,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "一般定期借地権（地上権）、借地期間残存62年11ヶ月、借地権設定登記可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料要)"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79143480/": {
+    "total_units": 52,
+    "floor_position": 6,
+    "floor_total": 9,
+    "floor_structure": "RC9階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_78953318/": {
+    "total_units": 300,
+    "floor_position": 7,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79077575/": {
+    "total_units": 300,
+    "floor_position": 7,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79023540/": {
+    "total_units": 105,
+    "floor_position": 2,
+    "floor_total": 9,
+    "floor_structure": "RC9階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20049680/": {
+    "total_units": 96,
+    "floor_position": 3,
+    "floor_total": 8,
+    "floor_structure": "RC8階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79098704/": {
+    "total_units": 52,
+    "floor_position": 6,
+    "floor_total": 9,
+    "floor_structure": "RC9階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20161097/": {
+    "total_units": 27,
+    "floor_position": 3,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78868648/": {
+    "total_units": 385,
+    "floor_position": 14,
+    "floor_total": 15,
+    "floor_structure": "RC15階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_79017324/": {
+    "total_units": 363,
+    "floor_position": 11,
+    "floor_total": 15,
+    "floor_structure": "RC15階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_77305028/": {
+    "total_units": 61,
+    "floor_position": 12,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78490375/": {
+    "total_units": 43,
+    "floor_position": 5,
+    "floor_total": 7,
+    "floor_structure": "RC7階建一部RC",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78622375/": {
+    "total_units": 61,
+    "floor_position": 5,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20152981/": {
+    "total_units": 78,
+    "floor_position": 5,
+    "floor_total": 8,
+    "floor_structure": "RC8階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_79073280/": {
+    "total_units": 92,
+    "floor_position": 1,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_79108273/": {
+    "total_units": 92,
+    "floor_position": 1,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78375491/": {
+    "total_units": 92,
+    "floor_position": 1,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78878901/": {
+    "total_units": 29,
+    "floor_position": 1,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20161172/": {
+    "total_units": 621,
+    "floor_position": 7,
+    "floor_total": 19,
+    "floor_structure": "RC19階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78979216/": {
+    "total_units": 78,
+    "floor_position": 7,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78386551/": {
+    "total_units": 135,
+    "floor_position": 1,
+    "floor_total": 7,
+    "floor_structure": "RC7階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20115025/": {
+    "total_units": 385,
+    "floor_position": 2,
+    "floor_total": 15,
+    "floor_structure": "RC15階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20066130/": {
+    "total_units": 385,
+    "floor_position": 3,
+    "floor_total": 15,
+    "floor_structure": "RC15階地下1階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20093765/": {
+    "floor_position": 2,
+    "floor_total": 18,
+    "floor_structure": "SRC18階建",
+    "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78971584/": {
+    "total_units": 385,
+    "floor_position": 1,
+    "floor_total": 15,
+    "floor_structure": "RC15階地下1階建一部RC",
+    "ownership": "所有権"
   }
 }
