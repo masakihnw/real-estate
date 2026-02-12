@@ -31,10 +31,11 @@ def normalize_listing_name(name: str) -> str:
 
 def clean_listing_name(name: str) -> str:
     """スクレイピングで取得した物件名のノイズを除去して物件名だけにする。
-    - 先頭の「新築マンション」「マンション」を除去
+    - 先頭の「新築マンション」「マンション」「マンション未入居」を除去
     - 末尾の「閲覧済」を除去
     - 「掲載物件X件」のようなテキストは空文字を返す（物件名ではない）
-    - 「第X期X次」等の販売期情報を除去
+    - 「第X期X次」「( 第X期 X次 )」等の販売期情報を除去
+    - 「眺望良好「XXX」」のようなキャッチコピー含みから物件名を抽出
     """
     if not name:
         return ""
@@ -42,13 +43,28 @@ def clean_listing_name(name: str) -> str:
     # 「掲載物件X件」のようなものは物件名ではない → 空
     if re.match(r"^掲載物件\d+件$", s):
         return ""
-    # 先頭のプレフィックスを除去
+    # 先頭のプレフィックスを除去（順序重要: 長い方から先に試す）
     s = re.sub(r"^新築マンション\s*", "", s).strip()
+    s = re.sub(r"^マンション未入居\s*", "", s).strip()
     s = re.sub(r"^マンション\s*", "", s).strip()
     # 末尾の「閲覧済」を除去
     s = re.sub(r"閲覧済$", "", s).strip()
-    # 販売期情報を除去: 「第1期1次」「　第1期1次」
-    s = re.sub(r"\s*第\d+期\d*次?\s*$", "", s).strip()
+    # 販売期情報を除去: 「第1期1次」「　第1期1次」「( 第2期 2次 )」
+    s = re.sub(r"\s*[（(]\s*第\d+期\s*\d*次?\s*[）)]\s*$", "", s).strip()
+    s = re.sub(r"\s*第\d+期\s*\d*次?\s*$", "", s).strip()
+    # キャッチコピー含みの物件名を抽出: 「眺望良好「XXX」」→「XXX」
+    # ただし、物件名自体が「」で囲まれている場合のみ
+    m = re.search(r"[「『]([^」』]{3,})[」』]", s)
+    if m and s != m.group(1):
+        # 「」の外側に余計なテキスト（キャッチコピー等）がある場合
+        prefix = s[:m.start()].strip()
+        suffix = s[m.end():].strip()
+        # 外側テキストが路線名や駅名でなければ、括弧内を物件名とする
+        if prefix and "線" not in prefix and "駅" not in prefix:
+            s = m.group(1).strip()
+    # 路線・駅・徒歩情報しかない場合は物件名ではない → 空
+    if re.match(r"^.*線.*駅.*徒歩\s*\d+\s*分.*$", s):
+        return ""
     return s
 
 
