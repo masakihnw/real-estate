@@ -2,7 +2,7 @@
 """
 スクレイピング結果を Markdown 形式の見やすいレポートに変換。
 前回結果との差分（新規・価格変動・削除）を検出して表示。
-検索条件（config.py）をレポートに含める。
+検索条件（config.py / Firestore）をレポートに含める。
 
 使い方:
   python generate_report.py result.json -o report.md
@@ -36,6 +36,14 @@ from report_utils import (
     format_total_units,
 )
 
+# Firestore からスクレイピング条件を上書き（main.py と同じ条件でレポートを生成するため）
+# config を import する前に呼ぶこと（from config import X は呼び出し時点の値をコピーするため）
+try:
+    from firestore_config_loader import load_config_from_firestore
+    load_config_from_firestore()
+except Exception:
+    pass  # Firestore 未設定時は config.py のデフォルトを使用
+
 try:
     from config import (
         PRICE_MIN_MAN,
@@ -49,6 +57,7 @@ try:
         AREA_LABEL,
         TOKYO_23_WARDS,
         ALLOWED_LINE_KEYWORDS,
+        LAYOUT_PREFIX_OK,
     )
 except ImportError:
     PRICE_MIN_MAN, PRICE_MAX_MAN = 7500, 10000
@@ -59,6 +68,7 @@ except ImportError:
     STATION_PASSENGERS_MIN = 0
     AREA_LABEL = "東京23区"
     ALLOWED_LINE_KEYWORDS = ()
+    LAYOUT_PREFIX_OK = ("2", "3")
     TOKYO_23_WARDS = (
         "千代田区", "中央区", "港区", "新宿区", "文京区", "台東区", "墨田区", "江東区",
         "品川区", "目黒区", "大田区", "世田谷区", "渋谷区", "中野区", "杉並区", "豊島区",
@@ -66,8 +76,30 @@ except ImportError:
     )
 
 
+def _layout_label() -> str:
+    """LAYOUT_PREFIX_OK から間取り条件のラベルを動的に生成。"""
+    prefixes = sorted(LAYOUT_PREFIX_OK, key=lambda x: int(x) if x.isdigit() else 999)
+    if not prefixes:
+        return "指定なし"
+    # 例: ("2", "3") → "2LDK〜3LDK 系（2LDK, 3LDK, 2DK, 3DK など）"
+    # 例: ("1", "2", "3") → "1LDK〜3LDK 系（1LDK, 2LDK, 3LDK, 1DK, 2DK, 3DK など）"
+    lo, hi = prefixes[0], prefixes[-1]
+    ldk_examples = ", ".join(f"{p}LDK" for p in prefixes)
+    dk_examples = ", ".join(f"{p}DK" for p in prefixes)
+    if lo == hi:
+        return f"{lo}LDK 系（{ldk_examples}, {dk_examples} など）"
+    return f"{lo}LDK〜{hi}LDK 系（{ldk_examples}, {dk_examples} など）"
+
+
+def _built_year_label() -> str:
+    """BUILT_YEAR_MIN から築年条件のラベルを動的に生成。"""
+    now_year = datetime.now().year
+    age = now_year - BUILT_YEAR_MIN
+    return f"{BUILT_YEAR_MIN}年以降（築{age}年以内）"
+
+
 def get_search_conditions_md() -> str:
-    """検索条件（config.py）をMarkdownの表形式で全て列挙。"""
+    """検索条件（config.py / Firestore）をMarkdownの表形式で全て列挙。"""
     if PRICE_MAX_MAN >= 10000:
         price_range = f"{PRICE_MIN_MAN // 10000}億{PRICE_MIN_MAN % 10000}万〜{PRICE_MAX_MAN // 10000}億円" if PRICE_MIN_MAN >= 10000 else f"{PRICE_MIN_MAN:,}万〜{PRICE_MAX_MAN // 10000}億円"
     else:
@@ -78,8 +110,8 @@ def get_search_conditions_md() -> str:
         f"| 検索地域 | {AREA_LABEL} |",
         f"| 価格 | {price_range} |",
         f"| 専有面積 | {AREA_MIN_M2}㎡以上" + (f"〜{AREA_MAX_M2}㎡" if AREA_MAX_M2 is not None else "") + " |",
-        "| 間取り | 2LDK〜3LDK 系（2LDK, 3LDK, 2DK, 3DK など） |",
-        f"| 築年 | {BUILT_YEAR_MIN}年以降（築20年以内） |",
+        f"| 間取り | {_layout_label()} |",
+        f"| 築年 | {_built_year_label()} |",
         f"| 駅徒歩 | {WALK_MIN_MAX}分以内 |",
         f"| 総戸数 | {TOTAL_UNITS_MIN}戸以上 |",
         "| 資産性ランク | 独自スコア（駅乗降客数・徒歩・築年・総戸数）4段階（S/A/B/C）。参考値。 |",
