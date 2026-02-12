@@ -729,6 +729,49 @@ def _handle_login_popup(page: "Page") -> None:
         pass
 
 
+# ──────────────────────────── ユーティリティ ────────────────────────────
+
+
+def _pick_value_judgment(
+    judgments: list[dict],
+    listing_price_man: Optional[int] = None,
+) -> Optional[str]:
+    """住戸ごとの判定リストから、物件全体の ss_value_judgment を導出する。
+
+    ロジック:
+      1. listing_price_man（SUUMO等の掲載価格）に最も近い住戸の judgment を採用
+      2. 掲載価格がない/マッチしない場合は最初の住戸の judgment を使用
+    """
+    if not judgments:
+        return None
+
+    # 全住戸の判定を持つエントリだけ対象
+    with_judgment = [j for j in judgments if j.get("judgment")]
+    if not with_judgment:
+        return None
+
+    # 住戸が1つなら即採用
+    if len(with_judgment) == 1:
+        return with_judgment[0]["judgment"]
+
+    # 掲載価格に最も近い住戸を探す
+    if listing_price_man is not None:
+        best = None
+        best_diff = float("inf")
+        for j in with_judgment:
+            unit_price = j.get("price_man")
+            if unit_price is not None:
+                diff = abs(unit_price - listing_price_man)
+                if diff < best_diff:
+                    best_diff = diff
+                    best = j
+        if best:
+            return best["judgment"]
+
+    # フォールバック: 最初の住戸
+    return with_judgment[0]["judgment"]
+
+
 # ──────────────────────────── メイン: バッチ enrichment ────────────────────────────
 
 def browser_enrich_listings(
@@ -818,11 +861,21 @@ def browser_enrich_listings(
                         listing["ss_price_judgments"] = json.dumps(
                             judgments, ensure_ascii=False
                         )
+                        # ── ss_value_judgment を住戸判定から導出 ──
+                        # 掲載価格に最も近い住戸の判定を採用。
+                        # 該当なしの場合は最初の住戸の判定を使用。
+                        best_judgment = _pick_value_judgment(
+                            judgments, listing.get("price_man")
+                        )
+                        if best_judgment:
+                            listing["ss_value_judgment"] = best_judgment
+
                         enriched_count += 1
                         unit_count = len(judgments)
                         cheap = sum(1 for j in judgments if j.get("judgment") in ("割安", "やや割安"))
                         print(
-                            f"  ✓ {name} — 割安判定: {unit_count}戸中{cheap}戸割安",
+                            f"  ✓ {name} — 割安判定: {unit_count}戸中{cheap}戸割安"
+                            f" → ss_value_judgment={best_judgment or '?'}",
                             file=sys.stderr,
                         )
                     else:

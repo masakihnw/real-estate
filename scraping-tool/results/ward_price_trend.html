@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>東京23区 中古マンション m²単価推移</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Hiragino Sans', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #0f172a;
+    }
+    .subtitle {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 20px;
+    }
+    .chart-container {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .chart-wrapper {
+      height: 500px;
+      position: relative;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-btn {
+      padding: 6px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #475569;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover {
+      background: #f1f5f9;
+    }
+    .filter-btn.active {
+      background: #1e293b;
+      color: white;
+      border-color: #1e293b;
+    }
+    .filter-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .summary-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .summary-section h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #0f172a;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 2px solid #e2e8f0;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    th.number { text-align: right; }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    td.number { text-align: right; font-variant-numeric: tabular-nums; }
+    td.positive { color: #dc2626; font-weight: 600; }
+    td.negative { color: #2563eb; font-weight: 600; }
+    .color-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .tier-cell {
+      color: #94a3b8;
+      font-size: 0.75rem;
+    }
+    tr:hover {
+      background: #f8fafc;
+    }
+    .note {
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .stat-sub {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>東京23区 中古マンション m&sup2;単価推移</h1>
+  <p class="subtitle">成約価格ベース &middot; 国土交通省 不動産情報ライブラリ &middot; 2021Q1〜2025Q3</p>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="chart-container">
+    <div class="filter-bar">
+      <span class="filter-label">表示:</span>
+      <button class="filter-btn active" data-filter="all">全23区</button>
+      <button class="filter-btn" data-filter="Tier1_都心">都心4区</button>
+      <button class="filter-btn" data-filter="Tier2_準都心">準都心6区</button>
+      <button class="filter-btn" data-filter="Tier3_城西・城南">城西・城南4区</button>
+      <button class="filter-btn" data-filter="Tier4_城北・城東">城北・城東9区</button>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <div class="summary-section">
+    <h2>区別サマリー（変動率順）</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>区</th>
+          <th>ティア</th>
+          <th class="number">2021Q1</th>
+          <th class="number">2025Q3</th>
+          <th class="number">変動率</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+            <td><span class="color-dot" style="background:rgb(202, 138, 4)"></span>江東区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥716,667</td>
+            <td class="number">¥1,480,000</td>
+            <td class="number positive">+106.5%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(239, 68, 68)"></span>中央区</td>
+            <td class="tier-cell">都心</td>
+            <td class="number">¥1,028,571</td>
+            <td class="number">¥1,839,744</td>
+            <td class="number positive">+78.9%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(248, 113, 113)"></span>渋谷区</td>
+            <td class="tier-cell">都心</td>
+            <td class="number">¥1,085,714</td>
+            <td class="number">¥1,818,182</td>
+            <td class="number positive">+67.5%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(185, 28, 28)"></span>港区</td>
+            <td class="tier-cell">都心</td>
+            <td class="number">¥1,416,667</td>
+            <td class="number">¥2,333,333</td>
+            <td class="number positive">+64.7%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(59, 130, 246)"></span>文京区</td>
+            <td class="tier-cell">準都心</td>
+            <td class="number">¥941,176</td>
+            <td class="number">¥1,398,333</td>
+            <td class="number positive">+48.6%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(34, 197, 94)"></span>中野区</td>
+            <td class="tier-cell">城西・城南</td>
+            <td class="number">¥725,000</td>
+            <td class="number">¥1,050,000</td>
+            <td class="number positive">+44.8%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(74, 222, 128)"></span>大田区</td>
+            <td class="tier-cell">城西・城南</td>
+            <td class="number">¥632,051</td>
+            <td class="number">¥854,545</td>
+            <td class="number positive">+35.2%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(120, 53, 15)"></span>板橋区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥547,727</td>
+            <td class="number">¥738,462</td>
+            <td class="number positive">+34.8%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(161, 98, 7)"></span>墨田区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥725,000</td>
+            <td class="number">¥963,095</td>
+            <td class="number positive">+32.8%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(234, 179, 8)"></span>荒川区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥666,667</td>
+            <td class="number">¥876,923</td>
+            <td class="number positive">+31.5%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(146, 64, 14)"></span>北区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥644,444</td>
+            <td class="number">¥840,000</td>
+            <td class="number positive">+30.3%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(147, 197, 253)"></span>豊島区</td>
+            <td class="tier-cell">準都心</td>
+            <td class="number">¥845,000</td>
+            <td class="number">¥1,094,444</td>
+            <td class="number positive">+29.5%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(22, 163, 74)"></span>世田谷区</td>
+            <td class="tier-cell">城西・城南</td>
+            <td class="number">¥750,000</td>
+            <td class="number">¥947,727</td>
+            <td class="number positive">+26.4%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(113, 63, 18)"></span>江戸川区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥510,000</td>
+            <td class="number">¥626,667</td>
+            <td class="number positive">+22.9%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(180, 83, 9)"></span>足立区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥446,154</td>
+            <td class="number">¥540,179</td>
+            <td class="number positive">+21.1%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(251, 191, 36)"></span>練馬区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥572,381</td>
+            <td class="number">¥692,857</td>
+            <td class="number positive">+21.0%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(96, 165, 250)"></span>目黒区</td>
+            <td class="tier-cell">準都心</td>
+            <td class="number">¥1,018,182</td>
+            <td class="number">¥1,220,000</td>
+            <td class="number positive">+19.8%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(30, 64, 175)"></span>品川区</td>
+            <td class="tier-cell">準都心</td>
+            <td class="number">¥1,048,182</td>
+            <td class="number">¥1,250,000</td>
+            <td class="number positive">+19.3%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(21, 128, 61)"></span>杉並区</td>
+            <td class="tier-cell">城西・城南</td>
+            <td class="number">¥727,273</td>
+            <td class="number">¥856,250</td>
+            <td class="number positive">+17.7%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(253, 224, 71)"></span>葛飾区</td>
+            <td class="tier-cell">城北・城東</td>
+            <td class="number">¥471,429</td>
+            <td class="number">¥551,923</td>
+            <td class="number positive">+17.1%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(29, 78, 216)"></span>台東区</td>
+            <td class="tier-cell">準都心</td>
+            <td class="number">¥844,444</td>
+            <td class="number">¥960,000</td>
+            <td class="number positive">+13.7%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(37, 99, 235)"></span>新宿区</td>
+            <td class="tier-cell">準都心</td>
+            <td class="number">¥1,029,167</td>
+            <td class="number">¥1,160,000</td>
+            <td class="number positive">+12.7%</td>
+          </tr>
+
+          <tr>
+            <td><span class="color-dot" style="background:rgb(220, 38, 38)"></span>千代田区</td>
+            <td class="tier-cell">都心</td>
+            <td class="number">N/A</td>
+            <td class="number">¥1,629,167</td>
+            <td class="number "></td>
+          </tr>
+      </tbody>
+    </table>
+    <p class="note">※ 成約価格（中古マンション等）の中央値。データソース: 国土交通省 不動産情報ライブラリ</p>
+  </div>
+
+  <script>
+    const labels = ["2021Q1", "2021Q2", "2022Q1", "2022Q2", "2023Q1", "2023Q2", "2024Q1", "2024Q2", "2024Q3", "2024Q4", "2025Q1", "2025Q2", "2025Q3"];
+    const allDatasets = [
+        {
+          label: '千代田区',
+          data: [null, 1230682, 1309524, 1250000, 1300000, 1380000, 1461039, 1381818, 1408333, 1400000, 1600000, 1777778, 1629167],
+          borderColor: 'rgb(220, 38, 38)',
+          backgroundColor: 'rgba(220, 38, 38, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier1_都心',
+          hidden: false
+        },
+        {
+          label: '中央区',
+          data: [1028571, 1181746, 1200000, null, 1218182, null, 1414973, 1288889, 1381818, 1633333, 1761616, 1857143, 1839744],
+          borderColor: 'rgb(239, 68, 68)',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier1_都心',
+          hidden: false
+        },
+        {
+          label: '港区',
+          data: [1416667, null, 1207143, null, 1550000, null, 1714286, 1651515, 1636667, 1955000, 2000000, 2194444, 2333333],
+          borderColor: 'rgb(185, 28, 28)',
+          backgroundColor: 'rgba(185, 28, 28, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier1_都心',
+          hidden: false
+        },
+        {
+          label: '渋谷区',
+          data: [1085714, null, 1165714, null, 1157895, null, 1485714, 1257143, 1400000, 1628571, 1625000, 1728571, 1818182],
+          borderColor: 'rgb(248, 113, 113)',
+          backgroundColor: 'rgba(248, 113, 113, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier1_都心',
+          hidden: false
+        },
+        {
+          label: '新宿区',
+          data: [1029167, null, 1046667, null, 1016667, null, 1243182, 1141667, 1114286, 1200000, 1131884, 1379167, 1160000],
+          borderColor: 'rgb(37, 99, 235)',
+          backgroundColor: 'rgba(37, 99, 235, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier2_準都心',
+          hidden: false
+        },
+        {
+          label: '文京区',
+          data: [941176, null, 1091608, null, 1083333, null, 1166667, 1235714, 1241429, 1022222, 1226667, 1142857, 1398333],
+          borderColor: 'rgb(59, 130, 246)',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier2_準都心',
+          hidden: false
+        },
+        {
+          label: '台東区',
+          data: [844444, 1233333, 904545, null, 903333, null, 1000000, 1026786, 963636, 1090000, 1016667, 1000000, 960000],
+          borderColor: 'rgb(29, 78, 216)',
+          backgroundColor: 'rgba(29, 78, 216, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier2_準都心',
+          hidden: false
+        },
+        {
+          label: '目黒区',
+          data: [1018182, null, 1096667, null, 1092308, null, 1117647, 1240972, 1200000, 1248571, 1250000, 1225000, 1220000],
+          borderColor: 'rgb(96, 165, 250)',
+          backgroundColor: 'rgba(96, 165, 250, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier2_準都心',
+          hidden: false
+        },
+        {
+          label: '品川区',
+          data: [1048182, null, 983333, null, 1123077, null, 1306667, 1026667, 1033333, 1310000, 1210000, 1160000, 1250000],
+          borderColor: 'rgb(30, 64, 175)',
+          backgroundColor: 'rgba(30, 64, 175, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier2_準都心',
+          hidden: false
+        },
+        {
+          label: '豊島区',
+          data: [845000, null, 850000, null, 885000, null, 1000000, 1000000, 1040000, 963636, 1066667, 1000000, 1094444],
+          borderColor: 'rgb(147, 197, 253)',
+          backgroundColor: 'rgba(147, 197, 253, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier2_準都心',
+          hidden: false
+        },
+        {
+          label: '世田谷区',
+          data: [750000, null, 827619, null, 829947, null, 902941, 950000, 875000, 781818, 880000, 929825, 947727],
+          borderColor: 'rgb(22, 163, 74)',
+          backgroundColor: 'rgba(22, 163, 74, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier3_城西・城南',
+          hidden: false
+        },
+        {
+          label: '中野区',
+          data: [725000, null, 866667, null, 900000, null, 842857, 865934, 1026667, 1033333, 840000, 1116667, 1050000],
+          borderColor: 'rgb(34, 197, 94)',
+          backgroundColor: 'rgba(34, 197, 94, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier3_城西・城南',
+          hidden: false
+        },
+        {
+          label: '杉並区',
+          data: [727273, null, 827885, null, 850000, null, 861250, 906667, 823529, 875000, 846154, 980000, 856250],
+          borderColor: 'rgb(21, 128, 61)',
+          backgroundColor: 'rgba(21, 128, 61, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier3_城西・城南',
+          hidden: false
+        },
+        {
+          label: '大田区',
+          data: [632051, null, 757143, null, 800000, null, 800000, 800000, 829167, 853939, 823529, 811111, 854545],
+          borderColor: 'rgb(74, 222, 128)',
+          backgroundColor: 'rgba(74, 222, 128, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier3_城西・城南',
+          hidden: false
+        },
+        {
+          label: '墨田区',
+          data: [725000, null, 777949, null, 869697, null, 836667, 800000, 840000, 947619, 836364, 857143, 963095],
+          borderColor: 'rgb(161, 98, 7)',
+          backgroundColor: 'rgba(161, 98, 7, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        },
+        {
+          label: '江東区',
+          data: [716667, null, 750000, null, 1000000, null, 1183974, 850000, 947222, 1400000, 1333333, 1446154, 1480000],
+          borderColor: 'rgb(202, 138, 4)',
+          backgroundColor: 'rgba(202, 138, 4, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        },
+        {
+          label: '北区',
+          data: [644444, 706593, 720000, null, 763333, null, 800000, 866667, 756349, 780833, 846667, 746667, 840000],
+          borderColor: 'rgb(146, 64, 14)',
+          backgroundColor: 'rgba(146, 64, 14, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        },
+        {
+          label: '荒川区',
+          data: [666667, 604545, 644444, 645249, 727273, null, 763636, 818182, 727273, 815385, 721970, 737500, 876923],
+          borderColor: 'rgb(234, 179, 8)',
+          backgroundColor: 'rgba(234, 179, 8, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        },
+        {
+          label: '板橋区',
+          data: [547727, null, 560000, null, 623077, null, 620000, 666667, 712500, 671429, 714286, 741429, 738462],
+          borderColor: 'rgb(120, 53, 15)',
+          backgroundColor: 'rgba(120, 53, 15, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        },
+        {
+          label: '練馬区',
+          data: [572381, null, 614286, null, 661905, null, 720000, 692857, 786667, 770330, 696154, 627273, 692857],
+          borderColor: 'rgb(251, 191, 36)',
+          backgroundColor: 'rgba(251, 191, 36, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        },
+        {
+          label: '足立区',
+          data: [446154, null, 480000, null, 480000, null, 542857, 494118, 561538, 551923, 500000, 496154, 540179],
+          borderColor: 'rgb(180, 83, 9)',
+          backgroundColor: 'rgba(180, 83, 9, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        },
+        {
+          label: '葛飾区',
+          data: [471429, null, 511688, null, 527922, null, 519643, 544156, 572851, 614286, 558571, 545000, 551923],
+          borderColor: 'rgb(253, 224, 71)',
+          backgroundColor: 'rgba(253, 224, 71, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        },
+        {
+          label: '江戸川区',
+          data: [510000, null, 526786, null, 586667, null, 563333, 584615, 573333, 553333, 560000, 477778, 626667],
+          borderColor: 'rgb(113, 63, 18)',
+          backgroundColor: 'rgba(113, 63, 18, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false,
+          tier: 'Tier4_城北・城東',
+          hidden: false
+        }
+    ];
+
+    // Stats
+    const statsRow = document.getElementById('statsRow');
+    const latest = allDatasets.map(d => ({ name: d.label, val: d.data[d.data.length - 1], tier: d.tier })).filter(d => d.val);
+    const avgAll = Math.round(latest.reduce((s, d) => s + d.val, 0) / latest.length);
+    const maxWard = latest.reduce((a, b) => a.val > b.val ? a : b);
+    const minWard = latest.reduce((a, b) => a.val < b.val ? a : b);
+
+    // 全期間の平均変動率
+    const firstVals = allDatasets.map(d => ({ name: d.label, first: d.data.find(v => v !== null), last: d.data[d.data.length - 1] })).filter(d => d.first && d.last);
+    const avgChange = firstVals.length ? Math.round(firstVals.reduce((s, d) => s + (d.last - d.first) / d.first * 100, 0) / firstVals.length * 10) / 10 : 0;
+
+    statsRow.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-label">23区平均 m&sup2;単価</div>
+        <div class="stat-value">&yen;${avgAll.toLocaleString()}</div>
+        <div class="stat-sub">直近四半期</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">最高値</div>
+        <div class="stat-value">&yen;${maxWard.val.toLocaleString()}</div>
+        <div class="stat-sub">${maxWard.name}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">最安値</div>
+        <div class="stat-value">&yen;${minWard.val.toLocaleString()}</div>
+        <div class="stat-sub">${minWard.name}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">平均変動率</div>
+        <div class="stat-value">${avgChange > 0 ? '+' : ''}${avgChange}%</div>
+        <div class="stat-sub">${labels[0]}→${labels[labels.length-1]}</div>
+      </div>
+    `;
+
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: allDatasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'circle',
+              padding: 8,
+              font: { size: 11 }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleFont: { size: 13 },
+            bodyFont: { size: 12 },
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(ctx) {
+                const val = ctx.parsed.y;
+                return val ? `${ctx.dataset.label}: ¥${val.toLocaleString()}/m²` : '';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 11 } }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'm² 単価（円）',
+              font: { size: 12 }
+            },
+            ticks: {
+              callback: function(value) {
+                return '¥' + (value / 10000).toFixed(0) + '万';
+              },
+              font: { size: 11 }
+            },
+            grid: {
+              color: 'rgba(0,0,0,0.05)'
+            }
+          }
+        },
+        spanGaps: true
+      }
+    });
+
+    // フィルタボタン
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        chart.data.datasets.forEach(ds => {
+          if (filter === 'all') {
+            ds.hidden = false;
+          } else {
+            ds.hidden = ds.tier !== filter;
+          }
+        });
+        chart.update();
+      });
+    });
+  </script>
+</body>
+</html>

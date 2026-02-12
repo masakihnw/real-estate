@@ -1,0 +1,8473 @@
+{
+  "stations": [
+    {
+      "group_code": "004314",
+      "station_name": "あざみ野",
+      "lines": [
+        "3号線",
+        "田園都市線"
+      ],
+      "operators": [
+        "横浜市",
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004091",
+      "station_name": "お台場海浜公園",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "003274",
+      "station_name": "お花茶屋",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "004341",
+      "station_name": "こどもの国",
+      "lines": [
+        "こどもの国線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "002934",
+      "station_name": "さいたま新都心",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004466",
+      "station_name": "すずかけ台",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004296",
+      "station_name": "たまプラーザ",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004486",
+      "station_name": "つきみ野",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004441",
+      "station_name": "つくし野",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003933",
+      "station_name": "つつじヶ丘",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003524",
+      "station_name": "とうきょうスカイツリー",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003223",
+      "station_name": "ときわ台",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004141",
+      "station_name": "はるひ野",
+      "lines": [
+        "多摩線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003242",
+      "station_name": "ひばりヶ丘",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "002987",
+      "station_name": "ふじみ野",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003025",
+      "station_name": "みずほ台",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003116",
+      "station_name": "みのり台",
+      "lines": [
+        "新京成線"
+      ],
+      "operators": [
+        "新京成電鉄"
+      ]
+    },
+    {
+      "group_code": "004353",
+      "station_name": "センター北",
+      "lines": [
+        "3号線",
+        "4号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "004380",
+      "station_name": "センター南",
+      "lines": [
+        "3号線",
+        "4号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "004144",
+      "station_name": "テレコムセンター",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "004098",
+      "station_name": "ベイサイド･ステーション",
+      "lines": [
+        "ディズニーリゾートライン"
+      ],
+      "operators": [
+        "舞浜リゾートライン"
+      ]
+    },
+    {
+      "group_code": "003946",
+      "station_name": "モノレール浜松町",
+      "lines": [
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "004063",
+      "station_name": "リゾートゲートウェイ･ステーション",
+      "lines": [
+        "ディズニーリゾートライン"
+      ],
+      "operators": [
+        "舞浜リゾートライン"
+      ]
+    },
+    {
+      "group_code": "003724",
+      "station_name": "一之江",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003455",
+      "station_name": "一橋学園",
+      "lines": [
+        "多摩湖線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003829",
+      "station_name": "万願寺",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003399",
+      "station_name": "三ノ輪",
+      "lines": [
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003370",
+      "station_name": "三ノ輪橋",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003359",
+      "station_name": "三河島",
+      "lines": [
+        "常磐線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003986",
+      "station_name": "三田",
+      "lines": [
+        "1号線浅草線",
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003716",
+      "station_name": "三越前",
+      "lines": [
+        "3号線銀座線",
+        "11号線半蔵門線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004016",
+      "station_name": "三軒茶屋",
+      "lines": [
+        "世田谷線",
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003010",
+      "station_name": "三郷",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003047",
+      "station_name": "三郷中央",
+      "lines": [
+        "常磐新線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道"
+      ]
+    },
+    {
+      "group_code": "003587",
+      "station_name": "三鷹",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003674",
+      "station_name": "三鷹台",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003277",
+      "station_name": "上中里",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003437",
+      "station_name": "上井草",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003283",
+      "station_name": "上北台",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003849",
+      "station_name": "上北沢",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003115",
+      "station_name": "上本郷",
+      "lines": [
+        "新京成線"
+      ],
+      "operators": [
+        "新京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003212",
+      "station_name": "上板橋",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004020",
+      "station_name": "上町",
+      "lines": [
+        "世田谷線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003427",
+      "station_name": "上石神井",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "002964",
+      "station_name": "上福岡",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003505",
+      "station_name": "上野",
+      "lines": [
+        "2号線日比谷線",
+        "3号線銀座線",
+        "東北新幹線",
+        "東北線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003488",
+      "station_name": "上野動物園東園",
+      "lines": [
+        "上野懸垂線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003497",
+      "station_name": "上野動物園西園",
+      "lines": [
+        "上野懸垂線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003545",
+      "station_name": "上野広小路",
+      "lines": [
+        "3号線銀座線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003543",
+      "station_name": "上野御徒町",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004175",
+      "station_name": "上野毛",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004310",
+      "station_name": "下丸子",
+      "lines": [
+        "東急多摩川線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003444",
+      "station_name": "下井草",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003908",
+      "station_name": "下北沢",
+      "lines": [
+        "井の頭線",
+        "小田原線"
+      ],
+      "operators": [
+        "京王電鉄",
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003148",
+      "station_name": "下山口",
+      "lines": [
+        "狭山線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003285",
+      "station_name": "下板橋",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004188",
+      "station_name": "下神明",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003498",
+      "station_name": "下総中山",
+      "lines": [
+        "総武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003491",
+      "station_name": "下落合",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003184",
+      "station_name": "下赤塚",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003874",
+      "station_name": "下高井戸",
+      "lines": [
+        "京王線",
+        "世田谷線"
+      ],
+      "operators": [
+        "京王電鉄",
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004114",
+      "station_name": "不動前",
+      "lines": [
+        "目黒線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "002947",
+      "station_name": "与野",
+      "lines": [
+        "東北線",
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002951",
+      "station_name": "与野本町",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004021",
+      "station_name": "世田谷",
+      "lines": [
+        "世田谷線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003931",
+      "station_name": "世田谷代田",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003646",
+      "station_name": "両国",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003654",
+      "station_name": "両国",
+      "lines": [
+        "総武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003495",
+      "station_name": "中井",
+      "lines": [
+        "新宿線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004031",
+      "station_name": "中央大学・明星大学",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "004498",
+      "station_name": "中央林間",
+      "lines": [
+        "江ノ島線",
+        "田園都市線"
+      ],
+      "operators": [
+        "小田急電鉄",
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004473",
+      "station_name": "中山",
+      "lines": [
+        "横浜線",
+        "4号線"
+      ],
+      "operators": [
+        "東日本旅客鉄道",
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "004325",
+      "station_name": "中川",
+      "lines": [
+        "3号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "004215",
+      "station_name": "中延",
+      "lines": [
+        "大井町線",
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003345",
+      "station_name": "中村橋",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003233",
+      "station_name": "中板橋",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003920",
+      "station_name": "中河原",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "002995",
+      "station_name": "中浦和",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004014",
+      "station_name": "中目黒",
+      "lines": [
+        "東横線",
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003568",
+      "station_name": "中野",
+      "lines": [
+        "5号線東西線",
+        "中央線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003643",
+      "station_name": "中野坂上",
+      "lines": [
+        "4号線丸ノ内線",
+        "4号線丸ノ内線分岐線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003688",
+      "station_name": "中野富士見町",
+      "lines": [
+        "4号線丸ノ内線分岐線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004089",
+      "station_name": "中野島",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003679",
+      "station_name": "中野新橋",
+      "lines": [
+        "4号線丸ノ内線分岐線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003868",
+      "station_name": "乃木坂",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004292",
+      "station_name": "久が原",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004179",
+      "station_name": "久地",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003710",
+      "station_name": "久我山",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003262",
+      "station_name": "久米川",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004216",
+      "station_name": "九品仏",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003657",
+      "station_name": "九段下",
+      "lines": [
+        "5号線東西線",
+        "11号線半蔵門線",
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003635",
+      "station_name": "亀戸",
+      "lines": [
+        "総武線",
+        "亀戸線"
+      ],
+      "operators": [
+        "東日本旅客鉄道",
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003610",
+      "station_name": "亀戸水神",
+      "lines": [
+        "亀戸線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003199",
+      "station_name": "亀有",
+      "lines": [
+        "常磐線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004198",
+      "station_name": "二子新地",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004177",
+      "station_name": "二子玉川",
+      "lines": [
+        "大井町線",
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003772",
+      "station_name": "二重橋前",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004110",
+      "station_name": "五反田",
+      "lines": [
+        "池上線",
+        "1号線浅草線",
+        "山手線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003200",
+      "station_name": "五反野",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004237",
+      "station_name": "五月台",
+      "lines": [
+        "多摩線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003642",
+      "station_name": "井の頭公園",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003440",
+      "station_name": "井荻",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004424",
+      "station_name": "京急川崎",
+      "lines": [
+        "大師線",
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004331",
+      "station_name": "京急蒲田",
+      "lines": [
+        "空港線",
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004506",
+      "station_name": "京急鶴見",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003521",
+      "station_name": "京成上野",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003485",
+      "station_name": "京成中山",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003445",
+      "station_name": "京成八幡",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003303",
+      "station_name": "京成小岩",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003477",
+      "station_name": "京成曳舟",
+      "lines": [
+        "押上線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003323",
+      "station_name": "京成立石",
+      "lines": [
+        "押上線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003195",
+      "station_name": "京成金町",
+      "lines": [
+        "金町線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003290",
+      "station_name": "京成関屋",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003248",
+      "station_name": "京成高砂",
+      "lines": [
+        "金町線",
+        "本線",
+        "北総線",
+        "成田空港線"
+      ],
+      "operators": [
+        "京成電鉄",
+        "北総鉄道"
+      ]
+    },
+    {
+      "group_code": "003792",
+      "station_name": "京橋",
+      "lines": [
+        "3号線銀座線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004070",
+      "station_name": "京王よみうりランド",
+      "lines": [
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004120",
+      "station_name": "京王堀之内",
+      "lines": [
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004116",
+      "station_name": "京王多摩センター",
+      "lines": [
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004013",
+      "station_name": "京王多摩川",
+      "lines": [
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004086",
+      "station_name": "京王永山",
+      "lines": [
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004066",
+      "station_name": "京王稲田堤",
+      "lines": [
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003721",
+      "station_name": "人形町",
+      "lines": [
+        "2号線日比谷線",
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003903",
+      "station_name": "仙川",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003743",
+      "station_name": "代々木",
+      "lines": [
+        "12号線大江戸線",
+        "山手線",
+        "中央線"
+      ],
+      "operators": [
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003847",
+      "station_name": "代々木上原",
+      "lines": [
+        "小田原線",
+        "9号線千代田線"
+      ],
+      "operators": [
+        "小田急電鉄",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003837",
+      "station_name": "代々木八幡",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003845",
+      "station_name": "代々木公園",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003985",
+      "station_name": "代官山",
+      "lines": [
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003830",
+      "station_name": "代田橋",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003560",
+      "station_name": "仲御徒町",
+      "lines": [
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004416",
+      "station_name": "仲町台",
+      "lines": [
+        "3号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "003704",
+      "station_name": "住吉",
+      "lines": [
+        "11号線半蔵門線",
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003271",
+      "station_name": "保谷",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003774",
+      "station_name": "信濃町",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004322",
+      "station_name": "元住吉",
+      "lines": [
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003225",
+      "station_name": "光が丘",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003033",
+      "station_name": "入曽",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003469",
+      "station_name": "入谷",
+      "lines": [
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003797",
+      "station_name": "八丁堀",
+      "lines": [
+        "2号線日比谷線",
+        "京葉線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004448",
+      "station_name": "八丁畷",
+      "lines": [
+        "本線",
+        "南武線"
+      ],
+      "operators": [
+        "京浜急行電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003287",
+      "station_name": "八坂",
+      "lines": [
+        "多摩湖線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003836",
+      "station_name": "八幡山",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003422",
+      "station_name": "八広",
+      "lines": [
+        "押上線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003105",
+      "station_name": "八柱",
+      "lines": [
+        "新京成線"
+      ],
+      "operators": [
+        "新京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003073",
+      "station_name": "八潮",
+      "lines": [
+        "常磐新線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道"
+      ]
+    },
+    {
+      "group_code": "003892",
+      "station_name": "六本木",
+      "lines": [
+        "2号線日比谷線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003884",
+      "station_name": "六本木一丁目",
+      "lines": [
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003133",
+      "station_name": "六町",
+      "lines": [
+        "常磐新線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道"
+      ]
+    },
+    {
+      "group_code": "004399",
+      "station_name": "六郷土手",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003842",
+      "station_name": "内幸町",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003853",
+      "station_name": "分倍河原",
+      "lines": [
+        "京王線",
+        "南武線"
+      ],
+      "operators": [
+        "京王電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003764",
+      "station_name": "初台",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "002949",
+      "station_name": "初石",
+      "lines": [
+        "野田線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003927",
+      "station_name": "勝どき",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "002938",
+      "station_name": "北与野",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003260",
+      "station_name": "北千住",
+      "lines": [
+        "常磐新線",
+        "2号線日比谷線",
+        "9号線千代田線",
+        "常磐線",
+        "伊勢崎線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道",
+        "東京地下鉄",
+        "東日本旅客鉄道",
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004212",
+      "station_name": "北千束",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003780",
+      "station_name": "北参道",
+      "lines": [
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004125",
+      "station_name": "北品川",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003213",
+      "station_name": "北国分",
+      "lines": [
+        "北総線"
+      ],
+      "operators": [
+        "北総鉄道"
+      ]
+    },
+    {
+      "group_code": "003032",
+      "station_name": "北小金",
+      "lines": [
+        "常磐線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004334",
+      "station_name": "北山田",
+      "lines": [
+        "4号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "003771",
+      "station_name": "北府中",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003044",
+      "station_name": "北戸田",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004459",
+      "station_name": "北新横浜",
+      "lines": [
+        "3号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "003056",
+      "station_name": "北朝霞",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003089",
+      "station_name": "北松戸",
+      "lines": [
+        "常磐線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003315",
+      "station_name": "北池袋",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "002968",
+      "station_name": "北浦和",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003162",
+      "station_name": "北綾瀬",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003130",
+      "station_name": "北赤羽",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004443",
+      "station_name": "十日市場",
+      "lines": [
+        "横浜線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003218",
+      "station_name": "十条",
+      "lines": [
+        "赤羽線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003301",
+      "station_name": "千住大橋",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003324",
+      "station_name": "千川",
+      "lines": [
+        "8号線有楽町線",
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003861",
+      "station_name": "千歳烏山",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003988",
+      "station_name": "千歳船橋",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003415",
+      "station_name": "千石",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003767",
+      "station_name": "千駄ヶ谷",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003434",
+      "station_name": "千駄木",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004305",
+      "station_name": "千鳥町",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003729",
+      "station_name": "半蔵門",
+      "lines": [
+        "11号線半蔵門線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "002975",
+      "station_name": "南与野",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003363",
+      "station_name": "南千住",
+      "lines": [
+        "常磐新線",
+        "2号線日比谷線",
+        "常磐線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道",
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003980",
+      "station_name": "南多摩",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002940",
+      "station_name": "南大塚",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003750",
+      "station_name": "南新宿",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003024",
+      "station_name": "南流山",
+      "lines": [
+        "常磐新線",
+        "武蔵野線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003004",
+      "station_name": "南浦和",
+      "lines": [
+        "東北線",
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004484",
+      "station_name": "南町田グランベリーパーク",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003854",
+      "station_name": "南砂町",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003819",
+      "station_name": "南行徳",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "002958",
+      "station_name": "南越谷",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003619",
+      "station_name": "南阿佐ヶ谷",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003054",
+      "station_name": "南鳩ヶ谷",
+      "lines": [
+        "埼玉高速鉄道線"
+      ],
+      "operators": [
+        "埼玉高速鉄道"
+      ]
+    },
+    {
+      "group_code": "003828",
+      "station_name": "原宿",
+      "lines": [
+        "山手線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003582",
+      "station_name": "原木中山",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003778",
+      "station_name": "参宮橋",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004345",
+      "station_name": "古淵",
+      "lines": [
+        "横浜線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004112",
+      "station_name": "台場",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "002955",
+      "station_name": "吉川",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002974",
+      "station_name": "吉川美南",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003584",
+      "station_name": "吉祥寺",
+      "lines": [
+        "井の頭線",
+        "中央線"
+      ],
+      "operators": [
+        "京王電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004150",
+      "station_name": "向ヶ丘遊園",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003407",
+      "station_name": "向原",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004308",
+      "station_name": "向河原",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003123",
+      "station_name": "和光市",
+      "lines": [
+        "8号線有楽町線",
+        "東上本線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004105",
+      "station_name": "和泉多摩川",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004095",
+      "station_name": "品川",
+      "lines": [
+        "本線",
+        "東海道新幹線",
+        "山手線",
+        "東海道線"
+      ],
+      "operators": [
+        "京浜急行電鉄",
+        "東海旅客鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004182",
+      "station_name": "品川シーサイド",
+      "lines": [
+        "りんかい線"
+      ],
+      "operators": [
+        "東京臨海高速鉄道"
+      ]
+    },
+    {
+      "group_code": "004154",
+      "station_name": "唐木田",
+      "lines": [
+        "多摩線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004053",
+      "station_name": "喜多見",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003376",
+      "station_name": "四ツ木",
+      "lines": [
+        "押上線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003728",
+      "station_name": "四ツ谷",
+      "lines": [
+        "4号線丸ノ内線",
+        "7号線南北線",
+        "中央線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003713",
+      "station_name": "四谷三丁目",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003799",
+      "station_name": "国会議事堂前",
+      "lines": [
+        "4号線丸ノ内線",
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003606",
+      "station_name": "国分寺",
+      "lines": [
+        "国分寺線",
+        "多摩湖線",
+        "中央線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003346",
+      "station_name": "国府台",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003622",
+      "station_name": "国立",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003775",
+      "station_name": "国立競技場",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004519",
+      "station_name": "国道",
+      "lines": [
+        "鶴見線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004065",
+      "station_name": "国際展示場",
+      "lines": [
+        "りんかい線"
+      ],
+      "operators": [
+        "東京臨海高速鉄道"
+      ]
+    },
+    {
+      "group_code": "003973",
+      "station_name": "国領",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003163",
+      "station_name": "地下鉄成増",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003186",
+      "station_name": "地下鉄赤塚",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003297",
+      "station_name": "堀切",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003273",
+      "station_name": "堀切菖蒲園",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003834",
+      "station_name": "外苑前",
+      "lines": [
+        "3号線銀座線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004121",
+      "station_name": "多摩センター",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003977",
+      "station_name": "多摩動物公園",
+      "lines": [
+        "動物園線",
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "京王電鉄",
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "004261",
+      "station_name": "多摩川",
+      "lines": [
+        "東横線",
+        "東急多摩川線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003201",
+      "station_name": "多摩湖",
+      "lines": [
+        "山口線",
+        "多摩湖線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003790",
+      "station_name": "多磨",
+      "lines": [
+        "多摩川線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003871",
+      "station_name": "多磨霊園",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003604",
+      "station_name": "大久保",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004197",
+      "station_name": "大井町",
+      "lines": [
+        "大井町線",
+        "りんかい線",
+        "東海道線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東京臨海高速鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004251",
+      "station_name": "大井競馬場前",
+      "lines": [
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "004452",
+      "station_name": "大倉山",
+      "lines": [
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003375",
+      "station_name": "大塚",
+      "lines": [
+        "山手線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004051",
+      "station_name": "大塚・帝京大学",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003378",
+      "station_name": "大塚駅前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003269",
+      "station_name": "大山",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004200",
+      "station_name": "大岡山",
+      "lines": [
+        "大井町線",
+        "目黒線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003698",
+      "station_name": "大島",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004135",
+      "station_name": "大崎",
+      "lines": [
+        "りんかい線",
+        "山手線"
+      ],
+      "operators": [
+        "東京臨海高速鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004127",
+      "station_name": "大崎広小路",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003150",
+      "station_name": "大師前",
+      "lines": [
+        "大師線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004407",
+      "station_name": "大師橋",
+      "lines": [
+        "大師線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003719",
+      "station_name": "大手町",
+      "lines": [
+        "4号線丸ノ内線",
+        "5号線東西線",
+        "9号線千代田線",
+        "11号線半蔵門線",
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004264",
+      "station_name": "大森",
+      "lines": [
+        "東海道線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004268",
+      "station_name": "大森海岸",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004307",
+      "station_name": "大森町",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003263",
+      "station_name": "大泉学園",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003939",
+      "station_name": "大門",
+      "lines": [
+        "1号線浅草線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004356",
+      "station_name": "大鳥居",
+      "lines": [
+        "空港線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004123",
+      "station_name": "天王洲アイル",
+      "lines": [
+        "東京モノレール羽田線",
+        "りんかい線"
+      ],
+      "operators": [
+        "東京モノレール",
+        "東京臨海高速鉄道"
+      ]
+    },
+    {
+      "group_code": "004373",
+      "station_name": "天空橋",
+      "lines": [
+        "空港線",
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "京浜急行電鉄",
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "004223",
+      "station_name": "奥沢",
+      "lines": [
+        "目黒線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003686",
+      "station_name": "妙典",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003490",
+      "station_name": "学習院下",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004094",
+      "station_name": "学芸大学",
+      "lines": [
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003796",
+      "station_name": "宝町",
+      "lines": [
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003989",
+      "station_name": "宮の坂",
+      "lines": [
+        "世田谷線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003259",
+      "station_name": "宮ノ前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004274",
+      "station_name": "宮前平",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004271",
+      "station_name": "宮崎台",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004158",
+      "station_name": "宿河原",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003736",
+      "station_name": "富士見ヶ丘",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003349",
+      "station_name": "富士見台",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003692",
+      "station_name": "小伝馬町",
+      "lines": [
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003255",
+      "station_name": "小台",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003360",
+      "station_name": "小岩",
+      "lines": [
+        "総武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004418",
+      "station_name": "小島新田",
+      "lines": [
+        "大師線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003333",
+      "station_name": "小川",
+      "lines": [
+        "国分寺線",
+        "拝島線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003659",
+      "station_name": "小川町",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003340",
+      "station_name": "小平",
+      "lines": [
+        "新宿線",
+        "拝島線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003088",
+      "station_name": "小手指",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004495",
+      "station_name": "小机",
+      "lines": [
+        "横浜線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003525",
+      "station_name": "小村井",
+      "lines": [
+        "亀戸線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004118",
+      "station_name": "小田急多摩センター",
+      "lines": [
+        "多摩線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004090",
+      "station_name": "小田急永山",
+      "lines": [
+        "多摩線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004470",
+      "station_name": "小田急相模原",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004475",
+      "station_name": "小田栄",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003294",
+      "station_name": "小竹向原",
+      "lines": [
+        "西武有楽町線",
+        "8号線有楽町線",
+        "13号線副都心線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003224",
+      "station_name": "小菅",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003029",
+      "station_name": "小金城趾",
+      "lines": [
+        "流山線"
+      ],
+      "operators": [
+        "流鉄"
+      ]
+    },
+    {
+      "group_code": "004435",
+      "station_name": "尻手",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003278",
+      "station_name": "尾久",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004205",
+      "station_name": "尾山台",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003957",
+      "station_name": "山下",
+      "lines": [
+        "世田谷線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003655",
+      "station_name": "岩本町",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003086",
+      "station_name": "川口",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003092",
+      "station_name": "川口元郷",
+      "lines": [
+        "埼玉高速鉄道線"
+      ],
+      "operators": [
+        "埼玉高速鉄道"
+      ]
+    },
+    {
+      "group_code": "004438",
+      "station_name": "川和町",
+      "lines": [
+        "4号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "004432",
+      "station_name": "川崎",
+      "lines": [
+        "東海道線",
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004413",
+      "station_name": "川崎大師",
+      "lines": [
+        "大師線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004461",
+      "station_name": "川崎新町",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003354",
+      "station_name": "巣鴨",
+      "lines": [
+        "6号線三田線",
+        "山手線"
+      ],
+      "operators": [
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003351",
+      "station_name": "巣鴨新田",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004360",
+      "station_name": "市が尾",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003671",
+      "station_name": "市ヶ谷",
+      "lines": [
+        "7号線南北線",
+        "8号線有楽町線",
+        "10号線新宿線",
+        "中央線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004001",
+      "station_name": "市場前",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "003403",
+      "station_name": "市川",
+      "lines": [
+        "総武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003870",
+      "station_name": "市川塩浜",
+      "lines": [
+        "京葉線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003380",
+      "station_name": "市川真間",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003975",
+      "station_name": "布田",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003085",
+      "station_name": "常盤平",
+      "lines": [
+        "新京成線"
+      ],
+      "operators": [
+        "新京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003791",
+      "station_name": "幡ヶ谷",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003561",
+      "station_name": "平井",
+      "lines": [
+        "総武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003000",
+      "station_name": "平和台",
+      "lines": [
+        "流山線"
+      ],
+      "operators": [
+        "流鉄"
+      ]
+    },
+    {
+      "group_code": "003228",
+      "station_name": "平和台",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004294",
+      "station_name": "平和島",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004336",
+      "station_name": "平間",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003043",
+      "station_name": "幸谷",
+      "lines": [
+        "流山線"
+      ],
+      "operators": [
+        "流鉄"
+      ]
+    },
+    {
+      "group_code": "003969",
+      "station_name": "広尾",
+      "lines": [
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003319",
+      "station_name": "庚申塚",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003821",
+      "station_name": "府中",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003876",
+      "station_name": "府中本町",
+      "lines": [
+        "南武線",
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003856",
+      "station_name": "府中競馬正門前",
+      "lines": [
+        "競馬場線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003542",
+      "station_name": "後楽園",
+      "lines": [
+        "4号線丸ノ内線",
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004273",
+      "station_name": "御嶽山",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003555",
+      "station_name": "御徒町",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003911",
+      "station_name": "御成門",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003615",
+      "station_name": "御茶ノ水",
+      "lines": [
+        "4号線丸ノ内線",
+        "総武線",
+        "中央線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003049",
+      "station_name": "志木",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003158",
+      "station_name": "志村三丁目",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003165",
+      "station_name": "志村坂上",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003153",
+      "station_name": "志茂",
+      "lines": [
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003520",
+      "station_name": "恋ヶ窪",
+      "lines": [
+        "国分寺線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004377",
+      "station_name": "恩田",
+      "lines": [
+        "こどもの国線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003991",
+      "station_name": "恵比寿",
+      "lines": [
+        "2号線日比谷線",
+        "山手線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004036",
+      "station_name": "成城学園前",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003156",
+      "station_name": "成増",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004414",
+      "station_name": "成瀬",
+      "lines": [
+        "横浜線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002988",
+      "station_name": "戸塚安行",
+      "lines": [
+        "埼玉高速鉄道線"
+      ],
+      "operators": [
+        "埼玉高速鉄道"
+      ]
+    },
+    {
+      "group_code": "003052",
+      "station_name": "戸田",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003072",
+      "station_name": "戸田公園",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004161",
+      "station_name": "戸越",
+      "lines": [
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004186",
+      "station_name": "戸越公園",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004155",
+      "station_name": "戸越銀座",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003131",
+      "station_name": "所沢",
+      "lines": [
+        "新宿線",
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003209",
+      "station_name": "扇大橋",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004518",
+      "station_name": "扇町",
+      "lines": [
+        "鶴見線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003526",
+      "station_name": "押上",
+      "lines": [
+        "押上線",
+        "11号線半蔵門線",
+        "1号線浅草線",
+        "伊勢崎線"
+      ],
+      "operators": [
+        "京成電鉄",
+        "東京地下鉄",
+        "東京都",
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004348",
+      "station_name": "整備場",
+      "lines": [
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "003339",
+      "station_name": "新三河島",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "002990",
+      "station_name": "新三郷",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003638",
+      "station_name": "新中野",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004287",
+      "station_name": "新丸子",
+      "lines": [
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003017",
+      "station_name": "新井宿",
+      "lines": [
+        "埼玉高速鉄道線"
+      ],
+      "operators": [
+        "埼玉高速鉄道"
+      ]
+    },
+    {
+      "group_code": "003489",
+      "station_name": "新井薬師前",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003901",
+      "station_name": "新代田",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003106",
+      "station_name": "新八柱",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003601",
+      "station_name": "新大久保",
+      "lines": [
+        "山手線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003431",
+      "station_name": "新大塚",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003700",
+      "station_name": "新宿",
+      "lines": [
+        "京王線",
+        "小田原線",
+        "4号線丸ノ内線",
+        "10号線新宿線",
+        "12号線大江戸線",
+        "山手線",
+        "中央線"
+      ],
+      "operators": [
+        "京王電鉄",
+        "小田急電鉄",
+        "東京地下鉄",
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003689",
+      "station_name": "新宿三丁目",
+      "lines": [
+        "4号線丸ノ内線",
+        "10号線新宿線",
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003707",
+      "station_name": "新宿御苑前",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003669",
+      "station_name": "新宿西口",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003833",
+      "station_name": "新富町",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003486",
+      "station_name": "新小岩",
+      "lines": [
+        "総武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003385",
+      "station_name": "新小平",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003653",
+      "station_name": "新小金井",
+      "lines": [
+        "多摩川線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004358",
+      "station_name": "新川崎",
+      "lines": [
+        "東海道線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003310",
+      "station_name": "新庚申塚",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003081",
+      "station_name": "新座",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003556",
+      "station_name": "新御徒町",
+      "lines": [
+        "常磐新線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003645",
+      "station_name": "新御茶ノ水",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003077",
+      "station_name": "新所沢",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004393",
+      "station_name": "新整備場",
+      "lines": [
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "003703",
+      "station_name": "新日本橋",
+      "lines": [
+        "総武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003997",
+      "station_name": "新木場",
+      "lines": [
+        "8号線有楽町線",
+        "りんかい線",
+        "京葉線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京臨海高速鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003045",
+      "station_name": "新松戸",
+      "lines": [
+        "常磐線",
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003268",
+      "station_name": "新板橋",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003244",
+      "station_name": "新柴又",
+      "lines": [
+        "北総線"
+      ],
+      "operators": [
+        "北総鉄道"
+      ]
+    },
+    {
+      "group_code": "003311",
+      "station_name": "新桜台",
+      "lines": [
+        "西武有楽町線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004501",
+      "station_name": "新横浜",
+      "lines": [
+        "3号線",
+        "東海道新幹線",
+        "横浜線"
+      ],
+      "operators": [
+        "横浜市",
+        "東海旅客鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003872",
+      "station_name": "新橋",
+      "lines": [
+        "東京臨海新交通臨海線",
+        "3号線銀座線",
+        "1号線浅草線",
+        "東海道線"
+      ],
+      "operators": [
+        "ゆりかもめ",
+        "東京地下鉄",
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003367",
+      "station_name": "新江古田",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "002937",
+      "station_name": "新河岸",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003978",
+      "station_name": "新浦安",
+      "lines": [
+        "京葉線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002963",
+      "station_name": "新狭山",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "002994",
+      "station_name": "新田",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004227",
+      "station_name": "新百合ヶ丘",
+      "lines": [
+        "小田原線",
+        "多摩線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003152",
+      "station_name": "新秋津",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004439",
+      "station_name": "新羽",
+      "lines": [
+        "3号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "003981",
+      "station_name": "新豊洲",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "002960",
+      "station_name": "新越谷",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004153",
+      "station_name": "新馬場",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003632",
+      "station_name": "新高円寺",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003112",
+      "station_name": "新高島平",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003751",
+      "station_name": "方南町",
+      "lines": [
+        "4号線丸ノ内線分岐線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004219",
+      "station_name": "旗の台",
+      "lines": [
+        "大井町線",
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003979",
+      "station_name": "日の出",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "004351",
+      "station_name": "日吉",
+      "lines": [
+        "東横線",
+        "4号線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "004366",
+      "station_name": "日吉本町",
+      "lines": [
+        "4号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "003417",
+      "station_name": "日暮里",
+      "lines": [
+        "本線",
+        "常磐線",
+        "東北線",
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "京成電鉄",
+        "東日本旅客鉄道",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003756",
+      "station_name": "日本橋",
+      "lines": [
+        "3号線銀座線",
+        "5号線東西線",
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003802",
+      "station_name": "日比谷",
+      "lines": [
+        "2号線日比谷線",
+        "9号線千代田線",
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003514",
+      "station_name": "早稲田",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003570",
+      "station_name": "早稲田",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003846",
+      "station_name": "明大前",
+      "lines": [
+        "井の頭線",
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003844",
+      "station_name": "明治神宮前",
+      "lines": [
+        "9号線千代田線",
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003529",
+      "station_name": "春日",
+      "lines": [
+        "6号線三田線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004503",
+      "station_name": "昭和",
+      "lines": [
+        "鶴見線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004312",
+      "station_name": "昭和島",
+      "lines": [
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "003944",
+      "station_name": "是政",
+      "lines": [
+        "多摩川線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003673",
+      "station_name": "曙橋",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003479",
+      "station_name": "曳舟",
+      "lines": [
+        "伊勢崎線",
+        "亀戸線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003889",
+      "station_name": "月島",
+      "lines": [
+        "8号線有楽町線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004064",
+      "station_name": "有明",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "004037",
+      "station_name": "有明テニスの森",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "003795",
+      "station_name": "有楽町",
+      "lines": [
+        "8号線有楽町線",
+        "東海道線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003097",
+      "station_name": "朝霞",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003061",
+      "station_name": "朝霞台",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003840",
+      "station_name": "木場",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003586",
+      "station_name": "末広町",
+      "lines": [
+        "3号線銀座線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003449",
+      "station_name": "本八幡",
+      "lines": [
+        "10号線新宿線",
+        "総武線"
+      ],
+      "operators": [
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003538",
+      "station_name": "本所吾妻橋",
+      "lines": [
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003193",
+      "station_name": "本蓮沼",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003546",
+      "station_name": "本郷三丁目",
+      "lines": [
+        "4号線丸ノ内線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003441",
+      "station_name": "本駒込",
+      "lines": [
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003548",
+      "station_name": "東あずま",
+      "lines": [
+        "亀戸線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003549",
+      "station_name": "東中野",
+      "lines": [
+        "12号線大江戸線",
+        "中央線"
+      ],
+      "operators": [
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003217",
+      "station_name": "東久留米",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003766",
+      "station_name": "東京",
+      "lines": [
+        "東海道新幹線",
+        "4号線丸ノ内線",
+        "総武線",
+        "東海道線",
+        "東北新幹線",
+        "東北線"
+      ],
+      "operators": [
+        "東海旅客鉄道",
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003785",
+      "station_name": "東京",
+      "lines": [
+        "京葉線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004108",
+      "station_name": "東京テレポート",
+      "lines": [
+        "りんかい線"
+      ],
+      "operators": [
+        "東京臨海高速鉄道"
+      ]
+    },
+    {
+      "group_code": "004106",
+      "station_name": "東京ディズニーシー･ステーション",
+      "lines": [
+        "ディズニーリゾートライン"
+      ],
+      "operators": [
+        "舞浜リゾートライン"
+      ]
+    },
+    {
+      "group_code": "004058",
+      "station_name": "東京ディズニーランド･ステーション",
+      "lines": [
+        "ディズニーリゾートライン"
+      ],
+      "operators": [
+        "舞浜リゾートライン"
+      ]
+    },
+    {
+      "group_code": "004087",
+      "station_name": "東京ビッグサイト",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "004128",
+      "station_name": "東京国際クルーズターミナル",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "003408",
+      "station_name": "東伏見",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003880",
+      "station_name": "東北沢",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003210",
+      "station_name": "東十条",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003442",
+      "station_name": "東向島",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003481",
+      "station_name": "東大前",
+      "lines": [
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003365",
+      "station_name": "東大和市",
+      "lines": [
+        "拝島線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003695",
+      "station_name": "東大島",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003594",
+      "station_name": "東小金井",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003284",
+      "station_name": "東尾久三丁目",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004350",
+      "station_name": "東山田",
+      "lines": [
+        "4号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "002956",
+      "station_name": "東川口",
+      "lines": [
+        "埼玉高速鉄道線",
+        "武蔵野線"
+      ],
+      "operators": [
+        "埼玉高速鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003850",
+      "station_name": "東府中",
+      "lines": [
+        "京王線",
+        "競馬場線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003100",
+      "station_name": "東所沢",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003612",
+      "station_name": "東新宿",
+      "lines": [
+        "12号線大江戸線",
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京都",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003676",
+      "station_name": "東日本橋",
+      "lines": [
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003220",
+      "station_name": "東村山",
+      "lines": [
+        "国分寺線",
+        "新宿線",
+        "西武園線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003899",
+      "station_name": "東松原",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003187",
+      "station_name": "東松戸",
+      "lines": [
+        "武蔵野線",
+        "北総線",
+        "成田空港線"
+      ],
+      "operators": [
+        "東日本旅客鉄道",
+        "北総鉄道",
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "004457",
+      "station_name": "東林間",
+      "lines": [
+        "江ノ島線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003194",
+      "station_name": "東武練馬",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003432",
+      "station_name": "東池袋",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003436",
+      "station_name": "東池袋四丁目",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "002980",
+      "station_name": "東浦和",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003838",
+      "station_name": "東銀座",
+      "lines": [
+        "2号線日比谷線",
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003393",
+      "station_name": "東長崎",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004408",
+      "station_name": "東門前",
+      "lines": [
+        "大師線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003839",
+      "station_name": "東陽町",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004034",
+      "station_name": "東雲",
+      "lines": [
+        "りんかい線"
+      ],
+      "operators": [
+        "東京臨海高速鉄道"
+      ]
+    },
+    {
+      "group_code": "003628",
+      "station_name": "東高円寺",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004077",
+      "station_name": "松が谷",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003915",
+      "station_name": "松原",
+      "lines": [
+        "世田谷線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003136",
+      "station_name": "松戸",
+      "lines": [
+        "新京成線",
+        "常磐線"
+      ],
+      "operators": [
+        "新京成電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003109",
+      "station_name": "松戸新田",
+      "lines": [
+        "新京成線"
+      ],
+      "operators": [
+        "新京成電鉄"
+      ]
+    },
+    {
+      "group_code": "004017",
+      "station_name": "松陰神社前",
+      "lines": [
+        "世田谷線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003286",
+      "station_name": "板橋",
+      "lines": [
+        "赤羽線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003245",
+      "station_name": "板橋区役所前",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003216",
+      "station_name": "板橋本町",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003038",
+      "station_name": "柳瀬川",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003232",
+      "station_name": "柴又",
+      "lines": [
+        "金町線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "003959",
+      "station_name": "柴崎",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003697",
+      "station_name": "柴崎体育館",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "004263",
+      "station_name": "柿生",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003253",
+      "station_name": "栄町",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004214",
+      "station_name": "栗平",
+      "lines": [
+        "多摩線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003483",
+      "station_name": "根津",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003862",
+      "station_name": "桜上水",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003321",
+      "station_name": "桜台",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004078",
+      "station_name": "桜新町",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003787",
+      "station_name": "桜田門",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003320",
+      "station_name": "桜街道",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003945",
+      "station_name": "梅ヶ丘",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004319",
+      "station_name": "梅屋敷",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003176",
+      "station_name": "梅島",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004257",
+      "station_name": "梶が谷",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003246",
+      "station_name": "梶原",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003711",
+      "station_name": "森下",
+      "lines": [
+        "10号線新宿線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003426",
+      "station_name": "椎名町",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004286",
+      "station_name": "武蔵中原",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003590",
+      "station_name": "武蔵境",
+      "lines": [
+        "多摩川線",
+        "中央線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003231",
+      "station_name": "武蔵大和",
+      "lines": [
+        "多摩湖線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004133",
+      "station_name": "武蔵小山",
+      "lines": [
+        "目黒線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004297",
+      "station_name": "武蔵小杉",
+      "lines": [
+        "東横線",
+        "南武線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004301",
+      "station_name": "武蔵小杉",
+      "lines": [
+        "東海道線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003600",
+      "station_name": "武蔵小金井",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004269",
+      "station_name": "武蔵新城",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004317",
+      "station_name": "武蔵新田",
+      "lines": [
+        "東急多摩川線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003006",
+      "station_name": "武蔵浦和",
+      "lines": [
+        "東北線",
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004242",
+      "station_name": "武蔵溝ノ口",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004517",
+      "station_name": "武蔵白石",
+      "lines": [
+        "鶴見線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003050",
+      "station_name": "武蔵藤沢",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003891",
+      "station_name": "武蔵野台",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003419",
+      "station_name": "武蔵関",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003753",
+      "station_name": "水天宮前",
+      "lines": [
+        "11号線半蔵門線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003580",
+      "station_name": "水道橋",
+      "lines": [
+        "6号線三田線",
+        "中央線"
+      ],
+      "operators": [
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003261",
+      "station_name": "氷川台",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003782",
+      "station_name": "永田町",
+      "lines": [
+        "7号線南北線",
+        "8号線有楽町線",
+        "11号線半蔵門線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003794",
+      "station_name": "永福町",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003887",
+      "station_name": "汐留",
+      "lines": [
+        "東京臨海新交通臨海線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "ゆりかもめ",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003171",
+      "station_name": "江北",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003337",
+      "station_name": "江古田",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003331",
+      "station_name": "江戸川",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "002926",
+      "station_name": "江戸川台",
+      "lines": [
+        "野田線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003534",
+      "station_name": "江戸川橋",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004340",
+      "station_name": "江田",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003914",
+      "station_name": "池ノ上",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004309",
+      "station_name": "池上",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003972",
+      "station_name": "池尻大橋",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003379",
+      "station_name": "池袋",
+      "lines": [
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003390",
+      "station_name": "池袋",
+      "lines": [
+        "池袋線",
+        "4号線丸ノ内線",
+        "8号線有楽町線",
+        "山手線",
+        "赤羽線",
+        "東上本線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "東京地下鉄",
+        "東日本旅客鉄道",
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003475",
+      "station_name": "沼袋",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004279",
+      "station_name": "沼部",
+      "lines": [
+        "東急多摩川線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003476",
+      "station_name": "泉体育館",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "004042",
+      "station_name": "泉岳寺",
+      "lines": [
+        "本線",
+        "1号線浅草線"
+      ],
+      "operators": [
+        "京浜急行電鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004180",
+      "station_name": "洗足",
+      "lines": [
+        "目黒線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004239",
+      "station_name": "洗足池",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004229",
+      "station_name": "津田山",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002992",
+      "station_name": "流山",
+      "lines": [
+        "流山線"
+      ],
+      "operators": [
+        "流鉄"
+      ]
+    },
+    {
+      "group_code": "002969",
+      "station_name": "流山おおたかの森",
+      "lines": [
+        "常磐新線",
+        "野田線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道",
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "002993",
+      "station_name": "流山セントラルパーク",
+      "lines": [
+        "常磐新線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道"
+      ]
+    },
+    {
+      "group_code": "004285",
+      "station_name": "流通センター",
+      "lines": [
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "003502",
+      "station_name": "浅草",
+      "lines": [
+        "常磐新線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道"
+      ]
+    },
+    {
+      "group_code": "003522",
+      "station_name": "浅草",
+      "lines": [
+        "3号線銀座線",
+        "1号線浅草線",
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都",
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003636",
+      "station_name": "浅草橋",
+      "lines": [
+        "1号線浅草線",
+        "総武線"
+      ],
+      "operators": [
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004488",
+      "station_name": "浜川崎",
+      "lines": [
+        "鶴見線",
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003949",
+      "station_name": "浜松町",
+      "lines": [
+        "東海道線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003763",
+      "station_name": "浜田山",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003706",
+      "station_name": "浜町",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "002989",
+      "station_name": "浦和",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002933",
+      "station_name": "浦和美園",
+      "lines": [
+        "埼玉高速鉄道線"
+      ],
+      "operators": [
+        "埼玉高速鉄道"
+      ]
+    },
+    {
+      "group_code": "003875",
+      "station_name": "浦安",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003107",
+      "station_name": "浮間舟渡",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003661",
+      "station_name": "淡路町",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003754",
+      "station_name": "清澄白河",
+      "lines": [
+        "11号線半蔵門線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003179",
+      "station_name": "清瀬",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003922",
+      "station_name": "渋谷",
+      "lines": [
+        "井の頭線",
+        "田園都市線",
+        "東横線",
+        "3号線銀座線",
+        "11号線半蔵門線",
+        "山手線",
+        "13号線副都心線"
+      ],
+      "operators": [
+        "京王電鉄",
+        "東急電鉄",
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004417",
+      "station_name": "港町",
+      "lines": [
+        "大師線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003558",
+      "station_name": "湯島",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003810",
+      "station_name": "溜池山王",
+      "lines": [
+        "3号線銀座線",
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004238",
+      "station_name": "溝の口",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003276",
+      "station_name": "滝野川一丁目",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003928",
+      "station_name": "潮見",
+      "lines": [
+        "京葉線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003266",
+      "station_name": "熊野前",
+      "lines": [
+        "荒川線",
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003288",
+      "station_name": "牛田",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003618",
+      "station_name": "牛込柳町",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003602",
+      "station_name": "牛込神楽坂",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004076",
+      "station_name": "狛江",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003068",
+      "station_name": "狭山ヶ丘",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "002991",
+      "station_name": "狭山市",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003016",
+      "station_name": "獨協大学前",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003371",
+      "station_name": "玉川上水",
+      "lines": [
+        "拝島線",
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "004324",
+      "station_name": "玉川学園前",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003236",
+      "station_name": "王子",
+      "lines": [
+        "7号線南北線",
+        "東北線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003207",
+      "station_name": "王子神谷",
+      "lines": [
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003239",
+      "station_name": "王子駅前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003667",
+      "station_name": "瑞江",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004159",
+      "station_name": "生田",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004109",
+      "station_name": "用賀",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003530",
+      "station_name": "田原町",
+      "lines": [
+        "3号線銀座線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004245",
+      "station_name": "田園調布",
+      "lines": [
+        "東横線",
+        "目黒線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004412",
+      "station_name": "田奈",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003423",
+      "station_name": "田無",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004000",
+      "station_name": "田町",
+      "lines": [
+        "東海道線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003335",
+      "station_name": "田端",
+      "lines": [
+        "山手線",
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003783",
+      "station_name": "甲州街道",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003302",
+      "station_name": "町屋",
+      "lines": [
+        "本線",
+        "9号線千代田線"
+      ],
+      "operators": [
+        "京成電鉄",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003291",
+      "station_name": "町屋二丁目",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003299",
+      "station_name": "町屋駅前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004387",
+      "station_name": "町田",
+      "lines": [
+        "小田原線",
+        "横浜線"
+      ],
+      "operators": [
+        "小田急電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004130",
+      "station_name": "登戸",
+      "lines": [
+        "小田原線",
+        "南武線"
+      ],
+      "operators": [
+        "小田急電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003461",
+      "station_name": "白山",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003873",
+      "station_name": "白糸台",
+      "lines": [
+        "多摩川線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004044",
+      "station_name": "白金台",
+      "lines": [
+        "6号線三田線",
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京都",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004025",
+      "station_name": "白金高輪",
+      "lines": [
+        "7号線南北線",
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004185",
+      "station_name": "百合ヶ丘",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003936",
+      "station_name": "百草園",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003470",
+      "station_name": "目白",
+      "lines": [
+        "山手線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004072",
+      "station_name": "目黒",
+      "lines": [
+        "目黒線",
+        "6号線三田線",
+        "山手線",
+        "7号線南北線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東京都",
+        "東日本旅客鉄道",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004426",
+      "station_name": "相模大野",
+      "lines": [
+        "江ノ島線",
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003229",
+      "station_name": "矢切",
+      "lines": [
+        "北総線"
+      ],
+      "operators": [
+        "北総鉄道"
+      ]
+    },
+    {
+      "group_code": "004329",
+      "station_name": "矢口渡",
+      "lines": [
+        "東急多摩川線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004403",
+      "station_name": "矢向",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003733",
+      "station_name": "矢川",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004032",
+      "station_name": "矢野口",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004247",
+      "station_name": "石川台",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003292",
+      "station_name": "石神井公園",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003447",
+      "station_name": "砂川七番",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "004050",
+      "station_name": "祐天寺",
+      "lines": [
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004024",
+      "station_name": "祖師ヶ谷大蔵",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003651",
+      "station_name": "神保町",
+      "lines": [
+        "11号線半蔵門線",
+        "6号線三田線",
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003578",
+      "station_name": "神楽坂",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003938",
+      "station_name": "神泉",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003677",
+      "station_name": "神田",
+      "lines": [
+        "3号線銀座線",
+        "中央線",
+        "東北線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003900",
+      "station_name": "神谷町",
+      "lines": [
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003206",
+      "station_name": "秋山",
+      "lines": [
+        "北総線"
+      ],
+      "operators": [
+        "北総鉄道"
+      ]
+    },
+    {
+      "group_code": "003151",
+      "station_name": "秋津",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003624",
+      "station_name": "秋葉原",
+      "lines": [
+        "常磐新線",
+        "2号線日比谷線",
+        "総武線",
+        "東北線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道",
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003950",
+      "station_name": "程久保",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "004056",
+      "station_name": "稲城",
+      "lines": [
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004011",
+      "station_name": "稲城長沼",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004067",
+      "station_name": "稲田堤",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003011",
+      "station_name": "稲荷山公園",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003519",
+      "station_name": "稲荷町",
+      "lines": [
+        "3号線銀座線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004364",
+      "station_name": "穴守稲荷",
+      "lines": [
+        "空港線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004244",
+      "station_name": "立会川",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003634",
+      "station_name": "立川",
+      "lines": [
+        "青梅線",
+        "中央線",
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003617",
+      "station_name": "立川北",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003649",
+      "station_name": "立川南",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003499",
+      "station_name": "立飛",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003943",
+      "station_name": "競艇場前",
+      "lines": [
+        "多摩川線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003101",
+      "station_name": "竹ノ塚",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003691",
+      "station_name": "竹橋",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003958",
+      "station_name": "竹芝",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "003806",
+      "station_name": "笹塚",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004191",
+      "station_name": "等々力",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003860",
+      "station_name": "築地",
+      "lines": [
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003886",
+      "station_name": "築地市場",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003565",
+      "station_name": "篠崎",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004349",
+      "station_name": "糀谷",
+      "lines": [
+        "空港線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003970",
+      "station_name": "経堂",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "004406",
+      "station_name": "綱島",
+      "lines": [
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003214",
+      "station_name": "綾瀬",
+      "lines": [
+        "9号線千代田線",
+        "常磐線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004210",
+      "station_name": "緑が丘",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003328",
+      "station_name": "練馬",
+      "lines": [
+        "西武有楽町線",
+        "池袋線",
+        "豊島線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003243",
+      "station_name": "練馬春日町",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003314",
+      "station_name": "練馬高野台",
+      "lines": [
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004372",
+      "station_name": "羽田空港第1ターミナル",
+      "lines": [
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "004368",
+      "station_name": "羽田空港第1・第2ターミナル",
+      "lines": [
+        "空港線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004361",
+      "station_name": "羽田空港第2ターミナル",
+      "lines": [
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "004382",
+      "station_name": "羽田空港第3ターミナル",
+      "lines": [
+        "空港線",
+        "東京モノレール羽田線"
+      ],
+      "operators": [
+        "京浜急行電鉄",
+        "東京モノレール"
+      ]
+    },
+    {
+      "group_code": "003971",
+      "station_name": "聖蹟桜ヶ丘",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004196",
+      "station_name": "自由が丘",
+      "lines": [
+        "大井町線",
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003078",
+      "station_name": "舎人",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003098",
+      "station_name": "舎人公園",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004055",
+      "station_name": "舞浜",
+      "lines": [
+        "京葉線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003094",
+      "station_name": "航空公園",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003745",
+      "station_name": "船堀",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003962",
+      "station_name": "芝公園",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004030",
+      "station_name": "芝浦ふ頭",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "003832",
+      "station_name": "芦花公園",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003430",
+      "station_name": "花小金井",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004520",
+      "station_name": "花月総持寺",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003623",
+      "station_name": "若松河田",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003996",
+      "station_name": "若林",
+      "lines": [
+        "世田谷線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004139",
+      "station_name": "若葉台",
+      "lines": [
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003773",
+      "station_name": "茅場町",
+      "lines": [
+        "2号線日比谷線",
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003484",
+      "station_name": "茗荷谷",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003040",
+      "station_name": "草加",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004181",
+      "station_name": "荏原中延",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004225",
+      "station_name": "荏原町",
+      "lines": [
+        "大井町線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003357",
+      "station_name": "荒川一中前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003306",
+      "station_name": "荒川七丁目",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003322",
+      "station_name": "荒川二丁目",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003350",
+      "station_name": "荒川区役所前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003252",
+      "station_name": "荒川車庫前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003254",
+      "station_name": "荒川遊園地前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003575",
+      "station_name": "荻窪",
+      "lines": [
+        "4号線丸ノ内線",
+        "中央線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003412",
+      "station_name": "菅野",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "004487",
+      "station_name": "菊名",
+      "lines": [
+        "東横線",
+        "横浜線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003709",
+      "station_name": "菊川",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003312",
+      "station_name": "萩山",
+      "lines": [
+        "多摩湖線",
+        "拝島線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003523",
+      "station_name": "落合",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003448",
+      "station_name": "落合南長崎",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003894",
+      "station_name": "葛西",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004012",
+      "station_name": "葛西臨海公園",
+      "lines": [
+        "京葉線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002977",
+      "station_name": "蒲生",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004330",
+      "station_name": "蒲田",
+      "lines": [
+        "池上線",
+        "東急多摩川線",
+        "東海道線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003140",
+      "station_name": "蓮根",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004323",
+      "station_name": "蓮沼",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003571",
+      "station_name": "蔵前",
+      "lines": [
+        "1号線浅草線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003041",
+      "station_name": "蕨",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004391",
+      "station_name": "藤が丘",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003835",
+      "station_name": "虎ノ門",
+      "lines": [
+        "3号線銀座線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003866",
+      "station_name": "虎ノ門ヒルズ",
+      "lines": [
+        "2号線日比谷線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003755",
+      "station_name": "行徳",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003883",
+      "station_name": "表参道",
+      "lines": [
+        "3号線銀座線",
+        "9号線千代田線",
+        "11号線半蔵門線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003279",
+      "station_name": "西ヶ原",
+      "lines": [
+        "7号線南北線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003289",
+      "station_name": "西ヶ原四丁目",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003128",
+      "station_name": "西台",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003611",
+      "station_name": "西国分寺",
+      "lines": [
+        "中央線",
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003665",
+      "station_name": "西国立",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004235",
+      "station_name": "西大井",
+      "lines": [
+        "東海道線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003702",
+      "station_name": "西大島",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004006",
+      "station_name": "西太子堂",
+      "lines": [
+        "世田谷線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004157",
+      "station_name": "西小山",
+      "lines": [
+        "目黒線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003055",
+      "station_name": "西川口",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003293",
+      "station_name": "西巣鴨",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003831",
+      "station_name": "西府",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003118",
+      "station_name": "西所沢",
+      "lines": [
+        "狭山線",
+        "池袋線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003159",
+      "station_name": "西新井",
+      "lines": [
+        "伊勢崎線",
+        "大師線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003144",
+      "station_name": "西新井大師西",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003662",
+      "station_name": "西新宿",
+      "lines": [
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003696",
+      "station_name": "西新宿五丁目",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003368",
+      "station_name": "西日暮里",
+      "lines": [
+        "9号線千代田線",
+        "東北線",
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003544",
+      "station_name": "西早稲田",
+      "lines": [
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003197",
+      "station_name": "西武園",
+      "lines": [
+        "西武園線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003192",
+      "station_name": "西武園ゆうえんち",
+      "lines": [
+        "山口線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003648",
+      "station_name": "西武新宿",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003409",
+      "station_name": "西武柳沢",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003181",
+      "station_name": "西武球場前",
+      "lines": [
+        "狭山線",
+        "山口線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003777",
+      "station_name": "西永福",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003014",
+      "station_name": "西浦和",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003579",
+      "station_name": "西荻窪",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003890",
+      "station_name": "西葛西",
+      "lines": [
+        "5号線東西線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003937",
+      "station_name": "西調布",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004270",
+      "station_name": "西馬込",
+      "lines": [
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003104",
+      "station_name": "西高島平",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003361",
+      "station_name": "要町",
+      "lines": [
+        "8号線有楽町線",
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003060",
+      "station_name": "見沼代親水公園",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004160",
+      "station_name": "読売ランド前",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003966",
+      "station_name": "調布",
+      "lines": [
+        "京王線",
+        "相模原線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003474",
+      "station_name": "護国寺",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003765",
+      "station_name": "谷保",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003120",
+      "station_name": "谷在家",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003059",
+      "station_name": "谷塚",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "002978",
+      "station_name": "豊四季",
+      "lines": [
+        "野田線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "003305",
+      "station_name": "豊島園",
+      "lines": [
+        "豊島線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003951",
+      "station_name": "豊洲",
+      "lines": [
+        "東京臨海新交通臨海線",
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "ゆりかもめ",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003960",
+      "station_name": "豪徳寺",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003298",
+      "station_name": "赤土小学校前",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003822",
+      "station_name": "赤坂",
+      "lines": [
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003788",
+      "station_name": "赤坂見附",
+      "lines": [
+        "3号線銀座線",
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003155",
+      "station_name": "赤羽",
+      "lines": [
+        "赤羽線",
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003141",
+      "station_name": "赤羽岩淵",
+      "lines": [
+        "埼玉高速鉄道線",
+        "7号線南北線"
+      ],
+      "operators": [
+        "埼玉高速鉄道",
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003954",
+      "station_name": "赤羽橋",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003859",
+      "station_name": "越中島",
+      "lines": [
+        "京葉線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "002942",
+      "station_name": "越谷",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "002957",
+      "station_name": "越谷レイクタウン",
+      "lines": [
+        "武蔵野線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003235",
+      "station_name": "足立小台",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003999",
+      "station_name": "辰巳",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003690",
+      "station_name": "都庁前",
+      "lines": [
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004143",
+      "station_name": "都立大学",
+      "lines": [
+        "東横線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003453",
+      "station_name": "都立家政",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004409",
+      "station_name": "都筑ふれあいの丘",
+      "lines": [
+        "4号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "003443",
+      "station_name": "都電雑司ヶ谷",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003473",
+      "station_name": "野方",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003191",
+      "station_name": "金町",
+      "lines": [
+        "常磐線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004415",
+      "station_name": "鈴木町",
+      "lines": [
+        "大師線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003823",
+      "station_name": "銀座",
+      "lines": [
+        "2号線日比谷線",
+        "3号線銀座線",
+        "4号線丸ノ内線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003801",
+      "station_name": "銀座一丁目",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003639",
+      "station_name": "錦糸町",
+      "lines": [
+        "11号線半蔵門線",
+        "総武線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003355",
+      "station_name": "鐘ヶ淵",
+      "lines": [
+        "伊勢崎線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004232",
+      "station_name": "長原",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004430",
+      "station_name": "長津田",
+      "lines": [
+        "こどもの国線",
+        "田園都市線",
+        "横浜線"
+      ],
+      "operators": [
+        "東急電鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003818",
+      "station_name": "門前仲町",
+      "lines": [
+        "5号線東西線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003574",
+      "station_name": "阿佐ヶ谷",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003471",
+      "station_name": "雑司が谷",
+      "lines": [
+        "13号線副都心線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "004367",
+      "station_name": "雑色",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "004259",
+      "station_name": "雪が谷大塚",
+      "lines": [
+        "池上線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003805",
+      "station_name": "霞ヶ関",
+      "lines": [
+        "2号線日比谷線",
+        "4号線丸ノ内線",
+        "9号線千代田線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003177",
+      "station_name": "青井",
+      "lines": [
+        "常磐新線"
+      ],
+      "operators": [
+        "首都圏新都市鉄道"
+      ]
+    },
+    {
+      "group_code": "003812",
+      "station_name": "青山一丁目",
+      "lines": [
+        "3号線銀座線",
+        "11号線半蔵門線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003382",
+      "station_name": "青梅街道",
+      "lines": [
+        "多摩湖線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004119",
+      "station_name": "青海",
+      "lines": [
+        "東京臨海新交通臨海線"
+      ],
+      "operators": [
+        "ゆりかもめ"
+      ]
+    },
+    {
+      "group_code": "004184",
+      "station_name": "青物横丁",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003280",
+      "station_name": "青砥",
+      "lines": [
+        "押上線",
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "004392",
+      "station_name": "青葉台",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003509",
+      "station_name": "面影橋",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003916",
+      "station_name": "飛田給",
+      "lines": [
+        "京王線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003256",
+      "station_name": "飛鳥山",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003595",
+      "station_name": "飯田橋",
+      "lines": [
+        "5号線東西線",
+        "7号線南北線",
+        "8号線有楽町線",
+        "12号線大江戸線",
+        "中央線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003675",
+      "station_name": "馬喰横山",
+      "lines": [
+        "10号線新宿線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003668",
+      "station_name": "馬喰町",
+      "lines": [
+        "総武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003064",
+      "station_name": "馬橋",
+      "lines": [
+        "流山線",
+        "常磐線"
+      ],
+      "operators": [
+        "流鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004248",
+      "station_name": "馬込",
+      "lines": [
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003929",
+      "station_name": "駒場東大前",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "004069",
+      "station_name": "駒沢大学",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003343",
+      "station_name": "駒込",
+      "lines": [
+        "7号線南北線",
+        "山手線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003752",
+      "station_name": "高井戸",
+      "lines": [
+        "井の頭線"
+      ],
+      "operators": [
+        "京王電鉄"
+      ]
+    },
+    {
+      "group_code": "003573",
+      "station_name": "高円寺",
+      "lines": [
+        "中央線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003117",
+      "station_name": "高島平",
+      "lines": [
+        "6号線三田線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003904",
+      "station_name": "高幡不動",
+      "lines": [
+        "京王線",
+        "動物園線",
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "京王電鉄",
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "003528",
+      "station_name": "高松",
+      "lines": [
+        "多摩都市モノレール線"
+      ],
+      "operators": [
+        "多摩都市モノレール"
+      ]
+    },
+    {
+      "group_code": "004230",
+      "station_name": "高津",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004370",
+      "station_name": "高田",
+      "lines": [
+        "4号線"
+      ],
+      "operators": [
+        "横浜市"
+      ]
+    },
+    {
+      "group_code": "003508",
+      "station_name": "高田馬場",
+      "lines": [
+        "新宿線",
+        "5号線東西線",
+        "山手線"
+      ],
+      "operators": [
+        "西武鉄道",
+        "東京地下鉄",
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004061",
+      "station_name": "高輪ゲートウェイ",
+      "lines": [
+        "東海道線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004079",
+      "station_name": "高輪台",
+      "lines": [
+        "1号線浅草線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003196",
+      "station_name": "高野",
+      "lines": [
+        "日暮里・舎人ライナー"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003468",
+      "station_name": "鬼子母神前",
+      "lines": [
+        "荒川線"
+      ],
+      "operators": [
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "003472",
+      "station_name": "鬼越",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京成電鉄"
+      ]
+    },
+    {
+      "group_code": "004220",
+      "station_name": "鮫洲",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003019",
+      "station_name": "鰭ヶ崎",
+      "lines": [
+        "流山線"
+      ],
+      "operators": [
+        "流鉄"
+      ]
+    },
+    {
+      "group_code": "003036",
+      "station_name": "鳩ヶ谷",
+      "lines": [
+        "埼玉高速鉄道線"
+      ],
+      "operators": [
+        "埼玉高速鉄道"
+      ]
+    },
+    {
+      "group_code": "004485",
+      "station_name": "鴨居",
+      "lines": [
+        "横浜線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004299",
+      "station_name": "鵜の木",
+      "lines": [
+        "東急多摩川線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "003460",
+      "station_name": "鶯谷",
+      "lines": [
+        "東北線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004278",
+      "station_name": "鶴川",
+      "lines": [
+        "小田原線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    },
+    {
+      "group_code": "003007",
+      "station_name": "鶴瀬",
+      "lines": [
+        "東上本線"
+      ],
+      "operators": [
+        "東武鉄道"
+      ]
+    },
+    {
+      "group_code": "004496",
+      "station_name": "鶴見",
+      "lines": [
+        "鶴見線",
+        "東海道線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "004465",
+      "station_name": "鶴見市場",
+      "lines": [
+        "本線"
+      ],
+      "operators": [
+        "京浜急行電鉄"
+      ]
+    },
+    {
+      "group_code": "003450",
+      "station_name": "鷹の台",
+      "lines": [
+        "国分寺線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "003451",
+      "station_name": "鷺ノ宮",
+      "lines": [
+        "新宿線"
+      ],
+      "operators": [
+        "西武鉄道"
+      ]
+    },
+    {
+      "group_code": "004290",
+      "station_name": "鷺沼",
+      "lines": [
+        "田園都市線"
+      ],
+      "operators": [
+        "東急電鉄"
+      ]
+    },
+    {
+      "group_code": "004359",
+      "station_name": "鹿島田",
+      "lines": [
+        "南武線"
+      ],
+      "operators": [
+        "東日本旅客鉄道"
+      ]
+    },
+    {
+      "group_code": "003737",
+      "station_name": "麹町",
+      "lines": [
+        "8号線有楽町線"
+      ],
+      "operators": [
+        "東京地下鉄"
+      ]
+    },
+    {
+      "group_code": "003941",
+      "station_name": "麻布十番",
+      "lines": [
+        "7号線南北線",
+        "12号線大江戸線"
+      ],
+      "operators": [
+        "東京地下鉄",
+        "東京都"
+      ]
+    },
+    {
+      "group_code": "004168",
+      "station_name": "黒川",
+      "lines": [
+        "多摩線"
+      ],
+      "operators": [
+        "小田急電鉄"
+      ]
+    }
+  ],
+  "count": 809
+}

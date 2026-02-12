@@ -2,6 +2,11 @@
 .DS_Store
 *.swp
 .idea/
+.cursor/
+.vscode/
+
+# Build artifacts
+build/
 
 # Python
 __pycache__/

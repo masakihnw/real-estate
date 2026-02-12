@@ -14,13 +14,14 @@ on:
   workflow_dispatch:  # 手動実行
     inputs:
       target:
-        description: '更新対象 (all / prices / land_prices / population)'
+        description: '更新対象 (all / prices / station_prices / land_prices / population)'
         required: false
         default: 'all'
         type: choice
         options:
           - 'all'
           - 'prices'
+          - 'station_prices'
           - 'land_prices'
           - 'population'
 
@@ -52,10 +53,11 @@ jobs:
           TARGET="${{ github.event.inputs.target || 'all' }}"
           MONTH=$(date -u +%-m)
           
-          # 四半期 cron (1月/4月/7月/10月) → prices を実行
+          # 四半期 cron (1月/4月/7月/10月) → prices + station_prices を実行
           # 年次 cron (4月) → land_prices + population も実行
           if [ "$TARGET" = "all" ]; then
             echo "run_prices=true" >> $GITHUB_OUTPUT
+            echo "run_station_prices=true" >> $GITHUB_OUTPUT
             # 4月は全て実行（年次データも更新）
             if [ "$MONTH" = "4" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
               echo "run_land_prices=true" >> $GITHUB_OUTPUT
@@ -66,6 +68,7 @@ jobs:
             fi
           else
             echo "run_prices=$( [ '$TARGET' = 'prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
+            echo "run_station_prices=$( [ '$TARGET' = 'station_prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
             echo "run_land_prices=$( [ '$TARGET' = 'land_prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
             echo "run_population=$( [ '$TARGET' = 'population' ] && echo true || echo false )" >> $GITHUB_OUTPUT
           fi
@@ -78,6 +81,18 @@ jobs:
         run: |
           if [ -n "$REINFOLIB_API_KEY" ]; then
             python3 reinfolib_cache_builder.py
+          else
+            echo "REINFOLIB_API_KEY 未設定のためスキップ"
+          fi
+
+      - name: Build station prices cache (駅別成約価格)
+        if: steps.targets.outputs.run_station_prices == 'true'
+        working-directory: scraping-tool
+        env:
+          REINFOLIB_API_KEY: ${{ secrets.REINFOLIB_API_KEY }}
+        run: |
+          if [ -n "$REINFOLIB_API_KEY" ]; then
+            python3 scripts/fetch_station_prices.py --direct-api --resume --workers 8
           else
             echo "REINFOLIB_API_KEY 未設定のためスキップ"
           fi
@@ -114,6 +129,8 @@ jobs:
           # キャッシュファイルを追加
           [ -f scraping-tool/data/reinfolib_prices.json ] && git add scraping-tool/data/reinfolib_prices.json
           [ -f scraping-tool/data/reinfolib_trends.json ] && git add scraping-tool/data/reinfolib_trends.json
+          [ -f scraping-tool/data/reinfolib_raw_transactions.json ] && git add scraping-tool/data/reinfolib_raw_transactions.json
+          [ -f scraping-tool/data/station_price_history.json ] && git add scraping-tool/data/station_price_history.json
           [ -f scraping-tool/data/reinfolib_land_prices.json ] && git add scraping-tool/data/reinfolib_land_prices.json
           [ -f scraping-tool/data/estat_population.json ] && git add scraping-tool/data/estat_population.json
           

@@ -2,41 +2,47 @@
 """
 物件 JSON に不動産情報ライブラリの相場データを付与する enricher。
 
-reinfolib_cache_builder.py で事前に構築した
+reinfolib_cache_builder.py / fetch_station_prices.py で事前に構築した
   data/reinfolib_prices.json          — 区別m²単価中央値
   data/reinfolib_trends.json          — 区別四半期推移
   data/reinfolib_raw_transactions.json — 直近4四半期の個別取引レコード
+  data/station_price_history.json     — 駅別 年次/四半期 m²単価推移
 を参照し、各物件に以下のフィールドを追加する:
 
   reinfolib_market_data (JSON文字列):
     {
       "ward": "港区",
-      --- 段階的マッチング比較 ---
-      "ward_median_m2_price": 1285000,    # マッチした成約価格m²単価中央値
-      "ward_mean_m2_price": 1310000,      # マッチした成約価格m²単価平均
-      "price_ratio": 1.08,               # 掲載価格 ÷ 相場 (1.0=相場並み)
-      "price_diff_man": 620,             # 相場との差額（万円, 正=割高）
-      "sample_count": 24,                # マッチしたサンプル数
-      "match_tier": 1,                   # マッチTier (1=精密, 2=標準, 3=広め, 4=区全体)
-      "match_description": "港区・3LDK・50-80m²・築±10年",  # マッチ条件説明
-      --- トレンド ---
-      "trend": "up",                     # 直近トレンド (up/flat/down)
-      "yoy_change_pct": 3.2,             # 直近の前年同期比変動率 (%)
-      "quarterly_m2_prices": [            # 四半期推移 (チャート用)
-        {"quarter": "2021Q1", "median_m2_price": 980000, "count": 30},
-        ...
-      ],
+      --- 段階的マッチング比較（区レベル） ---
+      "ward_median_m2_price": 1285000,
+      "ward_mean_m2_price": 1310000,
+      "price_ratio": 1.08,
+      "price_diff_man": 620,
+      "sample_count": 24,
+      "match_tier": 1,
+      "match_description": "港区・3LDK・50-80m²・築±10年",
+      --- トレンド（区レベル） ---
+      "trend": "up",
+      "yoy_change_pct": 3.2,
+      "quarterly_m2_prices": [...],
       --- 同一マンション候補の成約事例 ---
-      "same_building_transactions": [
-        {
-          "period": "2025Q2",
-          "floor_plan": "3LDK",
-          "area": 72.0,
-          "trade_price_man": 9500,
-          "m2_price": 1319444
-        },
-        ...
-      ],
+      "same_building_transactions": [...],
+      --- 駅レベル比較 ---
+      "station": {
+        "name": "品川",
+        "median_m2_price": 1450000,
+        "mean_m2_price": 1500000,
+        "sample_count": 65,
+        "price_ratio": 0.95,
+        "price_diff_man": -320,
+        "trend": "up",
+        "yoy_change_pct": 5.1,
+        "quarterly_m2_prices": [
+          {"quarter": "2023Q1", "median_m2_price": 1300000, "count": 15}, ...
+        ],
+        "yearly_m2_prices": [
+          {"year": "2021", "median_m2_price": 1100000, "count": 50}, ...
+        ]
+      },
       "data_source": "不動産情報ライブラリ（国土交通省）"
     }
 
@@ -53,6 +59,7 @@ import os
 import re
 import statistics
 import sys
+import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
 # ---------------------------------------------------------------------------
@@ -63,6 +70,7 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 PRICES_CACHE = os.path.join(DATA_DIR, "reinfolib_prices.json")
 TRENDS_CACHE = os.path.join(DATA_DIR, "reinfolib_trends.json")
 RAW_TX_CACHE = os.path.join(DATA_DIR, "reinfolib_raw_transactions.json")
+STATION_PRICE_CACHE = os.path.join(DATA_DIR, "station_price_history.json")
 
 
 def load_json_file(path: str) -> Optional[dict]:
@@ -349,6 +357,144 @@ def format_same_building_tx(tx: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# 駅レベル比較
+# ---------------------------------------------------------------------------
+
+def _normalize_station_name(name: str) -> str:
+    """
+    駅名を正規化。NFKC + ヶ→ケ 統一。
+    塚の互換字形(U+FA10)→標準字形(U+585A) も NFKC で解決される。
+    """
+    s = unicodedata.normalize("NFKC", name)
+    # ヶ (U+30F6 小さいケ) → ケ (U+30B1) に統一
+    s = s.replace("\u30F6", "\u30B1")
+    # ヵ (U+30F5 小さいカ) → カ (U+30AB) に統一
+    s = s.replace("\u30F5", "\u30AB")
+    return s
+
+
+def extract_station_name(station_line: Optional[str]) -> Optional[str]:
+    """
+    station_line から最寄り駅名を抽出し、正規化する。
+    例: 'ＪＲ山手線「品川」徒歩4分' → '品川'
+         '東京メトロ有楽町線「豊洲」徒歩4分／ゆりかもめ「豊洲」徒歩6分' → '豊洲'
+    """
+    if not station_line:
+        return None
+    # 「...」の中を取得（最初の駅名）
+    m = re.search(r"「([^」]+)」", station_line)
+    if m:
+        return _normalize_station_name(m.group(1))
+    return None
+
+
+def build_station_market_data(
+    station_data: dict,
+    listing_m2_price: Optional[float],
+    area_m2: Optional[float],
+) -> Optional[Dict[str, Any]]:
+    """
+    station_price_history.json の1駅データから、iOS 表示用の駅比較データを構築。
+
+    Args:
+        station_data: by_station[駅名] のデータ
+        listing_m2_price: 物件のm²単価（円）
+        area_m2: 物件の面積（㎡）
+
+    Returns:
+        駅レベル比較 dict（enricher 出力の "station" キーに入る）
+    """
+    years_data = station_data.get("years", {})
+    quarters_data = station_data.get("quarters", {})
+
+    # 直近年の中央値を駅相場として使用
+    sorted_years = sorted(years_data.keys(), reverse=True)
+    if not sorted_years:
+        return None
+
+    latest_year = sorted_years[0]
+    latest_stats = years_data[latest_year]
+    median_m2 = latest_stats.get("median_m2_price")
+    mean_m2 = latest_stats.get("mean_m2_price")
+    total_count = latest_stats.get("count", 0)
+
+    if not median_m2:
+        return None
+
+    # 相場比較
+    price_ratio = None
+    price_diff_man = None
+    if listing_m2_price and listing_m2_price > 0 and median_m2 > 0:
+        price_ratio = round(listing_m2_price / median_m2, 3)
+        if area_m2 and area_m2 > 0:
+            price_diff_man = round(
+                (listing_m2_price - median_m2) * area_m2 / 10000
+            )
+
+    # 四半期推移（ソート済み）
+    quarterly_prices = []
+    for ql in sorted(quarters_data.keys()):
+        qd = quarters_data[ql]
+        if qd.get("median_m2_price") is not None:
+            quarterly_prices.append({
+                "quarter": ql,
+                "median_m2_price": qd["median_m2_price"],
+                "count": qd.get("count", 0),
+            })
+
+    # 年次推移（ソート済み）
+    yearly_prices = []
+    for yr in sorted(years_data.keys()):
+        yd = years_data[yr]
+        if yd.get("median_m2_price") is not None:
+            yearly_prices.append({
+                "year": yr,
+                "median_m2_price": yd["median_m2_price"],
+                "count": yd.get("count", 0),
+            })
+
+    # トレンド判定（四半期データが十分にあれば四半期ベース、なければ年次ベース）
+    trend = "flat"
+    yoy_change_pct = None
+    if len(quarterly_prices) >= 3:
+        trend = determine_trend(quarterly_prices)
+    elif len(yearly_prices) >= 2:
+        # 年次ベースの簡易トレンド
+        first = yearly_prices[0]["median_m2_price"]
+        last = yearly_prices[-1]["median_m2_price"]
+        if first > 0:
+            change = (last - first) / first
+            if change > 0.03:
+                trend = "up"
+            elif change < -0.03:
+                trend = "down"
+
+    # YoY 計算（直近年 vs 前年）
+    if len(sorted_years) >= 2:
+        prev_year = sorted_years[1]
+        prev_stats = years_data[prev_year]
+        prev_median = prev_stats.get("median_m2_price")
+        if prev_median and prev_median > 0 and median_m2:
+            yoy_change_pct = round(
+                (median_m2 - prev_median) / prev_median * 100, 1
+            )
+
+    return {
+        "name": station_data.get("_station_name", ""),
+        "median_m2_price": median_m2,
+        "mean_m2_price": mean_m2,
+        "sample_count": total_count,
+        "price_ratio": price_ratio,
+        "price_diff_man": price_diff_man,
+        "trend": trend,
+        "yoy_change_pct": yoy_change_pct,
+        "quarterly_m2_prices": quarterly_prices,
+        "yearly_m2_prices": yearly_prices,
+        "lines": station_data.get("lines", []),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Enricher 本体
 # ---------------------------------------------------------------------------
 
@@ -360,6 +506,7 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
     prices = load_json_file(PRICES_CACHE)
     trends = load_json_file(TRENDS_CACHE)
     raw_tx_data = load_json_file(RAW_TX_CACHE)
+    station_price_data = load_json_file(STATION_PRICE_CACHE)
 
     if not prices:
         print("警告: reinfolib_prices.json が見つかりません。スキップします。", file=sys.stderr)
@@ -392,6 +539,29 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
         if w not in tx_by_ward:
             tx_by_ward[w] = []
         tx_by_ward[w].append(tx)
+
+    # 駅レベル価格データ（正規化キーで索引）
+    station_by_name: Dict[str, dict] = {}
+    if station_price_data:
+        by_station = station_price_data.get("by_station", {})
+        for sname, sdata in by_station.items():
+            sdata["_station_name"] = sname
+            # 正規化キーで格納（互換字形・ケ/ヶ 差異を吸収）
+            normalized_key = _normalize_station_name(sname)
+            station_by_name[normalized_key] = sdata
+            # 原名でも引けるように
+            if sname != normalized_key:
+                station_by_name[sname] = sdata
+        print(
+            f"駅レベル価格データ: {len(by_station)} 駅読み込み",
+            file=sys.stderr,
+        )
+    else:
+        print(
+            "注意: station_price_history.json が見つかりません。"
+            "駅レベル比較はスキップされます。",
+            file=sys.stderr,
+        )
 
     enriched_count = 0
 
@@ -503,6 +673,23 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
             ]
 
         # =====================================================================
+        # 駅レベル比較
+        # =====================================================================
+        station_market = None
+        station_line = listing.get("station_line") or ""
+        station_name = extract_station_name(station_line)
+
+        if station_name and station_name in station_by_name:
+            listing_m2_price_val = None
+            if price_man and area_m2 and area_m2 > 0:
+                listing_m2_price_val = (price_man * 10000) / area_m2
+            station_market = build_station_market_data(
+                station_by_name[station_name],
+                listing_m2_price_val,
+                area_m2,
+            )
+
+        # =====================================================================
         # market_data を構築
         # =====================================================================
         market_data: Dict[str, Any] = {
@@ -521,6 +708,8 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
             "quarterly_m2_prices": quarterly_prices,
             # 同一マンション事例
             "same_building_transactions": same_building_txs,
+            # 駅レベル比較
+            "station": station_market,
             # メタデータ
             "data_source": data_source,
         }
