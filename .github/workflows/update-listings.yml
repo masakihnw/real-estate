@@ -22,10 +22,10 @@ on:
           - 'false'
 
 # 同時実行を防止: スクレイピング中に別の実行が始まると rebase コンフリクトが起きるため
-# 新しい実行が始まったら進行中の実行をキャンセルする
+# 進行中の実行が完了するまで新しい実行はキューで待機させる
 concurrency:
   group: update-listings
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   update:
