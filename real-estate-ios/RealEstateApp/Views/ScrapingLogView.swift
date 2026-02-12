@@ -5,8 +5,44 @@
 //  最新のスクレイピングログを表示し、ワンタップでコピーできる画面。
 //  コピーしたログを Cursor に貼り付けて問題を診断できる。
 //
+//  巨大ログを効率的に表示するため UITextView を使用。
 
 import SwiftUI
+import UIKit
+
+// MARK: - UITextView ラッパー（大量テキストを効率的に表示）
+
+/// SwiftUI の `Text` は巨大文字列のレイアウトでメインスレッドをブロックする。
+/// UIKit の `UITextView` はテキストレンダリングが最適化されており、
+/// 可視領域のみを描画するため巨大ログでも高速に表示できる。
+private struct LogTextView: UIViewRepresentable {
+    let text: String
+
+    func makeUIView(context: Context) -> UITextView {
+        let tv = UITextView()
+        tv.isEditable = false
+        tv.isSelectable = true
+        tv.isScrollEnabled = false          // 外側の ScrollView に委ねる
+        tv.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        tv.backgroundColor = .systemGray6
+        tv.layer.cornerRadius = 8
+        tv.layer.masksToBounds = true
+        tv.font = .monospacedSystemFont(ofSize: 11, weight: .regular)
+        tv.textColor = .label
+        // リンク検出を無効化（パフォーマンス向上）
+        tv.dataDetectorTypes = []
+        return tv
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        // テキストが同じなら更新をスキップ
+        if uiView.text != text {
+            uiView.text = text
+        }
+    }
+}
+
+// MARK: - ScrapingLogView
 
 struct ScrapingLogView: View {
     @Environment(\.dismiss) private var dismiss
@@ -14,6 +50,8 @@ struct ScrapingLogView: View {
     private let logService = ScrapingLogService.shared
 
     @State private var copied = false
+    /// ログ本文を遅延表示するためのフラグ
+    @State private var showLogBody = false
 
     var body: some View {
         NavigationStack {
@@ -71,13 +109,32 @@ struct ScrapingLogView: View {
                 // コピーボタン（目立つ位置に配置）
                 mainCopyButton(log)
 
-                // ログ本文
-                logBody(log)
+                // ログ本文（遅延表示）
+                if showLogBody {
+                    logBody(log)
+                        .transition(.opacity)
+                } else {
+                    ProgressView("ログを表示中...")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
+                }
             }
             .padding()
         }
         .refreshable {
+            showLogBody = false
             await logService.fetch()
+            // 再取得後に少し遅延してログ本文を表示
+            try? await Task.sleep(for: .milliseconds(100))
+            showLogBody = true
+        }
+        .onAppear {
+            // UIが先に表示された後、次のランループでログ本文を表示
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                withAnimation(.easeIn(duration: 0.2)) {
+                    showLogBody = true
+                }
+            }
         }
     }
 
@@ -141,7 +198,7 @@ struct ScrapingLogView: View {
         .tint(copied ? .green : .blue)
     }
 
-    // MARK: - ログ本文
+    // MARK: - ログ本文（UITextView で効率的に描画）
 
     @ViewBuilder
     private func logBody(_ log: ScrapingLog) -> some View {
@@ -155,13 +212,9 @@ struct ScrapingLogView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text(log.log)
-                .font(.system(.caption, design: .monospaced))
-                .textSelection(.enabled)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(12)
-                .background(Color(.systemGray6))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            LogTextView(text: log.log)
+                .frame(maxWidth: .infinity)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 

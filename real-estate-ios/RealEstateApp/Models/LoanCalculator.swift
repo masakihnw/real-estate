@@ -23,7 +23,7 @@ import Foundation
 
 /// ローンシミュレーションの計算ユーティリティ
 enum LoanCalculator {
-    // MARK: - 定数（アプリの計算条件）
+    // MARK: - 定数（アプリの計算条件 — 含み益シミュレーション用）
 
     /// 返済期間（年）
     static let termYears: Int = 50
@@ -35,6 +35,15 @@ enum LoanCalculator {
     /// 新築物件のデフォルトシミュレーション価格（万円）
     static let defaultShinchikuPrice: Int = 9500
 
+    // MARK: - 定数（住まいサーフィン準拠 — 月額支払いシミュレーション用）
+
+    /// 住まいサーフィンの返済期間（年）
+    static let ssTermYears: Int = 35
+    /// 住まいサーフィンの年利 (%)
+    static let ssAnnualRate: Double = 0.79
+    /// 住まいサーフィンの頭金（万円）
+    static let ssDownPayment: Int = 0
+
     /// 住まいサーフィンのデフォルトシミュレーション基準価格（万円）
     /// スクレイピングで基準価格を取得できなかった場合のフォールバック
     static let siteDefaultSimPrice: Int = 6000
@@ -45,10 +54,20 @@ enum LoanCalculator {
 
     // MARK: - 元利均等返済の月額返済額
 
-    /// 月額返済額を計算（万円単位）
+    /// 月額返済額を計算（万円単位）— アプリ独自条件 (0.8% / 50年)
     static func monthlyPayment(principal: Double) -> Double {
-        let monthlyRate = annualRate / 100.0 / 12.0
-        let totalMonths = Double(termYears * 12)
+        monthlyPayment(principal: principal, rate: annualRate, years: termYears)
+    }
+
+    /// 月額返済額を計算（万円単位）— 住まいサーフィン準拠条件 (0.79% / 35年)
+    static func ssMonthlyPayment(principal: Double) -> Double {
+        monthlyPayment(principal: principal, rate: ssAnnualRate, years: ssTermYears)
+    }
+
+    /// 月額返済額を計算（万円単位）— 汎用
+    private static func monthlyPayment(principal: Double, rate: Double, years: Int) -> Double {
+        let monthlyRate = rate / 100.0 / 12.0
+        let totalMonths = Double(years * 12)
 
         if monthlyRate == 0 {
             return principal / totalMonths
@@ -96,7 +115,7 @@ enum LoanCalculator {
         if listing.isShinchiku {
             purchasePrice = defaultShinchikuPrice
         } else {
-            guard let price = listing.priceMan ?? listing.ssOkiPrice70m2,
+            guard let price = listing.priceMan ?? listing.ssOkiPriceForArea ?? listing.ssOkiPrice70m2,
                   price > 0 else { return nil }
             purchasePrice = price
         }

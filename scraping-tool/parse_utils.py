@@ -219,6 +219,27 @@ def layout_range_ok(layout: str) -> bool:
 # ──────────────────────────── 権利形態 ────────────────────────────
 
 
+def parse_monthly_yen(s: str) -> Optional[int]:
+    """「1万8000円／月」「5000円／月」「1万7580円／月（委託(通勤)）」などから月額円を返す。"""
+    if not s:
+        return None
+    # 括弧内の注記を除去
+    s = re.sub(r"[（(][^）)]*[）)]", "", s).strip()
+    # "−" "なし" "-" は None
+    if re.match(r"^[-−–—なし]+$", s.strip()):
+        return None
+    if "万" in s:
+        m = re.search(r"([0-9.]+)\s*万\s*([0-9.]*)\s*円", s)
+        if m:
+            man = float(m.group(1))
+            yen = float(m.group(2) or 0)
+            return int(man * 10000 + yen)
+    m = re.search(r"([0-9,]+)\s*円", s)
+    if m:
+        return int(m.group(1).replace(",", ""))
+    return None
+
+
 def parse_ownership(text: str) -> Optional[str]:
     """テキストから権利形態（所有権・借地権・底地権等）を抽出。中古HOME'S用。"""
     if not text or not text.strip():

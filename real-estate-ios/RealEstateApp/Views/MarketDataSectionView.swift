@@ -29,6 +29,12 @@ struct MarketDataSectionView: View {
                 // ── エリア相場情報 ──
                 areaInfoGrid(market)
 
+                // ── 同一マンション候補の成約事例 ──
+                if !market.sameBuildingTransactions.isEmpty {
+                    Divider()
+                    sameBuildingSection(market)
+                }
+
                 // ── 四半期推移チャート ──
                 if market.quarterlyM2Prices.count >= 3 {
                     Divider()
@@ -81,11 +87,21 @@ struct MarketDataSectionView: View {
                 }
             }
 
-            // 補足: サンプル数
-            HStack {
-                Text("\(market.ward)の直近成約\(market.sampleCount)件から算出")
+            // 補足: マッチ条件 + サンプル数
+            HStack(spacing: 6) {
+                // マッチ精度バッジ
+                Text(market.matchTierLabel)
+                    .font(.caption2)
+                    .fontWeight(.medium)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(matchTierBadgeColor(market.matchTier))
+                    .clipShape(Capsule())
+
+                Text("\(market.matchDescription)の成約\(market.sampleCount)件")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
+
                 Spacer()
             }
         }
@@ -157,6 +173,87 @@ struct MarketDataSectionView: View {
         )
     }
 
+    // MARK: - 同一マンション候補の成約事例
+
+    @ViewBuilder
+    private func sameBuildingSection(_ market: Listing.MarketData) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 6) {
+                Image(systemName: "building.fill")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                Text("同一マンション候補の成約事例")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                Text("\(market.sameBuildingTransactions.count)件")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+
+            ForEach(
+                Array(market.sameBuildingTransactions.prefix(5).enumerated()),
+                id: \.offset
+            ) { _, tx in
+                sameBuildingTransactionRow(tx)
+            }
+
+            if market.sameBuildingTransactions.count > 5 {
+                Text("他 \(market.sameBuildingTransactions.count - 5)件")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+
+            // 注意書き
+            Text("※ 同区・同町名・同築年・同構造で推定。同一棟を保証するものではありません")
+                .font(.system(size: 9))
+                .foregroundStyle(.quaternary)
+        }
+    }
+
+    @ViewBuilder
+    private func sameBuildingTransactionRow(
+        _ tx: Listing.MarketData.SameBuildingTransaction
+    ) -> some View {
+        HStack(spacing: 8) {
+            // 時期
+            Text(tx.periodDisplay)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .frame(width: 72, alignment: .leading)
+
+            // 間取り+面積
+            Text("\(tx.floorPlan) \(String(format: "%.0fm²", tx.area))")
+                .font(.caption2)
+                .fontWeight(.medium)
+                .frame(width: 80, alignment: .leading)
+
+            Spacer()
+
+            // 成約価格
+            Text(tx.tradePriceDisplay)
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .foregroundStyle(.primary)
+
+            // m²単価
+            Text(tx.m2PriceManDisplay)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .frame(width: 64, alignment: .trailing)
+        }
+        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .fill(Color.orange.opacity(0.04))
+        )
+    }
+
     // MARK: - 四半期推移チャート
 
     @ViewBuilder
@@ -215,6 +312,15 @@ struct MarketDataSectionView: View {
         guard let yoy else { return .primary }
         if abs(yoy) < 0.5 { return .primary }
         return yoy > 0 ? .green : .red
+    }
+
+    private func matchTierBadgeColor(_ tier: Int) -> Color {
+        switch tier {
+        case 1: return Color.green.opacity(0.15)
+        case 2: return Color.blue.opacity(0.12)
+        case 3: return Color.orange.opacity(0.12)
+        default: return Color(.systemGray5)
+        }
     }
 }
 

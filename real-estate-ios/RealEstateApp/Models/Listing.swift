@@ -28,6 +28,10 @@ final class Listing: @unchecked Sendable {
     var floorTotal: Int?
     var floorStructure: String?
     var ownership: String?
+    /// 管理費（円/月。SUUMO/HOME'S 詳細ページから取得）
+    var managementFee: Int?
+    /// 修繕積立金（円/月。SUUMO/HOME'S 詳細ページから取得）
+    var repairReserveFund: Int?
     var listWardRoman: String?
     var fetchedAt: Date
 
@@ -187,6 +191,8 @@ final class Listing: @unchecked Sendable {
         floorTotal: Int? = nil,
         floorStructure: String? = nil,
         ownership: String? = nil,
+        managementFee: Int? = nil,
+        repairReserveFund: Int? = nil,
         listWardRoman: String? = nil,
         fetchedAt: Date = .now,
         addedAt: Date = .now,
@@ -248,6 +254,8 @@ final class Listing: @unchecked Sendable {
         self.floorTotal = floorTotal
         self.floorStructure = floorStructure
         self.ownership = ownership
+        self.managementFee = managementFee
+        self.repairReserveFund = repairReserveFund
         self.listWardRoman = listWardRoman
         self.fetchedAt = fetchedAt
         self.addedAt = addedAt
@@ -748,6 +756,14 @@ final class Listing: @unchecked Sendable {
 
         /// 軸ラベル（サイト準拠）
         static let labels = ["沖式中古時価\nm²単価", "築年数", "お気に入り数", "徒歩分数", "中古値上がり率", "総戸数"]
+
+        /// 軸ラベル（1行版 — テーブル表示用）
+        static let labelsSingleLine = ["沖式時価m²単価", "築年数", "お気に入り数", "徒歩分数", "中古値上がり率", "総戸数"]
+
+        /// 6軸の平均偏差値
+        var average: Double {
+            values.reduce(0, +) / Double(values.count)
+        }
     }
 
     /// ssRadarData JSON をパースしてレーダーチャートデータを返す。
@@ -838,6 +854,17 @@ final class Listing: @unchecked Sendable {
         )
     }
 
+    /// 平均偏差値（レーダーチャート6軸の平均）。データなしは nil。
+    var averageDeviation: Double? {
+        parsedRadarData?.average
+    }
+
+    /// 平均偏差値の表示文字列（小数第1位まで）。データなしは "—"。
+    var averageDeviationDisplay: String {
+        guard let avg = averageDeviation else { return "—" }
+        return String(format: "%.1f", avg)
+    }
+
     // MARK: - 過去の相場推移
 
     /// 相場推移 1 エントリ
@@ -897,9 +924,22 @@ final class Listing: @unchecked Sendable {
         return "\(pct)%"
     }
 
-    /// 表示用: 沖式時価
+    /// 表示用: 沖式時価（70m²換算）
     var ssOkiPriceDisplay: String {
         guard let price = ssOkiPrice70m2 else { return "—" }
+        return "\(price)万円"
+    }
+
+    /// 沖式中古時価を実際の専有面積に換算した値（万円）
+    /// 計算式: ssOkiPrice70m2 / 70 * areaM2
+    var ssOkiPriceForArea: Int? {
+        guard let price70 = ssOkiPrice70m2, let area = areaM2, area > 0 else { return nil }
+        return Int(round(Double(price70) / 70.0 * area))
+    }
+
+    /// 表示用: 沖式時価（実面積換算）
+    var ssOkiPriceForAreaDisplay: String {
+        guard let price = ssOkiPriceForArea else { return "—" }
         return "\(price)万円"
     }
 
@@ -1092,15 +1132,58 @@ final class Listing: @unchecked Sendable {
         var priceRatio: Double?            // 掲載価格÷相場 (1.0=相場並み)
         var priceDiffMan: Int?             // 差額（万円, 正=割高）
         var sampleCount: Int
+        var matchTier: Int                 // 1=精密, 2=標準, 3=広め, 4=区全体
+        var matchDescription: String       // "港区・3LDK・50-80m²・築2005-2025年"
         var trend: String                  // "up" / "flat" / "down"
         var yoyChangePct: Double?          // 前年同期比変動率 (%)
         var quarterlyM2Prices: [QuarterlyPrice]
+        var sameBuildingTransactions: [SameBuildingTransaction]
         var dataSource: String
 
         struct QuarterlyPrice {
             var quarter: String            // "2024Q3"
             var medianM2Price: Int          // 円/m²
             var count: Int
+        }
+
+        struct SameBuildingTransaction {
+            var period: String             // "2025Q2"
+            var floorPlan: String          // "3LDK"
+            var area: Double               // 72.0
+            var tradePriceMan: Int          // 9500 (万円)
+            var m2Price: Int               // 1319444 (円/m²)
+
+            /// m²単価の万円表示
+            var m2PriceManDisplay: String {
+                let man = Double(m2Price) / 10000.0
+                return String(format: "%.1f万/m²", man)
+            }
+
+            /// 成約価格の表示
+            var tradePriceDisplay: String {
+                if tradePriceMan >= 10000 {
+                    let oku = Double(tradePriceMan) / 10000.0
+                    return String(format: "%.1f億円", oku)
+                }
+                return "\(tradePriceMan)万円"
+            }
+
+            /// 取引時期の表示（"2025Q2" → "2025年4-6月"）
+            var periodDisplay: String {
+                let parts = period.split(separator: "Q")
+                guard parts.count == 2,
+                      let year = parts.first,
+                      let q = Int(parts.last ?? "") else { return period }
+                let months: String
+                switch q {
+                case 1: months = "1-3月"
+                case 2: months = "4-6月"
+                case 3: months = "7-9月"
+                case 4: months = "10-12月"
+                default: months = ""
+                }
+                return "\(year)年\(months)"
+            }
         }
 
         /// 相場との乖離率テキスト（例: "+8%（割高）", "−5%（割安）", "相場並み"）
@@ -1152,6 +1235,16 @@ final class Listing: @unchecked Sendable {
             guard let yoy = yoyChangePct else { return "—" }
             return String(format: "%+.1f%%", yoy)
         }
+
+        /// マッチ条件の精度ラベル
+        var matchTierLabel: String {
+            switch matchTier {
+            case 1: return "精密比較"
+            case 2: return "標準比較"
+            case 3: return "間取り比較"
+            default: return "エリア比較"
+            }
+        }
     }
 
     /// reinfolibMarketData JSON を解析
@@ -1176,6 +1269,19 @@ final class Listing: @unchecked Sendable {
             )
         }
 
+        // 同一マンション候補の成約事例
+        let sbRaw = dict["same_building_transactions"] as? [[String: Any]] ?? []
+        let sameBuildingTxs = sbRaw.compactMap { tx -> MarketData.SameBuildingTransaction? in
+            guard let period = tx["period"] as? String else { return nil }
+            return MarketData.SameBuildingTransaction(
+                period: period,
+                floorPlan: tx["floor_plan"] as? String ?? "",
+                area: tx["area"] as? Double ?? 0,
+                tradePriceMan: tx["trade_price_man"] as? Int ?? 0,
+                m2Price: tx["m2_price"] as? Int ?? 0
+            )
+        }
+
         return MarketData(
             ward: ward,
             wardMedianM2Price: medianM2,
@@ -1183,9 +1289,12 @@ final class Listing: @unchecked Sendable {
             priceRatio: dict["price_ratio"] as? Double,
             priceDiffMan: dict["price_diff_man"] as? Int,
             sampleCount: dict["sample_count"] as? Int ?? 0,
+            matchTier: dict["match_tier"] as? Int ?? 4,
+            matchDescription: dict["match_description"] as? String ?? ward,
             trend: dict["trend"] as? String ?? "flat",
             yoyChangePct: dict["yoy_change_pct"] as? Double,
             quarterlyM2Prices: quarterly,
+            sameBuildingTransactions: sameBuildingTxs,
             dataSource: dict["data_source"] as? String ?? "不動産情報ライブラリ（国土交通省）"
         )
     }
@@ -1351,6 +1460,8 @@ struct ListingDTO: Codable {
     var floor_total: Int?
     var floor_structure: String?
     var ownership: String?
+    var management_fee: Int?
+    var repair_reserve_fund: Int?
     var list_ward_roman: String?
 
     // 重複集約
@@ -1442,6 +1553,8 @@ extension Listing {
             floorTotal: dto.floor_total,
             floorStructure: dto.floor_structure,
             ownership: dto.ownership,
+            managementFee: dto.management_fee,
+            repairReserveFund: dto.repair_reserve_fund,
             listWardRoman: dto.list_ward_roman,
             fetchedAt: fetchedAt,
             propertyType: dto.property_type ?? "chuko",

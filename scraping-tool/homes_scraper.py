@@ -38,6 +38,7 @@ from parse_utils import (
     parse_floor_position,
     parse_floor_total,
     parse_total_units_strict,
+    parse_monthly_yen,
     layout_ok,
     parse_ownership,
 )
@@ -80,6 +81,8 @@ class HomesListing:
     floor_position: Optional[int] = None   # 所在階（何階）
     floor_total: Optional[int] = None     # 建物階数（何階建て）
     ownership: Optional[str] = None        # 権利形態（所有権・借地権等。一覧に表示されていれば取得）
+    management_fee: Optional[int] = None   # 管理費（円/月）
+    repair_reserve_fund: Optional[int] = None  # 修繕積立金（円/月）
 
     def to_dict(self):
         return asdict(self)
@@ -242,6 +245,8 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
                     total_units = parse_total_units_strict(t)
             ownership = table_cell_value(vt, "権利") or table_cell_value(vt, "権利形態") if vt else ""
             ownership = (parse_ownership(ownership) or parse_ownership(tr.get_text() or ""))
+            mgmt_str = table_cell_value(vt, "管理費") if vt else ""
+            repair_str = table_cell_value(vt, "修繕積立金") if vt else ""
             by_url[url] = {
                 "layout": layout,
                 "walk_min": walk_min,
@@ -250,6 +255,8 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
                 "floor_position": floor_position,
                 "floor_total": building_floor_total,
                 "ownership": ownership,
+                "management_fee": parse_monthly_yen(mgmt_str) if mgmt_str else None,
+                "repair_reserve_fund": parse_monthly_yen(repair_str) if repair_str else None,
             }
 
     # mod-listKks.mod-listKks-sale: 1カード1物件
@@ -281,6 +288,8 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
         floor_total = parse_floor_total(text_all)
         ownership = table_cell_value(vt, "権利") or table_cell_value(vt, "権利形態") if vt else ""
         ownership = parse_ownership(ownership) or parse_ownership(text_all)
+        mgmt_str = table_cell_value(vt, "管理費") if vt else ""
+        repair_str = table_cell_value(vt, "修繕積立金") if vt else ""
         by_url[url] = {
             "layout": layout,
             "walk_min": walk_min,
@@ -289,6 +298,8 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
             "floor_position": floor_position,
             "floor_total": floor_total,
             "ownership": ownership,
+            "management_fee": parse_monthly_yen(mgmt_str) if mgmt_str else None,
+            "repair_reserve_fund": parse_monthly_yen(repair_str) if repair_str else None,
         }
 
     return by_url
@@ -394,6 +405,12 @@ def _extract_card_listings(soup: BeautifulSoup, base_url: str) -> list[HomesList
         if not name and not url:
             continue
 
+        # 管理費・修繕積立金
+        mgmt_str = _table_value("管理費")
+        repair_str = _table_value("修繕積立金")
+        management_fee = parse_monthly_yen(mgmt_str) if mgmt_str else None
+        repair_reserve_fund = parse_monthly_yen(repair_str) if repair_str else None
+
         items.append(HomesListing(
             source="homes",
             url=url,
@@ -409,6 +426,8 @@ def _extract_card_listings(soup: BeautifulSoup, base_url: str) -> list[HomesList
             total_units=total_units,
             floor_position=floor_position,
             floor_total=floor_total,
+            management_fee=management_fee,
+            repair_reserve_fund=repair_reserve_fund,
         ))
     return items
 
@@ -446,6 +465,8 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[HomesListing]:
             floor_position=floor_position,
             floor_total=floor_total,
             ownership=extra.get("ownership") if isinstance(extra.get("ownership"), str) else None,
+            management_fee=extra.get("management_fee"),
+            repair_reserve_fund=extra.get("repair_reserve_fund"),
         ))
 
     # フォールバック: JSON-LD + 旧HTMLセレクタで0件の場合、カード型パーサーを試行

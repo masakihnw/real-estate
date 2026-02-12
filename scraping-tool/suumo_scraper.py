@@ -41,6 +41,7 @@ from parse_utils import (
     parse_built_year,
     parse_floor_position,
     parse_floor_total,
+    parse_monthly_yen,
     layout_ok,
 )
 from scraper_common import (
@@ -81,6 +82,8 @@ class SuumoListing:
     floor_total: Optional[int] = None     # 建物階数（何階建て）
     floor_structure: Optional[str] = None  # 構造・階建表示（例: RC13階地下1階建。詳細キャッシュから取得）
     ownership: Optional[str] = None       # 権利形態（所有権・借地権・底地権等。一覧または詳細キャッシュから取得）
+    management_fee: Optional[int] = None  # 管理費（円/月。詳細キャッシュから取得）
+    repair_reserve_fund: Optional[int] = None  # 修繕積立金（円/月。詳細キャッシュから取得）
     list_ward_roman: Optional[str] = None  # 一覧取得元の区（sc_itabashi 等）。住所に区名が無くても23区判定に利用
 
     def to_dict(self):
@@ -381,18 +384,22 @@ def _parse_fallback(soup: BeautifulSoup, base_url: str) -> list[SuumoListing]:
 
 
 def parse_suumo_detail_html(html: str) -> dict:
-    """SUUMO 物件詳細ページのHTMLから「総戸数」「所在階」「構造・階建」「権利形態」をパースする。
+    """SUUMO 物件詳細ページのHTMLから物件属性をパースする。
 
     詳細ページを自動取得する機能は含まない。HTML文字列を渡して利用する。
     戻り値: {"total_units": int|None, "floor_position": int|None, "floor_total": int|None,
-             "floor_structure": str|None, "ownership": str|None}
+             "floor_structure": str|None, "ownership": str|None,
+             "management_fee": int|None, "repair_reserve_fund": int|None}
     floor_structure は "RC13階地下1階建" など表示用文字列。ownership は「所有権」「借地権」等。
+    management_fee は管理費（円/月）。repair_reserve_fund は修繕積立金（円/月）。
 
     想定HTML構造（docs/suumo.html 参照）:
     - th に「総戸数」を含む行の直後 td → "38戸" など → total_units
     - th に「所在階」または「所在階/構造・階建」を含む行の td → "12階" または "12階/RC13階地下1階建"
     - th に「構造・階建て」を含む行の td → "RC13階地下1階建" など
     - th に「権利形態」または「敷地の権利形態」を含む行の td → "所有権" など → ownership
+    - th に「管理費」を含む行の td → "1万8000円／月（委託(通勤)）" → management_fee
+    - th に「修繕積立金」を含む行の td → "1万7580円／月" → repair_reserve_fund
     """
     soup = BeautifulSoup(html, "lxml")
     total_units: Optional[int] = None
@@ -400,6 +407,8 @@ def parse_suumo_detail_html(html: str) -> dict:
     floor_total: Optional[int] = None
     floor_structure: Optional[str] = None
     ownership: Optional[str] = None
+    management_fee: Optional[int] = None
+    repair_reserve_fund: Optional[int] = None
 
     for tr in soup.find_all("tr"):
         cells = tr.find_all(["th", "td"], recursive=False)
@@ -439,12 +448,26 @@ def parse_suumo_detail_html(html: str) -> dict:
             if "権利形態" in th_text and td_text.strip():
                 ownership = td_text.strip()
 
+            # 管理費: "1万8000円／月（委託(通勤)）" → 18000
+            if "管理費" in th_text and "修繕" not in th_text:
+                val = parse_monthly_yen(td_text)
+                if val is not None and val > 0:
+                    management_fee = val
+
+            # 修繕積立金: "1万7580円／月" → 17580（「修繕積立基金」は一時金なので除外）
+            if "修繕積立金" in th_text and "基金" not in th_text:
+                val = parse_monthly_yen(td_text)
+                if val is not None and val > 0:
+                    repair_reserve_fund = val
+
     return {
         "total_units": total_units,
         "floor_position": floor_position,
         "floor_total": floor_total,
         "floor_structure": floor_structure,
         "ownership": ownership,
+        "management_fee": management_fee,
+        "repair_reserve_fund": repair_reserve_fund,
     }
 
 
@@ -517,6 +540,10 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
                 r.floor_structure = cache_val["floor_structure"]
             if r.ownership is None and cache_val.get("ownership") is not None:
                 r.ownership = cache_val["ownership"]
+            if r.management_fee is None and cache_val.get("management_fee") is not None:
+                r.management_fee = cache_val["management_fee"]
+            if r.repair_reserve_fund is None and cache_val.get("repair_reserve_fund") is not None:
+                r.repair_reserve_fund = cache_val["repair_reserve_fund"]
         elif total_units is None and isinstance(cache_val, int):
             total_units = cache_val
             r.total_units = cache_val
