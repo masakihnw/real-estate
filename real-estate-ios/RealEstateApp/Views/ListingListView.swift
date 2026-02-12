@@ -46,6 +46,21 @@ struct ListingListView: View {
         case walkAsc = "徒歩の近い順"
         case areaDesc = "広い順"
         case deviationDesc = "偏差値の高い順"
+        case profitPctDesc = "儲かる確率の高い順"
+    }
+
+    /// タブの物件種別に応じた利用可能なソート順
+    private var availableSortOrders: [SortOrder] {
+        let common: [SortOrder] = [.addedDesc, .priceAsc, .priceDesc, .walkAsc, .areaDesc]
+        switch propertyTypeFilter {
+        case "chuko":
+            return common + [.deviationDesc]
+        case "shinchiku":
+            return common + [.profitPctDesc]
+        default:
+            // お気に入りタブ等：両方表示
+            return common + [.deviationDesc, .profitPctDesc]
+        }
     }
 
     private var baseList: [Listing] {
@@ -160,6 +175,11 @@ struct ListingListView: View {
             list.sort {
                 let d0 = $0.averageDeviation ?? 0, d1 = $1.averageDeviation ?? 0
                 return d0 != d1 ? d0 > d1 : $0.name < $1.name
+            }
+        case .profitPctDesc:
+            list.sort {
+                let p0 = $0.ssProfitPct ?? 0, p1 = $1.ssProfitPct ?? 0
+                return p0 != p1 ? p0 > p1 : $0.name < $1.name
             }
         }
         return list
@@ -352,8 +372,16 @@ struct ListingListView: View {
     private var filterSortOverlayButtons: some View {
         VStack(alignment: .trailing, spacing: 8) {
             Menu {
-                ForEach(SortOrder.allCases, id: \.self) { order in
-                    Button(order.rawValue) { withAnimation { sortOrder = order } }
+                ForEach(availableSortOrders, id: \.self) { order in
+                    Button {
+                        withAnimation { sortOrder = order }
+                    } label: {
+                        if order == sortOrder {
+                            Label(order.rawValue, systemImage: "checkmark")
+                        } else {
+                            Text(order.rawValue)
+                        }
+                    }
                 }
             } label: {
                 Image(systemName: "arrow.up.arrow.down.circle")
