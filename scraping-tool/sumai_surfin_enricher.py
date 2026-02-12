@@ -1485,13 +1485,31 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
 
         # 既に enrichment 済みならスキップ
         # 新築は ss_profit_pct / ss_m2_discount、中古は ss_oki_price_70m2 / ss_appreciation_rate で判定
+        # ただし ss_address がない場合は住所取得のために再処理する
         if property_type == "shinchiku":
             already = (listing.get("ss_profit_pct") is not None
                        or listing.get("ss_m2_discount") is not None
                        or listing.get("ss_purchase_judgment") is not None)
         else:
             already = listing.get("ss_oki_price_70m2") is not None or listing.get("ss_appreciation_rate") is not None
-        if already:
+
+        needs_address = not listing.get("ss_address")
+
+        if already and not needs_address:
+            skip_count += 1
+            continue
+
+        if already and needs_address:
+            # 住所のみ追加取得（評価データは既に取得済み）
+            url = listing.get("ss_sumai_surfin_url")
+            if url:
+                fetched = _fetch_property_page(session, url)
+                if fetched:
+                    soup_addr, _ = fetched
+                    raw_addr = _extract_address_from_page(soup_addr)
+                    if raw_addr:
+                        listing["ss_address"] = _clean_ss_address(raw_addr)
+                        listing["address"] = listing["ss_address"]
             skip_count += 1
             continue
 
@@ -1520,6 +1538,10 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         # データをマージ
         for k, v in data.items():
             listing[k] = v
+
+        # 住まいサーフィンの住所を正として listing の address を上書き
+        if data.get("ss_address"):
+            listing["address"] = data["ss_address"]
 
         if any(k.startswith("ss_") and k != "ss_sumai_surfin_url" for k in data):
             enriched_count += 1
@@ -1555,6 +1577,16 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
 
     # キャッシュ保存
     save_cache(cache)
+
+    # 住まいサーフィンの住所を正として全物件の address を上書き
+    addr_updated = 0
+    for listing in listings:
+        ss_addr = listing.get("ss_address")
+        if ss_addr and listing.get("address") != ss_addr:
+            listing["address"] = ss_addr
+            addr_updated += 1
+    if addr_updated:
+        print(f"住所更新: {addr_updated}件（住まいサーフィンの所在地を正として反映）", file=sys.stderr)
 
     # 全物件のレーダーデータを iOS 互換形式に正規化・不足軸を補完
     radar_count = 0
