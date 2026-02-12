@@ -305,8 +305,8 @@ class MansionPricePredictor:
             hazard_risk = int(hazard_risk)
         else:
             hazard_risk = 0
-        # 住所（区名判定用。address / 住所 等）
-        address = property_data.get("address") or property_data.get("住所") or property_data.get("addr")
+        # 住所（区名判定用。ss_address / address / 住所 等）
+        address = property_data.get("ss_address") or property_data.get("address") or property_data.get("住所") or property_data.get("addr")
 
         # 築年数（現在時点）
         age_years: Optional[int] = None

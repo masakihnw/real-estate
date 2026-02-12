@@ -272,11 +272,15 @@ def enrich_hazard(listings: list[dict]) -> list[dict]:
         lat = listing.get("latitude")
         lng = listing.get("longitude")
 
-        # 座標がなければジオコードキャッシュから取得
-        if (lat is None or lng is None) and listing.get("address"):
-            cached = geocode_cache.get(listing["address"].strip())
-            if cached:
-                lat, lng = cached
+        # 座標がなければジオコードキャッシュから取得（ss_address 優先）
+        if lat is None or lng is None:
+            for addr_key in ("ss_address", "address"):
+                addr_val = (listing.get(addr_key) or "").strip()
+                if addr_val:
+                    cached = geocode_cache.get(addr_val)
+                    if cached:
+                        lat, lng = cached
+                        break
 
         if lat is None or lng is None:
             continue

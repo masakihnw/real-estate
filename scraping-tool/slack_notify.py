@@ -12,6 +12,7 @@ from typing import Any, Optional
 
 from optional_features import optional_features
 from report_utils import (
+    best_address,
     compare_listings,
     format_area,
     format_floor,
@@ -228,9 +229,9 @@ def _listing_line_slack(r: dict, url: str = "", include_breakdown: bool = True) 
     parts.extend([f"月額:{monthly_loan}"])
     parts.extend([f"M3:{m3_str}", f"PG:{pg_str}"])
     line = "• " + " ｜ ".join(parts)
-    map_url = google_maps_url(r.get("name") or r.get("address") or "")
-    if map_url:
-        line += f" ｜ <{map_url}|Map>"
+    map_url_val = google_maps_url(r.get("name") or best_address(r))
+    if map_url_val:
+        line += f" ｜ <{map_url_val}|Map>"
     if url:
         line += f" ｜ <{url}|詳細>"
     return line
@@ -290,8 +291,8 @@ def build_slack_message_from_listings(
             floor_str = format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure"))
             units = format_total_units(r.get("total_units"))
             ownership_str = format_ownership(r.get("ownership"))
-            map_url = google_maps_url(r.get("name") or r.get("address") or "")
-            map_part = f" ｜ <{map_url}|Map>" if map_url else ""
+            map_url_val = google_maps_url(r.get("name") or best_address(r))
+            map_part = f" ｜ <{map_url_val}|Map>" if map_url_val else ""
             lines.append(f"• {(r.get('name') or '')[:28]} ｜ {format_price(r.get('price_man'))} ｜ {floor_str} ｜ {units} ｜ {ownership_str}{map_part}")
         if len(diff_removed_a) > 5:
             lines.append(f"  … 他 {len(diff_removed_a) - 5}件")

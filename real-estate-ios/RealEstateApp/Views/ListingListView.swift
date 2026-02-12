@@ -101,7 +101,7 @@ struct ListingListView: View {
         }
         if !filterStore.filter.wards.isEmpty {
             list = list.filter { listing in
-                guard let ward = ListingFilter.extractWard(from: listing.address) else { return false }
+                guard let ward = ListingFilter.extractWard(from: listing.bestAddress) else { return false }
                 return filterStore.filter.wards.contains(ward)
             }
         }
@@ -179,7 +179,7 @@ struct ListingListView: View {
             let fields = [
                 listing.name,
                 listing.priceDisplay,
-                listing.address ?? "",
+                listing.bestAddress ?? "",
                 listing.primaryStationDisplay,
                 listing.layout ?? "",
                 listing.areaDisplay,
@@ -203,7 +203,7 @@ struct ListingListView: View {
 
     /// 一覧内に存在する区名のセット（フィルタシートの選択肢用）
     private var availableWards: Set<String> {
-        Set(baseList.compactMap { ListingFilter.extractWard(from: $0.address) })
+        Set(baseList.compactMap { ListingFilter.extractWard(from: $0.bestAddress) })
     }
 
     var body: some View {

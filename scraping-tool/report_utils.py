@@ -21,6 +21,11 @@ except ImportError:
     )
 
 
+def best_address(listing: dict) -> str:
+    """ss_address（住まいサーフィンの番地レベル住所）があれば優先、なければ元の address を返す。"""
+    return (listing.get("ss_address") or listing.get("address") or "").strip()
+
+
 def normalize_listing_name(name: str) -> str:
     """同一判定用に物件名を正規化。全角・半角スペース等を除いて比較する。"""
     if not name:

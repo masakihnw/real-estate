@@ -20,6 +20,7 @@ from typing import Any, Optional
 
 from optional_features import optional_features
 from report_utils import (
+    best_address,
     compare_listings,
     format_address_from_ward,
     format_area,
@@ -165,9 +166,9 @@ def _listing_cells(r: dict) -> dict[str, Any]:
         "walk": optional_features.format_all_station_walk(r.get("station_line"), r.get("walk_min")),
         "floor_str": format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure")),
         "units": format_total_units(r.get("total_units")),
-        "address_short": format_address_from_ward(r.get("address") or ""),
-        "address_trunc": (r.get("address") or "")[:20],
-        "gmap": google_maps_link(r.get("name") or r.get("address") or ""),
+        "address_short": format_address_from_ward(best_address(r)),
+        "address_trunc": best_address(r)[:20],
+        "gmap": google_maps_link(r.get("name") or best_address(r)),
     }
 
 
@@ -310,7 +311,7 @@ def generate_markdown(
     by_ward: dict[str, list[dict]] = {}
     no_ward: list[dict] = []
     for r in listings_a:
-        ward = get_ward_from_address(r.get("address") or "")
+        ward = get_ward_from_address(best_address(r))
         if ward:
             by_ward.setdefault(ward, []).append(r)
         else:
@@ -342,7 +343,7 @@ def generate_markdown(
             addrs = []
             seen: set[str] = set()
             for r in st_listings:
-                a = format_address_from_ward(r.get("address") or "")
+                a = format_address_from_ward(best_address(r))
                 if a != "-" and a not in seen:
                     seen.add(a)
                     addrs.append(a)

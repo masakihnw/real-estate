@@ -402,7 +402,7 @@ final class GeocodingService {
     /// Apple Geocoder のレート制限を考慮し、最大2並列で実行する。
     /// - Returns: ジオコーディングに失敗した件数
     func geocodeBatch(_ listings: [Listing]) async -> Int {
-        let toGeocode = listings.filter { !$0.hasCoordinate && $0.address != nil && !($0.address ?? "").isEmpty }
+        let toGeocode = listings.filter { !$0.hasCoordinate && $0.bestAddress != nil && !($0.bestAddress ?? "").isEmpty }
         guard !toGeocode.isEmpty else { return 0 }
 
         // 最大2並列（Apple Geocoder のレート制限対策）
@@ -415,7 +415,8 @@ final class GeocodingService {
                 }
                 index += 1
                 group.addTask { @Sendable in
-                    guard let address = listing.address else { return false }
+                    // ss_address（番地レベル）があれば優先使用してジオコーディング精度を向上
+                    guard let address = listing.bestAddress else { return false }
                     let geocoder = CLGeocoder()
                     do {
                         let placemarks = try await geocoder.geocodeAddressString(address)
@@ -882,7 +883,7 @@ struct MapTabView: View {
         }
         if !filterStore.filter.wards.isEmpty {
             list = list.filter { listing in
-                guard let ward = ListingFilter.extractWard(from: listing.address) else { return false }
+                guard let ward = ListingFilter.extractWard(from: listing.bestAddress) else { return false }
                 return filterStore.filter.wards.contains(ward)
             }
         }
@@ -911,7 +912,7 @@ struct MapTabView: View {
     }
 
     private var availableWards: Set<String> {
-        Set(listings.compactMap { ListingFilter.extractWard(from: $0.address) })
+        Set(listings.compactMap { ListingFilter.extractWard(from: $0.bestAddress) })
     }
 
     var body: some View {
@@ -1787,7 +1788,7 @@ struct MapTabView: View {
     private func startGeocoding() async {
         guard !hasStartedGeocoding else { return }
         hasStartedGeocoding = true
-        let toGeocode = listings.filter { !$0.hasCoordinate && $0.address != nil && !($0.address ?? "").isEmpty }
+        let toGeocode = listings.filter { !$0.hasCoordinate && $0.bestAddress != nil && !($0.bestAddress ?? "").isEmpty }
         guard !toGeocode.isEmpty else { return }
 
         let failures = await GeocodingService.shared.geocodeBatch(toGeocode)

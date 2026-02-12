@@ -15,6 +15,8 @@ final class Listing: @unchecked Sendable {
     var name: String
     var priceMan: Int?
     var address: String?
+    /// 住まいサーフィンから取得した番地レベルの詳細住所（パイプライン側で付与）
+    var ssAddress: String?
     var stationLine: String?
     var walkMin: Int?
     var areaM2: Double?
@@ -173,6 +175,7 @@ final class Listing: @unchecked Sendable {
         name: String,
         priceMan: Int? = nil,
         address: String? = nil,
+        ssAddress: String? = nil,
         stationLine: String? = nil,
         walkMin: Int? = nil,
         areaM2: Double? = nil,
@@ -233,6 +236,7 @@ final class Listing: @unchecked Sendable {
         self.name = name
         self.priceMan = priceMan
         self.address = address
+        self.ssAddress = ssAddress
         self.stationLine = stationLine
         self.walkMin = walkMin
         self.areaM2 = areaM2
@@ -632,6 +636,12 @@ final class Listing: @unchecked Sendable {
     /// 追加から24時間以内かどうか（Newバッジ表示用）
     var isNew: Bool {
         addedAt.timeIntervalSinceNow > -24 * 3600
+    }
+
+    /// 住まいサーフィンの詳細住所（ss_address）があればそちらを優先、なければ元の住所
+    var bestAddress: String? {
+        if let ss = ssAddress, !ss.isEmpty { return ss }
+        return address
     }
 
     /// ジオコーディング済みかどうか
@@ -1327,6 +1337,7 @@ struct ListingDTO: Codable {
     var price_man: Int?
     var price_max_man: Int?
     var address: String?
+    var ss_address: String?
     var station_line: String?
     var walk_min: Int?
     var area_m2: Double?
@@ -1419,6 +1430,7 @@ extension Listing {
             name: name,
             priceMan: dto.price_man,
             address: dto.address,
+            ssAddress: dto.ss_address,
             stationLine: dto.station_line,
             walkMin: dto.walk_min,
             areaM2: dto.area_m2,

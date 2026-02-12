@@ -54,15 +54,16 @@ struct ListingDetailView: View {
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    // ② 住所（Google Maps アイコンボタン）
-                    if let addr = listing.address, !addr.isEmpty {
+                    // ② 住所（Google Maps アイコンボタン）— ss_address 優先
+                    if let addr = listing.bestAddress, !addr.isEmpty {
                         HStack(spacing: 8) {
                             Text(addr)
                                 .font(ListingObjectStyle.subtitle)
                                 .foregroundStyle(.secondary)
                             Spacer(minLength: 0)
                             Button {
-                                let query = listing.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? listing.name
+                                // 住所+物件名で Google Maps 検索（ss_address の番地精度を活用）
+                                let query = (addr + " " + listing.name).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? listing.name
                                 if let url = URL(string: "https://www.google.com/maps/search/?api=1&query=\(query)") {
                                     UIApplication.shared.open(url)
                                 }
