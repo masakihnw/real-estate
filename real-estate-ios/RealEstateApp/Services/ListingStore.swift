@@ -339,6 +339,10 @@ final class ListingStore {
         existing.ssPastMarketTrends = new.ssPastMarketTrends
         existing.ssSurroundingProperties = new.ssSurroundingProperties
         existing.ssPriceJudgments = new.ssPriceJudgments
+        existing.ssSimBasePrice = new.ssSimBasePrice
+        // 不動産情報ライブラリ相場データ・人口動態データ（パイプライン側で付与）
+        existing.reinfolibMarketData = new.reinfolibMarketData
+        existing.estatPopulationData = new.estatPopulationData
         // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
         if let lat = new.latitude { existing.latitude = lat }
         if let lon = new.longitude { existing.longitude = lon }

@@ -16,25 +16,63 @@ struct RealEstateAppApp: App {
     // FCM 用 AppDelegate
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    // MARK: - スキーマバージョン管理
+    // Listing モデルのストアドプロパティを追加・削除・型変更した場合はインクリメントする。
+    // 旧バージョンの DB は自動削除され、サーバーからデータを再取得する。
+    // VersionedSchema を使わない簡易マイグレーション方式。
+    private static let currentSchemaVersion = 2  // v2: reinfolibMarketData + estatPopulationData 追加
+    private static let schemaVersionKey = "realestate.schemaVersion"
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([Listing.self])
+
+        // スキーマバージョンが古い場合、既存の DB ファイルを削除して再作成する。
+        // SwiftData の自動軽量マイグレーションは Optional プロパティ追加には対応するが、
+        // 大量プロパティ (50+) の大きなモデルに繰り返し変更を加えると
+        // Objective-C レベルの例外（NSException）でクラッシュすることがあるため、
+        // 明示的にバージョンを管理してクリーンスタートを保証する。
+        let savedVersion = UserDefaults.standard.integer(forKey: Self.schemaVersionKey)
+        if savedVersion < Self.currentSchemaVersion {
+            Self.deleteSwiftDataStore()
+            UserDefaults.standard.set(Self.currentSchemaVersion, forKey: Self.schemaVersionKey)
+        }
+
         // ディスクへの永続化を試みる
         let diskConfig = ModelConfiguration(isStoredInMemoryOnly: false)
         do {
             return try ModelContainer(for: schema, configurations: [diskConfig])
         } catch {
-            // ディスク失敗時はインメモリにフォールバック（データは永続化されない）
-            print("[RealEstateApp] 警告: ModelContainer のディスク作成に失敗、インメモリにフォールバック: \(error.localizedDescription)")
-            let memoryConfig = ModelConfiguration(isStoredInMemoryOnly: true)
+            // マイグレーション失敗の可能性 — DB を削除してリトライ
+            print("[RealEstateApp] 警告: ModelContainer 作成失敗、DB を削除してリトライします: \(error.localizedDescription)")
+            Self.deleteSwiftDataStore()
             do {
-                return try ModelContainer(for: schema, configurations: [memoryConfig])
+                return try ModelContainer(for: schema, configurations: [diskConfig])
             } catch {
-                // インメモリ作成も失敗 = システムレベルの異常（メモリ不足等）
-                // SwiftData 必須アプリのため回復不可; Apple テンプレート準拠
-                fatalError("[RealEstateApp] ModelContainer の作成に完全に失敗: \(error.localizedDescription)")
+                // ディスクが完全に使えない場合はインメモリにフォールバック
+                print("[RealEstateApp] 警告: リトライも失敗、インメモリにフォールバック: \(error.localizedDescription)")
+                let memoryConfig = ModelConfiguration(isStoredInMemoryOnly: true)
+                do {
+                    return try ModelContainer(for: schema, configurations: [memoryConfig])
+                } catch {
+                    // インメモリ作成も失敗 = システムレベルの異常（メモリ不足等）
+                    fatalError("[RealEstateApp] ModelContainer の作成に完全に失敗: \(error.localizedDescription)")
+                }
             }
         }
     }()
+
+    /// SwiftData のデフォルトストアファイルを削除する
+    private static func deleteSwiftDataStore() {
+        let base = URL.applicationSupportDirectory
+            .appending(path: "default.store")
+        // メインファイル + SQLite WAL/SHM
+        let suffixes = ["", "-wal", "-shm"]
+        for suffix in suffixes {
+            let fileURL = URL(filePath: base.path() + suffix)
+            try? FileManager.default.removeItem(at: fileURL)
+        }
+        print("[RealEstateApp] SwiftData ストアを削除しました")
+    }
 
     init() {
         // Firebase 初期化（GoogleService-Info.plist がバンドルに必要）

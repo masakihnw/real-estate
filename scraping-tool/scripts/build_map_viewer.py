@@ -43,6 +43,8 @@ def build_map_data(
             new_keys.add(identity_key(r))
 
     # 住所ごとにグループ化（同じ住所 = 同じ建物・1ピン）
+    # ss_address（住まいサーフィンの詳細住所）があればジオコーディング精度向上に使用するが、
+    # グループ化は元の address で行う（同一物件の重複検知のため）
     by_address = {}
     for r in listings:
         address = (r.get("address") or "").strip()
@@ -52,7 +54,13 @@ def build_map_data(
 
     result = []
     for address, group in by_address.items():
-        coords = geocode(address)
+        # ss_address（番地レベルの詳細住所）があれば優先的にジオコーディング
+        ss_addr = (group[0].get("ss_address") or "").strip()
+        coords = None
+        if ss_addr:
+            coords = geocode(ss_addr)
+        if not coords:
+            coords = geocode(address)
         if not coords:
             continue
         lat, lon = coords
