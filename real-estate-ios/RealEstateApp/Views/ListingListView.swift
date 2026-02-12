@@ -695,13 +695,24 @@ struct ListingRowView: View {
                     .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
                 }
 
-                // 2行目: 価格 + 騰落率/儲かる確率 + [掲載終了]
+                // 2行目: 価格 + Newバッジ + 騰落率/儲かる確率 + [掲載終了]
                 HStack(alignment: .center, spacing: 6) {
                     Text(listing.priceDisplayCompact)
                         .font(.footnote.weight(.bold))
                         .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
                         .lineLimit(1)
                         .layoutPriority(1)
+
+                    // 24時間以内に追加された物件には New バッジ
+                    if listing.isNew {
+                        Text("New")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color.red)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
 
                     // 騰落率 / 儲かる確率バッジ
                     if listing.isShinchiku {

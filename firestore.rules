@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /annotations/{docId} {
+      // 認証済みユーザーのみ読み書き可能
+      allow read, write: if request.auth != null;
+    }
+    match /scraping_config/{docId} {
+      // 認証済みユーザーのみ読み書き可能（設定画面からのスクレイピング条件編集用）
+      // GitHub Actions のサービスアカウント（Firebase Admin SDK）はルールの制約を受けない
+      allow read, write: if request.auth != null;
+    }
+  }
+}

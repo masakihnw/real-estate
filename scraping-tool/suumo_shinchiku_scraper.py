@@ -37,6 +37,7 @@ from config import (
     USER_AGENT,
     TOKYO_23_WARDS,
 )
+from report_utils import clean_listing_name
 
 BASE_URL = "https://suumo.jp"
 
@@ -313,7 +314,8 @@ def _parse_listing_block(container, detail_url: str) -> Optional[SuumoShinchikuL
 
         # 物件名: h2 から
         h2 = container.find("h2")
-        name = (h2.get_text(strip=True) or "").strip() if h2 else ""
+        raw_name = (h2.get_text(strip=True) or "").strip() if h2 else ""
+        name = clean_listing_name(raw_name) or raw_name
 
         # DT/DD パース
         def get_dd(label: str) -> str:

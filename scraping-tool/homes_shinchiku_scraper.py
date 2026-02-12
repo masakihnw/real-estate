@@ -36,6 +36,7 @@ from config import (
     USER_AGENT,
     TOKYO_23_WARDS,
 )
+from report_utils import clean_listing_name
 
 BASE_URL = "https://www.homes.co.jp"
 
@@ -275,10 +276,23 @@ def _extract_card_listings(soup: BeautifulSoup) -> list[HomesShinchikuListing]:
         for tag in ("h2", "h3", "h4"):
             el = container.find(tag)
             if el:
-                name = (el.get_text(strip=True) or "").strip()
+                raw = (el.get_text(strip=True) or "").strip()
                 # 「新築マンション」「分譲予定」などのプレフィックスを除去
-                name = re.sub(r"^(?:新築)?マンション\s*分譲(?:予定|中)?\s*", "", name).strip()
-                if name:
+                raw = re.sub(r"^(?:新築)?マンション\s*分譲(?:予定|中)?\s*", "", raw).strip()
+                # 共通クリーニング: 先頭「マンション」「新築マンション」、末尾「閲覧済」等を除去
+                cleaned = clean_listing_name(raw)
+                if cleaned:
+                    name = cleaned
+                    break
+
+        # h2/h3/h4 で物件名が取得できなかった場合（「掲載物件X件」等）、
+        # 物件詳細リンクのテキストから取得を試みる
+        if not name:
+            for a in container.find_all("a", href=re.compile(r"/mansion/b-\d+")):
+                t = (a.get_text(strip=True) or "").strip()
+                cleaned = clean_listing_name(t) if t else ""
+                if cleaned and "詳細" not in cleaned and "資料" not in cleaned and len(cleaned) >= 3:
+                    name = cleaned
                     break
 
         # テーブルからの情報抽出
@@ -297,6 +311,14 @@ def _extract_card_listings(soup: BeautifulSoup) -> list[HomesShinchikuListing]:
                 if sibling:
                     return (sibling.get_text(strip=True) or "").strip()
             return ""
+
+        # テーブルの「物件名」からも取得を試みる（h2/h3/h4 でダメだった場合のフォールバック）
+        if not name:
+            table_name = _table_value("物件名")
+            if table_name:
+                cleaned = clean_listing_name(table_name)
+                if cleaned:
+                    name = cleaned
 
         address = _table_value("所在地")
         station_line = _table_value("交通")
@@ -386,7 +408,7 @@ def parse_list_html(html: str) -> list[HomesShinchikuListing]:
             elif url:
                 items.append(HomesShinchikuListing(
                     url=url,
-                    name=jd.get("name", ""),
+                    name=clean_listing_name(jd.get("name", "")),
                     price_man=jd.get("price_man"),
                     address=jd.get("address", ""),
                     area_m2=jd.get("area_m2"),
@@ -402,11 +424,12 @@ def _parse_homes_block(block) -> Optional[HomesShinchikuListing]:
 
         # 物件名
         name_el = block.find(["h2", "h3", "h4"])
-        name = (name_el.get_text(strip=True) or "").strip() if name_el else ""
-        if not name:
+        raw_name = (name_el.get_text(strip=True) or "").strip() if name_el else ""
+        if not raw_name:
             a = block.find("a", href=True)
             if a:
-                name = (a.get_text(strip=True) or "").strip()
+                raw_name = (a.get_text(strip=True) or "").strip()
+        name = clean_listing_name(raw_name)
 
         # URL
         url = ""

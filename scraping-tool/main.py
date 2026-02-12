@@ -30,7 +30,7 @@ try:
 except Exception as e:
     print(f"[Config] Firestore 設定の読み込みに失敗（デフォルトを使用）: {e}", file=sys.stderr)
 
-from report_utils import listing_key
+from report_utils import listing_key, clean_listing_name
 
 
 def dedupe_listings(rows: list[dict]) -> list[dict]:
@@ -135,6 +135,13 @@ def main() -> None:
                     all_rows.extend(future.result())
                 except Exception as e:
                     print(f"# {name} 新築取得エラー: {e}", file=sys.stderr)
+
+    # 物件名のノイズ除去（「新築マンション」prefix、「閲覧済」suffix、「掲載物件X件」等）
+    for row in all_rows:
+        if row.get("name"):
+            cleaned = clean_listing_name(row["name"])
+            if cleaned:
+                row["name"] = cleaned
 
     # 同一物件（名前・間取り・広さ・価格・住所・築年・駅徒歩が全て一致）を1件にまとめる
     all_rows = dedupe_listings(all_rows)
