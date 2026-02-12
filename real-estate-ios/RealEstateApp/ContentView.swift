@@ -50,6 +50,10 @@ struct ContentView: View {
                 .accessibilityLabel("アプリ設定")
         }
         .tint(.accentColor)
+        .onChange(of: selectedTab) { _, _ in
+            // タブ切替時にキーボードを閉じる（検索バーのフォーカス残留を防止）
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
         .overlay(alignment: .top) {
             if !networkMonitor.isConnected {
                 HStack(spacing: 6) {
