@@ -22,7 +22,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6540335,
-    "longitude": 139.7441783
+    "longitude": 139.7441783,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -47,7 +48,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.647148,
-    "longitude": 139.7469836
+    "longitude": 139.7469836,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -72,7 +74,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.741249,
-    "longitude": 139.611557
+    "longitude": 139.611557,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -97,7 +100,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7785388,
-    "longitude": 139.8333733
+    "longitude": 139.8333733,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -122,7 +126,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6642677,
-    "longitude": 139.7367758
+    "longitude": 139.7367758,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -147,7 +152,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7725274,
-    "longitude": 139.6578236
+    "longitude": 139.6578236,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -172,7 +178,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.778271,
-    "longitude": 139.715575
+    "longitude": 139.715575,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -197,7 +204,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7530064,
-    "longitude": 139.6975348
+    "longitude": 139.6975348,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -222,7 +230,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7227042,
-    "longitude": 139.7816223
+    "longitude": 139.7816223,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -247,7 +256,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.730395,
-    "longitude": 139.771031
+    "longitude": 139.771031,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -272,7 +282,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6315802,
-    "longitude": 139.6425255
+    "longitude": 139.6425255,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -297,7 +308,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.748165,
-    "longitude": 139.711087
+    "longitude": 139.711087,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -322,7 +334,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.686137,
-    "longitude": 139.784749
+    "longitude": 139.784749,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -347,7 +360,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7385391,
-    "longitude": 139.669504
+    "longitude": 139.669504,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -372,7 +386,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.670909,
-    "longitude": 139.830018
+    "longitude": 139.830018,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -397,7 +412,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7305848,
-    "longitude": 139.8790107
+    "longitude": 139.8790107,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 5, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -422,7 +438,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7818487,
-    "longitude": 139.8315489
+    "longitude": 139.8315489,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -447,7 +464,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.70417,
-    "longitude": 139.6527502
+    "longitude": 139.6527502,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -472,7 +490,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7431895,
-    "longitude": 139.7990088
+    "longitude": 139.7990088,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 3, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -497,7 +516,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.728755,
-    "longitude": 139.586753
+    "longitude": 139.586753,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -522,7 +542,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6024391,
-    "longitude": 139.7082042
+    "longitude": 139.7082042,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -547,7 +568,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6986832,
-    "longitude": 139.7896756
+    "longitude": 139.7896756,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -572,7 +594,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6215645,
-    "longitude": 139.7503075
+    "longitude": 139.7503075,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -597,7 +620,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.686653,
-    "longitude": 139.781547
+    "longitude": 139.781547,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -622,7 +646,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6110721,
-    "longitude": 139.7003487
+    "longitude": 139.7003487,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 4, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -647,7 +672,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7341105,
-    "longitude": 139.7353515
+    "longitude": 139.7353515,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -672,7 +698,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7192288,
-    "longitude": 139.7317895
+    "longitude": 139.7317895,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -697,7 +724,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.690557,
-    "longitude": 139.743591
+    "longitude": 139.743591,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -722,7 +750,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7234816,
-    "longitude": 139.7502592
+    "longitude": 139.7502592,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -747,7 +776,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7498203,
-    "longitude": 139.6650562
+    "longitude": 139.6650562,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -772,7 +802,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.71755,
-    "longitude": 139.583934
+    "longitude": 139.583934,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -797,7 +828,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7408091,
-    "longitude": 139.7975036
+    "longitude": 139.7975036,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -822,7 +854,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6638877,
-    "longitude": 139.8687474
+    "longitude": 139.8687474,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -847,7 +880,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7364029,
-    "longitude": 139.8786008
+    "longitude": 139.8786008,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -872,7 +906,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7723515,
-    "longitude": 139.7278923
+    "longitude": 139.7278923,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -897,7 +932,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.743694,
-    "longitude": 139.7769975
+    "longitude": 139.7769975,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 5, \"fire\": 5, \"combined\": 5}"
   },
   {
     "source": "suumo",
@@ -922,7 +958,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7639866,
-    "longitude": 139.672853
+    "longitude": 139.672853,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -947,7 +984,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.743694,
-    "longitude": 139.7769975
+    "longitude": 139.7769975,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 5, \"fire\": 5, \"combined\": 5}"
   },
   {
     "source": "suumo",
@@ -972,7 +1010,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6764787,
-    "longitude": 139.6375126
+    "longitude": 139.6375126,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -997,7 +1036,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6380581,
-    "longitude": 139.7950577
+    "longitude": 139.7950577,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -1022,7 +1062,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.5692895,
-    "longitude": 139.6795025
+    "longitude": 139.6795025,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -1047,7 +1088,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.572462,
-    "longitude": 139.6945452
+    "longitude": 139.6945452,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -1072,7 +1114,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7798362,
-    "longitude": 139.7244803
+    "longitude": 139.7244803,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1097,7 +1140,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.700703,
-    "longitude": 139.639985
+    "longitude": 139.639985,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 4, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1122,7 +1166,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6098825,
-    "longitude": 139.7409412
+    "longitude": 139.7409412,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1147,7 +1192,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6833509,
-    "longitude": 139.7437121
+    "longitude": 139.7437121,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -1172,7 +1218,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6957829,
-    "longitude": 139.6930571
+    "longitude": 139.6930571,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1197,7 +1244,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6879723,
-    "longitude": 139.7278928
+    "longitude": 139.7278928,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -1222,7 +1270,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7019549,
-    "longitude": 139.7353911
+    "longitude": 139.7353911,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
   },
   {
     "source": "suumo",
@@ -1247,7 +1296,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.5745343,
-    "longitude": 139.7067739
+    "longitude": 139.7067739,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -1272,7 +1322,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7615715,
-    "longitude": 139.6773088
+    "longitude": 139.6773088,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}"
   },
   {
     "source": "suumo",
@@ -1297,7 +1348,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6735852,
-    "longitude": 139.6684438
+    "longitude": 139.6684438,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1322,7 +1374,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7415038,
-    "longitude": 139.7041659
+    "longitude": 139.7041659,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
   },
   {
     "source": "suumo",
@@ -1347,7 +1400,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7077005,
-    "longitude": 139.6629508
+    "longitude": 139.6629508,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -1441,7 +1495,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6540335,
-    "longitude": 139.7441783
+    "longitude": 139.7441783,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "suumo",
@@ -1489,7 +1544,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.5840651,
-    "longitude": 139.7228846
+    "longitude": 139.7228846,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
   },
   {
     "source": "homes",
@@ -2457,7 +2513,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.693856,
-    "longitude": 139.769189
+    "longitude": 139.769189,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 2, \"combined\": 3}"
   },
   {
     "source": "homes",
@@ -2482,7 +2539,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.693856,
-    "longitude": 139.769189
+    "longitude": 139.769189,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 2, \"combined\": 3}"
   },
   {
     "source": "homes",
@@ -2806,7 +2864,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6537504,
-    "longitude": 139.7416761
+    "longitude": 139.7416761,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "homes",
@@ -2831,7 +2890,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6537504,
-    "longitude": 139.7416761
+    "longitude": 139.7416761,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "homes",
@@ -2856,7 +2916,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6537504,
-    "longitude": 139.7416761
+    "longitude": 139.7416761,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "homes",
@@ -2881,7 +2942,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6360557,
-    "longitude": 139.7256848
+    "longitude": 139.7256848,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "homes",
@@ -2906,7 +2968,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6360557,
-    "longitude": 139.7256848
+    "longitude": 139.7256848,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "homes",
@@ -2954,7 +3017,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.661548,
-    "longitude": 139.7544341
+    "longitude": 139.7544341,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
   },
   {
     "source": "homes",
@@ -3025,7 +3089,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6923239,
-    "longitude": 139.6967102
+    "longitude": 139.6967102,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "homes",
@@ -3050,7 +3115,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6923239,
-    "longitude": 139.6967102
+    "longitude": 139.6967102,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "homes",
@@ -3075,7 +3141,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.6898839,
-    "longitude": 139.6845183
+    "longitude": 139.6845183,
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 3}"
   },
   {
     "source": "homes",
@@ -3100,7 +3167,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7050564,
-    "longitude": 139.756785
+    "longitude": 139.756785,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "homes",
@@ -3118,52 +3186,6 @@
     "delivery_date": "",
     "total_units": 63,
     "floor_total": 14,
-    "list_ward_roman": null,
-    "built_str": "",
-    "built_year": null,
-    "floor_position": null,
-    "floor_structure": null,
-    "ownership": null
-  },
-  {
-    "source": "homes",
-    "property_type": "shinchiku",
-    "url": "https://www.homes.co.jp/mansion/b-35007130000135/",
-    "name": "新築マンションプラウドタワー渋谷",
-    "price_man": null,
-    "price_max_man": null,
-    "address": "東京メトロ銀座線 渋谷駅 徒歩5分東京都渋谷区渋谷3丁目",
-    "station_line": "東京メトロ銀座線 渋谷駅 徒歩5分東京都渋谷区渋谷3丁目",
-    "walk_min": 5,
-    "area_m2": null,
-    "area_max_m2": null,
-    "layout": "",
-    "delivery_date": "",
-    "total_units": 132,
-    "floor_total": 26,
-    "list_ward_roman": null,
-    "built_str": "",
-    "built_year": null,
-    "floor_position": null,
-    "floor_structure": null,
-    "ownership": null
-  },
-  {
-    "source": "homes",
-    "property_type": "shinchiku",
-    "url": "https://www.homes.co.jp/mansion/b-35007130000098/",
-    "name": "掲載物件13件",
-    "price_man": null,
-    "price_max_man": null,
-    "address": "東京メトロ銀座線 渋谷駅 徒歩5分東京都渋谷区渋谷3丁目",
-    "station_line": "東京メトロ銀座線 渋谷駅 徒歩5分東京都渋谷区渋谷3丁目",
-    "walk_min": 5,
-    "area_m2": null,
-    "area_max_m2": null,
-    "layout": "",
-    "delivery_date": "",
-    "total_units": 132,
-    "floor_total": 26,
     "list_ward_roman": null,
     "built_str": "",
     "built_year": null,
@@ -3263,7 +3285,8 @@
     "floor_structure": null,
     "ownership": null,
     "latitude": 35.7268304,
-    "longitude": 139.7106565
+    "longitude": 139.7106565,
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
   },
   {
     "source": "homes",
