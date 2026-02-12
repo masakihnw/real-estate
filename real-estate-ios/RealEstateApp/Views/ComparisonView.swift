@@ -53,6 +53,12 @@ struct ComparisonView: View {
                         if listings.contains(where: { $0.hasMarketData }) {
                             labelCell("エリア傾向").accessibilityLabel("項目、エリア傾向")
                         }
+                        if listings.contains(where: { $0.hasPopulationData }) {
+                            labelCell("エリア人口").accessibilityLabel("項目、エリア人口")
+                        }
+                        if listings.contains(where: { $0.hasPopulationData }) {
+                            labelCell("人口増減").accessibilityLabel("項目、人口増減")
+                        }
                     }
                     .frame(width: 90)
 
@@ -105,6 +111,12 @@ struct ComparisonView: View {
                             }
                             if listings.contains(where: { $0.hasMarketData }) {
                                 valueCell(listing.parsedMarketData?.trendDisplay ?? "—")
+                            }
+                            if listings.contains(where: { $0.hasPopulationData }) {
+                                valueCell(listing.parsedPopulationData?.populationDisplay ?? "—")
+                            }
+                            if listings.contains(where: { $0.hasPopulationData }) {
+                                valueCell(listing.parsedPopulationData?.popChange1yrDisplay ?? "—")
                             }
                         }
                         .frame(width: 140)

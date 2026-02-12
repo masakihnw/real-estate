@@ -194,6 +194,17 @@ else
     echo "不動産情報ライブラリ enrichment: data/reinfolib_prices.json が未生成のためスキップ" >&2
 fi
 
+# 4.7d-2. e-Stat 人口動態 enrichment（区別人口・世帯数データの付与。API は叩かず、事前構築キャッシュを参照）
+if [ -f "data/estat_population.json" ]; then
+    echo "e-Stat 人口動態 enrichment 実行中..." >&2
+    python3 estat_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "e-Stat 人口動態 enrichment (中古) 失敗（続行）" >&2
+    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+        python3 estat_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "e-Stat 人口動態 enrichment (新築) 失敗（続行）" >&2
+    fi
+else
+    echo "e-Stat 人口動態 enrichment: data/estat_population.json が未生成のためスキップ" >&2
+fi
+
 # 4.7e. enrichment 完了後にレポートを最終再生成（ハザード・住まいサーフィン・不動産情報ライブラリ情報を反映）
 echo "レポートを最終再生成（enrichment 反映）..." >&2
 if [ -f "${OUTPUT_DIR}/previous.json" ]; then

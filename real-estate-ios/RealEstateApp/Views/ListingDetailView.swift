@@ -109,6 +109,12 @@ struct ListingDetailView: View {
                         MarketDataSectionView(listing: listing)
                     }
 
+                    // ⑤-d エリア人口動態（e-Stat）
+                    if listing.hasPopulationData {
+                        Divider()
+                        PopulationSectionView(listing: listing)
+                    }
+
                     Divider()
 
                     // ⑥ 住まいサーフィン評価
