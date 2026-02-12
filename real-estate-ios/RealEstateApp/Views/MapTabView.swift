@@ -655,6 +655,13 @@ struct HazardMapView: UIViewRepresentable {
             stack.spacing = 3
             stack.alignment = .leading
 
+            // 価格行
+            let priceLabel = UILabel()
+            priceLabel.text = listing.priceDisplayCompact
+            priceLabel.font = .systemFont(ofSize: 14, weight: .bold)
+            priceLabel.textColor = listing.isShinchiku ? UIColor.systemTeal : UIColor.systemBlue
+            stack.addArrangedSubview(priceLabel)
+
             // 物件詳細行（間取り・面積・徒歩・築年）
             let detailParts = [listing.layout, listing.areaDisplay, listing.walkDisplay, listing.builtAgeDisplay]
                 .compactMap { $0 }
@@ -784,15 +791,33 @@ struct MapTabView: View {
         // 掲載終了物件は地図に表示しない
         var list = listings.filter { $0.hasCoordinate && !$0.isDelisted }
 
+        // 物件種別フィルタ（新築/中古）
+        switch filterStore.filter.propertyType {
+        case .all: break
+        case .chuko: list = list.filter { $0.propertyType == "chuko" }
+        case .shinchiku: list = list.filter { $0.propertyType == "shinchiku" }
+        }
+
+        // 価格未定フィルタ
+        if !filterStore.filter.includePriceUndecided {
+            list = list.filter { $0.priceMan != nil }
+        }
+
         // 新築は価格帯（priceMan〜priceMaxMan）を持つため、範囲交差で判定する
         if let min = filterStore.filter.priceMin {
             list = list.filter {
+                guard $0.priceMan != nil || $0.priceMaxMan != nil else {
+                    return filterStore.filter.includePriceUndecided
+                }
                 let upper = $0.priceMaxMan ?? $0.priceMan ?? 0
                 return upper >= min
             }
         }
         if let max = filterStore.filter.priceMax {
             list = list.filter {
+                guard $0.priceMan != nil else {
+                    return filterStore.filter.includePriceUndecided
+                }
                 let lower = $0.priceMan ?? 0
                 return lower <= max
             }
@@ -919,7 +944,7 @@ struct MapTabView: View {
                 }
             }
             .sheet(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, filteredCount: filteredListings.count)
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, filteredCount: filteredListings.count, showPriceUndecidedToggle: true, showPropertyTypeFilter: true)
                     .presentationDetents([.medium, .large])
             }
             .overlay(alignment: .top) {

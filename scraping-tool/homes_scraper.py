@@ -614,6 +614,8 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
     session = _session()
     limit = max_pages if max_pages and max_pages > 0 else HOMES_MAX_PAGES_SAFETY
     page = 1
+    total_parsed = 0
+    total_passed = 0
     while page <= limit:
         url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
         try:
@@ -625,6 +627,7 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
         if not rows:
             print(f"HOME'S: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。", file=sys.stderr)
             break
+        total_parsed += len(rows)
         passed = 0
         for row in rows:
             if apply_filter:
@@ -632,9 +635,14 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
                 if filtered:
                     yield filtered[0]
                     passed += 1
+                    print(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)", file=sys.stderr)
             else:
                 yield row
                 passed += 1
-        if apply_filter and rows and passed == 0:
-            print(f"HOME'S: ページ{page}で{len(rows)}件パースしたが条件通過0件（価格・地域・間取り等で除外）。", file=sys.stderr)
+        total_passed += passed
+        # 進捗: 10ページごとにサマリー
+        if page % 10 == 0:
+            print(f"HOME'S: ...{page}ページ処理済 (通過: {total_passed}件)", file=sys.stderr)
         page += 1
+    if total_parsed > 0:
+        print(f"HOME'S: 完了 — {total_parsed}件パース, {total_passed}件通過", file=sys.stderr)

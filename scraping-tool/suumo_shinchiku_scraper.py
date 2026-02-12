@@ -525,20 +525,24 @@ def scrape_suumo_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
     """SUUMO 新築マンション一覧を取得。max_pages=0 のときは全ページ取得。"""
     session = _session()
     seen_urls: set[str] = set()
+    import sys as _sys
     limit = max_pages if max_pages and max_pages > 0 else SHINCHIKU_MAX_PAGES_SAFETY
     page = 1
+    total_parsed = 0
+    total_passed = 0
     while page <= limit:
         try:
             html = fetch_list_page(session, page)
         except requests.exceptions.HTTPError as e:
             if e.response is not None and 500 <= e.response.status_code < 600:
-                print(f"SUUMO 新築: ページ{page} で {e.response.status_code} エラーのためスキップ", file=__import__("sys").stderr)
+                print(f"SUUMO 新築: ページ{page} で {e.response.status_code} エラーのためスキップ", file=_sys.stderr)
                 page += 1
                 continue
             raise
         rows = parse_list_html(html)
         if not rows:
             break
+        total_parsed += len(rows)
         passed = 0
         for row in rows:
             if row.url and row.url not in seen_urls:
@@ -548,9 +552,15 @@ def scrape_suumo_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
                     if filtered:
                         yield filtered[0]
                         passed += 1
+                        _price = f"{filtered[0].price_man}万" if filtered[0].price_man else "価格未定"
+                        print(f"  ✓ {filtered[0].name} ({_price})", file=_sys.stderr)
                 else:
                     yield row
                     passed += 1
-        if apply_filter and rows and passed == 0:
-            print(f"SUUMO 新築: ページ{page}で{len(rows)}件パースしたが条件通過0件。", file=__import__("sys").stderr)
+        total_passed += passed
+        # 進捗: 10ページごとにサマリー
+        if page % 10 == 0:
+            print(f"SUUMO 新築: ...{page}ページ処理済 (通過: {total_passed}件)", file=_sys.stderr)
         page += 1
+    if total_parsed > 0:
+        print(f"SUUMO 新築: 完了 — {total_parsed}件パース, {total_passed}件通過", file=_sys.stderr)

@@ -26,6 +26,8 @@ struct ListingFilterSheet: View {
     let availableLayouts: [String]
     let availableWards: Set<String>
     let filteredCount: Int
+    /// 新築タブから呼ばれた場合に true（価格未定トグルを表示）
+    var showPriceUndecidedToggle: Bool = false
 
     // ローカル編集用（「適用」ではなく下部ボタンで反映）
     @State private var editFilter = ListingFilter()
@@ -38,10 +40,23 @@ struct ListingFilterSheet: View {
     // 面積の範囲
     private let areaRange: ClosedRange<Double> = 45...100
 
+    /// 物件種別フィルタを表示するか（地図タブから呼ばれた場合に true）
+    var showPropertyTypeFilter: Bool = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
+                    // 物件種別（地図タブ用）
+                    if showPropertyTypeFilter {
+                        FilterAccordion(
+                            title: "物件種別",
+                            summary: propertyTypeSummary
+                        ) {
+                            propertyTypeChipsContent
+                        }
+                    }
+
                     // 価格帯
                     FilterAccordion(
                         title: "価格帯",
@@ -131,6 +146,10 @@ struct ListingFilterSheet: View {
 
     // MARK: - Summaries
 
+    private var propertyTypeSummary: String {
+        editFilter.propertyType == .all ? "指定なし" : editFilter.propertyType.rawValue
+    }
+
     private var priceSummary: String {
         if let min = editFilter.priceMin, let max = editFilter.priceMax {
             return "\(min)万〜\(max)万"
@@ -211,6 +230,15 @@ struct ListingFilterSheet: View {
                     step: priceStep
                 )
                 .tint(.accentColor)
+            }
+            // 新築タブのみ: 価格未定を含むかどうかのトグル
+            if showPriceUndecidedToggle {
+                Toggle(isOn: $editFilter.includePriceUndecided) {
+                    Text("価格未定の物件を含む")
+                        .font(.caption)
+                }
+                .tint(.accentColor)
+                .padding(.top, 4)
             }
         }
     }
@@ -294,6 +322,22 @@ struct ListingFilterSheet: View {
                     } else {
                         editFilter.ownershipTypes.insert(type)
                     }
+                }
+            }
+        }
+    }
+
+    // MARK: - Property Type Chips
+
+    @ViewBuilder
+    private var propertyTypeChipsContent: some View {
+        FlowLayout(spacing: 6) {
+            ForEach(PropertyTypeFilter.allCases, id: \.self) { type in
+                FilterChip(
+                    label: type.rawValue,
+                    isSelected: editFilter.propertyType == type
+                ) {
+                    editFilter.propertyType = type
                 }
             }
         }
@@ -436,6 +480,7 @@ private struct FilterChip: View {
         filter: .constant(ListingFilter()),
         availableLayouts: ["1LDK", "2LDK", "3LDK", "4LDK+"],
         availableWards: ["江東区", "中央区", "港区"],
-        filteredCount: 12
+        filteredCount: 12,
+        showPriceUndecidedToggle: true
     )
 }

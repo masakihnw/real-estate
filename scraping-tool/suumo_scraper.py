@@ -661,21 +661,25 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
     session = _session()
     seen_urls: set[str] = set()
     limit = max_pages if max_pages and max_pages > 0 else SUUMO_MAX_PAGES_SAFETY
+    import sys as _sys
     for ward_roman in SUUMO_23_WARD_ROMAN:  # 全23区を同じ方式で取得
         p = 1
+        ward_total_parsed = 0
+        ward_total_passed = 0
         while p <= limit:
             try:
                 html = fetch_list_page(session, p, ward_roman=ward_roman)
             except requests.exceptions.HTTPError as e:
                 # リトライ後も 5xx の場合はそのページをスキップして続行（ジョブ全体は落とさない）
                 if e.response is not None and 500 <= e.response.status_code < 600:
-                    print(f"SUUMO: sc_{ward_roman} ページ{p} で {e.response.status_code} エラーのためスキップします: {e.response.url}", file=__import__("sys").stderr)
+                    print(f"SUUMO: sc_{ward_roman} ページ{p} で {e.response.status_code} エラーのためスキップします: {e.response.url}", file=_sys.stderr)
                     p += 1
                     continue
                 raise
             rows = parse_list_html(html)
             if not rows:
                 break
+            ward_total_parsed += len(rows)
             passed = 0
             for row in rows:
                 row.list_ward_roman = ward_roman  # 区ごと一覧のため、住所に区名が無くても23区判定に利用
@@ -686,9 +690,14 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
                         if filtered:
                             yield filtered[0]
                             passed += 1
+                            print(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)", file=_sys.stderr)
                     else:
                         yield row
                         passed += 1
-            if apply_filter and rows and passed == 0:
-                print(f"SUUMO: sc_{ward_roman} ページ{p}で{len(rows)}件パースしたが条件通過0件。", file=__import__("sys").stderr)
+            ward_total_passed += passed
+            # 進捗: 10ページごとにサマリー
+            if p % 10 == 0:
+                print(f"SUUMO: sc_{ward_roman} ...{p}ページ処理済 (通過: {ward_total_passed}件)", file=_sys.stderr)
             p += 1
+        if ward_total_parsed > 0:
+            print(f"SUUMO: sc_{ward_roman} 完了 — {ward_total_parsed}件パース, {ward_total_passed}件通過", file=_sys.stderr)

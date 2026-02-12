@@ -69,6 +69,9 @@ private struct RootView: View {
     @Environment(FirebaseSyncService.self) private var syncService
     let sharedModelContainer: ModelContainer
 
+    /// ウォークスルー表示フラグ
+    @State private var showWalkthrough = false
+
     var body: some View {
         Group {
             if authService.isLoading {
@@ -84,6 +87,17 @@ private struct RootView: View {
                     }
                     .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                         BackgroundRefreshManager.shared.scheduleNextRefresh()
+                    }
+                    .onAppear {
+                        // 初回ログイン時にウォークスルーを表示
+                        if !UserDefaults.standard.walkthroughCompleted {
+                            showWalkthrough = true
+                        }
+                    }
+                    .fullScreenCover(isPresented: $showWalkthrough) {
+                        WalkthroughView {
+                            showWalkthrough = false
+                        }
                     }
             } else {
                 // 未ログイン → ログイン画面

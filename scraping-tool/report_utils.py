@@ -71,16 +71,13 @@ def listing_has_property_changes(curr: dict, prev: dict) -> bool:
 
 
 def listing_key(r: dict) -> tuple:
-    """完全一致判定用のキー（価格含む）。重複除去（dedupe）等で「名前・間取り・広さ・価格・住所・築年・駅徒歩が全て一致」を同一とする。"""
+    """ユニーク判定用キー: 物件名・間取り・価格が同一なら同じ物件とみなす。
+    同一マンションで同条件の複数住戸が売り出されるケースは dedupe_listings 側で
+    duplicate_count として集計する。"""
     return (
         normalize_listing_name(r.get("name") or ""),
         (r.get("layout") or "").strip(),
-        r.get("area_m2"),
         r.get("price_man"),
-        (r.get("address") or "").strip(),
-        r.get("built_year"),
-        (r.get("station_line") or "").strip(),
-        r.get("walk_min"),
     )
 
 

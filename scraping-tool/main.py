@@ -34,15 +34,28 @@ from report_utils import listing_key
 
 
 def dedupe_listings(rows: list[dict]) -> list[dict]:
-    """同じ名前かつ条件（間取り・広さ・価格・住所・築年・駅徒歩）が全て一致する物件を1件にまとめる。"""
-    seen: set[tuple] = set()
-    out: list[dict] = []
+    """物件名・間取り・価格が同一の物件を1件にまとめる。
+    同一条件が複数ある場合は duplicate_count に戸数を記録し、
+    代表以外の URL を alt_urls に保持する。"""
+    from collections import OrderedDict
+
+    groups: OrderedDict[tuple, list[dict]] = OrderedDict()
     for r in rows:
         key = listing_key(r)
-        if key in seen:
-            continue
-        seen.add(key)
-        out.append(r)
+        groups.setdefault(key, []).append(r)
+
+    out: list[dict] = []
+    for _key, group in groups.items():
+        # 代表行: 情報量が多い（None でないフィールドが多い）ものを選ぶ
+        representative = max(group, key=lambda r: sum(1 for v in r.values() if v is not None))
+        count = len(group)
+        representative["duplicate_count"] = count
+        if count > 1:
+            # 代表以外の URL を alt_urls に保持（情報を失わない）
+            alt = [r["url"] for r in group if r.get("url") and r["url"] != representative.get("url")]
+            if alt:
+                representative["alt_urls"] = alt
+        out.append(representative)
     return out
 
 
