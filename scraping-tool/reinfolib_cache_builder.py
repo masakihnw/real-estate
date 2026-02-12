@@ -5,8 +5,10 @@
 
 四半期に1回実行（GitHub Actions から cron で起動）。
 出力:
-  data/reinfolib_prices.json  — 区別・駅別の直近m²単価中央値
-  data/reinfolib_trends.json  — 区別の四半期別m²単価推移（過去5年）
+  data/reinfolib_prices.json          — 区別・駅別の直近m²単価中央値
+  data/reinfolib_trends.json          — 区別の四半期別m²単価推移（過去5年）
+  data/reinfolib_raw_transactions.json — 直近4四半期の個別取引レコード
+                                         （段階的マッチング・同一マンション事例用）
 
 使い方:
   REINFOLIB_API_KEY=xxx python3 reinfolib_cache_builder.py
@@ -18,6 +20,7 @@
 import argparse
 import json
 import os
+import re
 import statistics
 import sys
 import time
@@ -62,6 +65,7 @@ REQUEST_DELAY_SEC = 2
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "data")
 PRICES_OUTPUT = os.path.join(OUTPUT_DIR, "reinfolib_prices.json")
 TRENDS_OUTPUT = os.path.join(OUTPUT_DIR, "reinfolib_trends.json")
+RAW_TRANSACTIONS_OUTPUT = os.path.join(OUTPUT_DIR, "reinfolib_raw_transactions.json")
 
 
 # ---------------------------------------------------------------------------
@@ -177,16 +181,91 @@ def parse_area(item: dict) -> Optional[float]:
     return None
 
 
+def parse_trade_price(item: dict) -> Optional[int]:
+    """取引価格（円）を取得。"""
+    try:
+        tp = item.get("TradePrice")
+        if tp:
+            return int(float(str(tp).replace(",", "")))
+    except (ValueError, TypeError):
+        pass
+    return None
+
+
+def parse_building_year(year_str: Optional[str]) -> Optional[int]:
+    """'2014年' → 2014 のように築年を数値化。"""
+    if not year_str:
+        return None
+    m = re.search(r"(\d{4})", year_str)
+    if m:
+        return int(m.group(1))
+    return None
+
+
+# 全角→半角変換テーブル
+_FULLWIDTH_TO_HALFWIDTH = str.maketrans(
+    "０１２３４５６７８９"
+    "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"
+    "ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ"
+    "＋",
+    "0123456789"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz"
+    "+",
+)
+
+
+def normalize_text(text: str) -> str:
+    """全角英数字を半角に変換し、前後の空白を除去。"""
+    return text.translate(_FULLWIDTH_TO_HALFWIDTH).strip()
+
+
+def parse_raw_transaction(
+    item: dict,
+    ward_name: str,
+    ward_code: str,
+    period_label: str,
+) -> Optional[dict]:
+    """
+    API レスポンスの1件を正規化された取引レコードに変換。
+    enricher での段階的マッチング・同一マンション事例用。
+    """
+    trade_price = parse_trade_price(item)
+    area = parse_area(item)
+    if not trade_price or not area or area <= 0:
+        return None
+
+    floor_plan_raw = item.get("FloorPlan", "")
+    floor_plan = normalize_text(floor_plan_raw) if floor_plan_raw else ""
+    structure_raw = item.get("Structure", "")
+    structure = normalize_text(structure_raw) if structure_raw else ""
+
+    return {
+        "ward": ward_name,
+        "ward_code": ward_code,
+        "district_name": item.get("DistrictName", ""),
+        "district_code": item.get("DistrictCode", ""),
+        "trade_price": trade_price,
+        "area": area,
+        "m2_price": round(trade_price / area),
+        "floor_plan": floor_plan,
+        "building_year": parse_building_year(item.get("BuildingYear")),
+        "structure": structure,
+        "period": period_label,
+    }
+
+
 # ---------------------------------------------------------------------------
 # キャッシュ構築
 # ---------------------------------------------------------------------------
 
-def build_prices_and_trends(api_key: str) -> Tuple[dict, dict]:
+def build_prices_and_trends(api_key: str) -> Tuple[dict, dict, dict]:
     """
-    全23区 × 全四半期のデータを取得し、prices と trends を構築。
+    全23区 × 全四半期のデータを取得し、prices・trends・raw_transactions を構築。
 
-    prices: 区別の直近相場（enricher 用）
-    trends: 区別の四半期推移（iOS チャート用）
+    prices:           区別の直近相場（enricher 用）
+    trends:           区別の四半期推移（iOS チャート用）
+    raw_transactions: 直近4四半期の個別取引レコード（段階的マッチング・同一棟事例用）
     """
     periods = get_target_periods()
     print(f"対象期間: {len(periods)} 四半期", file=sys.stderr)
@@ -195,11 +274,18 @@ def build_prices_and_trends(api_key: str) -> Tuple[dict, dict]:
     all_data: Dict[str, Dict[str, List[float]]] = {}
     # ward_code → quarter_label → sample_count
     sample_counts: Dict[str, Dict[str, int]] = {}
+    # ward_code → quarter_label → [raw API items] (直近4四半期のみ)
+    all_raw_items: Dict[str, Dict[str, List[dict]]] = {}
+
+    # 直近4四半期のラベルを先に計算（生データ保存対象の判定用）
+    recent_periods = periods[-4:] if len(periods) >= 4 else periods
+    recent_qlabels_set = set(quarter_label(y, q) for y, q in recent_periods)
 
     for ward_code in TOKYO_23_WARD_CODES:
         ward_name = WARD_CODE_TO_NAME.get(ward_code, ward_code)
         all_data[ward_code] = {}
         sample_counts[ward_code] = {}
+        all_raw_items[ward_code] = {}
 
         for year, quarter in periods:
             qlabel = quarter_label(year, quarter)
@@ -213,7 +299,7 @@ def build_prices_and_trends(api_key: str) -> Tuple[dict, dict]:
                 # 重複を避けるため取引価格を追加（成約データがない四半期の補完）
                 if not items:
                     items = items_01
-                    
+
             m2_prices = []
             for item in items:
                 p = parse_m2_price(item)
@@ -222,6 +308,10 @@ def build_prices_and_trends(api_key: str) -> Tuple[dict, dict]:
 
             all_data[ward_code][qlabel] = m2_prices
             sample_counts[ward_code][qlabel] = len(m2_prices)
+
+            # 直近4四半期の生データを保存
+            if qlabel in recent_qlabels_set:
+                all_raw_items[ward_code][qlabel] = items
 
             time.sleep(REQUEST_DELAY_SEC)
 
@@ -319,7 +409,27 @@ def build_prices_and_trends(api_key: str) -> Tuple[dict, dict]:
         "data_source": "不動産情報ライブラリ（国土交通省）",
     }
 
-    return prices, trends
+    # --- raw_transactions.json 構築 ---
+    # 直近4四半期の個別取引レコードを正規化して保存
+    raw_transaction_list: List[dict] = []
+    for ward_code in TOKYO_23_WARD_CODES:
+        ward_name = WARD_CODE_TO_NAME.get(ward_code, ward_code)
+        for qlabel in sorted(recent_qlabels_set):
+            items = all_raw_items.get(ward_code, {}).get(qlabel, [])
+            for item in items:
+                rec = parse_raw_transaction(item, ward_name, ward_code, qlabel)
+                if rec is not None:
+                    raw_transaction_list.append(rec)
+
+    raw_transactions = {
+        "transactions": raw_transaction_list,
+        "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "periods_covered": sorted(recent_qlabels_set),
+        "data_source": "不動産情報ライブラリ（国土交通省）",
+        "record_count": len(raw_transaction_list),
+    }
+
+    return prices, trends, raw_transactions
 
 
 # ---------------------------------------------------------------------------
@@ -343,10 +453,11 @@ def main() -> None:
     print("=== 不動産情報ライブラリ キャッシュ構築開始 ===", file=sys.stderr)
     print(f"出力先: {args.output_dir}", file=sys.stderr)
 
-    prices, trends = build_prices_and_trends(api_key)
+    prices, trends, raw_transactions = build_prices_and_trends(api_key)
 
     prices_path = os.path.join(args.output_dir, "reinfolib_prices.json")
     trends_path = os.path.join(args.output_dir, "reinfolib_trends.json")
+    raw_tx_path = os.path.join(args.output_dir, "reinfolib_raw_transactions.json")
 
     with open(prices_path, "w", encoding="utf-8") as f:
         json.dump(prices, f, ensure_ascii=False, indent=2)
@@ -356,12 +467,24 @@ def main() -> None:
         json.dump(trends, f, ensure_ascii=False, indent=2)
     print(f"trends キャッシュ保存: {trends_path}", file=sys.stderr)
 
+    with open(raw_tx_path, "w", encoding="utf-8") as f:
+        json.dump(raw_transactions, f, ensure_ascii=False, indent=2)
+    print(
+        f"raw_transactions キャッシュ保存: {raw_tx_path}"
+        f" ({raw_transactions['record_count']} 件)",
+        file=sys.stderr,
+    )
+
     # サマリー出力
     ward_count = len(prices["by_ward"])
     total_samples = sum(
         w.get("sample_count", 0) for w in prices["by_ward"].values()
     )
-    print(f"=== 完了: {ward_count}区, 合計 {total_samples} 件 ===", file=sys.stderr)
+    print(
+        f"=== 完了: {ward_count}区, 合計 {total_samples} 件"
+        f" (個別レコード {raw_transactions['record_count']} 件) ===",
+        file=sys.stderr,
+    )
 
 
 if __name__ == "__main__":

@@ -45,6 +45,7 @@ struct ListingListView: View {
         case priceDesc = "価格の高い順"
         case walkAsc = "徒歩の近い順"
         case areaDesc = "広い順"
+        case deviationDesc = "偏差値の高い順"
     }
 
     private var baseList: [Listing] {
@@ -154,6 +155,11 @@ struct ListingListView: View {
             list.sort {
                 let a0 = $0.areaM2 ?? 0, a1 = $1.areaM2 ?? 0
                 return a0 != a1 ? a0 > a1 : $0.name < $1.name
+            }
+        case .deviationDesc:
+            list.sort {
+                let d0 = $0.averageDeviation ?? 0, d1 = $1.averageDeviation ?? 0
+                return d0 != d1 ? d0 > d1 : $0.name < $1.name
             }
         }
         return list
@@ -771,6 +777,11 @@ struct ListingRowView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 3))
                     }
 
+                    // 偏差値バッジ（平均偏差値）
+                    if let avg = listing.averageDeviation {
+                        DeviationBadge(value: avg)
+                    }
+
                     // 複数戸売出バッジ
                     if let dupText = listing.duplicateCountDisplay {
                         Text(dupText)
@@ -945,6 +956,37 @@ struct OwnershipBadge: View {
             .background((type == .owned ? Color.accentColor : Color.orange).opacity(0.10))
             .clipShape(RoundedRectangle(cornerRadius: size == .small ? 4 : 5))
         }
+    }
+}
+
+
+// MARK: - Deviation Badge
+
+/// 平均偏差値バッジ。50を基準に色分け（高い=青系、低い=グレー系）。
+struct DeviationBadge: View {
+    let value: Double
+
+    private var color: Color {
+        if value >= 60 { return .blue }
+        if value >= 55 { return .cyan }
+        if value >= 50 { return .teal }
+        if value >= 45 { return .orange }
+        return .gray
+    }
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Image(systemName: "chart.bar.fill")
+                .font(.system(size: 7, weight: .bold))
+            Text(String(format: "%.1f", value))
+                .font(.caption2.weight(.bold))
+                .monospacedDigit()
+        }
+        .foregroundStyle(color)
+        .padding(.horizontal, 5)
+        .padding(.vertical, 2)
+        .background(color.opacity(0.12))
+        .clipShape(RoundedRectangle(cornerRadius: 4))
     }
 }
 

@@ -313,8 +313,15 @@ struct ListingDetailView: View {
 
     @ViewBuilder
     private func monthlyPaymentSimulation(priceMan: Int) -> some View {
-        let monthly = LoanCalculator.monthlyPayment(principal: Double(priceMan))
-        let monthlyYen = Int(round(monthly * 10000))
+        let loanMonthlyMan = LoanCalculator.ssMonthlyPayment(principal: Double(priceMan))
+        let loanMonthlyYen = Int(round(loanMonthlyMan * 10000))
+
+        // 管理費＋修繕積立金（円/月）
+        let mgmtFee = listing.managementFee ?? 0
+        let repairFund = listing.repairReserveFund ?? 0
+        let fixedCostYen = mgmtFee + repairFund
+        let totalMonthlyYen = loanMonthlyYen + fixedCostYen
+        let hasFixedCost = mgmtFee > 0 || repairFund > 0
 
         VStack(alignment: .leading, spacing: 8) {
             Label("月額支払いシミュレーション", systemImage: "yensign.circle")
@@ -322,12 +329,13 @@ struct ListingDetailView: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(Color.accentColor)
 
+            // 合計月額
             HStack(alignment: .firstTextBaseline) {
-                Text("月額返済額（目安）")
+                Text("月額合計（目安）")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("\(monthlyYen.formatted())円")
+                Text("\(totalMonthlyYen.formatted())円")
                     .font(.system(.title3, design: .rounded).weight(.bold))
                     .foregroundStyle(Color.accentColor)
                 Text("/月")
@@ -335,7 +343,48 @@ struct ListingDetailView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("※ 金利\(String(format: "%.1f", LoanCalculator.annualRate))%・返済\(LoanCalculator.termYears)年・頭金\(LoanCalculator.downPayment)円で計算（住まいサーフィン準拠）")
+            // 内訳
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("ローン返済")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("\(loanMonthlyYen.formatted())円")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                if hasFixedCost {
+                    if mgmtFee > 0 {
+                        HStack {
+                            Text("管理費")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Text("\(mgmtFee.formatted())円")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    if repairFund > 0 {
+                        HStack {
+                            Text("修繕積立金")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Text("\(repairFund.formatted())円")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } else {
+                    Text("※ 管理費・修繕積立金は未取得（ローン返済額のみ）")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+
+            Text("※ 金利\(String(format: "%.2f", LoanCalculator.ssAnnualRate))%・返済\(LoanCalculator.ssTermYears)年・頭金\(LoanCalculator.ssDownPayment)円で計算（住まいサーフィン準拠）")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
@@ -1023,20 +1072,39 @@ struct ListingDetailView: View {
 
     @ViewBuilder
     private var chukoSumaiSection: some View {
-        // 沖式中古時価（70㎡換算）と値上がり率
+        // 沖式中古時価（実面積換算 / 70㎡換算）と値上がり率
         HStack(alignment: .top, spacing: 4) {
-            if let price = listing.ssOkiPrice70m2 {
+            if let price70 = listing.ssOkiPrice70m2 {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("沖式中古時価（70㎡換算）")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    HStack(alignment: .firstTextBaseline, spacing: 2) {
-                        Text(price.formatted())
-                            .font(.system(.title, design: .rounded).weight(.heavy))
-                            .foregroundStyle(Color.accentColor)
-                        Text("万円")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.accentColor.opacity(0.6))
+                    // 実面積換算がある場合はそれをメイン表示
+                    if let priceArea = listing.ssOkiPriceForArea, let area = listing.areaM2 {
+                        Text("沖式中古時価（\(String(format: "%.1f", area))㎡換算）")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        HStack(alignment: .firstTextBaseline, spacing: 2) {
+                            Text(priceArea.formatted())
+                                .font(.system(.title, design: .rounded).weight(.heavy))
+                                .foregroundStyle(Color.accentColor)
+                            Text("万円")
+                                .font(.subheadline)
+                                .foregroundStyle(Color.accentColor.opacity(0.6))
+                        }
+                        Text("70㎡換算: \(price70.formatted())万円")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    } else {
+                        // 面積情報がない場合は従来通り 70㎡換算を表示
+                        Text("沖式中古時価（70㎡換算）")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        HStack(alignment: .firstTextBaseline, spacing: 2) {
+                            Text(price70.formatted())
+                                .font(.system(.title, design: .rounded).weight(.heavy))
+                                .foregroundStyle(Color.accentColor)
+                            Text("万円")
+                                .font(.subheadline)
+                                .foregroundStyle(Color.accentColor.opacity(0.6))
+                        }
                     }
                     if let judgment = listing.ssValueJudgment {
                         Text(judgment)
@@ -1079,7 +1147,52 @@ struct ListingDetailView: View {
             RadarChartView(data: radar)
                 .frame(maxWidth: 260)
                 .frame(maxWidth: .infinity) // 中央寄せ
+
+            // 平均偏差値ヘッダー
+            HStack(spacing: 6) {
+                Text("平均偏差値")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text(String(format: "%.1f", radar.average))
+                    .font(.system(.title3, design: .rounded).weight(.heavy))
+                    .foregroundStyle(deviationColor(radar.average))
+                Spacer()
+            }
+
+            // 各軸の偏差値テーブル
+            VStack(spacing: 0) {
+                ForEach(Array(zip(Listing.RadarData.labelsSingleLine, radar.values).enumerated()), id: \.offset) { index, pair in
+                    let (label, value) = pair
+                    HStack {
+                        Text(label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(String(format: "%.1f", value))
+                            .font(.caption.weight(.bold))
+                            .monospacedDigit()
+                            .foregroundStyle(deviationColor(value))
+                    }
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, 8)
+                    .background(index.isMultiple(of: 2) ? Color.clear : Color.gray.opacity(0.04))
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 6))
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color.gray.opacity(0.1), lineWidth: 0.5)
+            )
         }
+    }
+
+    /// 偏差値の色分け（50を基準にグラデーション）
+    private func deviationColor(_ value: Double) -> Color {
+        if value >= 60 { return .blue }
+        if value >= 55 { return .cyan }
+        if value >= 50 { return .teal }
+        if value >= 45 { return .orange }
+        return .gray
     }
 
     // MARK: - 新築マンション: 儲かる確率

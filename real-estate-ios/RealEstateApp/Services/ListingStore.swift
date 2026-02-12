@@ -305,6 +305,8 @@ final class ListingStore {
         existing.floorTotal = new.floorTotal
         existing.floorStructure = new.floorStructure
         existing.ownership = new.ownership
+        existing.managementFee = new.managementFee
+        existing.repairReserveFund = new.repairReserveFund
         existing.listWardRoman = new.listWardRoman
         existing.fetchedAt = new.fetchedAt
         existing.propertyType = new.propertyType
