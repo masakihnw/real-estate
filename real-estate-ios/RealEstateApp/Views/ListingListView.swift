@@ -851,44 +851,34 @@ private struct BadgeRow: View {
     @ViewBuilder
     private var commuteBadges: some View {
         if let pgMin = listing.commutePlaygroundDisplay {
-            Button {
-                CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
-            } label: {
-                HStack(spacing: 4) {
-                    Image("logo-playground")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 12)
-                    Text(pgMin)
-                        .font(.caption2.weight(.semibold))
-                }
-                .foregroundStyle(DesignSystem.commutePGColor)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(DesignSystem.commutePGColor.opacity(0.08))
-                .clipShape(RoundedRectangle(cornerRadius: 4))
+            HStack(spacing: 4) {
+                Image("logo-playground")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 12)
+                Text(pgMin)
+                    .font(.caption2.weight(.semibold))
             }
-            .buttonStyle(.plain)
+            .foregroundStyle(DesignSystem.commutePGColor)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(DesignSystem.commutePGColor.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 4))
         }
         if let m3Min = listing.commuteM3CareerDisplay {
-            Button {
-                CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
-            } label: {
-                HStack(spacing: 4) {
-                    Image("logo-m3career")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 12)
-                    Text(m3Min)
-                        .font(.caption2.weight(.semibold))
-                }
-                .foregroundStyle(DesignSystem.commuteM3Color)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(DesignSystem.commuteM3Color.opacity(0.08))
-                .clipShape(RoundedRectangle(cornerRadius: 4))
+            HStack(spacing: 4) {
+                Image("logo-m3career")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 12)
+                Text(m3Min)
+                    .font(.caption2.weight(.semibold))
             }
-            .buttonStyle(.plain)
+            .foregroundStyle(DesignSystem.commuteM3Color)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(DesignSystem.commuteM3Color.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 4))
         }
     }
 }
