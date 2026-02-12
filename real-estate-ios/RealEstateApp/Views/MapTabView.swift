@@ -401,7 +401,7 @@ final class GeocodingService {
     /// 並列バッチジオコーディング（未ジオコーディングの物件をまとめて処理）
     /// Apple Geocoder のレート制限を考慮し、最大2並列で実行する。
     /// - Returns: ジオコーディングに失敗した件数
-    func geocodeBatch(_ listings: [Listing], modelContext: ModelContext) async -> Int {
+    func geocodeBatch(_ listings: [Listing]) async -> Int {
         let toGeocode = listings.filter { !$0.hasCoordinate && $0.address != nil && !($0.address ?? "").isEmpty }
         guard !toGeocode.isEmpty else { return 0 }
 
@@ -411,7 +411,7 @@ final class GeocodingService {
             var index = 0
             for listing in toGeocode {
                 if index >= maxConcurrency {
-                    await group.next()
+                    _ = await group.next()
                 }
                 index += 1
                 group.addTask { @Sendable in
@@ -436,9 +436,6 @@ final class GeocodingService {
             var count = 0
             for await failed in group where failed { count += 1 }
             return count
-        }
-        await MainActor.run {
-            SaveErrorHandler.shared.save(modelContext, source: "Geocoding")
         }
         return failureCount
     }
@@ -1793,7 +1790,8 @@ struct MapTabView: View {
         let toGeocode = listings.filter { !$0.hasCoordinate && $0.address != nil && !($0.address ?? "").isEmpty }
         guard !toGeocode.isEmpty else { return }
 
-        let failures = await GeocodingService.shared.geocodeBatch(toGeocode, modelContext: modelContext)
+        let failures = await GeocodingService.shared.geocodeBatch(toGeocode)
+        SaveErrorHandler.shared.save(modelContext, source: "Geocoding")
         geocodingFailureCount = failures
     }
 }
