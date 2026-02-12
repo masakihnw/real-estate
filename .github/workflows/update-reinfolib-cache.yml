@@ -1,0 +1,143 @@
+name: Update MLIT & e-Stat Cache
+
+# 不動産情報ライブラリ API / e-Stat API のキャッシュを更新するワークフロー。
+# 成約価格・地価公示・人口動態の各キャッシュを構築し、コミット・プッシュする。
+# enrichment は次回の update-listings.yml 実行時に自動適用される。
+
+on:
+  schedule:
+    # 四半期ごと: 1月/4月/7月/10月の15日 6:00 UTC (15:00 JST)
+    # データ公開から数日後を想定
+    - cron: '0 6 15 1,4,7,10 *'
+    # 年次: 4月1日 6:00 UTC — 地価公示（3月公表）+ e-Stat 人口データ
+    - cron: '0 6 1 4 *'
+  workflow_dispatch:  # 手動実行
+    inputs:
+      target:
+        description: '更新対象 (all / prices / land_prices / population)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - 'all'
+          - 'prices'
+          - 'land_prices'
+          - 'population'
+
+jobs:
+  update-cache:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: pip install requests
+
+      - name: Determine targets
+        id: targets
+        run: |
+          TARGET="${{ github.event.inputs.target || 'all' }}"
+          MONTH=$(date -u +%-m)
+          
+          # 四半期 cron (1月/4月/7月/10月) → prices を実行
+          # 年次 cron (4月) → land_prices + population も実行
+          if [ "$TARGET" = "all" ]; then
+            echo "run_prices=true" >> $GITHUB_OUTPUT
+            # 4月は全て実行（年次データも更新）
+            if [ "$MONTH" = "4" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "run_land_prices=true" >> $GITHUB_OUTPUT
+              echo "run_population=true" >> $GITHUB_OUTPUT
+            else
+              echo "run_land_prices=false" >> $GITHUB_OUTPUT
+              echo "run_population=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "run_prices=$( [ '$TARGET' = 'prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
+            echo "run_land_prices=$( [ '$TARGET' = 'land_prices' ] && echo true || echo false )" >> $GITHUB_OUTPUT
+            echo "run_population=$( [ '$TARGET' = 'population' ] && echo true || echo false )" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build prices cache (成約価格)
+        if: steps.targets.outputs.run_prices == 'true'
+        working-directory: scraping-tool
+        env:
+          REINFOLIB_API_KEY: ${{ secrets.REINFOLIB_API_KEY }}
+        run: |
+          if [ -n "$REINFOLIB_API_KEY" ]; then
+            python3 reinfolib_cache_builder.py
+          else
+            echo "REINFOLIB_API_KEY 未設定のためスキップ"
+          fi
+
+      - name: Build land prices cache (地価公示)
+        if: steps.targets.outputs.run_land_prices == 'true'
+        working-directory: scraping-tool
+        env:
+          REINFOLIB_API_KEY: ${{ secrets.REINFOLIB_API_KEY }}
+        run: |
+          if [ -n "$REINFOLIB_API_KEY" ]; then
+            python3 reinfolib_land_price_builder.py
+          else
+            echo "REINFOLIB_API_KEY 未設定のためスキップ"
+          fi
+
+      - name: Build population cache (人口動態)
+        if: steps.targets.outputs.run_population == 'true'
+        working-directory: scraping-tool
+        env:
+          ESTAT_API_KEY: ${{ secrets.ESTAT_API_KEY }}
+        run: |
+          if [ -n "$ESTAT_API_KEY" ]; then
+            python3 estat_population_builder.py
+          else
+            echo "ESTAT_API_KEY 未設定のためスキップ"
+          fi
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # キャッシュファイルを追加
+          [ -f scraping-tool/data/reinfolib_prices.json ] && git add scraping-tool/data/reinfolib_prices.json
+          [ -f scraping-tool/data/reinfolib_trends.json ] && git add scraping-tool/data/reinfolib_trends.json
+          [ -f scraping-tool/data/reinfolib_land_prices.json ] && git add scraping-tool/data/reinfolib_land_prices.json
+          [ -f scraping-tool/data/estat_population.json ] && git add scraping-tool/data/estat_population.json
+          
+          DATE=$(date +%Y-%m-%d)
+          QUARTER="Q$(( ($(date +%-m) - 1) / 3 + 1 ))"
+          
+          if git diff --cached --quiet; then
+            echo "変更なし（スキップ）"
+          else
+            git commit -m "chore: update MLIT/e-Stat cache ${DATE} ${QUARTER}
+
+          自動更新: GitHub Actions (update-reinfolib-cache)"
+            
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin HEAD:refs/heads/${{ github.ref_name }}
+          fi
+
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-type: application/json' \
+              -d "{\"text\": \":warning: *MLIT/e-Stat キャッシュ更新失敗*\n実行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+          fi

@@ -389,10 +389,39 @@ struct ListingListView: View {
             Text(
                 favoritesOnly
                     ? "物件一覧でハートをタップするとここに表示されます。"
-                    : "データは自動的に更新されます。しばらくお待ちください。"
+                    : "データは自動的に更新されます。\nうまく表示されない場合は下のボタンをお試しください。"
             )
+        } actions: {
+            if !favoritesOnly {
+                Button {
+                    Task {
+                        store.clearETags()
+                        await store.refresh(modelContext: modelContext)
+                    }
+                } label: {
+                    Label("データを取得", systemImage: "arrow.clockwise")
+                }
+                .buttonStyle(.bordered)
+                .disabled(store.isRefreshing)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .bottom) {
+            if !favoritesOnly && store.isRefreshing {
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text("更新中…")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(.regularMaterial, in: Capsule())
+                .padding(.bottom, 40)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .animation(.easeInOut, value: store.isRefreshing)
+            }
+        }
         .accessibilityElement(children: .combine)
     }
 
