@@ -54,6 +54,15 @@ ALLOWED_LINE_KEYWORDS = (
 # data/station_passengers.json を scripts/fetch_station_passengers.py で1回取得してから有効になる。
 STATION_PASSENGERS_MIN = 0
 
+# SUUMO 23区のローマ字コード（区ごと一覧取得・23区判定で使用）
+SUUMO_23_WARD_ROMAN = (
+    "chiyoda", "chuo", "minato", "shinjuku", "bunkyo", "shibuya",
+    "taito", "sumida", "koto", "arakawa", "adachi", "katsushika", "edogawa",
+    "shinagawa", "meguro", "ota", "setagaya",
+    "nakano", "suginami", "nerima",
+    "toshima", "kita", "itabashi",
+)
+
 # リクエスト間隔（秒）: 負荷軽減のため
 REQUEST_DELAY_SEC = 2
 # HOME'S 専用のリクエスト間隔（秒）: AWS WAF ボット検知対策のため長めに設定

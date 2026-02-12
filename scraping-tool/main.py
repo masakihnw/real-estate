@@ -17,7 +17,7 @@ import argparse
 import csv
 import json
 import sys
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 # スクリプト配置が scraping-tool/ である前提
@@ -110,31 +110,26 @@ def main() -> None:
 
     all_rows: list[dict] = []
 
+    # property_type に応じたスクレイパー関数を選択
+    scraper_map = {
+        "chuko": {"suumo": _scrape_suumo_chuko, "homes": _scrape_homes_chuko},
+        "shinchiku": {"suumo": _scrape_suumo_shinchiku, "homes": _scrape_homes_shinchiku},
+    }
+    scrapers = scraper_map[args.property_type]
+    type_label = "中古" if args.property_type == "chuko" else "新築"
+
     # SUUMO と HOME'S を並列スクレイピング（--source both の場合）
-    if args.property_type == "chuko":
-        tasks = {}
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            if args.source in ("suumo", "both"):
-                tasks["suumo"] = executor.submit(_scrape_suumo_chuko, args.max_pages, not args.no_filter)
-            if args.source in ("homes", "both"):
-                tasks["homes"] = executor.submit(_scrape_homes_chuko, args.max_pages, not args.no_filter)
-            for name, future in tasks.items():
-                try:
-                    all_rows.extend(future.result())
-                except Exception as e:
-                    print(f"# {name} 中古取得エラー: {e}", file=sys.stderr)
-    else:
-        tasks = {}
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            if args.source in ("suumo", "both"):
-                tasks["suumo"] = executor.submit(_scrape_suumo_shinchiku, args.max_pages, not args.no_filter)
-            if args.source in ("homes", "both"):
-                tasks["homes"] = executor.submit(_scrape_homes_shinchiku, args.max_pages, not args.no_filter)
-            for name, future in tasks.items():
-                try:
-                    all_rows.extend(future.result())
-                except Exception as e:
-                    print(f"# {name} 新築取得エラー: {e}", file=sys.stderr)
+    tasks = {}
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        if args.source in ("suumo", "both"):
+            tasks["suumo"] = executor.submit(scrapers["suumo"], args.max_pages, not args.no_filter)
+        if args.source in ("homes", "both"):
+            tasks["homes"] = executor.submit(scrapers["homes"], args.max_pages, not args.no_filter)
+        for name, future in tasks.items():
+            try:
+                all_rows.extend(future.result())
+            except Exception as e:
+                print(f"# {name} {type_label}取得エラー: {e}", file=sys.stderr)
 
     # 物件名のノイズ除去（「新築マンション」prefix、「閲覧済」suffix、「掲載物件X件」等）
     for row in all_rows:

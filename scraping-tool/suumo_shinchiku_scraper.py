@@ -10,12 +10,10 @@ SUUMO 新築マンション一覧のスクレイピング（私的利用・軽�
 新築固有のロジック（価格未定の許容、間取り幅マッチ、築年フィルタ不要など）に対応。
 """
 
-import json
 import re
 import sys
 import time
 from dataclasses import dataclass, asdict, field
-from pathlib import Path
 from typing import Iterator, Optional
 from urllib.parse import urljoin
 
@@ -35,9 +33,25 @@ from config import (
     REQUEST_TIMEOUT_SEC,
     REQUEST_RETRIES,
     USER_AGENT,
-    TOKYO_23_WARDS,
+    SUUMO_23_WARD_ROMAN,
+)
+from parse_utils import (
+    parse_price_range,
+    parse_area_range,
+    parse_walk_min_best,
+    parse_total_units,
+    parse_floor_total_lenient,
+    parse_ownership_from_text,
+    layout_range_ok,
 )
 from report_utils import clean_listing_name
+from scraper_common import (
+    create_session,
+    load_station_passengers,
+    station_passengers_ok,
+    line_ok,
+    is_tokyo_23_by_address,
+)
 
 BASE_URL = "https://suumo.jp"
 
@@ -45,15 +59,6 @@ BASE_URL = "https://suumo.jp"
 LIST_URL_BASE = "https://suumo.jp/jj/bukken/ichiran/JJ011FC001/?ar=030&bs=010&ta=13"
 # 全ページ取得時の安全上限
 SHINCHIKU_MAX_PAGES_SAFETY = 100
-
-# 23区のローマ字コード（detail URL /ms/shinchiku/tokyo/sc_{ward}/ から抽出して23区判定に利用）
-SUUMO_23_WARD_ROMAN = (
-    "chiyoda", "chuo", "minato", "shinjuku", "bunkyo", "shibuya",
-    "taito", "sumida", "koto", "arakawa", "adachi", "katsushika", "edogawa",
-    "shinagawa", "meguro", "ota", "setagaya",
-    "nakano", "suginami", "nerima",
-    "toshima", "kita", "itabashi",
-)
 
 
 @dataclass
@@ -88,128 +93,7 @@ class SuumoShinchikuListing:
         return asdict(self)
 
 
-def _session() -> requests.Session:
-    s = requests.Session()
-    s.headers["User-Agent"] = USER_AGENT
-    s.headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-    s.headers["Accept-Language"] = "ja,en;q=0.9"
-    return s
-
-
-# ---------- パース補助関数 ----------
-
-def _parse_price_range(text: str) -> tuple[Optional[int], Optional[int]]:
-    """新築の価格表記をパース。
-    例:
-      "4900万円台～8300万円台／予定" → (4900, 8300)
-      "価格未定" → (None, None)
-      "7440万円～9670万円" → (7440, 9670)
-      "9900万円台～2億1000万円台／予定" → (9900, 21000)
-      "1億1880万円～1億3480万円" → (11880, 13480)
-      "3700万円台～6500万円台／予定 （第1期1次）" → (3700, 6500)
-    """
-    if not text or "価格未定" in text:
-        return (None, None)
-    text = text.replace(",", "").replace("（", "(").replace("）", ")")
-    # 期情報を除去
-    text = re.sub(r"\(.*?\)", "", text).strip()
-    # "／予定" "/ 予定" を除去
-    text = re.sub(r"[／/]\s*予定", "", text).strip()
-
-    def _parse_single_price(s: str) -> Optional[int]:
-        """単一の価格表記をパース。"""
-        s = s.strip()
-        if not s:
-            return None
-        if "億" in s:
-            m = re.search(r"([0-9.]+)\s*億\s*([0-9.]*)\s*万?円?\s*台?", s)
-            if m:
-                oku = float(m.group(1))
-                man = float(m.group(2) or 0)
-                return int(oku * 10000 + man)
-        m = re.search(r"([0-9.,]+)\s*万\s*円?\s*台?", s)
-        if m:
-            return int(float(m.group(1).replace(",", "")))
-        return None
-
-    # "～" or "〜" で分割
-    parts = re.split(r"[～〜]", text, maxsplit=1)
-    if len(parts) == 2:
-        lo = _parse_single_price(parts[0])
-        hi = _parse_single_price(parts[1])
-        return (lo, hi)
-    else:
-        val = _parse_single_price(text)
-        return (val, val)
-
-
-def _parse_area_range(text: str) -> tuple[Optional[float], Optional[float]]:
-    """面積幅をパース。"60.71m2～85.42m2" → (60.71, 85.42)。"""
-    if not text:
-        return (None, None)
-    vals = re.findall(r"([0-9.]+)\s*(?:m2|㎡|m\s*2)", text, re.I)
-    if len(vals) >= 2:
-        return (float(vals[0]), float(vals[1]))
-    elif len(vals) == 1:
-        return (float(vals[0]), float(vals[0]))
-    return (None, None)
-
-
-def _parse_walk_min(text: str) -> Optional[int]:
-    """「徒歩4分」「徒歩9分～10分」から最小値を返す。"""
-    if not text:
-        return None
-    vals = re.findall(r"徒歩\s*約?\s*([0-9]+)\s*分", text)
-    if vals:
-        return min(int(v) for v in vals)
-    return None
-
-
-def _parse_total_units(text: str) -> Optional[int]:
-    """「全394邸」「総戸数143戸」「全50邸」から総戸数を抽出。"""
-    if not text:
-        return None
-    m = re.search(r"(?:全|総戸数\s*)(\d+)\s*(?:邸|戸)", text)
-    return int(m.group(1)) if m else None
-
-
-def _parse_floor_total(text: str) -> Optional[int]:
-    """「地上20階」「29階建」から階数を抽出。"""
-    if not text:
-        return None
-    m = re.search(r"(?:地上\s*)?(\d+)\s*階(?:\s*建)?", text)
-    return int(m.group(1)) if m else None
-
-
-def _parse_ownership_from_text(text: str) -> Optional[str]:
-    """テキストから権利形態を推定。
-    新築では「所有権」「定期借地権」「一般定期借地権」などが記載されることが多い。
-    """
-    if not text:
-        return None
-    # 「権利形態」ラベル近辺から取得を試みる
-    m = re.search(r"権利(?:形態)?[：:\s]*([^\n,、]+)", text)
-    if m:
-        val = m.group(1).strip()
-        if val and len(val) <= 50:
-            return val
-    # ラベルなしで直接パターンマッチ
-    for pattern in [
-        r"(一般定期借地権[^\n]*)",
-        r"(定期借地権[^\n]*)",
-        r"(普通借地権[^\n]*)",
-        r"(旧法借地権[^\n]*)",
-    ]:
-        m = re.search(pattern, text)
-        if m:
-            val = m.group(1).strip()
-            if val and len(val) <= 80:
-                return val
-    # 「所有権」は単独で出現することが多い
-    if re.search(r"所有権", text):
-        return "所有権"
-    return None
-
+# ---------- パース補助関数（SUUMO 新築専用） ----------
 
 def _extract_ward_from_url(url: str) -> Optional[str]:
     """detail URL /ms/shinchiku/tokyo/sc_{ward}/nc_{id}/ から ward を抽出。"""
@@ -332,7 +216,7 @@ def _parse_listing_block(container, detail_url: str) -> Optional[SuumoShinchikuL
         station_line = get_dd("交通")
         delivery_date = get_dd("引渡時期")
 
-        walk_min = _parse_walk_min(station_line)
+        walk_min = parse_walk_min_best(station_line)
 
         # 価格: コンテナ内のテキストから価格パターンを探す
         price_man, price_max_man = _extract_price_from_text(text)
@@ -341,14 +225,14 @@ def _parse_listing_block(container, detail_url: str) -> Optional[SuumoShinchikuL
         layout, area_m2, area_max_m2 = _extract_layout_area(text)
 
         # 総戸数: 説明文から
-        total_units = _parse_total_units(text)
+        total_units = parse_total_units(text)
         # 階数: 説明文から
-        floor_total = _parse_floor_total(text)
+        floor_total = parse_floor_total_lenient(text)
 
         # 権利形態: DT/DD または テキストから
         ownership = get_dd("権利形態") or get_dd("敷地の権利形態") or get_dd("権利")
         if not ownership:
-            ownership = _parse_ownership_from_text(text)
+            ownership = parse_ownership_from_text(text)
 
         # ward: detail URL から
         ward = _extract_ward_from_url(detail_url)
@@ -391,7 +275,7 @@ def _extract_price_from_text(text: str) -> tuple[Optional[int], Optional[int]]:
             # 間取りタイプ行は除外
             if re.search(r"[LDK].*m2", line):
                 continue
-            result = _parse_price_range(line)
+            result = parse_price_range(line)
             if result != (None, None) or "価格未定" in line:
                 return result
     return (None, None)
@@ -409,7 +293,7 @@ def _extract_layout_area(text: str) -> tuple[str, Optional[float], Optional[floa
             parts = line.split("/", 1)
             layout_part = parts[0].strip() if len(parts) > 0 else ""
             area_part = parts[1].strip() if len(parts) > 1 else ""
-            area_min, area_max = _parse_area_range(area_part)
+            area_min, area_max = parse_area_range(area_part)
             return (layout_part, area_min, area_max)
     # フォールバック: 間取りだけ or 面積だけ
     layout = ""
@@ -425,85 +309,17 @@ def _extract_layout_area(text: str) -> tuple[str, Optional[float], Optional[floa
             )
             layout = m.group(1).strip() if m else line[:40]
         if area_min is None and re.search(r"[0-9.]+\s*(?:m2|㎡)", line, re.I):
-            area_min, area_max = _parse_area_range(line)
+            area_min, area_max = parse_area_range(line)
     return (layout, area_min, area_max)
 
 
 # ---------- フィルタ ----------
 
 def _is_tokyo_23(address: str, list_ward_roman: Optional[str] = None) -> bool:
-    """東京23区の物件かどうか。"""
+    """東京23区の物件かどうか。SUUMO の list_ward_roman または住所で判定。"""
     if list_ward_roman and list_ward_roman in SUUMO_23_WARD_ROMAN:
         return True
-    if address and any(ward in address for ward in TOKYO_23_WARDS):
-        return True
-    return False
-
-
-def _line_ok(station_line: str) -> bool:
-    """路線フィルタ。"""
-    if not ALLOWED_LINE_KEYWORDS:
-        return True
-    line = (station_line or "").strip()
-    if not line:
-        return True
-    return any(kw in line for kw in ALLOWED_LINE_KEYWORDS)
-
-
-def _layout_range_ok(layout: str) -> bool:
-    """間取り幅が条件に合うか。
-    "2LDK～4LDK" のような幅表記の場合、2LDK or 3LDK が含まれればOK。
-    "1LDK～4LDK" も 2LDK, 3LDK を含むのでOK。
-    """
-    if not layout:
-        return True  # 間取り不明は通過
-    layout = layout.strip()
-    # 幅表記の場合: 先頭の数字と末尾の数字を取得してレンジチェック
-    nums = re.findall(r"(\d+)\s*[LDKS]", layout)
-    if nums:
-        num_range = [int(n) for n in nums]
-        lo = min(num_range)
-        hi = max(num_range)
-        # config の LAYOUT_PREFIX_OK は ("2", "3") なので、レンジ内に 2 or 3 があればOK
-        return lo <= 3 and hi >= 2
-    # 単一間取り
-    return layout.startswith("2") or layout.startswith("3")
-
-
-def _load_station_passengers() -> dict[str, int]:
-    """data/station_passengers.json から 駅名 → 乗降客数 を読み込む。"""
-    path = Path(__file__).resolve().parent / "data" / "station_passengers.json"
-    if not path.exists():
-        return {}
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, OSError):
-        return {}
-
-
-def _station_name_from_line(station_line: str) -> str:
-    if not (station_line and station_line.strip()):
-        return ""
-    m = re.search(r"[「『]([^」』]+)[」』]", station_line)
-    if m:
-        return m.group(1).strip()
-    m = re.search(r"([^\s]+駅)", station_line)
-    if m:
-        return m.group(1).strip()
-    return (station_line.strip()[:30] or "").strip()
-
-
-def _station_passengers_ok(station_line: str, passengers_map: dict[str, int]) -> bool:
-    if STATION_PASSENGERS_MIN <= 0 or not passengers_map:
-        return True
-    name = _station_name_from_line(station_line or "")
-    if not name:
-        return True
-    passengers = passengers_map.get(name) or passengers_map.get(name.replace("駅", "")) or passengers_map.get(name + "駅")
-    if passengers is None:
-        return True
-    return passengers >= STATION_PASSENGERS_MIN
+    return is_tokyo_23_by_address(address)
 
 
 def apply_conditions(listings: list[SuumoShinchikuListing]) -> list[SuumoShinchikuListing]:
@@ -517,14 +333,14 @@ def apply_conditions(listings: list[SuumoShinchikuListing]) -> list[SuumoShinchi
     - 地域: 23区限定。
     - 路線: 中古と同じ。
     """
-    passengers_map = _load_station_passengers()
+    passengers_map = load_station_passengers()
     out = []
     for r in listings:
         if not _is_tokyo_23(r.address, r.list_ward_roman):
             continue
-        if not _line_ok(r.station_line):
+        if not line_ok(r.station_line):
             continue
-        if not _station_passengers_ok(r.station_line, passengers_map):
+        if not station_passengers_ok(r.station_line, passengers_map):
             continue
 
         # 価格: 価格未定は通過。帯の場合はレンジ重なりチェック。
@@ -542,7 +358,7 @@ def apply_conditions(listings: list[SuumoShinchikuListing]) -> list[SuumoShinchi
             continue
 
         # 間取り
-        if not _layout_range_ok(r.layout):
+        if not layout_range_ok(r.layout):
             continue
 
         # 徒歩
@@ -561,9 +377,8 @@ def apply_conditions(listings: list[SuumoShinchikuListing]) -> list[SuumoShinchi
 
 def scrape_suumo_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = True) -> Iterator[SuumoShinchikuListing]:
     """SUUMO 新築マンション一覧を取得。max_pages=0 のときは全ページ取得。"""
-    session = _session()
+    session = create_session()
     seen_urls: set[str] = set()
-    import sys as _sys
     limit = max_pages if max_pages and max_pages > 0 else SHINCHIKU_MAX_PAGES_SAFETY
     page = 1
     total_parsed = 0
@@ -573,7 +388,7 @@ def scrape_suumo_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
             html = fetch_list_page(session, page)
         except requests.exceptions.HTTPError as e:
             if e.response is not None and 500 <= e.response.status_code < 600:
-                print(f"SUUMO 新築: ページ{page} で {e.response.status_code} エラーのためスキップ", file=_sys.stderr)
+                print(f"SUUMO 新築: ページ{page} で {e.response.status_code} エラーのためスキップ", file=sys.stderr)
                 page += 1
                 continue
             raise
@@ -591,14 +406,14 @@ def scrape_suumo_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
                         yield filtered[0]
                         passed += 1
                         _price = f"{filtered[0].price_man}万" if filtered[0].price_man else "価格未定"
-                        print(f"  ✓ {filtered[0].name} ({_price})", file=_sys.stderr)
+                        print(f"  ✓ {filtered[0].name} ({_price})", file=sys.stderr)
                 else:
                     yield row
                     passed += 1
         total_passed += passed
         # 進捗: 10ページごとにサマリー
         if page % 10 == 0:
-            print(f"SUUMO 新築: ...{page}ページ処理済 (通過: {total_passed}件)", file=_sys.stderr)
+            print(f"SUUMO 新築: ...{page}ページ処理済 (通過: {total_passed}件)", file=sys.stderr)
         page += 1
     if total_parsed > 0:
-        print(f"SUUMO 新築: 完了 — {total_parsed}件パース, {total_passed}件通過", file=_sys.stderr)
+        print(f"SUUMO 新築: 完了 — {total_parsed}件パース, {total_passed}件通過", file=sys.stderr)
