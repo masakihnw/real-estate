@@ -16,6 +16,7 @@ commute.py の駅名ルックアップを使い、各物件について最適な
 
 import argparse
 import json
+import math
 import re
 import sys
 from datetime import datetime, timezone
@@ -28,6 +29,7 @@ from commute import (
     ESTIMATE_OFFICE_STATION_WALK_M3_MIN,
     ESTIMATE_STATION_TO_OFFICE_PG_MIN,
     ESTIMATE_OFFICE_STATION_WALK_PG_MIN,
+    WALK_CORRECTION_FACTOR,
 )
 
 
@@ -115,7 +117,8 @@ def _find_best_route(
     best: Optional[Dict[str, Any]] = None
 
     for station_name, walk_val in station_walk_pairs:
-        walk = walk_val if walk_val is not None else 0
+        raw_walk = walk_val if walk_val is not None else 0
+        walk = math.ceil(raw_walk * WALK_CORRECTION_FACTOR)
         train_min = get_commute_minutes(station_name, dest_key)
         is_registered = train_min is not None
 

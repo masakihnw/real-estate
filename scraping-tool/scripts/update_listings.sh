@@ -101,18 +101,8 @@ if [ -n "${GITHUB_REPOSITORY:-}" ] && [ -n "${GITHUB_REF_NAME:-}" ]; then
     MAP_URL_ARG="--map-url ${MAP_URL}"
 fi
 
-# 3. 前回結果（latest.json）があれば差分レポート生成、なければ通常レポート（地図URLは再生成後に付与）
-if [ -f "${OUTPUT_DIR}/latest.json" ]; then
-    echo "前回結果と比較: latest.json" >&2
-    python3 generate_report.py "$CURRENT" --compare "${OUTPUT_DIR}/latest.json" -o "$REPORT" $REPORT_URL_ARG
-else
-    echo "初回実行（差分なし）" >&2
-    python3 generate_report.py "$CURRENT" -o "$REPORT" $REPORT_URL_ARG
-fi
-# 今回実行分のレポートをタイムスタンプ付きで保存（Slackリンク用・results/直下）
-cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
-
-# 4. 最新結果を latest.json に保存。Slack 差分用に前回を previous.json へ退避してから上書き
+# 3. 最新結果を latest.json に保存。Slack 差分用に前回を previous.json へ退避してから上書き
+#    レポートは詳細キャッシュ・地図・enrichment 反映後にまとめて生成（generate_report.py 呼び出しは後段）
 cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
 cp "$CURRENT" "${OUTPUT_DIR}/latest.json"
 

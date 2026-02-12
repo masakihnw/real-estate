@@ -6,6 +6,7 @@ data/commute_<key>.json（駅名 → 分数）を参照。未登録の駅は「(
 """
 
 import json
+import math
 import re
 from pathlib import Path
 from typing import Optional, Tuple, List
@@ -16,6 +17,12 @@ ESTIMATE_STATION_TO_OFFICE_M3_MIN = 30
 ESTIMATE_OFFICE_STATION_WALK_M3_MIN = 0
 ESTIMATE_STATION_TO_OFFICE_PG_MIN = 30
 ESTIMATE_OFFICE_STATION_WALK_PG_MIN = 2
+
+# 徒歩時間の補正係数
+# 不動産表示基準は 80m/分（直線的）だが、Google Maps の実測値は
+# 実際の歩行ルート・信号・階段を考慮するため 1.2〜1.3 倍程度かかる。
+# 1.0 = 補正なし（従来）、1.2 = 20%増（推奨）
+WALK_CORRECTION_FACTOR = 1.2
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
@@ -196,6 +203,42 @@ def format_commute_minutes(minutes: Optional[int]) -> str:
     return f"{minutes}分"
 
 
+def _corrected_walk(walk_min: Optional[int]) -> int:
+    """徒歩分数に補正係数を適用して返す。"""
+    walk = walk_min if walk_min is not None else 0
+    return math.ceil(walk * WALK_CORRECTION_FACTOR)
+
+
+def _find_best_door_to_door(
+    station_line: str,
+    walk_min: Optional[int],
+    dest_key: str,
+) -> Tuple[Optional[int], bool]:
+    """
+    複数駅の駅名・徒歩ペアから、指定目的地へのドアtoドア最短分数を返す。
+    各駅について (補正済み徒歩 + 電車時間) を計算し、最小を選択する。
+    Returns: (最短合計分数, 登録駅かどうか)
+    """
+    pairs = parse_station_walk_pairs(station_line or "", walk_min)
+    if not pairs:
+        walk = _corrected_walk(walk_min)
+        return (None, False)
+
+    best_total: Optional[int] = None
+    best_registered = False
+
+    for station_name, walk_val in pairs:
+        walk = _corrected_walk(walk_val)
+        train_min = get_commute_minutes(station_name, dest_key)
+        if train_min is not None:
+            total = walk + train_min
+            if best_total is None or total < best_total:
+                best_total = total
+                best_registered = True
+
+    return (best_total, best_registered)
+
+
 def get_commute_display_with_estimate(
     station_line: str,
     walk_min: Optional[int],
@@ -203,21 +246,24 @@ def get_commute_display_with_estimate(
     """
     M3・PG の通勤時間表示文字列を返す。(m3_str, pg_str)。
     いずれもドアtoドア（物件→最寄駅の徒歩＋最寄駅→オフィス）で表示する。
-    JSON に駅が登録されていれば 徒歩＋駅→オフィス で「○分」、未登録なら
-    (概算) 徒歩＋最寄り駅→会社最寄り駅＋会社最寄り駅→会社の徒歩 を表示する。
+    各駅について (補正済み徒歩 + 電車時間) を計算し、最短ルートを選択する。
+    JSON に駅が登録されていれば「○分」、未登録なら (概算) を表示する。
+    徒歩分数には WALK_CORRECTION_FACTOR による補正を適用する。
     """
-    m3_min, pg_min = get_commute_display_best(station_line or "")
-    walk = walk_min if walk_min is not None else 0
+    m3_total, m3_registered = _find_best_door_to_door(station_line, walk_min, "m3career")
+    pg_total, pg_registered = _find_best_door_to_door(station_line, walk_min, "playground")
 
-    if m3_min is not None:
-        m3_str = f"{walk + m3_min}分"
+    if m3_total is not None:
+        m3_str = f"{m3_total}分"
     else:
+        walk = _corrected_walk(walk_min)
         est = walk + ESTIMATE_STATION_TO_OFFICE_M3_MIN + ESTIMATE_OFFICE_STATION_WALK_M3_MIN
         m3_str = f"(概算){est}分"
 
-    if pg_min is not None:
-        pg_str = f"{walk + pg_min}分"
+    if pg_total is not None:
+        pg_str = f"{pg_total}分"
     else:
+        walk = _corrected_walk(walk_min)
         est = walk + ESTIMATE_STATION_TO_OFFICE_PG_MIN + ESTIMATE_OFFICE_STATION_WALK_PG_MIN
         pg_str = f"(概算){est}分"
 
@@ -230,19 +276,19 @@ def get_commute_total_minutes(
 ) -> Tuple[Optional[int], Optional[int]]:
     """
     M3・PG のドアtoドア通勤分数を返す。(m3_total_min, pg_total_min)。
-    未登録駅の場合は概算（徒歩＋最寄り→会社最寄り＋会社最寄り→会社）を返す。
+    各駅について (補正済み徒歩 + 電車時間) を計算し、最短ルートを選択する。
+    未登録駅の場合は概算を返す。
+    徒歩分数には WALK_CORRECTION_FACTOR による補正を適用する。
     """
-    m3_min, pg_min = get_commute_display_best(station_line or "")
-    walk = walk_min if walk_min is not None else 0
+    m3_total, _ = _find_best_door_to_door(station_line, walk_min, "m3career")
+    pg_total, _ = _find_best_door_to_door(station_line, walk_min, "playground")
 
-    if m3_min is not None:
-        m3_total = walk + m3_min
-    else:
+    if m3_total is None:
+        walk = _corrected_walk(walk_min)
         m3_total = walk + ESTIMATE_STATION_TO_OFFICE_M3_MIN + ESTIMATE_OFFICE_STATION_WALK_M3_MIN
 
-    if pg_min is not None:
-        pg_total = walk + pg_min
-    else:
+    if pg_total is None:
+        walk = _corrected_walk(walk_min)
         pg_total = walk + ESTIMATE_STATION_TO_OFFICE_PG_MIN + ESTIMATE_OFFICE_STATION_WALK_PG_MIN
 
     return (m3_total, pg_total)

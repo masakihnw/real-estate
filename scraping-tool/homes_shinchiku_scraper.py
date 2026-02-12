@@ -14,7 +14,6 @@ import re
 import sys
 import time
 from dataclasses import dataclass, asdict
-from pathlib import Path
 from typing import Any, Iterator, Optional
 from urllib.parse import urljoin
 
@@ -28,15 +27,13 @@ from config import (
     AREA_MAX_M2,
     WALK_MIN_MAX,
     TOTAL_UNITS_MIN,
-    STATION_PASSENGERS_MIN,
-    ALLOWED_LINE_KEYWORDS,
     HOMES_REQUEST_DELAY_SEC,
     REQUEST_TIMEOUT_SEC,
     REQUEST_RETRIES,
-    USER_AGENT,
-    TOKYO_23_WARDS,
 )
+from parse_utils import parse_price_range, parse_area_range, parse_walk_min_best, parse_total_units, parse_floor_total_lenient, layout_range_ok
 from report_utils import clean_listing_name
+from scraper_common import create_session, is_waf_challenge, load_station_passengers, station_passengers_ok, line_ok, is_tokyo_23_by_address
 
 BASE_URL = "https://www.homes.co.jp"
 
@@ -78,83 +75,7 @@ class HomesShinchikuListing:
         return asdict(self)
 
 
-def _session() -> requests.Session:
-    s = requests.Session()
-    s.headers["User-Agent"] = USER_AGENT
-    s.headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-    s.headers["Accept-Language"] = "ja,en;q=0.9"
-    return s
-
-
-# ---------- パース補助関数 ----------
-
-def _parse_price_range(text: str) -> tuple[Optional[int], Optional[int]]:
-    """価格帯をパース。suumo_shinchiku_scraper と同じロジック。"""
-    if not text or "価格未定" in text:
-        return (None, None)
-    text = text.replace(",", "").replace("（", "(").replace("）", ")")
-    text = re.sub(r"\(.*?\)", "", text).strip()
-    text = re.sub(r"[／/]\s*予定", "", text).strip()
-
-    def _single(s: str) -> Optional[int]:
-        s = s.strip()
-        if not s:
-            return None
-        if "億" in s:
-            m = re.search(r"([0-9.]+)\s*億\s*([0-9.]*)\s*万?円?\s*台?", s)
-            if m:
-                return int(float(m.group(1)) * 10000 + float(m.group(2) or 0))
-        m = re.search(r"([0-9.,]+)\s*万\s*円?\s*台?", s)
-        return int(float(m.group(1).replace(",", ""))) if m else None
-
-    parts = re.split(r"[～〜]", text, maxsplit=1)
-    if len(parts) == 2:
-        return (_single(parts[0]), _single(parts[1]))
-    val = _single(text)
-    return (val, val)
-
-
-def _parse_area_range(text: str) -> tuple[Optional[float], Optional[float]]:
-    if not text:
-        return (None, None)
-    vals = re.findall(r"([0-9.]+)\s*(?:m2|㎡|m\s*2)", text, re.I)
-    if len(vals) >= 2:
-        return (float(vals[0]), float(vals[1]))
-    elif len(vals) == 1:
-        return (float(vals[0]), float(vals[0]))
-    return (None, None)
-
-
-def _parse_walk_min(text: str) -> Optional[int]:
-    if not text:
-        return None
-    vals = re.findall(r"徒歩\s*約?\s*([0-9]+)\s*分", text)
-    return min(int(v) for v in vals) if vals else None
-
-
-def _parse_total_units(text: str) -> Optional[int]:
-    if not text:
-        return None
-    m = re.search(r"(?:全|総戸数\s*)(\d+)\s*(?:邸|戸)", text)
-    return int(m.group(1)) if m else None
-
-
-def _parse_floor_total(text: str) -> Optional[int]:
-    if not text:
-        return None
-    m = re.search(r"(?:地上\s*)?(\d+)\s*階(?:\s*建)?", text)
-    return int(m.group(1)) if m else None
-
-
 # ---------- ページ取得 ----------
-
-def _is_waf_challenge(html: str) -> bool:
-    """AWS WAF のボット検知チャレンジページかどうかを判定。"""
-    if len(html) < 5000 and "awsWafCookieDomainList" in html:
-        return True
-    if len(html) < 5000 and "gokuProps" in html:
-        return True
-    return False
 
 
 def fetch_list_page(session: requests.Session, url: str) -> str:
@@ -174,7 +95,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
             r.encoding = r.apparent_encoding or "utf-8"
             html = r.text
             # AWS WAF チャレンジページの検出
-            if _is_waf_challenge(html):
+            if is_waf_challenge(html):
                 wait = min(30 * (attempt + 1), 120)
                 print(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})", file=sys.stderr)
                 time.sleep(wait)
@@ -331,11 +252,11 @@ def _extract_card_listings(soup: BeautifulSoup) -> list[HomesShinchikuListing]:
         price_str = re.sub(r"^一般販売住戸[：:]\s*", "", price_str).strip()
         delivery_date = _table_value("完成予定") or _table_value("完成") or _table_value("引渡")
 
-        price_man, price_max_man = _parse_price_range(price_str) if price_str else (None, None)
-        area_m2, area_max_m2 = _parse_area_range(area_str) if area_str else (None, None)
-        walk_min = _parse_walk_min(station_line or text)
-        total_units = _parse_total_units(text)
-        floor_total = _parse_floor_total(text)
+        price_man, price_max_man = parse_price_range(price_str) if price_str else (None, None)
+        area_m2, area_max_m2 = parse_area_range(area_str) if area_str else (None, None)
+        walk_min = parse_walk_min_best(station_line or text)
+        total_units = parse_total_units(text)
+        floor_total = parse_floor_total_lenient(text)
 
         if not name and not url:
             continue
@@ -450,14 +371,14 @@ def _parse_homes_block(block) -> Optional[HomesShinchikuListing]:
         address = get_val("所在地")
         station_line = get_val("交通")
         delivery_date = get_val("引渡") or get_val("入居")
-        walk_min = _parse_walk_min(station_line or text)
+        walk_min = parse_walk_min_best(station_line or text)
 
         # 価格
         price_man, price_max_man = (None, None)
         for line in text.split("\n"):
             line = line.strip()
             if "万円" in line and "タイプ" not in line:
-                price_man, price_max_man = _parse_price_range(line)
+                price_man, price_max_man = parse_price_range(line)
                 if price_man is not None:
                     break
 
@@ -470,11 +391,11 @@ def _parse_homes_block(block) -> Optional[HomesShinchikuListing]:
                 parts = re.split(r"[/／]", line, maxsplit=1)
                 layout = parts[0].strip()
                 if len(parts) > 1:
-                    area_m2, area_max_m2 = _parse_area_range(parts[1])
+                    area_m2, area_max_m2 = parse_area_range(parts[1])
                 break
 
-        total_units = _parse_total_units(text)
-        floor_total = _parse_floor_total(text)
+        total_units = parse_total_units(text)
+        floor_total = parse_floor_total_lenient(text)
 
         return HomesShinchikuListing(
             url=url,
@@ -497,76 +418,17 @@ def _parse_homes_block(block) -> Optional[HomesShinchikuListing]:
 
 # ---------- フィルタ ----------
 
-def _is_tokyo_23(address: str) -> bool:
-    if not (address and address.strip()):
-        return False
-    return any(ward in address for ward in TOKYO_23_WARDS)
-
-
-def _line_ok(station_line: str) -> bool:
-    if not ALLOWED_LINE_KEYWORDS:
-        return True
-    line = (station_line or "").strip()
-    if not line:
-        return True
-    return any(kw in line for kw in ALLOWED_LINE_KEYWORDS)
-
-
-def _layout_range_ok(layout: str) -> bool:
-    if not layout:
-        return True
-    layout = layout.strip()
-    nums = re.findall(r"(\d+)\s*[LDKS]", layout)
-    if nums:
-        lo = min(int(n) for n in nums)
-        hi = max(int(n) for n in nums)
-        return lo <= 3 and hi >= 2
-    return layout.startswith("2") or layout.startswith("3")
-
-
-def _load_station_passengers() -> dict[str, int]:
-    path = Path(__file__).resolve().parent / "data" / "station_passengers.json"
-    if not path.exists():
-        return {}
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, OSError):
-        return {}
-
-
-def _station_name_from_line(station_line: str) -> str:
-    if not (station_line and station_line.strip()):
-        return ""
-    m = re.search(r"[「『]([^」』]+)[」』]", station_line)
-    if m:
-        return m.group(1).strip()
-    m = re.search(r"([^\s]+駅)", station_line)
-    return m.group(1).strip() if m else (station_line.strip()[:30] or "").strip()
-
-
-def _station_passengers_ok(station_line: str, passengers_map: dict[str, int]) -> bool:
-    if STATION_PASSENGERS_MIN <= 0 or not passengers_map:
-        return True
-    name = _station_name_from_line(station_line or "")
-    if not name:
-        return True
-    passengers = passengers_map.get(name) or passengers_map.get(name.replace("駅", "")) or passengers_map.get(name + "駅")
-    if passengers is None:
-        return True
-    return passengers >= STATION_PASSENGERS_MIN
-
 
 def apply_conditions(listings: list[HomesShinchikuListing]) -> list[HomesShinchikuListing]:
     """新築用フィルタ。"""
-    passengers_map = _load_station_passengers()
+    passengers_map = load_station_passengers()
     out = []
     for r in listings:
-        if not _is_tokyo_23(r.address):
+        if not is_tokyo_23_by_address(r.address):
             continue
-        if not _line_ok(r.station_line):
+        if not line_ok(r.station_line):
             continue
-        if not _station_passengers_ok(r.station_line, passengers_map):
+        if not station_passengers_ok(r.station_line, passengers_map):
             continue
         if r.price_man is not None:
             price_hi = r.price_max_man or r.price_man
@@ -577,7 +439,7 @@ def apply_conditions(listings: list[HomesShinchikuListing]) -> list[HomesShinchi
             continue
         if AREA_MAX_M2 is not None and r.area_m2 is not None and r.area_m2 > AREA_MAX_M2:
             continue
-        if not _layout_range_ok(r.layout):
+        if not layout_range_ok(r.layout):
             continue
         if r.walk_min is not None and r.walk_min > WALK_MIN_MAX:
             continue
@@ -591,8 +453,7 @@ def apply_conditions(listings: list[HomesShinchikuListing]) -> list[HomesShinchi
 
 def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = True) -> Iterator[HomesShinchikuListing]:
     """HOME'S 新築マンション一覧を取得。max_pages=0 のときは全ページ取得。"""
-    session = _session()
-    import sys as _sys
+    session = create_session()
     limit = max_pages if max_pages and max_pages > 0 else HOMES_SHINCHIKU_MAX_PAGES_SAFETY
     page = 1
     total_parsed = 0
@@ -602,11 +463,11 @@ def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
         try:
             html = fetch_list_page(session, url)
         except Exception as e:
-            print(f"HOME'S 新築: ページ{page}でエラー: {e}", file=_sys.stderr)
+            print(f"HOME'S 新築: ページ{page}でエラー: {e}", file=sys.stderr)
             break
         rows = parse_list_html(html)
         if not rows:
-            print(f"HOME'S 新築: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。", file=_sys.stderr)
+            print(f"HOME'S 新築: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。", file=sys.stderr)
             break
         total_parsed += len(rows)
         passed = 0
@@ -617,14 +478,14 @@ def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
                     yield filtered[0]
                     passed += 1
                     _price = f"{filtered[0].price_man}万" if filtered[0].price_man else "価格未定"
-                    print(f"  ✓ {filtered[0].name} ({_price})", file=_sys.stderr)
+                    print(f"  ✓ {filtered[0].name} ({_price})", file=sys.stderr)
             else:
                 yield row
                 passed += 1
         total_passed += passed
         # 進捗: 10ページごとにサマリー
         if page % 10 == 0:
-            print(f"HOME'S 新築: ...{page}ページ処理済 (通過: {total_passed}件)", file=_sys.stderr)
+            print(f"HOME'S 新築: ...{page}ページ処理済 (通過: {total_passed}件)", file=sys.stderr)
         page += 1
     if total_parsed > 0:
-        print(f"HOME'S 新築: 完了 — {total_parsed}件パース, {total_passed}件通過", file=_sys.stderr)
+        print(f"HOME'S 新築: 完了 — {total_parsed}件パース, {total_passed}件通過", file=sys.stderr)

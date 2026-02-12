@@ -32,20 +32,25 @@ from config import (
     USER_AGENT,
     TOKYO_23_WARDS,
     NON_TOKYO_23_URL_PATHS,
+    SUUMO_23_WARD_ROMAN,
+)
+from parse_utils import (
+    parse_price,
+    parse_area_m2,
+    parse_walk_min,
+    parse_built_year,
+    parse_floor_position,
+    parse_floor_total,
+    layout_ok,
+)
+from scraper_common import (
+    create_session,
+    load_station_passengers,
+    station_passengers_ok,
+    line_ok,
 )
 
 BASE_URL = "https://suumo.jp"
-
-# 23区の絞り方: /ms/chuko/tokyo/sc_区のローマ字/ で各区を同様に取得（全23区）
-# 千代田・中央・港・新宿・文京・渋谷｜台東・墨田・江東・荒川・足立・葛飾・江戸川｜品川・目黒・大田・世田谷｜中野・杉並・練馬｜豊島・北・板橋
-SUUMO_23_WARD_ROMAN = (
-    "chiyoda", "chuo", "minato", "shinjuku", "bunkyo", "shibuya",
-    "taito", "sumida", "koto", "arakawa", "adachi", "katsushika", "edogawa",
-    "shinagawa", "meguro", "ota", "setagaya",
-    "nakano", "suginami", "nerima",
-    "toshima", "kita", "itabashi",
-)
-assert len(SUUMO_23_WARD_ROMAN) == 23, "23区のローマ字コードは23個"
 
 # 23区ごと一覧: /ms/chuko/tokyo/sc_XXX/ 。2ページ目以降は ?page=N
 LIST_URL_WARD_ROMAN = "https://suumo.jp/ms/chuko/tokyo/sc_{ward}/"
@@ -80,89 +85,6 @@ class SuumoListing:
 
     def to_dict(self):
         return asdict(self)
-
-
-def _session() -> requests.Session:
-    s = requests.Session()
-    s.headers["User-Agent"] = USER_AGENT
-    s.headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-    s.headers["Accept-Language"] = "ja,en;q=0.9"
-    return s
-
-
-def _parse_price(s: str) -> Optional[int]:
-    """「1080万円」「1億4360万円」などから万円単位の数値を返す。"""
-    if not s:
-        return None
-    s = s.replace(",", "").strip()
-    if "億" in s:
-        m = re.search(r"([0-9.]+)億([0-9.]*)\s*万?", s)
-        if m:
-            oku = float(m.group(1))
-            man = float(m.group(2) or 0)
-            return int(oku * 10000 + man)
-    m = re.search(r"([0-9.,]+)\s*万", s)
-    if m:
-        return int(float(m.group(1).replace(",", "")))
-    return None
-
-
-def _parse_area_m2(s: str) -> Optional[float]:
-    """「48.93m2」「48.93㎡」「48.93m2（14.80坪）」などから数値を返す。"""
-    if not s:
-        return None
-    # 数値＋単位の形のみマッチ（「㎡」単体だと group(1) が None になるため数値を必須に）
-    m = re.search(r"([0-9.]+)\s*(?:m2|㎡|m\s*2)", s, re.I)
-    if m and m.group(1) is not None:
-        return float(m.group(1))
-    return None
-
-
-def _parse_walk_min(s: str) -> Optional[int]:
-    """「徒歩4分」「徒歩約3分」などから分を返す。"""
-    if not s:
-        return None
-    m = re.search(r"徒歩\s*約?\s*([0-9]+)\s*分", s)
-    if m:
-        return int(m.group(1))
-    return None
-
-
-def _parse_built_year(s: str) -> Optional[int]:
-    """「1976年3月」「2020年6月」などから年を返す。"""
-    if not s:
-        return None
-    m = re.search(r"([0-9]{4})\s*年", s)
-    if m:
-        return int(m.group(1))
-    return None
-
-
-def _parse_floor_position(s: str) -> Optional[int]:
-    """「5階」「13階」などから所在階を返す。"""
-    if not s:
-        return None
-    m = re.search(r"(\d+)\s*階(?!建)", s)
-    return int(m.group(1)) if m else None
-
-
-def _parse_floor_total(s: str) -> Optional[int]:
-    """「10階建」「6階建て」などから建物階数を返す。"""
-    if not s:
-        return None
-    m = re.search(r"(\d+)\s*階\s*建(?:て)?", s)
-    return int(m.group(1)) if m else None
-
-
-def _layout_ok(layout: str) -> bool:
-    """2LDK〜3LDK 系か（2DK/3DK 含む）。"""
-    if not layout:
-        return False
-    layout = layout.strip()
-    return any(
-        layout.startswith(p) or layout.replace("K", "DK").startswith(p)
-        for p in ("2", "3")
-    ) and ("LDK" in layout or "DK" in layout or "K" in layout)
 
 
 def fetch_list_page(
@@ -250,14 +172,14 @@ def _parse_suumo_unit(bloc, base_url: str) -> Optional[SuumoListing]:
             m = re.search(rf"{re.escape(label)}\s*[\s\n]*([^\n]+)", txt)
             return (m.group(1).strip() if m else "").strip()
         name = get_val("物件名") or "（不明）"
-        price_man = _parse_price(get_val("販売価格"))
+        price_man = parse_price(get_val("販売価格"))
         address = get_val("所在地")
         station_line = get_val("沿線・駅")
-        walk_min = _parse_walk_min(station_line)
-        area_m2 = _parse_area_m2(get_val("専有面積"))
+        walk_min = parse_walk_min(station_line)
+        area_m2 = parse_area_m2(get_val("専有面積"))
         layout = get_val("間取り")
         built_str = get_val("築年月")
-        built_year = _parse_built_year(built_str)
+        built_year = parse_built_year(built_str)
 
         # 詳細URL: 同じブロック内の資料請求 or 物件リンク
         a = bloc.find("a", href=re.compile(r"/jj/bukken/|/ms/chuko/|nc="))
@@ -265,8 +187,8 @@ def _parse_suumo_unit(bloc, base_url: str) -> Optional[SuumoListing]:
 
         # 階: 所在階・階建（ラベルまたは本文・物件名から）
         body_text = bloc.get_text()
-        floor_position = _parse_floor_position(get_val("所在階") or get_val("階") or body_text) or _parse_floor_position(name)
-        floor_total = _parse_floor_total(get_val("階建") or get_val("建物階数") or body_text) or _parse_floor_total(name)
+        floor_position = parse_floor_position(get_val("所在階") or get_val("階") or body_text) or parse_floor_position(name)
+        floor_total = parse_floor_total(get_val("階建") or get_val("建物階数") or body_text) or parse_floor_total(name)
         # 権利形態: 所有権・借地権・底地権等（一覧に表示されていれば取得）
         ownership_raw = get_val("権利形態") or ""
         ownership = (ownership_raw.strip() or None) if ownership_raw.strip() else None
@@ -306,7 +228,7 @@ def _parse_cassette(div, base_url: str) -> Optional[SuumoListing]:
             price_text = parent.get_text() if parent else str(price_el)
         else:
             price_text = div.get_text()
-        price_man = _parse_price(price_text)
+        price_man = parse_price(price_text)
 
         # リンク
         a = div.find("a", href=re.compile(r"/jj/bukken/|/ms/chuko/|nc="))
@@ -317,11 +239,11 @@ def _parse_cassette(div, base_url: str) -> Optional[SuumoListing]:
         address = (addr_el.get_text(strip=True) or "") if addr_el else ""
         col2 = div.find(class_=re.compile(r"detail-col2|station|access"))
         station_line = (col2.get_text(strip=True) or "") if col2 else ""
-        walk_min = _parse_walk_min(station_line or div.get_text())
+        walk_min = parse_walk_min(station_line or div.get_text())
 
         # 専有・間取り・築年
         body = div.get_text()
-        area_m2 = _parse_area_m2(body)
+        area_m2 = parse_area_m2(body)
         layout = ""
         for part in re.split(r"[\s\n]+", body):
             if re.match(r"^[0-9]+[LDK DK]+$", part.replace(" ", "")):
@@ -334,9 +256,9 @@ def _parse_cassette(div, base_url: str) -> Optional[SuumoListing]:
 
         built_m = re.search(r"築年月\s*([0-9]{4}\s*年[0-9]{1,2}\s*月?)", body)
         built_str = built_m.group(1).strip() if built_m else ""
-        built_year = _parse_built_year(built_str)
-        floor_position = _parse_floor_position(body) or _parse_floor_position(name or "")
-        floor_total = _parse_floor_total(body) or _parse_floor_total(name or "")
+        built_year = parse_built_year(built_str)
+        floor_position = parse_floor_position(body) or parse_floor_position(name or "")
+        floor_total = parse_floor_total(body) or parse_floor_total(name or "")
 
         return SuumoListing(
             source="suumo",
@@ -363,10 +285,10 @@ def _parse_cassette(div, base_url: str) -> Optional[SuumoListing]:
 def _parse_property_block(bloc, base_url: str) -> Optional[SuumoListing]:
     """property / bukken 系ブロックから1件取り出す。"""
     text = bloc.get_text()
-    price_man = _parse_price(text)
-    area_m2 = _parse_area_m2(text)
-    walk_min = _parse_walk_min(text)
-    built_year = _parse_built_year(text)
+    price_man = parse_price(text)
+    area_m2 = parse_area_m2(text)
+    walk_min = parse_walk_min(text)
+    built_year = parse_built_year(text)
     a = bloc.find("a", href=True)
     url = urljoin(base_url, a["href"]) if a else ""
 
@@ -378,8 +300,8 @@ def _parse_property_block(bloc, base_url: str) -> Optional[SuumoListing]:
 
     built_m = re.search(r"([0-9]{4}\s*年[0-9]{1,2}\s*月?)", text)
     built_str = built_m.group(1).strip() if built_m else ""
-    floor_position = _parse_floor_position(text) or _parse_floor_position(name or "")
-    floor_total = _parse_floor_total(text) or _parse_floor_total(name or "")
+    floor_position = parse_floor_position(text) or parse_floor_position(name or "")
+    floor_total = parse_floor_total(text) or parse_floor_total(name or "")
 
     return SuumoListing(
         source="suumo",
@@ -409,12 +331,12 @@ def _parse_fallback(soup: BeautifulSoup, base_url: str) -> list[SuumoListing]:
         txt = wrap.get_text()
         if "販売価格" not in txt and "万円" not in txt:
             continue
-        price_man = _parse_price(txt)
+        price_man = parse_price(txt)
         if price_man is None:
             continue
-        area_m2 = _parse_area_m2(txt)
-        walk_min = _parse_walk_min(txt)
-        built_year = _parse_built_year(txt)
+        area_m2 = parse_area_m2(txt)
+        walk_min = parse_walk_min(txt)
+        built_year = parse_built_year(txt)
         m = re.search(r"間取り\s*([^\s]+)", txt)
         layout = (m.group(1).strip() if m else "").strip()
 
@@ -432,8 +354,8 @@ def _parse_fallback(soup: BeautifulSoup, base_url: str) -> list[SuumoListing]:
                 if t and len(t) < 100 and "万円" not in t:
                     name = t
                     break
-        floor_position = _parse_floor_position(txt) or _parse_floor_position(name or "")
-        floor_total = _parse_floor_total(txt) or _parse_floor_total(name or "")
+        floor_position = parse_floor_position(txt) or parse_floor_position(name or "")
+        floor_total = parse_floor_total(txt) or parse_floor_total(name or "")
 
         items.append(
             SuumoListing(
@@ -544,16 +466,6 @@ def _is_tokyo_23(address: str, url: str = "", list_ward_roman: Optional[str] = N
     return False
 
 
-def _line_ok(station_line: str) -> bool:
-    """路線限定時、最寄り路線がALLOWED_LINE_KEYWORDSのいずれかを含むか。空のときは通過（パース失敗時の取りこぼし防止）。"""
-    if not ALLOWED_LINE_KEYWORDS:
-        return True
-    line = (station_line or "").strip()
-    if not line:
-        return True  # 一覧で沿線・駅が取れない場合は通過（SUUMO HTML変更等で全件落ちるのを防ぐ）
-    return any(kw in line for kw in ALLOWED_LINE_KEYWORDS)
-
-
 def _load_building_units_cache() -> dict:
     """data/building_units.json から URL → 総戸数(int) または URL → 詳細dict のキャッシュを読み込む。
     詳細dict は total_units, floor_position, floor_total, floor_structure, ownership を含む。"""
@@ -567,62 +479,24 @@ def _load_building_units_cache() -> dict:
         return {}
 
 
-def _load_station_passengers() -> dict[str, int]:
-    """data/station_passengers.json から 駅名 → 乗降客数 を読み込む。"""
-    path = Path(__file__).resolve().parent / "data" / "station_passengers.json"
-    if not path.exists():
-        return {}
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, OSError):
-        return {}
-
-
-def _station_name_from_line(station_line: str) -> str:
-    """station_line から駅名を抽出。「」内があればそれ、なければ『〇〇駅』の部分。"""
-    if not (station_line and station_line.strip()):
-        return ""
-    m = re.search(r"[「『]([^」』]+)[」』]", station_line)
-    if m:
-        return m.group(1).strip()
-    m = re.search(r"([^\s]+駅)", station_line)
-    if m:
-        return m.group(1).strip()
-    return (station_line.strip()[:30] or "").strip()
-
-
-def _station_passengers_ok(station_line: str, passengers_map: dict[str, int]) -> bool:
-    """駅乗降客数フィルタ。STATION_PASSENGERS_MIN > 0 かつデータがあるときのみチェック。"""
-    if STATION_PASSENGERS_MIN <= 0 or not passengers_map:
-        return True
-    name = _station_name_from_line(station_line or "")
-    if not name:
-        return True
-    passengers = passengers_map.get(name) or passengers_map.get(name.replace("駅", "")) or passengers_map.get(name + "駅")
-    if passengers is None:
-        return True  # データにない駅は通過（取りこぼし防止）
-    return passengers >= STATION_PASSENGERS_MIN
-
-
 def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
     """価格・専有・間取り・築年・徒歩・地域（東京23区）・総戸数・駅乗降客数で条件ドキュメントに合わせてフィルタ。"""
     units_cache = _load_building_units_cache()
-    passengers_map = _load_station_passengers()
+    passengers_map = load_station_passengers()
     out = []
     for r in listings:
         list_ward = getattr(r, "list_ward_roman", None)
         if not _is_tokyo_23(r.address, r.url, list_ward_roman=list_ward):
             continue
-        if not _line_ok(r.station_line):
+        if not line_ok(r.station_line):
             continue
-        if not _station_passengers_ok(r.station_line, passengers_map):
+        if not station_passengers_ok(r.station_line, passengers_map):
             continue
         if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
             continue
         if r.area_m2 is not None and (r.area_m2 < AREA_MIN_M2 or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
             continue
-        if not _layout_ok(r.layout):
+        if not layout_ok(r.layout):
             continue
         if r.built_year is not None and r.built_year < BUILT_YEAR_MIN:
             continue
@@ -658,10 +532,9 @@ SUUMO_MAX_PAGES_SAFETY = 100
 
 def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Iterator[SuumoListing]:
     """SUUMO 東京23区の中古マンションを取得。全23区を sc_区のローマ字（sc_koto, sc_kita 等）で同様に区ごとに取得。max_pages=0 のときは結果がなくなるまで全ページ取得。"""
-    session = _session()
+    session = create_session()
     seen_urls: set[str] = set()
     limit = max_pages if max_pages and max_pages > 0 else SUUMO_MAX_PAGES_SAFETY
-    import sys as _sys
     for ward_roman in SUUMO_23_WARD_ROMAN:  # 全23区を同じ方式で取得
         p = 1
         ward_total_parsed = 0
@@ -672,7 +545,7 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
             except requests.exceptions.HTTPError as e:
                 # リトライ後も 5xx の場合はそのページをスキップして続行（ジョブ全体は落とさない）
                 if e.response is not None and 500 <= e.response.status_code < 600:
-                    print(f"SUUMO: sc_{ward_roman} ページ{p} で {e.response.status_code} エラーのためスキップします: {e.response.url}", file=_sys.stderr)
+                    print(f"SUUMO: sc_{ward_roman} ページ{p} で {e.response.status_code} エラーのためスキップします: {e.response.url}", file=sys.stderr)
                     p += 1
                     continue
                 raise
@@ -690,14 +563,14 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
                         if filtered:
                             yield filtered[0]
                             passed += 1
-                            print(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)", file=_sys.stderr)
+                            print(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)", file=sys.stderr)
                     else:
                         yield row
                         passed += 1
             ward_total_passed += passed
             # 進捗: 10ページごとにサマリー
             if p % 10 == 0:
-                print(f"SUUMO: sc_{ward_roman} ...{p}ページ処理済 (通過: {ward_total_passed}件)", file=_sys.stderr)
+                print(f"SUUMO: sc_{ward_roman} ...{p}ページ処理済 (通過: {ward_total_passed}件)", file=sys.stderr)
             p += 1
         if ward_total_parsed > 0:
-            print(f"SUUMO: sc_{ward_roman} 完了 — {ward_total_parsed}件パース, {ward_total_passed}件通過", file=_sys.stderr)
+            print(f"SUUMO: sc_{ward_roman} 完了 — {ward_total_parsed}件パース, {ward_total_passed}件通過", file=sys.stderr)
