@@ -165,8 +165,8 @@ final class CommuteTimeService {
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination))
         request.transportType = .transit
 
-        // 平日朝8時出発で計算（次の月曜日の8:00）
-        request.departureDate = nextWeekdayMorning()
+        // 平日朝8:30到着で計算（次の平日の8:30）
+        request.arrivalDate = nextWeekdayMorning()
 
         let directions = MKDirections(request: request)
 
@@ -255,12 +255,12 @@ final class CommuteTimeService {
         return max(0, transitSteps.count - 1)
     }
 
-    /// 次の平日（月〜金）の朝8:00 を返す
+    /// 次の平日（月〜金）の朝8:30 を返す（到着時刻として使用）
     private func nextWeekdayMorning() -> Date {
         let calendar = Calendar(identifier: .gregorian)
         var components = calendar.dateComponents([.year, .month, .day, .weekday], from: Date())
         components.hour = 8
-        components.minute = 0
+        components.minute = 30
         components.second = 0
 
         guard var date = calendar.date(from: components) else { return Date() }
