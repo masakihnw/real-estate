@@ -89,7 +89,7 @@ struct ListingListView: View {
         }
         if let max = filterStore.filter.priceMax {
             list = list.filter {
-                guard $0.priceMan != nil else {
+                guard $0.priceMan != nil || $0.priceMaxMan != nil else {
                     return filterStore.filter.includePriceUndecided
                 }
                 let lower = $0.priceMan ?? 0

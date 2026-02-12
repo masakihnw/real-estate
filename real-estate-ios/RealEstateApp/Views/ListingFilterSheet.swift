@@ -29,8 +29,9 @@ struct ListingFilterSheet: View {
     /// 新築タブから呼ばれた場合に true（価格未定トグルを表示）
     var showPriceUndecidedToggle: Bool = false
 
-    // ローカル編集用（「適用」ではなく下部ボタンで反映）
-    @State private var editFilter = ListingFilter()
+    // キャンセル時に復元するための元フィルタ
+    @State private var originalFilter = ListingFilter()
+    @State private var didApply = false
 
     // 価格の範囲
     private let priceRange: ClosedRange<Double> = 5000...15000
@@ -111,7 +112,7 @@ struct ListingFilterSheet: View {
             }
             .safeAreaInset(edge: .bottom) {
                 Button {
-                    filter = editFilter
+                    didApply = true
                     dismiss()
                 } label: {
                     Text(filteredCount > 0 ? "\(filteredCount)件の物件を表示" : "該当する物件がありません")
@@ -135,54 +136,59 @@ struct ListingFilterSheet: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("リセット") {
-                        withAnimation { editFilter.reset() }
+                        withAnimation { filter.reset() }
                     }
                     .foregroundStyle(Color.accentColor)
                 }
             }
-            .onAppear { editFilter = filter }
+            .onAppear { originalFilter = filter }
+            .onDisappear {
+                if !didApply {
+                    filter = originalFilter
+                }
+            }
         }
     }
 
     // MARK: - Summaries
 
     private var propertyTypeSummary: String {
-        editFilter.propertyType == .all ? "指定なし" : editFilter.propertyType.rawValue
+        filter.propertyType == .all ? "指定なし" : filter.propertyType.rawValue
     }
 
     private var priceSummary: String {
-        if let min = editFilter.priceMin, let max = editFilter.priceMax {
+        if let min = filter.priceMin, let max = filter.priceMax {
             return "\(min)万〜\(max)万"
-        } else if let min = editFilter.priceMin {
+        } else if let min = filter.priceMin {
             return "\(min)万〜"
-        } else if let max = editFilter.priceMax {
+        } else if let max = filter.priceMax {
             return "〜\(max)万"
         }
         return "指定なし"
     }
 
     private var layoutSummary: String {
-        editFilter.layouts.isEmpty ? "指定なし" : editFilter.layouts.sorted().joined(separator: ", ")
+        filter.layouts.isEmpty ? "指定なし" : filter.layouts.sorted().joined(separator: ", ")
     }
 
     private var walkSummary: String {
-        guard let max = editFilter.walkMax else { return "指定なし" }
+        guard let max = filter.walkMax else { return "指定なし" }
         return "\(max)分以内"
     }
 
     private var areaSummary: String {
-        guard let min = editFilter.areaMin else { return "指定なし" }
+        guard let min = filter.areaMin else { return "指定なし" }
         return "\(Int(min))㎡以上"
     }
 
     private var ownershipSummary: String {
-        if editFilter.ownershipTypes.isEmpty { return "指定なし" }
-        return editFilter.ownershipTypes.map(\.rawValue).sorted().joined(separator: ", ")
+        if filter.ownershipTypes.isEmpty { return "指定なし" }
+        return filter.ownershipTypes.map(\.rawValue).sorted().joined(separator: ", ")
     }
 
     private var wardSummary: String {
-        if editFilter.wards.isEmpty { return "指定なし" }
-        let sorted = editFilter.wards.sorted()
+        if filter.wards.isEmpty { return "指定なし" }
+        let sorted = filter.wards.sorted()
         if sorted.count <= 3 { return sorted.joined(separator: ", ") }
         return "\(sorted.prefix(2).joined(separator: ", ")) 他\(sorted.count - 2)区"
     }
@@ -192,8 +198,8 @@ struct ListingFilterSheet: View {
     @ViewBuilder
     private var priceSliderContent: some View {
         VStack(spacing: 6) {
-            let minVal = Double(editFilter.priceMin ?? Int(priceRange.lowerBound))
-            let maxVal = Double(editFilter.priceMax ?? Int(priceRange.upperBound))
+            let minVal = Double(filter.priceMin ?? Int(priceRange.lowerBound))
+            let maxVal = Double(filter.priceMax ?? Int(priceRange.upperBound))
             HStack {
                 Text("\(Int(minVal))万")
                     .font(.caption)
@@ -209,8 +215,8 @@ struct ListingFilterSheet: View {
                     .foregroundStyle(.secondary)
                 Slider(
                     value: Binding(
-                        get: { Double(editFilter.priceMin ?? Int(priceRange.lowerBound)) },
-                        set: { editFilter.priceMin = Int($0) == Int(priceRange.lowerBound) ? nil : Int($0) }
+                        get: { Double(filter.priceMin ?? Int(priceRange.lowerBound)) },
+                        set: { filter.priceMin = Int($0) == Int(priceRange.lowerBound) ? nil : Int($0) }
                     ),
                     in: priceRange,
                     step: priceStep
@@ -223,8 +229,8 @@ struct ListingFilterSheet: View {
                     .foregroundStyle(.secondary)
                 Slider(
                     value: Binding(
-                        get: { Double(editFilter.priceMax ?? Int(priceRange.upperBound)) },
-                        set: { editFilter.priceMax = Int($0) == Int(priceRange.upperBound) ? nil : Int($0) }
+                        get: { Double(filter.priceMax ?? Int(priceRange.upperBound)) },
+                        set: { filter.priceMax = Int($0) == Int(priceRange.upperBound) ? nil : Int($0) }
                     ),
                     in: priceRange,
                     step: priceStep
@@ -233,7 +239,7 @@ struct ListingFilterSheet: View {
             }
             // 新築タブのみ: 価格未定を含むかどうかのトグル
             if showPriceUndecidedToggle {
-                Toggle(isOn: $editFilter.includePriceUndecided) {
+                Toggle(isOn: $filter.includePriceUndecided) {
                     Text("価格未定の物件を含む")
                         .font(.caption)
                 }
@@ -251,9 +257,9 @@ struct ListingFilterSheet: View {
             ForEach(availableLayouts, id: \.self) { layout in
                 FilterChip(
                     label: layout,
-                    isSelected: editFilter.layouts.contains(layout)
+                    isSelected: filter.layouts.contains(layout)
                 ) {
-                    toggleSet(&editFilter.layouts, value: layout)
+                    toggleSet(&filter.layouts, value: layout)
                 }
             }
         }
@@ -264,18 +270,18 @@ struct ListingFilterSheet: View {
     @ViewBuilder
     private var walkSliderContent: some View {
         VStack(spacing: 4) {
-            let val = Double(editFilter.walkMax ?? Int(walkRange.upperBound))
+            let val = Double(filter.walkMax ?? Int(walkRange.upperBound))
             HStack {
                 Slider(
                     value: Binding(
                         get: { val },
-                        set: { editFilter.walkMax = Int($0) == Int(walkRange.upperBound) ? nil : Int($0) }
+                        set: { filter.walkMax = Int($0) == Int(walkRange.upperBound) ? nil : Int($0) }
                     ),
                     in: walkRange,
                     step: 1
                 )
                 .tint(.accentColor)
-                Text(editFilter.walkMax.map { "\($0)分以内" } ?? "指定なし")
+                Text(filter.walkMax.map { "\($0)分以内" } ?? "指定なし")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 70, alignment: .trailing)
@@ -288,18 +294,18 @@ struct ListingFilterSheet: View {
     @ViewBuilder
     private var areaSliderContent: some View {
         VStack(spacing: 4) {
-            let val = editFilter.areaMin ?? areaRange.lowerBound
+            let val = filter.areaMin ?? areaRange.lowerBound
             HStack {
                 Slider(
                     value: Binding(
                         get: { val },
-                        set: { editFilter.areaMin = $0 <= areaRange.lowerBound ? nil : $0 }
+                        set: { filter.areaMin = $0 <= areaRange.lowerBound ? nil : $0 }
                     ),
                     in: areaRange,
                     step: 5
                 )
                 .tint(.accentColor)
-                Text(editFilter.areaMin.map { "\(Int($0))㎡以上" } ?? "指定なし")
+                Text(filter.areaMin.map { "\(Int($0))㎡以上" } ?? "指定なし")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 70, alignment: .trailing)
@@ -315,12 +321,12 @@ struct ListingFilterSheet: View {
             ForEach(OwnershipType.allCases, id: \.self) { type in
                 FilterChip(
                     label: type.rawValue,
-                    isSelected: editFilter.ownershipTypes.contains(type)
+                    isSelected: filter.ownershipTypes.contains(type)
                 ) {
-                    if editFilter.ownershipTypes.contains(type) {
-                        editFilter.ownershipTypes.remove(type)
+                    if filter.ownershipTypes.contains(type) {
+                        filter.ownershipTypes.remove(type)
                     } else {
-                        editFilter.ownershipTypes.insert(type)
+                        filter.ownershipTypes.insert(type)
                     }
                 }
             }
@@ -335,9 +341,9 @@ struct ListingFilterSheet: View {
             ForEach(PropertyTypeFilter.allCases, id: \.self) { type in
                 FilterChip(
                     label: type.rawValue,
-                    isSelected: editFilter.propertyType == type
+                    isSelected: filter.propertyType == type
                 ) {
-                    editFilter.propertyType = type
+                    filter.propertyType = type
                 }
             }
         }
@@ -357,9 +363,9 @@ struct ListingFilterSheet: View {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 6) {
                     ForEach(group.wards, id: \.self) { ward in
                         let inData = availableWards.contains(ward)
-                        let isSelected = editFilter.wards.contains(ward)
+                        let isSelected = filter.wards.contains(ward)
                         Button {
-                            toggleSet(&editFilter.wards, value: ward)
+                            toggleSet(&filter.wards, value: ward)
                         } label: {
                             Text(ward)
                                 .font(.caption2)
