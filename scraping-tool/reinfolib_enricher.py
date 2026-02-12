@@ -141,8 +141,8 @@ def enrich_reinfolib(listings: list) -> int:
         if listing.get("reinfolib_market_data"):
             continue
 
-        # 住所から区名を抽出
-        ward = extract_ward(listing.get("address"))
+        # 住所から区名を抽出（ss_address 優先）
+        ward = extract_ward(listing.get("ss_address") or listing.get("address"))
         if not ward:
             continue
 

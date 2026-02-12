@@ -293,6 +293,7 @@ final class ListingStore {
         existing.name = new.name
         existing.priceMan = new.priceMan
         existing.address = new.address
+        existing.ssAddress = new.ssAddress
         existing.stationLine = new.stationLine
         existing.walkMin = new.walkMin
         existing.areaM2 = new.areaM2

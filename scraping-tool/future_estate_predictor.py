@@ -304,7 +304,7 @@ class FutureEstatePredictor:
                 "investment_grade": "C",
                 "strategic_advice": "価格情報がありません。",
             }
-        address = property_data.get("address") or property_data.get("住所") or property_data.get("addr")
+        address = property_data.get("ss_address") or property_data.get("address") or property_data.get("住所") or property_data.get("addr")
         ward_name = _ward_from_address(address) or property_data.get("ward")
         rank, supply_constraint = self._get_ward_params(ward_name)
         current_valuation = int(round(listing_yen * LISTING_TO_CONTRACT_RATIO))
