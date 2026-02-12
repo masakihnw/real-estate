@@ -420,9 +420,14 @@ def parse_property_page(session: requests.Session, url: str,
     if purchase_judgment:
         result["ss_purchase_judgment"] = purchase_judgment
 
-    # ── 値上がりシミュレーション (5年後/10年後 × ベスト/標準/ワースト) ──
+    # ── 値上がりシミュレーション (5年後/10年後 × ベスト/標準/ワースト + ローン残高) ──
     sim_data = _extract_simulation_data(soup, html)
     result.update(sim_data)
+
+    # ── 10年後予測詳細（新築のみ: m²単価、予測変動率等） ──
+    if property_type == "shinchiku":
+        forecast = _extract_forecast_detail(soup, html)
+        result.update(forecast)
 
     # ── 過去の相場推移テーブル ──
     past_trends = _extract_past_market_trends(soup, html)
@@ -608,6 +613,51 @@ def _extract_purchase_judgment(soup: BeautifulSoup, html: str) -> Optional[str]:
     return None
 
 
+def _extract_forecast_detail(soup: BeautifulSoup, html: str) -> dict:
+    """
+    10年後予測詳細データを抽出する（新築のみ）。
+    返却例:
+      {
+        "ss_new_m2_price": 264,        # 新築時m²単価（万円）
+        "ss_forecast_m2_price": 295,   # 10年後予測m²単価（万円）
+        "ss_forecast_change_rate": 11.7,  # 予測変動率（%）
+      }
+    """
+    result: dict = {}
+
+    # ── 新築時m²単価 ──
+    # パターン: "新築時価格表㎡単価" or "新築時m²単価" → "264 万円" or "264万/㎡"
+    m = re.search(r"新築時(?:価格表)?[㎡m²]単価.*?(\d+)\s*万", html, re.DOTALL)
+    if m:
+        result["ss_new_m2_price"] = int(m.group(1))
+
+    # ── 沖式新築時価㎡単価 ──
+    m = re.search(r"沖式新築時価[㎡m²]単価.*?(\d+)\s*万", html, re.DOTALL)
+    if m:
+        # ss_new_m2_price が未取得の場合のフォールバック
+        if "ss_new_m2_price" not in result:
+            result["ss_new_m2_price"] = int(m.group(1))
+
+    # ── 10年後予測m²単価 ──
+    m = re.search(r"10年後予測[㎡m²].*?(\d+)\s*万", html, re.DOTALL)
+    if m:
+        result["ss_forecast_m2_price"] = int(m.group(1))
+
+    # ── 予測変動率 ──
+    m = re.search(r"予測変動率.*?([+-]?\d+(?:\.\d+)?)\s*[%％]", html, re.DOTALL)
+    if m:
+        result["ss_forecast_change_rate"] = float(m.group(1))
+
+    # フォールバック: 新築時m²単価と沖式新築時価㎡単価から変動率を計算
+    if "ss_forecast_change_rate" not in result:
+        new_p = result.get("ss_new_m2_price")
+        fc_p = result.get("ss_forecast_m2_price")
+        if new_p and fc_p and new_p > 0:
+            result["ss_forecast_change_rate"] = round((fc_p - new_p) / new_p * 100, 1)
+
+    return result
+
+
 def _extract_past_market_trends(soup: BeautifulSoup, html: str) -> Optional[list]:
     """
     過去の相場推移テーブルからデータを抽出する。
@@ -674,7 +724,7 @@ def _extract_past_market_trends(soup: BeautifulSoup, html: str) -> Optional[list
 
 def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
     """
-    値上がりシミュレーションテーブルのデータを抽出。
+    値上がりシミュレーションテーブル + ローン残高のデータを抽出。
     返却例: {
         "ss_sim_best_5yr": 7344,
         "ss_sim_best_10yr": 7788,
@@ -682,6 +732,8 @@ def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
         "ss_sim_standard_10yr": 6588,
         "ss_sim_worst_5yr": 6144,
         "ss_sim_worst_10yr": 5388,
+        "ss_loan_balance_5yr": 5395,
+        "ss_loan_balance_10yr": 4757,
     }
     """
     result: dict = {}
@@ -711,6 +763,8 @@ def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
                 case_key = "standard"
             elif "ワースト" in row_text:
                 case_key = "worst"
+            elif "ローン残高" in row_text:
+                case_key = "__loan__"
             else:
                 continue
 
@@ -718,9 +772,13 @@ def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
             for idx, suffix in [(1, "5yr"), (2, "10yr")]:
                 if idx < len(cells):
                     val_text = cells[idx].get_text(strip=True)
-                    num = re.search(r"([\d,]+)\s*万円", val_text)
+                    num = re.search(r"([\d,]+)\s*万", val_text)
                     if num:
-                        result[f"ss_sim_{case_key}_{suffix}"] = int(num.group(1).replace(",", ""))
+                        val = int(num.group(1).replace(",", ""))
+                        if case_key == "__loan__":
+                            result[f"ss_loan_balance_{suffix}"] = val
+                        else:
+                            result[f"ss_sim_{case_key}_{suffix}"] = val
 
     # テーブルが見つからなかった場合、正規表現でフォールバック
     if not result:
@@ -1024,6 +1082,12 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                 parts.append(f"お気に入り: {data['ss_favorite_count']}点")
             if data.get("ss_radar_data"):
                 parts.append("レーダー✓")
+            if data.get("ss_sim_best_5yr") is not None:
+                parts.append("シミュレーション✓")
+            if data.get("ss_loan_balance_5yr") is not None:
+                parts.append("ローン残高✓")
+            if data.get("ss_forecast_change_rate") is not None:
+                parts.append(f"変動率: {data['ss_forecast_change_rate']:+.1f}%")
             print(f"  ✓ {name} — {', '.join(parts) or 'URL取得'}", file=sys.stderr)
         else:
             no_data_count += 1
