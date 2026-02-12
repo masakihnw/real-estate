@@ -169,10 +169,17 @@ fi
 # 4.7b. 住まいサーフィン enrichment
 #   SUMAI_USER / SUMAI_PASS 設定時: Web スクレイピング + レーダーデータ生成
 #   未設定時: 既存 ss_*/walk_min からレーダーデータのみ補完（ログイン不要）
+#   --browser: 追加でブラウザ自動化（割安判定・カスタムシミュレーション）を実行
 echo "住まいサーフィン enrichment 実行中..." >&2
-python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" --property-type chuko || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
+# ブラウザ自動化フラグ: playwright がインストール済みの場合のみ有効
+BROWSER_FLAG=""
+if python3 -c "import playwright" 2>/dev/null; then
+    BROWSER_FLAG="--browser"
+    echo "  playwright 検出: ブラウザ自動化を含めて実行" >&2
+fi
+python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" --property-type chuko $BROWSER_FLAG || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
 if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" --property-type shinchiku || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
+    python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" --property-type shinchiku $BROWSER_FLAG || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
 fi
 
 # 4.7c. 通勤時間 enrichment（駅名ベースの概算通勤時間を付与。iOS で MKDirections 計算前のデフォルト値）

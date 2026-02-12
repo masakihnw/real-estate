@@ -74,8 +74,10 @@ final class Listing: @unchecked Sendable {
 
     /// 沖式儲かる確率 (%)
     var ssProfitPct: Int?
-    /// 沖式新築時価 or 沖式時価 (万円, 70m2換算)
+    /// 沖式中古時価 (万円, 70m²換算) — 中古のみ
     var ssOkiPrice70m2: Int?
+    /// m²割安額 (万円/m²) — 新築のみ。負値=割安、正値=割高
+    var ssM2Discount: Int?
     /// 割安判定 ("割安"/"適正"/"割高")
     var ssValueJudgment: String?
     /// 駅ランキング (e.g. "3/12")
@@ -92,7 +94,7 @@ final class Listing: @unchecked Sendable {
     var ssPurchaseJudgment: String?
 
     /// レーダーチャート偏差値 JSON 文字列（住まいサーフィン由来）
-    /// 例: {"asset_value":65.3,"favorites":58.2,"access_count":52.1,"oki_price_m2":70.5,"appreciation_rate":62.8,"walk_min":55.4}
+    /// 例: {"oki_price_m2":65.3,"build_age":52.1,"favorites":58.2,"walk_min":55.4,"appreciation_rate":62.8,"total_units":48.0}
     var ssRadarData: String?
 
     // MARK: - ハザード情報
@@ -126,6 +128,9 @@ final class Listing: @unchecked Sendable {
     /// ローン残高 10年後（万円）
     var ssLoanBalance10yr: Int?
 
+    /// シミュレーション基準価格（万円）— サイト側が使用したデフォルト価格
+    var ssSimBasePrice: Int?
+
     /// 新築時m²単価（万円）— 新築のみ
     var ssNewM2Price: Int?
     /// 10年後予測m²単価（万円）— 新築のみ
@@ -136,6 +141,14 @@ final class Listing: @unchecked Sendable {
     /// 過去の相場推移 JSON 文字列
     /// フォーマット: [{"period":"2022年～","price_man":11021,"area_m2":70.2,"unit_price_man":157},...]
     var ssPastMarketTrends: String?
+
+    /// 周辺の中古マンション相場 JSON 文字列
+    /// フォーマット: [{"name":"サンクタス大森ヴァッサーハウス","appreciation_rate":79.2,"oki_price_70m2":7700,"url":"https://..."},...]
+    var ssSurroundingProperties: String?
+
+    /// 販売価格割安判定 JSON 文字列（中古のみ・ブラウザ自動化で取得）
+    /// フォーマット: [{"unit":"3階/14階建","price_man":5980,"m2_price":78,"layout":"2LDK","area_m2":76.24,"direction":"南","oki_price_man":6200,"difference_man":-220,"judgment":"割安"},...]
+    var ssPriceJudgments: String?
 
     init(
         source: String? = nil,
@@ -171,6 +184,7 @@ final class Listing: @unchecked Sendable {
         commuteInfoJSON: String? = nil,
         ssProfitPct: Int? = nil,
         ssOkiPrice70m2: Int? = nil,
+        ssM2Discount: Int? = nil,
         ssValueJudgment: String? = nil,
         ssStationRank: String? = nil,
         ssWardRank: String? = nil,
@@ -187,10 +201,13 @@ final class Listing: @unchecked Sendable {
         ssSimWorst10yr: Int? = nil,
         ssLoanBalance5yr: Int? = nil,
         ssLoanBalance10yr: Int? = nil,
+        ssSimBasePrice: Int? = nil,
         ssNewM2Price: Int? = nil,
         ssForecastM2Price: Int? = nil,
         ssForecastChangeRate: Double? = nil,
-        ssPastMarketTrends: String? = nil
+        ssPastMarketTrends: String? = nil,
+        ssSurroundingProperties: String? = nil,
+        ssPriceJudgments: String? = nil
     ) {
         self.source = source
         self.url = url
@@ -225,6 +242,7 @@ final class Listing: @unchecked Sendable {
         self.commuteInfoJSON = commuteInfoJSON
         self.ssProfitPct = ssProfitPct
         self.ssOkiPrice70m2 = ssOkiPrice70m2
+        self.ssM2Discount = ssM2Discount
         self.ssValueJudgment = ssValueJudgment
         self.ssStationRank = ssStationRank
         self.ssWardRank = ssWardRank
@@ -241,10 +259,13 @@ final class Listing: @unchecked Sendable {
         self.ssSimWorst10yr = ssSimWorst10yr
         self.ssLoanBalance5yr = ssLoanBalance5yr
         self.ssLoanBalance10yr = ssLoanBalance10yr
+        self.ssSimBasePrice = ssSimBasePrice
         self.ssNewM2Price = ssNewM2Price
         self.ssForecastM2Price = ssForecastM2Price
         self.ssForecastChangeRate = ssForecastChangeRate
         self.ssPastMarketTrends = ssPastMarketTrends
+        self.ssSurroundingProperties = ssSurroundingProperties
+        self.ssPriceJudgments = ssPriceJudgments
     }
 
     // MARK: - Identity
@@ -599,33 +620,109 @@ final class Listing: @unchecked Sendable {
 
     /// 住まいサーフィンのデータがあるかどうか
     var hasSumaiSurfinData: Bool {
-        ssProfitPct != nil || ssOkiPrice70m2 != nil || ssValueJudgment != nil
-            || ssAppreciationRate != nil || ssFavoriteCount != nil
-            || ssSimBest5yr != nil
+        ssProfitPct != nil || ssOkiPrice70m2 != nil || ssM2Discount != nil
+            || ssValueJudgment != nil || ssAppreciationRate != nil
+            || ssFavoriteCount != nil || ssSimBest5yr != nil
+    }
+
+    // MARK: - 周辺物件データ
+
+    /// 周辺の中古マンション相場の1件
+    struct SurroundingProperty: Identifiable {
+        let id = UUID()
+        let name: String
+        let appreciationRate: Double?  // 中古値上がり率 (%)
+        let okiPrice70m2: Int?         // 沖式中古時価 70m²換算 (万円)
+        let url: String?               // 住まいサーフィンURL
+    }
+
+    /// ssSurroundingProperties JSON をパースして配列で返す
+    var parsedSurroundingProperties: [SurroundingProperty] {
+        guard let json = ssSurroundingProperties,
+              let data = json.data(using: .utf8),
+              let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            return []
+        }
+        return arr.compactMap { dict in
+            guard let name = dict["name"] as? String else { return nil }
+            let rate = dict["appreciation_rate"] as? Double
+            let price = dict["oki_price_70m2"] as? Int
+            let url = dict["url"] as? String
+            return SurroundingProperty(name: name, appreciationRate: rate, okiPrice70m2: price, url: url)
+        }
+    }
+
+    /// 周辺物件データがあるか
+    var hasSurroundingProperties: Bool {
+        ssSurroundingProperties != nil && !parsedSurroundingProperties.isEmpty
+    }
+
+    // MARK: - 販売価格割安判定（中古のみ）
+
+    /// 販売住戸ごとの割安/割高判定
+    struct PriceJudgmentUnit: Identifiable {
+        let id = UUID()
+        let unit: String?           // "3階/14階建"
+        let priceMan: Int?          // 販売価格（万円）
+        let m2Price: Int?           // m²単価（万円）
+        let layout: String?         // 間取り
+        let areaM2: Double?         // 面積（㎡）
+        let direction: String?      // 向き
+        let okiPriceMan: Int?       // 沖式中古時価（万円）
+        let differenceMan: Int?     // 差額（万円、マイナス=割安）
+        let judgment: String?       // "割安" / "割高" / "適正"
+    }
+
+    /// ssPriceJudgments JSON をパースして配列で返す
+    var parsedPriceJudgments: [PriceJudgmentUnit] {
+        guard let json = ssPriceJudgments,
+              let data = json.data(using: .utf8),
+              let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            return []
+        }
+        return arr.compactMap { dict in
+            PriceJudgmentUnit(
+                unit: dict["unit"] as? String,
+                priceMan: dict["price_man"] as? Int,
+                m2Price: dict["m2_price"] as? Int,
+                layout: dict["layout"] as? String,
+                areaM2: dict["area_m2"] as? Double,
+                direction: dict["direction"] as? String,
+                okiPriceMan: dict["oki_price_man"] as? Int,
+                differenceMan: dict["difference_man"] as? Int,
+                judgment: dict["judgment"] as? String
+            )
+        }
+    }
+
+    /// 割安判定データがあるか
+    var hasPriceJudgments: Bool {
+        ssPriceJudgments != nil && !parsedPriceJudgments.isEmpty
     }
 
     // MARK: - レーダーチャートデータ
 
     /// レーダーチャートの6軸データ（偏差値ベース、0-100）
+    /// 軸の順番・ラベルは住まいサーフィンのサイト表示に準拠
     struct RadarData {
-        var assetValue: Double     // 資産性
-        var favorites: Double      // お気に入り
-        var accessCount: Double    // アクセス数
-        var okiPriceM2: Double     // 沖式時価m²単価
-        var appreciationRate: Double // 値上がり率
-        var walkMin: Double        // 徒歩分数
+        var okiPriceM2: Double       // 沖式中古時価m²単価
+        var buildAge: Double         // 築年数
+        var favorites: Double        // お気に入り数
+        var walkMin: Double          // 徒歩分数
+        var appreciationRate: Double // 中古値上がり率
+        var totalUnits: Double       // 総戸数
 
-        /// 6軸を配列で返す（描画用）
-        var values: [Double] { [assetValue, favorites, accessCount, okiPriceM2, appreciationRate, walkMin] }
+        /// 6軸を配列で返す（描画用 — サイトと同じ時計回り順）
+        var values: [Double] { [okiPriceM2, buildAge, favorites, walkMin, appreciationRate, totalUnits] }
 
-        /// 軸ラベル
-        static let labels = ["資産性", "お気に入り", "アクセス数", "沖式時価m²単価", "値上がり率", "徒歩分数"]
+        /// 軸ラベル（サイト準拠）
+        static let labels = ["沖式中古時価\nm²単価", "築年数", "お気に入り数", "徒歩分数", "中古値上がり率", "総戸数"]
     }
 
     /// ssRadarData JSON をパースしてレーダーチャートデータを返す。
     /// 対応形式:
-    ///   1. named-key 形式: {"asset_value":65.3, "favorites":58.2, ...}
-    ///   2. labels/values 形式 (旧): {"labels":["資産性",...], "values":[65.3,...]}
+    ///   1. named-key 形式: {"oki_price_m2":65.3, "build_age":58.2, ...}
+    ///   2. labels/values 形式 (旧): {"labels":["沖式中古時価m²単価",...], "values":[65.3,...]}
     /// JSON がない場合は既存フィールドからフォールバック計算する。
     var parsedRadarData: RadarData? {
         // まず JSON パースを試行
@@ -637,47 +734,56 @@ final class Listing: @unchecked Sendable {
             if let labels = dict["labels"] as? [String],
                let values = dict["values"] as? [Double] {
                 let labelToKey: [String: String] = [
-                    "資産性": "asset_value", "お気に入り": "favorites",
-                    "アクセス数": "access_count", "沖式時価m²単価": "oki_price_m2",
-                    "沖式時価": "oki_price_m2", "値上がり率": "appreciation_rate",
-                    "中古値上がり率": "appreciation_rate", "徒歩分数": "walk_min",
+                    "沖式中古時価m²単価": "oki_price_m2",
+                    "沖式時価m²単価": "oki_price_m2",
+                    "沖式時価": "oki_price_m2",
+                    "築年数": "build_age",
+                    "お気に入り数": "favorites",
+                    "お気に入り": "favorites",
+                    "徒歩分数": "walk_min",
+                    "中古値上がり率": "appreciation_rate",
+                    "値上がり率": "appreciation_rate",
+                    "総戸数": "total_units",
+                    // 旧キー互換
+                    "資産性": "appreciation_rate",
+                    "アクセス数": "oki_price_m2",
                 ]
                 var mapped: [String: Double] = [:]
                 for (i, label) in labels.enumerated() where i < values.count {
                     if let key = labelToKey[label] { mapped[key] = values[i] }
                 }
                 return RadarData(
-                    assetValue: mapped["asset_value"] ?? 50,
-                    favorites: mapped["favorites"] ?? 50,
-                    accessCount: mapped["access_count"] ?? 50,
                     okiPriceM2: mapped["oki_price_m2"] ?? 50,
+                    buildAge: mapped["build_age"] ?? 50,
+                    favorites: mapped["favorites"] ?? 50,
+                    walkMin: mapped["walk_min"] ?? 50,
                     appreciationRate: mapped["appreciation_rate"] ?? 50,
-                    walkMin: mapped["walk_min"] ?? 50
+                    totalUnits: mapped["total_units"] ?? 50
                 )
             }
 
             // named-key 形式（新 enricher 出力）
             return RadarData(
-                assetValue: (dict["asset_value"] as? Double) ?? 50,
-                favorites: (dict["favorites"] as? Double) ?? 50,
-                accessCount: (dict["access_count"] as? Double) ?? 50,
                 okiPriceM2: (dict["oki_price_m2"] as? Double) ?? 50,
+                buildAge: (dict["build_age"] as? Double) ?? 50,
+                favorites: (dict["favorites"] as? Double) ?? 50,
+                walkMin: (dict["walk_min"] as? Double) ?? 50,
                 appreciationRate: (dict["appreciation_rate"] as? Double) ?? 50,
-                walkMin: (dict["walk_min"] as? Double) ?? 50
+                totalUnits: (dict["total_units"] as? Double) ?? 50
             )
         }
 
         // フォールバック: 既存データから推定（大まかな偏差値近似）
         guard hasSumaiSurfinData else { return nil }
 
+        // 沖式時価: 有無で推定
+        let okiVal: Double = ssOkiPrice70m2 != nil ? 55 : 50
+
         // 値上がり率 → 偏差値（0% = 50, ±10% = ±10）
         let rateVal: Double = {
             guard let rate = ssAppreciationRate else { return 50 }
             return min(80, max(20, 50 + rate))
         }()
-
-        // 沖式時価: 有無で推定
-        let okiVal: Double = ssOkiPrice70m2 != nil ? 55 : 50
 
         // お気に入りカウント → 偏差値
         let favVal: Double = {
@@ -692,12 +798,12 @@ final class Listing: @unchecked Sendable {
         }()
 
         return RadarData(
-            assetValue: rateVal,
-            favorites: favVal,
-            accessCount: 50,  // アクセス数はフォールバック不可
             okiPriceM2: okiVal,
+            buildAge: 50,          // 築年数はフォールバック不可
+            favorites: favVal,
+            walkMin: walkVal,
             appreciationRate: rateVal,
-            walkMin: walkVal
+            totalUnits: 50          // 総戸数はフォールバック不可
         )
     }
 
@@ -735,10 +841,17 @@ final class Listing: @unchecked Sendable {
         ssPastMarketTrends != nil && !parsedMarketTrends.isEmpty
     }
 
-    /// 値上がりシミュレーションデータがあるか（新築のみ。住まいサーフィンの値上がりシミュレーションは新築物件ページにのみ存在する）
+    /// 値上がりシミュレーションデータがあるか（新築のみ）
+    ///
+    /// 以下のいずれかで計算可能:
+    ///   1. シミュレーション絶対値（ベスト/標準/ワースト）がある → 変動率を逆算して使用
+    ///   2. 予測変動率（ss_forecast_change_rate）がある → ±10pp スプレッドで推定
     var hasSimulationData: Bool {
         isShinchiku
-            && ssSimBest5yr != nil && ssSimStandard5yr != nil && ssSimWorst5yr != nil
+            && (
+                (ssSimBest5yr != nil && ssSimStandard5yr != nil && ssSimWorst5yr != nil)
+                || ssForecastChangeRate != nil
+            )
     }
 
     /// 10年後予測詳細データがあるか（新築のみ）
@@ -1015,6 +1128,7 @@ struct ListingDTO: Codable {
     // 住まいサーフィン評価データ
     var ss_profit_pct: Int?
     var ss_oki_price_70m2: Int?
+    var ss_m2_discount: Int?
     var ss_value_judgment: String?
     var ss_station_rank: String?
     var ss_ward_rank: String?
@@ -1031,10 +1145,13 @@ struct ListingDTO: Codable {
     var ss_sim_worst_10yr: Int?
     var ss_loan_balance_5yr: Int?
     var ss_loan_balance_10yr: Int?
+    var ss_sim_base_price: Int?
     var ss_new_m2_price: Int?
     var ss_forecast_m2_price: Int?
     var ss_forecast_change_rate: Double?
     var ss_past_market_trends: String?
+    var ss_surrounding_properties: String?
+    var ss_price_judgments: String?
 
     // 通勤時間（駅ベース概算、パイプライン側で付与）
     var commute_info: String?
@@ -1093,6 +1210,7 @@ extension Listing {
             commuteInfoJSON: dto.commute_info,
             ssProfitPct: dto.ss_profit_pct,
             ssOkiPrice70m2: dto.ss_oki_price_70m2,
+            ssM2Discount: dto.ss_m2_discount,
             ssValueJudgment: dto.ss_value_judgment,
             ssStationRank: dto.ss_station_rank,
             ssWardRank: dto.ss_ward_rank,
@@ -1109,10 +1227,13 @@ extension Listing {
             ssSimWorst10yr: dto.ss_sim_worst_10yr,
             ssLoanBalance5yr: dto.ss_loan_balance_5yr,
             ssLoanBalance10yr: dto.ss_loan_balance_10yr,
+            ssSimBasePrice: dto.ss_sim_base_price,
             ssNewM2Price: dto.ss_new_m2_price,
             ssForecastM2Price: dto.ss_forecast_m2_price,
             ssForecastChangeRate: dto.ss_forecast_change_rate,
-            ssPastMarketTrends: dto.ss_past_market_trends
+            ssPastMarketTrends: dto.ss_past_market_trends,
+            ssSurroundingProperties: dto.ss_surrounding_properties,
+            ssPriceJudgments: dto.ss_price_judgments
         )
     }
 }

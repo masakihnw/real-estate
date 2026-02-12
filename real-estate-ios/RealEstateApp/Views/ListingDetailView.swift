@@ -20,6 +20,10 @@ struct ListingDetailView: View {
     @State private var editingCommentId: String?
     /// 駅プルダウン展開状態
     @State private var isStationsExpanded: Bool = false
+    /// 周辺物件プルダウン展開状態
+    @State private var isSurroundingExpanded: Bool = false
+    /// 割安判定プルダウン展開状態
+    @State private var isPriceJudgmentsExpanded: Bool = false
     /// SFSafariViewController 表示用
     @State private var safariURL: URL?
     /// HIG: 破壊的操作の確認用（コメント削除）
@@ -987,6 +991,16 @@ struct ListingDetailView: View {
                     Spacer()
                 }
             }
+
+            // 周辺の中古マンション相場（プルダウン表示）
+            if listing.hasSurroundingProperties {
+                surroundingPropertiesSection
+            }
+
+            // 販売価格割安判定（中古のみ・ブラウザ自動化で取得したデータ）
+            if listing.hasPriceJudgments {
+                priceJudgmentsSection
+            }
         }
         .padding(14)
         .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
@@ -1059,7 +1073,7 @@ struct ListingDetailView: View {
 
     @ViewBuilder
     private var shinchikuSumaiSection: some View {
-        // ── 儲かる確率 + 沖式新築時価 ──
+        // ── 儲かる確率 + m²割安額 ──
         if let pct = listing.ssProfitPct {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 VStack(alignment: .leading, spacing: 2) {
@@ -1078,14 +1092,19 @@ struct ListingDetailView: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 6) {
-                    if let price = listing.ssOkiPrice70m2 {
+                    if let discount = listing.ssM2Discount {
                         VStack(alignment: .trailing, spacing: 1) {
-                            Text("沖式新築時価（70㎡換算）")
+                            Text("m²割安額")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
-                            Text("\(price.formatted())万円")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
+                            HStack(alignment: .firstTextBaseline, spacing: 1) {
+                                Text(discount >= 0 ? "+\(discount)" : "\(discount)")
+                                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                                    .foregroundStyle(discount <= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
+                                Text("万円/m²")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                     if let judgment = listing.ssValueJudgment {
@@ -1100,15 +1119,20 @@ struct ListingDetailView: View {
                     }
                 }
             }
-        } else if let price = listing.ssOkiPrice70m2 {
+        } else if let discount = listing.ssM2Discount {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("沖式新築時価（70㎡換算）")
+                    Text("m²割安額")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("\(price.formatted())万円")
-                        .font(.title3)
-                        .fontWeight(.semibold)
+                    HStack(alignment: .firstTextBaseline, spacing: 1) {
+                        Text(discount >= 0 ? "+\(discount)" : "\(discount)")
+                            .font(.system(.title3, design: .rounded).weight(.semibold))
+                            .foregroundStyle(discount <= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
+                        Text("万円/m²")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 Spacer()
                 if let judgment = listing.ssValueJudgment {
@@ -1140,7 +1164,8 @@ struct ListingDetailView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(.secondary)
                 Spacer()
-                if let judgment = listing.ssPurchaseJudgment {
+                // シミュレーションセクションで購入判定を表示する場合は重複を避ける
+                if !listing.hasSimulationData, let judgment = listing.ssPurchaseJudgment {
                     Text(judgment)
                         .font(.caption)
                         .fontWeight(.bold)
@@ -1207,6 +1232,228 @@ struct ListingDetailView: View {
                 .font(.subheadline)
                 .fontWeight(.bold)
                 .foregroundStyle(valueColor)
+        }
+    }
+
+    // MARK: - 周辺の中古マンション相場
+
+    @ViewBuilder
+    private var surroundingPropertiesSection: some View {
+        let properties = listing.parsedSurroundingProperties
+
+        VStack(alignment: .leading, spacing: 0) {
+            // ヘッダーボタン（タップで展開/折りたたみ）
+            Button {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    isSurroundingExpanded.toggle()
+                }
+            } label: {
+                HStack {
+                    Text("周辺の中古マンション相場")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    HStack(spacing: 4) {
+                        Text("\(properties.count)件")
+                            .font(.caption2)
+                        Image(systemName: isSurroundingExpanded ? "chevron.up" : "chevron.down")
+                            .font(.caption2)
+                    }
+                    .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 8)
+            }
+            .buttonStyle(.plain)
+
+            // 展開部分
+            if isSurroundingExpanded {
+                VStack(spacing: 0) {
+                    ForEach(properties) { prop in
+                        HStack {
+                            // 物件名
+                            if let url = prop.url, let propURL = URL(string: url) {
+                                Button {
+                                    safariURL = propURL
+                                } label: {
+                                    Text(prop.name)
+                                        .font(.caption)
+                                        .foregroundStyle(Color.accentColor)
+                                        .lineLimit(1)
+                                }
+                                .buttonStyle(.plain)
+                            } else {
+                                Text(prop.name)
+                                    .font(.caption)
+                                    .lineLimit(1)
+                            }
+
+                            Spacer(minLength: 8)
+
+                            // 値上がり率
+                            if let rate = prop.appreciationRate {
+                                Text(String(format: "%.1f%%", rate))
+                                    .font(.system(.caption, design: .rounded).weight(.semibold))
+                                    .foregroundStyle(rate >= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
+                                    .frame(width: 50, alignment: .trailing)
+                            }
+
+                            // 沖式中古時価 70m²
+                            if let price = prop.okiPrice70m2 {
+                                Text("\(price.formatted())万")
+                                    .font(.system(.caption, design: .rounded).weight(.semibold))
+                                    .frame(width: 70, alignment: .trailing)
+                            }
+                        }
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 4)
+
+                        if prop.id != properties.last?.id {
+                            Divider()
+                        }
+                    }
+                }
+                .padding(8)
+                .background(Color(.systemGray6).opacity(0.5))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+    }
+
+    // MARK: - 販売価格割安判定（中古のみ）
+
+    @ViewBuilder
+    private var priceJudgmentsSection: some View {
+        let units = listing.parsedPriceJudgments
+
+        VStack(alignment: .leading, spacing: 0) {
+            // ヘッダーボタン
+            Button {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    isPriceJudgmentsExpanded.toggle()
+                }
+            } label: {
+                HStack {
+                    Text("販売価格 割安判定")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    HStack(spacing: 4) {
+                        let cheapCount = units.filter { $0.judgment == "割安" || $0.judgment == "やや割安" }.count
+                        if cheapCount > 0 {
+                            Text("\(cheapCount)/\(units.count)戸割安")
+                                .font(.caption2)
+                                .foregroundStyle(DesignSystem.positiveColor)
+                        } else {
+                            Text("\(units.count)戸")
+                                .font(.caption2)
+                        }
+                        Image(systemName: isPriceJudgmentsExpanded ? "chevron.up" : "chevron.down")
+                            .font(.caption2)
+                    }
+                    .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 8)
+            }
+            .buttonStyle(.plain)
+
+            // 展開部分
+            if isPriceJudgmentsExpanded {
+                VStack(spacing: 0) {
+                    ForEach(units) { unit in
+                        VStack(alignment: .leading, spacing: 4) {
+                            // 1行目: 住戸情報 + 判定
+                            HStack {
+                                if let unitLabel = unit.unit {
+                                    Text(unitLabel)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                if let layout = unit.layout {
+                                    Text(layout)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                if let area = unit.areaM2 {
+                                    Text(String(format: "%.1fm²", area))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                if let judgment = unit.judgment {
+                                    Text(judgment)
+                                        .font(.caption2)
+                                        .fontWeight(.bold)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(priceJudgmentColor(judgment).opacity(0.15))
+                                        .foregroundStyle(priceJudgmentColor(judgment))
+                                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                                }
+                            }
+
+                            // 2行目: 価格比較
+                            HStack(spacing: 12) {
+                                if let price = unit.priceMan {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text("販売価格")
+                                            .font(.system(size: 9))
+                                            .foregroundStyle(.tertiary)
+                                        Text("\(price.formatted())万")
+                                            .font(.system(.caption, design: .rounded).weight(.semibold))
+                                    }
+                                }
+                                if let okiPrice = unit.okiPriceMan {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text("沖式時価")
+                                            .font(.system(size: 9))
+                                            .foregroundStyle(.tertiary)
+                                        Text("\(okiPrice.formatted())万")
+                                            .font(.system(.caption, design: .rounded).weight(.semibold))
+                                    }
+                                }
+                                if let diff = unit.differenceMan {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text("差額")
+                                            .font(.system(size: 9))
+                                            .foregroundStyle(.tertiary)
+                                        Text("\(diff >= 0 ? "+" : "")\(diff.formatted())万")
+                                            .font(.system(.caption, design: .rounded).weight(.bold))
+                                            .foregroundStyle(diff <= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
+                                    }
+                                }
+                                Spacer()
+                            }
+                        }
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 4)
+
+                        if unit.id != units.last?.id {
+                            Divider()
+                        }
+                    }
+                }
+                .padding(8)
+                .background(Color(.systemGray6).opacity(0.5))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+    }
+
+    /// 割安判定のカラーマッピング
+    private func priceJudgmentColor(_ judgment: String) -> Color {
+        switch judgment {
+        case "割安", "やや割安":
+            return DesignSystem.positiveColor
+        case "割高", "やや割高":
+            return DesignSystem.negativeColor
+        case "適正":
+            return Color.orange
+        default:
+            return Color.secondary
         }
     }
 

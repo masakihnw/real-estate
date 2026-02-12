@@ -342,16 +342,14 @@ def _name_similarity(a: str, b: str) -> float:
 
 # ──────────────────────────── ページパース ────────────────────────────
 
-def parse_property_page(session: requests.Session, url: str,
-                        property_type: str = "chuko") -> dict:
+def _fetch_property_page(
+    session: requests.Session, url: str
+) -> Optional[tuple[BeautifulSoup, str]]:
     """
-    住まいサーフィンの物件ページ (/re/{id}/) をパースし、
-    評価データの dict を返す。
-
-    property_type: "chuko" (中古) or "shinchiku" (新築)
+    住まいサーフィンの物件ページ (/re/{id}/) を取得し、
+    (BeautifulSoup, html_text) のタプルを返す。
+    取得失敗時は None。
     """
-    result: dict = {"ss_sumai_surfin_url": url}
-
     time.sleep(DELAY)
 
     try:
@@ -372,21 +370,37 @@ def parse_property_page(session: requests.Session, url: str,
                 else:
                     raise
         if resp is None:
-            return result
+            return None
         html = resp.text
         soup = BeautifulSoup(html, "lxml")
+        return soup, html
     except Exception as e:
         print(f"住まいサーフィン: ページ取得エラー ({url}): {e}", file=sys.stderr)
+        return None
+
+
+# ──────────────────────────── 中古専用パーサー ────────────────────────────
+
+def parse_chuko_page(session: requests.Session, url: str) -> dict:
+    """
+    住まいサーフィンの中古マンションページをパースし、評価データの dict を返す。
+
+    抽出フィールド:
+      ss_sumai_surfin_url, ss_oki_price_70m2, ss_value_judgment,
+      ss_station_rank, ss_ward_rank, ss_appreciation_rate,
+      ss_favorite_count, ss_purchase_judgment,
+      ss_sim_*, ss_loan_balance_*, ss_sim_base_price,
+      ss_past_market_trends, ss_radar_data
+    """
+    result: dict = {"ss_sumai_surfin_url": url}
+
+    fetched = _fetch_property_page(session, url)
+    if fetched is None:
         return result
+    soup, html = fetched
 
-    # ── 沖式儲かる確率（新築のみ — 中古には存在しない） ──
-    if property_type == "shinchiku":
-        profit_pct = _extract_profit_pct(soup, html)
-        if profit_pct is not None:
-            result["ss_profit_pct"] = profit_pct
-
-    # ── 沖式新築時価 / 沖式時価 (70m2換算) ──
-    oki_price = _extract_oki_price(soup, html)
+    # ── 沖式中古時価 (70m²換算) ──
+    oki_price = _extract_oki_price_chuko(soup, html)
     if oki_price is not None:
         result["ss_oki_price_70m2"] = oki_price
 
@@ -405,7 +419,7 @@ def parse_property_page(session: requests.Session, url: str,
     if ward_rank:
         result["ss_ward_rank"] = ward_rank
 
-    # ── 中古値上がり率 (%) — 沖式資産性評価セクションから取得 ──
+    # ── 中古値上がり率 (%) ──
     appreciation = _extract_appreciation_rate(soup, html)
     if appreciation is not None:
         result["ss_appreciation_rate"] = appreciation
@@ -420,37 +434,195 @@ def parse_property_page(session: requests.Session, url: str,
     if purchase_judgment:
         result["ss_purchase_judgment"] = purchase_judgment
 
-    # ── 値上がりシミュレーション (5年後/10年後 × ベスト/標準/ワースト + ローン残高) ──
+    # ── 値上がりシミュレーション ──
     sim_data = _extract_simulation_data(soup, html)
     result.update(sim_data)
 
-    # ── 10年後予測詳細（新築のみ: m²単価、予測変動率等） ──
-    if property_type == "shinchiku":
-        forecast = _extract_forecast_detail(soup, html)
-        result.update(forecast)
+    # ── シミュレーション基準価格（万円）──
+    sim_base = _extract_sim_base_price(soup, html)
+    if sim_base is not None:
+        result["ss_sim_base_price"] = sim_base
 
     # ── 過去の相場推移テーブル ──
     past_trends = _extract_past_market_trends(soup, html)
     if past_trends:
         result["ss_past_market_trends"] = json.dumps(past_trends, ensure_ascii=False)
 
-    # ── レーダーチャート用データ（ランキング偏差値 + JS チャート） ──
+    # ── 周辺の中古マンション相場 ──
+    surrounding = _extract_surrounding_properties(soup, html)
+    if surrounding:
+        result["ss_surrounding_properties"] = json.dumps(surrounding, ensure_ascii=False)
+
+    # ── レーダーチャート用データ ──
     radar_data = _extract_radar_chart_data(soup, html)
     if radar_data:
         result["ss_radar_data"] = json.dumps(radar_data, ensure_ascii=False)
+
+    # ── 最終バリデーション ──
+    result = _validate_parsed_data(result, url)
+
+    return result
+
+
+# ──────────────────────────── 新築専用パーサー ────────────────────────────
+
+def parse_shinchiku_page(session: requests.Session, url: str) -> dict:
+    """
+    住まいサーフィンの新築マンションページをパースし、評価データの dict を返す。
+
+    抽出フィールド:
+      ss_sumai_surfin_url, ss_profit_pct, ss_m2_discount,
+      ss_value_judgment, ss_station_rank, ss_ward_rank,
+      ss_favorite_count, ss_purchase_judgment,
+      ss_sim_*, ss_loan_balance_*, ss_sim_base_price,
+      ss_new_m2_price, ss_forecast_m2_price, ss_forecast_change_rate,
+      ss_radar_data
+    """
+    result: dict = {"ss_sumai_surfin_url": url}
+
+    fetched = _fetch_property_page(session, url)
+    if fetched is None:
+        return result
+    soup, html = fetched
+
+    # ── 沖式儲かる確率 ──
+    profit_pct = _extract_profit_pct(soup, html)
+    if profit_pct is not None:
+        result["ss_profit_pct"] = profit_pct
+
+    # ── m²割安額 ──
+    m2_discount = _extract_m2_discount(soup, html)
+    if m2_discount is not None:
+        result["ss_m2_discount"] = m2_discount
+
+    # ── 固定費判定（割安/適正/割高） ──
+    value_judgment = _extract_value_judgment(soup, html)
+    if value_judgment:
+        result["ss_value_judgment"] = value_judgment
+
+    # ── 駅ランキング ──
+    station_rank = _extract_rank(soup, "駅", html)
+    if station_rank:
+        result["ss_station_rank"] = station_rank
+
+    # ── 区ランキング ──
+    ward_rank = _extract_rank(soup, "区", html)
+    if ward_rank:
+        result["ss_ward_rank"] = ward_rank
+
+    # ── お気に入り数 ──
+    fav_count = _extract_favorite_count(soup, html)
+    if fav_count is not None:
+        result["ss_favorite_count"] = fav_count
+
+    # ── 購入判定 ──
+    purchase_judgment = _extract_purchase_judgment(soup, html)
+    if purchase_judgment:
+        result["ss_purchase_judgment"] = purchase_judgment
+
+    # ── 値上がりシミュレーション ──
+    sim_data = _extract_simulation_data(soup, html)
+    result.update(sim_data)
+
+    # ── シミュレーション基準価格（万円）──
+    sim_base = _extract_sim_base_price(soup, html)
+    if sim_base is not None:
+        result["ss_sim_base_price"] = sim_base
+
+    # ── 10年後予測詳細（m²単価、予測変動率等） ──
+    forecast = _extract_forecast_detail(soup, html)
+    result.update(forecast)
+
+    # ── 周辺の中古マンション相場 ──
+    surrounding = _extract_surrounding_properties(soup, html)
+    if surrounding:
+        result["ss_surrounding_properties"] = json.dumps(surrounding, ensure_ascii=False)
+
+    # ── レーダーチャート用データ ──
+    radar_data = _extract_radar_chart_data(soup, html)
+    if radar_data:
+        result["ss_radar_data"] = json.dumps(radar_data, ensure_ascii=False)
+
+    # ── 最終バリデーション ──
+    result = _validate_parsed_data(result, url)
+
+    return result
+
+
+def _validate_parsed_data(result: dict, url: str) -> dict:
+    """
+    パース結果の最終バリデーション。
+    regex の誤マッチによる異常値を除外する安全弁。
+    """
+    # バリデーションルール: (キー, 最小値, 最大値, 説明)
+    validation_rules: list[tuple[str, float, float, str]] = [
+        ("ss_profit_pct", 0, 100, "儲かる確率は0-100%"),
+        ("ss_oki_price_70m2", 1500, 100000, "70㎡換算時価は1500万円以上"),
+        ("ss_new_m2_price", 30, 2000, "㎡単価は30-2000万円"),
+        ("ss_forecast_m2_price", 30, 2000, "予測㎡単価は30-2000万円"),
+        ("ss_forecast_change_rate", -100, 300, "変動率は-100%～+300%"),
+        ("ss_sim_best_5yr", 100, 100000, "シミュレーション値は100万円以上"),
+        ("ss_sim_best_10yr", 100, 100000, "シミュレーション値は100万円以上"),
+        ("ss_sim_standard_5yr", 100, 100000, "シミュレーション値は100万円以上"),
+        ("ss_sim_standard_10yr", 100, 100000, "シミュレーション値は100万円以上"),
+        ("ss_sim_worst_5yr", 100, 100000, "シミュレーション値は100万円以上"),
+        ("ss_sim_worst_10yr", 100, 100000, "シミュレーション値は100万円以上"),
+        ("ss_loan_balance_5yr", 100, 100000, "ローン残高は100万円以上"),
+        ("ss_loan_balance_10yr", 100, 100000, "ローン残高は100万円以上"),
+        ("ss_appreciation_rate", 0, 500, "値上がり率は0-500%"),
+    ]
+    for key, min_val, max_val, desc in validation_rules:
+        val = result.get(key)
+        if val is not None and isinstance(val, (int, float)):
+            if val < min_val or val > max_val:
+                print(
+                    f"  [SumaiSurfin] バリデーション失敗 ({url}): "
+                    f"{key}={val} — {desc} → 除外",
+                    file=sys.stderr,
+                )
+                del result[key]
+
+    # 購入判定が単なるラベル名の場合は除外
+    pj = result.get("ss_purchase_judgment")
+    if pj in ("購入判定", "値上がり判定", "--"):
+        del result["ss_purchase_judgment"]
+
+    # シミュレーションデータの整合性チェック:
+    # 全ケースが同じ値の場合は誤取得の可能性が高い
+    sim_keys_5yr = ["ss_sim_best_5yr", "ss_sim_standard_5yr", "ss_sim_worst_5yr"]
+    sim_keys_10yr = ["ss_sim_best_10yr", "ss_sim_standard_10yr", "ss_sim_worst_10yr"]
+    for sim_keys in [sim_keys_5yr, sim_keys_10yr]:
+        vals = [result.get(k) for k in sim_keys if result.get(k) is not None]
+        if len(vals) == 3 and len(set(vals)) == 1:
+            # ベスト/標準/ワーストが全て同じ値 → 異常データ
+            print(
+                f"  [SumaiSurfin] シミュレーション整合性エラー ({url}): "
+                f"全ケース同値={vals[0]} → 除外",
+                file=sys.stderr,
+            )
+            for k in sim_keys:
+                result.pop(k, None)
 
     return result
 
 
 def _extract_profit_pct(soup: BeautifulSoup, html: str) -> Optional[int]:
     """沖式儲かる確率（%）を抽出。"""
-    # テキストから "儲かる確率" 付近の数値を探す
-    # パターン1: "XX%" の大きな数字表示
-    m = re.search(r"儲かる確率.*?(\d{1,3})\s*%", html, re.DOTALL)
+    # パターン1: "儲かる確率" の近傍（200文字以内）から数値を探す
+    # re.DOTALL + .*? で HTML 全体をスキャンすると、ユーザーレビュー等の
+    # 無関係な数値を拾ってしまうため、検索範囲を制限する。
+    m = re.search(r"儲かる確率", html)
     if m:
-        return int(m.group(1))
+        # "儲かる確率" の後ろ 200 文字以内で数値 + % を探す
+        search_area = html[m.start():m.start() + 200]
+        num = re.search(r"儲かる確率.*?(\d{1,3})\s*[%％]", search_area, re.DOTALL)
+        if num:
+            val = int(num.group(1))
+            # 儲かる確率は 0-100% の範囲
+            if 0 <= val <= 100:
+                return val
 
-    # パターン2: class で探す
+    # パターン2: DOM から探す（親要素の範囲に限定）
     for el in soup.find_all(string=re.compile(r"儲かる確率")):
         parent = el.find_parent()
         if parent:
@@ -459,21 +631,84 @@ def _extract_profit_pct(soup: BeautifulSoup, html: str) -> Optional[int]:
             if container:
                 num = re.search(r"(\d{1,3})\s*[%％]", container.get_text())
                 if num:
-                    return int(num.group(1))
+                    val = int(num.group(1))
+                    if 0 <= val <= 100:
+                        return val
     return None
 
 
-def _extract_oki_price(soup: BeautifulSoup, html: str) -> Optional[int]:
-    """沖式新築時価 or 沖式時価 (万円) を抽出。"""
+def _extract_oki_price_chuko(soup: BeautifulSoup, html: str) -> Optional[int]:
+    """沖式中古時価（70m²換算, 万円）を抽出。中古専用。
+
+    注意: "沖式中古時価m²単価" (㎡あたりの単価) を誤取得しないよう、
+    70m² 換算パターンを優先し、m²単価パターンを除外する。
+    """
     patterns = [
-        r"沖式新築時価.*?(\d[\d,]+)\s*万円",
-        r"沖式時価.*?(\d[\d,]+)\s*万円",
-        r"沖式中古時価.*?(\d[\d,]+)\s*万円",
+        # 優先: "沖式中古時価(70m2換算) X,XXX万円" — 最も確実
+        r"沖式中古時価\s*[\(（]70.{0,10}?[\)）]\s*.{0,50}?(\d[\d,]+)\s*万円",
+        # 汎用: m²単価パターンを除外して検索
+        r"沖式中古時価(?![㎡m²]\s*単価).{0,200}?(\d[\d,]+)\s*万円",
+    ]
+    for pat in patterns:
+        m = re.search(pat, html, re.DOTALL)
+        if m:
+            val = int(m.group(1).replace(",", ""))
+            # 70m² 換算の時価は最低でも 1500 万円以上（㎡単価等の誤取得を防止）
+            if val >= 1500:
+                return val
+    return None
+
+
+def _extract_m2_discount(soup: BeautifulSoup, html: str) -> Optional[int]:
+    """m²割安額（万円/m²）を抽出。新築専用。
+
+    住まいサーフィンの新築ページに表示される「m²割安額」を取得する。
+    負値 = 割安、正値 = 割高。
+    """
+    patterns = [
+        # "m²割安額 -12万円" / "㎡割安額 +5万円"
+        r"[m㎡²]\s*[²2]?\s*割安額.{0,100}?([+-]?\d[\d,]*)\s*万円",
+        # "割安額 -12万円/m²"
+        r"割安額.{0,100}?([+-]?\d[\d,]*)\s*万円\s*/?\s*[m㎡²]",
     ]
     for pat in patterns:
         m = re.search(pat, html, re.DOTALL)
         if m:
             return int(m.group(1).replace(",", ""))
+    return None
+
+
+def _extract_sim_base_price(soup: BeautifulSoup, html: str) -> Optional[int]:
+    """シミュレーションフォームの基準価格（万円）を抽出する。
+
+    住まいサーフィンの「購入条件を入力」フォームのデフォルト価格を取得。
+    この値は値上がりシミュレーションの計算基準となる。
+    """
+    # パターン1: 「購入条件」フッター内の価格
+    # "購入条件 価格: 6,000万円 / 金利: 0.79%..."
+    m = re.search(r"購入条件.{0,50}?価格[：:]\s*([\d,]+)\s*万", html, re.DOTALL)
+    if m:
+        val = int(m.group(1).replace(",", ""))
+        if 1000 <= val <= 50000:
+            return val
+
+    # パターン2: input フォームの value 属性（希望住戸の価格フィールド）
+    for inp in soup.find_all("input"):
+        name = inp.get("name", "").lower()
+        if "price" in name or "kakaku" in name:
+            val_str = inp.get("value", "")
+            if val_str and val_str.isdigit():
+                val = int(val_str)
+                if 1000 <= val <= 50000:
+                    return val
+
+    # パターン3: JavaScript 変数から抽出
+    m = re.search(r"(?:price|kakaku|希望.*?価格)\s*[=:]\s*(\d{4,5})", html)
+    if m:
+        val = int(m.group(1))
+        if 1000 <= val <= 50000:
+            return val
+
     return None
 
 
@@ -586,29 +821,47 @@ def _extract_favorite_count(soup: BeautifulSoup, html: str) -> Optional[int]:
 
 
 def _extract_purchase_judgment(soup: BeautifulSoup, html: str) -> Optional[str]:
-    """購入判定（"購入が望ましい" 等）を抽出。"""
-    # パターン1: "購入判定" の近くのテキスト
-    m = re.search(r"購入判定.*?(購入[^\s<]{1,20})", html, re.DOTALL)
-    if m:
-        return m.group(1).strip()
+    """購入判定 / 値上がり判定のテキストを抽出。
 
-    # パターン2: テーブルや見出しの隣
-    for el in soup.find_all(string=re.compile(r"購入判定")):
+    住まいサーフィンの判定は以下の 3 パターン:
+      - "値上がりが期待できます"
+      - "条件付きで値上がりが期待できます"
+      - "永住することで資産化が期待できます"
+    """
+    # ── パターン1: 既知の判定文言を直接検索 ──
+    known_judgments = [
+        "条件付きで値上がりが期待できます",
+        "値上がりが期待できます",
+        "永住することで資産化が期待できます",
+    ]
+    for judgment in known_judgments:
+        if judgment in html:
+            return judgment
+
+    # ── パターン2: "値上がり判定" の近傍から判定テキストを探す ──
+    m = re.search(r"値上がり判定", html)
+    if m:
+        # 判定の後ろ 300 文字以内を検索
+        search_area = html[m.start():m.start() + 300]
+        # "値上がり" or "永住" を含む文を探す
+        judge_m = re.search(
+            r"((?:条件付きで)?値上がり[^\s<]{1,30}|永住[^\s<]{1,30})",
+            search_area,
+        )
+        if judge_m:
+            text = judge_m.group(1).strip()
+            # "値上がり判定" 自体を再キャプチャしないようフィルタ
+            if text != "値上がり判定":
+                return text
+
+    # ── パターン3: DOM から探す ──
+    for el in soup.find_all(string=re.compile(r"値上がり判定|購入判定")):
         parent = el.find_parent()
         if parent:
-            # 隣の要素を探す
             sibling = parent.find_next_sibling()
             if sibling:
                 text = sibling.get_text(strip=True)
-                if text:
-                    return text
-            # 同じ親内のテキスト
-            container = parent.find_parent()
-            if container:
-                text = container.get_text(strip=True)
-                # "購入判定" を除去して残りを取得
-                text = text.replace("購入判定", "").strip()
-                if text:
+                if text and text not in ("購入判定", "値上がり判定", "--"):
                     return text
     return None
 
@@ -622,31 +875,45 @@ def _extract_forecast_detail(soup: BeautifulSoup, html: str) -> dict:
         "ss_forecast_m2_price": 295,   # 10年後予測m²単価（万円）
         "ss_forecast_change_rate": 11.7,  # 予測変動率（%）
       }
+
+    注意: 各 regex は検索範囲を 200 文字以内に制限する。
+    re.DOTALL + .*? でページ全体を検索すると、ユーザーレビュー内の
+    「平均㎡単価144万円」等の無関係な数値を誤取得する。
     """
     result: dict = {}
 
     # ── 新築時m²単価 ──
     # パターン: "新築時価格表㎡単価" or "新築時m²単価" → "264 万円" or "264万/㎡"
-    m = re.search(r"新築時(?:価格表)?[㎡m²]単価.*?(\d+)\s*万", html, re.DOTALL)
+    m = re.search(r"新築時(?:価格表)?[㎡m²]単価.{0,200}?(\d+)\s*万", html, re.DOTALL)
     if m:
-        result["ss_new_m2_price"] = int(m.group(1))
+        val = int(m.group(1))
+        # ㎡単価は東京で概ね 50～1000 万円/㎡ の範囲
+        if 30 <= val <= 2000:
+            result["ss_new_m2_price"] = val
 
     # ── 沖式新築時価㎡単価 ──
-    m = re.search(r"沖式新築時価[㎡m²]単価.*?(\d+)\s*万", html, re.DOTALL)
+    m = re.search(r"沖式新築時価[㎡m²]単価.{0,200}?(\d+)\s*万", html, re.DOTALL)
     if m:
         # ss_new_m2_price が未取得の場合のフォールバック
         if "ss_new_m2_price" not in result:
-            result["ss_new_m2_price"] = int(m.group(1))
+            val = int(m.group(1))
+            if 30 <= val <= 2000:
+                result["ss_new_m2_price"] = val
 
     # ── 10年後予測m²単価 ──
-    m = re.search(r"10年後予測[㎡m²].*?(\d+)\s*万", html, re.DOTALL)
+    m = re.search(r"10年後予測[㎡m²].{0,200}?(\d+)\s*万", html, re.DOTALL)
     if m:
-        result["ss_forecast_m2_price"] = int(m.group(1))
+        val = int(m.group(1))
+        if 30 <= val <= 2000:
+            result["ss_forecast_m2_price"] = val
 
     # ── 予測変動率 ──
-    m = re.search(r"予測変動率.*?([+-]?\d+(?:\.\d+)?)\s*[%％]", html, re.DOTALL)
+    m = re.search(r"予測変動率.{0,100}?([+-]?\d+(?:\.\d+)?)\s*[%％]", html, re.DOTALL)
     if m:
-        result["ss_forecast_change_rate"] = float(m.group(1))
+        val = float(m.group(1))
+        # 変動率は通常 -50% ～ +200% 程度
+        if -100 <= val <= 300:
+            result["ss_forecast_change_rate"] = val
 
     # フォールバック: 新築時m²単価と沖式新築時価㎡単価から変動率を計算
     if "ss_forecast_change_rate" not in result:
@@ -656,6 +923,94 @@ def _extract_forecast_detail(soup: BeautifulSoup, html: str) -> dict:
             result["ss_forecast_change_rate"] = round((fc_p - new_p) / new_p * 100, 1)
 
     return result
+
+
+def _extract_surrounding_properties(soup: BeautifulSoup, html: str) -> Optional[list]:
+    """
+    周辺の中古マンション相場テーブルからデータを抽出する。
+    返却形式:
+      [
+        {"name": "サンクタス大森ヴァッサーハウス", "appreciation_rate": 79.2, "oki_price_70m2": 7700},
+        {"name": "スターロワイヤル南大井", "oki_price_70m2": 7630},
+        ...
+      ]
+    注意: 中古値上がり率はログイン時のみ表示（非ログイン時は "XX%" で表示されるため取得不可）
+    """
+    results: list = []
+
+    # 「周辺の中古マンション相場」セクションのテーブルを探す
+    for heading in soup.find_all(string=re.compile(r"周辺の中古マンション相場")):
+        parent = heading.find_parent()
+        if not parent:
+            continue
+
+        # 見出し以降の最も近い <table> を探す
+        table = parent.find_next("table")
+        if not table:
+            # 親の兄弟要素にテーブルがあるか確認
+            for sibling in parent.find_all_next():
+                if sibling.name == "table":
+                    table = sibling
+                    break
+                # 別のセクション見出しに到達したら中止
+                if sibling.get_text(strip=True) in ("過去の相場推移", "沖式住戸比較レポート"):
+                    break
+        if not table:
+            continue
+
+        rows = table.find_all("tr")
+        for row in rows:
+            cells = row.find_all(["td", "th"])
+            if len(cells) < 2:
+                continue
+
+            # ヘッダー行をスキップ（"物件名" を含む行）
+            first_cell_text = cells[0].get_text(strip=True)
+            if "物件名" in first_cell_text:
+                continue
+
+            entry: dict = {}
+
+            # 物件名: 最初のセルのリンクテキストまたはテキスト
+            link = cells[0].find("a")
+            name = link.get_text(strip=True) if link else first_cell_text
+            if name and len(name) > 1 and name != "物件名":
+                entry["name"] = name
+                # リンクURLも取得（任意）
+                if link and link.get("href"):
+                    href = link["href"]
+                    if href.startswith("/"):
+                        entry["url"] = f"{BASE_URL}{href}"
+                    elif href.startswith("http"):
+                        entry["url"] = href
+
+            # 中古値上がり率: 2番目のセル
+            if len(cells) >= 2:
+                rate_text = cells[1].get_text(strip=True)
+                # "XX%" はマスク値なので除外
+                if "XX" not in rate_text:
+                    rate_m = re.search(r"(\d+(?:\.\d+)?)\s*[%％]", rate_text)
+                    if rate_m:
+                        entry["appreciation_rate"] = float(rate_m.group(1))
+
+            # 沖式中古時価（70m²換算）: 3番目のセル
+            if len(cells) >= 3:
+                price_text = cells[2].get_text(strip=True)
+                price_m = re.search(r"([\d,]+)\s*万円", price_text)
+                if price_m:
+                    val = int(price_m.group(1).replace(",", ""))
+                    if val >= 500:  # 最低 500 万円以上
+                        entry["oki_price_70m2"] = val
+
+            # 物件名がありかつ価格があれば追加
+            if "name" in entry and "oki_price_70m2" in entry:
+                results.append(entry)
+
+        # 最初のテーブルだけ処理
+        if results:
+            break
+
+    return results if results else None
 
 
 def _extract_past_market_trends(soup: BeautifulSoup, html: str) -> Optional[list]:
@@ -781,6 +1136,7 @@ def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
                             result[f"ss_sim_{case_key}_{suffix}"] = val
 
     # テーブルが見つからなかった場合、正規表現でフォールバック
+    # 検索範囲を 500 文字以内に制限し、値のバリデーションを実施
     if not result:
         case_patterns = {
             "best": r"ベストケース",
@@ -790,31 +1146,48 @@ def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
         for case_key, case_pat in case_patterns.items():
             # "ベストケース ... 7,344万円 ... 7,788万円" のようなパターン
             m = re.search(
-                case_pat + r".*?([\d,]+)\s*万円.*?([\d,]+)\s*万円",
+                case_pat + r".{0,500}?([\d,]+)\s*万円.{0,200}?([\d,]+)\s*万円",
                 html, re.DOTALL,
             )
             if m:
-                result[f"ss_sim_{case_key}_5yr"] = int(m.group(1).replace(",", ""))
-                result[f"ss_sim_{case_key}_10yr"] = int(m.group(2).replace(",", ""))
+                val_5yr = int(m.group(1).replace(",", ""))
+                val_10yr = int(m.group(2).replace(",", ""))
+                # シミュレーション値は通常 500～50000 万円の範囲
+                if val_5yr >= 500 and val_10yr >= 500:
+                    result[f"ss_sim_{case_key}_5yr"] = val_5yr
+                    result[f"ss_sim_{case_key}_10yr"] = val_10yr
 
-    return result
+    # テーブル解析結果もバリデーション: 極端に小さい値は除外
+    validated: dict = {}
+    for k, v in result.items():
+        if isinstance(v, int) and v < 100:
+            # 100万円未満のシミュレーション値は不正データとして除外
+            print(f"  [SumaiSurfin] シミュレーション値バリデーション失敗: {k}={v} (100万円未満のため除外)", file=sys.stderr)
+            continue
+        validated[k] = v
+
+    return validated
 
 
 # ──────────────────────────── レーダーチャート ────────────────────────────
 
 # 住まいサーフィンのラベル → iOS RadarData の named-key マッピング
+# サイト準拠の 6 軸: 沖式中古時価m²単価, 築年数, お気に入り数, 徒歩分数, 中古値上がり率, 総戸数
 RADAR_LABEL_TO_KEY: dict[str, str] = {
-    "資産性": "asset_value",
-    "お気に入り": "favorites",
-    "アクセス数": "access_count",
+    "沖式中古時価m²単価": "oki_price_m2",
+    "沖式中古時価m\u00b2単価": "oki_price_m2",
     "沖式時価m²単価": "oki_price_m2",
     "沖式時価": "oki_price_m2",
     "中古沖式時価m²単価": "oki_price_m2",
-    "値上がり率": "appreciation_rate",
-    "中古値上がり率": "appreciation_rate",
-    "値上り率": "appreciation_rate",
+    "築年数": "build_age",
+    "お気に入り数": "favorites",
+    "お気に入り": "favorites",
     "徒歩分数": "walk_min",
     "徒歩分": "walk_min",
+    "中古値上がり率": "appreciation_rate",
+    "値上がり率": "appreciation_rate",
+    "値上り率": "appreciation_rate",
+    "総戸数": "total_units",
 }
 
 
@@ -826,12 +1199,14 @@ def _extract_radar_chart_data(soup: BeautifulSoup, html: str) -> Optional[dict]:
       1) <script> タグ内の Chart.js / Highcharts の radar 設定を探す
       2) 見つからなければ、ページ上のランキング偏差値スコアを構築する
 
-    返却形式 (成功時): iOS 互換の named-key 形式
+    返却形式 (成功時): iOS 互換の named-key 形式（サイト準拠の 6 軸）
       {
-        "asset_value":   38.4,
-        "favorites":     47.1,
-        "access_count":  40.7,
-        ...
+        "oki_price_m2":      38.4,   # 沖式中古時価m²単価
+        "build_age":         47.1,   # 築年数
+        "favorites":         40.7,   # お気に入り数
+        "walk_min":          52.3,   # 徒歩分数
+        "appreciation_rate": 55.8,   # 中古値上がり率
+        "total_units":       48.0,   # 総戸数
       }
     偏差値 50 = 行政区平均
     """
@@ -914,11 +1289,15 @@ def _build_radar_from_rankings(soup: BeautifulSoup, html: str) -> Optional[dict]
     """
     ページ上のランキングセクションから偏差値スコアを抽出し、
     iOS named-key 形式のレーダーチャートデータを構築する。
+    サイト準拠の 6 軸: 沖式中古時価m²単価, 築年数, お気に入り数, 徒歩分数, 中古値上がり率, 総戸数
     """
     ranking_defs = [
-        ("asset_value", r"資産性ランキング.*?(\d+(?:\.\d+)?)\s*点"),
-        ("favorites", r"お気に入りランキング.*?(\d+(?:\.\d+)?)\s*点"),
-        ("access_count", r"アクセス数ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("oki_price_m2", r"(?:沖式中古時価|沖式時価)[m㎡²]*単価.*?ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("build_age", r"築年数.*?ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("favorites", r"お気に入り(?:数)?ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("walk_min", r"徒歩分(?:数)?.*?ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("appreciation_rate", r"(?:中古)?値上(?:が|り)り率.*?ランキング.*?(\d+(?:\.\d+)?)\s*点"),
+        ("total_units", r"総戸数.*?ランキング.*?(\d+(?:\.\d+)?)\s*点"),
     ]
 
     result: dict[str, float] = {}
@@ -934,18 +1313,18 @@ def _build_radar_from_rankings(soup: BeautifulSoup, html: str) -> Optional[dict]
     return result
 
 
-def _finalize_radar_data(listing: dict) -> None:
+def _finalize_radar_data(listing: dict, property_type: str = "chuko") -> None:
     """
     listing の ss_radar_data を iOS 互換の named-key 形式に正規化し、
     不足軸を ss_* フィールドや walk_min から補完する。
 
-    iOS RadarData の 6 軸（偏差値 20-80, 50=平均）:
-      asset_value       資産性
-      favorites         お気に入り
-      access_count      アクセス数
-      oki_price_m2      沖式時価m²単価
-      appreciation_rate  値上がり率
+    iOS RadarData の 6 軸（偏差値 20-80, 50=平均 — サイト準拠）:
+      oki_price_m2      沖式中古時価m²単価
+      build_age         築年数
+      favorites         お気に入り数
       walk_min          徒歩分数
+      appreciation_rate 中古値上がり率
+      total_units       総戸数
     """
     ios_data: dict[str, float] = {}
 
@@ -965,26 +1344,30 @@ def _finalize_radar_data(listing: dict) -> None:
                     if key and isinstance(val, (int, float)):
                         ios_data[key] = float(val)
             else:
-                # 既に named-key 形式
-                for k in ("asset_value", "favorites", "access_count",
-                          "oki_price_m2", "appreciation_rate", "walk_min"):
+                # 既に named-key 形式（新旧キー両方に対応）
+                for k in ("oki_price_m2", "build_age", "favorites",
+                          "walk_min", "appreciation_rate", "total_units"):
                     if k in parsed and isinstance(parsed[k], (int, float)):
                         ios_data[k] = float(parsed[k])
+                # 旧キーの互換変換
+                if "asset_value" in parsed and "appreciation_rate" not in ios_data:
+                    ios_data["appreciation_rate"] = float(parsed["asset_value"])
+                if "access_count" in parsed and "oki_price_m2" not in ios_data:
+                    ios_data["oki_price_m2"] = float(parsed["access_count"])
 
-    # 2) ss_* フィールドから不足軸を補完
-    if "appreciation_rate" not in ios_data:
-        rate = listing.get("ss_appreciation_rate")
-        if rate is not None:
-            ios_data["appreciation_rate"] = min(80.0, max(20.0, 50.0 + float(rate)))
+    # 2) ss_* フィールドから不足軸を補完（中古のみ — 中古固有のフィールドで推定）
+    if property_type == "chuko":
+        if "oki_price_m2" not in ios_data:
+            oki = listing.get("ss_oki_price_70m2")
+            if oki is not None:
+                ios_data["oki_price_m2"] = 55.0
 
-    if "asset_value" not in ios_data and "appreciation_rate" in ios_data:
-        ios_data["asset_value"] = ios_data["appreciation_rate"]
+        if "appreciation_rate" not in ios_data:
+            rate = listing.get("ss_appreciation_rate")
+            if rate is not None:
+                ios_data["appreciation_rate"] = min(80.0, max(20.0, 50.0 + float(rate)))
 
-    if "oki_price_m2" not in ios_data:
-        oki = listing.get("ss_oki_price_70m2")
-        if oki is not None:
-            ios_data["oki_price_m2"] = 55.0
-
+    # 共通: お気に入り・徒歩分数の補完
     if "favorites" not in ios_data:
         fav = listing.get("ss_favorite_count")
         if fav is not None:
@@ -998,6 +1381,8 @@ def _finalize_radar_data(listing: dict) -> None:
                 ios_data["walk_min"] = min(80.0, max(20.0, 65.0 - (w - 5) * 3.0))
             except (ValueError, TypeError):
                 pass
+
+    # build_age, total_units はフォールバック不可（サイトからの偏差値のみ）
 
     # 3) 2 軸以上あれば iOS 互換 JSON としてセット
     if len(ios_data) >= 2:
@@ -1035,9 +1420,11 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             continue
 
         # 既に enrichment 済みならスキップ
-        # 新築は ss_profit_pct、中古は ss_oki_price_70m2 で判定
+        # 新築は ss_profit_pct / ss_m2_discount、中古は ss_oki_price_70m2 / ss_appreciation_rate で判定
         if property_type == "shinchiku":
-            already = listing.get("ss_profit_pct") is not None or listing.get("ss_oki_price_70m2") is not None
+            already = (listing.get("ss_profit_pct") is not None
+                       or listing.get("ss_m2_discount") is not None
+                       or listing.get("ss_purchase_judgment") is not None)
         else:
             already = listing.get("ss_oki_price_70m2") is not None or listing.get("ss_appreciation_rate") is not None
         if already:
@@ -1056,8 +1443,11 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         clean_name = _normalize_name(name)
         inline_data = cache.get(clean_name + "__inline", {})
 
-        # ページパース
-        data = parse_property_page(session, prop_url, property_type=property_type)
+        # ページパース（中古・新築で専用パーサーを使い分け）
+        if property_type == "chuko":
+            data = parse_chuko_page(session, prop_url)
+        else:
+            data = parse_shinchiku_page(session, prop_url)
 
         # 検索結果のインラインデータで補完（detail ページで取得できなかった場合）
         if "ss_appreciation_rate" not in data and inline_data.get("appreciation_rate"):
@@ -1080,6 +1470,8 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                 parts.append("相場推移✓")
             if data.get("ss_favorite_count") is not None:
                 parts.append(f"お気に入り: {data['ss_favorite_count']}点")
+            if data.get("ss_surrounding_properties"):
+                parts.append("周辺相場✓")
             if data.get("ss_radar_data"):
                 parts.append("レーダー✓")
             if data.get("ss_sim_best_5yr") is not None:
@@ -1104,7 +1496,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
     radar_count = 0
     for listing in listings:
         had_radar = listing.get("ss_radar_data") is not None
-        _finalize_radar_data(listing)
+        _finalize_radar_data(listing, property_type=property_type)
         if not had_radar and listing.get("ss_radar_data") is not None:
             radar_count += 1
     if radar_count:
@@ -1119,7 +1511,8 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
     print(f"住まいサーフィン enrichment 完了: {enriched_count}件成功, {not_found_count}件未発見, {no_data_count}件データなし, {skip_count}件スキップ(済)", file=sys.stderr)
 
 
-def finalize_radar_only(input_path: str, output_path: str) -> None:
+def finalize_radar_only(input_path: str, output_path: str,
+                        property_type: str = "chuko") -> None:
     """
     Web スクレイピングなしで、既存 ss_* / walk_min からレーダーデータを補完する。
     SUMAI_USER / SUMAI_PASS が不要。
@@ -1136,7 +1529,7 @@ def finalize_radar_only(input_path: str, output_path: str) -> None:
     radar_count = 0
     for listing in listings:
         had_radar = listing.get("ss_radar_data") is not None
-        _finalize_radar_data(listing)
+        _finalize_radar_data(listing, property_type=property_type)
         if not had_radar and listing.get("ss_radar_data") is not None:
             radar_count += 1
 
@@ -1157,6 +1550,10 @@ def main() -> None:
                     help="物件タイプ（未指定時はファイル名から自動判定）")
     ap.add_argument("--finalize-radar-only", action="store_true",
                     help="Web スクレイピングなしでレーダーデータのみ補完する（SUMAI_USER/PASS 不要）")
+    ap.add_argument("--browser", action="store_true",
+                    help="ブラウザ自動化で追加データを取得（中古: 割安判定、新築: カスタムシミュレーション）")
+    ap.add_argument("--browser-only", action="store_true",
+                    help="ブラウザ自動化のみ実行（requests ベースの enrichment をスキップ）")
     args = ap.parse_args()
 
     # 物件タイプの自動判定
@@ -1170,7 +1567,7 @@ def main() -> None:
     print(f"住まいサーフィン: 物件タイプ = {prop_type}", file=sys.stderr)
 
     if args.finalize_radar_only:
-        finalize_radar_only(args.input, args.output)
+        finalize_radar_only(args.input, args.output, property_type=prop_type)
         return
 
     user = os.environ.get("SUMAI_USER", "")
@@ -1179,18 +1576,40 @@ def main() -> None:
     if not user or not password:
         print("住まいサーフィン: SUMAI_USER / SUMAI_PASS が未設定のためスキップ", file=sys.stderr)
         # 認証不要のレーダーデータ補完だけ実行
-        finalize_radar_only(args.input, args.output)
+        finalize_radar_only(args.input, args.output, property_type=prop_type)
         return
 
-    session = _create_session()
+    # ── requests ベースの enrichment ──
+    if not args.browser_only:
+        session = _create_session()
 
-    if not login(session, user, password):
-        print("住まいサーフィン: ログインに失敗したためスキップ", file=sys.stderr)
-        # ログイン失敗でもレーダーデータ補完は実行
-        finalize_radar_only(args.input, args.output)
-        return
+        if not login(session, user, password):
+            print("住まいサーフィン: ログインに失敗したためスキップ", file=sys.stderr)
+            # ログイン失敗でもレーダーデータ補完は実行
+            finalize_radar_only(args.input, args.output, property_type=prop_type)
+            # ブラウザ enrichment はログイン失敗でもスキップ
+            return
 
-    enrich_listings(args.input, args.output, session, property_type=prop_type)
+        enrich_listings(args.input, args.output, session, property_type=prop_type)
+
+    # ── ブラウザ自動化 enrichment ──
+    if args.browser or args.browser_only:
+        try:
+            from sumai_surfin_browser import browser_enrich_listings
+            print("ブラウザ自動化 enrichment を実行中...", file=sys.stderr)
+            browser_enrich_listings(
+                input_path=args.input if args.browser_only else args.output,
+                output_path=args.output,
+                property_type=prop_type,
+                user=user,
+                password=password,
+            )
+        except ImportError:
+            print(
+                "ブラウザ enrichment: playwright が未インストールのためスキップ\n"
+                "  pip install playwright && playwright install chromium",
+                file=sys.stderr,
+            )
 
 
 if __name__ == "__main__":

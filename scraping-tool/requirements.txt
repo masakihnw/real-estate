@@ -13,3 +13,6 @@ cryptography>=41.0.0,<44.0.0
 Pillow>=10.0.0,<12.0.0
 # Firestore からスクレイピング条件を取得（firestore_config_loader.py）用
 firebase-admin>=6.0.0,<7.0.0
+# ブラウザ自動化（sumai_surfin_browser.py）— 割安判定・カスタムシミュレーション用
+# インストール後: playwright install chromium
+playwright>=1.40.0,<2.0.0
