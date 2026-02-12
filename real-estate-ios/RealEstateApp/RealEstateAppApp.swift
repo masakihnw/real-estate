@@ -52,6 +52,7 @@ struct RealEstateAppApp: App {
                 .environment(FirebaseSyncService.shared)
                 .environment(AuthService.shared)
                 .environment(SaveErrorHandler.shared)
+                .environment(PhotoSyncService.shared)
                 .preferredColorScheme(.light) // ライトモード固定
                 .onOpenURL { url in
                     // Google Sign-In のコールバック URL を処理
@@ -77,8 +78,8 @@ private struct RootView: View {
             if authService.isLoading {
                 // Firebase Auth の初期化待ち
                 ProgressView()
-            } else if authService.isSignedIn {
-                // ログイン済み → メイン画面
+            } else if authService.isAuthorized {
+                // 認証済み + アクセス許可 → メイン画面
                 ContentView()
                     .task {
                         // Firestore からアノテーションを取得

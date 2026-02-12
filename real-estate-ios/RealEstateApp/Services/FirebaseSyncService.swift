@@ -188,6 +188,7 @@ final class FirebaseSyncService {
             guard !allDocIDs.isEmpty else { return }
 
             // Firestore の IN クエリは最大30件ずつ
+            var allFetchedDocuments: [QueryDocumentSnapshot] = []
             let batchSize = 30
             for batchStart in stride(from: 0, to: allDocIDs.count, by: batchSize) {
                 let batchEnd = min(batchStart + batchSize, allDocIDs.count)
@@ -196,6 +197,8 @@ final class FirebaseSyncService {
                 let snapshot = try await db.collection(collectionName)
                     .whereField(FieldPath.documentID(), in: batchIDs)
                     .getDocuments()
+
+                allFetchedDocuments.append(contentsOf: snapshot.documents)
 
                 for doc in snapshot.documents {
                     let data = doc.data()
@@ -240,6 +243,16 @@ final class FirebaseSyncService {
             }
 
             SaveErrorHandler.shared.save(modelContext, source: "FirebaseSync")
+
+            // 写真の同期（Firestore メタデータ → Storage ダウンロード → ローカル保存）
+            if !allFetchedDocuments.isEmpty {
+                await PhotoSyncService.shared.pullPhotos(
+                    for: localListings,
+                    firestoreDocuments: allFetchedDocuments,
+                    docIDToListings: docIDToListings,
+                    modelContext: modelContext
+                )
+            }
         } catch {
             print("[FirebaseSync] Pull 失敗: \(error.localizedDescription)")
         }

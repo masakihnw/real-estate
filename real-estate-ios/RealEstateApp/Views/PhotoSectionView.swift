@@ -4,6 +4,7 @@
 //
 //  物件詳細画面の内見写真セクション。
 //  カメラロールから選択、またはカメラで直接撮影して物件に紐づけて保存する。
+//  Firebase Storage を通じて家族間で写真を共有する。
 //
 
 import SwiftUI
@@ -24,6 +25,7 @@ struct PhotoSectionView: View {
     @State private var photoToDelete: PhotoMeta?
 
     private let photoStorage = PhotoStorageService.shared
+    private let photoSync = PhotoSyncService.shared
 
     var body: some View {
         let photos = listing.parsedPhotos
@@ -81,6 +83,8 @@ struct PhotoSectionView: View {
                             PhotoThumbnailView(
                                 photo: photo,
                                 listing: listing,
+                                isUploading: photoSync.uploadingPhotoIds.contains(photo.id),
+                                canDelete: photo.isOwnedBy(userId: photoSync.currentUserId),
                                 onTap: { fullscreenPhotoIndex = IdentifiableIndex(id: index) },
                                 onDelete: { photoToDelete = photo }
                             )
@@ -150,6 +154,8 @@ struct PhotoSectionView: View {
 private struct PhotoThumbnailView: View {
     let photo: PhotoMeta
     let listing: Listing
+    var isUploading: Bool
+    var canDelete: Bool
     var onTap: () -> Void
     var onDelete: () -> Void
 
@@ -157,36 +163,74 @@ private struct PhotoThumbnailView: View {
     @State private var loadedImage: UIImage?
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            Button(action: onTap) {
-                Group {
-                    if let image = loadedImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else {
-                        Rectangle()
-                            .fill(Color(.systemGray5))
-                            .overlay {
+        VStack(spacing: 4) {
+            ZStack(alignment: .topTrailing) {
+                Button(action: onTap) {
+                    Group {
+                        if let image = loadedImage {
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } else {
+                            Rectangle()
+                                .fill(Color(.systemGray5))
+                                .overlay {
+                                    ProgressView()
+                                }
+                        }
+                    }
+                    .frame(width: 100, height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .overlay(alignment: .bottomLeading) {
+                        // アップロード状態インジケーター
+                        if isUploading {
+                            // アップロード中
+                            HStack(spacing: 2) {
                                 ProgressView()
+                                    .scaleEffect(0.5)
+                                    .tint(.white)
                             }
+                            .padding(4)
+                            .background(.black.opacity(0.5))
+                            .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                            .padding(4)
+                        } else if photo.isUploaded {
+                            // クラウド同期済み
+                            Image(systemName: "icloud.fill")
+                                .font(.system(size: 10))
+                                .foregroundStyle(.white)
+                                .padding(4)
+                                .background(.black.opacity(0.4))
+                                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                                .padding(4)
+                        }
                     }
                 }
-                .frame(width: 100, height: 100)
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            }
-            .buttonStyle(.plain)
+                .buttonStyle(.plain)
 
-            // 削除ボタン
-            Button(action: onDelete) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 18))
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white, Color(.systemGray3))
+                // 削除ボタン（自分の写真のみ）
+                if canDelete {
+                    Button(action: onDelete) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 18))
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.white, Color(.systemGray3))
+                    }
+                    .buttonStyle(.plain)
+                    .offset(x: 4, y: -4)
+                    .accessibilityLabel("写真を削除")
+                }
             }
-            .buttonStyle(.plain)
-            .offset(x: 4, y: -4)
-            .accessibilityLabel("写真を削除")
+
+            // 投稿者名（他ユーザーの写真の場合のみ表示）
+            if let authorName = photo.authorName,
+               !photo.isOwnedBy(userId: PhotoSyncService.shared.currentUserId) {
+                Text(authorName)
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .frame(width: 100)
+            }
         }
         .task {
             if let cached = photoStorage.cachedImage(for: photo) {
@@ -223,6 +267,12 @@ private struct PhotoFullscreenView: View {
 
     private let photoStorage = PhotoStorageService.shared
 
+    /// 現在表示中の写真
+    private var currentPhoto: PhotoMeta? {
+        guard currentIndex >= 0, currentIndex < photos.count else { return nil }
+        return photos[currentIndex]
+    }
+
     var body: some View {
         NavigationStack {
             TabView(selection: $currentIndex) {
@@ -249,9 +299,17 @@ private struct PhotoFullscreenView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("\(currentIndex + 1) / \(photos.count)")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    VStack(spacing: 2) {
+                        Text("\(currentIndex + 1) / \(photos.count)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        // 投稿者名を表示
+                        if let photo = currentPhoto, let authorName = photo.authorName {
+                            Text(authorName)
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("閉じる") { dismiss() }
