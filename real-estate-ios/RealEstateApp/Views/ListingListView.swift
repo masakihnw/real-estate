@@ -23,6 +23,7 @@ struct ListingListView: View {
     @State private var showComparison = false
     @State private var isCompareMode = false
     @State private var searchText = ""
+    @FocusState private var isSearchFocused: Bool
 
     /// お気に入りタブの掲載状態フィルタ
     enum DelistFilter: String, CaseIterable {
@@ -228,6 +229,9 @@ struct ListingListView: View {
                         TextField("物件名で検索", text: $searchText)
                             .font(.subheadline)
                             .textFieldStyle(.plain)
+                            .focused($isSearchFocused)
+                            .submitLabel(.done)
+                            .onSubmit { isSearchFocused = false }
                         if !searchText.isEmpty {
                             Button {
                                 searchText = ""
@@ -579,6 +583,7 @@ struct ListingListView: View {
             }
         }
         .listStyle(.plain)
+        .scrollDismissesKeyboard(.immediately)
         .animation(.default, value: sortOrder)
         // OOUI: 比較モード時にガイダンスバナーを表示
         .safeAreaInset(edge: .top) {
