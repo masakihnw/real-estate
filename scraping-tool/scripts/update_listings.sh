@@ -125,6 +125,10 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
     python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest_shinchiku.json" || echo "embed_geocode (新築) に失敗しました（続行）" >&2
 fi
 
+# 4.4.4. ジオコーディングキャッシュのバリデーション（東京23区範囲外の座標を検出）
+echo "ジオコーディングキャッシュをバリデーション中..." >&2
+python3 scripts/geocode.py || echo "⚠ ジオコーディングキャッシュに問題のあるエントリがあります（手動確認推奨）" >&2
+
 echo "レポートを再生成（詳細キャッシュ・地図リンク反映）..." >&2
 if [ -f "${OUTPUT_DIR}/previous.json" ]; then
     python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
