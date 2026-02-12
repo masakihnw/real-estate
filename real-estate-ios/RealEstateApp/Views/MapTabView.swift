@@ -1124,31 +1124,101 @@ struct MapTabView: View {
                     // 全ON/OFF ボタン
                     hazardToggleAllButtons
 
-                    // 基本レイヤー
-                    hazardSectionHeader("基本レイヤー")
-                    ForEach(HazardLayer.basicLayers) { layer in
-                        hazardToggleRow(layer)
-                        if layer != HazardLayer.basicLayers.last { sheetDivider }
+                    // ─── おすすめ一括ON ───
+                    Button {
+                        withAnimation {
+                            // 重要3レイヤーをまとめてON
+                            activeHazardLayers.formUnion([.flood, .liquefaction])
+                            activeRiskLayers.insert(.buildingCollapse)
+                            Task { await TokyoRiskService.shared.fetchIfNeeded(.buildingCollapse) }
+                            usePaleBaseMap = true
+                        }
+                    } label: {
+                        Label("マンション購入で重要な3項目をON", systemImage: "star.fill")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
                     }
+                    .buttonStyle(.bordered)
+                    .tint(.orange)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 4)
+                    .padding(.bottom, 8)
 
-                    // 洪水詳細
-                    hazardSectionHeader("洪水詳細")
-                    ForEach(HazardLayer.floodDetailLayers) { layer in
-                        hazardToggleRow(layer)
-                        if layer != HazardLayer.floodDetailLayers.last { sheetDivider }
-                    }
+                    // ═══════════════════════════════════════════
+                    // 重要度★★★ マンション購入で必ずチェック
+                    // ═══════════════════════════════════════════
+                    hazardImportanceSectionHeader(
+                        title: "重要度★★★ 必ずチェック",
+                        color: .red,
+                        description: "資産価値・安全性に直結。該当エリアは慎重に検討"
+                    )
+
+                    // 洪水浸水想定
+                    hazardToggleRowWithReason(
+                        .flood,
+                        reason: "浸水想定区域は保険料増・売却困難に直結。河川沿い・低地は要注意",
+                        area: "荒川・隅田川沿い（足立区・葛飾区・江戸川区・墨田区・江東区）"
+                    )
+                    sheetDivider
+
+                    // 液状化
+                    hazardToggleRowWithReason(
+                        .liquefaction,
+                        reason: "地盤沈下でマンション傾斜→修繕費億単位のリスク。埋立地は要注意",
+                        area: "湾岸エリア（江東区豊洲・有明・お台場）、荒川・隅田川沿い"
+                    )
+                    sheetDivider
+
+                    // 建物倒壊危険度（東京都）
+                    riskToggleRowWithReason(
+                        .buildingCollapse,
+                        reason: "木造密集地域や旧耐震建物が多い地域ほど高ランク。ランク3以上は避けたい",
+                        area: "墨田区・荒川区・足立区北部・品川区南部の木密地域"
+                    )
+
+                    // ═══════════════════════════════════════════
+                    // 重要度★★ エリアによっては要チェック
+                    // ═══════════════════════════════════════════
+                    hazardImportanceSectionHeader(
+                        title: "重要度★★ エリアにより要注意",
+                        color: .orange,
+                        description: "特定エリアでリスクが高い。該当地域の物件は確認推奨"
+                    )
+
+                    // 高潮
+                    hazardToggleRowWithReason(
+                        .stormSurge,
+                        reason: "温暖化で台風強度が増加傾向。臨海部の低層階は特に注意",
+                        area: "東京湾岸エリア（中央区・港区・江東区・品川区・大田区の沿岸部）"
+                    )
+                    sheetDivider
+
+                    // 総合危険度
+                    riskToggleRowWithReason(
+                        .combined,
+                        reason: "建物倒壊+火災を総合評価。ランク3以上は複合的にリスクが高い地域",
+                        area: "墨田区・荒川区・足立区・品川区の一部"
+                    )
+                    sheetDivider
+
+                    // 火災危険度
+                    riskToggleRowWithReason(
+                        .fire,
+                        reason: "木造密集地域で延焼リスク。RC造マンション自体は耐火だが周辺環境に影響",
+                        area: "中野区・杉並区・豊島区・板橋区の木造密集エリア"
+                    )
+                    sheetDivider
 
                     // 地盤の揺れやすさ
-                    hazardSectionHeader("地震")
-                    hazardToggleRow(.seismicRisk)
+                    hazardToggleRowWithReason(
+                        .seismicRisk,
+                        reason: "軟弱地盤は揺れが増幅され家具転倒・設備破損リスクが上がる",
+                        area: "旧河道・埋立地（荒川沿い、東京湾岸、隅田川周辺）"
+                    )
 
-                    // 東京都地域危険度
-                    hazardSectionHeader("地域危険度（東京都）")
-                    ForEach(TokyoRiskLayer.allCases) { layer in
-                        riskToggleRow(layer)
-                        if layer != TokyoRiskLayer.allCases.last { sheetDivider }
-                    }
-                    // ランク凡例
+                    // ランク凡例（地域危険度用）
                     HStack(spacing: 8) {
                         ForEach(1...5, id: \.self) { rank in
                             HStack(spacing: 3) {
@@ -1167,6 +1237,50 @@ struct MapTabView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
+
+                    // ═══════════════════════════════════════════
+                    // 重要度★ 参考程度
+                    // ═══════════════════════════════════════════
+                    hazardImportanceSectionHeader(
+                        title: "重要度★ 参考程度",
+                        color: .secondary,
+                        description: "23区内マンションでは影響が限定的。気になる場合のみ確認"
+                    )
+
+                    // 土砂災害
+                    hazardToggleRowWithReason(
+                        .sediment,
+                        reason: "23区内のマンション立地ではほぼ該当なし。崖地・山間部のみ注意",
+                        area: "北区・板橋区・練馬区の一部崖地（23区内ではごく限定的）"
+                    )
+                    sheetDivider
+
+                    // 津波
+                    hazardToggleRowWithReason(
+                        .tsunami,
+                        reason: "東京湾奥は地形的に津波リスクが極めて低い。想定浸水深も小さい",
+                        area: "東京湾沿岸部（該当しても浸水深30cm未満がほとんど）"
+                    )
+                    sheetDivider
+
+                    // 内水浸水
+                    hazardToggleRowWithReason(
+                        .inlandWater,
+                        reason: "下水道逆流による浸水。1階以外のマンション住戸はほぼ影響なし",
+                        area: "窪地・すり鉢地形の低地（新宿区・文京区・渋谷区の一部）"
+                    )
+
+                    // ─── 洪水詳細（専門家向け） ───
+                    hazardImportanceSectionHeader(
+                        title: "洪水詳細（専門家向け）",
+                        color: .blue,
+                        description: "洪水リスクをより詳しく知りたい場合に。一般的には上記で十分"
+                    )
+
+                    ForEach(HazardLayer.floodDetailLayers) { layer in
+                        hazardToggleRow(layer)
+                        if layer != HazardLayer.floodDetailLayers.last { sheetDivider }
+                    }
 
                     // ベースマップ切替
                     hazardSectionHeader("表示設定")
@@ -1231,9 +1345,148 @@ struct MapTabView: View {
             .padding(.bottom, 4)
     }
 
+    /// 重要度セクションヘッダー（色付きバー + 説明文）
+    @ViewBuilder
+    private func hazardImportanceSectionHeader(title: String, color: Color, description: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 6) {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(color)
+                    .frame(width: 4, height: 16)
+                Text(title)
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundStyle(color)
+            }
+            Text(description)
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.top, 20)
+        .padding(.bottom, 6)
+    }
+
     @ViewBuilder
     private var sheetDivider: some View {
         Divider().padding(.leading, 52)
+    }
+
+    /// ハザードレイヤー行（重要度根拠 + 該当エリア付き）
+    @ViewBuilder
+    private func hazardToggleRowWithReason(_ layer: HazardLayer, reason: String, area: String) -> some View {
+        let isActive = activeHazardLayers.contains(layer)
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Image(systemName: layer.systemImage)
+                    .foregroundStyle(isActive ? Color.accentColor : Color.secondary)
+                    .frame(width: 28)
+                Text(layer.rawValue)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                Spacer()
+                Button {
+                    infoTargetHazard = layer
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                Toggle("", isOn: Binding(
+                    get: { activeHazardLayers.contains(layer) },
+                    set: { on in
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            if on { activeHazardLayers.insert(layer) }
+                            else { activeHazardLayers.remove(layer) }
+                        }
+                    }
+                ))
+                .labelsHidden()
+            }
+            // 根拠テキスト
+            Text(reason)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 36)
+            // 該当エリア
+            HStack(spacing: 4) {
+                Image(systemName: "mappin.circle.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                Text(area)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.leading, 36)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .accessibilityAddTraits(isActive ? .isSelected : [])
+        .sheet(item: $infoTargetHazard) { target in
+            hazardInfoSheet(target)
+        }
+    }
+
+    /// 地域危険度レイヤー行（重要度根拠 + 該当エリア付き）
+    @ViewBuilder
+    private func riskToggleRowWithReason(_ layer: TokyoRiskLayer, reason: String, area: String) -> some View {
+        let isActive = activeRiskLayers.contains(layer)
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Image(systemName: layer.systemImage)
+                    .foregroundStyle(isActive ? Color.accentColor : Color.secondary)
+                    .frame(width: 28)
+                Text(layer.rawValue)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                Spacer()
+                Button {
+                    infoTargetRisk = layer
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                Toggle("", isOn: Binding(
+                    get: { activeRiskLayers.contains(layer) },
+                    set: { on in
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            if on {
+                                activeRiskLayers.insert(layer)
+                                Task { await TokyoRiskService.shared.fetchIfNeeded(layer) }
+                            } else {
+                                activeRiskLayers.remove(layer)
+                            }
+                        }
+                    }
+                ))
+                .labelsHidden()
+            }
+            // 根拠テキスト
+            Text(reason)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 36)
+            // 該当エリア
+            HStack(spacing: 4) {
+                Image(systemName: "mappin.circle.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                Text(area)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.leading, 36)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .accessibilityAddTraits(isActive ? .isSelected : [])
+        .sheet(item: $infoTargetRisk) { target in
+            riskInfoSheet(target)
+        }
     }
 
     // MARK: - 地図凡例（ピン + ハザードレイヤー動的）
