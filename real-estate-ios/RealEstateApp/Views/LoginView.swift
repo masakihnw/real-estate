@@ -15,6 +15,11 @@ struct LoginView: View {
     @State private var isSigningIn = false
     @State private var errorMessage: String?
 
+    /// 表示するエラーメッセージ（ローカルエラー or AuthService のエラー）
+    private var displayError: String? {
+        errorMessage ?? authService.lastError
+    }
+
     var body: some View {
         ZStack {
             // 全画面グラデーション背景（上: 薄い青 → 下: ごく薄い青）
@@ -64,8 +69,8 @@ struct LoginView: View {
                     ZStack {
                         if isSigningIn {
                             ProgressView()
-                        } else if let errorMessage {
-                            Text(errorMessage)
+                        } else if let displayError {
+                            Text(displayError)
                                 .font(ListingObjectStyle.caption)
                                 .foregroundStyle(.red)
                                 .multilineTextAlignment(.center)
@@ -100,6 +105,12 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 32)
                 .padding(.bottom, 92)
+            }
+        }
+        .task {
+            // エッジケース: サインイン済みだがメール未許可 → サインアウト
+            if authService.isSignedIn && !authService.isEmailAllowed {
+                authService.signOut()
             }
         }
     }

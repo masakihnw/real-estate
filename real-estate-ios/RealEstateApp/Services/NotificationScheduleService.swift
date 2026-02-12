@@ -158,6 +158,32 @@ final class NotificationScheduleService {
         UNUserNotificationCenter.current().add(request)
     }
 
+    /// 他のユーザーからの内見写真追加を即時通知する。
+    /// - Parameters:
+    ///   - authorName: 写真投稿者名
+    ///   - listingName: 物件名
+    ///   - listingIdentityKey: 物件の identityKey（タップ時の遷移用）
+    func notifyNewPhoto(authorName: String, listingName: String, listingIdentityKey: String) {
+        guard isCommentNotificationEnabled else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "\(authorName) が写真を追加"
+        content.subtitle = listingName
+        content.body = "新しい内見写真が追加されました"
+        content.sound = .default
+        content.userInfo = [
+            "type": "photo",
+            "listingIdentityKey": listingIdentityKey
+        ]
+
+        let request = UNNotificationRequest(
+            identifier: "photo-\(UUID().uuidString)",
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
     /// データ更新で新着が見つかった時に呼ぶ。カウントを累積し、通知を再スケジュールする。
     func accumulateAndReschedule(newCount: Int) {
         guard newCount > 0 else { return }

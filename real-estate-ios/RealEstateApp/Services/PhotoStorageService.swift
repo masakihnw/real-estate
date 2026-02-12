@@ -59,6 +59,7 @@ final class PhotoStorageService {
     // MARK: - 写真の保存
 
     /// UIImage を物件に紐づけて保存し、Listing.photosJSON を更新する。
+    /// 保存後にクラウドへのアップロードも自動的にトリガーする。
     @MainActor
     func savePhoto(_ image: UIImage, for listing: Listing, modelContext: ModelContext) {
         let dir = directoryURL(for: listing)
@@ -82,11 +83,52 @@ final class PhotoStorageService {
             return
         }
 
-        // メタデータを更新
+        // メタデータを更新（author 情報を含む）
+        let syncService = PhotoSyncService.shared
+        let photoMeta = PhotoMeta(
+            id: photoId,
+            fileName: fileName,
+            createdAt: .now,
+            authorName: syncService.isAuthenticated ? syncService.currentUserDisplayName : nil,
+            authorId: syncService.currentUserId
+        )
+
         var photos = listing.parsedPhotos
-        photos.append(PhotoMeta(id: photoId, fileName: fileName, createdAt: .now))
+        photos.append(photoMeta)
         listing.photosJSON = PhotoMeta.encode(photos)
         SaveErrorHandler.shared.save(modelContext, source: "PhotoStorage")
+
+        // バックグラウンドでクラウドにアップロード
+        syncService.uploadPhoto(image, photoMeta: photoMeta, for: listing, modelContext: modelContext)
+    }
+
+    /// クラウドからダウンロードした写真データをローカルに保存する（メタデータの更新は呼び出し元が行う）。
+    func saveCloudPhoto(data: Data, meta: PhotoMeta, for listing: Listing) {
+        let dir = directoryURL(for: listing)
+        do {
+            try fileManager.createDirectory(at: dir, withIntermediateDirectories: true)
+        } catch {
+            print("[PhotoStorage] 物件ディレクトリの作成に失敗: \(error.localizedDescription)")
+            return
+        }
+
+        let fileURL = dir.appendingPathComponent(meta.fileName)
+        do {
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            print("[PhotoStorage] クラウド写真のローカル保存に失敗: \(error.localizedDescription)")
+        }
+    }
+
+    /// 指定した写真のローカルファイルのみを削除する（メタデータの更新は呼び出し元が行う）。
+    func deleteLocalFile(for meta: PhotoMeta, listing: Listing) {
+        let fileURL = photoURL(for: meta, listing: listing)
+        do {
+            try fileManager.removeItem(at: fileURL)
+        } catch {
+            print("[PhotoStorage] ファイル削除失敗: \(error.localizedDescription)")
+        }
+        evictCache(for: meta)
     }
 
     // MARK: - 写真の読み込み
@@ -123,7 +165,7 @@ final class PhotoStorageService {
 
     // MARK: - 写真の削除
 
-    /// 指定した写真を削除する
+    /// 指定した写真を削除する（ローカル + クラウド両方）
     @MainActor
     func deletePhoto(_ meta: PhotoMeta, for listing: Listing, modelContext: ModelContext) {
         let fileURL = photoURL(for: meta, listing: listing)
@@ -132,6 +174,10 @@ final class PhotoStorageService {
         } catch {
             print("[PhotoStorage] ファイル削除失敗（メタデータは更新します）: \(error.localizedDescription)")
         }
+        evictCache(for: meta)
+
+        // クラウドからも削除
+        PhotoSyncService.shared.deleteCloudPhoto(meta, for: listing)
 
         var photos = listing.parsedPhotos
         photos.removeAll { $0.id == meta.id }

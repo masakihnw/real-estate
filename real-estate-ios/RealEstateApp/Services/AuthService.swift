@@ -5,6 +5,9 @@
 //  Google アカウントによる認証を管理する。
 //  Firebase Auth + Google Sign-In SDK を使用。
 //
+//  アクセス制御:
+//  許可されたメールアドレスのみサインイン可能
+//
 
 import Foundation
 import FirebaseAuth
@@ -28,11 +31,45 @@ final class AuthService {
     /// サインアウトなどで発生した直近のエラー（UI で表示可能）
     private(set) var lastError: String?
 
+    // MARK: - Access Control（アクセス制御）
+
+    /// 許可されたメールアドレス一覧（小文字で記載）
+    /// ここに許可する Google アカウントのメールアドレスを追加する。
+    private static let allowedEmails: Set<String> = [
+        "masaki.hanawa.417@gmail.com",
+        "nogura.yuka.kf@gmail.com",
+    ]
+
+    /// 現在のユーザーのメールアドレスが許可リストに含まれるか
+    var isEmailAllowed: Bool {
+        guard let email = currentUser?.email?.lowercased() else { return false }
+        return Self.allowedEmails.contains(email)
+    }
+
+    /// アプリへのアクセスが許可されているか（サインイン済み + メール許可）
+    var isAuthorized: Bool {
+        isSignedIn && isEmailAllowed
+    }
+
     private init() {
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
-            self?.currentUser = user
-            self?.isSignedIn = user != nil
-            self?.isLoading = false
+            guard let self else { return }
+            self.currentUser = user
+
+            // 許可されていないメールアドレスのセッションが復元された場合、
+            // 自動でサインアウトする
+            if let user, let email = user.email?.lowercased(),
+               !Self.allowedEmails.contains(email) {
+                self.isSignedIn = false
+                self.isLoading = false
+                self.lastError = "このアカウント（\(email)）はアクセスが許可されていません"
+                try? Auth.auth().signOut()
+                GIDSignIn.sharedInstance.signOut()
+                return
+            }
+
+            self.isSignedIn = user != nil
+            self.isLoading = false
         }
     }
 
@@ -45,6 +82,7 @@ final class AuthService {
     // MARK: - Google Sign-In
 
     /// Google アカウントでサインインする。
+    /// メールアドレスが許可リストに含まれない場合は自動でサインアウトしエラーを投げる。
     @MainActor
     func signInWithGoogle() async throws {
         lastError = nil
@@ -72,6 +110,13 @@ final class AuthService {
         )
 
         try await Auth.auth().signIn(with: credential)
+
+        // メールアドレスの許可チェック
+        if let email = Auth.auth().currentUser?.email?.lowercased(),
+           !Self.allowedEmails.contains(email) {
+            signOut()
+            throw AuthError.unauthorizedEmail
+        }
     }
 
     // MARK: - Sign Out
@@ -101,6 +146,7 @@ final class AuthService {
         case missingClientID
         case noRootViewController
         case missingIDToken
+        case unauthorizedEmail
 
         var errorDescription: String? {
             switch self {
@@ -110,6 +156,8 @@ final class AuthService {
                 return "画面の取得に失敗しました"
             case .missingIDToken:
                 return "Google ID Token の取得に失敗しました"
+            case .unauthorizedEmail:
+                return "このアカウントはアクセスが許可されていません"
             }
         }
     }

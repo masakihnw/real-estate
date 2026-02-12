@@ -1070,10 +1070,28 @@ struct CommentData: Codable, Identifiable {
 // MARK: - 内見写真メタデータ
 
 /// 物件に紐づく1枚の内見写真のメタデータ。画像ファイル自体はアプリの Documents ディレクトリに保存。
+/// クラウド共有時は Firebase Storage にもアップロードされ、storagePath にパスが記録される。
 struct PhotoMeta: Codable, Identifiable {
     var id: String
     var fileName: String
     var createdAt: Date
+
+    // クラウド共有用フィールド（全て Optional: 既存データと互換性を保つ）
+    /// アップロードしたユーザーの表示名
+    var authorName: String?
+    /// アップロードしたユーザーの Firebase UID
+    var authorId: String?
+    /// Firebase Storage 上のパス（nil = 未アップロード or ローカルのみ）
+    var storagePath: String?
+
+    /// 自分がアップロードした写真かどうか（authorId が nil の場合は既存写真として自分の写真扱い）
+    func isOwnedBy(userId: String?) -> Bool {
+        guard let authorId else { return true } // マイグレーション前の既存写真
+        return authorId == userId
+    }
+
+    /// クラウドにアップロード済みかどうか
+    var isUploaded: Bool { storagePath != nil }
 
     static let encoder: JSONEncoder = {
         let e = JSONEncoder()
