@@ -21,6 +21,12 @@ on:
           - 'true'
           - 'false'
 
+# 同時実行を防止: スクレイピング中に別の実行が始まると rebase コンフリクトが起きるため
+# 新しい実行が始まったら進行中の実行をキャンセルする
+concurrency:
+  group: update-listings
+  cancel-in-progress: true
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -119,6 +125,10 @@ jobs:
           [ -f scraping-tool/data/building_units.json ] && git add scraping-tool/data/building_units.json
           [ -f scraping-tool/data/geocode_cache.json ] && git add scraping-tool/data/geocode_cache.json
           [ -f scraping-tool/data/sumai_surfin_cache.json ] && git add scraping-tool/data/sumai_surfin_cache.json
+          [ -f scraping-tool/data/reinfolib_prices.json ] && git add scraping-tool/data/reinfolib_prices.json
+          [ -f scraping-tool/data/reinfolib_trends.json ] && git add scraping-tool/data/reinfolib_trends.json
+          [ -f scraping-tool/data/reinfolib_land_prices.json ] && git add scraping-tool/data/reinfolib_land_prices.json
+          [ -f scraping-tool/data/estat_population.json ] && git add scraping-tool/data/estat_population.json
           # 東京都地域危険度 GeoJSON（初回生成時のみ）
           [ -d scraping-tool/results/risk_geojson ] && git add scraping-tool/results/risk_geojson/
           git commit -m "Update listings: ${DATE}
@@ -127,7 +137,8 @@ jobs:
           レポート: scraping-tool/results/report/report.md
           自動更新: GitHub Actions" || exit 0
 
-          git pull --rebase origin ${{ github.ref_name }}
+          # -X theirs: コンフリクト時は現在の実行結果（最新データ）を優先して自動解決
+          git pull --rebase -X theirs origin ${{ github.ref_name }}
           git push origin HEAD:refs/heads/${{ github.ref_name }}
 
       # ワークフロー失敗時に Slack で通知（SLACK_WEBHOOK_URL が設定されている場合のみ）
