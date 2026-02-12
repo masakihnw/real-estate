@@ -316,6 +316,7 @@ final class ListingStore {
         // 住まいサーフィン評価データ（JSON 由来なので上書き）
         existing.ssProfitPct = new.ssProfitPct
         existing.ssOkiPrice70m2 = new.ssOkiPrice70m2
+        existing.ssM2Discount = new.ssM2Discount
         existing.ssValueJudgment = new.ssValueJudgment
         existing.ssStationRank = new.ssStationRank
         existing.ssWardRank = new.ssWardRank
@@ -336,6 +337,8 @@ final class ListingStore {
         existing.ssForecastM2Price = new.ssForecastM2Price
         existing.ssForecastChangeRate = new.ssForecastChangeRate
         existing.ssPastMarketTrends = new.ssPastMarketTrends
+        existing.ssSurroundingProperties = new.ssSurroundingProperties
+        existing.ssPriceJudgments = new.ssPriceJudgments
         // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
         if let lat = new.latitude { existing.latitude = lat }
         if let lon = new.longitude { existing.longitude = lon }

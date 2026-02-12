@@ -61,16 +61,17 @@ struct RadarChartView: View {
 
                     // 軸ラベル
                     ForEach(0..<6, id: \.self) { i in
-                        let labelOffset = radius + size * 0.1
+                        let labelOffset = radius + size * 0.13
                         let pos = point(for: i, value: 1.0, center: center, radius: labelOffset)
                         Text(Listing.RadarData.labels[i])
                             .font(.system(size: 9))
+                            .multilineTextAlignment(.center)
                             .foregroundStyle(Color.gray)
                             .position(pos)
                     }
                 }
             }
-            .aspectRatio(1.18, contentMode: .fit) // やや横長（ラベル領域を含む）
+            .aspectRatio(1.15, contentMode: .fit) // やや横長（ラベル領域を含む）
 
             // 凡例
             HStack(spacing: 20) {
@@ -149,12 +150,12 @@ struct RadarChartView: View {
 #Preview {
     VStack {
         RadarChartView(data: Listing.RadarData(
-            assetValue: 72,
-            favorites: 58,
-            accessCount: 52,
             okiPriceM2: 65,
+            buildAge: 52,
+            favorites: 58,
+            walkMin: 60,
             appreciationRate: 68,
-            walkMin: 60
+            totalUnits: 55
         ))
         .frame(maxWidth: 260)
     }

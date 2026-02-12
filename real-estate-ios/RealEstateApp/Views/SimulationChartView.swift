@@ -44,6 +44,8 @@ struct SimulationSectionView: View {
 
     @ViewBuilder
     private func purchaseJudgmentBadge(_ judgment: String) -> some View {
+        let isPositive = judgment.contains("値上がり") || judgment.contains("期待")
+            || judgment.contains("望ましい")
         HStack {
             Text("購入判定")
                 .font(.caption)
@@ -56,7 +58,7 @@ struct SimulationSectionView: View {
             Text(judgment)
                 .font(.subheadline)
                 .fontWeight(.bold)
-                .foregroundStyle(judgment.contains("望ましい") ? Color.green : Color.primary)
+                .foregroundStyle(isPositive ? DesignSystem.positiveColor : Color.primary)
         }
     }
 
@@ -217,7 +219,7 @@ struct SimulationSectionView: View {
 
     @ViewBuilder
     private func conditionFooter(purchasePrice: Int) -> some View {
-        Text("購入条件 価格: \(formatMan(purchasePrice)) / 金利: 0.8% / 返済期間: 50年 / 頭金: 0万円")
+        Text("購入条件 価格: \(formatMan(purchasePrice)) / 金利: \(String(format: "%.1f", LoanCalculator.annualRate))% / 返済期間: \(LoanCalculator.termYears)年 / 頭金: \(LoanCalculator.downPayment)万円")
             .font(.caption2)
             .foregroundStyle(.secondary)
             .padding(.top, 4)
