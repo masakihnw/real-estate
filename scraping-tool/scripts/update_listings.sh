@@ -143,12 +143,6 @@ else
 fi
 cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
 
-# 4.5. Notion 同期（NOTION_TOKEN と NOTION_DATABASE_ID が設定されている場合のみ。失敗してもレポート・コミットは行う）
-if [ -n "${NOTION_TOKEN:-}" ] && [ -n "${NOTION_DATABASE_ID:-}" ]; then
-    echo "Notion に同期中..." >&2
-    python3 notion-tool/sync_to_notion.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" || echo "Notion 同期は失敗しました（レポート・コミットは続行）" >&2
-fi
-
 # 4.6. 新築結果を latest_shinchiku.json に保存
 if [ -s "$CURRENT_SHINCHIKU" ]; then
     cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/previous_shinchiku.json" 2>/dev/null || true

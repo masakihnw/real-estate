@@ -55,7 +55,7 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           chmod +x scripts/update_listings.sh
-          ./scripts/update_listings.sh --no-git  # レポート・latest/previous まで。Notion は次ステップで実行
+          ./scripts/update_listings.sh --no-git  # レポート・latest/previous まで。コミットは後続ステップで実行
 
       # パイプライン失敗時もログを Firestore にアップロード（ERR trap が効かないケース用のフォールバック）
       - name: Upload scraping log on failure
@@ -105,21 +105,6 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           python3 slack_notify.py results/latest.json results/previous.json results/report/report.md
-
-      # Notion 同期が失敗してもジョブは成功扱いとし、続けてコミット・プッシュする（md は必ずリポジトリに残る）
-      - name: Sync to Notion
-        if: steps.check.outputs.changed == 'true'
-        continue-on-error: true
-        working-directory: scraping-tool
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-        run: |
-          if [ -n "$NOTION_TOKEN" ] && [ -n "$NOTION_DATABASE_ID" ]; then
-            python3 notion-tool/sync_to_notion.py results/latest.json --compare results/previous.json
-          else
-            echo "NOTION_TOKEN または NOTION_DATABASE_ID が未設定のため Notion 同期をスキップします"
-          fi
 
       - name: Commit and push
         if: steps.check.outputs.changed == 'true'
