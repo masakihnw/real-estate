@@ -121,6 +121,18 @@ final class Listing: @unchecked Sendable {
     /// ワーストケース 10年後
     var ssSimWorst10yr: Int?
 
+    /// ローン残高 5年後（万円）
+    var ssLoanBalance5yr: Int?
+    /// ローン残高 10年後（万円）
+    var ssLoanBalance10yr: Int?
+
+    /// 新築時m²単価（万円）— 新築のみ
+    var ssNewM2Price: Int?
+    /// 10年後予測m²単価（万円）— 新築のみ
+    var ssForecastM2Price: Int?
+    /// 予測変動率 (%) — 新築のみ
+    var ssForecastChangeRate: Double?
+
     /// 過去の相場推移 JSON 文字列
     /// フォーマット: [{"period":"2022年～","price_man":11021,"area_m2":70.2,"unit_price_man":157},...]
     var ssPastMarketTrends: String?
@@ -173,6 +185,11 @@ final class Listing: @unchecked Sendable {
         ssSimStandard10yr: Int? = nil,
         ssSimWorst5yr: Int? = nil,
         ssSimWorst10yr: Int? = nil,
+        ssLoanBalance5yr: Int? = nil,
+        ssLoanBalance10yr: Int? = nil,
+        ssNewM2Price: Int? = nil,
+        ssForecastM2Price: Int? = nil,
+        ssForecastChangeRate: Double? = nil,
         ssPastMarketTrends: String? = nil
     ) {
         self.source = source
@@ -222,6 +239,11 @@ final class Listing: @unchecked Sendable {
         self.ssSimStandard10yr = ssSimStandard10yr
         self.ssSimWorst5yr = ssSimWorst5yr
         self.ssSimWorst10yr = ssSimWorst10yr
+        self.ssLoanBalance5yr = ssLoanBalance5yr
+        self.ssLoanBalance10yr = ssLoanBalance10yr
+        self.ssNewM2Price = ssNewM2Price
+        self.ssForecastM2Price = ssForecastM2Price
+        self.ssForecastChangeRate = ssForecastChangeRate
         self.ssPastMarketTrends = ssPastMarketTrends
     }
 
@@ -719,6 +741,12 @@ final class Listing: @unchecked Sendable {
             && ssSimBest5yr != nil && ssSimStandard5yr != nil && ssSimWorst5yr != nil
     }
 
+    /// 10年後予測詳細データがあるか（新築のみ）
+    var hasForecastDetail: Bool {
+        isShinchiku
+            && (ssNewM2Price != nil || ssForecastM2Price != nil || ssForecastChangeRate != nil || ssPurchaseJudgment != nil)
+    }
+
     /// 表示用: 沖式儲かる確率
     var ssProfitDisplay: String {
         guard let pct = ssProfitPct else { return "—" }
@@ -1001,6 +1029,11 @@ struct ListingDTO: Codable {
     var ss_sim_standard_10yr: Int?
     var ss_sim_worst_5yr: Int?
     var ss_sim_worst_10yr: Int?
+    var ss_loan_balance_5yr: Int?
+    var ss_loan_balance_10yr: Int?
+    var ss_new_m2_price: Int?
+    var ss_forecast_m2_price: Int?
+    var ss_forecast_change_rate: Double?
     var ss_past_market_trends: String?
 
     // 通勤時間（駅ベース概算、パイプライン側で付与）
@@ -1074,6 +1107,11 @@ extension Listing {
             ssSimStandard10yr: dto.ss_sim_standard_10yr,
             ssSimWorst5yr: dto.ss_sim_worst_5yr,
             ssSimWorst10yr: dto.ss_sim_worst_10yr,
+            ssLoanBalance5yr: dto.ss_loan_balance_5yr,
+            ssLoanBalance10yr: dto.ss_loan_balance_10yr,
+            ssNewM2Price: dto.ss_new_m2_price,
+            ssForecastM2Price: dto.ss_forecast_m2_price,
+            ssForecastChangeRate: dto.ss_forecast_change_rate,
             ssPastMarketTrends: dto.ss_past_market_trends
         )
     }

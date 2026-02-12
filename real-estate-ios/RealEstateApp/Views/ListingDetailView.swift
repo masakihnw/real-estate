@@ -1059,6 +1059,7 @@ struct ListingDetailView: View {
 
     @ViewBuilder
     private var shinchikuSumaiSection: some View {
+        // ── 儲かる確率 + 沖式新築時価 ──
         if let pct = listing.ssProfitPct {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 VStack(alignment: .leading, spacing: 2) {
@@ -1082,7 +1083,7 @@ struct ListingDetailView: View {
                             Text("沖式新築時価（70㎡換算）")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
-                            Text("\(price)万円")
+                            Text("\(price.formatted())万円")
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
                         }
@@ -1105,7 +1106,7 @@ struct ListingDetailView: View {
                     Text("沖式新築時価（70㎡換算）")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("\(price)万円")
+                    Text("\(price.formatted())万円")
                         .font(.title3)
                         .fontWeight(.semibold)
                 }
@@ -1121,6 +1122,91 @@ struct ListingDetailView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                 }
             }
+        }
+
+        // ── 10年後予測詳細 ──
+        if listing.hasForecastDetail {
+            forecastDetailSection
+        }
+    }
+
+    /// 10年後予測詳細セクション（新築のみ）
+    @ViewBuilder
+    private var forecastDetailSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("10年後予測詳細")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                if let judgment = listing.ssPurchaseJudgment {
+                    Text(judgment)
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(
+                            judgment.contains("値上がり") || judgment.contains("期待")
+                                ? DesignSystem.positiveColor.opacity(0.12)
+                                : Color.secondary.opacity(0.12)
+                        )
+                        .foregroundStyle(
+                            judgment.contains("値上がり") || judgment.contains("期待")
+                                ? DesignSystem.positiveColor
+                                : .primary
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                }
+            }
+
+            // 詳細行
+            VStack(spacing: 6) {
+                if let price = listing.ssOkiPrice70m2 {
+                    forecastRow(label: "沖式新築時価", value: "\(price.formatted())万円", subLabel: "(70㎡)")
+                }
+                if let m2Price = listing.ssNewM2Price {
+                    forecastRow(label: "新築時m²単価", value: "\(m2Price)万円/㎡")
+                }
+                if let forecastM2 = listing.ssForecastM2Price {
+                    forecastRow(label: "10年後予測m²", value: "\(forecastM2)万円/㎡")
+                }
+                if let changeRate = listing.ssForecastChangeRate {
+                    let formatted = changeRate.truncatingRemainder(dividingBy: 1) == 0
+                        ? String(format: "%.0f", changeRate)
+                        : String(format: "%.1f", changeRate)
+                    let sign = changeRate >= 0 ? "+" : ""
+                    forecastRow(
+                        label: "予測変動率",
+                        value: "\(sign)\(formatted)%",
+                        valueColor: changeRate >= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor
+                    )
+                }
+            }
+        }
+        .padding(10)
+        .background(Color(.systemGray6).opacity(0.5))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    @ViewBuilder
+    private func forecastRow(label: String, value: String, subLabel: String? = nil, valueColor: Color = .primary) -> some View {
+        HStack {
+            HStack(spacing: 2) {
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                if let sub = subLabel {
+                    Text(sub)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            Spacer()
+            Text(value)
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundStyle(valueColor)
         }
     }
 

@@ -330,6 +330,11 @@ final class ListingStore {
         existing.ssSimStandard10yr = new.ssSimStandard10yr
         existing.ssSimWorst5yr = new.ssSimWorst5yr
         existing.ssSimWorst10yr = new.ssSimWorst10yr
+        existing.ssLoanBalance5yr = new.ssLoanBalance5yr
+        existing.ssLoanBalance10yr = new.ssLoanBalance10yr
+        existing.ssNewM2Price = new.ssNewM2Price
+        existing.ssForecastM2Price = new.ssForecastM2Price
+        existing.ssForecastChangeRate = new.ssForecastChangeRate
         existing.ssPastMarketTrends = new.ssPastMarketTrends
         // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
         if let lat = new.latitude { existing.latitude = lat }

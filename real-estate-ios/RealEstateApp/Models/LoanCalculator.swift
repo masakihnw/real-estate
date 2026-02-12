@@ -66,8 +66,11 @@ enum LoanCalculator {
         let principal = Double(purchasePrice - downPayment)
         guard principal > 0 else { return nil }
 
-        let balance5yr = loanBalance(principal: principal, afterYears: 5)
-        let balance10yr = loanBalance(principal: principal, afterYears: 10)
+        // サーバーから取得したローン残高があればそちらを優先
+        let balance5yr = listing.ssLoanBalance5yr.map(Double.init)
+            ?? loanBalance(principal: principal, afterYears: 5)
+        let balance10yr = listing.ssLoanBalance10yr.map(Double.init)
+            ?? loanBalance(principal: principal, afterYears: 10)
 
         let best5 = listing.ssSimBest5yr ?? 0
         let best10 = listing.ssSimBest10yr ?? 0
