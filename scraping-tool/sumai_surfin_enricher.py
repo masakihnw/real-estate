@@ -806,6 +806,9 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
     cache = load_cache()
     enriched_count = 0
     skip_count = 0
+    not_found_count = 0
+    no_data_count = 0
+    target_count = 0
 
     for i, listing in enumerate(listings):
         name = listing.get("name", "")
@@ -817,12 +820,12 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             skip_count += 1
             continue
 
-        print(f"  [{i+1}/{len(listings)}] {name} ...", end=" ", file=sys.stderr)
+        target_count += 1
 
         # 検索
         prop_url = search_property(session, name, cache)
         if not prop_url:
-            print("見つかりません", file=sys.stderr)
+            not_found_count += 1
             continue
 
         # ページパース
@@ -843,9 +846,14 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                 parts.append(f"お気に入り: {data['ss_favorite_count']}点")
             if data.get("ss_radar_data"):
                 parts.append("レーダー✓")
-            print(f"OK ({', '.join(parts) or 'URL取得'})", file=sys.stderr)
+            print(f"  ✓ {name} — {', '.join(parts) or 'URL取得'}", file=sys.stderr)
         else:
-            print("データなし", file=sys.stderr)
+            no_data_count += 1
+
+        # 進捗: 20件ごとにサマリー
+        processed = enriched_count + not_found_count + no_data_count
+        if processed > 0 and processed % 20 == 0:
+            print(f"  住まいサーフィン進捗: {processed}/{target_count}件処理済 (成功: {enriched_count})", file=sys.stderr)
 
     # キャッシュ保存
     save_cache(cache)
@@ -866,7 +874,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(output_path)
 
-    print(f"住まいサーフィン enrichment 完了: {enriched_count}件追加, {skip_count}件スキップ", file=sys.stderr)
+    print(f"住まいサーフィン enrichment 完了: {enriched_count}件成功, {not_found_count}件未発見, {no_data_count}件データなし, {skip_count}件スキップ(済)", file=sys.stderr)
 
 
 def finalize_radar_only(input_path: str, output_path: str) -> None:

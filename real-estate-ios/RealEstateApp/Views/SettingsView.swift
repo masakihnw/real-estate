@@ -24,6 +24,7 @@ struct SettingsView: View {
     @State private var showSignOutConfirmation = false
     @State private var showFullRefreshConfirmation = false
     @State private var showScrapingConfig = false
+    @State private var showWalkthrough = false
 
     // カスタム URL
     @State private var chukoURLInput: String = ""
@@ -74,6 +75,11 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showScrapingConfig) {
                 ScrapingConfigView(initialConfig: ScrapingConfigService.shared.config)
+            }
+            .fullScreenCover(isPresented: $showWalkthrough) {
+                WalkthroughView {
+                    showWalkthrough = false
+                }
             }
             .task {
                 await refreshNotificationStatus()
@@ -365,6 +371,17 @@ struct SettingsView: View {
     @ViewBuilder
     private var aboutSection: some View {
         Section {
+            Button {
+                showWalkthrough = true
+            } label: {
+                HStack {
+                    Label("使い方ガイド", systemImage: "questionmark.circle")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
             HStack {
                 Text("バージョン")
                 Spacer()

@@ -136,6 +136,9 @@ final class ListingStore {
 
         // Firestore からアノテーション（いいね・メモ）を取得してマージ
         await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext)
+
+        // 通勤時間の自動計算（未計算 or 7日以上経過のみ）
+        await CommuteTimeService.shared.calculateForAllListings(modelContext: modelContext)
     }
 
     /// 保存済み ETag をクリアして次回フルフェッチを強制する
@@ -290,6 +293,7 @@ final class ListingStore {
         existing.listWardRoman = new.listWardRoman
         existing.fetchedAt = new.fetchedAt
         existing.propertyType = new.propertyType
+        existing.duplicateCount = new.duplicateCount
         existing.priceMaxMan = new.priceMaxMan
         existing.areaMaxM2 = new.areaMaxM2
         existing.deliveryDate = new.deliveryDate

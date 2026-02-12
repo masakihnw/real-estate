@@ -569,19 +569,23 @@ def apply_conditions(listings: list[HomesShinchikuListing]) -> list[HomesShinchi
 def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = True) -> Iterator[HomesShinchikuListing]:
     """HOME'S 新築マンション一覧を取得。max_pages=0 のときは全ページ取得。"""
     session = _session()
+    import sys as _sys
     limit = max_pages if max_pages and max_pages > 0 else HOMES_SHINCHIKU_MAX_PAGES_SAFETY
     page = 1
+    total_parsed = 0
+    total_passed = 0
     while page <= limit:
         url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
         try:
             html = fetch_list_page(session, url)
         except Exception as e:
-            print(f"HOME'S 新築: ページ{page}でエラー: {e}", file=__import__("sys").stderr)
+            print(f"HOME'S 新築: ページ{page}でエラー: {e}", file=_sys.stderr)
             break
         rows = parse_list_html(html)
         if not rows:
-            print(f"HOME'S 新築: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。", file=__import__("sys").stderr)
+            print(f"HOME'S 新築: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。", file=_sys.stderr)
             break
+        total_parsed += len(rows)
         passed = 0
         for row in rows:
             if apply_filter:
@@ -589,9 +593,15 @@ def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
                 if filtered:
                     yield filtered[0]
                     passed += 1
+                    _price = f"{filtered[0].price_man}万" if filtered[0].price_man else "価格未定"
+                    print(f"  ✓ {filtered[0].name} ({_price})", file=_sys.stderr)
             else:
                 yield row
                 passed += 1
-        if apply_filter and rows and passed == 0:
-            print(f"HOME'S 新築: ページ{page}で{len(rows)}件パースしたが条件通過0件。", file=__import__("sys").stderr)
+        total_passed += passed
+        # 進捗: 10ページごとにサマリー
+        if page % 10 == 0:
+            print(f"HOME'S 新築: ...{page}ページ処理済 (通過: {total_passed}件)", file=_sys.stderr)
         page += 1
+    if total_parsed > 0:
+        print(f"HOME'S 新築: 完了 — {total_parsed}件パース, {total_passed}件通過", file=_sys.stderr)

@@ -65,6 +65,11 @@ final class Listing: @unchecked Sendable {
     /// ジオコーディング済み経度（キャッシュ用）
     var longitude: Double?
 
+    // MARK: - 重複集約
+
+    /// 同一条件（物件名・間取り・価格）で検出された戸数（1 = ユニーク、2+ = 複数戸売出中）
+    var duplicateCount: Int
+
     // MARK: - 住まいサーフィン評価データ
 
     /// 沖式儲かる確率 (%)
@@ -140,6 +145,7 @@ final class Listing: @unchecked Sendable {
         isLiked: Bool = false,
         isDelisted: Bool = false,
         propertyType: String = "chuko",
+        duplicateCount: Int = 1,
         priceMaxMan: Int? = nil,
         areaMaxM2: Double? = nil,
         deliveryDate: String? = nil,
@@ -187,6 +193,7 @@ final class Listing: @unchecked Sendable {
         self.isLiked = isLiked
         self.isDelisted = isDelisted
         self.propertyType = propertyType
+        self.duplicateCount = duplicateCount
         self.priceMaxMan = priceMaxMan
         self.areaMaxM2 = areaMaxM2
         self.deliveryDate = deliveryDate
@@ -228,6 +235,15 @@ final class Listing: @unchecked Sendable {
     }
 
     var isShinchiku: Bool { propertyType == "shinchiku" }
+
+    /// 複数戸が同一条件で売り出されているか
+    var hasMultipleUnits: Bool { duplicateCount > 1 }
+
+    /// 表示用: 複数戸売出バッジテキスト（例: "2戸売出中"）
+    var duplicateCountDisplay: String? {
+        guard duplicateCount > 1 else { return nil }
+        return "\(duplicateCount)戸売出中"
+    }
 
     // MARK: - Display Properties
 
@@ -493,12 +509,36 @@ final class Listing: @unchecked Sendable {
         floorTotal.map { "\($0)階建" } ?? "—"
     }
 
+    /// 権利形態の種別
+    enum OwnershipType {
+        case owned       // 所有権
+        case leasehold   // 定期借地権・借地権
+        case unknown     // 不明
+    }
+
+    /// 権利形態の種別を判定
+    var ownershipType: OwnershipType {
+        guard let o = ownership, !o.isEmpty else { return .unknown }
+        if o.contains("所有権") { return .owned }
+        if o.contains("借地") { return .leasehold }
+        return .unknown
+    }
+
     /// 表示用: 権利形態（短縮: 所有権 or 定借）
     var ownershipShort: String {
         guard let o = ownership, !o.isEmpty else { return "—" }
         if o.contains("所有権") { return "所有権" }
         if o.contains("借地") { return "定借" }
         return String(o.prefix(4))
+    }
+
+    /// 表示用: 権利形態 SF Symbol 名
+    var ownershipIconName: String {
+        switch ownershipType {
+        case .owned: return "shield.checkered"
+        case .leasehold: return "clock.arrow.circlepath"
+        case .unknown: return ""
+        }
     }
 
     /// 表示用: 総戸数
@@ -889,6 +929,9 @@ struct ListingDTO: Codable {
     var ownership: String?
     var list_ward_roman: String?
 
+    // 重複集約
+    var duplicate_count: Int?
+
     // ジオコーディング済み座標（パイプライン側で付与）
     var latitude: Double?
     var longitude: Double?
@@ -939,6 +982,7 @@ extension Listing {
             listWardRoman: dto.list_ward_roman,
             fetchedAt: fetchedAt,
             propertyType: dto.property_type ?? "chuko",
+            duplicateCount: dto.duplicate_count ?? 1,
             priceMaxMan: dto.price_max_man,
             areaMaxM2: dto.area_max_m2,
             deliveryDate: dto.delivery_date,

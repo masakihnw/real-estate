@@ -61,8 +61,10 @@ def embed(json_path: Path) -> int:
         # 既に座標がある場合はスキップ（スクレイパーやアプリ側で設定済み）
         if listing.get("latitude") is not None and listing.get("longitude") is not None:
             continue
-        if address in cache:
-            lat, lon = cache[address]
+        # 完全一致 → 「東京都」prefix 付きで再試行
+        coord = cache.get(address) or cache.get(f"東京都{address}")
+        if coord:
+            lat, lon = coord
             listing["latitude"] = lat
             listing["longitude"] = lon
             embedded_count += 1

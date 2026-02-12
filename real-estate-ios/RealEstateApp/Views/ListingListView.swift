@@ -69,16 +69,28 @@ struct ListingListView: View {
     var filteredAndSorted: [Listing] {
         var list = baseList
 
+        // 価格未定フィルタ（includePriceUndecided が false なら除外）
+        if !filterStore.filter.includePriceUndecided {
+            list = list.filter { $0.priceMan != nil }
+        }
+
         // フィルタ
         // 新築は価格帯（priceMan〜priceMaxMan）を持つため、範囲交差で判定する
         if let min = filterStore.filter.priceMin {
             list = list.filter {
+                // 価格未定（priceMan == nil）かつ includePriceUndecided なら通過
+                guard $0.priceMan != nil || $0.priceMaxMan != nil else {
+                    return filterStore.filter.includePriceUndecided
+                }
                 let upper = $0.priceMaxMan ?? $0.priceMan ?? 0
                 return upper >= min
             }
         }
         if let max = filterStore.filter.priceMax {
             list = list.filter {
+                guard $0.priceMan != nil else {
+                    return filterStore.filter.includePriceUndecided
+                }
                 let lower = $0.priceMan ?? 0
                 return lower <= max
             }
@@ -315,7 +327,7 @@ struct ListingListView: View {
                 ComparisonView(listings: comparisonListings)
             }
             .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, filteredCount: filteredAndSorted.count)
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, filteredCount: filteredAndSorted.count, showPriceUndecidedToggle: propertyTypeFilter == "shinchiku")
             }
             .alert("データ取得エラー", isPresented: $showErrorAlert) {
                 Button("OK", role: .cancel) { }
@@ -714,6 +726,17 @@ struct ListingRowView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 3))
                     }
 
+                    // 複数戸売出バッジ
+                    if let dupText = listing.duplicateCountDisplay {
+                        Text(dupText)
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color.purple)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+
                     if listing.isDelisted {
                         Text("掲載終了")
                             .font(.caption2.weight(.bold))
@@ -739,9 +762,10 @@ struct ListingRowView: View {
                     } else {
                         Text(listing.builtAgeDisplay)
                         Text(listing.floorDisplay)
-                        Text(listing.ownershipShort)
                         Text(listing.totalUnitsDisplay)
                     }
+                    // 所有権/定借バッジ（アイコン＋テキスト、一発で判別可能）
+                    OwnershipBadge(listing: listing, size: .small)
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -854,6 +878,37 @@ private struct BadgeRow: View {
                 .clipShape(RoundedRectangle(cornerRadius: 4))
             }
             .buttonStyle(.plain)
+        }
+    }
+}
+
+
+// MARK: - Ownership Badge
+
+/// 所有権/定借を色付きアイコン＋テキストで一発判別可能なバッジ
+/// - 所有権: 青シールド + 「所有権」
+/// - 定借: オレンジ時計 + 「定借」
+/// - 不明/データなし: 非表示
+struct OwnershipBadge: View {
+    let listing: Listing
+
+    enum BadgeSize { case small, large }
+    var size: BadgeSize = .small
+
+    var body: some View {
+        let type = listing.ownershipType
+        if type != .unknown {
+            HStack(spacing: 2) {
+                Image(systemName: type == .owned ? "shield.checkered" : "clock.arrow.circlepath")
+                    .font(size == .small ? .system(size: 8, weight: .bold) : .system(size: 10, weight: .bold))
+                Text(type == .owned ? "所有権" : "定借")
+                    .font(size == .small ? .system(size: 9, weight: .semibold) : .system(size: 11, weight: .semibold))
+            }
+            .foregroundStyle(type == .owned ? Color.accentColor : Color.orange)
+            .padding(.horizontal, size == .small ? 5 : 7)
+            .padding(.vertical, size == .small ? 1 : 2)
+            .background((type == .owned ? Color.accentColor : Color.orange).opacity(0.10))
+            .clipShape(RoundedRectangle(cornerRadius: size == .small ? 4 : 5))
         }
     }
 }
