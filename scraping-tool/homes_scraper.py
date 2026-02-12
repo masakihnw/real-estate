@@ -33,6 +33,7 @@ from config import (
     USER_AGENT,
     TOKYO_23_WARDS,
 )
+from report_utils import clean_listing_name
 
 BASE_URL = "https://www.homes.co.jp"
 
@@ -407,15 +408,17 @@ def _extract_card_listings(soup: BeautifulSoup, base_url: str) -> list[HomesList
         for tag in ("h2", "h3", "h4"):
             el = container.find(tag)
             if el:
-                name = (el.get_text(strip=True) or "").strip()
-                if name:
+                raw = (el.get_text(strip=True) or "").strip()
+                cleaned = clean_listing_name(raw)
+                if cleaned:
+                    name = cleaned
                     break
         if not name:
             a = container.find("a", href=re.compile(r"/mansion/b-"))
             if a:
                 t = (a.get_text(strip=True) or "").strip()
                 if t and "詳細" not in t and "資料" not in t:
-                    name = t
+                    name = clean_listing_name(t)
 
         # テーブルからの情報抽出
         def _table_value(label: str) -> str:
@@ -505,7 +508,7 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[HomesListing]:
         items.append(HomesListing(
             source="homes",
             url=url,
-            name=r.get("name") or "",
+            name=clean_listing_name(r.get("name") or ""),
             price_man=r.get("price_man"),
             address=r.get("address") or "",
             station_line=station_line,

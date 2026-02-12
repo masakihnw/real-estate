@@ -1701,8 +1701,8 @@ updatePrice(); updateCount();
 - ForEach + List 内の各カード
 - カード: VStack(alignment: .leading, spacing: 5)
   1行目: HStack { OwnershipCircle(所有権=青丸「所」/定借=オレンジ丸「借」, 18pt丸, 白文字) + 物件名 + 価格(accent.bold) + 騰落率バッジ/儲かるバッジ + Spacer + [掲載終了バッジ] + [📷枚数] + [💬件数] + ♥ }
-  2行目: HStack { 間取り 面積 徒歩 築年/入居 階/階建 戸数 } .font(.system(size:11)).foregroundStyle(.secondary).lineLimit(1)
-  3行目: 駅情報 .font(.system(size:10)).foregroundStyle(.tertiary)
+  2行目: HStack { 間取り 面積 築年/入居 階/階建 戸数 } .font(.system(size:11)).foregroundStyle(.secondary).lineLimit(1)
+  3行目: 路線名「駅名」徒歩X分（※路線名・駅名・徒歩分数のみ。住所等は不要） .font(.system(size:10)).foregroundStyle(.tertiary)
   4行目: ハザードバッジ（⚠アイコンなし、チップのみ）
   5行目: 通勤時間バッジ（[PGロゴ] xx分 / [M3ロゴ] xx分）— hasCommuteInfo のみ
 - 掲載終了カード: opacity(0.75)

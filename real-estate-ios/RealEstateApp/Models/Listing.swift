@@ -559,6 +559,11 @@ final class Listing: @unchecked Sendable {
         Self.addedAtFormatter.string(from: addedAt)
     }
 
+    /// 追加から24時間以内かどうか（Newバッジ表示用）
+    var isNew: Bool {
+        addedAt.timeIntervalSinceNow > -24 * 3600
+    }
+
     /// ジオコーディング済みかどうか
     var hasCoordinate: Bool {
         latitude != nil && longitude != nil
@@ -959,9 +964,26 @@ struct ListingDTO: Codable {
 }
 
 extension Listing {
+    /// スクレイピングで混入しがちなノイズを物件名から除去
+    static func cleanListingName(_ name: String) -> String {
+        var s = name.trimmingCharacters(in: .whitespaces)
+        // 「掲載物件X件」のようなものは物件名ではない
+        if s.range(of: #"^掲載物件\d+件$"#, options: .regularExpression) != nil { return "" }
+        // 先頭の「新築マンション」「マンション」を除去
+        if s.hasPrefix("新築マンション") { s = String(s.dropFirst(7)).trimmingCharacters(in: .whitespaces) }
+        if s.hasPrefix("マンション") { s = String(s.dropFirst(5)).trimmingCharacters(in: .whitespaces) }
+        // 末尾の「閲覧済」を除去
+        if s.hasSuffix("閲覧済") { s = String(s.dropLast(3)).trimmingCharacters(in: .whitespaces) }
+        // 販売期情報を除去
+        if let range = s.range(of: #"\s*第\d+期\d*次?\s*$"#, options: .regularExpression) { s = String(s[..<range.lowerBound]).trimmingCharacters(in: .whitespaces) }
+        return s
+    }
+
     static func from(dto: ListingDTO, fetchedAt: Date = .now) -> Listing? {
         guard let url = dto.url, !url.isEmpty,
-              let name = dto.name, !name.isEmpty else { return nil }
+              let rawName = dto.name, !rawName.isEmpty else { return nil }
+        let name = cleanListingName(rawName)
+        guard !name.isEmpty else { return nil }
         return Listing(
             source: dto.source,
             url: url,

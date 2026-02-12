@@ -29,6 +29,29 @@ def normalize_listing_name(name: str) -> str:
     return re.sub(r"\s+", "", s)
 
 
+def clean_listing_name(name: str) -> str:
+    """スクレイピングで取得した物件名のノイズを除去して物件名だけにする。
+    - 先頭の「新築マンション」「マンション」を除去
+    - 末尾の「閲覧済」を除去
+    - 「掲載物件X件」のようなテキストは空文字を返す（物件名ではない）
+    - 「第X期X次」等の販売期情報を除去
+    """
+    if not name:
+        return ""
+    s = name.strip()
+    # 「掲載物件X件」のようなものは物件名ではない → 空
+    if re.match(r"^掲載物件\d+件$", s):
+        return ""
+    # 先頭のプレフィックスを除去
+    s = re.sub(r"^新築マンション\s*", "", s).strip()
+    s = re.sub(r"^マンション\s*", "", s).strip()
+    # 末尾の「閲覧済」を除去
+    s = re.sub(r"閲覧済$", "", s).strip()
+    # 販売期情報を除去: 「第1期1次」「　第1期1次」
+    s = re.sub(r"\s*第\d+期\d*次?\s*$", "", s).strip()
+    return s
+
+
 def identity_key(r: dict) -> tuple:
     """同一物件の識別用キー（価格を除く）。差分検出で「同じ物件で価格だけ変わった → updated」とするために使う。"""
     return (
