@@ -969,13 +969,15 @@ extension Listing {
         var s = name.trimmingCharacters(in: .whitespaces)
         // 「掲載物件X件」のようなものは物件名ではない
         if s.range(of: #"^掲載物件\d+件$"#, options: .regularExpression) != nil { return "" }
-        // 先頭の「新築マンション」「マンション」を除去
+        // 先頭の「新築マンション」「マンション未入居」「マンション」を除去（長い方から先に試す）
         if s.hasPrefix("新築マンション") { s = String(s.dropFirst(7)).trimmingCharacters(in: .whitespaces) }
+        if s.hasPrefix("マンション未入居") { s = String(s.dropFirst(8)).trimmingCharacters(in: .whitespaces) }
         if s.hasPrefix("マンション") { s = String(s.dropFirst(5)).trimmingCharacters(in: .whitespaces) }
         // 末尾の「閲覧済」を除去
         if s.hasSuffix("閲覧済") { s = String(s.dropLast(3)).trimmingCharacters(in: .whitespaces) }
-        // 販売期情報を除去
-        if let range = s.range(of: #"\s*第\d+期\d*次?\s*$"#, options: .regularExpression) { s = String(s[..<range.lowerBound]).trimmingCharacters(in: .whitespaces) }
+        // 販売期情報を除去: 「( 第2期 2次 )」「第1期1次」
+        if let range = s.range(of: #"\s*[（(]\s*第\d+期\s*\d*次?\s*[）)]\s*$"#, options: .regularExpression) { s = String(s[..<range.lowerBound]).trimmingCharacters(in: .whitespaces) }
+        if let range = s.range(of: #"\s*第\d+期\s*\d*次?\s*$"#, options: .regularExpression) { s = String(s[..<range.lowerBound]).trimmingCharacters(in: .whitespaces) }
         return s
     }
 
