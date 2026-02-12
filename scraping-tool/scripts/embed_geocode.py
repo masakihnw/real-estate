@@ -133,12 +133,20 @@ def embed(json_path: Path) -> int:
         # 既に座標がある場合はスキップ（スクレイパーやアプリ側で設定済み）
         if listing.get("latitude") is not None and listing.get("longitude") is not None:
             continue
-        # 段階的にアドレス候補を生成してキャッシュを照合
+        # ss_address（住まいサーフィンの詳細住所）があれば優先的にキャッシュ照合
+        ss_address = (listing.get("ss_address") or "").strip()
         coord = None
-        for candidate in _address_candidates(address):
-            coord = cache.get(candidate)
-            if coord:
-                break
+        if ss_address:
+            for candidate in _address_candidates(ss_address):
+                coord = cache.get(candidate)
+                if coord:
+                    break
+        # ss_address で見つからなければ元の address でも試行
+        if not coord:
+            for candidate in _address_candidates(address):
+                coord = cache.get(candidate)
+                if coord:
+                    break
         if coord:
             lat, lon = coord
             listing["latitude"] = lat

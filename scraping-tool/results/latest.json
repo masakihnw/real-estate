@@ -108,7 +108,7 @@
     "ss_surrounding_properties": "[{\"name\": \"ジェントルエア神宮前\", \"url\": \"https://www.sumai-surfin.com/re/2759/\", \"appreciation_rate\": 144.7, \"oki_price_70m2\": 18900}, {\"name\": \"パークハウス神宮前\", \"url\": \"https://www.sumai-surfin.com/re/20645/\", \"appreciation_rate\": 136.6, \"oki_price_70m2\": 20720}, {\"name\": \"神宮前シティタワー\", \"url\": \"https://www.sumai-surfin.com/re/14512/\", \"appreciation_rate\": 135.3, \"oki_price_70m2\": 17080}, {\"name\": \"ヴィークコート原宿Ｈｉｌｌｓ\", \"url\": \"https://www.sumai-surfin.com/re/31217/\", \"appreciation_rate\": 104.2, \"oki_price_70m2\": 16520}, {\"name\": \"ディアナガーデン神宮前\", \"url\": \"https://www.sumai-surfin.com/re/16353/\", \"appreciation_rate\": 99.0, \"oki_price_70m2\": 14980}, {\"name\": \"クレヴィア原宿\", \"url\": \"https://www.sumai-surfin.com/re/31063/\", \"appreciation_rate\": 98.5, \"oki_price_70m2\": 16380}, {\"name\": \"パークハウス神宮外苑\", \"url\": \"https://www.sumai-surfin.com/re/16598/\", \"appreciation_rate\": 94.2, \"oki_price_70m2\": 16170}, {\"name\": \"グランスイート神宮前\", \"url\": \"https://www.sumai-surfin.com/re/1716/\", \"appreciation_rate\": 87.6, \"oki_price_70m2\": 14070}, {\"name\": \"パークコート神宮前\", \"url\": \"https://www.sumai-surfin.com/re/9771/\", \"appreciation_rate\": 84.1, \"oki_price_70m2\": 11340}, {\"name\": \"Ｋｉｓｔ原宿\", \"url\": \"https://www.sumai-surfin.com/re/1590/\", \"appreciation_rate\": 81.4, \"oki_price_70m2\": 13090}]",
     "ss_appreciation_rate": 84.1,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 65.0, \"walk_min\": 62.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high"
   },
   {
     "source": "suumo",

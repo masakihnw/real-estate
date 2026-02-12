@@ -101,78 +101,28 @@ if [ -n "${GITHUB_REPOSITORY:-}" ] && [ -n "${GITHUB_REF_NAME:-}" ]; then
     MAP_URL_ARG="--map-url ${MAP_URL}"
 fi
 
-# 3. 最新結果を latest.json に保存。Slack 差分用に前回を previous.json へ退避してから上書き
-#    レポートは詳細キャッシュ・地図・enrichment 反映後にまとめて生成（generate_report.py 呼び出しは後段）
+# 3. 最新結果を latest.json / latest_shinchiku.json に保存。
+#    Slack 差分用に前回を previous に退避してから上書き。
+#    新築も先に保存する（住まいサーフィン enrichment で ss_address を取得するため）
 cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
 cp "$CURRENT" "${OUTPUT_DIR}/latest.json"
-
-# 4.4. 総戸数・階数・権利形態キャッシュ更新（SUUMO 詳細ページを取得して data/building_units.json と data/html_cache/ を更新）
-echo "総戸数・階数・権利形態キャッシュを更新中（詳細ページ取得のため時間がかかります）..." >&2
-python3 scripts/build_units_cache.py "${OUTPUT_DIR}/latest.json" || echo "キャッシュの更新に失敗しました（続行）" >&2
-
-# 4.4.1. 今回の latest.json にキャッシュをマージし、レポートを再生成
-#         → report.md と Slack（latest.json を参照）の両方に階・戸数・権利が反映される
-python3 scripts/merge_detail_cache.py "${OUTPUT_DIR}/latest.json" || echo "詳細キャッシュのマージに失敗しました（続行）" >&2
-
-# 4.4.2. 物件マップ用 HTML を生成（レポート・Slack に地図リンクを付与するため。初回はジオコーディングで時間がかかることがあります）
-echo "物件マップを生成中..." >&2
-python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" || echo "地図の生成に失敗しました（続行）" >&2
-
-# 4.4.3. ジオコーディングキャッシュの座標を latest.json / latest_shinchiku.json に埋め込み（hazard enricher で使用）
-echo "ジオコーディングを埋め込み中..." >&2
-python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest.json" || echo "embed_geocode (中古) に失敗しました（続行）" >&2
-if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest_shinchiku.json" || echo "embed_geocode (新築) に失敗しました（続行）" >&2
-fi
-
-# 4.4.4. ジオコーディングキャッシュのバリデーション（東京23区範囲外の座標を検出）
-echo "ジオコーディングキャッシュをバリデーション中..." >&2
-python3 scripts/geocode.py || echo "⚠ ジオコーディングキャッシュに問題のあるエントリがあります（手動確認推奨）" >&2
-
-# 4.4.5. 座標の相互検証（住所・物件名・最寄り駅・座標の整合性チェック + 修正試行）
-echo "座標の相互検証 + 修正試行中..." >&2
-python3 scripts/geocode_cross_validator.py "${OUTPUT_DIR}/latest.json" --fix || echo "⚠ 座標の相互検証で問題が検出されました（手動確認推奨）" >&2
-if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    python3 scripts/geocode_cross_validator.py "${OUTPUT_DIR}/latest_shinchiku.json" --fix || echo "⚠ 座標の相互検証（新築）で問題が検出されました（手動確認推奨）" >&2
-fi
-
-echo "レポートを再生成（詳細キャッシュ・地図リンク反映）..." >&2
-if [ -f "${OUTPUT_DIR}/previous.json" ]; then
-    python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
-else
-    python3 generate_report.py "${OUTPUT_DIR}/latest.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
-fi
-cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
-
-# 4.6. 新築結果を latest_shinchiku.json に保存
 if [ -s "$CURRENT_SHINCHIKU" ]; then
     cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/previous_shinchiku.json" 2>/dev/null || true
     cp "$CURRENT_SHINCHIKU" "${OUTPUT_DIR}/latest_shinchiku.json"
     echo "新築: ${OUTPUT_DIR}/latest_shinchiku.json に保存" >&2
 fi
 
-# 4.6b. 東京都地域危険度 GeoJSON 生成（初回のみ。geopandas がインストールされている場合）
-RISK_GEOJSON_DIR="${OUTPUT_DIR}/risk_geojson"
-if [ ! -f "${RISK_GEOJSON_DIR}/building_collapse_risk.geojson" ]; then
-    echo "東京都地域危険度 GeoJSON を生成中（初回のみ）..." >&2
-    python3 scripts/convert_risk_geojson.py 2>&1 || echo "GeoJSON 変換失敗（geopandas 未インストール？ GSI タイルのみでハザード判定を続行）" >&2
-else
-    echo "東京都地域危険度 GeoJSON: 生成済み（スキップ）" >&2
-fi
+# 4.1. 総戸数・階数・権利形態キャッシュ更新（SUUMO 詳細ページを取得して data/building_units.json と data/html_cache/ を更新）
+echo "総戸数・階数・権利形態キャッシュを更新中（詳細ページ取得のため時間がかかります）..." >&2
+python3 scripts/build_units_cache.py "${OUTPUT_DIR}/latest.json" || echo "キャッシュの更新に失敗しました（続行）" >&2
 
-# 4.7a. ハザード enrichment（座標があれば GSI タイル + 東京地域危険度を判定）
-echo "ハザード enrichment 実行中..." >&2
-python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "ハザード enrichment (中古) 失敗（続行）" >&2
-if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "ハザード enrichment (新築) 失敗（続行）" >&2
-fi
+# 4.2. 今回の latest.json にキャッシュをマージ
+python3 scripts/merge_detail_cache.py "${OUTPUT_DIR}/latest.json" || echo "詳細キャッシュのマージに失敗しました（続行）" >&2
 
-# 4.7b. 住まいサーフィン enrichment
-#   SUMAI_USER / SUMAI_PASS 設定時: Web スクレイピング + レーダーデータ生成
-#   未設定時: 既存 ss_*/walk_min からレーダーデータのみ補完（ログイン不要）
-#   --browser: 追加でブラウザ自動化（割安判定・カスタムシミュレーション）を実行
-echo "住まいサーフィン enrichment 実行中..." >&2
-# ブラウザ自動化フラグ: playwright がインストール済みかつブラウザバイナリが存在する場合のみ有効
+# ─── 4.3. 住まいサーフィン enrichment（ジオコーディングの前に実行） ───
+# 住まいサーフィンの物件概要から番地レベルの正確な住所（ss_address）を取得する。
+# この ss_address を後続のジオコーディングで使うことで座標精度を大幅に向上させる。
+echo "住まいサーフィン enrichment 実行中（住所取得 → ジオコーディング精度向上）..." >&2
 BROWSER_FLAG=""
 if python3 -c "
 import sys
@@ -196,6 +146,54 @@ fi
 python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" --property-type chuko $BROWSER_FLAG || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
 if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
     python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" --property-type shinchiku $BROWSER_FLAG || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
+fi
+
+# ─── 4.4. ジオコーディング（ss_address を活用して高精度に変換） ───
+# 4.4.1. 物件マップ用 HTML を生成（初回はジオコーディングで時間がかかることがあります）
+#         ss_address があれば優先使用し、番地レベルの精度で座標を取得する。
+echo "物件マップを生成中（ss_address 活用）..." >&2
+python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" || echo "地図の生成に失敗しました（続行）" >&2
+
+# 4.4.2. ジオコーディングキャッシュの座標を latest.json / latest_shinchiku.json に埋め込み
+echo "ジオコーディングを埋め込み中..." >&2
+python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest.json" || echo "embed_geocode (中古) に失敗しました（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 scripts/embed_geocode.py "${OUTPUT_DIR}/latest_shinchiku.json" || echo "embed_geocode (新築) に失敗しました（続行）" >&2
+fi
+
+# 4.4.3. ジオコーディングキャッシュのバリデーション（東京23区範囲外の座標を検出）
+echo "ジオコーディングキャッシュをバリデーション中..." >&2
+python3 scripts/geocode.py || echo "⚠ ジオコーディングキャッシュに問題のあるエントリがあります（手動確認推奨）" >&2
+
+# 4.4.4. 座標の相互検証（住所・物件名・最寄り駅・座標の整合性チェック + 修正試行）
+echo "座標の相互検証 + 修正試行中..." >&2
+python3 scripts/geocode_cross_validator.py "${OUTPUT_DIR}/latest.json" --fix || echo "⚠ 座標の相互検証で問題が検出されました（手動確認推奨）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 scripts/geocode_cross_validator.py "${OUTPUT_DIR}/latest_shinchiku.json" --fix || echo "⚠ 座標の相互検証（新築）で問題が検出されました（手動確認推奨）" >&2
+fi
+
+echo "レポートを再生成（詳細キャッシュ・地図リンク反映）..." >&2
+if [ -f "${OUTPUT_DIR}/previous.json" ]; then
+    python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
+else
+    python3 generate_report.py "${OUTPUT_DIR}/latest.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
+fi
+cp "$REPORT" "${OUTPUT_DIR}/report_${DATE}.md"
+
+# 4.5. 東京都地域危険度 GeoJSON 生成（初回のみ。geopandas がインストールされている場合）
+RISK_GEOJSON_DIR="${OUTPUT_DIR}/risk_geojson"
+if [ ! -f "${RISK_GEOJSON_DIR}/building_collapse_risk.geojson" ]; then
+    echo "東京都地域危険度 GeoJSON を生成中（初回のみ）..." >&2
+    python3 scripts/convert_risk_geojson.py 2>&1 || echo "GeoJSON 変換失敗（geopandas 未インストール？ GSI タイルのみでハザード判定を続行）" >&2
+else
+    echo "東京都地域危険度 GeoJSON: 生成済み（スキップ）" >&2
+fi
+
+# 4.6a. ハザード enrichment（座標があれば GSI タイル + 東京地域危険度を判定）
+echo "ハザード enrichment 実行中..." >&2
+python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "ハザード enrichment (中古) 失敗（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "ハザード enrichment (新築) 失敗（続行）" >&2
 fi
 
 # 4.7c. 通勤時間 enrichment（廃止: iOS アプリ側で Apple Maps MKDirections を使って正確に計算する方式に移行）
