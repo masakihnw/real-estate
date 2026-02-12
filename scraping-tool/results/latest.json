@@ -414,8 +414,8 @@
     "alt_urls": [
       "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_77839724/"
     ],
-    "latitude": 35.6743164,
-    "longitude": 139.8262215,
+    "latitude": 35.668823,
+    "longitude": 139.835551,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/44991/",
     "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -427,7 +427,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"ニューライズシティ東京ベイハイライズ\", \"url\": \"https://www.sumai-surfin.com/re/1549/\", \"appreciation_rate\": 113.4, \"oki_price_70m2\": 7280}, {\"name\": \"グランエスタ（ファイブスター）\", \"url\": \"https://www.sumai-surfin.com/re/1529/\", \"appreciation_rate\": 108.3, \"oki_price_70m2\": 7840}, {\"name\": \"クレストフォルム東京アヴァンセ\", \"url\": \"https://www.sumai-surfin.com/re/403/\", \"appreciation_rate\": 106.7, \"oki_price_70m2\": 6860}, {\"name\": \"メロディーハイム南砂町フェイシア\", \"url\": \"https://www.sumai-surfin.com/re/1158/\", \"appreciation_rate\": 101.4, \"oki_price_70m2\": 6580}, {\"name\": \"エムステージウエスティア\", \"url\": \"https://www.sumai-surfin.com/re/13700/\", \"appreciation_rate\": 98.4, \"oki_price_70m2\": 6790}, {\"name\": \"オーベルグランディオ砂町水辺公園\", \"url\": \"https://www.sumai-surfin.com/re/1534/\", \"appreciation_rate\": 88.4, \"oki_price_70m2\": 5460}, {\"name\": \"クレストフォルム南砂仙台堀川公園\", \"url\": \"https://www.sumai-surfin.com/re/1919/\", \"appreciation_rate\": 88.3, \"oki_price_70m2\": 5810}, {\"name\": \"クレヴィア南砂\", \"url\": \"https://www.sumai-surfin.com/re/30257/\", \"appreciation_rate\": 87.7, \"oki_price_70m2\": 8120}, {\"name\": \"グランシティ東陽町II\", \"url\": \"https://www.sumai-surfin.com/re/276/\", \"appreciation_rate\": 78.8, \"oki_price_70m2\": 6370}, {\"name\": \"フェルモ南砂\", \"url\": \"https://www.sumai-surfin.com/re/28636/\", \"appreciation_rate\": 78.1, \"oki_price_70m2\": 7490}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 70.4, \"walk_min\": 65.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -449,8 +450,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6743164,
-    "longitude": 139.8262215,
+    "latitude": 35.668823,
+    "longitude": 139.835551,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/44991/",
     "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -462,7 +463,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"ニューライズシティ東京ベイハイライズ\", \"url\": \"https://www.sumai-surfin.com/re/1549/\", \"appreciation_rate\": 113.4, \"oki_price_70m2\": 7280}, {\"name\": \"グランエスタ（ファイブスター）\", \"url\": \"https://www.sumai-surfin.com/re/1529/\", \"appreciation_rate\": 108.3, \"oki_price_70m2\": 7840}, {\"name\": \"クレストフォルム東京アヴァンセ\", \"url\": \"https://www.sumai-surfin.com/re/403/\", \"appreciation_rate\": 106.7, \"oki_price_70m2\": 6860}, {\"name\": \"メロディーハイム南砂町フェイシア\", \"url\": \"https://www.sumai-surfin.com/re/1158/\", \"appreciation_rate\": 101.4, \"oki_price_70m2\": 6580}, {\"name\": \"エムステージウエスティア\", \"url\": \"https://www.sumai-surfin.com/re/13700/\", \"appreciation_rate\": 98.4, \"oki_price_70m2\": 6790}, {\"name\": \"オーベルグランディオ砂町水辺公園\", \"url\": \"https://www.sumai-surfin.com/re/1534/\", \"appreciation_rate\": 88.4, \"oki_price_70m2\": 5460}, {\"name\": \"クレストフォルム南砂仙台堀川公園\", \"url\": \"https://www.sumai-surfin.com/re/1919/\", \"appreciation_rate\": 88.3, \"oki_price_70m2\": 5810}, {\"name\": \"クレヴィア南砂\", \"url\": \"https://www.sumai-surfin.com/re/30257/\", \"appreciation_rate\": 87.7, \"oki_price_70m2\": 8120}, {\"name\": \"グランシティ東陽町II\", \"url\": \"https://www.sumai-surfin.com/re/276/\", \"appreciation_rate\": 78.8, \"oki_price_70m2\": 6370}, {\"name\": \"フェルモ南砂\", \"url\": \"https://www.sumai-surfin.com/re/28636/\", \"appreciation_rate\": 78.1, \"oki_price_70m2\": 7490}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 70.4, \"walk_min\": 65.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -484,8 +486,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6976987,
-    "longitude": 139.827138,
+    "latitude": 35.6974009,
+    "longitude": 139.8429757,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 5, \"fire\": 5, \"combined\": 5}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/9268/",
     "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩8分 + 東大島駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 30, \"summary\": \"徒歩8分 + 東大島駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -499,7 +501,8 @@
     "ss_surrounding_properties": "[{\"name\": \"ブルージュ東大島\", \"url\": \"https://www.sumai-surfin.com/re/1060/\", \"appreciation_rate\": 114.7, \"oki_price_70m2\": 6160}, {\"name\": \"ソラネットシティ\", \"url\": \"https://www.sumai-surfin.com/re/693/\", \"appreciation_rate\": 92.1, \"oki_price_70m2\": 5880}, {\"name\": \"ＥーＣＩＴＹパークサイドコート\", \"url\": \"https://www.sumai-surfin.com/re/14580/\", \"appreciation_rate\": 91.3, \"oki_price_70m2\": 6650}, {\"name\": \"エクステ東大島\", \"url\": \"https://www.sumai-surfin.com/re/13138/\", \"appreciation_rate\": 87.1, \"oki_price_70m2\": 5530}, {\"name\": \"プレジール東大島\", \"url\": \"https://www.sumai-surfin.com/re/12919/\", \"appreciation_rate\": 77.9, \"oki_price_70m2\": 5600}, {\"name\": \"ティーズガーデン\", \"url\": \"https://www.sumai-surfin.com/re/16366/\", \"appreciation_rate\": 69.3, \"oki_price_70m2\": 5180}, {\"name\": \"ランドステージ東大島エグゼタワー\", \"url\": \"https://www.sumai-surfin.com/re/17653/\", \"appreciation_rate\": 63.7, \"oki_price_70m2\": 5670}, {\"name\": \"ライオンズステージ大島イーストアクエア\", \"url\": \"https://www.sumai-surfin.com/re/17382/\", \"appreciation_rate\": 63.5, \"oki_price_70m2\": 5950}, {\"name\": \"ロイヤルクレスト砂町水辺公園\", \"url\": \"https://www.sumai-surfin.com/re/3897/\", \"appreciation_rate\": 61.9, \"oki_price_70m2\": 5180}, {\"name\": \"エルフィーノ東大島\", \"url\": \"https://www.sumai-surfin.com/re/2175/\", \"appreciation_rate\": 61.4, \"oki_price_70m2\": 5110}]",
     "ss_appreciation_rate": 45.9,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 60.6, \"walk_min\": 56.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "medium",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -598,8 +601,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6743164,
-    "longitude": 139.8262215,
+    "latitude": 35.668823,
+    "longitude": 139.835551,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/44991/",
     "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -611,7 +614,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"ニューライズシティ東京ベイハイライズ\", \"url\": \"https://www.sumai-surfin.com/re/1549/\", \"appreciation_rate\": 113.4, \"oki_price_70m2\": 7280}, {\"name\": \"グランエスタ（ファイブスター）\", \"url\": \"https://www.sumai-surfin.com/re/1529/\", \"appreciation_rate\": 108.3, \"oki_price_70m2\": 7840}, {\"name\": \"クレストフォルム東京アヴァンセ\", \"url\": \"https://www.sumai-surfin.com/re/403/\", \"appreciation_rate\": 106.7, \"oki_price_70m2\": 6860}, {\"name\": \"メロディーハイム南砂町フェイシア\", \"url\": \"https://www.sumai-surfin.com/re/1158/\", \"appreciation_rate\": 101.4, \"oki_price_70m2\": 6580}, {\"name\": \"エムステージウエスティア\", \"url\": \"https://www.sumai-surfin.com/re/13700/\", \"appreciation_rate\": 98.4, \"oki_price_70m2\": 6790}, {\"name\": \"オーベルグランディオ砂町水辺公園\", \"url\": \"https://www.sumai-surfin.com/re/1534/\", \"appreciation_rate\": 88.4, \"oki_price_70m2\": 5460}, {\"name\": \"クレストフォルム南砂仙台堀川公園\", \"url\": \"https://www.sumai-surfin.com/re/1919/\", \"appreciation_rate\": 88.3, \"oki_price_70m2\": 5810}, {\"name\": \"クレヴィア南砂\", \"url\": \"https://www.sumai-surfin.com/re/30257/\", \"appreciation_rate\": 87.7, \"oki_price_70m2\": 8120}, {\"name\": \"グランシティ東陽町II\", \"url\": \"https://www.sumai-surfin.com/re/276/\", \"appreciation_rate\": 78.8, \"oki_price_70m2\": 6370}, {\"name\": \"フェルモ南砂\", \"url\": \"https://www.sumai-surfin.com/re/28636/\", \"appreciation_rate\": 78.1, \"oki_price_70m2\": 7490}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 70.4, \"walk_min\": 65.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -745,8 +749,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6743164,
-    "longitude": 139.8262215,
+    "latitude": 35.668823,
+    "longitude": 139.835551,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/44991/",
     "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -758,7 +762,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"ニューライズシティ東京ベイハイライズ\", \"url\": \"https://www.sumai-surfin.com/re/1549/\", \"appreciation_rate\": 113.4, \"oki_price_70m2\": 7280}, {\"name\": \"グランエスタ（ファイブスター）\", \"url\": \"https://www.sumai-surfin.com/re/1529/\", \"appreciation_rate\": 108.3, \"oki_price_70m2\": 7840}, {\"name\": \"クレストフォルム東京アヴァンセ\", \"url\": \"https://www.sumai-surfin.com/re/403/\", \"appreciation_rate\": 106.7, \"oki_price_70m2\": 6860}, {\"name\": \"メロディーハイム南砂町フェイシア\", \"url\": \"https://www.sumai-surfin.com/re/1158/\", \"appreciation_rate\": 101.4, \"oki_price_70m2\": 6580}, {\"name\": \"エムステージウエスティア\", \"url\": \"https://www.sumai-surfin.com/re/13700/\", \"appreciation_rate\": 98.4, \"oki_price_70m2\": 6790}, {\"name\": \"オーベルグランディオ砂町水辺公園\", \"url\": \"https://www.sumai-surfin.com/re/1534/\", \"appreciation_rate\": 88.4, \"oki_price_70m2\": 5460}, {\"name\": \"クレストフォルム南砂仙台堀川公園\", \"url\": \"https://www.sumai-surfin.com/re/1919/\", \"appreciation_rate\": 88.3, \"oki_price_70m2\": 5810}, {\"name\": \"クレヴィア南砂\", \"url\": \"https://www.sumai-surfin.com/re/30257/\", \"appreciation_rate\": 87.7, \"oki_price_70m2\": 8120}, {\"name\": \"グランシティ東陽町II\", \"url\": \"https://www.sumai-surfin.com/re/276/\", \"appreciation_rate\": 78.8, \"oki_price_70m2\": 6370}, {\"name\": \"フェルモ南砂\", \"url\": \"https://www.sumai-surfin.com/re/28636/\", \"appreciation_rate\": 78.1, \"oki_price_70m2\": 7490}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 70.4, \"walk_min\": 65.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -780,8 +785,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6743164,
-    "longitude": 139.8262215,
+    "latitude": 35.668823,
+    "longitude": 139.835551,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/44991/",
     "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -793,7 +798,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"ニューライズシティ東京ベイハイライズ\", \"url\": \"https://www.sumai-surfin.com/re/1549/\", \"appreciation_rate\": 113.4, \"oki_price_70m2\": 7280}, {\"name\": \"グランエスタ（ファイブスター）\", \"url\": \"https://www.sumai-surfin.com/re/1529/\", \"appreciation_rate\": 108.3, \"oki_price_70m2\": 7840}, {\"name\": \"クレストフォルム東京アヴァンセ\", \"url\": \"https://www.sumai-surfin.com/re/403/\", \"appreciation_rate\": 106.7, \"oki_price_70m2\": 6860}, {\"name\": \"メロディーハイム南砂町フェイシア\", \"url\": \"https://www.sumai-surfin.com/re/1158/\", \"appreciation_rate\": 101.4, \"oki_price_70m2\": 6580}, {\"name\": \"エムステージウエスティア\", \"url\": \"https://www.sumai-surfin.com/re/13700/\", \"appreciation_rate\": 98.4, \"oki_price_70m2\": 6790}, {\"name\": \"オーベルグランディオ砂町水辺公園\", \"url\": \"https://www.sumai-surfin.com/re/1534/\", \"appreciation_rate\": 88.4, \"oki_price_70m2\": 5460}, {\"name\": \"クレストフォルム南砂仙台堀川公園\", \"url\": \"https://www.sumai-surfin.com/re/1919/\", \"appreciation_rate\": 88.3, \"oki_price_70m2\": 5810}, {\"name\": \"クレヴィア南砂\", \"url\": \"https://www.sumai-surfin.com/re/30257/\", \"appreciation_rate\": 87.7, \"oki_price_70m2\": 8120}, {\"name\": \"グランシティ東陽町II\", \"url\": \"https://www.sumai-surfin.com/re/276/\", \"appreciation_rate\": 78.8, \"oki_price_70m2\": 6370}, {\"name\": \"フェルモ南砂\", \"url\": \"https://www.sumai-surfin.com/re/28636/\", \"appreciation_rate\": 78.1, \"oki_price_70m2\": 7490}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 70.4, \"walk_min\": 65.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -879,8 +885,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6743164,
-    "longitude": 139.8262215,
+    "latitude": 35.668823,
+    "longitude": 139.835551,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/44991/",
     "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -892,7 +898,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"ニューライズシティ東京ベイハイライズ\", \"url\": \"https://www.sumai-surfin.com/re/1549/\", \"appreciation_rate\": 113.4, \"oki_price_70m2\": 7280}, {\"name\": \"グランエスタ（ファイブスター）\", \"url\": \"https://www.sumai-surfin.com/re/1529/\", \"appreciation_rate\": 108.3, \"oki_price_70m2\": 7840}, {\"name\": \"クレストフォルム東京アヴァンセ\", \"url\": \"https://www.sumai-surfin.com/re/403/\", \"appreciation_rate\": 106.7, \"oki_price_70m2\": 6860}, {\"name\": \"メロディーハイム南砂町フェイシア\", \"url\": \"https://www.sumai-surfin.com/re/1158/\", \"appreciation_rate\": 101.4, \"oki_price_70m2\": 6580}, {\"name\": \"エムステージウエスティア\", \"url\": \"https://www.sumai-surfin.com/re/13700/\", \"appreciation_rate\": 98.4, \"oki_price_70m2\": 6790}, {\"name\": \"オーベルグランディオ砂町水辺公園\", \"url\": \"https://www.sumai-surfin.com/re/1534/\", \"appreciation_rate\": 88.4, \"oki_price_70m2\": 5460}, {\"name\": \"クレストフォルム南砂仙台堀川公園\", \"url\": \"https://www.sumai-surfin.com/re/1919/\", \"appreciation_rate\": 88.3, \"oki_price_70m2\": 5810}, {\"name\": \"クレヴィア南砂\", \"url\": \"https://www.sumai-surfin.com/re/30257/\", \"appreciation_rate\": 87.7, \"oki_price_70m2\": 8120}, {\"name\": \"グランシティ東陽町II\", \"url\": \"https://www.sumai-surfin.com/re/276/\", \"appreciation_rate\": 78.8, \"oki_price_70m2\": 6370}, {\"name\": \"フェルモ南砂\", \"url\": \"https://www.sumai-surfin.com/re/28636/\", \"appreciation_rate\": 78.1, \"oki_price_70m2\": 7490}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 70.4, \"walk_min\": 65.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1095,8 +1102,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6896928,
-    "longitude": 139.8350966,
+    "latitude": 35.6924781,
+    "longitude": 139.8277217,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 3, \"combined\": 3}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/25604/",
     "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 亀戸駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 亀戸駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -1110,7 +1117,8 @@
     "ss_surrounding_properties": "[{\"name\": \"パークナード亀戸ロジュマン\", \"url\": \"https://www.sumai-surfin.com/re/4118/\", \"appreciation_rate\": 115.4, \"oki_price_70m2\": 7210}, {\"name\": \"クレアトール亀戸\", \"url\": \"https://www.sumai-surfin.com/re/13206/\", \"appreciation_rate\": 110.7, \"oki_price_70m2\": 7210}, {\"name\": \"アーデルハイム錦糸町\", \"url\": \"https://www.sumai-surfin.com/re/2313/\", \"appreciation_rate\": 110.4, \"oki_price_70m2\": 7420}, {\"name\": \"レーベンハイム亀戸シャリテ\", \"url\": \"https://www.sumai-surfin.com/re/1322/\", \"appreciation_rate\": 107.7, \"oki_price_70m2\": 7140}, {\"name\": \"ランドステージ亀戸\", \"url\": \"https://www.sumai-surfin.com/re/14394/\", \"appreciation_rate\": 107.6, \"oki_price_70m2\": 6860}, {\"name\": \"パークタワー亀戸ステーションアリーナ\", \"url\": \"https://www.sumai-surfin.com/re/817/\", \"appreciation_rate\": 101.9, \"oki_price_70m2\": 7700}, {\"name\": \"ミオカステーロ亀戸II\", \"url\": \"https://www.sumai-surfin.com/re/4033/\", \"appreciation_rate\": 97.6, \"oki_price_70m2\": 7000}, {\"name\": \"クローバー亀有\", \"url\": \"https://www.sumai-surfin.com/re/3118/\", \"appreciation_rate\": 95.8, \"oki_price_70m2\": 7490}, {\"name\": \"ディナ・スカーラ亀戸II\", \"url\": \"https://www.sumai-surfin.com/re/1778/\", \"appreciation_rate\": 95.1, \"oki_price_70m2\": 7000}, {\"name\": \"ベルグコート亀戸中央公園\", \"url\": \"https://www.sumai-surfin.com/re/1083/\", \"appreciation_rate\": 94.1, \"oki_price_70m2\": 6720}]",
     "ss_appreciation_rate": 78.0,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 63.4, \"walk_min\": 59.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1132,8 +1140,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6743164,
-    "longitude": 139.8262215,
+    "latitude": 35.668823,
+    "longitude": 139.835551,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/44991/",
     "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -1145,7 +1153,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"ニューライズシティ東京ベイハイライズ\", \"url\": \"https://www.sumai-surfin.com/re/1549/\", \"appreciation_rate\": 113.4, \"oki_price_70m2\": 7280}, {\"name\": \"グランエスタ（ファイブスター）\", \"url\": \"https://www.sumai-surfin.com/re/1529/\", \"appreciation_rate\": 108.3, \"oki_price_70m2\": 7840}, {\"name\": \"クレストフォルム東京アヴァンセ\", \"url\": \"https://www.sumai-surfin.com/re/403/\", \"appreciation_rate\": 106.7, \"oki_price_70m2\": 6860}, {\"name\": \"メロディーハイム南砂町フェイシア\", \"url\": \"https://www.sumai-surfin.com/re/1158/\", \"appreciation_rate\": 101.4, \"oki_price_70m2\": 6580}, {\"name\": \"エムステージウエスティア\", \"url\": \"https://www.sumai-surfin.com/re/13700/\", \"appreciation_rate\": 98.4, \"oki_price_70m2\": 6790}, {\"name\": \"オーベルグランディオ砂町水辺公園\", \"url\": \"https://www.sumai-surfin.com/re/1534/\", \"appreciation_rate\": 88.4, \"oki_price_70m2\": 5460}, {\"name\": \"クレストフォルム南砂仙台堀川公園\", \"url\": \"https://www.sumai-surfin.com/re/1919/\", \"appreciation_rate\": 88.3, \"oki_price_70m2\": 5810}, {\"name\": \"クレヴィア南砂\", \"url\": \"https://www.sumai-surfin.com/re/30257/\", \"appreciation_rate\": 87.7, \"oki_price_70m2\": 8120}, {\"name\": \"グランシティ東陽町II\", \"url\": \"https://www.sumai-surfin.com/re/276/\", \"appreciation_rate\": 78.8, \"oki_price_70m2\": 6370}, {\"name\": \"フェルモ南砂\", \"url\": \"https://www.sumai-surfin.com/re/28636/\", \"appreciation_rate\": 78.1, \"oki_price_70m2\": 7490}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 70.4, \"walk_min\": 65.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1278,8 +1287,8 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6976987,
-    "longitude": 139.827138,
+    "latitude": 35.704637,
+    "longitude": 139.822325,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 5, \"fire\": 5, \"combined\": 5}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/33116/",
     "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩10分 + 押上駅から18分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩10分 + 押上駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -1293,7 +1302,8 @@
     "ss_surrounding_properties": "[{\"name\": \"コスモ押上ステーションフロント\", \"url\": \"https://www.sumai-surfin.com/re/454/\", \"appreciation_rate\": 150.2, \"oki_price_70m2\": 8820}, {\"name\": \"パームス押上\", \"url\": \"https://www.sumai-surfin.com/re/16625/\", \"appreciation_rate\": 135.1, \"oki_price_70m2\": 8120}, {\"name\": \"エスタガーデン\", \"url\": \"https://www.sumai-surfin.com/re/14935/\", \"appreciation_rate\": 127.1, \"oki_price_70m2\": 8890}, {\"name\": \"ミオカステーロ押上II\", \"url\": \"https://www.sumai-surfin.com/re/1113/\", \"appreciation_rate\": 112.7, \"oki_price_70m2\": 7560}, {\"name\": \"パークホームズ隅田桜橋\", \"url\": \"https://www.sumai-surfin.com/re/862/\", \"appreciation_rate\": 111.8, \"oki_price_70m2\": 7210}, {\"name\": \"ミオカステーロ押上シェーナ\", \"url\": \"https://www.sumai-surfin.com/re/12941/\", \"appreciation_rate\": 105.7, \"oki_price_70m2\": 7140}, {\"name\": \"パレミーユ押上\", \"url\": \"https://www.sumai-surfin.com/re/13360/\", \"appreciation_rate\": 103.5, \"oki_price_70m2\": 7490}, {\"name\": \"ナイスシティアリーナ押上\", \"url\": \"https://www.sumai-surfin.com/re/2692/\", \"appreciation_rate\": 101.5, \"oki_price_70m2\": 8540}, {\"name\": \"アーデル向島アヴァンセア\", \"url\": \"https://www.sumai-surfin.com/re/37/\", \"appreciation_rate\": 100.5, \"oki_price_70m2\": 6790}, {\"name\": \"向島第２ダイヤモンドマンション\", \"url\": \"https://www.sumai-surfin.com/re/3011/\", \"appreciation_rate\": 98.7, \"oki_price_70m2\": 6790}]",
     "ss_appreciation_rate": 91.2,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 61.6, \"walk_min\": 50.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "medium",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1315,12 +1325,13 @@
     "list_ward_roman": "koto",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6899027,
-    "longitude": 139.8350597,
+    "latitude": 35.690595,
+    "longitude": 139.842773,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
     "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩7分 + 東大島駅から20分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 東大島駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
     "reinfolib_market_data": "{\"ward\": \"江東区\", \"ward_median_m2_price\": 1400000, \"ward_mean_m2_price\": 1345519, \"price_ratio\": 1.047, \"price_diff_man\": 449, \"sample_count\": 378, \"trend\": \"flat\", \"yoy_change_pct\": 56.2, \"quarterly_m2_prices\": [{\"quarter\": \"2024Q1\", \"median_m2_price\": 1183974, \"count\": 88}, {\"quarter\": \"2024Q2\", \"median_m2_price\": 850000, \"count\": 97}, {\"quarter\": \"2024Q3\", \"median_m2_price\": 947222, \"count\": 98}, {\"quarter\": \"2024Q4\", \"median_m2_price\": 1400000, \"count\": 97}, {\"quarter\": \"2025Q1\", \"median_m2_price\": 1333333, \"count\": 99}, {\"quarter\": \"2025Q2\", \"median_m2_price\": 1446154, \"count\": 91}, {\"quarter\": \"2025Q3\", \"median_m2_price\": 1480000, \"count\": 91}], \"data_source\": \"不動産情報ライブラリ（国土交通省）\"}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1369,8 +1380,8 @@
     "list_ward_roman": "arakawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7322021,
-    "longitude": 139.7666684,
+    "latitude": 35.736172,
+    "longitude": 139.769456,
     "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/12215/",
     "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -1382,7 +1393,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"ザ・パークハウス谷中道灌山通り\", \"url\": \"https://www.sumai-surfin.com/re/26776/\", \"appreciation_rate\": 123.1, \"oki_price_70m2\": 11550}, {\"name\": \"コスモ西日暮里ビューステージ\", \"url\": \"https://www.sumai-surfin.com/re/463/\", \"appreciation_rate\": 121.2, \"oki_price_70m2\": 6860}, {\"name\": \"サンクレイドル西日暮里\", \"url\": \"https://www.sumai-surfin.com/re/25910/\", \"appreciation_rate\": 118.6, \"oki_price_70m2\": 8540}, {\"name\": \"コスモレジデンス東京ＥＡＳＴ\", \"url\": \"https://www.sumai-surfin.com/re/3960/\", \"appreciation_rate\": 105.2, \"oki_price_70m2\": 6930}, {\"name\": \"デュオシティ西日暮里ステーシア\", \"url\": \"https://www.sumai-surfin.com/re/28136/\", \"appreciation_rate\": 100.5, \"oki_price_70m2\": 9520}, {\"name\": \"コスモシティ西日暮里\", \"url\": \"https://www.sumai-surfin.com/re/2450/\", \"appreciation_rate\": 99.0, \"oki_price_70m2\": 6090}, {\"name\": \"クラッシィハウス谷中道灌山\", \"url\": \"https://www.sumai-surfin.com/re/30291/\", \"appreciation_rate\": 98.5, \"oki_price_70m2\": 10710}, {\"name\": \"ローヤルシティ西日暮里\", \"url\": \"https://www.sumai-surfin.com/re/26163/\", \"appreciation_rate\": 95.9, \"oki_price_70m2\": 8120}, {\"name\": \"ジェイシティ西日暮里\", \"url\": \"https://www.sumai-surfin.com/re/13953/\", \"appreciation_rate\": 93.2, \"oki_price_70m2\": 6650}, {\"name\": \"ナイスシティアリーナ西日暮里\", \"url\": \"https://www.sumai-surfin.com/re/4463/\", \"appreciation_rate\": 87.4, \"oki_price_70m2\": 7840}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 60.0, \"walk_min\": 68.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "medium",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1480,8 +1492,8 @@
     "list_ward_roman": "arakawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7323388,
-    "longitude": 139.7987663,
+    "latitude": 35.736832,
+    "longitude": 139.809688,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/4744/",
     "commute_info": "{\"playground\": {\"minutes\": 40, \"summary\": \"(概算) 徒歩8分 + 京成関屋駅から約32分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"(概算) 徒歩8分 + 京成関屋駅から約30分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -1495,7 +1507,8 @@
     "ss_surrounding_properties": "[{\"name\": \"コスモシティ東京イースト\", \"url\": \"https://www.sumai-surfin.com/re/13864/\", \"appreciation_rate\": 116.9, \"oki_price_70m2\": 6440}, {\"name\": \"トキアス\", \"url\": \"https://www.sumai-surfin.com/re/756/\", \"appreciation_rate\": 115.1, \"oki_price_70m2\": 6440}, {\"name\": \"クリオ南千住壱番館\", \"url\": \"https://www.sumai-surfin.com/re/15409/\", \"appreciation_rate\": 101.1, \"oki_price_70m2\": 6020}, {\"name\": \"クレヴィア南千住テラス\", \"url\": \"https://www.sumai-surfin.com/re/28835/\", \"appreciation_rate\": 95.0, \"oki_price_70m2\": 7560}, {\"name\": \"ドムールタワーレジデンス\", \"url\": \"https://www.sumai-surfin.com/re/14112/\", \"appreciation_rate\": 94.2, \"oki_price_70m2\": 5810}, {\"name\": \"ブランズタワー南千住\", \"url\": \"https://www.sumai-surfin.com/re/7690/\", \"appreciation_rate\": 88.6, \"oki_price_70m2\": 9870}, {\"name\": \"東京フロンティアシティ　アーバンフォート\", \"url\": \"https://www.sumai-surfin.com/re/3470/\", \"appreciation_rate\": 87.1, \"oki_price_70m2\": 5880}, {\"name\": \"ダイナシティ東京リバーゲート\", \"url\": \"https://www.sumai-surfin.com/re/2827/\", \"appreciation_rate\": 86.0, \"oki_price_70m2\": 6300}, {\"name\": \"リバーパーク汐入はなみずき通り北７番館\", \"url\": \"https://www.sumai-surfin.com/re/13494/\", \"appreciation_rate\": 84.7, \"oki_price_70m2\": 4970}, {\"name\": \"クレヴィア南千住\", \"url\": \"https://www.sumai-surfin.com/re/26347/\", \"appreciation_rate\": 84.5, \"oki_price_70m2\": 7140}]",
     "ss_appreciation_rate": 78.4,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 68.0, \"walk_min\": 56.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1517,12 +1530,13 @@
     "list_ward_roman": "arakawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7390532,
-    "longitude": 139.7813524,
+    "latitude": 35.738852,
+    "longitude": 139.77575,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
     "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
     "reinfolib_market_data": "{\"ward\": \"荒川区\", \"ward_median_m2_price\": 775000, \"ward_mean_m2_price\": 828029, \"price_ratio\": 1.647, \"price_diff_man\": 3136, \"sample_count\": 335, \"trend\": \"flat\", \"yoy_change_pct\": 20.6, \"quarterly_m2_prices\": [{\"quarter\": \"2024Q1\", \"median_m2_price\": 763636, \"count\": 89}, {\"quarter\": \"2024Q2\", \"median_m2_price\": 818182, \"count\": 76}, {\"quarter\": \"2024Q3\", \"median_m2_price\": 727273, \"count\": 63}, {\"quarter\": \"2024Q4\", \"median_m2_price\": 815385, \"count\": 85}, {\"quarter\": \"2025Q1\", \"median_m2_price\": 721970, \"count\": 86}, {\"quarter\": \"2025Q2\", \"median_m2_price\": 737500, \"count\": 81}, {\"quarter\": \"2025Q3\", \"median_m2_price\": 876923, \"count\": 83}], \"data_source\": \"不動産情報ライブラリ（国土交通省）\"}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1544,12 +1558,13 @@
     "list_ward_roman": "arakawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7390532,
-    "longitude": 139.7813524,
+    "latitude": 35.738852,
+    "longitude": 139.77575,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
     "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
     "reinfolib_market_data": "{\"ward\": \"荒川区\", \"ward_median_m2_price\": 775000, \"ward_mean_m2_price\": 828029, \"price_ratio\": 1.659, \"price_diff_man\": 3171, \"sample_count\": 335, \"trend\": \"flat\", \"yoy_change_pct\": 20.6, \"quarterly_m2_prices\": [{\"quarter\": \"2024Q1\", \"median_m2_price\": 763636, \"count\": 89}, {\"quarter\": \"2024Q2\", \"median_m2_price\": 818182, \"count\": 76}, {\"quarter\": \"2024Q3\", \"median_m2_price\": 727273, \"count\": 63}, {\"quarter\": \"2024Q4\", \"median_m2_price\": 815385, \"count\": 85}, {\"quarter\": \"2025Q1\", \"median_m2_price\": 721970, \"count\": 86}, {\"quarter\": \"2025Q2\", \"median_m2_price\": 737500, \"count\": 81}, {\"quarter\": \"2025Q3\", \"median_m2_price\": 876923, \"count\": 83}], \"data_source\": \"不動産情報ライブラリ（国土交通省）\"}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1676,8 +1691,8 @@
     "list_ward_roman": "arakawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7390532,
-    "longitude": 139.7813524,
+    "latitude": 35.738852,
+    "longitude": 139.77575,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/2456/",
     "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -1691,7 +1706,8 @@
     "ss_surrounding_properties": "[{\"name\": \"レーベンリヴァーレ東京ラ・トーレ\", \"url\": \"https://www.sumai-surfin.com/re/2456/\", \"appreciation_rate\": 103.1, \"oki_price_70m2\": 6720}, {\"name\": \"コスモ西日暮里ロイヤルフォルム\", \"url\": \"https://www.sumai-surfin.com/re/12710/\", \"appreciation_rate\": 81.0, \"oki_price_70m2\": 6090}, {\"name\": \"イニシア田端ツインマークス\", \"url\": \"https://www.sumai-surfin.com/re/40457/\", \"appreciation_rate\": 37.0, \"oki_price_70m2\": 7140}, {\"name\": \"クリオ町屋サザンマークス\", \"url\": \"https://www.sumai-surfin.com/re/42836/\", \"appreciation_rate\": 35.6, \"oki_price_70m2\": 8260}, {\"name\": \"プラウド町屋\", \"url\": \"https://www.sumai-surfin.com/re/45585/\", \"appreciation_rate\": 31.3, \"oki_price_70m2\": 9240}, {\"name\": \"アドバンスクレール田端新町\", \"url\": \"https://www.sumai-surfin.com/re/39436/\", \"appreciation_rate\": 30.7, \"oki_price_70m2\": 6440}]",
     "ss_appreciation_rate": 103.1,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 60.6, \"walk_min\": 68.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1784,8 +1800,8 @@
     "list_ward_roman": "arakawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7390532,
-    "longitude": 139.7813524,
+    "latitude": 35.737404,
+    "longitude": 139.7772062,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/45585/",
     "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -1799,7 +1815,8 @@
     "ss_surrounding_properties": "[{\"name\": \"レーベンリヴァーレ東京ラ・トーレ\", \"url\": \"https://www.sumai-surfin.com/re/2456/\", \"appreciation_rate\": 103.1, \"oki_price_70m2\": 6720}, {\"name\": \"コスモ西日暮里ロイヤルフォルム\", \"url\": \"https://www.sumai-surfin.com/re/12710/\", \"appreciation_rate\": 81.0, \"oki_price_70m2\": 6090}, {\"name\": \"イニシア田端ツインマークス\", \"url\": \"https://www.sumai-surfin.com/re/40457/\", \"appreciation_rate\": 37.0, \"oki_price_70m2\": 7140}, {\"name\": \"クリオ町屋サザンマークス\", \"url\": \"https://www.sumai-surfin.com/re/42836/\", \"appreciation_rate\": 35.6, \"oki_price_70m2\": 8260}, {\"name\": \"プラウド町屋\", \"url\": \"https://www.sumai-surfin.com/re/45585/\", \"appreciation_rate\": 31.3, \"oki_price_70m2\": 9240}, {\"name\": \"アドバンスクレール田端新町\", \"url\": \"https://www.sumai-surfin.com/re/39436/\", \"appreciation_rate\": 30.7, \"oki_price_70m2\": 6440}]",
     "ss_appreciation_rate": 31.3,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 61.2, \"walk_min\": 68.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -1875,8 +1892,8 @@
     "list_ward_roman": "adachi",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7746029,
-    "longitude": 139.8045163,
+    "latitude": 35.7450848,
+    "longitude": 139.8075589,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/3102/",
     "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩10分 + 北千住駅から24分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩10分 + 北千住駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -1890,7 +1907,8 @@
     "ss_surrounding_properties": "[{\"name\": \"アトラスタワー北千住\", \"url\": \"https://www.sumai-surfin.com/re/79/\", \"appreciation_rate\": 119.9, \"oki_price_70m2\": 9590}, {\"name\": \"グランフラッツ千住旭町\", \"url\": \"https://www.sumai-surfin.com/re/329/\", \"appreciation_rate\": 97.9, \"oki_price_70m2\": 7000}, {\"name\": \"コスモ北千住ＥＡＳＴ\", \"url\": \"https://www.sumai-surfin.com/re/471/\", \"appreciation_rate\": 96.9, \"oki_price_70m2\": 5950}, {\"name\": \"ローヤルシテイ北千住\", \"url\": \"https://www.sumai-surfin.com/re/2630/\", \"appreciation_rate\": 96.6, \"oki_price_70m2\": 5740}, {\"name\": \"ロータリーパレス北千住\", \"url\": \"https://www.sumai-surfin.com/re/1392/\", \"appreciation_rate\": 95.9, \"oki_price_70m2\": 6790}, {\"name\": \"コルサム北千住\", \"url\": \"https://www.sumai-surfin.com/re/15786/\", \"appreciation_rate\": 91.8, \"oki_price_70m2\": 6510}, {\"name\": \"藤和シティホームズ北千住リアルステージ\", \"url\": \"https://www.sumai-surfin.com/re/1881/\", \"appreciation_rate\": 90.9, \"oki_price_70m2\": 6160}, {\"name\": \"グランフラッツ千住３丁目\", \"url\": \"https://www.sumai-surfin.com/re/12677/\", \"appreciation_rate\": 90.7, \"oki_price_70m2\": 6650}, {\"name\": \"グランフラッツ千住寿町\", \"url\": \"https://www.sumai-surfin.com/re/3267/\", \"appreciation_rate\": 85.8, \"oki_price_70m2\": 6230}, {\"name\": \"リビオ北千住\", \"url\": \"https://www.sumai-surfin.com/re/28762/\", \"appreciation_rate\": 85.5, \"oki_price_70m2\": 5110}]",
     "ss_appreciation_rate": 78.8,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 62.0, \"walk_min\": 50.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -2186,8 +2204,8 @@
     "list_ward_roman": "adachi",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7746029,
-    "longitude": 139.8045163,
+    "latitude": 35.7450848,
+    "longitude": 139.8075589,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/28305/",
     "commute_info": "{\"playground\": {\"minutes\": 32, \"summary\": \"徒歩8分 + 北千住駅から24分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 36, \"summary\": \"徒歩8分 + 北千住駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -2199,7 +2217,8 @@
     "ss_sim_base_price": 5000,
     "ss_surrounding_properties": "[{\"name\": \"アトラスタワー北千住\", \"url\": \"https://www.sumai-surfin.com/re/79/\", \"appreciation_rate\": 119.9, \"oki_price_70m2\": 9590}, {\"name\": \"グランフラッツ千住旭町\", \"url\": \"https://www.sumai-surfin.com/re/329/\", \"appreciation_rate\": 97.9, \"oki_price_70m2\": 7000}, {\"name\": \"コスモ北千住ＥＡＳＴ\", \"url\": \"https://www.sumai-surfin.com/re/471/\", \"appreciation_rate\": 96.9, \"oki_price_70m2\": 5950}, {\"name\": \"ローヤルシテイ北千住\", \"url\": \"https://www.sumai-surfin.com/re/2630/\", \"appreciation_rate\": 96.6, \"oki_price_70m2\": 5740}, {\"name\": \"ロータリーパレス北千住\", \"url\": \"https://www.sumai-surfin.com/re/1392/\", \"appreciation_rate\": 95.9, \"oki_price_70m2\": 6790}, {\"name\": \"コルサム北千住\", \"url\": \"https://www.sumai-surfin.com/re/15786/\", \"appreciation_rate\": 91.8, \"oki_price_70m2\": 6510}, {\"name\": \"藤和シティホームズ北千住リアルステージ\", \"url\": \"https://www.sumai-surfin.com/re/1881/\", \"appreciation_rate\": 90.9, \"oki_price_70m2\": 6160}, {\"name\": \"グランフラッツ千住３丁目\", \"url\": \"https://www.sumai-surfin.com/re/12677/\", \"appreciation_rate\": 90.7, \"oki_price_70m2\": 6650}, {\"name\": \"グランフラッツ千住寿町\", \"url\": \"https://www.sumai-surfin.com/re/3267/\", \"appreciation_rate\": 85.8, \"oki_price_70m2\": 6230}, {\"name\": \"リビオ北千住\", \"url\": \"https://www.sumai-surfin.com/re/28762/\", \"appreciation_rate\": 85.5, \"oki_price_70m2\": 5110}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 59.6, \"walk_min\": 56.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -2871,8 +2890,8 @@
     "alt_urls": [
       "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_78951223/"
     ],
-    "latitude": 35.7364029,
-    "longitude": 139.8786008,
+    "latitude": 35.7338039,
+    "longitude": 139.8821986,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/45601/",
     "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩3分 + 小岩駅から30分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩3分 + 小岩駅から34分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -2884,7 +2903,8 @@
     "ss_sim_base_price": 8800,
     "ss_surrounding_properties": "[{\"name\": \"アルファグランデ小岩スカイファースト\", \"url\": \"https://www.sumai-surfin.com/re/30684/\", \"appreciation_rate\": 95.8, \"oki_price_70m2\": 9240}, {\"name\": \"ミオカステーロ小岩\", \"url\": \"https://www.sumai-surfin.com/re/1841/\", \"appreciation_rate\": 92.9, \"oki_price_70m2\": 6650}, {\"name\": \"パークタワー東京クラルテステーションフロント\", \"url\": \"https://www.sumai-surfin.com/re/819/\", \"appreciation_rate\": 77.5, \"oki_price_70m2\": 6930}, {\"name\": \"東京グランファースト\", \"url\": \"https://www.sumai-surfin.com/re/4065/\", \"appreciation_rate\": 75.3, \"oki_price_70m2\": 7140}, {\"name\": \"プレシス小岩\", \"url\": \"https://www.sumai-surfin.com/re/27152/\", \"appreciation_rate\": 71.0, \"oki_price_70m2\": 6300}, {\"name\": \"プレシス小岩イデアル\", \"url\": \"https://www.sumai-surfin.com/re/30454/\", \"appreciation_rate\": 68.1, \"oki_price_70m2\": 6510}, {\"name\": \"アルシオン小岩\", \"url\": \"https://www.sumai-surfin.com/re/96/\", \"appreciation_rate\": 66.2, \"oki_price_70m2\": 5810}, {\"name\": \"サンクレイドル小岩\", \"url\": \"https://www.sumai-surfin.com/re/3558/\", \"appreciation_rate\": 65.8, \"oki_price_70m2\": 5110}, {\"name\": \"サングランデ西小岩弐番館\", \"url\": \"https://www.sumai-surfin.com/re/547/\", \"appreciation_rate\": 65.4, \"oki_price_70m2\": 5600}, {\"name\": \"クレアホームズ小岩\", \"url\": \"https://www.sumai-surfin.com/re/28494/\", \"appreciation_rate\": 64.5, \"oki_price_70m2\": 7000}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 59.8, \"walk_min\": 71.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -3083,8 +3103,8 @@
     "list_ward_roman": "edogawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7364029,
-    "longitude": 139.8786008,
+    "latitude": 35.7338039,
+    "longitude": 139.8821986,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/45601/",
     "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩3分 + 小岩駅から30分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩3分 + 小岩駅から34分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -3096,7 +3116,8 @@
     "ss_sim_base_price": 8800,
     "ss_surrounding_properties": "[{\"name\": \"アルファグランデ小岩スカイファースト\", \"url\": \"https://www.sumai-surfin.com/re/30684/\", \"appreciation_rate\": 95.8, \"oki_price_70m2\": 9240}, {\"name\": \"ミオカステーロ小岩\", \"url\": \"https://www.sumai-surfin.com/re/1841/\", \"appreciation_rate\": 92.9, \"oki_price_70m2\": 6650}, {\"name\": \"パークタワー東京クラルテステーションフロント\", \"url\": \"https://www.sumai-surfin.com/re/819/\", \"appreciation_rate\": 77.5, \"oki_price_70m2\": 6930}, {\"name\": \"東京グランファースト\", \"url\": \"https://www.sumai-surfin.com/re/4065/\", \"appreciation_rate\": 75.3, \"oki_price_70m2\": 7140}, {\"name\": \"プレシス小岩\", \"url\": \"https://www.sumai-surfin.com/re/27152/\", \"appreciation_rate\": 71.0, \"oki_price_70m2\": 6300}, {\"name\": \"プレシス小岩イデアル\", \"url\": \"https://www.sumai-surfin.com/re/30454/\", \"appreciation_rate\": 68.1, \"oki_price_70m2\": 6510}, {\"name\": \"アルシオン小岩\", \"url\": \"https://www.sumai-surfin.com/re/96/\", \"appreciation_rate\": 66.2, \"oki_price_70m2\": 5810}, {\"name\": \"サンクレイドル小岩\", \"url\": \"https://www.sumai-surfin.com/re/3558/\", \"appreciation_rate\": 65.8, \"oki_price_70m2\": 5110}, {\"name\": \"サングランデ西小岩弐番館\", \"url\": \"https://www.sumai-surfin.com/re/547/\", \"appreciation_rate\": 65.4, \"oki_price_70m2\": 5600}, {\"name\": \"クレアホームズ小岩\", \"url\": \"https://www.sumai-surfin.com/re/28494/\", \"appreciation_rate\": 64.5, \"oki_price_70m2\": 7000}]",
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"favorites\": 59.8, \"walk_min\": 71.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -3118,8 +3139,8 @@
     "list_ward_roman": "edogawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7260236,
-    "longitude": 139.883879,
+    "latitude": 35.73167,
+    "longitude": 139.885317,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/41039/",
     "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩3分 + 小岩駅から30分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩3分 + 小岩駅から34分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -3133,7 +3154,8 @@
     "ss_surrounding_properties": "[{\"name\": \"アルファグランデ小岩スカイファースト\", \"url\": \"https://www.sumai-surfin.com/re/30684/\", \"appreciation_rate\": 95.8, \"oki_price_70m2\": 9240}, {\"name\": \"ミオカステーロ小岩\", \"url\": \"https://www.sumai-surfin.com/re/1841/\", \"appreciation_rate\": 92.9, \"oki_price_70m2\": 6650}, {\"name\": \"パークタワー東京クラルテステーションフロント\", \"url\": \"https://www.sumai-surfin.com/re/819/\", \"appreciation_rate\": 77.5, \"oki_price_70m2\": 6930}, {\"name\": \"東京グランファースト\", \"url\": \"https://www.sumai-surfin.com/re/4065/\", \"appreciation_rate\": 75.3, \"oki_price_70m2\": 7140}, {\"name\": \"プレシス小岩\", \"url\": \"https://www.sumai-surfin.com/re/27152/\", \"appreciation_rate\": 71.0, \"oki_price_70m2\": 6300}, {\"name\": \"プレシス小岩イデアル\", \"url\": \"https://www.sumai-surfin.com/re/30454/\", \"appreciation_rate\": 68.1, \"oki_price_70m2\": 6510}, {\"name\": \"アルシオン小岩\", \"url\": \"https://www.sumai-surfin.com/re/96/\", \"appreciation_rate\": 66.2, \"oki_price_70m2\": 5810}, {\"name\": \"サンクレイドル小岩\", \"url\": \"https://www.sumai-surfin.com/re/3558/\", \"appreciation_rate\": 65.8, \"oki_price_70m2\": 5110}, {\"name\": \"サングランデ西小岩弐番館\", \"url\": \"https://www.sumai-surfin.com/re/547/\", \"appreciation_rate\": 65.4, \"oki_price_70m2\": 5600}, {\"name\": \"クレアホームズ小岩\", \"url\": \"https://www.sumai-surfin.com/re/28494/\", \"appreciation_rate\": 64.5, \"oki_price_70m2\": 7000}]",
     "ss_appreciation_rate": 41.6,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 63.4, \"walk_min\": 71.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "medium",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -3227,8 +3249,8 @@
     "list_ward_roman": "shinagawa",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.6172643,
-    "longitude": 139.7488637,
+    "latitude": 35.6095108,
+    "longitude": 139.7486177,
     "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/2075/",
     "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩1分 + 品川シーサイド駅から30分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩1分 + 品川シーサイド駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -3242,7 +3264,8 @@
     "ss_surrounding_properties": "[{\"name\": \"品川シーサイドレジデンス\", \"url\": \"https://www.sumai-surfin.com/re/4016/\", \"appreciation_rate\": 99.7, \"oki_price_70m2\": 8750}, {\"name\": \"ブリリアタワー品川シーサイド\", \"url\": \"https://www.sumai-surfin.com/re/2075/\", \"appreciation_rate\": 91.1, \"oki_price_70m2\": 7000}, {\"name\": \"グランドメゾン品川シーサイドの杜\", \"url\": \"https://www.sumai-surfin.com/re/39758/\", \"appreciation_rate\": 85.0, \"oki_price_70m2\": 11900}, {\"name\": \"プライムパークス品川シーサイド　ザ・レジデンス\", \"url\": \"https://www.sumai-surfin.com/re/40115/\", \"appreciation_rate\": 75.4, \"oki_price_70m2\": 10430}, {\"name\": \"プライムパークス品川シーサイド　ザ・タワー\", \"url\": \"https://www.sumai-surfin.com/re/39560/\", \"appreciation_rate\": 74.5, \"oki_price_70m2\": 11270}, {\"name\": \"クレストタワー品川シーサイド\", \"url\": \"https://www.sumai-surfin.com/re/8859/\", \"appreciation_rate\": 63.1, \"oki_price_70m2\": 9660}]",
     "ss_appreciation_rate": 91.1,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 67.6, \"walk_min\": 77.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -5209,12 +5232,13 @@
     "list_ward_roman": "toshima",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7315657,
-    "longitude": 139.6846593,
+    "latitude": 35.7290124,
+    "longitude": 139.6920338,
     "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 4, \"combined\": 4}",
     "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩5分 + 椎名町駅から24分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩5分 + 椎名町駅から28分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
     "reinfolib_market_data": "{\"ward\": \"豊島区\", \"ward_median_m2_price\": 1017778, \"ward_mean_m2_price\": 1148199, \"price_ratio\": 1.345, \"price_diff_man\": 2302, \"sample_count\": 344, \"trend\": \"flat\", \"yoy_change_pct\": 5.2, \"quarterly_m2_prices\": [{\"quarter\": \"2024Q1\", \"median_m2_price\": 1000000, \"count\": 89}, {\"quarter\": \"2024Q2\", \"median_m2_price\": 1000000, \"count\": 88}, {\"quarter\": \"2024Q3\", \"median_m2_price\": 1040000, \"count\": 89}, {\"quarter\": \"2024Q4\", \"median_m2_price\": 963636, \"count\": 85}, {\"quarter\": \"2025Q1\", \"median_m2_price\": 1066667, \"count\": 87}, {\"quarter\": \"2025Q2\", \"median_m2_price\": 1000000, \"count\": 86}, {\"quarter\": \"2025Q3\", \"median_m2_price\": 1094444, \"count\": 86}], \"data_source\": \"不動産情報ライブラリ（国土交通省）\"}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -5486,12 +5510,13 @@
     "list_ward_roman": "kita",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7539829,
-    "longitude": 139.7375996,
+    "latitude": 35.764854,
+    "longitude": 139.735301,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
     "commute_info": "{\"playground\": {\"minutes\": 32, \"summary\": \"徒歩6分 + 東十条駅から26分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 36, \"summary\": \"徒歩6分 + 東十条駅から30分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
     "reinfolib_market_data": "{\"ward\": \"北区\", \"ward_median_m2_price\": 800000, \"ward_mean_m2_price\": 841082, \"price_ratio\": 1.758, \"price_diff_man\": 4261, \"sample_count\": 308, \"trend\": \"flat\", \"yoy_change_pct\": 11.1, \"quarterly_m2_prices\": [{\"quarter\": \"2024Q1\", \"median_m2_price\": 800000, \"count\": 89}, {\"quarter\": \"2024Q2\", \"median_m2_price\": 866667, \"count\": 87}, {\"quarter\": \"2024Q3\", \"median_m2_price\": 756349, \"count\": 88}, {\"quarter\": \"2024Q4\", \"median_m2_price\": 780833, \"count\": 88}, {\"quarter\": \"2025Q1\", \"median_m2_price\": 846667, \"count\": 76}, {\"quarter\": \"2025Q2\", \"median_m2_price\": 746667, \"count\": 67}, {\"quarter\": \"2025Q3\", \"median_m2_price\": 840000, \"count\": 77}], \"data_source\": \"不動産情報ライブラリ（国土交通省）\"}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "medium",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -5948,8 +5973,8 @@
       "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79213291/",
       "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79150960/"
     ],
-    "latitude": 35.7630169,
-    "longitude": 139.7488159,
+    "latitude": 35.7576335,
+    "longitude": 139.7404504,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/25912/",
     "commute_info": "{\"playground\": {\"minutes\": 23, \"summary\": \"徒歩5分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -5963,7 +5988,8 @@
     "ss_surrounding_properties": "[{\"name\": \"プリムローズ王子飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/16979/\", \"appreciation_rate\": 92.1, \"oki_price_70m2\": 6720}, {\"name\": \"アーデル王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28859/\", \"appreciation_rate\": 87.6, \"oki_price_70m2\": 8750}, {\"name\": \"ファミール王子タワースイート\", \"url\": \"https://www.sumai-surfin.com/re/12902/\", \"appreciation_rate\": 87.4, \"oki_price_70m2\": 5950}, {\"name\": \"ベルドゥムール王子\", \"url\": \"https://www.sumai-surfin.com/re/14283/\", \"appreciation_rate\": 87.2, \"oki_price_70m2\": 5600}, {\"name\": \"ルピナス王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/1294/\", \"appreciation_rate\": 82.2, \"oki_price_70m2\": 7280}, {\"name\": \"シアンズ王子\", \"url\": \"https://www.sumai-surfin.com/re/2510/\", \"appreciation_rate\": 81.1, \"oki_price_70m2\": 6720}, {\"name\": \"ランドステージ王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/13483/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 6790}, {\"name\": \"ルフォン飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/9590/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 8260}, {\"name\": \"プラウド王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28759/\", \"appreciation_rate\": 74.0, \"oki_price_70m2\": 10080}, {\"name\": \"プラウド王子本町ディアージュ\", \"url\": \"https://www.sumai-surfin.com/re/30239/\", \"appreciation_rate\": 71.7, \"oki_price_70m2\": 9380}]",
     "ss_appreciation_rate": 48.5,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 59.6, \"walk_min\": 65.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -5988,8 +6014,8 @@
     "alt_urls": [
       "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79208922/"
     ],
-    "latitude": 35.7630169,
-    "longitude": 139.7488159,
+    "latitude": 35.7576335,
+    "longitude": 139.7404504,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/25912/",
     "commute_info": "{\"playground\": {\"minutes\": 24, \"summary\": \"徒歩6分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -6003,7 +6029,8 @@
     "ss_surrounding_properties": "[{\"name\": \"プリムローズ王子飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/16979/\", \"appreciation_rate\": 92.1, \"oki_price_70m2\": 6720}, {\"name\": \"アーデル王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28859/\", \"appreciation_rate\": 87.6, \"oki_price_70m2\": 8750}, {\"name\": \"ファミール王子タワースイート\", \"url\": \"https://www.sumai-surfin.com/re/12902/\", \"appreciation_rate\": 87.4, \"oki_price_70m2\": 5950}, {\"name\": \"ベルドゥムール王子\", \"url\": \"https://www.sumai-surfin.com/re/14283/\", \"appreciation_rate\": 87.2, \"oki_price_70m2\": 5600}, {\"name\": \"ルピナス王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/1294/\", \"appreciation_rate\": 82.2, \"oki_price_70m2\": 7280}, {\"name\": \"シアンズ王子\", \"url\": \"https://www.sumai-surfin.com/re/2510/\", \"appreciation_rate\": 81.1, \"oki_price_70m2\": 6720}, {\"name\": \"ランドステージ王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/13483/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 6790}, {\"name\": \"ルフォン飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/9590/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 8260}, {\"name\": \"プラウド王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28759/\", \"appreciation_rate\": 74.0, \"oki_price_70m2\": 10080}, {\"name\": \"プラウド王子本町ディアージュ\", \"url\": \"https://www.sumai-surfin.com/re/30239/\", \"appreciation_rate\": 71.7, \"oki_price_70m2\": 9380}]",
     "ss_appreciation_rate": 48.5,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 59.6, \"walk_min\": 62.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -6029,8 +6056,8 @@
       "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79135381/",
       "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_78421043/"
     ],
-    "latitude": 35.7630169,
-    "longitude": 139.7488159,
+    "latitude": 35.7576335,
+    "longitude": 139.7404504,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/25912/",
     "commute_info": "{\"playground\": {\"minutes\": 22, \"summary\": \"徒歩4分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩4分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -6044,7 +6071,8 @@
     "ss_surrounding_properties": "[{\"name\": \"プリムローズ王子飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/16979/\", \"appreciation_rate\": 92.1, \"oki_price_70m2\": 6720}, {\"name\": \"アーデル王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28859/\", \"appreciation_rate\": 87.6, \"oki_price_70m2\": 8750}, {\"name\": \"ファミール王子タワースイート\", \"url\": \"https://www.sumai-surfin.com/re/12902/\", \"appreciation_rate\": 87.4, \"oki_price_70m2\": 5950}, {\"name\": \"ベルドゥムール王子\", \"url\": \"https://www.sumai-surfin.com/re/14283/\", \"appreciation_rate\": 87.2, \"oki_price_70m2\": 5600}, {\"name\": \"ルピナス王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/1294/\", \"appreciation_rate\": 82.2, \"oki_price_70m2\": 7280}, {\"name\": \"シアンズ王子\", \"url\": \"https://www.sumai-surfin.com/re/2510/\", \"appreciation_rate\": 81.1, \"oki_price_70m2\": 6720}, {\"name\": \"ランドステージ王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/13483/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 6790}, {\"name\": \"ルフォン飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/9590/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 8260}, {\"name\": \"プラウド王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28759/\", \"appreciation_rate\": 74.0, \"oki_price_70m2\": 10080}, {\"name\": \"プラウド王子本町ディアージュ\", \"url\": \"https://www.sumai-surfin.com/re/30239/\", \"appreciation_rate\": 71.7, \"oki_price_70m2\": 9380}]",
     "ss_appreciation_rate": 48.5,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 59.6, \"walk_min\": 68.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -6140,8 +6168,8 @@
     "list_ward_roman": "kita",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7630169,
-    "longitude": 139.7488159,
+    "latitude": 35.7576335,
+    "longitude": 139.7404504,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/25912/",
     "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩7分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -6155,7 +6183,8 @@
     "ss_surrounding_properties": "[{\"name\": \"プリムローズ王子飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/16979/\", \"appreciation_rate\": 92.1, \"oki_price_70m2\": 6720}, {\"name\": \"アーデル王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28859/\", \"appreciation_rate\": 87.6, \"oki_price_70m2\": 8750}, {\"name\": \"ファミール王子タワースイート\", \"url\": \"https://www.sumai-surfin.com/re/12902/\", \"appreciation_rate\": 87.4, \"oki_price_70m2\": 5950}, {\"name\": \"ベルドゥムール王子\", \"url\": \"https://www.sumai-surfin.com/re/14283/\", \"appreciation_rate\": 87.2, \"oki_price_70m2\": 5600}, {\"name\": \"ルピナス王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/1294/\", \"appreciation_rate\": 82.2, \"oki_price_70m2\": 7280}, {\"name\": \"シアンズ王子\", \"url\": \"https://www.sumai-surfin.com/re/2510/\", \"appreciation_rate\": 81.1, \"oki_price_70m2\": 6720}, {\"name\": \"ランドステージ王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/13483/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 6790}, {\"name\": \"ルフォン飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/9590/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 8260}, {\"name\": \"プラウド王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28759/\", \"appreciation_rate\": 74.0, \"oki_price_70m2\": 10080}, {\"name\": \"プラウド王子本町ディアージュ\", \"url\": \"https://www.sumai-surfin.com/re/30239/\", \"appreciation_rate\": 71.7, \"oki_price_70m2\": 9380}]",
     "ss_appreciation_rate": 48.5,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 59.6, \"walk_min\": 59.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -6177,8 +6206,8 @@
     "list_ward_roman": "kita",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.7630169,
-    "longitude": 139.7488159,
+    "latitude": 35.7576335,
+    "longitude": 139.7404504,
     "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/25912/",
     "commute_info": "{\"playground\": {\"minutes\": 22, \"summary\": \"徒歩4分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩4分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -6192,7 +6221,8 @@
     "ss_surrounding_properties": "[{\"name\": \"プリムローズ王子飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/16979/\", \"appreciation_rate\": 92.1, \"oki_price_70m2\": 6720}, {\"name\": \"アーデル王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28859/\", \"appreciation_rate\": 87.6, \"oki_price_70m2\": 8750}, {\"name\": \"ファミール王子タワースイート\", \"url\": \"https://www.sumai-surfin.com/re/12902/\", \"appreciation_rate\": 87.4, \"oki_price_70m2\": 5950}, {\"name\": \"ベルドゥムール王子\", \"url\": \"https://www.sumai-surfin.com/re/14283/\", \"appreciation_rate\": 87.2, \"oki_price_70m2\": 5600}, {\"name\": \"ルピナス王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/1294/\", \"appreciation_rate\": 82.2, \"oki_price_70m2\": 7280}, {\"name\": \"シアンズ王子\", \"url\": \"https://www.sumai-surfin.com/re/2510/\", \"appreciation_rate\": 81.1, \"oki_price_70m2\": 6720}, {\"name\": \"ランドステージ王子駅前\", \"url\": \"https://www.sumai-surfin.com/re/13483/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 6790}, {\"name\": \"ルフォン飛鳥山\", \"url\": \"https://www.sumai-surfin.com/re/9590/\", \"appreciation_rate\": 79.9, \"oki_price_70m2\": 8260}, {\"name\": \"プラウド王子本町\", \"url\": \"https://www.sumai-surfin.com/re/28759/\", \"appreciation_rate\": 74.0, \"oki_price_70m2\": 10080}, {\"name\": \"プラウド王子本町ディアージュ\", \"url\": \"https://www.sumai-surfin.com/re/30239/\", \"appreciation_rate\": 71.7, \"oki_price_70m2\": 9380}]",
     "ss_appreciation_rate": 48.5,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 59.6, \"walk_min\": 68.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "high",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",
@@ -6881,8 +6911,8 @@
     "list_ward_roman": "itabashi",
     "property_type": "chuko",
     "duplicate_count": 1,
-    "latitude": 35.761537,
-    "longitude": 139.6855991,
+    "latitude": 35.7611227,
+    "longitude": 139.6900612,
     "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 2}",
     "ss_sumai_surfin_url": "https://www.sumai-surfin.com/re/10077/",
     "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩1分 + ときわ台駅から32分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩1分 + ときわ台駅から36分\", \"calculatedAt\": \"2026-02-12T08:32:03Z\"}}",
@@ -6896,7 +6926,8 @@
     "ss_surrounding_properties": "[{\"name\": \"レーベンハイム常盤台一丁目\", \"url\": \"https://www.sumai-surfin.com/re/1330/\", \"appreciation_rate\": 89.3, \"oki_price_70m2\": 9240}, {\"name\": \"コスモときわ台パークフォルム\", \"url\": \"https://www.sumai-surfin.com/re/15612/\", \"appreciation_rate\": 75.3, \"oki_price_70m2\": 6090}, {\"name\": \"ときわ台メリーガーデン\", \"url\": \"https://www.sumai-surfin.com/re/16422/\", \"appreciation_rate\": 74.4, \"oki_price_70m2\": 5880}, {\"name\": \"コニファーコート常盤台\", \"url\": \"https://www.sumai-surfin.com/re/12715/\", \"appreciation_rate\": 74.0, \"oki_price_70m2\": 5810}, {\"name\": \"レクセルガーデンときわ台\", \"url\": \"https://www.sumai-surfin.com/re/2941/\", \"appreciation_rate\": 73.1, \"oki_price_70m2\": 5880}, {\"name\": \"フレアサイトときわ台\", \"url\": \"https://www.sumai-surfin.com/re/14261/\", \"appreciation_rate\": 68.2, \"oki_price_70m2\": 5810}, {\"name\": \"ブリリアときわ台ソライエレジデンス\", \"url\": \"https://www.sumai-surfin.com/re/30103/\", \"appreciation_rate\": 65.7, \"oki_price_70m2\": 7490}, {\"name\": \"ミオカステーロときわ台セレーノ\", \"url\": \"https://www.sumai-surfin.com/re/12940/\", \"appreciation_rate\": 62.3, \"oki_price_70m2\": 5950}, {\"name\": \"ネオマイム常盤台カルムプラッツ\", \"url\": \"https://www.sumai-surfin.com/re/4733/\", \"appreciation_rate\": 61.0, \"oki_price_70m2\": 6650}, {\"name\": \"センチュリーハイツ東山公園\", \"url\": \"https://www.sumai-surfin.com/re/14035/\", \"appreciation_rate\": 60.1, \"oki_price_70m2\": 5600}]",
     "ss_appreciation_rate": 51.0,
     "ss_radar_data": "{\"oki_price_m2\": 55.0, \"appreciation_rate\": 80.0, \"favorites\": 60.0, \"walk_min\": 77.0}",
-    "geocode_confidence": "low"
+    "geocode_confidence": "medium",
+    "geocode_fixed": true
   },
   {
     "source": "suumo",

@@ -56,8 +56,18 @@ def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 
 
 def _extract_ward(address: str) -> Optional[str]:
-    """住所文字列から区名を抽出。"""
-    m = re.search(r"([一-龥ぁ-んァ-ン]+区)", address)
+    """住所文字列から区名を抽出。
+
+    「東京都港区」→「港区」、「港区」→「港区」
+    注意: 単純な [CJK]+区 パターンでは「東京都港区」全体にマッチしてしまうため、
+    「都」の後ろの区名を優先抽出する。
+    """
+    # パターン1: 「都」の後ろの区名（「東京都港区...」→「港区」）
+    m = re.search(r"都([^区]+区)", address)
+    if m:
+        return m.group(1)
+    # パターン2: 先頭から短い区名（「港区港南...」→「港区」）
+    m = re.search(r"^([^\s都道府県]{1,4}区)", address)
     return m.group(1) if m else None
 
 

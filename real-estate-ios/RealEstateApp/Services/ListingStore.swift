@@ -342,11 +342,8 @@ final class ListingStore {
         // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
         if let lat = new.latitude { existing.latitude = lat }
         if let lon = new.longitude { existing.longitude = lon }
-        // 通勤時間: 既存データがない場合のみ JSON 由来の駅ベース概算で補完
-        // MKDirections で計算済みの場合はそちらを優先して上書きしない
-        if existing.commuteInfoJSON == nil, let newCommute = new.commuteInfoJSON {
-            existing.commuteInfoJSON = newCommute
-        }
+        // 通勤時間: Apple Maps (MKDirections) で正確に計算するため、JSON 概算は取り込まない
+        // calculateForAllListings() がリフレッシュ後に自動実行される
         // existing.memo, existing.isLiked, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザーデータ）
     }
 
