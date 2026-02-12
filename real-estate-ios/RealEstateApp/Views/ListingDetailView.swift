@@ -1004,7 +1004,7 @@ struct ListingDetailView: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                     HStack(alignment: .firstTextBaseline, spacing: 2) {
-                        Text("\(price)")
+                        Text(price.formatted())
                             .font(.system(.title, design: .rounded).weight(.heavy))
                             .foregroundStyle(Color.accentColor)
                         Text("万円")
@@ -1030,7 +1030,12 @@ struct ListingDetailView: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                     HStack(alignment: .firstTextBaseline, spacing: 1) {
-                        Text(rate >= 0 ? "+\(String(format: "%.1f", rate))" : String(format: "%.1f", rate))
+                        Text({
+                            let formatted = rate.truncatingRemainder(dividingBy: 1) == 0
+                                ? String(format: "%.0f", rate)
+                                : String(format: "%.1f", rate)
+                            return rate >= 0 ? "+\(formatted)" : formatted
+                        }())
                             .font(.system(.title2, design: .rounded).weight(.heavy))
                             .foregroundStyle(rate >= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
                         Text("%")

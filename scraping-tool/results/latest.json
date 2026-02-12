@@ -20,7 +20,8 @@
     "property_type": "chuko",
     "latitude": 35.7026486,
     "longitude": 139.6912278,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 24, \"summary\": \"徒歩4分 + 東中野駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 東中野駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -43,7 +44,8 @@
     "property_type": "chuko",
     "latitude": 35.6705829,
     "longitude": 139.7066608,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 21, \"summary\": \"徒歩6分 + 原宿駅から15分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 24, \"summary\": \"徒歩6分 + 原宿駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -66,7 +68,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -89,7 +92,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -112,7 +116,8 @@
     "property_type": "chuko",
     "latitude": 35.6634824,
     "longitude": 139.8077876,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩7分 + 東陽町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩7分 + 東陽町駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -135,7 +140,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -158,7 +164,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -181,7 +188,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -204,7 +212,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -227,7 +236,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -250,7 +260,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -273,7 +284,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -296,7 +308,8 @@
     "property_type": "chuko",
     "latitude": 35.6615806,
     "longitude": 139.8317778,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -319,7 +332,8 @@
     "property_type": "chuko",
     "latitude": 35.6896928,
     "longitude": 139.8350966,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 亀戸駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 亀戸駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -342,7 +356,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -365,7 +380,8 @@
     "property_type": "chuko",
     "latitude": 35.6441411,
     "longitude": 139.8022923,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 辰巳駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩7分 + 辰巳駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -388,7 +404,8 @@
     "property_type": "chuko",
     "latitude": 35.6615806,
     "longitude": 139.8317778,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -411,7 +428,8 @@
     "property_type": "chuko",
     "latitude": 35.6890372,
     "longitude": 139.8293526,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 20, \"summary\": \"徒歩2分 + 西大島駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 22, \"summary\": \"徒歩2分 + 西大島駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -434,7 +452,8 @@
     "property_type": "chuko",
     "latitude": 35.6899027,
     "longitude": 139.8350597,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩7分 + 東大島駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 東大島駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -457,7 +476,8 @@
     "property_type": "chuko",
     "latitude": 35.7322021,
     "longitude": 139.7666684,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -480,7 +500,8 @@
     "property_type": "chuko",
     "latitude": 35.7390532,
     "longitude": 139.7813524,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -503,7 +524,8 @@
     "property_type": "chuko",
     "latitude": 35.7390532,
     "longitude": 139.7813524,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -526,7 +548,8 @@
     "property_type": "chuko",
     "latitude": 35.7390532,
     "longitude": 139.7813524,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -549,7 +572,8 @@
     "property_type": "chuko",
     "latitude": 35.7390532,
     "longitude": 139.7813524,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -572,7 +596,8 @@
     "property_type": "chuko",
     "latitude": 35.7408091,
     "longitude": 139.7975036,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩3分 + 千住大橋駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩3分 + 千住大橋駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -595,7 +620,8 @@
     "property_type": "chuko",
     "latitude": 35.7408091,
     "longitude": 139.7975036,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩3分 + 千住大橋駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩3分 + 千住大橋駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -618,7 +644,8 @@
     "property_type": "chuko",
     "latitude": 35.7751304,
     "longitude": 139.7879781,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 41, \"summary\": \"徒歩5分 + 西新井駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩5分 + 西新井駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -641,7 +668,8 @@
     "property_type": "chuko",
     "latitude": 35.7751304,
     "longitude": 139.7879781,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 41, \"summary\": \"徒歩5分 + 西新井駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩5分 + 西新井駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -664,7 +692,8 @@
     "property_type": "chuko",
     "latitude": 35.7751304,
     "longitude": 139.7879781,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 41, \"summary\": \"徒歩5分 + 西新井駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩5分 + 西新井駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -687,7 +716,8 @@
     "property_type": "chuko",
     "latitude": 35.7751304,
     "longitude": 139.7879781,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 41, \"summary\": \"徒歩5分 + 西新井駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩5分 + 西新井駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -710,7 +740,8 @@
     "property_type": "chuko",
     "latitude": 35.7942511,
     "longitude": 139.7918556,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 43, \"summary\": \"徒歩3分 + 竹ノ塚駅から40分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 41, \"summary\": \"徒歩3分 + 竹ノ塚駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -733,7 +764,8 @@
     "property_type": "chuko",
     "latitude": 35.7785388,
     "longitude": 139.8333733,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 35, \"summary\": \"徒歩3分 + 北綾瀬駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩3分 + 北綾瀬駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -756,7 +788,8 @@
     "property_type": "chuko",
     "latitude": 35.7458973,
     "longitude": 139.8546135,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 24, \"summary\": \"徒歩2分 + 青砥駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩2分 + 青砥駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -779,7 +812,8 @@
     "property_type": "chuko",
     "latitude": 35.7170544,
     "longitude": 139.8578694,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩3分 + 新小岩駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 35, \"summary\": \"徒歩3分 + 新小岩駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -802,7 +836,8 @@
     "property_type": "chuko",
     "latitude": 35.7762982,
     "longitude": 139.8791437,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 43, \"summary\": \"徒歩7分 + 金町駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 45, \"summary\": \"徒歩7分 + 金町駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -825,7 +860,8 @@
     "property_type": "chuko",
     "latitude": 35.7762982,
     "longitude": 139.8791437,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 43, \"summary\": \"徒歩7分 + 金町駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 45, \"summary\": \"徒歩7分 + 金町駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -848,7 +884,8 @@
     "property_type": "chuko",
     "latitude": 35.7170544,
     "longitude": 139.8578694,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩3分 + 新小岩駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 35, \"summary\": \"徒歩3分 + 新小岩駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -871,7 +908,8 @@
     "property_type": "chuko",
     "latitude": 35.7170544,
     "longitude": 139.8578694,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩3分 + 新小岩駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 35, \"summary\": \"徒歩3分 + 新小岩駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -894,7 +932,8 @@
     "property_type": "chuko",
     "latitude": 35.7170544,
     "longitude": 139.8578694,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩3分 + 新小岩駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 35, \"summary\": \"徒歩3分 + 新小岩駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -917,7 +956,8 @@
     "property_type": "chuko",
     "latitude": 35.7666976,
     "longitude": 139.8710689,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 37, \"summary\": \"徒歩1分 + 京成金町駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 39, \"summary\": \"徒歩1分 + 京成金町駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -940,7 +980,8 @@
     "property_type": "chuko",
     "latitude": 35.7170544,
     "longitude": 139.8578694,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩3分 + 新小岩駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 35, \"summary\": \"徒歩3分 + 新小岩駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -963,7 +1004,8 @@
     "property_type": "chuko",
     "latitude": 35.6838309,
     "longitude": 139.864297,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 船堀駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩5分 + 船堀駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -986,7 +1028,8 @@
     "property_type": "chuko",
     "latitude": 35.7364029,
     "longitude": 139.8786008,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩3分 + 小岩駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩3分 + 小岩駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1009,7 +1052,8 @@
     "property_type": "chuko",
     "latitude": 35.6638877,
     "longitude": 139.8687474,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩3分 + 葛西駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩3分 + 葛西駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1032,7 +1076,8 @@
     "property_type": "chuko",
     "latitude": 35.7364029,
     "longitude": 139.8786008,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩4分 + 小岩駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩4分 + 小岩駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1055,7 +1100,8 @@
     "property_type": "chuko",
     "latitude": 35.6838309,
     "longitude": 139.864297,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 23, \"summary\": \"徒歩3分 + 船堀駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 27, \"summary\": \"徒歩3分 + 船堀駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1078,7 +1124,8 @@
     "property_type": "chuko",
     "latitude": 35.7364029,
     "longitude": 139.8786008,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩3分 + 小岩駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩3分 + 小岩駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1101,7 +1148,8 @@
     "property_type": "chuko",
     "latitude": 35.7260236,
     "longitude": 139.883879,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩3分 + 小岩駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩3分 + 小岩駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1124,7 +1172,8 @@
     "property_type": "chuko",
     "latitude": 35.7305848,
     "longitude": 139.8790107,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 5, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 5, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩1分 + 小岩駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 35, \"summary\": \"徒歩1分 + 小岩駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1147,7 +1196,8 @@
     "property_type": "chuko",
     "latitude": 35.6172643,
     "longitude": 139.7488637,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩1分 + 品川シーサイド駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩1分 + 品川シーサイド駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1170,7 +1220,8 @@
     "property_type": "chuko",
     "latitude": 35.5961963,
     "longitude": 139.7154876,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 35, \"summary\": \"徒歩7分 + 馬込駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 27, \"summary\": \"徒歩7分 + 馬込駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1193,7 +1244,8 @@
     "property_type": "chuko",
     "latitude": 35.5639836,
     "longitude": 139.6932882,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 42, \"summary\": \"徒歩2分 + 武蔵新田駅から40分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 40, \"summary\": \"徒歩2分 + 武蔵新田駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1216,7 +1268,8 @@
     "property_type": "chuko",
     "latitude": 35.5639836,
     "longitude": 139.6932882,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 44, \"summary\": \"徒歩6分 + 矢口渡駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 42, \"summary\": \"徒歩6分 + 矢口渡駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1239,7 +1292,8 @@
     "property_type": "chuko",
     "latitude": 35.5949455,
     "longitude": 139.706635,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 馬込駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 24, \"summary\": \"徒歩4分 + 馬込駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1262,7 +1316,8 @@
     "property_type": "chuko",
     "latitude": 35.5582943,
     "longitude": 139.7182027,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 41, \"summary\": \"徒歩7分 + 蒲田駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩7分 + 蒲田駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1285,7 +1340,8 @@
     "property_type": "chuko",
     "latitude": 35.5511001,
     "longitude": 139.7317797,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 42, \"summary\": \"徒歩6分 + 糀谷駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩6分 + 糀谷駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1308,7 +1364,8 @@
     "property_type": "chuko",
     "latitude": 35.5639836,
     "longitude": 139.6932882,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 43, \"summary\": \"徒歩3分 + 武蔵新田駅から40分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 41, \"summary\": \"徒歩3分 + 武蔵新田駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1331,7 +1388,8 @@
     "property_type": "chuko",
     "latitude": 35.5828893,
     "longitude": 139.7373,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩3分 + 大森海岸駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩3分 + 大森海岸駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1354,7 +1412,8 @@
     "property_type": "chuko",
     "latitude": 35.6589853,
     "longitude": 139.6500287,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩6分 + 梅ヶ丘駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 34, \"summary\": \"徒歩6分 + 梅ヶ丘駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1377,7 +1436,8 @@
     "property_type": "chuko",
     "latitude": 35.6628538,
     "longitude": 139.6075808,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 40, \"summary\": \"徒歩6分 + 芦花公園駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 42, \"summary\": \"徒歩6分 + 芦花公園駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1400,7 +1460,8 @@
     "property_type": "chuko",
     "latitude": 35.6689793,
     "longitude": 139.6007466,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 40, \"summary\": \"徒歩6分 + 芦花公園駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 42, \"summary\": \"徒歩6分 + 芦花公園駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1423,7 +1484,8 @@
     "property_type": "chuko",
     "latitude": 35.6689793,
     "longitude": 139.6007466,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 40, \"summary\": \"徒歩6分 + 芦花公園駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 42, \"summary\": \"徒歩6分 + 芦花公園駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1446,7 +1508,8 @@
     "property_type": "chuko",
     "latitude": 35.7153431,
     "longitude": 139.6701011,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩4分 + 新井薬師前駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新井薬師前駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1469,7 +1532,8 @@
     "property_type": "chuko",
     "latitude": 35.7040634,
     "longitude": 139.6352555,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 26, \"summary\": \"徒歩4分 + 阿佐ケ谷駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 阿佐ケ谷駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1492,7 +1556,8 @@
     "property_type": "chuko",
     "latitude": 35.7134088,
     "longitude": 139.6086647,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 24, \"summary\": \"徒歩0分 + 荻窪駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩0分 + 荻窪駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1515,7 +1580,8 @@
     "property_type": "chuko",
     "latitude": 35.6847034,
     "longitude": 139.6121869,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩5分 + 高井戸駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 35, \"summary\": \"徒歩5分 + 高井戸駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1538,7 +1604,8 @@
     "property_type": "chuko",
     "latitude": 35.6816115,
     "longitude": 139.6274386,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 31, \"summary\": \"徒歩7分 + 西永福駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 35, \"summary\": \"徒歩7分 + 西永福駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1561,7 +1628,8 @@
     "property_type": "chuko",
     "latitude": 35.6935241,
     "longitude": 139.6576038,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 26, \"summary\": \"徒歩4分 + 東高円寺駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩4分 + 東高円寺駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1584,7 +1652,8 @@
     "property_type": "chuko",
     "latitude": 35.722974,
     "longitude": 139.5806268,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩0分 + 吉祥寺駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩0分 + 吉祥寺駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1607,7 +1676,8 @@
     "property_type": "chuko",
     "latitude": 35.7161614,
     "longitude": 139.5809489,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 3, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 3, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩0分 + 吉祥寺駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩0分 + 吉祥寺駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1630,7 +1700,8 @@
     "property_type": "chuko",
     "latitude": 35.722974,
     "longitude": 139.5806268,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩0分 + 吉祥寺駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩0分 + 吉祥寺駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1653,7 +1724,8 @@
     "property_type": "chuko",
     "latitude": 35.7517409,
     "longitude": 139.6413347,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 37, \"summary\": \"徒歩7分 + 練馬春日町駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 39, \"summary\": \"徒歩7分 + 練馬春日町駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1676,7 +1748,8 @@
     "property_type": "chuko",
     "latitude": 35.722974,
     "longitude": 139.5806268,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩0分 + 吉祥寺駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩0分 + 吉祥寺駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1699,7 +1772,8 @@
     "property_type": "chuko",
     "latitude": 35.7517409,
     "longitude": 139.6413347,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 37, \"summary\": \"徒歩7分 + 練馬春日町駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 39, \"summary\": \"徒歩7分 + 練馬春日町駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1722,7 +1796,8 @@
     "property_type": "chuko",
     "latitude": 35.7495045,
     "longitude": 139.5865223,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 40, \"summary\": \"徒歩2分 + 大泉学園駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 44, \"summary\": \"徒歩2分 + 大泉学園駅から42分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1745,7 +1820,8 @@
     "property_type": "chuko",
     "latitude": 35.7495045,
     "longitude": 139.5865223,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 40, \"summary\": \"徒歩2分 + 大泉学園駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 44, \"summary\": \"徒歩2分 + 大泉学園駅から42分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1768,7 +1844,8 @@
     "property_type": "chuko",
     "latitude": 35.7436117,
     "longitude": 139.6043049,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 36, \"summary\": \"徒歩2分 + 石神井公園駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 40, \"summary\": \"徒歩2分 + 石神井公園駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1791,7 +1868,8 @@
     "property_type": "chuko",
     "latitude": 35.7157717,
     "longitude": 139.712324,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩7分 + 雑司が谷駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 31, \"summary\": \"徒歩7分 + 雑司が谷駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1814,7 +1892,8 @@
     "property_type": "chuko",
     "latitude": 35.7315657,
     "longitude": 139.6846593,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩5分 + 椎名町駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩5分 + 椎名町駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1837,7 +1916,8 @@
     "property_type": "chuko",
     "latitude": 35.7157717,
     "longitude": 139.712324,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩7分 + 雑司が谷駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 31, \"summary\": \"徒歩7分 + 雑司が谷駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1860,7 +1940,8 @@
     "property_type": "chuko",
     "latitude": 35.7862869,
     "longitude": 139.7103797,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩3分 + 北赤羽駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩3分 + 北赤羽駅から35分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1883,7 +1964,8 @@
     "property_type": "chuko",
     "latitude": 35.6583131,
     "longitude": 139.7980009,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 王子神谷駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 王子神谷駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1906,7 +1988,8 @@
     "property_type": "chuko",
     "latitude": 35.7539829,
     "longitude": 139.7375996,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 32, \"summary\": \"徒歩6分 + 東十条駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 36, \"summary\": \"徒歩6分 + 東十条駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1929,7 +2012,8 @@
     "property_type": "chuko",
     "latitude": 35.7905901,
     "longitude": 139.7004698,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 35, \"summary\": \"徒歩5分 + 北赤羽駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 40, \"summary\": \"徒歩5分 + 北赤羽駅から35分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1952,7 +2036,8 @@
     "property_type": "chuko",
     "latitude": 35.7905901,
     "longitude": 139.7004698,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 35, \"summary\": \"徒歩5分 + 北赤羽駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 40, \"summary\": \"徒歩5分 + 北赤羽駅から35分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1975,7 +2060,8 @@
     "property_type": "chuko",
     "latitude": 35.7855026,
     "longitude": 139.723336,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩1分 + 赤羽岩淵駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩1分 + 赤羽岩淵駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -1998,7 +2084,8 @@
     "property_type": "chuko",
     "latitude": 35.7855026,
     "longitude": 139.723336,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩2分 + 赤羽岩淵駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 34, \"summary\": \"徒歩2分 + 赤羽岩淵駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2021,7 +2108,8 @@
     "property_type": "chuko",
     "latitude": 35.7905901,
     "longitude": 139.7004698,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 35, \"summary\": \"徒歩5分 + 北赤羽駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 40, \"summary\": \"徒歩5分 + 北赤羽駅から35分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2044,7 +2132,8 @@
     "property_type": "chuko",
     "latitude": 35.7779045,
     "longitude": 139.7325256,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 5, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 5, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩6分 + 志茂駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩6分 + 志茂駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2067,7 +2156,8 @@
     "property_type": "chuko",
     "latitude": 35.6583131,
     "longitude": 139.7980009,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 王子神谷駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 王子神谷駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2090,7 +2180,8 @@
     "property_type": "chuko",
     "latitude": 35.6583131,
     "longitude": 139.7980009,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 東十条駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩7分 + 東十条駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2113,7 +2204,8 @@
     "property_type": "chuko",
     "latitude": 35.7630169,
     "longitude": 139.7488159,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 23, \"summary\": \"徒歩5分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2136,7 +2228,8 @@
     "property_type": "chuko",
     "latitude": 35.7630169,
     "longitude": 139.7488159,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 23, \"summary\": \"徒歩5分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2159,7 +2252,8 @@
     "property_type": "chuko",
     "latitude": 35.7630169,
     "longitude": 139.7488159,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 24, \"summary\": \"徒歩6分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2182,7 +2276,8 @@
     "property_type": "chuko",
     "latitude": 35.7630169,
     "longitude": 139.7488159,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 22, \"summary\": \"徒歩4分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩4分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2205,7 +2300,8 @@
     "property_type": "chuko",
     "latitude": 35.7630169,
     "longitude": 139.7488159,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 23, \"summary\": \"徒歩5分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2228,7 +2324,8 @@
     "property_type": "chuko",
     "latitude": 35.7630169,
     "longitude": 139.7488159,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 22, \"summary\": \"徒歩4分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩4分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2251,7 +2348,8 @@
     "property_type": "chuko",
     "latitude": 35.7630169,
     "longitude": 139.7488159,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩7分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩7分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2274,7 +2372,8 @@
     "property_type": "chuko",
     "latitude": 35.7630169,
     "longitude": 139.7488159,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 22, \"summary\": \"徒歩4分 + 王子駅から18分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩4分 + 王子駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2297,7 +2396,8 @@
     "property_type": "chuko",
     "latitude": 35.7855026,
     "longitude": 139.723336,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩2分 + 赤羽岩淵駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 34, \"summary\": \"徒歩2分 + 赤羽岩淵駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2320,7 +2420,8 @@
     "property_type": "chuko",
     "latitude": 35.7855026,
     "longitude": 139.723336,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩2分 + 赤羽岩淵駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 34, \"summary\": \"徒歩2分 + 赤羽岩淵駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2343,7 +2444,8 @@
     "property_type": "chuko",
     "latitude": 35.7598345,
     "longitude": 139.708538,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 板橋本町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 板橋本町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2366,7 +2468,8 @@
     "property_type": "chuko",
     "latitude": 35.777686,
     "longitude": 139.6330024,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 37, \"summary\": \"徒歩7分 + 地下鉄成増駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 41, \"summary\": \"徒歩7分 + 地下鉄成増駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2389,7 +2492,8 @@
     "property_type": "chuko",
     "latitude": 35.7852052,
     "longitude": 139.6821549,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩7分 + 蓮根駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩7分 + 蓮根駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2412,7 +2516,8 @@
     "property_type": "chuko",
     "latitude": 35.7573255,
     "longitude": 139.6884023,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 35, \"summary\": \"徒歩3分 + ときわ台駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 39, \"summary\": \"徒歩3分 + ときわ台駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2435,7 +2540,8 @@
     "property_type": "chuko",
     "latitude": 35.7648164,
     "longitude": 139.7068162,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 板橋本町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 板橋本町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2458,7 +2564,8 @@
     "property_type": "chuko",
     "latitude": 35.761537,
     "longitude": 139.6855991,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 33, \"summary\": \"徒歩1分 + ときわ台駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 37, \"summary\": \"徒歩1分 + ときわ台駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2481,7 +2588,8 @@
     "property_type": "chuko",
     "latitude": 35.7530064,
     "longitude": 139.6975348,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩6分 + 大山駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩6分 + 大山駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2504,7 +2612,8 @@
     "property_type": "chuko",
     "latitude": 35.777686,
     "longitude": 139.6330024,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 37, \"summary\": \"徒歩7分 + 地下鉄成増駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 41, \"summary\": \"徒歩7分 + 地下鉄成増駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2527,7 +2636,8 @@
     "property_type": "chuko",
     "latitude": 35.775992,
     "longitude": 139.631253,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 35, \"summary\": \"徒歩5分 + 地下鉄成増駅から30分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 39, \"summary\": \"徒歩5分 + 地下鉄成増駅から34分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "suumo",
@@ -2550,7 +2660,8 @@
     "property_type": "chuko",
     "latitude": 35.7553466,
     "longitude": 139.7098504,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 板橋区役所前駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩5分 + 板橋区役所前駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2571,7 +2682,8 @@
     "property_type": "chuko",
     "latitude": 35.6303197,
     "longitude": 139.6914353,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 学芸大学駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 学芸大学駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2592,7 +2704,8 @@
     "property_type": "chuko",
     "latitude": 35.6303197,
     "longitude": 139.6914353,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 学芸大学駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 学芸大学駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2613,7 +2726,8 @@
     "property_type": "chuko",
     "latitude": 35.6769648,
     "longitude": 139.641321,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩3分 + 西永福駅駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 31, \"summary\": \"徒歩3分 + 西永福駅駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2634,7 +2748,8 @@
     "property_type": "chuko",
     "latitude": 35.6839,
     "longitude": 139.866969,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 船堀駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 29, \"summary\": \"徒歩5分 + 船堀駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2655,7 +2770,8 @@
     "property_type": "chuko",
     "latitude": 35.7160319,
     "longitude": 139.7140038,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩7分 + 雑司が谷駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 31, \"summary\": \"徒歩7分 + 雑司が谷駅駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2676,7 +2792,8 @@
     "property_type": "chuko",
     "latitude": 35.6543988,
     "longitude": 139.8843764,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 26, \"summary\": \"徒歩2分 + 葛西駅駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 24, \"summary\": \"徒歩2分 + 葛西駅駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2697,7 +2814,8 @@
     "property_type": "chuko",
     "latitude": 35.737978,
     "longitude": 139.779571,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 4, \"fire\": 4, \"combined\": 4}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2718,7 +2836,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 27, \"summary\": \"徒歩5分 + 南砂町駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩5分 + 南砂町駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2739,7 +2858,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 南砂町駅駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 南砂町駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2760,7 +2880,8 @@
     "property_type": "chuko",
     "latitude": 35.6743164,
     "longitude": 139.8262215,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 南砂町駅駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 南砂町駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2781,7 +2902,8 @@
     "property_type": "chuko",
     "latitude": 35.7530064,
     "longitude": 139.6975348,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 34, \"summary\": \"徒歩6分 + 大山駅駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 38, \"summary\": \"徒歩6分 + 大山駅駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2802,7 +2924,8 @@
     "property_type": "chuko",
     "latitude": 35.6628538,
     "longitude": 139.6075808,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 1, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 36, \"summary\": \"徒歩4分 + 千歳烏山駅駅から32分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 40, \"summary\": \"徒歩4分 + 千歳烏山駅駅から36分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2823,7 +2946,8 @@
     "property_type": "chuko",
     "latitude": 35.7504293,
     "longitude": 139.8541318,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 24, \"summary\": \"徒歩2分 + 青砥駅駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩2分 + 青砥駅駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2844,7 +2968,8 @@
     "property_type": "chuko",
     "latitude": 35.7322021,
     "longitude": 139.7666684,
-    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": false, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 新三河島駅駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 32, \"summary\": \"徒歩4分 + 新三河島駅駅から28分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2865,7 +2990,8 @@
     "property_type": "chuko",
     "latitude": 35.6645795,
     "longitude": 139.8593173,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 西葛西駅駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩4分 + 西葛西駅駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2886,7 +3012,8 @@
     "property_type": "chuko",
     "latitude": 35.6645795,
     "longitude": 139.8593173,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 西葛西駅駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩4分 + 西葛西駅駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2907,7 +3034,8 @@
     "property_type": "chuko",
     "latitude": 35.6839,
     "longitude": 139.866969,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 23, \"summary\": \"徒歩3分 + 船堀駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 27, \"summary\": \"徒歩3分 + 船堀駅駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2928,7 +3056,8 @@
     "property_type": "chuko",
     "latitude": 35.7408091,
     "longitude": 139.7975036,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 25, \"summary\": \"徒歩3分 + 千住大橋駅駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 25, \"summary\": \"徒歩3分 + 千住大橋駅駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2949,7 +3078,8 @@
     "property_type": "chuko",
     "latitude": 35.6674208,
     "longitude": 139.8580746,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 西葛西駅駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩4分 + 西葛西駅駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2970,7 +3100,8 @@
     "property_type": "chuko",
     "latitude": 35.6674208,
     "longitude": 139.8580746,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 1, \"combined\": 1}",
+    "commute_info": "{\"playground\": {\"minutes\": 30, \"summary\": \"徒歩4分 + 西葛西駅駅から26分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩4分 + 西葛西駅駅から24分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -2991,7 +3122,8 @@
     "property_type": "chuko",
     "latitude": 35.6998911,
     "longitude": 139.6736607,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 2, \"fire\": 3, \"combined\": 3}",
+    "commute_info": "{\"playground\": {\"minutes\": 26, \"summary\": \"徒歩6分 + 新中野駅駅から20分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 28, \"summary\": \"徒歩6分 + 新中野駅駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -3012,7 +3144,8 @@
     "property_type": "chuko",
     "latitude": 35.5639836,
     "longitude": 139.6932882,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 42, \"summary\": \"徒歩2分 + 武蔵新田駅駅から40分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 40, \"summary\": \"徒歩2分 + 武蔵新田駅駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -3033,7 +3166,8 @@
     "property_type": "chuko",
     "latitude": 35.7144096,
     "longitude": 139.7903283,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": true, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 3, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 26, \"summary\": \"徒歩4分 + 浅草駅駅から22分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 20, \"summary\": \"徒歩4分 + 浅草駅駅から16分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   },
   {
     "source": "homes",
@@ -3054,6 +3188,7 @@
     "property_type": "chuko",
     "latitude": 35.5672648,
     "longitude": 139.6925515,
-    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}"
+    "hazard_info": "{\"flood\": true, \"sediment\": false, \"storm_surge\": false, \"tsunami\": false, \"liquefaction\": false, \"inland_water\": false, \"building_collapse\": 3, \"fire\": 2, \"combined\": 2}",
+    "commute_info": "{\"playground\": {\"minutes\": 42, \"summary\": \"徒歩2分 + 武蔵新田駅駅から40分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}, \"m3career\": {\"minutes\": 40, \"summary\": \"徒歩2分 + 武蔵新田駅駅から38分\", \"calculatedAt\": \"2026-02-12T03:56:17Z\"}}"
   }
 ]

@@ -121,6 +121,10 @@ final class Listing: @unchecked Sendable {
     /// ワーストケース 10年後
     var ssSimWorst10yr: Int?
 
+    /// 過去の相場推移 JSON 文字列
+    /// フォーマット: [{"period":"2022年～","price_man":11021,"area_m2":70.2,"unit_price_man":157},...]
+    var ssPastMarketTrends: String?
+
     init(
         source: String? = nil,
         url: String,
@@ -168,7 +172,8 @@ final class Listing: @unchecked Sendable {
         ssSimStandard5yr: Int? = nil,
         ssSimStandard10yr: Int? = nil,
         ssSimWorst5yr: Int? = nil,
-        ssSimWorst10yr: Int? = nil
+        ssSimWorst10yr: Int? = nil,
+        ssPastMarketTrends: String? = nil
     ) {
         self.source = source
         self.url = url
@@ -217,6 +222,7 @@ final class Listing: @unchecked Sendable {
         self.ssSimStandard10yr = ssSimStandard10yr
         self.ssSimWorst5yr = ssSimWorst5yr
         self.ssSimWorst10yr = ssSimWorst10yr
+        self.ssPastMarketTrends = ssPastMarketTrends
     }
 
     // MARK: - Identity
@@ -673,6 +679,40 @@ final class Listing: @unchecked Sendable {
         )
     }
 
+    // MARK: - 過去の相場推移
+
+    /// 相場推移 1 エントリ
+    struct MarketTrendEntry {
+        let period: String     // "2022年～"
+        let priceMan: Int      // 万円
+        let areaM2: Double?    // ㎡
+        let unitPriceMan: Int? // ㎡単価（万円）
+    }
+
+    /// ssPastMarketTrends JSON をパースして配列を返す
+    var parsedMarketTrends: [MarketTrendEntry] {
+        guard let json = ssPastMarketTrends,
+              let data = json.data(using: .utf8),
+              let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            return []
+        }
+        return array.compactMap { dict in
+            guard let period = dict["period"] as? String,
+                  let price = dict["price_man"] as? Int else { return nil }
+            return MarketTrendEntry(
+                period: period,
+                priceMan: price,
+                areaM2: dict["area_m2"] as? Double,
+                unitPriceMan: dict["unit_price_man"] as? Int
+            )
+        }
+    }
+
+    /// 過去の相場推移データがあるか
+    var hasMarketTrends: Bool {
+        ssPastMarketTrends != nil && !parsedMarketTrends.isEmpty
+    }
+
     /// 値上がりシミュレーションデータがあるか（新築のみ。住まいサーフィンの値上がりシミュレーションは新築物件ページにのみ存在する）
     var hasSimulationData: Bool {
         isShinchiku
@@ -961,6 +1001,10 @@ struct ListingDTO: Codable {
     var ss_sim_standard_10yr: Int?
     var ss_sim_worst_5yr: Int?
     var ss_sim_worst_10yr: Int?
+    var ss_past_market_trends: String?
+
+    // 通勤時間（駅ベース概算、パイプライン側で付与）
+    var commute_info: String?
 }
 
 extension Listing {
@@ -1013,6 +1057,7 @@ extension Listing {
             latitude: dto.latitude,
             longitude: dto.longitude,
             hazardInfo: dto.hazard_info,
+            commuteInfoJSON: dto.commute_info,
             ssProfitPct: dto.ss_profit_pct,
             ssOkiPrice70m2: dto.ss_oki_price_70m2,
             ssValueJudgment: dto.ss_value_judgment,
@@ -1028,7 +1073,8 @@ extension Listing {
             ssSimStandard5yr: dto.ss_sim_standard_5yr,
             ssSimStandard10yr: dto.ss_sim_standard_10yr,
             ssSimWorst5yr: dto.ss_sim_worst_5yr,
-            ssSimWorst10yr: dto.ss_sim_worst_10yr
+            ssSimWorst10yr: dto.ss_sim_worst_10yr,
+            ssPastMarketTrends: dto.ss_past_market_trends
         )
     }
 }

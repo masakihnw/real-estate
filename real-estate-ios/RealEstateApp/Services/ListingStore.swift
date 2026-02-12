@@ -330,10 +330,16 @@ final class ListingStore {
         existing.ssSimStandard10yr = new.ssSimStandard10yr
         existing.ssSimWorst5yr = new.ssSimWorst5yr
         existing.ssSimWorst10yr = new.ssSimWorst10yr
+        existing.ssPastMarketTrends = new.ssPastMarketTrends
         // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
         if let lat = new.latitude { existing.latitude = lat }
         if let lon = new.longitude { existing.longitude = lon }
-        // existing.memo, existing.isLiked, existing.commentsJSON, existing.photosJSON, existing.addedAt, existing.commuteInfoJSON はそのまま（ユーザーデータ）
+        // 通勤時間: 既存データがない場合のみ JSON 由来の駅ベース概算で補完
+        // MKDirections で計算済みの場合はそちらを優先して上書きしない
+        if existing.commuteInfoJSON == nil, let newCommute = new.commuteInfoJSON {
+            existing.commuteInfoJSON = newCommute
+        }
+        // existing.memo, existing.isLiked, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザーデータ）
     }
 
     func requestNotificationPermission() {
