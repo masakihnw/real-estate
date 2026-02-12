@@ -1440,7 +1440,7 @@ extension Listing {
             latitude: dto.latitude,
             longitude: dto.longitude,
             hazardInfo: dto.hazard_info,
-            commuteInfoJSON: dto.commute_info,
+            // commuteInfoJSON: JSON 概算は使わず Apple Maps (MKDirections) で正確に計算する
             ssProfitPct: dto.ss_profit_pct,
             ssOkiPrice70m2: dto.ss_oki_price_70m2,
             ssM2Discount: dto.ss_m2_discount,

@@ -51,6 +51,8 @@ jobs:
           pip install -r requirements.txt
           # 東京都地域危険度 GeoJSON 変換用（初回のみ使用、失敗しても続行可能）
           pip install geopandas shapely fiona || echo "geopandas インストール失敗（GeoJSON 変換はスキップ）"
+          # 住まいサーフィン ブラウザ自動化用（playwright がインストール済みの場合のみ）
+          python3 -c "import playwright" 2>/dev/null && playwright install chromium --with-deps || echo "playwright ブラウザインストールスキップ"
 
       - name: Run update script
         id: scrape
@@ -137,9 +139,16 @@ jobs:
           レポート: scraping-tool/results/report/report.md
           自動更新: GitHub Actions" || exit 0
 
-          # -X theirs: コンフリクト時は現在の実行結果（最新データ）を優先して自動解決
-          git pull --rebase -X theirs origin ${{ github.ref_name }}
-          git push origin HEAD:refs/heads/${{ github.ref_name }}
+          # rebase 方式で push（コンフリクト時は最新の実行結果を優先）
+          # rebase 失敗時は abort → merge --strategy=ours で確実に push する
+          if git pull --rebase -X theirs origin ${{ github.ref_name }}; then
+            git push origin HEAD:refs/heads/${{ github.ref_name }}
+          else
+            echo "rebase 失敗: merge 方式にフォールバック" >&2
+            git rebase --abort
+            git pull --no-rebase -X ours origin ${{ github.ref_name }}
+            git push origin HEAD:refs/heads/${{ github.ref_name }}
+          fi
 
       # ワークフロー失敗時に Slack で通知（SLACK_WEBHOOK_URL が設定されている場合のみ）
       - name: Notify failure to Slack

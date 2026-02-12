@@ -379,6 +379,60 @@ def _fetch_property_page(
         return None
 
 
+# ──────────────────────────── 住所抽出 ────────────────────────────
+
+def _extract_address_from_page(soup: BeautifulSoup) -> Optional[str]:
+    """住まいサーフィンの物件概要セクションから所在地を抽出する。
+
+    ページ内最初の <dt>所在地</dt> → <dd>住所</dd> を返す。
+    周辺マンション一覧にも「所在地」があるが、ページ上部の物件概要が最初に出現する。
+    """
+    dt = soup.find("dt", string=lambda t: t and "所在地" in t.strip())
+    if dt:
+        dd = dt.find_next_sibling("dd")
+        if dd:
+            addr = dd.get_text(strip=True)
+            if addr and ("区" in addr or "市" in addr):
+                return addr
+    return None
+
+
+def _clean_ss_address(raw_address: str) -> str:
+    """住まいサーフィンの住所を正規化する。
+
+    以下のパターンを処理:
+      - 「（地番）」「（地名地番）」→ 除去
+      - 「他XX筆」→ 以降を除去
+      - 「、XXX-XXの一部」→ 除去
+      - 「以下略」→ 除去
+
+    例:
+      "東京都板橋区成増２－２２０－１他１４筆、２２０－２の一部（地番）"
+      → "東京都板橋区成増２－２２０－１"
+    """
+    s = raw_address.strip()
+
+    # 1. 括弧付き注記を除去: （地番）、（地名地番）、(地番) 等
+    s = re.sub(r"[（(][^）)]*地番[^）)]*[）)]", "", s).strip()
+    s = re.sub(r"[（(][^）)]*[）)]$", "", s).strip()
+
+    # 2. 「他XX筆」以降を除去（例: 他１４筆、220-2の一部）
+    s = re.sub(r"他[０-９0-9]+筆.*$", "", s).strip()
+
+    # 3. 「、」以降を除去（残った余計な情報）
+    # ただし住所の一部（例: XX-XX）と区別するため、「、」の後が数字なら除去
+    s = re.sub(r"[、,][０-９0-9\s].*$", "", s).strip()
+
+    # 4. 末尾の「他」「以下略」を除去
+    s = re.sub(r"\s*他\s*$", "", s).strip()
+    s = re.sub(r"\s*以下略\s*$", "", s).strip()
+
+    # 5. 末尾の「の一部」を除去
+    s = re.sub(r"の一部\s*$", "", s).strip()
+
+    return s
+
+
 # ──────────────────────────── 中古専用パーサー ────────────────────────────
 
 def parse_chuko_page(session: requests.Session, url: str) -> dict:
@@ -398,6 +452,11 @@ def parse_chuko_page(session: requests.Session, url: str) -> dict:
     if fetched is None:
         return result
     soup, html = fetched
+
+    # ── 所在地（詳細住所） ──
+    raw_addr = _extract_address_from_page(soup)
+    if raw_addr:
+        result["ss_address"] = _clean_ss_address(raw_addr)
 
     # ── 沖式中古時価 (70m²換算) ──
     oki_price = _extract_oki_price_chuko(soup, html)
@@ -484,6 +543,11 @@ def parse_shinchiku_page(session: requests.Session, url: str) -> dict:
     if fetched is None:
         return result
     soup, html = fetched
+
+    # ── 所在地（詳細住所） ──
+    raw_addr = _extract_address_from_page(soup)
+    if raw_addr:
+        result["ss_address"] = _clean_ss_address(raw_addr)
 
     # ── 沖式儲かる確率 ──
     profit_pct = _extract_profit_pct(soup, html)
@@ -1608,6 +1672,12 @@ def main() -> None:
             print(
                 "ブラウザ enrichment: playwright が未インストールのためスキップ\n"
                 "  pip install playwright && playwright install chromium",
+                file=sys.stderr,
+            )
+        except Exception as e:
+            print(
+                f"ブラウザ enrichment: 実行時エラーのためスキップ: {e}\n"
+                "  ブラウザバイナリ未インストールの可能性: playwright install chromium",
                 file=sys.stderr,
             )
 

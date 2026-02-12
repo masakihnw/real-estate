@@ -28,9 +28,9 @@ final class CommuteTimeService {
     /// 経路計算中かどうか
     private(set) var isCalculating = false
 
-    /// オフィス座標変更時にキャッシュを無効化するためのバージョン。
-    /// 座標を更新した場合はこの値をインクリメントする。
-    private static let coordinateVersion = 2
+    /// キャッシュ無効化バージョン。変更時は全物件の通勤時間を Apple Maps で再計算する。
+    /// v2→v3: JSON 概算を廃止し、Apple Maps (MKDirections) のみで計算する方式に変更
+    private static let coordinateVersion = 3
     private static let coordinateVersionKey = "commuteTime.coordinateVersion"
 
     private init() {

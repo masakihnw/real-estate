@@ -129,6 +129,13 @@ fi
 echo "ジオコーディングキャッシュをバリデーション中..." >&2
 python3 scripts/geocode.py || echo "⚠ ジオコーディングキャッシュに問題のあるエントリがあります（手動確認推奨）" >&2
 
+# 4.4.5. 座標の相互検証（住所・物件名・最寄り駅・座標の整合性チェック + 修正試行）
+echo "座標の相互検証 + 修正試行中..." >&2
+python3 scripts/geocode_cross_validator.py "${OUTPUT_DIR}/latest.json" --fix || echo "⚠ 座標の相互検証で問題が検出されました（手動確認推奨）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 scripts/geocode_cross_validator.py "${OUTPUT_DIR}/latest_shinchiku.json" --fix || echo "⚠ 座標の相互検証（新築）で問題が検出されました（手動確認推奨）" >&2
+fi
+
 echo "レポートを再生成（詳細キャッシュ・地図リンク反映）..." >&2
 if [ -f "${OUTPUT_DIR}/previous.json" ]; then
     python3 generate_report.py "${OUTPUT_DIR}/latest.json" --compare "${OUTPUT_DIR}/previous.json" -o "$REPORT" $REPORT_URL_ARG $MAP_URL_ARG
@@ -165,23 +172,39 @@ fi
 #   未設定時: 既存 ss_*/walk_min からレーダーデータのみ補完（ログイン不要）
 #   --browser: 追加でブラウザ自動化（割安判定・カスタムシミュレーション）を実行
 echo "住まいサーフィン enrichment 実行中..." >&2
-# ブラウザ自動化フラグ: playwright がインストール済みの場合のみ有効
+# ブラウザ自動化フラグ: playwright がインストール済みかつブラウザバイナリが存在する場合のみ有効
 BROWSER_FLAG=""
-if python3 -c "import playwright" 2>/dev/null; then
+if python3 -c "
+import sys
+try:
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        path = p.chromium.executable_path
+        import os
+        if os.path.isfile(path):
+            sys.exit(0)
+        else:
+            sys.exit(1)
+except Exception:
+    sys.exit(1)
+" 2>/dev/null; then
     BROWSER_FLAG="--browser"
-    echo "  playwright 検出: ブラウザ自動化を含めて実行" >&2
+    echo "  playwright 検出（ブラウザバイナリ確認済み）: ブラウザ自動化を含めて実行" >&2
+else
+    echo "  playwright 未検出またはブラウザバイナリなし: ブラウザ自動化スキップ" >&2
 fi
 python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" --property-type chuko $BROWSER_FLAG || echo "住まいサーフィン enrichment (中古) 失敗（続行）" >&2
 if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
     python3 sumai_surfin_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" --property-type shinchiku $BROWSER_FLAG || echo "住まいサーフィン enrichment (新築) 失敗（続行）" >&2
 fi
 
-# 4.7c. 通勤時間 enrichment（駅名ベースの概算通勤時間を付与。iOS で MKDirections 計算前のデフォルト値）
-echo "通勤時間 enrichment 実行中..." >&2
-python3 commute_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "通勤時間 enrichment (中古) 失敗（続行）" >&2
-if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    python3 commute_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "通勤時間 enrichment (新築) 失敗（続行）" >&2
-fi
+# 4.7c. 通勤時間 enrichment（廃止: iOS アプリ側で Apple Maps MKDirections を使って正確に計算する方式に移行）
+# 駅名ベースの概算は精度が低いため、パイプラインからの付与を停止
+# echo "通勤時間 enrichment 実行中..." >&2
+# python3 commute_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "通勤時間 enrichment (中古) 失敗（続行）" >&2
+# if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+#     python3 commute_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "通勤時間 enrichment (新築) 失敗（続行）" >&2
+# fi
 
 # 4.7d. 不動産情報ライブラリ enrichment（区別成約価格相場の付与。API は叩かず、事前構築キャッシュを参照）
 if [ -f "data/reinfolib_prices.json" ]; then
