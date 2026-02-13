@@ -191,13 +191,13 @@ def _build_commute_info(
 # ---------------------------------------------------------------------------
 
 
-def enrich_commute(listings: list) -> int:
-    """物件リストに commute_info を追加する。既にある場合はスキップ。"""
+def enrich_commute(listings: list, force: bool = False) -> int:
+    """物件リストに commute_info を追加する。既にある場合はスキップ（force=True で強制上書き）。"""
     enriched_count = 0
 
     for listing in listings:
-        # 既に commute_info がある場合はスキップ
-        if listing.get("commute_info"):
+        # 既に commute_info がある場合はスキップ（force=True なら上書き）
+        if listing.get("commute_info") and not force:
             continue
 
         station_line = listing.get("station_line", "")
@@ -217,12 +217,13 @@ def main() -> None:
     )
     ap.add_argument("--input", required=True, help="入力JSONファイル")
     ap.add_argument("--output", required=True, help="出力JSONファイル")
+    ap.add_argument("--force", action="store_true", help="既存の commute_info を強制的に再計算する")
     args = ap.parse_args()
 
     with open(args.input, "r", encoding="utf-8") as f:
         listings = json.load(f)
 
-    count = enrich_commute(listings)
+    count = enrich_commute(listings, force=args.force)
 
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)

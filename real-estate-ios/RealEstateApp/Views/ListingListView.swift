@@ -240,7 +240,7 @@ struct ListingListView: View {
                     .padding(.bottom, 8)
                 }
                 .navigationTitle(navTitle)
-                .navigationBarTitleDisplayMode(.large)
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         HStack(spacing: 12) {
@@ -761,10 +761,10 @@ struct ListingRowView: View {
                             Text("儲かる \(pct)%")
                                 .font(.caption2.weight(.semibold))
                                 .foregroundStyle(Color.accentColor)
-                                .padding(.horizontal, 4)
-                                .padding(.vertical, 1)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 2)
                                 .background(Color.accentColor.opacity(0.10))
-                                .clipShape(RoundedRectangle(cornerRadius: 3))
+                                .clipShape(RoundedRectangle(cornerRadius: 4))
                         }
                     } else if let rate = listing.ssAppreciationRate {
                         let sign = rate >= 0 ? "↑" : "↓"
@@ -772,10 +772,10 @@ struct ListingRowView: View {
                         Text("\(sign)\(Int(abs(rate)))%")
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(color)
-                            .padding(.horizontal, 4)
-                            .padding(.vertical, 1)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
                             .background(color.opacity(0.10))
-                            .clipShape(RoundedRectangle(cornerRadius: 3))
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
 
                     // 偏差値バッジ（平均偏差値）— 新築では不要のため非表示
@@ -953,7 +953,7 @@ struct OwnershipBadge: View {
             }
             .foregroundStyle(type == .owned ? Color.accentColor : Color.orange)
             .padding(.horizontal, size == .small ? 5 : 7)
-            .padding(.vertical, size == .small ? 1 : 2)
+            .padding(.vertical, 2)
             .background((type == .owned ? Color.accentColor : Color.orange).opacity(0.10))
             .clipShape(RoundedRectangle(cornerRadius: size == .small ? 4 : 5))
         }

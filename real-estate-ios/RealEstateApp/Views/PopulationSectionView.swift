@@ -126,8 +126,8 @@ struct PopulationSectionView: View {
         let padding = max(range * 0.2, 0.05) // 最低0.05万人分の余白
         let yMin = minVal - padding
         let yMax = maxVal + padding
-        // 軸の目盛りを5〜7本程度で細かく表示
-        let stride = niceStride(for: yMax - yMin, targetTicks: 6)
+        // 軸の目盛りを3〜4本程度でコンパクトに表示
+        let stride = niceStride(for: yMax - yMin, targetTicks: 4)
 
         VStack(alignment: .leading, spacing: 8) {
             Text("\(pop.ward) 人口推移")
@@ -138,17 +138,12 @@ struct PopulationSectionView: View {
             Chart {
                 ForEach(Array(pop.populationHistory.enumerated()), id: \.element.year) { _, entry in
                     let manPop = Double(entry.value) / 10000.0
-                    LineMark(
-                        x: .value("年", entry.year),
-                        y: .value("人口(万人)", manPop)
-                    )
-                    .foregroundStyle(Color.accentColor)
-                    .interpolationMethod(.monotone)
-                    .lineStyle(StrokeStyle(lineWidth: 2))
 
+                    // 1. AreaMark（背景グラデーション — 最背面に描画）
                     AreaMark(
                         x: .value("年", entry.year),
-                        y: .value("人口(万人)", manPop)
+                        yStart: .value("下限", yMin),
+                        yEnd: .value("人口", manPop)
                     )
                     .interpolationMethod(.monotone)
                     .foregroundStyle(
@@ -159,9 +154,19 @@ struct PopulationSectionView: View {
                         )
                     )
 
+                    // 2. LineMark（折れ線）
+                    LineMark(
+                        x: .value("年", entry.year),
+                        y: .value("人口", manPop)
+                    )
+                    .foregroundStyle(Color.accentColor)
+                    .interpolationMethod(.monotone)
+                    .lineStyle(StrokeStyle(lineWidth: 2))
+
+                    // 3. PointMark（データ点 — 最前面に描画）
                     PointMark(
                         x: .value("年", entry.year),
-                        y: .value("人口(万人)", manPop)
+                        y: .value("人口", manPop)
                     )
                     .foregroundStyle(Color.accentColor)
                     .symbolSize(24)
@@ -173,8 +178,9 @@ struct PopulationSectionView: View {
                     AxisGridLine()
                     AxisValueLabel {
                         if let v = value.as(Double.self) {
-                            Text(String(format: "%.2f万", v))
+                            Text(yAxisLabel(v, stride: stride))
                                 .font(.caption2)
+                                .monospacedDigit()
                         }
                     }
                 }
@@ -191,6 +197,21 @@ struct PopulationSectionView: View {
             }
             .chartLegend(.hidden)
             .frame(height: 180)
+            .clipped()
+        }
+    }
+
+    /// Y軸ラベルのフォーマット（stride に応じてコンパクトに表示）
+    private func yAxisLabel(_ value: Double, stride: Double) -> String {
+        if stride >= 1.0 {
+            // stride≥1: 整数表示 "69万"
+            return String(format: "%.0f万", value)
+        } else if stride >= 0.1 {
+            // stride≥0.1: 小数1桁 "69.5万"
+            return String(format: "%.1f万", value)
+        } else {
+            // stride<0.1: 小数2桁 "69.75万"
+            return String(format: "%.2f万", value)
         }
     }
 
@@ -205,8 +226,6 @@ struct PopulationSectionView: View {
             niceNorm = 1.0
         } else if normalized <= 2.0 {
             niceNorm = 2.0
-        } else if normalized <= 2.5 {
-            niceNorm = 2.5
         } else if normalized <= 5.0 {
             niceNorm = 5.0
         } else {

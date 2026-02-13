@@ -1107,23 +1107,18 @@ final class Listing: @unchecked Sendable {
             if stormSurge { results.append(("wind", "高潮浸水", .warning)) }
             if tsunami { results.append(("water.waves", "津波浸水", .danger)) }
             if liquefaction { results.append(("waveform.path.ecg", "液状化", .warning)) }
-            // 東京都地域危険度: コンパクトな1ラベルにまとめる（例: "建物倒壊3、火災4"）
-            var riskParts: [String] = []
-            var maxRiskSev: HazardSeverity = .warning
+            // 東京都地域危険度: 建物倒壊・火災・総合を独立ラベルで表示
             if buildingCollapse >= 3 {
-                riskParts.append("建物倒壊\(buildingCollapse)")
-                if buildingCollapse >= 4 { maxRiskSev = .danger }
+                let sev: HazardSeverity = buildingCollapse >= 4 ? .danger : .warning
+                results.append(("building.2.crop.circle", "倒壊\(buildingCollapse)", sev))
             }
             if fire >= 3 {
-                riskParts.append("火災\(fire)")
-                if fire >= 4 { maxRiskSev = .danger }
+                let sev: HazardSeverity = fire >= 4 ? .danger : .warning
+                results.append(("flame.fill", "火災\(fire)", sev))
             }
             if combined >= 3 {
-                riskParts.append("総合\(combined)")
-                if combined >= 4 { maxRiskSev = .danger }
-            }
-            if !riskParts.isEmpty {
-                results.append(("exclamationmark.triangle.fill", riskParts.joined(separator: "、"), maxRiskSev))
+                let sev: HazardSeverity = combined >= 4 ? .danger : .warning
+                results.append(("exclamationmark.triangle.fill", "総合\(combined)", sev))
             }
             return results
         }
@@ -1301,6 +1296,7 @@ final class Listing: @unchecked Sendable {
         var trend: String                  // "up" / "flat" / "down"
         var yoyChangePct: Double?          // 前年同期比変動率 (%)
         var quarterlyM2Prices: [QuarterlyPrice]
+        var yearlyM2Prices: [YearlyPrice]  // 区レベル年次推移（駅データ集計）
         var sameBuildingTransactions: [SameBuildingTransaction]
         var station: StationMarketData?    // 駅レベル比較
         var dataSource: String
@@ -1511,6 +1507,16 @@ final class Listing: @unchecked Sendable {
             )
         }
 
+        // 区レベル年次推移（駅データから集計）
+        let yearlyRaw = dict["yearly_m2_prices"] as? [[String: Any]] ?? []
+        let yearly = yearlyRaw.compactMap { y -> MarketData.YearlyPrice? in
+            guard let year = y["year"] as? String,
+                  let price = y["median_m2_price"] as? Int else { return nil }
+            return MarketData.YearlyPrice(
+                year: year, medianM2Price: price, count: y["count"] as? Int ?? 0
+            )
+        }
+
         // 同一マンション候補の成約事例
         let sbRaw = dict["same_building_transactions"] as? [[String: Any]] ?? []
         let sameBuildingTxs = sbRaw.compactMap { tx -> MarketData.SameBuildingTransaction? in
@@ -1575,6 +1581,7 @@ final class Listing: @unchecked Sendable {
             trend: dict["trend"] as? String ?? "flat",
             yoyChangePct: dict["yoy_change_pct"] as? Double,
             quarterlyM2Prices: quarterly,
+            yearlyM2Prices: yearly,
             sameBuildingTransactions: sameBuildingTxs,
             station: stationData,
             dataSource: dict["data_source"] as? String ?? "不動産情報ライブラリ（国土交通省）"
