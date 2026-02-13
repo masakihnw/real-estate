@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """
-results/latest.json を読み、住所をジオコーディングして地図用HTMLを生成する。
+results/latest.json（中古）と latest_shinchiku.json（新築）を読み、住所をジオコーディングして地図用HTMLを生成する。
 出力: results/map_viewer.html （ブラウザで開くと物件がマッピングされた地図が表示される）
 
 使い方:
   python scripts/build_map_viewer.py [results/latest.json]
-  python scripts/build_map_viewer.py results/latest.json results/previous.json   # 前回あり → 新規物件を緑ピンで表示
-  python scripts/build_map_viewer.py --limit 20   # 先頭20件だけ（テスト用）
+  python scripts/build_map_viewer.py results/latest.json --shinchiku results/latest_shinchiku.json
+  python scripts/build_map_viewer.py --output custom_map.html
+  python scripts/build_map_viewer.py --previous results/previous.json --limit 20
 
-前回結果（previous.json）を第2引数で渡すと、新規追加された物件のピンを緑色で表示します。
+ピン色: 青=中古、緑=新築。前回結果（--previous）があれば新規物件にはポップアップで🆕バッジを表示。
 初回は住所のジオコーディングで時間がかかります。結果は data/geocode_cache.json にキャッシュされ、次回以降は高速です。
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -19,7 +21,7 @@ from typing import Optional
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_JSON = ROOT / "results" / "latest.json"
-OUTPUT_HTML = ROOT / "results" / "map_viewer.html"
+DEFAULT_OUTPUT = ROOT / "results" / "map_viewer.html"
 
 # geocode は build_map_viewer の親ディレクトリから import
 sys.path.insert(0, str(ROOT))
@@ -34,7 +36,8 @@ def build_map_data(
     """
     物件リストから地図用データを生成。
     同一住所は1ピンにまとめ、価格・間取りが違う複数件はポップアップで一覧表示。
-    previous があれば新規を判定し、1件でも新規があればそのピンを緑に。
+    ピン色は property_type で決定: 青=中古(chuko)、緑=新築(shinchiku)。
+    previous があれば新規物件にポップアップで🆕バッジを表示。
     """
     new_keys = set()
     if previous_listings:
@@ -66,10 +69,14 @@ def build_map_data(
         lat, lon = coords
         items = []
         any_new = False
+        has_shinchiku = False
         for r in group:
             is_new = identity_key(r) in new_keys
             if is_new:
                 any_new = True
+            prop_type = (r.get("property_type") or "chuko").strip()
+            if prop_type == "shinchiku":
+                has_shinchiku = True
             items.append({
                 "name": (r.get("name") or "").strip(),
                 "url": (r.get("url") or "").strip(),
@@ -80,6 +87,7 @@ def build_map_data(
                 "walk_min": r.get("walk_min"),
                 "built_year": r.get("built_year"),
                 "is_new": is_new,
+                "property_type": prop_type,
             })
         result.append({
             "lat": lat,
@@ -87,6 +95,7 @@ def build_map_data(
             "address": address,
             "listings": items,
             "is_new": any_new,
+            "is_shinchiku": has_shinchiku,
         })
     return result
 
@@ -120,8 +129,8 @@ def html_content(map_data: list[dict]) -> str:
     #legend {{ position: absolute; bottom: 24px; left: 12px; z-index: 1000; background: #fff; padding: 8px 12px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); font-size: 12px; }}
     #legend .item {{ margin: 4px 0; display: flex; align-items: center; gap: 8px; }}
     #legend .pin {{ width: 14px; height: 14px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 2px solid #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }}
-    #legend .pin-default {{ background: #3b82f6; }}
-    #legend .pin-new {{ background: #22c55e; }}
+    #legend .pin-chuko {{ background: #3b82f6; }}
+    #legend .pin-shinchiku {{ background: #22c55e; }}
     #hint {{ position: absolute; top: 12px; left: 12px; right: 12px; z-index: 1000; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #92400e; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
   </style>
 </head>
@@ -129,8 +138,8 @@ def html_content(map_data: list[dict]) -> str:
   <div id="hint">※Slackアプリ内で開くと地図が表示されないことがあります。リンクを長押し→「ブラウザで開く」で Safari や Chrome から開くと表示されます。</div>
   <div id="map"></div>
   <div id="legend">
-    <div class="item"><span class="pin pin-default"></span> 既存の物件</div>
-    <div class="item"><span class="pin pin-new"></span> 🆕 新規追加</div>
+    <div class="item"><span class="pin pin-chuko"></span> 中古</div>
+    <div class="item"><span class="pin pin-shinchiku"></span> 新築</div>
   </div>
   <script type="application/json" id="map-data">{data_json}</script>
   <script>
@@ -155,8 +164,8 @@ def html_content(map_data: list[dict]) -> str:
       L.tileLayer("https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png", {{
         attribution: "&copy; <a href=\\"https://www.openstreetmap.org/copyright\\">OpenStreetMap</a>"
       }}).addTo(map);
-      const newIcon = L.divIcon({{ className: "pin-new", html: "<div style=\\"background:#22c55e;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)\\"></div>", iconSize: [24, 24], iconAnchor: [12, 24] }});
-      const defaultIcon = L.divIcon({{ className: "pin-default", html: "<div style=\\"background:#3b82f6;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)\\"></div>", iconSize: [24, 24], iconAnchor: [12, 24] }});
+      const chukoIcon = L.divIcon({{ className: "pin-chuko", html: "<div style=\\"background:#3b82f6;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)\\"></div>", iconSize: [24, 24], iconAnchor: [12, 24] }});
+      const shinchikuIcon = L.divIcon({{ className: "pin-shinchiku", html: "<div style=\\"background:#22c55e;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)\\"></div>", iconSize: [24, 24], iconAnchor: [12, 24] }});
       MAP_DATA.forEach(function(p) {{
         const addrHtml = "<div class=\\"popup-address\\">" + escapeHtml(p.address) + "</div>";
         let itemsHtml = "";
@@ -172,7 +181,7 @@ def html_content(map_data: list[dict]) -> str:
             (item.url ? "<div class=\\"popup-link\\"><a href=\\"" + escapeAttr(item.url) + "\\" target=\\"_blank\\" rel=\\"noopener\\">詳細を開く</a></div>" : "") + "</div>";
         }});
         const content = addrHtml + itemsHtml;
-        const marker = L.marker([p.lat, p.lon], {{ icon: p.is_new ? newIcon : defaultIcon }});
+        const marker = L.marker([p.lat, p.lon], {{ icon: p.is_shinchiku ? shinchikuIcon : chukoIcon }});
         marker.addTo(map).bindPopup(content);
       }});
       setTimeout(function() {{ if (map && map.invalidateSize) map.invalidateSize(); }}, 300);
@@ -188,26 +197,57 @@ def html_content(map_data: list[dict]) -> str:
 """
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="物件JSONをジオコーディングして地図用HTMLを生成する。",
+        epilog="ピン色: 青=中古、緑=新築。前回結果（--previous）があれば新規物件に🆕バッジを表示。",
+    )
+    parser.add_argument(
+        "json_path",
+        nargs="?",
+        type=Path,
+        default=DEFAULT_JSON,
+        help=f"物件JSONファイルのパス（デフォルト: {DEFAULT_JSON}）",
+    )
+    parser.add_argument(
+        "--previous",
+        "-p",
+        type=Path,
+        metavar="PATH",
+        help="前回の物件JSON（比較用。省略時は json_path の親ディレクトリの previous.json）",
+    )
+    parser.add_argument(
+        "--shinchiku",
+        "-s",
+        type=Path,
+        metavar="PATH",
+        help="新築物件JSONのパス（中古JSONに結合して地図化）",
+    )
+    parser.add_argument(
+        "--limit",
+        "-n",
+        type=int,
+        metavar="N",
+        help="先頭N件のみ処理（テスト用）",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        type=Path,
+        default=DEFAULT_OUTPUT,
+        metavar="PATH",
+        help=f"出力HTMLのパス（デフォルト: {DEFAULT_OUTPUT}）",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
-    argv = sys.argv[1:]
-    limit = None
-    rest = []
-    i = 0
-    while i < len(argv):
-        a = argv[i]
-        if a == "--limit" and i + 1 < len(argv):
-            limit = int(argv[i + 1])
-            i += 2
-            continue
-        if a.startswith("--limit="):
-            limit = int(a.split("=", 1)[1])
-            i += 1
-            continue
-        if not a.startswith("--"):
-            rest.append(a)
-        i += 1
-    json_path = Path(rest[0]) if rest else DEFAULT_JSON
-    previous_path = Path(rest[1]) if len(rest) > 1 else json_path.parent / "previous.json"
+    args = parse_args()
+    json_path = args.json_path
+    previous_path = args.previous if args.previous is not None else json_path.parent / "previous.json"
+    shinchiku_path_str = str(args.shinchiku) if args.shinchiku else None
+    limit = args.limit
+    output_html = args.output
     if not json_path.exists():
         print(f"Error: {json_path} not found", file=sys.stderr)
         sys.exit(1)
@@ -216,6 +256,24 @@ def main() -> None:
     if not isinstance(listings, list):
         print("Error: JSON must be an array of listings", file=sys.stderr)
         sys.exit(1)
+
+    # 新築 JSON を読み込んで結合
+    shinchiku_count = 0
+    if shinchiku_path_str:
+        shinchiku_path = Path(shinchiku_path_str)
+        if shinchiku_path.exists():
+            try:
+                with open(shinchiku_path, encoding="utf-8") as f:
+                    shinchiku_data = json.load(f)
+                if isinstance(shinchiku_data, list):
+                    shinchiku_count = len(shinchiku_data)
+                    listings = listings + shinchiku_data
+                    print(f"Loaded {shinchiku_count} shinchiku listings from {shinchiku_path}")
+            except Exception as e:
+                print(f"Warning: failed to load shinchiku JSON: {e}", file=sys.stderr)
+        else:
+            print(f"Warning: shinchiku file not found: {shinchiku_path}", file=sys.stderr)
+
     if limit is not None:
         listings = listings[:limit]
         print(f"Limit: using first {limit} listings.")
@@ -229,16 +287,18 @@ def main() -> None:
                 print(f"Comparing with previous: {previous_path} ({len(previous_listings)} listings)")
         except Exception:
             pass
-    print(f"Loading {len(listings)} listings from {json_path}...")
+    print(f"Loading {len(listings)} listings ({len(listings) - shinchiku_count} chuko + {shinchiku_count} shinchiku)...")
     map_data = build_map_data(listings, previous_listings)
     new_count = sum(1 for p in map_data if p.get("is_new"))
-    print(f"Geocoded {len(map_data)} listings (skipped {len(listings) - len(map_data)} without coordinates).")
+    shinchiku_pin_count = sum(1 for p in map_data if p.get("is_shinchiku"))
+    print(f"Geocoded {len(map_data)} locations (skipped {len(listings) - len(map_data)} without coordinates).")
+    print(f"Pins: {len(map_data) - shinchiku_pin_count} chuko (blue) + {shinchiku_pin_count} shinchiku (green)")
     if new_count:
-        print(f"New listings (green pins): {new_count}")
-    OUTPUT_HTML.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+        print(f"Newly added listings (🆕 badge): {new_count}")
+    output_html.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_html, "w", encoding="utf-8") as f:
         f.write(html_content(map_data))
-    print(f"Wrote {OUTPUT_HTML}")
+    print(f"Wrote {output_html}")
     print("Open the file in a browser to view the map.")
 
 

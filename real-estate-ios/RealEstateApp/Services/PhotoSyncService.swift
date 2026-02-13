@@ -21,6 +21,7 @@ import FirebaseStorage
 import SwiftData
 
 @Observable
+@MainActor
 final class PhotoSyncService {
     static let shared = PhotoSyncService()
 
@@ -95,9 +96,7 @@ final class PhotoSyncService {
 
             if let error {
                 print("[PhotoSync] Storage アップロード失敗: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    self.uploadingPhotoIds.remove(photoMeta.id)
-                }
+                Task { @MainActor in self.uploadingPhotoIds.remove(photoMeta.id) }
                 return
             }
 
@@ -121,7 +120,7 @@ final class PhotoSyncService {
             }
 
             // ローカルの PhotoMeta を更新（storagePath, authorName, authorId を記録）
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.uploadingPhotoIds.remove(photoMeta.id)
                 self.updateLocalPhotoMeta(
                     photoId: photoMeta.id,
@@ -150,7 +149,7 @@ final class PhotoSyncService {
                     return
                 }
                 await MainActor.run {
-                    uploadPhoto(image, photoMeta: meta, for: listing, modelContext: modelContext)
+                    self.uploadPhoto(image, photoMeta: meta, for: listing, modelContext: modelContext)
                 }
             }
         }
@@ -189,7 +188,6 @@ final class PhotoSyncService {
 
     /// Firestore からアノテーション内の写真メタデータを取得し、
     /// 未ダウンロードの写真を Firebase Storage からダウンロードしてローカルに保存する。
-    @MainActor
     func pullPhotos(for listings: [Listing], firestoreDocuments: [QueryDocumentSnapshot], docIDToListings: [String: [Listing]], modelContext: ModelContext) async {
         guard isAuthenticated else { return }
 
@@ -315,7 +313,6 @@ final class PhotoSyncService {
     }
 
     /// ローカルの PhotoMeta を更新する（アップロード完了後）。
-    @MainActor
     private func updateLocalPhotoMeta(photoId: String, storagePath: String, authorName: String, authorId: String, listing: Listing, modelContext: ModelContext) {
         var photos = listing.parsedPhotos
         if let index = photos.firstIndex(where: { $0.id == photoId }) {

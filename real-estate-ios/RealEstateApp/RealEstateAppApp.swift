@@ -20,7 +20,7 @@ struct RealEstateAppApp: App {
     // Listing モデルのストアドプロパティを追加・削除・型変更した場合はインクリメントする。
     // 旧バージョンの DB は自動削除され、サーバーからデータを再取得する。
     // VersionedSchema を使わない簡易マイグレーション方式。
-    private static let currentSchemaVersion = 3  // v3: managementFee + repairReserveFund 追加
+    private static let currentSchemaVersion = 5  // v5: ssLookupStatus 追加（住まいサーフィン検索ステータス）
     private static let schemaVersionKey = "realestate.schemaVersion"
 
     var sharedModelContainer: ModelContainer = {
@@ -55,7 +55,11 @@ struct RealEstateAppApp: App {
                     return try ModelContainer(for: schema, configurations: [memoryConfig])
                 } catch {
                     // インメモリ作成も失敗 = システムレベルの異常（メモリ不足等）
-                    fatalError("[RealEstateApp] ModelContainer の作成に完全に失敗: \(error.localizedDescription)")
+                    fatalError("""
+                        [RealEstateApp] データベースの初期化に失敗しました。
+                        エラー: \(error.localizedDescription)
+                        アプリを再インストールするか、ストレージの空き容量を確認してください。
+                        """)
                 }
             }
         }

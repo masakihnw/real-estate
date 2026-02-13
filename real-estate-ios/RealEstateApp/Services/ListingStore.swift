@@ -26,6 +26,8 @@ final class ListingStore {
 
     private(set) var isRefreshing = false
     private(set) var lastError: String?
+    /// 非致命的な同期警告（Firebase いいね・メモ、通勤時間計算など）。UI で任意に表示可能。
+    private(set) var syncWarning: String?
     private(set) var lastFetchedAt: Date?
     /// 最後の更新で新着データがあったか（ETag 判定用の表示に使う）
     private(set) var lastRefreshHadChanges = true
@@ -86,20 +88,25 @@ final class ListingStore {
         guard !isRefreshing else { return }
         await MainActor.run { isRefreshing = true }
         lastError = nil
+        syncWarning = nil
         lastRefreshHadChanges = false
 
         // SwiftData が空の場合は ETag をクリアしてフルフェッチを強制する。
         // アプリの再インストール/リビルドで SwiftData はクリアされるが
         // UserDefaults（ETag）が残っていると 304 が返り、データが 0 件になる問題を防ぐ。
+        let chukoDescriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == "chuko" })
+        let shinchikuDescriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == "shinchiku" })
+        var chukoCount = 0
+        var shinchikuCount = 0
         do {
-            let chukoDescriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == "chuko" })
-            let shinchikuDescriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == "shinchiku" })
-            let chukoCount = (try? modelContext.fetchCount(chukoDescriptor)) ?? 0
-            let shinchikuCount = (try? modelContext.fetchCount(shinchikuDescriptor)) ?? 0
-            if chukoCount == 0 || shinchikuCount == 0 {
-                clearETags()
-                print("[ListingStore] SwiftData が空のため ETag をクリアしてフルフェッチを実行します")
-            }
+            chukoCount = try modelContext.fetchCount(chukoDescriptor)
+            shinchikuCount = try modelContext.fetchCount(shinchikuDescriptor)
+        } catch {
+            print("[ListingStore] fetchCount 失敗: \(error.localizedDescription)")
+        }
+        if chukoCount == 0 || shinchikuCount == 0 {
+            clearETags()
+            print("[ListingStore] SwiftData が空のため ETag をクリアしてフルフェッチを実行します")
         }
 
         // P2: 中古・新築を並列取得（ネットワーク待ちを半減）
@@ -149,10 +156,18 @@ final class ListingStore {
         }
 
         // Firestore からアノテーション（いいね・メモ）を取得してマージ
-        await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext)
+        await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+            Task { @MainActor in
+                syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+            }
+        }
 
         // 通勤時間の自動計算（未計算 or 7日以上経過のみ）
-        await CommuteTimeService.shared.calculateForAllListings(modelContext: modelContext)
+        await CommuteTimeService.shared.calculateForAllListings(modelContext: modelContext) { [self] msg in
+            Task { @MainActor in
+                syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+            }
+        }
     }
 
     /// 保存済み ETag をクリアして次回フルフェッチを強制する
@@ -237,6 +252,9 @@ final class ListingStore {
                 // P1: Dictionary で O(1) ルックアップ
                 let existingByKey = Dictionary(existing.map { ($0.identityKey, $0) }, uniquingKeysWith: { first, _ in first })
 
+                // 前回 isNew だった物件をリセット（今回の同期で新規でなければ消える）
+                for e in existing { e.isNew = false }
+
                 var newCount = 0
                 var incomingKeys = Set<String>()
 
@@ -252,6 +270,7 @@ final class ListingStore {
                         update(same, from: listing)
                     } else {
                         newCount += 1
+                        listing.isNew = true
                         modelContext.insert(listing)
                     }
                 }
@@ -286,7 +305,7 @@ final class ListingStore {
         }
     }
 
-    /// JSON 由来のプロパティのみ更新。memo / isLiked / addedAt / latitude / longitude はユーザーデータのため上書きしない。
+    /// JSON 由来のプロパティのみ更新。memo / isLiked / isNew / addedAt / latitude / longitude はユーザーデータ・同期管理データのため上書きしない。
     private func update(_ existing: Listing, from new: Listing) {
         existing.source = new.source
         existing.url = new.url
@@ -317,6 +336,7 @@ final class ListingStore {
         // ハザード情報（JSON 由来なので上書き）
         existing.hazardInfo = new.hazardInfo
         // 住まいサーフィン評価データ（JSON 由来なので上書き）
+        existing.ssLookupStatus = new.ssLookupStatus
         existing.ssProfitPct = new.ssProfitPct
         existing.ssOkiPrice70m2 = new.ssOkiPrice70m2
         existing.ssM2Discount = new.ssM2Discount
@@ -351,7 +371,7 @@ final class ListingStore {
         if let lon = new.longitude { existing.longitude = lon }
         // 通勤時間: Apple Maps (MKDirections) で正確に計算するため、JSON 概算は取り込まない
         // calculateForAllListings() がリフレッシュ後に自動実行される
-        // existing.memo, existing.isLiked, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザーデータ）
+        // existing.memo, existing.isLiked, existing.isNew, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
     }
 
     func requestNotificationPermission() {

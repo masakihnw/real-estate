@@ -9,12 +9,14 @@ SUUMO/HOMES の掲載情報と外部係数データ（CSV）を組み合わせ�
 from __future__ import annotations
 
 import json
-import math
 import re
+import sys
 from pathlib import Path
 from typing import Any, Literal, Optional
 
 import pandas as pd
+
+from shared_utils import ward_from_address
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
@@ -72,33 +74,10 @@ TOWER_LARGE_FLOOR_THRESHOLD = 20   # 階数これ以上で「タワマン規模�
 HAZARD_PENALTY_RED = 0.90    # hazard_risk==2: -10%
 HAZARD_PENALTY_YELLOW = 0.97  # hazard_risk==1: -3%
 
-# 含み益・資産性ランク用（50年変動金利・金利1%・元利均等・10年後の残高。レポート月額表示と共通前提）
-LOAN_YEARS = 50
-LOAN_ANNUAL_RATE = 0.01
-LOAN_MONTHS = LOAN_YEARS * 12
-LOAN_MONTHS_AFTER_10Y = 10 * 12
 # 儲かる確率: 含み益率10%以上→高, 0%以上10%未満→中, マイナス→低
 IMPLIED_GAIN_RATIO_S = 0.10   # 含み益率10%以上で資産性S
 IMPLIED_GAIN_RATIO_A = 0.05   # 5%以上でA
 IMPLIED_GAIN_RATIO_B = 0.0    # 0%以上でB, 未満でC
-
-
-def _calc_loan_residual_10y_yen(price_yen: float) -> float:
-    """
-    元利均等・金利1%・50年ローンで、10年後のローン残高（円）を返す。
-    資産性ランク・含み益算出の共通前提（asset_simulation と同一ロジック）。
-    """
-    if price_yen <= 0:
-        return 0.0
-    price_man = price_yen / 10000
-    n = LOAN_MONTHS
-    r = LOAN_ANNUAL_RATE / 12
-    if r <= 0:
-        return price_yen * (1 - LOAN_MONTHS_AFTER_10Y / n)
-    monthly = price_man * r * math.pow(1 + r, n) / (math.pow(1 + r, n) - 1)
-    k = LOAN_MONTHS_AFTER_10Y
-    balance_man = price_man * math.pow(1 + r, k) - monthly * (math.pow(1 + r, k) - 1) / r
-    return max(0.0, balance_man) * 10000
 
 
 def implied_gain_ratio_to_asset_rank(implied_gain_ratio: float) -> tuple[float, str]:
@@ -159,21 +138,6 @@ TOWER_POTENTIAL_BONUS_PCT = 0.05   # 大規模かつ tower_potential_flag==1 で
 TOWER_NO_POTENTIAL_PENALTY_PCT = -0.02  # 小規模・低層かつ tower_potential_flag==0 で -2%
 
 
-def _ward_from_address(address: Optional[str]) -> Optional[str]:
-    """
-    住所文字列から区名（〇〇区）を抽出する。
-    例: "東京都千代田区神田神保町1-1" → "千代田区", "江東区豊洲3-2" → "江東区"
-    """
-    if not address or not str(address).strip():
-        return None
-    s = str(address).strip()
-    # 東京都〇〇区 / 〇〇区 のパターン（区名は漢字1〜4文字程度）
-    m = re.search(r"(?:東京都)?([一-龥ぁ-んァ-ン]+区)", s)
-    if m:
-        return m.group(1).strip()
-    return None
-
-
 class MansionPricePredictor:
     """
     掲載情報と外部CSVから10年後の成約価格を予測するクラス。
@@ -190,10 +154,14 @@ class MansionPricePredictor:
         self._loaded = False
 
     def _load_calibration(self) -> None:
-        if self._calibration_path.exists():
+        if not self._calibration_path.exists():
+            self._calibration = {}
+            return
+        try:
             with open(self._calibration_path, encoding="utf-8") as f:
                 self._calibration = json.load(f)
-        else:
+        except Exception as e:
+            print(f"警告: calibration.json の読み込みに失敗しました（デフォルトで続行）: {e}", file=sys.stderr)
             self._calibration = {}
 
     def _cal(self, key: str, default: Any) -> Any:
@@ -205,31 +173,46 @@ class MansionPricePredictor:
         """外部CSVを読み込み、予測に使うデータを保持する。区単位の係数は ward_coefficients.csv（5賃料成長グループ・在庫スコア・高さ制限フラグ）。"""
         ward_path = self.data_dir / "ward_coefficients.csv"
         if ward_path.exists():
-            self._ward_coefficients = pd.read_csv(ward_path, encoding="utf-8")
-            self._ward_coefficients["ward_name"] = self._ward_coefficients["ward_name"].astype(str).str.strip()
-            for col in ("rent_cagr", "inventory_trend_score", "market_momentum_score"):
-                if col in self._ward_coefficients.columns:
-                    default = 0.035 if col == "rent_cagr" else 1.0
-                    self._ward_coefficients[col] = pd.to_numeric(
-                        self._ward_coefficients[col], errors="coerce"
-                    ).fillna(default)
-            for col in ("rent_cluster_group", "tower_regulation_flag", "tower_potential_flag"):
-                if col in self._ward_coefficients.columns:
-                    self._ward_coefficients[col] = pd.to_numeric(
-                        self._ward_coefficients[col], errors="coerce"
-                    ).fillna(0).astype(int)
+            try:
+                self._ward_coefficients = pd.read_csv(ward_path, encoding="utf-8")
+                self._ward_coefficients["ward_name"] = self._ward_coefficients["ward_name"].astype(str).str.strip()
+                for col in ("rent_cagr", "inventory_trend_score", "market_momentum_score"):
+                    if col in self._ward_coefficients.columns:
+                        default = 0.035 if col == "rent_cagr" else 1.0
+                        self._ward_coefficients[col] = pd.to_numeric(
+                            self._ward_coefficients[col], errors="coerce"
+                        ).fillna(default)
+                for col in ("rent_cluster_group", "tower_regulation_flag", "tower_potential_flag"):
+                    if col in self._ward_coefficients.columns:
+                        self._ward_coefficients[col] = pd.to_numeric(
+                            self._ward_coefficients[col], errors="coerce"
+                        ).fillna(0).astype(int)
+            except Exception as e:
+                print(f"警告: ward_coefficients.csv の読み込みに失敗しました（空で続行）: {e}", file=sys.stderr)
+                self._ward_coefficients = None
         else:
             self._ward_coefficients = None
-        self._management_guidelines = pd.read_csv(
-            self.data_dir / "management_guidelines.csv",
-            encoding="utf-8",
-            dtype={"age_min": "int64", "age_max": "int64", "guideline_yen_per_sqm": "float64"},
-        )
-        self._macro_scenarios = pd.read_csv(
-            self.data_dir / "macro_economic_scenarios.csv",
-            encoding="utf-8",
-            dtype={"scenario_id": str, "scenario_name": str, "price_multiplier": "float64"},
-        )
+
+        mg_path = self.data_dir / "management_guidelines.csv"
+        try:
+            self._management_guidelines = pd.read_csv(
+                mg_path, encoding="utf-8",
+                dtype={"age_min": "int64", "age_max": "int64", "guideline_yen_per_sqm": "float64"},
+            )
+        except Exception as e:
+            print(f"警告: management_guidelines.csv の読み込みに失敗しました（空で続行）: {e}", file=sys.stderr)
+            self._management_guidelines = pd.DataFrame()
+
+        macro_path = self.data_dir / "macro_economic_scenarios.csv"
+        try:
+            self._macro_scenarios = pd.read_csv(
+                macro_path, encoding="utf-8",
+                dtype={"scenario_id": str, "scenario_name": str, "price_multiplier": "float64"},
+            )
+        except Exception as e:
+            print(f"警告: macro_economic_scenarios.csv の読み込みに失敗しました（空で続行）: {e}", file=sys.stderr)
+            self._macro_scenarios = pd.DataFrame()
+
         self._loaded = True
 
     def _ensure_loaded(self) -> None:
@@ -333,7 +316,7 @@ class MansionPricePredictor:
         tower_regulation_flag = 0
         tower_potential_flag = 0
         market_momentum_score = 1.0
-        ward_name = _ward_from_address(address)
+        ward_name = ward_from_address(address)
         if ward_name and self._ward_coefficients is not None:
             match = self._ward_coefficients[
                 self._ward_coefficients["ward_name"].astype(str).str.strip() == ward_name.strip()

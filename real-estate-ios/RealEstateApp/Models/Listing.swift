@@ -47,6 +47,8 @@ final class Listing: @unchecked Sendable {
     var commentsJSON: String?
     /// サイトから掲載が終了した（JSON から消えた）物件
     var isDelisted: Bool
+    /// 前回の同期時に存在しなかった新着物件（Newバッジ表示用。同期ごとにリセット）
+    var isNew: Bool
 
     /// 内見写真メタデータ JSON 文字列（ローカル保存）
     /// フォーマット: [{"id":"...","fileName":"...","createdAt":"ISO8601"}]
@@ -77,6 +79,13 @@ final class Listing: @unchecked Sendable {
     var duplicateCount: Int
 
     // MARK: - 住まいサーフィン評価データ
+
+    /// 住まいサーフィン検索ステータス ("found" / "not_found" / "no_data")
+    /// - found: 住まいサーフィンで発見し、データ取得済み
+    /// - not_found: 住まいサーフィンで検索したが、該当物件が見つからなかった
+    /// - no_data: 住まいサーフィンで該当ページは見つかったが、評価データがなかった
+    /// - nil: 未検索（パイプライン未実行）
+    var ssLookupStatus: String?
 
     /// 沖式儲かる確率 (%)
     var ssProfitPct: Int?
@@ -199,6 +208,7 @@ final class Listing: @unchecked Sendable {
         memo: String? = nil,
         isLiked: Bool = false,
         isDelisted: Bool = false,
+        isNew: Bool = false,
         propertyType: String = "chuko",
         duplicateCount: Int = 1,
         priceMaxMan: Int? = nil,
@@ -208,6 +218,7 @@ final class Listing: @unchecked Sendable {
         longitude: Double? = nil,
         hazardInfo: String? = nil,
         commuteInfoJSON: String? = nil,
+        ssLookupStatus: String? = nil,
         ssProfitPct: Int? = nil,
         ssOkiPrice70m2: Int? = nil,
         ssM2Discount: Int? = nil,
@@ -262,6 +273,7 @@ final class Listing: @unchecked Sendable {
         self.memo = memo
         self.isLiked = isLiked
         self.isDelisted = isDelisted
+        self.isNew = isNew
         self.propertyType = propertyType
         self.duplicateCount = duplicateCount
         self.priceMaxMan = priceMaxMan
@@ -271,6 +283,7 @@ final class Listing: @unchecked Sendable {
         self.longitude = longitude
         self.hazardInfo = hazardInfo
         self.commuteInfoJSON = commuteInfoJSON
+        self.ssLookupStatus = ssLookupStatus
         self.ssProfitPct = ssProfitPct
         self.ssOkiPrice70m2 = ssOkiPrice70m2
         self.ssM2Discount = ssM2Discount
@@ -522,9 +535,10 @@ final class Listing: @unchecked Sendable {
     ///   → [("ＪＲ山手線「目白」徒歩4分", "目白", 4), ("東京メトロ副都心線「雑司が谷」徒歩8分", "雑司が谷", 8)]
     struct StationInfo: Identifiable {
         let id = UUID()
-        let fullText: String    // "路線名「駅名」徒歩X分"
-        let stationName: String // "駅名"
-        let walkMin: Int?       // 徒歩分数
+        let fullText: String     // "路線名「駅名」徒歩X分"
+        let routeName: String    // "ＪＲ山手線" 等
+        let stationName: String  // "駅名"
+        let walkMin: Int?        // 徒歩分数
     }
 
     var parsedStations: [StationInfo] {
@@ -534,9 +548,11 @@ final class Listing: @unchecked Sendable {
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
         return segments.map { seg in
-            // 駅名抽出
+            // 路線名・駅名抽出
+            var route = ""
             var name = seg
             if let s = seg.firstIndex(of: "「"), let e = seg.firstIndex(of: "」"), s < e {
+                route = String(seg[seg.startIndex..<s]).trimmingCharacters(in: .whitespaces)
                 name = String(seg[seg.index(after: s)..<e])
             }
             // 徒歩分数抽出
@@ -547,7 +563,7 @@ final class Listing: @unchecked Sendable {
                     walk = Int(matched[numRange])
                 }
             }
-            return StationInfo(fullText: seg, stationName: name, walkMin: walk)
+            return StationInfo(fullText: seg, routeName: route, stationName: name, walkMin: walk)
         }
     }
 
@@ -576,14 +592,16 @@ final class Listing: @unchecked Sendable {
         deliveryDate ?? "—"
     }
 
-    /// 表示用: 階数（○階/○階建）
+    /// 表示用: 階数（○階/○階建）。データなしは空文字を返す
     var floorDisplay: String {
-        let pos = floorPosition.map { "\($0)階" } ?? "—"
-        let total = floorTotal.map { "\($0)階建" } ?? ""
-        if !total.isEmpty {
-            return "\(pos)/\(total)"
+        let pos = floorPosition.map { "\($0)階" }
+        let total = floorTotal.map { "\($0)階建" }
+        switch (pos, total) {
+        case let (p?, t?): return "\(p)/\(t)"
+        case let (p?, nil): return p
+        case let (nil, t?): return t
+        case (nil, nil): return ""
         }
-        return pos
     }
 
     /// 表示用: 階建のみ（新築一覧用。何階建かだけ表示）
@@ -641,10 +659,7 @@ final class Listing: @unchecked Sendable {
         Self.addedAtFormatter.string(from: addedAt)
     }
 
-    /// 追加から24時間以内かどうか（Newバッジ表示用）
-    var isNew: Bool {
-        addedAt.timeIntervalSinceNow > -24 * 3600
-    }
+    // isNew は stored property として定義済み（前回の同期時に存在しなかった新着物件フラグ）
 
     /// 住まいサーフィンの詳細住所（ss_address）があればそちらを優先、なければ元の住所
     var bestAddress: String? {
@@ -664,6 +679,26 @@ final class Listing: @unchecked Sendable {
             || ssFavoriteCount != nil || ssSimBest5yr != nil
     }
 
+    // MARK: - JSON パースキャッシュ（@Transient = SwiftData 非永続化）
+    // 各 JSON 文字列のパース結果をメモリ内にキャッシュし、body 再評価のたびにデコードが走るのを防ぐ。
+    // ソース JSON が変わった場合は自動的にキャッシュを無効化する。
+
+    @Transient private var _cache = ListingJSONCache()
+
+    /// JSON パース結果のインメモリキャッシュ。Listing ごとに1つ保持。
+    private class ListingJSONCache {
+        var comments: (source: String?, result: [CommentData])?
+        var photos: (source: String?, result: [PhotoMeta])?
+        var commuteInfo: (source: String?, result: CommuteData)?
+        var radarData: (source: String?, result: RadarData?)?
+        var surrounding: (source: String?, result: [SurroundingProperty])?
+        var priceJudgments: (source: String?, result: [PriceJudgmentUnit])?
+        var hazard: (source: String?, result: HazardData)?
+        var marketData: (source: String?, result: MarketData?)?
+        var populationData: (source: String?, result: PopulationData?)?
+        var marketTrends: (source: String?, result: [MarketTrendEntry])?
+    }
+
     // MARK: - 周辺物件データ
 
     /// 周辺の中古マンション相場の1件
@@ -675,10 +710,18 @@ final class Listing: @unchecked Sendable {
         let url: String?               // 住まいサーフィンURL
     }
 
-    /// ssSurroundingProperties JSON をパースして配列で返す
+    /// ssSurroundingProperties JSON をパースして配列で返す（キャッシュ付き）
     var parsedSurroundingProperties: [SurroundingProperty] {
-        guard let json = ssSurroundingProperties,
-              let data = json.data(using: .utf8),
+        if let cached = _cache.surrounding, cached.source == ssSurroundingProperties {
+            return cached.result
+        }
+        let result = Self._parseSurroundingProperties(ssSurroundingProperties)
+        _cache.surrounding = (ssSurroundingProperties, result)
+        return result
+    }
+
+    private static func _parseSurroundingProperties(_ json: String?) -> [SurroundingProperty] {
+        guard let json, let data = json.data(using: .utf8),
               let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
             return []
         }
@@ -712,10 +755,18 @@ final class Listing: @unchecked Sendable {
         let judgment: String?       // "割安" / "割高" / "適正"
     }
 
-    /// ssPriceJudgments JSON をパースして配列で返す
+    /// ssPriceJudgments JSON をパースして配列で返す（キャッシュ付き）
     var parsedPriceJudgments: [PriceJudgmentUnit] {
-        guard let json = ssPriceJudgments,
-              let data = json.data(using: .utf8),
+        if let cached = _cache.priceJudgments, cached.source == ssPriceJudgments {
+            return cached.result
+        }
+        let result = Self._parsePriceJudgments(ssPriceJudgments)
+        _cache.priceJudgments = (ssPriceJudgments, result)
+        return result
+    }
+
+    private static func _parsePriceJudgments(_ json: String?) -> [PriceJudgmentUnit] {
+        guard let json, let data = json.data(using: .utf8),
               let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
             return []
         }
@@ -766,12 +817,22 @@ final class Listing: @unchecked Sendable {
         }
     }
 
-    /// ssRadarData JSON をパースしてレーダーチャートデータを返す。
+    /// ssRadarData JSON をパースしてレーダーチャートデータを返す（キャッシュ付き）。
     /// 対応形式:
     ///   1. named-key 形式: {"oki_price_m2":65.3, "build_age":58.2, ...}
     ///   2. labels/values 形式 (旧): {"labels":["沖式中古時価m²単価",...], "values":[65.3,...]}
     /// JSON がない場合は既存フィールドからフォールバック計算する。
     var parsedRadarData: RadarData? {
+        // キャッシュヒット判定（ssRadarData + フォールバック入力が同じなら再利用）
+        if let cached = _cache.radarData, cached.source == ssRadarData {
+            return cached.result
+        }
+        let result = _parseRadarDataImpl()
+        _cache.radarData = (ssRadarData, result)
+        return result
+    }
+
+    private func _parseRadarDataImpl() -> RadarData? {
         // まず JSON パースを試行
         if let json = ssRadarData,
            let data = json.data(using: .utf8),
@@ -875,10 +936,18 @@ final class Listing: @unchecked Sendable {
         let unitPriceMan: Int? // ㎡単価（万円）
     }
 
-    /// ssPastMarketTrends JSON をパースして配列を返す
+    /// ssPastMarketTrends JSON をパースして配列を返す（キャッシュ付き）
     var parsedMarketTrends: [MarketTrendEntry] {
-        guard let json = ssPastMarketTrends,
-              let data = json.data(using: .utf8),
+        if let cached = _cache.marketTrends, cached.source == ssPastMarketTrends {
+            return cached.result
+        }
+        let result = Self._parseMarketTrends(ssPastMarketTrends)
+        _cache.marketTrends = (ssPastMarketTrends, result)
+        return result
+    }
+
+    private static func _parseMarketTrends(_ json: String?) -> [MarketTrendEntry] {
+        guard let json, let data = json.data(using: .utf8),
               let array = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
             return []
         }
@@ -945,12 +1014,15 @@ final class Listing: @unchecked Sendable {
 
     /// 販売価格判定
     ///
+    /// 住まいサーフィンが提供する判定ラベルをそのまま使用する。
+    /// 独自の閾値による計算は行わない。
+    ///
     /// 優先順位:
-    ///   1. `ssValueJudgment` — ブラウザ自動化 or enricher で設定済みの値
+    ///   1. `ssValueJudgment` — ブラウザ自動化で取得した代表判定
     ///   2. `ssPriceJudgments` — 住戸ごとの判定から掲載価格に最も近い住戸を採用
-    ///   3. 沖式中古時価との比較で推定（フォールバック）
+    ///   3. データなし → nil
     var computedPriceJudgment: String? {
-        // 1. enricher / ブラウザ自動化で設定済みならそれを使用
+        // 1. ブラウザ自動化で設定済みならそれを使用
         if let j = ssValueJudgment, !j.isEmpty {
             return j
         }
@@ -958,25 +1030,8 @@ final class Listing: @unchecked Sendable {
         if let j = bestMatchingPriceJudgment {
             return j
         }
-        // 3. 中古のみ: 沖式中古時価との比較で計算（フォールバック）
-        //    住まいサーフィンの閾値: 割安(10%〜), やや割安(3.1〜9.9%), 適正(-8〜3%), やや割高(-8.1〜-14.9%), 割高(-15%〜)
-        guard !isShinchiku,
-              let okiForArea = ssOkiPriceForArea, okiForArea > 0,
-              let price = priceMan, price > 0 else {
-            return nil
-        }
-        let diffRate = (Double(price) - Double(okiForArea)) / Double(okiForArea)
-        if diffRate <= -0.15 {
-            return "割安"
-        } else if diffRate <= -0.081 {
-            return "やや割安"
-        } else if diffRate <= 0.03 {
-            return "適正価格"
-        } else if diffRate <= 0.10 {
-            return "やや割高"
-        } else {
-            return "割高"
-        }
+        // 住まいサーフィンのデータがない場合は nil
+        return nil
     }
 
     /// ssPriceJudgments の住戸から掲載価格に最も近い住戸の judgment を返す
@@ -1098,10 +1153,18 @@ final class Listing: @unchecked Sendable {
         case danger   // 危険（赤: ランク4-5）
     }
 
-    /// hazardInfo JSON をパースして HazardData を返す
+    /// hazardInfo JSON をパースして HazardData を返す（キャッシュ付き）
     var parsedHazardData: HazardData {
-        guard let info = hazardInfo,
-              let data = info.data(using: .utf8),
+        if let cached = _cache.hazard, cached.source == hazardInfo {
+            return cached.result
+        }
+        let result = Self._parseHazardData(hazardInfo)
+        _cache.hazard = (hazardInfo, result)
+        return result
+    }
+
+    private static func _parseHazardData(_ info: String?) -> HazardData {
+        guard let info, let data = info.data(using: .utf8),
               let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             return HazardData()
         }
@@ -1130,10 +1193,18 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - コメント
 
-    /// パース済みコメントリスト（日時昇順）
+    /// パース済みコメントリスト（日時昇順・キャッシュ付き）
     var parsedComments: [CommentData] {
-        guard let json = commentsJSON,
-              let data = json.data(using: .utf8) else { return [] }
+        if let cached = _cache.comments, cached.source == commentsJSON {
+            return cached.result
+        }
+        let result = Self._parseComments(commentsJSON)
+        _cache.comments = (commentsJSON, result)
+        return result
+    }
+
+    private static func _parseComments(_ json: String?) -> [CommentData] {
+        guard let json, let data = json.data(using: .utf8) else { return [] }
         return (try? CommentData.decoder.decode([CommentData].self, from: data))?
             .sorted { $0.createdAt < $1.createdAt } ?? []
     }
@@ -1152,10 +1223,18 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - 内見写真
 
-    /// パース済み写真メタデータリスト（日時昇順）
+    /// パース済み写真メタデータリスト（日時昇順・キャッシュ付き）
     var parsedPhotos: [PhotoMeta] {
-        guard let json = photosJSON,
-              let data = json.data(using: .utf8) else { return [] }
+        if let cached = _cache.photos, cached.source == photosJSON {
+            return cached.result
+        }
+        let result = Self._parsePhotos(photosJSON)
+        _cache.photos = (photosJSON, result)
+        return result
+    }
+
+    private static func _parsePhotos(_ json: String?) -> [PhotoMeta] {
+        guard let json, let data = json.data(using: .utf8) else { return [] }
         return (try? PhotoMeta.decoder.decode([PhotoMeta].self, from: data))?
             .sorted { $0.createdAt < $1.createdAt } ?? []
     }
@@ -1168,10 +1247,18 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - 通勤時間
 
-    /// パース済み通勤時間データ
+    /// パース済み通勤時間データ（キャッシュ付き）
     var parsedCommuteInfo: CommuteData {
-        guard let json = commuteInfoJSON,
-              let data = json.data(using: .utf8) else { return CommuteData() }
+        if let cached = _cache.commuteInfo, cached.source == commuteInfoJSON {
+            return cached.result
+        }
+        let result = Self._parseCommuteInfo(commuteInfoJSON)
+        _cache.commuteInfo = (commuteInfoJSON, result)
+        return result
+    }
+
+    private static func _parseCommuteInfo(_ json: String?) -> CommuteData {
+        guard let json, let data = json.data(using: .utf8) else { return CommuteData() }
         return (try? CommuteData.decoder.decode(CommuteData.self, from: data)) ?? CommuteData()
     }
 
@@ -1387,8 +1474,17 @@ final class Listing: @unchecked Sendable {
         }
     }
 
-    /// reinfolibMarketData JSON を解析
+    /// reinfolibMarketData JSON を解析（キャッシュ付き）
     var parsedMarketData: MarketData? {
+        if let cached = _cache.marketData, cached.source == reinfolibMarketData {
+            return cached.result
+        }
+        let result = _parseMarketDataImpl()
+        _cache.marketData = (reinfolibMarketData, result)
+        return result
+    }
+
+    private func _parseMarketDataImpl() -> MarketData? {
         guard let json = reinfolibMarketData, !json.isEmpty,
               let data = json.data(using: .utf8),
               let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
@@ -1536,8 +1632,17 @@ final class Listing: @unchecked Sendable {
         }
     }
 
-    /// estatPopulationData JSON を解析
+    /// estatPopulationData JSON を解析（キャッシュ付き）
     var parsedPopulationData: PopulationData? {
+        if let cached = _cache.populationData, cached.source == estatPopulationData {
+            return cached.result
+        }
+        let result = _parsePopulationDataImpl()
+        _cache.populationData = (estatPopulationData, result)
+        return result
+    }
+
+    private func _parsePopulationDataImpl() -> PopulationData? {
         guard let json = estatPopulationData, !json.isEmpty,
               let data = json.data(using: .utf8),
               let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
@@ -1602,6 +1707,11 @@ struct CommuteData: Codable {
         guard let data = try? Self.encoder.encode(self) else { return nil }
         return String(data: data, encoding: .utf8)
     }
+
+    /// いずれかの目的地がフォールバック概算になっているか
+    var hasFallbackEstimate: Bool {
+        (playground?.isFallbackEstimate ?? false) || (m3career?.isFallbackEstimate ?? false)
+    }
 }
 
 /// 1つの目的地への通勤時間情報
@@ -1614,6 +1724,11 @@ struct CommuteDestination: Codable {
     var transfers: Int?
     /// 計算日時
     var calculatedAt: Date
+
+    /// Apple Maps から正規の経路が取得できず、直線距離ベースの概算になっているか
+    var isFallbackEstimate: Bool {
+        summary.contains("経路情報取得不可")
+    }
 }
 
 // MARK: - JSON Decoding (latest.json / latest_shinchiku.json 形式)
@@ -1655,6 +1770,7 @@ struct ListingDTO: Codable {
     var hazard_info: String?
 
     // 住まいサーフィン評価データ
+    var ss_lookup_status: String?
     var ss_profit_pct: Int?
     var ss_oki_price_70m2: Int?
     var ss_m2_discount: Int?
@@ -1693,12 +1809,92 @@ struct ListingDTO: Codable {
 }
 
 extension Listing {
-    /// スクレイピングで混入しがちなノイズを物件名から除去
+    // MARK: - ブランド名 英字→カタカナ変換辞書
+    // デベロッパーのマンションブランド名。住まいサーフィン・一般的にはカタカナ表記が標準。
+    private static let brandToKana: [(pattern: String, kana: String)] = [
+        ("brillia", "ブリリア"),       // 東京建物
+        ("livcity", "リブシティ"),     // スターツ
+        ("belista", "ベリスタ"),       // 大和地所レジデンス
+        ("livio", "リビオ"),          // 日鉄興和不動産
+        ("cravia", "クレヴィア"),      // 伊藤忠都市開発
+        ("cielia", "シエリア"),        // 関電不動産開発
+        ("premia", "プレミア"),
+        ("arkmark", "アークマーク"),    // フジクリエイション
+        ("ohana", "オハナ"),          // 野村不動産
+        ("atlas", "アトラス"),         // 旭化成不動産レジデンス
+        ("branz", "ブランズ"),         // 東急不動産
+    ]
+
+    /// スクレイピングで混入しがちなノイズを物件名から除去し、純粋なマンション名を返す。
+    ///
+    /// 処理順序:
+    /// 1. NFKC正規化（全角英数→半角統一）
+    /// 2. 広告装飾の除去（【...】, ◆, ■□■, ～以降, ペット飼育可能♪ 等）
+    /// 3. 括弧内の別名表記を除去（（Brillia 大島 Pa…）等）
+    /// 4. 英字ブランド名→カタカナ変換（Brillia→ブリリア 等）
+    /// 5. 棟名の除去（A棟, ノース棟, 2号棟 等）
+    /// 6. 階数の除去（9F, 1階, 地下1階 等）
+    /// 7. 末尾の英語サブネームを除去（GRAN WARD TERRACE 等）
+    /// 8. 既存の接頭辞/接尾辞クリーニング（新築マンション, 閲覧済, 販売期 等）
     static func cleanListingName(_ name: String) -> String {
-        var s = name.trimmingCharacters(in: .whitespaces)
-        // 「掲載物件X件」のようなものは物件名ではない
+        // NFKC正規化（全角英数→半角統一）
+        var s = name.precomposedStringWithCompatibilityMapping
+            .trimmingCharacters(in: .whitespaces)
+
+        // 「掲載物件X件」「見学予約」のようなものは物件名ではない
         if s.range(of: #"^掲載物件\d+件$"#, options: .regularExpression) != nil { return "" }
-        // 先頭の「新築マンション」「マンション未入居」「マンション」を除去（長い方から先に試す）
+        if s == "見学予約" || s == "noimage" { return "" }
+
+        // ── 広告装飾の除去 ──
+        // 【...】を除去（【弊社限定取扱物件】、【売主物件】等）
+        s = s.replacingOccurrences(of: #"【[^】]*】"#, with: "", options: .regularExpression)
+        // ◆で囲まれた装飾を除去（◆山手線 上野駅◆等）
+        s = s.replacingOccurrences(of: #"◆[^◆]+◆"#, with: " ", options: .regularExpression)
+        // 末尾の◆以降を除去（◆3LDK+W… 等の間取り情報）
+        s = s.replacingOccurrences(of: #"◆.*$"#, with: "", options: .regularExpression)
+        // ■□ 等の記号装飾を除去
+        s = s.replacingOccurrences(of: #"[■□]+\s*"#, with: "", options: .regularExpression)
+        // ～以降の駅距離・説明文を除去
+        s = s.replacingOccurrences(of: #"[~～].*$"#, with: "", options: .regularExpression)
+        // 末尾の広告文句
+        s = s.replacingOccurrences(of: #"ペット飼育可能.*$"#, with: "", options: .regularExpression)
+        s = s.replacingOccurrences(of: #"[♪！!☆★]+$"#, with: "", options: .regularExpression)
+
+        // ── 括弧内の別名表記を除去 ──
+        // 閉じ括弧がある場合: （Brillia 大島 Park Side）
+        s = s.replacingOccurrences(of: #"[（(][^）)]*[）)]"#, with: "", options: .regularExpression)
+        // 閉じ括弧がない場合（SUUMO の文字数制限で切れている）: （Brillia 大島 Pa…
+        s = s.replacingOccurrences(of: #"[（(][^）)]*$"#, with: "", options: .regularExpression)
+
+        s = s.trimmingCharacters(in: .whitespaces)
+
+        // ── 英字ブランド名→カタカナ変換 ──
+        for brand in brandToKana {
+            s = s.replacingOccurrences(
+                of: brand.pattern,
+                with: brand.kana,
+                options: [.regularExpression, .caseInsensitive]
+            )
+        }
+
+        // ── 棟名の除去 ──
+        s = s.replacingOccurrences(of: #"\s*[A-Za-z]棟$"#, with: "", options: .regularExpression)
+        s = s.replacingOccurrences(of: #"\s*\d+号棟$"#, with: "", options: .regularExpression)
+        s = s.replacingOccurrences(of: #"\s*(ノース|サウス|イースト|ウエスト|ウェスト|テラス|セントラル)棟$"#, with: "", options: .regularExpression)
+
+        // ── 階数の除去 ──
+        s = s.replacingOccurrences(of: #"\s*\d+[Ff]$"#, with: "", options: .regularExpression)
+        s = s.replacingOccurrences(of: #"\s*地下?\d*階.*$"#, with: "", options: .regularExpression)
+
+        // ── 末尾の英語サブネーム除去 ──
+        // 日本語文字の後に続く英字列を除去（GRAN WARD TERRACE, activewing 等）
+        // 英字3文字未満またはローマ数字のみ（I, II, III 等）の場合は残す
+        s = Self.stripTrailingEnglish(s)
+
+        s = s.trimmingCharacters(in: .whitespaces)
+
+        // ── 既存のクリーニング ──
+        // 先頭の「新築マンション」「マンション未入居」「マンション」を除去
         if s.hasPrefix("新築マンション") { s = String(s.dropFirst(7)).trimmingCharacters(in: .whitespaces) }
         if s.hasPrefix("マンション未入居") { s = String(s.dropFirst(8)).trimmingCharacters(in: .whitespaces) }
         if s.hasPrefix("マンション") { s = String(s.dropFirst(5)).trimmingCharacters(in: .whitespaces) }
@@ -1707,7 +1903,33 @@ extension Listing {
         // 販売期情報を除去: 「( 第2期 2次 )」「第1期1次」
         if let range = s.range(of: #"\s*[（(]\s*第\d+期\s*\d*次?\s*[）)]\s*$"#, options: .regularExpression) { s = String(s[..<range.lowerBound]).trimmingCharacters(in: .whitespaces) }
         if let range = s.range(of: #"\s*第\d+期\s*\d*次?\s*$"#, options: .regularExpression) { s = String(s[..<range.lowerBound]).trimmingCharacters(in: .whitespaces) }
-        return s
+
+        // 連続スペースを正規化
+        s = s.replacingOccurrences(of: #"\s{2,}"#, with: " ", options: .regularExpression)
+
+        return s.trimmingCharacters(in: .whitespaces)
+    }
+
+    /// 末尾の英語サブネームを除去する（GRAN WARD TERRACE, activewing 等）。
+    /// ローマ数字（I, II, III, IV 等）は建物名の一部なので除去しない。
+    private static func stripTrailingEnglish(_ s: String) -> String {
+        // 日本語文字（ひらがな・カタカナ・漢字・長音記号）の最後の位置を探す
+        guard let lastCJK = s.range(
+            of: #"[\p{Hiragana}\p{Katakana}\p{Han}ー](?=[^\p{Hiragana}\p{Katakana}\p{Han}ー]*$)"#,
+            options: .regularExpression
+        ) else { return s }
+
+        let after = String(s[lastCJK.upperBound...])
+        // 英字のみ抽出
+        let alphaOnly = after.filter { $0.isASCII && $0.isLetter }
+        // 英字3文字未満 → 除去しない（I, II 等のローマ数字）
+        guard alphaOnly.count >= 3 else { return s }
+        // 全文字がローマ数字文字（I,V,X,L,C,D,M）→ 除去しない
+        let romanChars: Set<Character> = ["I", "V", "X", "L", "C", "D", "M",
+                                          "i", "v", "x", "l", "c", "d", "m"]
+        if alphaOnly.allSatisfy({ romanChars.contains($0) }) { return s }
+        // 末尾の英語部分を除去
+        return String(s[...s.index(before: lastCJK.upperBound)])
     }
 
     static func from(dto: ListingDTO, fetchedAt: Date = .now) -> Listing? {
@@ -1746,6 +1968,7 @@ extension Listing {
             longitude: dto.longitude,
             hazardInfo: dto.hazard_info,
             // commuteInfoJSON: JSON 概算は使わず Apple Maps (MKDirections) で正確に計算する
+            ssLookupStatus: dto.ss_lookup_status,
             ssProfitPct: dto.ss_profit_pct,
             ssOkiPrice70m2: dto.ss_oki_price_70m2,
             ssM2Discount: dto.ss_m2_discount,

@@ -235,7 +235,8 @@ struct SettingsView: View {
 
                 // スケジュール時刻（0回以外で表示）
                 if notifService.notificationCount > 0 {
-                    ForEach(Array(notifService.scheduleTimes.enumerated()), id: \.offset) { index, time in
+                    ForEach(0..<notifService.scheduleTimes.count, id: \.self) { index in
+                        let time = notifService.scheduleTimes[index]
                         DatePicker(
                             "\(index + 1)回目",
                             selection: Binding(

@@ -15,7 +15,7 @@ private let wardGroups: [(area: String, wards: [String])] = [
     ("城南エリア", ["品川区", "大田区", "目黒区"]),
     ("城西エリア", ["渋谷区", "新宿区", "世田谷区"]),
     ("城北エリア", ["文京区", "豊島区", "北区", "板橋区", "練馬区", "荒川区"]),
-    ("多摩エリア", ["杉並区", "中野区", "武蔵野市"]),
+    ("多摩エリア", ["杉並区", "中野区"]),
 ]
 
 // MARK: - Filter Sheet
@@ -25,6 +25,8 @@ struct ListingFilterSheet: View {
     @Binding var filter: ListingFilter
     let availableLayouts: [String]
     let availableWards: Set<String>
+    /// 路線別駅名リスト（路線名順）
+    let availableRouteStations: [RouteStations]
     let filteredCount: Int
     /// 新築タブから呼ばれた場合に true（価格未定トグルを表示）
     var showPriceUndecidedToggle: Bool = false
@@ -82,6 +84,16 @@ struct ListingFilterSheet: View {
                         summary: walkSummary
                     ) {
                         walkSliderContent
+                    }
+
+                    // 駅名
+                    if !availableRouteStations.isEmpty {
+                        FilterAccordion(
+                            title: "駅名",
+                            summary: stationSummary
+                        ) {
+                            stationPickerContent
+                        }
                     }
 
                     // 広さ
@@ -186,6 +198,13 @@ struct ListingFilterSheet: View {
         return filter.ownershipTypes.map(\.rawValue).sorted().joined(separator: ", ")
     }
 
+    private var stationSummary: String {
+        if filter.stations.isEmpty { return "指定なし" }
+        let sorted = filter.stations.sorted()
+        if sorted.count <= 3 { return sorted.joined(separator: ", ") }
+        return "\(sorted.prefix(2).joined(separator: ", ")) 他\(sorted.count - 2)駅"
+    }
+
     private var wardSummary: String {
         if filter.wards.isEmpty { return "指定なし" }
         let sorted = filter.wards.sorted()
@@ -285,6 +304,94 @@ struct ListingFilterSheet: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(width: 70, alignment: .trailing)
+            }
+        }
+    }
+
+    // MARK: - Station Picker
+
+    @ViewBuilder
+    private var stationPickerContent: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // 選択中の駅を一括クリアボタン
+            if !filter.stations.isEmpty {
+                Button {
+                    withAnimation { filter.stations.removeAll() }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.caption2)
+                        Text("選択をすべて解除（\(filter.stations.count)駅）")
+                            .font(.caption)
+                    }
+                    .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .padding(.bottom, 8)
+            }
+
+            ForEach(availableRouteStations, id: \.routeName) { routeGroup in
+                DisclosureGroup {
+                    VStack(alignment: .leading, spacing: 0) {
+                        // 路線内一括選択/解除
+                        let allSelected = routeGroup.stationNames.allSatisfy { filter.stations.contains($0) }
+                        Button {
+                            withAnimation {
+                                if allSelected {
+                                    for s in routeGroup.stationNames { filter.stations.remove(s) }
+                                } else {
+                                    for s in routeGroup.stationNames { filter.stations.insert(s) }
+                                }
+                            }
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: allSelected ? "checkmark.square.fill" : "square")
+                                    .font(.caption)
+                                    .foregroundStyle(allSelected ? Color.accentColor : .secondary)
+                                Text("すべて選択")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.vertical, 6)
+                        }
+                        .buttonStyle(.plain)
+
+                        ForEach(routeGroup.stationNames, id: \.self) { station in
+                            let isSelected = filter.stations.contains(station)
+                            Button {
+                                withAnimation { toggleSet(&filter.stations, value: station) }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: isSelected ? "checkmark.square.fill" : "square")
+                                        .font(.subheadline)
+                                        .foregroundStyle(isSelected ? Color.accentColor : Color(.tertiaryLabel))
+                                    Text(station)
+                                        .font(.subheadline)
+                                        .foregroundStyle(isSelected ? .primary : .secondary)
+                                    Spacer()
+                                }
+                                .padding(.vertical, 5)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityAddTraits(isSelected ? .isSelected : [])
+                        }
+                    }
+                    .padding(.leading, 4)
+                } label: {
+                    HStack(spacing: 6) {
+                        Text(routeGroup.routeName)
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
+                        let count = routeGroup.stationNames.filter { filter.stations.contains($0) }.count
+                        if count > 0 {
+                            Text("\(count)駅選択中")
+                                .font(.caption2)
+                                .foregroundStyle(Color.accentColor)
+                        }
+                    }
+                }
+                .tint(.secondary)
             }
         }
     }
@@ -444,6 +551,7 @@ private struct FilterAccordion<Content: View>: View {
 
             if isExpanded {
                 content()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 12)
                     .fixedSize(horizontal: false, vertical: true)
                     .transition(.opacity)
@@ -486,6 +594,10 @@ private struct FilterChip: View {
         filter: .constant(ListingFilter()),
         availableLayouts: ["1LDK", "2LDK", "3LDK", "4LDK+"],
         availableWards: ["江東区", "中央区", "港区"],
+        availableRouteStations: [
+            RouteStations(routeName: "ＪＲ山手線", stationNames: ["品川", "目黒", "恵比寿"]),
+            RouteStations(routeName: "東京メトロ有楽町線", stationNames: ["豊洲", "月島"]),
+        ],
         filteredCount: 12,
         showPriceUndecidedToggle: true
     )

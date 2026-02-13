@@ -30,6 +30,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 45  # スクレイパーハング時のセーフガード
     permissions:
       contents: write  # コミット・プッシュに必要（リポジトリ設定でも「Read and write」を有効にすること）
 
@@ -38,12 +39,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0  # 履歴を全て取得（差分検出のため）
+          fetch-depth: 1  # HEAD のみ取得（差分チェックは git diff で HEAD と working tree を比較するため十分）
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scraping-tool/requirements.txt
 
       - name: Install dependencies
         working-directory: scraping-tool
@@ -51,7 +54,18 @@ jobs:
           pip install -r requirements.txt
           # 東京都地域危険度 GeoJSON 変換用（初回のみ使用、失敗しても続行可能）
           pip install geopandas shapely fiona || echo "geopandas インストール失敗（GeoJSON 変換はスキップ）"
-          # 住まいサーフィン ブラウザ自動化用（playwright がインストール済みの場合のみ）
+
+      # Playwright ブラウザのキャッシュ（毎回 ~100MB のダウンロードを回避）
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}
+
+      - name: Install Playwright browser
+        working-directory: scraping-tool
+        run: |
           python3 -c "import playwright" 2>/dev/null && playwright install chromium --with-deps || echo "playwright ブラウザインストールスキップ"
 
       - name: Run update script
@@ -121,16 +135,18 @@ jobs:
           git config --local user.name "GitHub Action"
 
           DATE=$(date +%Y%m%d_%H%M%S)
-          COUNT=$(python3 -c "import json, pathlib; f=pathlib.Path('scraping-tool/results/latest.json'); print(len(json.load(open(f))) if f.exists() else 0)")
+          COUNT=$(jq length scraping-tool/results/latest.json 2>/dev/null || echo 0)
 
           git add scraping-tool/results/
-          [ -f scraping-tool/data/building_units.json ] && git add scraping-tool/data/building_units.json
-          [ -f scraping-tool/data/geocode_cache.json ] && git add scraping-tool/data/geocode_cache.json
-          [ -f scraping-tool/data/sumai_surfin_cache.json ] && git add scraping-tool/data/sumai_surfin_cache.json
-          [ -f scraping-tool/data/reinfolib_prices.json ] && git add scraping-tool/data/reinfolib_prices.json
-          [ -f scraping-tool/data/reinfolib_trends.json ] && git add scraping-tool/data/reinfolib_trends.json
-          [ -f scraping-tool/data/reinfolib_land_prices.json ] && git add scraping-tool/data/reinfolib_land_prices.json
-          [ -f scraping-tool/data/estat_population.json ] && git add scraping-tool/data/estat_population.json
+          git add --ignore-missing \
+            scraping-tool/data/building_units.json \
+            scraping-tool/data/geocode_cache.json \
+            scraping-tool/data/sumai_surfin_cache.json \
+            scraping-tool/data/reinfolib_prices.json \
+            scraping-tool/data/reinfolib_trends.json \
+            scraping-tool/data/reinfolib_land_prices.json \
+            scraping-tool/data/estat_population.json \
+            2>/dev/null || true
           # 東京都地域危険度 GeoJSON（初回生成時のみ）
           [ -d scraping-tool/results/risk_geojson ] && git add scraping-tool/results/risk_geojson/
           git commit -m "Update listings: ${DATE}
@@ -157,7 +173,9 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            # 失敗したステップ名を含める
+            FAILED_STEP="${{ github.action }}"
             curl -s -X POST "$SLACK_WEBHOOK_URL" \
               -H 'Content-type: application/json' \
-              -d "{\"text\": \":rotating_light: *物件スクレイピング失敗*\nワークフロー: ${{ github.workflow }}\n実行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+              -d "{\"text\": \":rotating_light: *物件スクレイピング失敗*\nワークフロー: ${{ github.workflow }}\nステップ: ${FAILED_STEP}\n実行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
           fi

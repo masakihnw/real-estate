@@ -54,22 +54,24 @@ final class AuthService {
     private init() {
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             guard let self else { return }
-            self.currentUser = user
+            Task { @MainActor in
+                self.currentUser = user
 
-            // 許可されていないメールアドレスのセッションが復元された場合、
-            // 自動でサインアウトする
-            if let user, let email = user.email?.lowercased(),
-               !Self.allowedEmails.contains(email) {
-                self.isSignedIn = false
+                // 許可されていないメールアドレスのセッションが復元された場合、
+                // 自動でサインアウトする
+                if let user, let email = user.email?.lowercased(),
+                   !Self.allowedEmails.contains(email) {
+                    self.isSignedIn = false
+                    self.isLoading = false
+                    self.lastError = "このアカウント（\(email)）はアクセスが許可されていません"
+                    try? Auth.auth().signOut()
+                    GIDSignIn.sharedInstance.signOut()
+                    return
+                }
+
+                self.isSignedIn = user != nil
                 self.isLoading = false
-                self.lastError = "このアカウント（\(email)）はアクセスが許可されていません"
-                try? Auth.auth().signOut()
-                GIDSignIn.sharedInstance.signOut()
-                return
             }
-
-            self.isSignedIn = user != nil
-            self.isLoading = false
         }
     }
 
@@ -123,13 +125,14 @@ final class AuthService {
 
     /// サインアウトする。
     func signOut() {
-        lastError = nil
+        Task { @MainActor in lastError = nil }
         do {
             try Auth.auth().signOut()
             GIDSignIn.sharedInstance.signOut()
         } catch {
-            lastError = error.localizedDescription
-            print("[Auth] サインアウト失敗: \(error.localizedDescription)")
+            let errDesc = error.localizedDescription
+            Task { @MainActor in lastError = errDesc }
+            print("[Auth] サインアウト失敗: \(errDesc)")
         }
     }
 

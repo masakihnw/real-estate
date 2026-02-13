@@ -675,7 +675,7 @@ struct HazardMapView: UIViewRepresentable {
 
             // 階数・総戸数
             let subTextParts = [
-                listing.floorDisplay != "—" ? listing.floorDisplay : nil,
+                !listing.floorDisplay.isEmpty ? listing.floorDisplay : nil,
                 listing.totalUnitsDisplay != "—" ? listing.totalUnitsDisplay : nil
             ].compactMap { $0 }
 
@@ -837,82 +837,46 @@ struct MapTabView: View {
     @State private var geocodingFailureCount = 0
     /// データ取得エラー表示
     @State private var showErrorAlert = false
+    /// フィルタ結果のキャッシュ（body 再評価時の重計算を避ける）
+    @State private var cachedFilteredListings: [Listing] = []
 
     /// 座標未取得の物件数（ジオコーディング待ち or 失敗）
     private var ungeocodedCount: Int {
         listings.filter { !$0.hasCoordinate }.count
     }
 
+    /// フィルタを適用した結果（ロジックの実体）
+    private func computeFilteredListings() -> [Listing] {
+        // 掲載終了物件は地図に表示しない（View専用の前処理）
+        let baseList = listings.filter { $0.hasCoordinate && !$0.isDelisted }
+        return filterStore.filter.apply(to: baseList)
+    }
+
+    /// キャッシュを再計算（onChange / onAppear から呼ぶ）
+    private func recomputeFilteredListings() {
+        cachedFilteredListings = computeFilteredListings()
+    }
+
+    /// 表示用フィルタ結果（キャッシュ。フィルタ・listings 変更時のみ再計算）
     private var filteredListings: [Listing] {
-        // 掲載終了物件は地図に表示しない
-        var list = listings.filter { $0.hasCoordinate && !$0.isDelisted }
+        cachedFilteredListings
+    }
 
-        // 物件種別フィルタ（新築/中古）
-        switch filterStore.filter.propertyType {
-        case .all: break
-        case .chuko: list = list.filter { $0.propertyType == "chuko" }
-        case .shinchiku: list = list.filter { $0.propertyType == "shinchiku" }
-        }
-
-        // 価格未定フィルタ
-        if !filterStore.filter.includePriceUndecided {
-            list = list.filter { $0.priceMan != nil }
-        }
-
-        // 新築は価格帯（priceMan〜priceMaxMan）を持つため、範囲交差で判定する
-        if let min = filterStore.filter.priceMin {
-            list = list.filter {
-                guard $0.priceMan != nil || $0.priceMaxMan != nil else {
-                    return filterStore.filter.includePriceUndecided
-                }
-                let upper = $0.priceMaxMan ?? $0.priceMan ?? 0
-                return upper >= min
-            }
-        }
-        if let max = filterStore.filter.priceMax {
-            list = list.filter {
-                guard $0.priceMan != nil || $0.priceMaxMan != nil else {
-                    return filterStore.filter.includePriceUndecided
-                }
-                let lower = $0.priceMan ?? 0
-                return lower <= max
-            }
-        }
-        if !filterStore.filter.layouts.isEmpty {
-            list = list.filter { filterStore.filter.layouts.contains($0.layout ?? "") }
-        }
-        if !filterStore.filter.wards.isEmpty {
-            list = list.filter { listing in
-                guard let ward = ListingFilter.extractWard(from: listing.bestAddress) else { return false }
-                return filterStore.filter.wards.contains(ward)
-            }
-        }
-        if let max = filterStore.filter.walkMax {
-            list = list.filter { ($0.walkMin ?? 99) <= max }
-        }
-        if let min = filterStore.filter.areaMin {
-            list = list.filter { ($0.areaM2 ?? 0) >= min }
-        }
-        if !filterStore.filter.ownershipTypes.isEmpty {
-            list = list.filter { listing in
-                let o = listing.ownership ?? ""
-                return filterStore.filter.ownershipTypes.contains { type in
-                    switch type {
-                    case .ownership: return o.contains("所有権")
-                    case .leasehold: return o.contains("借地")
-                    }
-                }
-            }
-        }
-        return list
+    /// フィルタ再計算のトリガー（listings の変更＋座標取得完了を検知）
+    private var listingsChangeTrigger: Int {
+        listings.count + listings.filter { $0.hasCoordinate }.count
     }
 
     private var availableLayouts: [String] {
-        Set(listings.compactMap(\.layout).filter { !$0.isEmpty }).sorted()
+        ListingFilter.availableLayouts(from: listings)
     }
 
     private var availableWards: Set<String> {
-        Set(listings.compactMap { ListingFilter.extractWard(from: $0.bestAddress) })
+        ListingFilter.availableWards(from: listings)
+    }
+
+    private var availableRouteStations: [RouteStations] {
+        ListingFilter.availableRouteStations(from: listings)
     }
 
     var body: some View {
@@ -1000,7 +964,7 @@ struct MapTabView: View {
                 }
             }
             .sheet(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, filteredCount: filteredListings.count, showPriceUndecidedToggle: true, showPropertyTypeFilter: true)
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, filteredCount: filteredListings.count, showPriceUndecidedToggle: true, showPropertyTypeFilter: true)
                     .presentationDetents([.medium, .large])
             }
             .overlay(alignment: .top) {
@@ -1049,6 +1013,9 @@ struct MapTabView: View {
             .task {
                 await startGeocoding()
             }
+            .onAppear { recomputeFilteredListings() }
+            .onChange(of: filterStore.filter) { _, _ in recomputeFilteredListings() }
+            .onChange(of: listingsChangeTrigger) { _, _ in recomputeFilteredListings() }
         }
     }
 
@@ -1505,8 +1472,10 @@ struct MapTabView: View {
                 Text("新築").font(.caption2)
             }
             HStack(spacing: 4) {
-                Circle().fill(.red).frame(width: 8, height: 8)
-                Text("♥いいね").font(.caption2)
+                Image(systemName: "heart.fill")
+                    .font(.system(size: 8))
+                    .foregroundStyle(.red)
+                Text("いいね").font(.caption2)
             }
         }
         .padding(8)
@@ -1679,7 +1648,7 @@ struct MapTabView: View {
                         Text("凡例（色とリスクの対応）")
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                        ForEach(Array(layer.legendItems.enumerated()), id: \.offset) { _, item in
+                        ForEach(Array(layer.legendItems.enumerated()), id: \.element.label) { _, item in
                             HStack(spacing: 8) {
                                 RoundedRectangle(cornerRadius: 3)
                                     .fill(item.color)

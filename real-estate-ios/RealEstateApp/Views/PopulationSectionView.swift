@@ -118,6 +118,17 @@ struct PopulationSectionView: View {
 
     @ViewBuilder
     private func populationTrendChart(_ pop: Listing.PopulationData) -> some View {
+        let values = pop.populationHistory.map { Double($0.value) / 10000.0 }
+        let minVal = values.min() ?? 0
+        let maxVal = values.max() ?? 1
+        let range = maxVal - minVal
+        // データ範囲に対して上下20%のパディングを取り、変化をビビッドに表示
+        let padding = max(range * 0.2, 0.05) // 最低0.05万人分の余白
+        let yMin = minVal - padding
+        let yMax = maxVal + padding
+        // 軸の目盛りを5〜7本程度で細かく表示
+        let stride = niceStride(for: yMax - yMin, targetTicks: 6)
+
         VStack(alignment: .leading, spacing: 8) {
             Text("\(pop.ward) 人口推移")
                 .font(.caption)
@@ -125,7 +136,7 @@ struct PopulationSectionView: View {
                 .foregroundStyle(.secondary)
 
             Chart {
-                ForEach(Array(pop.populationHistory.enumerated()), id: \.offset) { _, entry in
+                ForEach(Array(pop.populationHistory.enumerated()), id: \.element.year) { _, entry in
                     let manPop = Double(entry.value) / 10000.0
                     LineMark(
                         x: .value("年", entry.year),
@@ -155,12 +166,13 @@ struct PopulationSectionView: View {
                     .symbolSize(24)
                 }
             }
+            .chartYScale(domain: yMin ... yMax)
             .chartYAxis {
-                AxisMarks(position: .leading) { value in
+                AxisMarks(position: .leading, values: .stride(by: stride)) { value in
                     AxisGridLine()
                     AxisValueLabel {
                         if let v = value.as(Double.self) {
-                            Text(String(format: "%.1f万", v))
+                            Text(String(format: "%.2f万", v))
                                 .font(.caption2)
                         }
                     }
@@ -177,8 +189,29 @@ struct PopulationSectionView: View {
                 }
             }
             .chartLegend(.hidden)
-            .frame(height: 150)
+            .frame(height: 180)
         }
+    }
+
+    /// Y軸の目盛り間隔をキリの良い数値に丸める
+    private func niceStride(for range: Double, targetTicks: Int) -> Double {
+        guard range > 0, targetTicks > 0 else { return 0.1 }
+        let rawStride = range / Double(targetTicks)
+        let magnitude = pow(10, floor(log10(rawStride)))
+        let normalized = rawStride / magnitude
+        let niceNorm: Double
+        if normalized <= 1.0 {
+            niceNorm = 1.0
+        } else if normalized <= 2.0 {
+            niceNorm = 2.0
+        } else if normalized <= 2.5 {
+            niceNorm = 2.5
+        } else if normalized <= 5.0 {
+            niceNorm = 5.0
+        } else {
+            niceNorm = 10.0
+        }
+        return niceNorm * magnitude
     }
 
     // MARK: - ヘルパー

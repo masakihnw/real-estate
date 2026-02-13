@@ -34,19 +34,7 @@ struct ListingDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing) {
                     // 掲載終了バナー
-                    if listing.isDelisted {
-                        HStack(spacing: 8) {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                            Text("この物件はサイトから掲載終了しています")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                        }
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(12)
-                        .background(Color.orange)
-                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous))
-                    }
+                    delistedBanner
 
                     // ① 物件名（いいねボタンはナビバーに移動）
                     Text(listing.name)
@@ -55,30 +43,7 @@ struct ListingDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     // ② 住所（Google Maps アイコンボタン）— ss_address 優先
-                    if let addr = listing.bestAddress, !addr.isEmpty {
-                        HStack(spacing: 8) {
-                            Text(addr)
-                                .font(ListingObjectStyle.subtitle)
-                                .foregroundStyle(.secondary)
-                            Spacer(minLength: 0)
-                            Button {
-                                // 住所+物件名で Google Maps 検索（ss_address の番地精度を活用）
-                                let query = (addr + " " + listing.name).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? listing.name
-                                if let url = URL(string: "https://www.google.com/maps/search/?api=1&query=\(query)") {
-                                    UIApplication.shared.open(url)
-                                }
-                            } label: {
-                                Image(systemName: "map.fill")
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(Color.accentColor)
-                                    .frame(width: 30, height: 30)
-                                    .background(Color.accentColor.opacity(0.1))
-                                    .clipShape(Circle())
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel("Google Maps で物件を検索")
-                        }
-                    }
+                    addressSection
 
                     Divider()
 
@@ -121,6 +86,24 @@ struct ListingDetailView: View {
                     // ⑥ 住まいサーフィン評価
                     if listing.hasSumaiSurfinData {
                         sumaiSurfinSection
+                    } else {
+                        sumaiSurfinUnavailableNotice
+                    }
+
+                    // ⑥-b 周辺相場（住まいサーフィン）
+                    if listing.hasSurroundingProperties {
+                        Divider()
+                        surroundingPropertiesSection
+                            .padding(14)
+                            .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+                    }
+
+                    // ⑥-c 販売価格割安判定
+                    if listing.hasPriceJudgments {
+                        Divider()
+                        priceJudgmentsSection
+                            .padding(14)
+                            .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
                     }
 
                     // 値上がり・含み益シミュレーション
@@ -178,10 +161,7 @@ struct ListingDetailView: View {
                     }
                 }
             }
-            .onTapGesture {
-                // コメント入力以外をタップでキーボードを閉じる
-                isCommentFocused = false
-            }
+            .scrollDismissesKeyboard(.interactively)
             .sheet(isPresented: Binding(
                 get: { safariURL != nil },
                 set: { if !$0 { safariURL = nil } }
@@ -190,6 +170,54 @@ struct ListingDetailView: View {
                     SafariView(url: url)
                         .ignoresSafeArea()
                 }
+            }
+        }
+    }
+
+    // MARK: - 掲載終了バナー（画面上部）
+
+    @ViewBuilder
+    private var delistedBanner: some View {
+        if listing.isDelisted {
+            HStack(spacing: 8) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                Text("この物件はサイトから掲載終了しています")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+            }
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(12)
+            .background(Color.orange)
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous))
+        }
+    }
+
+    // MARK: - ② 住所（Google Maps アイコンボタン）
+
+    @ViewBuilder
+    private var addressSection: some View {
+        if let addr = listing.bestAddress, !addr.isEmpty {
+            HStack(spacing: 8) {
+                Text(addr)
+                    .font(ListingObjectStyle.subtitle)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 0)
+                Button {
+                    let query = (addr + " " + listing.name).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? listing.name
+                    if let url = URL(string: "https://www.google.com/maps/search/?api=1&query=\(query)") {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    Image(systemName: "map.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color.accentColor)
+                        .frame(width: 30, height: 30)
+                        .background(Color.accentColor.opacity(0.1))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Google Maps で物件を検索")
             }
         }
     }
@@ -215,31 +243,35 @@ struct ListingDetailView: View {
                 DetailRow(title: "入居時期", value: listing.deliveryDateDisplay)
             } else {
                 DetailRow(title: "築年", value: listing.builtDisplay)
-                DetailRow(title: "所在階 / 階建", value: {
+            }
+            DetailRow(title: listing.isShinchiku ? "階建" : "所在階 / 階建", value: {
+                if listing.isShinchiku {
+                    return listing.floorTotalDisplay
+                } else {
                     let floor = listing.floorPosition.map { "\($0)階" } ?? "—"
                     let total = listing.floorTotal.map { "\($0)階建" } ?? "—"
                     return "\(floor) / \(total)"
-                }())
-            }
-            if listing.isShinchiku {
-                DetailRow(title: "階建", value: listing.floorTotal.map { "\($0)階建" } ?? "—")
-            }
+                }
+            }())
             DetailRow(title: "総戸数", value: listing.totalUnits.map { "\($0)戸" } ?? "—")
             if let ownership = listing.ownership, !ownership.isEmpty {
                 HStack {
                     Text("権利形態")
+                        .font(ListingObjectStyle.detailLabel)
                         .foregroundStyle(.secondary)
                     Spacer()
                     OwnershipBadge(listing: listing, size: .large)
                 }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
             }
             DetailRow(title: "種別", value: listing.isShinchiku ? "新築マンション" : "中古マンション")
         }
         .listingGlassBackground()
 
-        // 月額支払いシミュレーション（中古のみ）
-        if !listing.isShinchiku, let priceMan = listing.priceMan, priceMan > 0 {
-            monthlyPaymentSimulation(priceMan: priceMan)
+        // 月額支払いシミュレーション（中古・新築共通）
+        if let priceMan = listing.priceMan, priceMan > 0 {
+            MonthlyPaymentSimulationView(listing: listing)
         }
     }
 
@@ -307,89 +339,6 @@ struct ListingDetailView: View {
                 }
             }
         }
-    }
-
-    // MARK: - 月額支払いシミュレーション
-
-    @ViewBuilder
-    private func monthlyPaymentSimulation(priceMan: Int) -> some View {
-        let loanMonthlyMan = LoanCalculator.ssMonthlyPayment(principal: Double(priceMan))
-        let loanMonthlyYen = Int(round(loanMonthlyMan * 10000))
-
-        // 管理費＋修繕積立金（円/月）
-        let mgmtFee = listing.managementFee ?? 0
-        let repairFund = listing.repairReserveFund ?? 0
-        let fixedCostYen = mgmtFee + repairFund
-        let totalMonthlyYen = loanMonthlyYen + fixedCostYen
-        let hasFixedCost = mgmtFee > 0 || repairFund > 0
-
-        VStack(alignment: .leading, spacing: 8) {
-            Label("月額支払いシミュレーション", systemImage: "yensign.circle")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(Color.accentColor)
-
-            // 合計月額
-            HStack(alignment: .firstTextBaseline) {
-                Text("月額合計（目安）")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Text("\(totalMonthlyYen.formatted())円")
-                    .font(.system(.title3, design: .rounded).weight(.bold))
-                    .foregroundStyle(Color.accentColor)
-                Text("/月")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            // 内訳
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("ローン返済")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    Text("\(loanMonthlyYen.formatted())円")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-                if hasFixedCost {
-                    if mgmtFee > 0 {
-                        HStack {
-                            Text("管理費")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Text("\(mgmtFee.formatted())円")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    if repairFund > 0 {
-                        HStack {
-                            Text("修繕積立金")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Text("\(repairFund.formatted())円")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                } else {
-                    Text("※ 管理費・修繕積立金は未取得（ローン返済額のみ）")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-
-            Text("※ 金利\(String(format: "%.2f", LoanCalculator.ssAnnualRate))%・返済\(LoanCalculator.ssTermYears)年・頭金\(LoanCalculator.ssDownPayment)円で計算（住まいサーフィン準拠）")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-        }
-        .padding(12)
-        .listingGlassBackground()
     }
 
     // MARK: - ① コメントセクション
@@ -871,7 +820,7 @@ struct ListingDetailView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     FlowLayout(spacing: 6) {
-                        ForEach(Array(gsiItems.enumerated()), id: \.offset) { _, item in
+                        ForEach(Array(gsiItems.enumerated()), id: \.element.label) { _, item in
                             HazardChip(icon: item.icon, label: item.label, severity: item.severity)
                         }
                     }
@@ -884,7 +833,7 @@ struct ListingDetailView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    ForEach(Array(tokyoItems.enumerated()), id: \.offset) { _, item in
+                    ForEach(Array(tokyoItems.enumerated()), id: \.element.label) { _, item in
                         HStack(spacing: 8) {
                             Image(systemName: item.icon)
                                 .font(.body)
@@ -1022,6 +971,72 @@ struct ListingDetailView: View {
         }
     }
 
+    // MARK: - 住まいサーフィン未取得通知
+
+    @ViewBuilder
+    private var sumaiSurfinUnavailableNotice: some View {
+        let status = listing.ssLookupStatus
+
+        VStack(alignment: .leading, spacing: 8) {
+            Label("住まいサーフィン評価", systemImage: "chart.bar.xaxis")
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundStyle(.secondary)
+
+            if status == "not_found" {
+                // 住まいサーフィンで検索したが、該当物件が見つからなかった
+                HStack(alignment: .top, spacing: 8) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.subheadline)
+                        .foregroundStyle(.orange)
+                        .frame(width: 20)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("住まいサーフィンに該当物件が見つかりませんでした")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Text("物件名の表記揺れ（棟名・広告文・英字/カタカナ違い等）により自動マッチングできなかった可能性があります。")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+            } else if status == "no_data" {
+                // 住まいサーフィンにページはあるが、評価データがなかった
+                HStack(alignment: .top, spacing: 8) {
+                    Image(systemName: "doc.text.magnifyingglass")
+                        .font(.subheadline)
+                        .foregroundStyle(.orange)
+                        .frame(width: 20)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("住まいサーフィンに掲載されていますが、評価データがありません")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Text("物件ページは存在しますが、沖式時価・儲かる確率等の評価データがまだ公開されていません。")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+            } else {
+                // nil = 未検索（パイプライン未実行 or 古いデータ）
+                HStack(alignment: .top, spacing: 8) {
+                    Image(systemName: "clock")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 20)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("住まいサーフィン情報は未取得です")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Text("データ取得パイプラインが未実行、または古いデータのため情報がありません。次回のデータ更新で取得される場合があります。")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+            }
+        }
+        .padding(14)
+        .tintedGlassBackground(tint: Color.secondary, tintOpacity: 0.03, borderOpacity: 0.08)
+    }
+
     // MARK: - 住まいサーフィン評価セクション
 
     @ViewBuilder
@@ -1052,16 +1067,6 @@ struct ListingDetailView: View {
                     }
                     Spacer()
                 }
-            }
-
-            // 周辺の中古マンション相場（プルダウン表示）
-            if listing.hasSurroundingProperties {
-                surroundingPropertiesSection
-            }
-
-            // 販売価格割安判定（中古のみ・ブラウザ自動化で取得したデータ）
-            if listing.hasPriceJudgments {
-                priceJudgmentsSection
             }
         }
         .padding(14)
@@ -1139,6 +1144,16 @@ struct ListingDetailView: View {
                             .foregroundStyle(rate >= 0 ? DesignSystem.positiveColor.opacity(0.6) : DesignSystem.negativeColor.opacity(0.6))
                     }
                 }
+            } else if listing.hasSumaiSurfinData {
+                // SS データはあるが値上がり率が未取得の場合、項目だけ表示
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("中古値上がり率")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text("—")
+                        .font(.system(.title2, design: .rounded).weight(.heavy))
+                        .foregroundStyle(.tertiary)
+                }
             }
         }
 
@@ -1161,8 +1176,9 @@ struct ListingDetailView: View {
 
             // 各軸の偏差値テーブル
             VStack(spacing: 0) {
-                ForEach(Array(zip(Listing.RadarData.labelsSingleLine, radar.values).enumerated()), id: \.offset) { index, pair in
-                    let (label, value) = pair
+                ForEach(0..<Listing.RadarData.labelsSingleLine.count, id: \.self) { index in
+                    let label = Listing.RadarData.labelsSingleLine[index]
+                    let value = radar.values[index]
                     HStack {
                         Text(label)
                             .font(.caption)
@@ -1416,11 +1432,16 @@ struct ListingDetailView: View {
 
                             Spacer(minLength: 8)
 
-                            // 値上がり率
+                            // 値上がり率（未取得時は "—" を表示）
                             if let rate = prop.appreciationRate {
                                 Text(String(format: "%.1f%%", rate))
                                     .font(.system(.caption, design: .rounded).weight(.semibold))
                                     .foregroundStyle(rate >= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
+                                    .frame(width: 50, alignment: .trailing)
+                            } else {
+                                Text("—")
+                                    .font(.system(.caption, design: .rounded))
+                                    .foregroundStyle(.tertiary)
                                     .frame(width: 50, alignment: .trailing)
                             }
 
