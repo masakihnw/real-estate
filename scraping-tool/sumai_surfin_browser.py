@@ -71,71 +71,44 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
         page.goto(LOGIN_URL, wait_until="networkidle", timeout=NAV_TIMEOUT)
         time.sleep(1)
 
-        # ── ユーザー名フィールドを探す ──
-        # 戦略1: type=text の input（name に login を含むもの優先）
-        username_input = None
-        password_input = None
+        # ── ユーザー名・パスワード入力 ──
+        username_input = page.locator('#fe-login_name')
+        password_input = page.locator('#fe-login_password')
 
-        # name 属性で探す（既知のフィールド名）
-        for selector in [
-            'input[name="login_name"]',
-            'input[name="username"]',
-            'input[name="email"]',
-            'input[type="text"]',
-            'input[type="email"]',
-        ]:
-            loc = page.locator(selector).first
-            if loc.count() > 0 and loc.is_visible():
-                username_input = loc
-                break
+        # id でヒットしない場合は name で探す
+        if username_input.count() == 0:
+            username_input = page.locator('input[name="login_name"]').first
+        if password_input.count() == 0:
+            password_input = page.locator('input[name="login_password"]').first
 
-        for selector in [
-            'input[name="login_password"]',
-            'input[name="password"]',
-            'input[type="password"]',
-        ]:
-            loc = page.locator(selector).first
-            if loc.count() > 0 and loc.is_visible():
-                password_input = loc
-                break
-
-        if not username_input or not password_input:
+        if username_input.count() == 0 or password_input.count() == 0:
             print("ブラウザログイン: 入力フィールドが見つかりません", file=sys.stderr)
             return False
 
-        # ── 入力 ──
-        username_input.fill(user)
+        # type() でキー入力をシミュレート（fill() だとイベント発火しない場合がある）
+        username_input.click()
+        username_input.type(user, delay=30)
         time.sleep(0.3)
-        password_input.fill(password)
+        password_input.click()
+        password_input.type(password, delay=30)
         time.sleep(0.3)
 
         # ── ログインボタンをクリック ──
-        login_btn = None
-        for selector in [
-            'button[type="submit"]',
-            'input[type="submit"]',
-            'button:has-text("ログイン")',
-            'a:has-text("ログイン")',
-        ]:
-            loc = page.locator(selector).first
-            if loc.count() > 0 and loc.is_visible():
-                login_btn = loc
-                break
-
-        if not login_btn:
-            # フォールバック: Enter キーで送信
-            password_input.press("Enter")
+        # フォームの <a onclick="document.login_form.submit()"> を優先的に使用
+        login_link = page.locator('a[onclick*="login_form.submit"]')
+        if login_link.count() > 0 and login_link.is_visible():
+            with page.expect_navigation(timeout=NAV_TIMEOUT):
+                login_link.click()
         else:
-            login_btn.click()
+            # フォールバック: JavaScript でフォームを直接送信
+            with page.expect_navigation(timeout=NAV_TIMEOUT):
+                page.evaluate("document.login_form.submit()")
 
-        # ── ログイン完了を待つ ──
-        page.wait_for_load_state("networkidle", timeout=NAV_TIMEOUT)
         time.sleep(2)
 
-        # リダイレクト先が SSO フローの場合、追加のナビゲーションが必要
-        # www.sumai-surfin.com/member/ にアクセスして SSO を確立
+        # ── SSO 確立: /member/ にアクセス ──
         page.goto(f"{BASE_URL}/member/", wait_until="networkidle", timeout=NAV_TIMEOUT)
-        time.sleep(1)
+        time.sleep(2)
 
         # ── 成功判定 ──
         content = page.content()
@@ -143,11 +116,15 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
             print("ブラウザログイン: 成功", file=sys.stderr)
             return True
 
-        # フォールバック: 検索ページで確認
-        page.goto(f"{BASE_URL}/search/", wait_until="networkidle", timeout=NAV_TIMEOUT)
+        # フォールバック: account ドメインのマイページで確認
+        page.goto("https://account.sumai-surfin.com/mypage", wait_until="networkidle", timeout=NAV_TIMEOUT)
+        time.sleep(1)
         content = page.content()
-        if "ログアウト" in content:
-            print("ブラウザログイン: 成功（検索ページで確認）", file=sys.stderr)
+        if "ログアウト" in content or "マイページ" in content:
+            print("ブラウザログイン: 成功（account ドメインで確認）", file=sys.stderr)
+            # www ドメインに戻してセッションを確立
+            page.goto(f"{BASE_URL}/member/", wait_until="networkidle", timeout=NAV_TIMEOUT)
+            time.sleep(1)
             return True
 
         print("ブラウザログイン: 失敗（ログアウトリンクが見つかりません）", file=sys.stderr)
@@ -168,65 +145,213 @@ def extract_chuko_price_judgments(page: "Page", url: str) -> Optional[list[dict]
         判定データのリスト。取得失敗時は None。
         [
           {
-            "unit": "3階/14階建",
-            "price_man": 5980,
-            "m2_price": 78,
-            "layout": "2LDK",
-            "area_m2": 76.24,
-            "direction": "南",
-            "oki_price_man": 6200,
-            "difference_man": -220,
-            "judgment": "割安"
+            "unit": "15階/23階建",
+            "price_man": 12980,
+            "area_m2": 70.0,
+            "layout": "2SLDK",
+            "judgment": "割高"
           }
         ]
     """
     try:
-        page.goto(url, wait_until="networkidle", timeout=NAV_TIMEOUT)
-        time.sleep(PAGE_DELAY)
+        page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+        time.sleep(4)
 
-        # ── 「販売価格が割安か判定する」ボタンを探してクリック ──
-        judge_btn = _find_clickable(page, [
-            'button:has-text("販売価格が割安か判定")',
-            'a:has-text("販売価格が割安か判定")',
-            'input[value*="販売価格が割安か判定"]',
-            ':text("販売価格が割安か判定する")',
-        ])
+        # ── 「販売価格が割安か判定する」ボタンを JavaScript で直接クリック ──
+        # ボタンの span id = "js-usedprice-judge-exec"
+        has_btn = page.evaluate(
+            "!!document.querySelector('#js-usedprice-judge-exec')"
+        )
 
-        if not judge_btn:
-            print(f"  [Browser] 割安判定ボタンが見つかりません: {url}", file=sys.stderr)
+        if not has_btn:
+            # フォールバック: テキストで検索
+            judge_btn = _find_clickable(page, [
+                ':text("販売価格が割安か判定する")',
+                'a:has-text("販売価格が割安か判定")',
+            ])
+            if not judge_btn:
+                print(f"  [Browser] 割安判定ボタンが見つかりません: {url}", file=sys.stderr)
+                return None
+            judge_btn.click(force=True)
+        else:
+            # スワイパーの初期化を待ち、スライドをアクティブ化
+            page.evaluate("""() => {
+                const slide = document.querySelector('.swiper-slide.sale-price');
+                if (slide && !slide.classList.contains('swiper-slide-active')) {
+                    slide.classList.add('swiper-slide-active');
+                }
+            }""")
+            time.sleep(0.5)
+            page.evaluate("document.querySelector('#js-usedprice-judge-exec').click()")
+
+        time.sleep(4)
+
+        # ── 判定結果を読み取る ──
+        result_text = page.evaluate(
+            "document.querySelector('#js-usedprice-judge-result-text')?.textContent?.trim()"
+        )
+
+        # 結果が空の場合: ss_seq_id を探して直接 API を呼ぶフォールバック
+        if not result_text:
+            result_text = _try_direct_api_judgment(page)
+
+        if not result_text:
+            print(f"  [Browser] 判定結果が表示されません: {url}", file=sys.stderr)
             return None
 
-        judge_btn.click()
+        # ── 全住戸の情報を収集（スワイパーのナビゲーション） ──
+        unit_count = page.evaluate(
+            "document.querySelectorAll('.u-sellPrice_roomNumber.-navi').length"
+        )
 
-        # ── ログインポップアップの処理 ──
-        time.sleep(2)
-        _handle_login_popup(page)
+        results: list[dict] = []
 
-        # ── 判定結果の表示を待つ ──
-        # 判定後、テーブルが更新される。「割安」「割高」「適正」のいずれかが表示されるまで待つ
-        try:
-            page.wait_for_function(
-                """() => {
-                    const text = document.body.innerText;
-                    return text.includes('割安') || text.includes('割高') || text.includes('適正');
-                }""",
-                timeout=ACTION_TIMEOUT,
-            )
-        except Exception:
-            # タイムアウトしても続行（既にデータがある場合）
-            pass
+        if unit_count <= 1:
+            # 住戸が1つの場合: 現在表示中の情報のみ
+            slide_info = _extract_current_slide_info(page)
+            slide_info["judgment"] = result_text
+            results.append(slide_info)
+        else:
+            # 複数住戸: 各ナビをクリックして判定を取得
+            for i in range(unit_count):
+                page.evaluate(f"""() => {{
+                    const navis = document.querySelectorAll('.u-sellPrice_roomNumber.-navi');
+                    if (navis[{i}]) navis[{i}].click();
+                }}""")
+                time.sleep(1)
 
-        time.sleep(1)
+                # 判定ボタンを再クリック
+                page.evaluate(
+                    "document.querySelector('#js-usedprice-judge-exec')?.click()"
+                )
+                time.sleep(1.5)
 
-        # ── HTML を取得して解析 ──
-        html = page.content()
-        soup = BeautifulSoup(html, "lxml")
+                judgment = page.evaluate(
+                    "document.querySelector('#js-usedprice-judge-result-text')?.textContent?.trim()"
+                )
 
-        return _parse_price_judgment_table(soup, html)
+                slide_info = _extract_current_slide_info(page)
+                slide_info["judgment"] = judgment or result_text  # フォールバック
+                results.append(slide_info)
+
+        return results if results else None
 
     except Exception as e:
         print(f"  [Browser] 中古割安判定エラー ({url}): {e}", file=sys.stderr)
         return None
+
+
+def _try_direct_api_judgment(page: "Page") -> Optional[str]:
+    """スライドに ss_seq_id がない場合、ページソースやスクリプトから ID を探して
+    直接 API を呼び出すフォールバック。"""
+    try:
+        result = page.evaluate("""() => {
+            // 1. data-ss_seq_id 属性を持つ要素を探す
+            const els = document.querySelectorAll('[data-ss_seq_id]');
+            for (const el of els) {
+                const sid = el.dataset.ss_seq_id;
+                if (sid && sid !== 'undefined') return sid;
+            }
+
+            // 2. ページ内の JavaScript 変数から探す
+            const scripts = document.querySelectorAll('script');
+            for (const s of scripts) {
+                const text = s.textContent || '';
+                const m = text.match(/ss_seq_id['"\\s:=]+(\\d+)/);
+                if (m) return m[1];
+            }
+
+            // 3. hidden input や data 属性から探す
+            const inputs = document.querySelectorAll('input[name*="seq"], input[name*="sid"]');
+            for (const inp of inputs) {
+                if (inp.value && /^\\d+$/.test(inp.value)) return inp.value;
+            }
+
+            return null;
+        }""")
+
+        if not result:
+            return None
+
+        # 直接 API 呼び出し
+        api_result = page.evaluate(f"""() => {{
+            return new Promise((resolve) => {{
+                $.ajax({{
+                    url: "/common/data/judge_usedprice.php",
+                    data: {{ sid: "{result}" }},
+                    dataType: "json",
+                    success: function(data) {{ resolve(data?.judge || null); }},
+                    error: function() {{ resolve(null); }},
+                    timeout: 10000
+                }});
+            }});
+        }}""")
+
+        return api_result if api_result else None
+
+    except Exception:
+        return None
+
+
+def _extract_current_slide_info(page: "Page") -> dict:
+    """スワイパーの現在アクティブなスライドから住戸情報を取得する。"""
+    info = page.evaluate("""() => {
+        // section01 内のテキストからアクティブスライドの情報を探す
+        const resultEl = document.querySelector('#js-usedprice-judge-result');
+        const section = document.querySelector('#section01');
+        if (!section) return {};
+
+        // 販売住戸の情報を探す
+        const dts = section.querySelectorAll('dt');
+        let floor = '', price = '', area = '', layout = '';
+        for (const dt of dts) {
+            const text = dt.textContent.trim();
+            const dd = dt.nextElementSibling;
+            if (!dd) continue;
+            const val = dd.textContent.trim();
+            if (text.includes('販売住戸') && val.match(/\\d+階/)) floor = val.replace(/\\s+/g, ' ').trim();
+            if (text.includes('販売価格') && val.match(/[\\d,]+万/)) price = val;
+        }
+
+        // アクティブスライド内のテキストを使う
+        const activeSlide = document.querySelector('.p-property-card__item02 .swiper-slide-active');
+        if (activeSlide) {
+            const slideText = activeSlide.innerText;
+            // 階数
+            const floorMatch = slideText.match(/(\\d+)階\\s*\\/?\\s*(\\d+)階/);
+            if (floorMatch) floor = floorMatch[1] + '階/' + floorMatch[2] + '階建';
+            // 価格
+            const priceMatch = slideText.match(/([\\d,]+)万/);
+            if (priceMatch) price = priceMatch[1].replace(/,/g, '');
+            // 面積
+            const areaMatch = slideText.match(/(\\d+\\.?\\d*)m2/);
+            if (areaMatch) area = areaMatch[1];
+            // 間取り
+            const layoutMatch = slideText.match(/(\\d[SLDK]+)/);
+            if (layoutMatch) layout = layoutMatch[1];
+        }
+
+        return { floor, price, area, layout };
+    }""")
+
+    result: dict = {}
+    if info:
+        if info.get("floor"):
+            result["unit"] = info["floor"]
+        if info.get("price"):
+            try:
+                result["price_man"] = int(info["price"].replace(",", ""))
+            except (ValueError, TypeError):
+                pass
+        if info.get("area"):
+            try:
+                result["area_m2"] = float(info["area"])
+            except (ValueError, TypeError):
+                pass
+        if info.get("layout"):
+            result["layout"] = info["layout"]
+
+    return result
 
 
 def _parse_price_judgment_table(soup: BeautifulSoup, html: str) -> Optional[list[dict]]:
@@ -772,6 +897,14 @@ def _pick_value_judgment(
     return with_judgment[0]["judgment"]
 
 
+def _save_json(listings: list, path: Path) -> None:
+    """リストを JSON ファイルに原子的に書き込む。"""
+    tmp_path = path.with_suffix(".json.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(listings, f, ensure_ascii=False, indent=2)
+    tmp_path.replace(path)
+
+
 # ──────────────────────────── メイン: バッチ enrichment ────────────────────────────
 
 def browser_enrich_listings(
@@ -818,7 +951,7 @@ def browser_enrich_listings(
     if property_type == "chuko":
         targets = [
             (i, listing) for i, listing in targets
-            if listing.get("ss_price_judgments") is None
+            if not listing.get("ss_value_judgment")
         ]
     # 新築は常に再計算（カスタムパラメータの変更を想定）
 
@@ -910,24 +1043,23 @@ def browser_enrich_listings(
                 error_count += 1
                 print(f"  ✗ {name} — エラー: {e}", file=sys.stderr)
 
-            # 進捗表示
+            # 進捗表示 & 中間セーブ（10件ごと）
             if (idx + 1) % 10 == 0:
                 print(
                     f"  ブラウザ進捗: {idx + 1}/{len(targets)}件 "
                     f"(成功: {enriched_count}, 失敗: {error_count})",
                     file=sys.stderr,
                 )
+                # 中間セーブ
+                _save_json(listings, output_path_p)
 
             # ページ間のディレイ
             time.sleep(PAGE_DELAY)
 
         browser.close()
 
-    # ── 出力（原子的書き込み）──
-    tmp_path = output_path_p.with_suffix(".json.tmp")
-    with open(tmp_path, "w", encoding="utf-8") as f:
-        json.dump(listings, f, ensure_ascii=False, indent=2)
-    tmp_path.replace(output_path_p)
+    # ── 最終出力 ──
+    _save_json(listings, output_path_p)
 
     print(
         f"ブラウザ enrichment 完了: {enriched_count}件成功, {error_count}件失敗 "

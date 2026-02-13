@@ -1576,7 +1576,7 @@ struct ListingDetailView: View {
             return DesignSystem.positiveColor
         case "割高", "やや割高":
             return DesignSystem.negativeColor
-        case "適正":
+        case "適正", "適正価格":
             return Color.orange
         default:
             return Color.secondary
@@ -1614,9 +1614,9 @@ struct ListingDetailView: View {
 
     private func judgmentColor(_ judgment: String) -> Color {
         switch judgment {
-        case "割安": return DesignSystem.positiveColor
-        case "適正": return .secondary
-        case "割高": return DesignSystem.negativeColor
+        case "割安", "やや割安": return DesignSystem.positiveColor
+        case "適正", "適正価格": return .secondary
+        case "割高", "やや割高": return DesignSystem.negativeColor
         default: return .secondary
         }
     }

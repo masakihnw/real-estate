@@ -638,10 +638,7 @@ def parse_shinchiku_page(session: requests.Session, url: str) -> dict:
     if surrounding:
         result["ss_surrounding_properties"] = json.dumps(surrounding, ensure_ascii=False)
 
-    # ── レーダーチャート用データ ──
-    radar_data = _extract_radar_chart_data(soup, html)
-    if radar_data:
-        result["ss_radar_data"] = json.dumps(radar_data, ensure_ascii=False)
+    # ── レーダーチャート用データ（新築では偏差値表示不要のため抽出しない） ──
 
     # ── 最終バリデーション ──
     result = _validate_parsed_data(result, url)
@@ -715,6 +712,10 @@ def _extract_profit_pct(soup: BeautifulSoup, html: str) -> Optional[int]:
     if m:
         # "儲かる確率" の後ろ 200 文字以内で数値 + % を探す
         search_area = html[m.start():m.start() + 200]
+        # "xx%" や "--%" などデータなしパターンを検出 → None を返す
+        no_data = re.search(r"儲かる確率.*?(?:xx|XX|ー{2,}|－{2,}|--)\s*[%％]", search_area, re.DOTALL)
+        if no_data:
+            return None
         num = re.search(r"儲かる確率.*?(\d{1,3})\s*[%％]", search_area, re.DOTALL)
         if num:
             val = int(num.group(1))
@@ -726,10 +727,22 @@ def _extract_profit_pct(soup: BeautifulSoup, html: str) -> Optional[int]:
     for el in soup.find_all(string=re.compile(r"儲かる確率")):
         parent = el.find_parent()
         if parent:
-            # 近傍の数値を探す
+            # 近傍の数値を探す — コンテナ全体ではなく
+            # "儲かる確率" の後に出現する数値+%のみを対象にする
             container = parent.find_parent()
             if container:
-                num = re.search(r"(\d{1,3})\s*[%％]", container.get_text())
+                text = container.get_text()
+                # "xx%" 等のデータなしパターンを先にチェック
+                profit_pos = text.find("儲かる確率")
+                if profit_pos >= 0:
+                    after_text = text[profit_pos:]
+                    no_data = re.search(r"儲かる確率.*?(?:xx|XX|ー{2,}|－{2,}|--)\s*[%％]", after_text, re.DOTALL)
+                    if no_data:
+                        return None
+                    num = re.search(r"儲かる確率.*?(\d{1,3})\s*[%％]", after_text, re.DOTALL)
+                else:
+                    # "儲かる確率" が見つからない場合は従来通り
+                    num = re.search(r"(\d{1,3})\s*[%％]", text)
                 if num:
                     val = int(num.group(1))
                     if 0 <= val <= 100:
@@ -1634,15 +1647,24 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
     if addr_updated:
         print(f"住所更新: {addr_updated}件（住まいサーフィンの所在地を正として反映）", file=sys.stderr)
 
-    # 全物件のレーダーデータを iOS 互換形式に正規化・不足軸を補完
+    # 全物件のレーダーデータを iOS 互換形式に正規化・不足軸を補完（新築は偏差値不要のためスキップ）
     radar_count = 0
-    for listing in listings:
-        had_radar = listing.get("ss_radar_data") is not None
-        _finalize_radar_data(listing, property_type=property_type)
-        if not had_radar and listing.get("ss_radar_data") is not None:
-            radar_count += 1
-    if radar_count:
-        print(f"レーダーデータ補完: {radar_count}件（既存 ss_*/walk_min から生成）", file=sys.stderr)
+    if property_type != "shinchiku":
+        for listing in listings:
+            had_radar = listing.get("ss_radar_data") is not None
+            _finalize_radar_data(listing, property_type=property_type)
+            if not had_radar and listing.get("ss_radar_data") is not None:
+                radar_count += 1
+        if radar_count:
+            print(f"レーダーデータ補完: {radar_count}件（既存 ss_*/walk_min から生成）", file=sys.stderr)
+    else:
+        # 新築: 既存の ss_radar_data があれば除去
+        removed = 0
+        for listing in listings:
+            if listing.pop("ss_radar_data", None) is not None:
+                removed += 1
+        if removed:
+            print(f"レーダーデータ除去: {removed}件（新築では偏差値不要）", file=sys.stderr)
 
     # 出力（原子的書き込み）
     tmp_path = output_path.with_suffix(".json.tmp")
@@ -1668,12 +1690,21 @@ def finalize_radar_only(input_path: str, output_path: str,
         print("住まいサーフィン: 入力が配列ではありません", file=sys.stderr)
         return
 
-    radar_count = 0
-    for listing in listings:
-        had_radar = listing.get("ss_radar_data") is not None
-        _finalize_radar_data(listing, property_type=property_type)
-        if not had_radar and listing.get("ss_radar_data") is not None:
-            radar_count += 1
+    # 新築は偏差値不要のためレーダーデータを補完しない
+    if property_type == "shinchiku":
+        removed = 0
+        for listing in listings:
+            if listing.pop("ss_radar_data", None) is not None:
+                removed += 1
+        if removed:
+            print(f"レーダーデータ除去: {removed}件（新築では偏差値不要）", file=sys.stderr)
+    else:
+        radar_count = 0
+        for listing in listings:
+            had_radar = listing.get("ss_radar_data") is not None
+            _finalize_radar_data(listing, property_type=property_type)
+            if not had_radar and listing.get("ss_radar_data") is not None:
+                radar_count += 1
 
     # 原子的書き込み
     tmp_path = output_path_p.with_suffix(".json.tmp")
