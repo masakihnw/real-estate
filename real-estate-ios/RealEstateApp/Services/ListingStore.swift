@@ -240,6 +240,23 @@ final class ListingStore {
     private func syncToDatabase(fetchResult: FetchDataResult, propertyType: String, modelContext: ModelContext) -> SyncResult {
         switch fetchResult {
         case .notModified:
+            // データ未変更でも前回の isNew フラグをリセットする
+            // （リセットしないと 304 が続く限り New バッジが残り続ける）
+            do {
+                let predicate = #Predicate<Listing> { $0.propertyType == propertyType }
+                let descriptor = FetchDescriptor<Listing>(predicate: predicate)
+                let existing = try modelContext.fetch(descriptor)
+                var hadResets = false
+                for e in existing where e.isNew {
+                    e.isNew = false
+                    hadResets = true
+                }
+                if hadResets {
+                    try modelContext.save()
+                }
+            } catch {
+                print("[ListingStore] isNew リセット失敗 (\(propertyType)): \(error)")
+            }
             return SyncResult(hadChanges: false)
         case .error(let msg):
             return SyncResult(error: "\(propertyType): \(msg)")
@@ -369,8 +386,16 @@ final class ListingStore {
         // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
         if let lat = new.latitude { existing.latitude = lat }
         if let lon = new.longitude { existing.longitude = lon }
-        // 通勤時間: Apple Maps (MKDirections) で正確に計算するため、JSON 概算は取り込まない
-        // calculateForAllListings() がリフレッシュ後に自動実行される
+        // 通勤時間: パイプラインのデータを初期値として取り込む
+        // 既存データがないか、フォールバック概算（経路情報取得不可）の場合のみ上書き
+        // MKDirections で取得した正確な経路データは保持する
+        if let pipelineCommute = new.commuteInfoJSON {
+            if existing.commuteInfoJSON == nil {
+                existing.commuteInfoJSON = pipelineCommute
+            } else if existing.parsedCommuteInfo.hasFallbackEstimate {
+                existing.commuteInfoJSON = pipelineCommute
+            }
+        }
         // existing.memo, existing.isLiked, existing.isNew, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
     }
 

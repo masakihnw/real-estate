@@ -387,7 +387,7 @@ struct MarketDataSectionView: View {
                 stationName: market.station?.name,
                 listingM2Price: listingM2Price
             )
-            .frame(height: 200)
+            .frame(height: 220)
         }
     }
 
@@ -469,6 +469,14 @@ struct MarketTrendChart: View {
         return unique.sorted()          // "2021Q1" < "2024Q1" < "2025Q3" — 辞書順 = 時系列順
     }
 
+    /// データポイント数に応じた PointMark サイズ（多いほど小さく）
+    private var pointSymbolSize: CGFloat {
+        let totalQuarters = sortedAllQuarters.count
+        if totalQuarters > 16 { return 8 }   // 5年分: 小さめ
+        if totalQuarters > 10 { return 12 }  // 3年分: 中くらい
+        return 16                              // 少量: 通常サイズ
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Chart {
@@ -489,7 +497,7 @@ struct MarketTrendChart: View {
                         y: .value("m²単価(万)", manPrice)
                     )
                     .foregroundStyle(Color.accentColor)
-                    .symbolSize(16)
+                    .symbolSize(pointSymbolSize)
                 }
 
                 // 駅レベル成約相場の推移（オーバーレイ）
@@ -509,7 +517,7 @@ struct MarketTrendChart: View {
                         y: .value("m²単価(万)", manPrice)
                     )
                     .foregroundStyle(Color.indigo)
-                    .symbolSize(16)
+                    .symbolSize(pointSymbolSize)
                 }
 
                 // 物件のm²単価ライン
@@ -543,12 +551,18 @@ struct MarketTrendChart: View {
             }
             .chartXAxis {
                 AxisMarks { value in
-                    AxisValueLabel {
-                        if let label = value.as(String.self) {
-                            let short = label.count > 4 ? String(label.suffix(label.count - 2)) : label
-                            Text(short)
-                                .font(.caption2)
-                                .rotationEffect(.degrees(-30))
+                    if let label = value.as(String.self) {
+                        if label.hasSuffix("Q1") {
+                            // Q1 = 年の境界: 年ラベル + グリッドライン + ティックを表示
+                            AxisGridLine()
+                            AxisTick()
+                            AxisValueLabel {
+                                Text(String(label.prefix(4)))   // "2024Q1" → "2024"
+                                    .font(.caption2)
+                            }
+                        } else {
+                            // Q2-Q4: 薄いグリッドラインのみ（ラベルなし）
+                            AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))
                         }
                     }
                 }
