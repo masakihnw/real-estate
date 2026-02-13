@@ -18,7 +18,9 @@
     "floor_position": 9,
     "floor_total": 16,
     "floor_structure": "RC16階地下3階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存35年、借地権設定登記不可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存35年、借地権設定登記不可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可",
+    "management_fee": 20840,
+    "repair_reserve_fund": 6190
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_79000573/": {
     "total_units": 48,
@@ -60,21 +62,27 @@
     "floor_position": 1,
     "floor_total": 17,
     "floor_structure": "RC17階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12810,
+    "repair_reserve_fund": 14240
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78488190/": {
     "total_units": 362,
     "floor_position": 1,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存60年、借地権設定登記相談、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存60年、借地権設定登記相談、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可",
+    "management_fee": 12350,
+    "repair_reserve_fund": 6500
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78608780/": {
     "total_units": 362,
     "floor_position": 1,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存59年8ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存59年8ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
+    "management_fee": 12350,
+    "repair_reserve_fund": 6500
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_79068353/": {
     "total_units": 740,
@@ -102,49 +110,63 @@
     "floor_position": 9,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存59年8ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存59年8ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
+    "management_fee": 12330,
+    "repair_reserve_fund": 6490
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_79218570/": {
     "total_units": 362,
     "floor_position": 1,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存59年7ヶ月、借地権設定登記相談、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存59年7ヶ月、借地権設定登記相談、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)",
+    "management_fee": 12350,
+    "repair_reserve_fund": 6500
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78221687/": {
     "total_units": 357,
     "floor_position": 1,
     "floor_total": 20,
     "floor_structure": "SRC20階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 10520,
+    "repair_reserve_fund": 15320
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78956896/": {
     "total_units": 361,
     "floor_position": 6,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存59年6ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存59年6ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
+    "management_fee": 12380,
+    "repair_reserve_fund": 6520
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20100754/": {
     "total_units": 440,
     "floor_position": 4,
     "floor_total": 44,
     "floor_structure": "RC44階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 16600,
+    "repair_reserve_fund": 19330
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78448709/": {
     "total_units": 357,
     "floor_position": 13,
     "floor_total": 20,
     "floor_structure": "SRC20階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 9080,
+    "repair_reserve_fund": 13230
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78956865/": {
     "total_units": 100,
     "floor_position": 14,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 9368,
+    "repair_reserve_fund": 9342
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_78428665/": {
     "total_units": 36,
@@ -158,35 +180,45 @@
     "floor_position": 7,
     "floor_total": 8,
     "floor_structure": "RC8階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13900,
+    "repair_reserve_fund": 18020
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_78383416/": {
     "total_units": 68,
     "floor_position": 7,
     "floor_total": 8,
     "floor_structure": "RC8階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13900,
+    "repair_reserve_fund": 18020
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_78124198/": {
     "total_units": 150,
     "floor_position": 4,
     "floor_total": 14,
     "floor_structure": "RC14階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 15800,
+    "repair_reserve_fund": 26300
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_20061330/": {
     "total_units": 77,
     "floor_position": 6,
     "floor_total": 6,
     "floor_structure": "RC6階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 23215,
+    "repair_reserve_fund": 7290
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_79190869/": {
     "total_units": 64,
     "floor_position": 3,
     "floor_total": 8,
     "floor_structure": "RC8階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 11600,
+    "repair_reserve_fund": 6300
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_20082088/": {
     "total_units": 59,
@@ -221,7 +253,9 @@
     "floor_position": 8,
     "floor_total": 12,
     "floor_structure": "RC12階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13800,
+    "repair_reserve_fund": 18020
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_78138673/": {
     "total_units": 38,
@@ -276,7 +310,9 @@
     "floor_position": 2,
     "floor_total": 5,
     "floor_structure": "RC5階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 17700,
+    "repair_reserve_fund": 7660
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_78640105/": {
     "total_units": 35,
@@ -290,21 +326,27 @@
     "floor_position": 7,
     "floor_total": 8,
     "floor_structure": "RC8階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 11850,
+    "repair_reserve_fund": 5360
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20110110/": {
     "total_units": 54,
     "floor_position": 9,
     "floor_total": 9,
     "floor_structure": "RC9階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 10700,
+    "repair_reserve_fund": 10600
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20103813/": {
     "total_units": 534,
     "floor_position": 8,
     "floor_total": 17,
     "floor_structure": "SRC17階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 11800,
+    "repair_reserve_fund": 13110
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20049463/": {
     "total_units": 79,
@@ -325,34 +367,44 @@
     "floor_position": 7,
     "floor_total": 12,
     "floor_structure": "RC12階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12000,
+    "repair_reserve_fund": 21490
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_78873440/": {
     "total_units": 56,
     "floor_position": 3,
     "floor_total": 5,
     "floor_structure": "RC5階地下2階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13700,
+    "repair_reserve_fund": 16700
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_79066124/": {
     "total_units": 280,
     "floor_position": 2,
     "floor_total": 9,
     "floor_structure": "RC9階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 16340,
+    "repair_reserve_fund": 10260
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_78848413/": {
     "floor_position": 1,
     "floor_total": 10,
     "floor_structure": "RC10階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 22700,
+    "repair_reserve_fund": 26190
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78513233/": {
     "total_units": 65,
     "floor_position": 8,
     "floor_total": 14,
     "floor_structure": "RC14階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 23900,
+    "repair_reserve_fund": 7800
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79064686/": {
     "total_units": 24,
@@ -387,7 +439,9 @@
     "floor_position": 9,
     "floor_total": 12,
     "floor_structure": "RC12階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 15300,
+    "repair_reserve_fund": 13670
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_79029769/": {
     "total_units": 39,
@@ -401,14 +455,18 @@
     "floor_position": 1,
     "floor_total": 3,
     "floor_structure": "RC3階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 19218,
+    "repair_reserve_fund": 10400
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_78795019/": {
     "total_units": 64,
     "floor_position": 2,
     "floor_total": 6,
     "floor_structure": "RC6階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12880,
+    "repair_reserve_fund": 10960
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_78494847/": {
     "total_units": 30,
@@ -429,14 +487,18 @@
     "floor_position": 2,
     "floor_total": 3,
     "floor_structure": "RC3階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14500,
+    "repair_reserve_fund": 5920
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_79030236/": {
     "total_units": 50,
     "floor_position": 3,
     "floor_total": 3,
     "floor_structure": "RC3階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 15100,
+    "repair_reserve_fund": 6190
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_78440478/": {
     "total_units": 44,
@@ -450,7 +512,9 @@
     "floor_position": 7,
     "floor_total": 26,
     "floor_structure": "RC26階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 19254,
+    "repair_reserve_fund": 29850
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_20122428/": {
     "total_units": 44,
@@ -464,21 +528,27 @@
     "floor_position": 25,
     "floor_total": 26,
     "floor_structure": "RC26階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 18654,
+    "repair_reserve_fund": 28690
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_20042506/": {
     "total_units": 108,
     "floor_position": 2,
     "floor_total": 10,
     "floor_structure": "RC10階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 16400,
+    "repair_reserve_fund": 13120
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78737098/": {
     "total_units": 149,
     "floor_position": 3,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存36年6ヶ月、借地権設定登記可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存36年6ヶ月、借地権設定登記可、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)",
+    "management_fee": 18200,
+    "repair_reserve_fund": 10100
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78821709/": {
     "total_units": 42,
@@ -512,7 +582,9 @@
     "floor_position": 2,
     "floor_total": 7,
     "floor_structure": "RC7階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 17060,
+    "repair_reserve_fund": 18570
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_79002385/": {
     "total_units": 42,
@@ -540,14 +612,18 @@
     "floor_position": 5,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存36年5ヶ月、借地期間満了時に更地返却要。建物買取請求、契約更新および改築等による期間延長不可。借地権の譲渡、転貸可。ただし地主の承諾要。保証金は期間満了時に無利息にて全額返還。、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存36年5ヶ月、借地期間満了時に更地返却要。建物買取請求、契約更新および改築等による期間延長不可。借地権の譲渡、転貸可。ただし地主の承諾要。保証金は期間満了時に無利息にて全額返還。、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料要)",
+    "management_fee": 18100,
+    "repair_reserve_fund": 10090
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79205694/": {
     "total_units": 114,
     "floor_position": 2,
     "floor_total": 10,
     "floor_structure": "RC10階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14590,
+    "repair_reserve_fund": 16880
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_78389134/": {
     "total_units": 79,
@@ -561,28 +637,36 @@
     "floor_position": 10,
     "floor_total": 22,
     "floor_structure": "RC22階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14654,
+    "repair_reserve_fund": 22330
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_75866936/": {
     "total_units": 110,
     "floor_position": 1,
     "floor_total": 23,
     "floor_structure": "RC23階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 15824,
+    "repair_reserve_fund": 16330
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_77087333/": {
     "total_units": 500,
     "floor_position": 11,
     "floor_total": 11,
     "floor_structure": "RC11階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 19010,
+    "repair_reserve_fund": 18650
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20081615/": {
     "total_units": 114,
     "floor_position": 1,
     "floor_total": 10,
     "floor_structure": "RC10階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12780,
+    "repair_reserve_fund": 14790
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79135381/": {
     "total_units": 84,
@@ -596,21 +680,27 @@
     "floor_position": 14,
     "floor_total": 15,
     "floor_structure": "SRC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13400,
+    "repair_reserve_fund": 8520
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79189561/": {
     "total_units": 110,
     "floor_position": 11,
     "floor_total": 23,
     "floor_structure": "RC23階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 16124,
+    "repair_reserve_fund": 16650
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_78948403/": {
     "total_units": 110,
     "floor_position": 16,
     "floor_total": 23,
     "floor_structure": "RC23階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 15724,
+    "repair_reserve_fund": 16280
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_78960046/": {
     "total_units": 102,
@@ -680,7 +770,9 @@
     "floor_position": 3,
     "floor_total": 5,
     "floor_structure": "RC5階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 18000,
+    "repair_reserve_fund": 10880
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_77744750/": {
     "total_units": 42,
@@ -694,7 +786,9 @@
     "floor_position": 10,
     "floor_total": 10,
     "floor_structure": "RC10階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14700,
+    "repair_reserve_fund": 22380
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_79222675/": {
     "total_units": 27,
@@ -743,7 +837,9 @@
     "floor_position": 7,
     "floor_total": 8,
     "floor_structure": "RC8階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13900,
+    "repair_reserve_fund": 18020
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20025139/": {
     "total_units": 27,
@@ -806,14 +902,18 @@
     "floor_position": 5,
     "floor_total": 10,
     "floor_structure": "RC10階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存72年5ヶ月、解体準備保証金：解体準備金の6カ月分/10年毎更新　地代保証金・解体準備保証金については、購入者様にもご負担いただきます。なお、保証金は返還されません。、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存72年5ヶ月、解体準備保証金：解体準備金の6カ月分/10年毎更新　地代保証金・解体準備保証金については、購入者様にもご負担いただきます。なお、保証金は返還されません。、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は事前協議により決定、借地権の譲渡・転貸可(地主承諾、承諾要、承諾料不要)",
+    "management_fee": 14950,
+    "repair_reserve_fund": 6860
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78555120/": {
     "total_units": 362,
     "floor_position": 1,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "一般定期借地権（賃借権）、借地期間残存59年11ヶ月、借地権設定登記可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)"
+    "ownership": "一般定期借地権（賃借権）、借地期間残存59年11ヶ月、借地権設定登記可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)",
+    "management_fee": 12350,
+    "repair_reserve_fund": 6500
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_20153656/": {
     "total_units": 47,
@@ -826,7 +926,9 @@
     "floor_position": 20,
     "floor_total": 22,
     "floor_structure": "SRC22階地下2階建",
-    "ownership": "一般定期借地権（地上権）、借地期間残存31年3ヶ月、敷地権利については確認中です。、借地権設定登記相談、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可"
+    "ownership": "一般定期借地権（地上権）、借地期間残存31年3ヶ月、敷地権利については確認中です。、借地権設定登記相談、賃料改定は事前協議により決定、改定後賃料は事前協議により決定、借地権の譲渡・転貸不可",
+    "management_fee": 45645,
+    "repair_reserve_fund": 15660
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20000892/": {
     "total_units": 27,
@@ -840,7 +942,9 @@
     "floor_position": 6,
     "floor_total": 12,
     "floor_structure": "RC12階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 19200,
+    "repair_reserve_fund": 27650
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_20154112/": {
     "total_units": 26,
@@ -854,7 +958,9 @@
     "floor_position": 4,
     "floor_total": 5,
     "floor_structure": "RC5階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 18680,
+    "repair_reserve_fund": 8180
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_79208746/": {
     "total_units": 30,
@@ -868,7 +974,9 @@
     "floor_position": 14,
     "floor_total": 19,
     "floor_structure": "RC19階建一部RC",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13200,
+    "repair_reserve_fund": 17670
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20183327/": {
     "total_units": 48,
@@ -888,14 +996,18 @@
     "floor_position": 2,
     "floor_total": 6,
     "floor_structure": "RC6階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 15330,
+    "repair_reserve_fund": 12260
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20009255/": {
     "total_units": 84,
     "floor_position": 14,
     "floor_total": 15,
     "floor_structure": "SRC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13400,
+    "repair_reserve_fund": 8520
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_78756012/": {
     "total_units": 38,
@@ -916,7 +1028,9 @@
     "floor_position": 1,
     "floor_total": 14,
     "floor_structure": "RC14階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14570,
+    "repair_reserve_fund": 16000
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_arakawa/nc_20107645/": {
     "total_units": 57,
@@ -951,7 +1065,9 @@
     "floor_position": 12,
     "floor_total": 18,
     "floor_structure": "RC18階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 21890,
+    "repair_reserve_fund": 8160
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_78662469/": {
     "total_units": 251,
@@ -993,7 +1109,9 @@
     "floor_position": 1,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14725,
+    "repair_reserve_fund": 6660
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_78535464/": {
     "total_units": 39,
@@ -1028,83 +1146,107 @@
     "floor_position": 3,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 21200,
+    "repair_reserve_fund": 9400
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20101055/": {
     "total_units": 124,
     "floor_position": 7,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 21300,
+    "repair_reserve_fund": 9400
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_79104991/": {
     "total_units": 268,
     "floor_position": 9,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12205,
+    "repair_reserve_fund": 5420
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_78716687/": {
     "total_units": 268,
     "floor_position": 1,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14725,
+    "repair_reserve_fund": 6660
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_79216671/": {
     "total_units": 268,
     "floor_position": 14,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12795,
+    "repair_reserve_fund": 5710
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20103390/": {
     "total_units": 476,
     "floor_position": 37,
     "floor_total": 39,
     "floor_structure": "SRC39階地下2階建一部鉄骨",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 15300,
+    "repair_reserve_fund": 27790
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_79232403/": {
     "total_units": 268,
     "floor_position": 13,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13315,
+    "repair_reserve_fund": 5970
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_20089848/": {
     "total_units": 88,
     "floor_position": 10,
     "floor_total": 14,
     "floor_structure": "RC14階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13830,
+    "repair_reserve_fund": 6320
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_77563237/": {
     "floor_position": 7,
     "floor_total": 8,
     "floor_structure": "RC8階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 25000,
+    "repair_reserve_fund": 6800
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_77785014/": {
     "total_units": 88,
     "floor_position": 13,
     "floor_total": 14,
     "floor_structure": "RC14階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13930,
+    "repair_reserve_fund": 6390
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_20180040/": {
     "total_units": 65,
     "floor_position": 11,
     "floor_total": 13,
     "floor_structure": "RC13階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14100,
+    "repair_reserve_fund": 10700
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_edogawa/nc_79218320/": {
     "total_units": 233,
     "floor_position": 16,
     "floor_total": 22,
     "floor_structure": "RC22階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 23490,
+    "repair_reserve_fund": 9100
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_78660663/": {
     "total_units": 35,
@@ -1118,7 +1260,9 @@
     "floor_position": 7,
     "floor_total": 14,
     "floor_structure": "RC14階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12400,
+    "repair_reserve_fund": 8270
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_79209410/": {
     "total_units": 25,
@@ -1146,48 +1290,62 @@
     "floor_position": 1,
     "floor_total": 4,
     "floor_structure": "RC4階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 20150,
+    "repair_reserve_fund": 16200
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_79131033/": {
     "total_units": 54,
     "floor_position": 8,
     "floor_total": 8,
     "floor_structure": "RC8階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13900,
+    "repair_reserve_fund": 10910
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_20081236/": {
     "total_units": 269,
     "floor_position": 1,
     "floor_total": 4,
     "floor_structure": "RC4階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 14200,
+    "repair_reserve_fund": 14890
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_78698604/": {
     "total_units": 269,
     "floor_position": 2,
     "floor_total": 3,
     "floor_structure": "RC3階地下1階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13620,
+    "repair_reserve_fund": 14280
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20170920/": {
     "total_units": 89,
     "floor_position": 4,
     "floor_total": 12,
     "floor_structure": "RC12階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 10850,
+    "repair_reserve_fund": 7620
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79179048/": {
     "total_units": 864,
     "floor_position": 1,
     "floor_total": 11,
     "floor_structure": "RC11階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12300,
+    "repair_reserve_fund": 10410
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79142076/": {
     "floor_position": 12,
     "floor_total": 19,
     "floor_structure": "RC19階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12870,
+    "repair_reserve_fund": 7570
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79105273/": {
     "total_units": 169,
@@ -1201,14 +1359,18 @@
     "floor_position": 12,
     "floor_total": 15,
     "floor_structure": "RC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13920,
+    "repair_reserve_fund": 8610
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20150965/": {
     "total_units": 114,
     "floor_position": 1,
     "floor_total": 10,
     "floor_structure": "RC10階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 12780,
+    "repair_reserve_fund": 14790
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79137348/": {
     "total_units": 84,
@@ -1222,7 +1384,9 @@
     "floor_position": 14,
     "floor_total": 15,
     "floor_structure": "SRC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13400,
+    "repair_reserve_fund": 8520
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79213291/": {
     "total_units": 84,
@@ -1236,7 +1400,9 @@
     "floor_position": 14,
     "floor_total": 15,
     "floor_structure": "SRC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13400,
+    "repair_reserve_fund": 8520
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20131921/": {
     "total_units": 84,
@@ -1250,14 +1416,18 @@
     "floor_position": 14,
     "floor_total": 15,
     "floor_structure": "SRC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13400,
+    "repair_reserve_fund": 8250
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20026606/": {
     "total_units": 128,
     "floor_position": 1,
     "floor_total": 5,
     "floor_structure": "RC5階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13360,
+    "repair_reserve_fund": 14300
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20138434/": {
     "total_units": 40,
@@ -1285,7 +1455,9 @@
     "floor_position": 14,
     "floor_total": 15,
     "floor_structure": "SRC15階建",
-    "ownership": "所有権"
+    "ownership": "所有権",
+    "management_fee": 13400,
+    "repair_reserve_fund": 8520
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79232344/": {
     "total_units": 84,
@@ -1969,5 +2141,50 @@
     "floor_total": 15,
     "floor_structure": "RC15階地下1階建一部RC",
     "ownership": "所有権"
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_78841278/": {
+    "total_units": 128,
+    "floor_position": 1,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "所有権",
+    "management_fee": 13360,
+    "repair_reserve_fund": 14300
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_20202595/": {
+    "total_units": 146,
+    "floor_position": 3,
+    "floor_total": 9,
+    "floor_structure": "RC9階建",
+    "ownership": "所有権",
+    "management_fee": 15105,
+    "repair_reserve_fund": 12130
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_20148661/": {
+    "total_units": 40,
+    "floor_position": 10,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権",
+    "management_fee": 19700,
+    "repair_reserve_fund": 9500
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20197139/": {
+    "total_units": 35,
+    "floor_position": 2,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権",
+    "management_fee": 15330,
+    "repair_reserve_fund": 12260
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_79165418/": {
+    "total_units": 84,
+    "floor_position": 14,
+    "floor_total": 15,
+    "floor_structure": "SRC15階建",
+    "ownership": "所有権",
+    "management_fee": 13400,
+    "repair_reserve_fund": 8250
   }
 }
