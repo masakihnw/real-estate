@@ -41,8 +41,12 @@ struct MarketDataSectionView: View {
                     sameBuildingSection(market)
                 }
 
-                // ── 四半期推移チャート ──
-                if market.quarterlyM2Prices.count >= 3 || (market.station?.quarterlyM2Prices.count ?? 0) >= 3 {
+                // ── m²単価推移チャート ──
+                if market.yearlyM2Prices.count >= 2
+                    || (market.station?.yearlyM2Prices.count ?? 0) >= 2
+                    || market.quarterlyM2Prices.count >= 3
+                    || (market.station?.quarterlyM2Prices.count ?? 0) >= 3
+                {
                     Divider()
                     trendChartSection(market)
                 }
@@ -313,15 +317,16 @@ struct MarketDataSectionView: View {
 
                 Divider().frame(height: 30)
 
-                // 乖離率
+                // 乖離率（バックエンド値 or iOS側フォールバック計算）
                 VStack(alignment: .leading, spacing: 3) {
                     Text("vs 本物件")
                         .font(.system(size: 10))
                         .foregroundStyle(.secondary)
-                    Text(station.priceRatioDisplay)
+                    let ratio = effectiveStationPriceRatio(for: station)
+                    Text(effectiveStationPriceRatioDisplay(ratio))
                         .font(.caption)
                         .fontWeight(.semibold)
-                        .foregroundStyle(stationPriceColor(station.priceRatio))
+                        .foregroundStyle(stationPriceColor(ratio))
                 }
 
                 Divider().frame(height: 30)
@@ -364,10 +369,15 @@ struct MarketDataSectionView: View {
         }
     }
 
-    // MARK: - 四半期推移チャート
+    // MARK: - m²単価推移チャート
 
     @ViewBuilder
     private func trendChartSection(_ market: Listing.MarketData) -> some View {
+        // 年次データが2つ以上あればそちらを優先
+        let wardYearly = market.yearlyM2Prices
+        let stationYearly = market.station?.yearlyM2Prices ?? []
+        let useYearly = wardYearly.count >= 2 || stationYearly.count >= 2
+
         VStack(alignment: .leading, spacing: 8) {
             if market.station != nil {
                 Text("m²単価推移（\(market.ward) / \(market.station?.name ?? "")駅）")
@@ -381,13 +391,27 @@ struct MarketDataSectionView: View {
                     .foregroundStyle(.secondary)
             }
 
-            MarketTrendChart(
-                quarterlyPrices: market.quarterlyM2Prices,
-                stationQuarterlyPrices: market.station?.quarterlyM2Prices ?? [],
-                stationName: market.station?.name,
-                listingM2Price: listingM2Price
-            )
-            .frame(height: 220)
+            if useYearly {
+                MarketTrendChart(
+                    mode: .yearly(
+                        wardYearly: wardYearly,
+                        stationYearly: stationYearly
+                    ),
+                    stationName: market.station?.name,
+                    listingM2Price: listingM2Price
+                )
+                .frame(height: 220)
+            } else {
+                MarketTrendChart(
+                    mode: .quarterly(
+                        wardQuarterly: market.quarterlyM2Prices,
+                        stationQuarterly: market.station?.quarterlyM2Prices ?? []
+                    ),
+                    stationName: market.station?.name,
+                    listingM2Price: listingM2Price
+                )
+                .frame(height: 220)
+            }
         }
     }
 
@@ -442,6 +466,26 @@ struct MarketDataSectionView: View {
         }
     }
 
+    /// 駅比較の相場乖離率（バックエンド値がなければ iOS 側で計算）
+    private func effectiveStationPriceRatio(
+        for station: Listing.MarketData.StationMarketData
+    ) -> Double? {
+        if let ratio = station.priceRatio { return ratio }
+        // フォールバック: 物件m²単価 ÷ 駅圏中央値m²単価
+        guard let m2Price = listingM2Price, station.medianM2Price > 0 else { return nil }
+        return m2Price / Double(station.medianM2Price)
+    }
+
+    /// 乖離率の表示テキスト
+    private func effectiveStationPriceRatioDisplay(_ ratio: Double?) -> String {
+        guard let ratio else { return "—" }
+        let pct = (ratio - 1.0) * 100
+        if abs(pct) < 2.0 { return "相場並み" }
+        return pct > 0
+            ? String(format: "+%.0f%%（割高）", pct)
+            : String(format: "%.0f%%（割安）", pct)
+    }
+
     private func stationPriceColor(_ ratio: Double?) -> Color {
         guard let ratio else { return .primary }
         let pct = (ratio - 1.0) * 100
@@ -450,155 +494,281 @@ struct MarketDataSectionView: View {
     }
 }
 
-// MARK: - 四半期推移チャート
+// MARK: - m²単価推移チャート
 
 struct MarketTrendChart: View {
-    let quarterlyPrices: [Listing.MarketData.QuarterlyPrice]
-    var stationQuarterlyPrices: [Listing.MarketData.QuarterlyPrice] = []
+    /// 表示モード
+    enum Mode {
+        case yearly(
+            wardYearly: [Listing.MarketData.YearlyPrice],
+            stationYearly: [Listing.MarketData.YearlyPrice]
+        )
+        case quarterly(
+            wardQuarterly: [Listing.MarketData.QuarterlyPrice],
+            stationQuarterly: [Listing.MarketData.QuarterlyPrice]
+        )
+    }
+
+    let mode: Mode
     var stationName: String?
     let listingM2Price: Double?
 
+    // MARK: - Computed helpers
+
     /// 凡例表示が必要か（駅データがある場合）
-    private var showLegend: Bool { !stationQuarterlyPrices.isEmpty }
-
-    /// 区 + 駅の全四半期ラベルをマージ＆ソートした配列（X軸の正しい時系列順を保証）
-    private var sortedAllQuarters: [String] {
-        let wardLabels = quarterlyPrices.map(\.quarter)
-        let stationLabels = stationQuarterlyPrices.map(\.quarter)
-        let unique = Set(wardLabels + stationLabels)
-        return unique.sorted()          // "2021Q1" < "2024Q1" < "2025Q3" — 辞書順 = 時系列順
+    private var showLegend: Bool {
+        switch mode {
+        case .yearly(_, let st): return !st.isEmpty
+        case .quarterly(_, let st): return !st.isEmpty
+        }
     }
 
-    /// データポイント数に応じた PointMark サイズ（多いほど小さく）
-    private var pointSymbolSize: CGFloat {
-        let totalQuarters = sortedAllQuarters.count
-        if totalQuarters > 16 { return 8 }   // 5年分: 小さめ
-        if totalQuarters > 10 { return 12 }  // 3年分: 中くらい
-        return 16                              // 少量: 通常サイズ
+    /// 全ラベルをマージ＆ソート
+    private var sortedLabels: [String] {
+        switch mode {
+        case .yearly(let ward, let station):
+            let all = Set(ward.map(\.year) + station.map(\.year))
+            return all.sorted()
+        case .quarterly(let ward, let station):
+            let all = Set(ward.map(\.quarter) + station.map(\.quarter))
+            return all.sorted()
+        }
     }
+
+    /// PointMark サイズ（データが多いほど小さく）
+    private var pointSize: CGFloat {
+        let n = sortedLabels.count
+        if n > 16 { return 8 }
+        if n > 10 { return 12 }
+        if n > 6 { return 16 }
+        return 24
+    }
+
+    // MARK: - Body
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Chart {
-                // 区レベル成約相場の推移
-                ForEach(Array(quarterlyPrices.enumerated()), id: \.element.quarter) { _, qp in
-                    let manPrice = Double(qp.medianM2Price) / 10000.0
-                    LineMark(
-                        x: .value("四半期", qp.quarter),
-                        y: .value("m²単価(万)", manPrice),
-                        series: .value("系列", "区")
-                    )
-                    .foregroundStyle(Color.accentColor)
-                    .interpolationMethod(.catmullRom)
-                    .lineStyle(StrokeStyle(lineWidth: 2))
-
-                    PointMark(
-                        x: .value("四半期", qp.quarter),
-                        y: .value("m²単価(万)", manPrice)
-                    )
-                    .foregroundStyle(Color.accentColor)
-                    .symbolSize(pointSymbolSize)
-                }
-
-                // 駅レベル成約相場の推移（オーバーレイ）
-                ForEach(Array(stationQuarterlyPrices.enumerated()), id: \.element.quarter) { _, qp in
-                    let manPrice = Double(qp.medianM2Price) / 10000.0
-                    LineMark(
-                        x: .value("四半期", qp.quarter),
-                        y: .value("m²単価(万)", manPrice),
-                        series: .value("系列", "駅")
-                    )
-                    .foregroundStyle(Color.indigo)
-                    .interpolationMethod(.catmullRom)
-                    .lineStyle(StrokeStyle(lineWidth: 2, dash: [6, 3]))
-
-                    PointMark(
-                        x: .value("四半期", qp.quarter),
-                        y: .value("m²単価(万)", manPrice)
-                    )
-                    .foregroundStyle(Color.indigo)
-                    .symbolSize(pointSymbolSize)
-                }
-
-                // 物件のm²単価ライン
-                if let listingPrice = listingM2Price {
-                    let manPrice = listingPrice / 10000.0
-                    RuleMark(y: .value("物件m²単価", manPrice))
-                        .foregroundStyle(.red.opacity(0.6))
-                        .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
-                        .annotation(position: .top, alignment: .trailing) {
-                            Text("本物件")
-                                .font(.caption2)
-                                .foregroundStyle(.red)
-                                .padding(.horizontal, 4)
-                                .padding(.vertical, 1)
-                                .background(Color.red.opacity(0.1))
-                                .clipShape(RoundedRectangle(cornerRadius: 3))
-                        }
-                }
+            switch mode {
+            case .yearly(let wardYearly, let stationYearly):
+                yearlyChart(wardYearly: wardYearly, stationYearly: stationYearly)
+            case .quarterly(let wardQuarterly, let stationQuarterly):
+                quarterlyChart(wardQuarterly: wardQuarterly, stationQuarterly: stationQuarterly)
             }
-            .chartXScale(domain: sortedAllQuarters)
-            .chartYAxis {
-                AxisMarks(position: .leading) { value in
-                    AxisGridLine()
-                    AxisValueLabel {
-                        if let v = value.as(Double.self) {
-                            Text(String(format: "%.0f万", v))
-                                .font(.caption2)
-                        }
-                    }
-                }
-            }
-            .chartXAxis {
-                AxisMarks { value in
-                    if let label = value.as(String.self) {
-                        if label.hasSuffix("Q1") {
-                            // Q1 = 年の境界: 年ラベル + グリッドライン + ティックを表示
-                            AxisGridLine()
-                            AxisTick()
-                            AxisValueLabel {
-                                Text(String(label.prefix(4)))   // "2024Q1" → "2024"
-                                    .font(.caption2)
-                            }
-                        } else {
-                            // Q2-Q4: 薄いグリッドラインのみ（ラベルなし）
-                            AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))
-                        }
-                    }
-                }
-            }
-            .chartLegend(.hidden)
 
             // カスタム凡例（駅データがある場合のみ）
             if showLegend {
-                HStack(spacing: 12) {
-                    HStack(spacing: 4) {
-                        RoundedRectangle(cornerRadius: 1)
-                            .fill(Color.accentColor)
-                            .frame(width: 16, height: 2)
-                        Text("区全体")
-                            .font(.system(size: 9))
-                            .foregroundStyle(.secondary)
-                    }
-                    HStack(spacing: 4) {
-                        RoundedRectangle(cornerRadius: 1)
-                            .fill(Color.indigo)
-                            .frame(width: 16, height: 2)
-                        Text("\(stationName ?? "駅")駅圏")
-                            .font(.system(size: 9))
-                            .foregroundStyle(.secondary)
-                    }
-                    HStack(spacing: 4) {
-                        RoundedRectangle(cornerRadius: 1)
-                            .fill(Color.red.opacity(0.6))
-                            .frame(width: 16, height: 2)
-                        Text("本物件")
-                            .font(.system(size: 9))
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.top, 4)
+                legendView
             }
         }
+    }
+
+    // MARK: - 年次チャート
+
+    @ViewBuilder
+    private func yearlyChart(
+        wardYearly: [Listing.MarketData.YearlyPrice],
+        stationYearly: [Listing.MarketData.YearlyPrice]
+    ) -> some View {
+        Chart {
+            // 区レベル年次推移
+            ForEach(Array(wardYearly.enumerated()), id: \.element.year) { _, yp in
+                let manPrice = Double(yp.medianM2Price) / 10000.0
+                LineMark(
+                    x: .value("年", yp.year),
+                    y: .value("m²単価(万)", manPrice),
+                    series: .value("系列", "区")
+                )
+                .foregroundStyle(Color.accentColor)
+                .interpolationMethod(.catmullRom)
+                .lineStyle(StrokeStyle(lineWidth: 2))
+
+                PointMark(
+                    x: .value("年", yp.year),
+                    y: .value("m²単価(万)", manPrice)
+                )
+                .foregroundStyle(Color.accentColor)
+                .symbolSize(pointSize)
+            }
+
+            // 駅レベル年次推移
+            ForEach(Array(stationYearly.enumerated()), id: \.element.year) { _, yp in
+                let manPrice = Double(yp.medianM2Price) / 10000.0
+                LineMark(
+                    x: .value("年", yp.year),
+                    y: .value("m²単価(万)", manPrice),
+                    series: .value("系列", "駅")
+                )
+                .foregroundStyle(Color.indigo)
+                .interpolationMethod(.catmullRom)
+                .lineStyle(StrokeStyle(lineWidth: 2, dash: [6, 3]))
+
+                PointMark(
+                    x: .value("年", yp.year),
+                    y: .value("m²単価(万)", manPrice)
+                )
+                .foregroundStyle(Color.indigo)
+                .symbolSize(pointSize)
+            }
+
+            // 物件の m² 単価ライン
+            listingRuleMark
+        }
+        .chartXScale(domain: sortedLabels)
+        .chartYAxis { yAxisMarks }
+        .chartXAxis {
+            AxisMarks { value in
+                AxisGridLine()
+                AxisTick()
+                AxisValueLabel {
+                    if let label = value.as(String.self) {
+                        // "2021" → "21'"
+                        Text(shortYear(label))
+                            .font(.caption2)
+                    }
+                }
+            }
+        }
+        .chartLegend(.hidden)
+    }
+
+    // MARK: - 四半期チャート
+
+    @ViewBuilder
+    private func quarterlyChart(
+        wardQuarterly: [Listing.MarketData.QuarterlyPrice],
+        stationQuarterly: [Listing.MarketData.QuarterlyPrice]
+    ) -> some View {
+        Chart {
+            ForEach(Array(wardQuarterly.enumerated()), id: \.element.quarter) { _, qp in
+                let manPrice = Double(qp.medianM2Price) / 10000.0
+                LineMark(
+                    x: .value("四半期", qp.quarter),
+                    y: .value("m²単価(万)", manPrice),
+                    series: .value("系列", "区")
+                )
+                .foregroundStyle(Color.accentColor)
+                .interpolationMethod(.catmullRom)
+                .lineStyle(StrokeStyle(lineWidth: 2))
+
+                PointMark(
+                    x: .value("四半期", qp.quarter),
+                    y: .value("m²単価(万)", manPrice)
+                )
+                .foregroundStyle(Color.accentColor)
+                .symbolSize(pointSize)
+            }
+
+            ForEach(Array(stationQuarterly.enumerated()), id: \.element.quarter) { _, qp in
+                let manPrice = Double(qp.medianM2Price) / 10000.0
+                LineMark(
+                    x: .value("四半期", qp.quarter),
+                    y: .value("m²単価(万)", manPrice),
+                    series: .value("系列", "駅")
+                )
+                .foregroundStyle(Color.indigo)
+                .interpolationMethod(.catmullRom)
+                .lineStyle(StrokeStyle(lineWidth: 2, dash: [6, 3]))
+
+                PointMark(
+                    x: .value("四半期", qp.quarter),
+                    y: .value("m²単価(万)", manPrice)
+                )
+                .foregroundStyle(Color.indigo)
+                .symbolSize(pointSize)
+            }
+
+            listingRuleMark
+        }
+        .chartXScale(domain: sortedLabels)
+        .chartYAxis { yAxisMarks }
+        .chartXAxis {
+            AxisMarks { value in
+                if let label = value.as(String.self) {
+                    if label.hasSuffix("Q1") {
+                        AxisGridLine()
+                        AxisTick()
+                        AxisValueLabel {
+                            // "2024Q1" → "24'"
+                            Text(shortYear(String(label.prefix(4))))
+                                .font(.caption2)
+                        }
+                    } else {
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))
+                    }
+                }
+            }
+        }
+        .chartLegend(.hidden)
+    }
+
+    // MARK: - 共通パーツ
+
+    @ChartContentBuilder
+    private var listingRuleMark: some ChartContent {
+        if let listingPrice = listingM2Price {
+            let manPrice = listingPrice / 10000.0
+            RuleMark(y: .value("物件m²単価", manPrice))
+                .foregroundStyle(.red.opacity(0.6))
+                .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
+                .annotation(position: .top, alignment: .trailing) {
+                    Text("本物件")
+                        .font(.caption2)
+                        .foregroundStyle(.red)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
+                        .background(Color.red.opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 3))
+                }
+        }
+    }
+
+    private var yAxisMarks: some AxisContent {
+        AxisMarks(position: .leading) { value in
+            AxisGridLine()
+            AxisValueLabel {
+                if let v = value.as(Double.self) {
+                    Text(String(format: "%.0f万", v))
+                        .font(.caption2)
+                }
+            }
+        }
+    }
+
+    private var legendView: some View {
+        HStack(spacing: 12) {
+            HStack(spacing: 4) {
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(Color.accentColor)
+                    .frame(width: 16, height: 2)
+                Text("区全体")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+            }
+            HStack(spacing: 4) {
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(Color.indigo)
+                    .frame(width: 16, height: 2)
+                Text("\(stationName ?? "駅")駅圏")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+            }
+            HStack(spacing: 4) {
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(Color.red.opacity(0.6))
+                    .frame(width: 16, height: 2)
+                Text("本物件")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.top, 4)
+    }
+
+    /// "2024" → "24'"
+    private func shortYear(_ year: String) -> String {
+        if year.count == 4 {
+            return String(year.suffix(2)) + "'"
+        }
+        return year
     }
 }

@@ -542,6 +542,8 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
 
     # 駅レベル価格データ（正規化キーで索引）
     station_by_name: Dict[str, dict] = {}
+    # 区別 年次推移（駅データから集計）
+    ward_yearly_prices: Dict[str, List[dict]] = {}
     if station_price_data:
         by_station = station_price_data.get("by_station", {})
         for sname, sdata in by_station.items():
@@ -552,6 +554,30 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
             # 原名でも引けるように
             if sname != normalized_key:
                 station_by_name[sname] = sdata
+
+        # ── 駅データから区レベルの年次 m² 単価を集計 ──
+        _ward_year_prices: Dict[str, Dict[str, List[int]]] = {}
+        for sname, sdata in by_station.items():
+            w = sdata.get("ward", "")
+            if not w:
+                continue
+            for yr, yd in sdata.get("years", {}).items():
+                med = yd.get("median_m2_price")
+                if med and med > 0:
+                    _ward_year_prices.setdefault(w, {}).setdefault(yr, []).append(med)
+        for w, year_dict in _ward_year_prices.items():
+            yearly = []
+            for yr in sorted(year_dict.keys()):
+                prices_list = year_dict[yr]
+                if prices_list:
+                    med = int(statistics.median(prices_list))
+                    yearly.append({
+                        "year": yr,
+                        "median_m2_price": med,
+                        "count": len(prices_list),
+                    })
+            ward_yearly_prices[w] = yearly
+
         print(
             f"駅レベル価格データ: {len(by_station)} 駅読み込み",
             file=sys.stderr,
@@ -706,6 +732,7 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
             "trend": trend,
             "yoy_change_pct": yoy,
             "quarterly_m2_prices": quarterly_prices,
+            "yearly_m2_prices": ward_yearly_prices.get(ward, []),
             # 同一マンション事例
             "same_building_transactions": same_building_txs,
             # 駅レベル比較
