@@ -308,19 +308,61 @@ def search_property(session: requests.Session, name: str, cache: dict) -> Option
 
 
 def _extract_search_result_inline(soup: BeautifulSoup, prop_url: str) -> dict:
-    """検索結果カードから値上がり率・沖式中古時価をインライン抽出する。"""
-    result: dict = {}
-    page_text = soup.get_text()
+    """検索結果カードから値上がり率・沖式中古時価70m2をインライン抽出する。
 
-    # 検索結果カードの値上がり率: "値上がり率 79.2%"
+    検索結果一覧ページの物件カードには「沖式中古時価70m2換算」が明示的に
+    表示される。物件詳細ページではヘルプ文の例示値（「例：7,000万円」等）を
+    正規表現が誤取得するリスクがあるため、一覧ページの値を優先データソースとする。
+    """
+    result: dict = {}
+
+    # prop_url から re_id を取得してカード要素を特定
+    re_match = re.search(r"/re/(\d+)/?", prop_url)
+    if not re_match:
+        return result
+    re_id = re_match.group(1)
+
+    card_text = _find_property_card_text(soup, re_id)
+    if not card_text:
+        # フォールバック: ページ全体のテキスト（単一検索結果の場合）
+        card_text = soup.get_text()
+
+    # 値上がり率: "値上がり率 79.2%"
     # ※ 取得にはログインが必須（非ログイン時は "XX.X%" でマスクされる）。
     #   正規表現が数値のみにマッチするため "XX.X%" は自然に除外されるが、
     #   必ずログイン済みセッションで呼び出すこと。
-    m = re.search(r"値上(?:が|り)り率\s*(\d+(?:\.\d+)?)\s*[%％]", page_text)
+    m = re.search(r"値上(?:が|り)り率\s*(\d+(?:\.\d+)?)\s*[%％]", card_text)
     if m:
         result["appreciation_rate"] = float(m.group(1))
 
+    # 沖式中古時価70m2換算: "8,400万円"
+    m = re.search(r"沖式中古時価\s*70\s*m?\s*[2²]?\s*換算\s*([\d,]+)\s*万円", card_text)
+    if m:
+        val = int(m.group(1).replace(",", ""))
+        if val >= 1500:
+            result["oki_price_70m2"] = val
+
     return result
+
+
+def _find_property_card_text(soup: BeautifulSoup, re_id: str) -> Optional[str]:
+    """検索結果ページから指定 re_id の物件カード要素のテキストを返す。
+
+    物件カードは「沖式中古時価」「値上がり率」を含む最小の祖先要素として特定する。
+    ページ全体（10,000文字超）を誤取得しないよう、文字数上限 2,000 でガードする。
+    """
+    for a in soup.find_all("a", href=re.compile(rf"/re/{re_id}/?")):
+        parent = a
+        for _ in range(15):
+            parent = parent.parent
+            if parent is None:
+                break
+            text = parent.get_text(separator=" ")
+            # カード要素は「沖式中古時価」と「値上がり率」を含み、
+            # ページ全体でないことを文字数で確認
+            if "沖式中古時価" in text and "値上がり率" in text and len(text) < 2000:
+                return text
+    return None
 
 
 
@@ -895,8 +937,14 @@ def _extract_profit_pct(soup: BeautifulSoup, html: str) -> Optional[int]:
 def _extract_oki_price_chuko(soup: BeautifulSoup, html: str) -> Optional[int]:
     """沖式中古時価（70m²換算, 万円）を抽出。中古専用。
 
-    注意: "沖式中古時価m²単価" (㎡あたりの単価) を誤取得しないよう、
-    70m² 換算パターンを優先し、m²単価パターンを除外する。
+    注意:
+    - "沖式中古時価m²単価" (㎡あたりの単価) を誤取得しないよう、
+      70m² 換算パターンを優先し、m²単価パターンを除外する。
+    - ページ下部のヘルプ文（用語説明）に含まれる例示値
+      （「例：7,000万円　⇒　沖式中古時価 100万/㎡」等）を誤取得しないよう、
+      マッチ直前に「例」が出現するケースを除外する。
+    - 検索結果一覧からの取得 (oki_price_70m2) を優先データソースとするため、
+      この関数はフォールバック位置づけ。
     """
     patterns = [
         # 優先: "沖式中古時価(70m2換算) X,XXX万円" — 最も確実
@@ -907,6 +955,10 @@ def _extract_oki_price_chuko(soup: BeautifulSoup, html: str) -> Optional[int]:
     for pat in patterns:
         m = re.search(pat, html, re.DOTALL)
         if m:
+            # ヘルプ文の例示値を除外（「例：7,000万円」等のサンプルデータ）
+            context_before = html[max(0, m.start(1) - 20):m.start(1)]
+            if re.search(r"例\s*[：:]", context_before):
+                continue
             val = int(m.group(1).replace(",", ""))
             # 70m² 換算の時価は最低でも 1500 万円以上（㎡単価等の誤取得を防止）
             if val >= 1500:
@@ -1752,7 +1804,12 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         else:
             data = parse_shinchiku_page(session, prop_url)
 
-        # 検索結果のインラインデータで補完（detail ページで取得できなかった場合）
+        # 検索結果のインラインデータで補完・上書き
+        # 沖式中古時価: 検索結果一覧の値を優先
+        # （詳細ページの正規表現はヘルプ文の例示値「例：7,000万円」等を誤取得することがある）
+        if inline_data.get("oki_price_70m2") is not None:
+            data["ss_oki_price_70m2"] = inline_data["oki_price_70m2"]
+        # 値上がり率: detail ページで取得できなかった場合のフォールバック
         if "ss_appreciation_rate" not in data and inline_data.get("appreciation_rate"):
             data["ss_appreciation_rate"] = inline_data["appreciation_rate"]
 
