@@ -959,16 +959,21 @@ final class Listing: @unchecked Sendable {
             return j
         }
         // 3. 中古のみ: 沖式中古時価との比較で計算（フォールバック）
+        //    住まいサーフィンの閾値: 割安(10%〜), やや割安(3.1〜9.9%), 適正(-8〜3%), やや割高(-8.1〜-14.9%), 割高(-15%〜)
         guard !isShinchiku,
               let okiForArea = ssOkiPriceForArea, okiForArea > 0,
               let price = priceMan, price > 0 else {
             return nil
         }
-        let ratio = Double(price) / Double(okiForArea)
-        if ratio <= 0.95 {
+        let diffRate = (Double(price) - Double(okiForArea)) / Double(okiForArea)
+        if diffRate <= -0.15 {
             return "割安"
-        } else if ratio <= 1.10 {
-            return "適正"
+        } else if diffRate <= -0.081 {
+            return "やや割安"
+        } else if diffRate <= 0.03 {
+            return "適正価格"
+        } else if diffRate <= 0.10 {
+            return "やや割高"
         } else {
             return "割高"
         }

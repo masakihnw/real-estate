@@ -805,8 +805,8 @@ struct ListingRowView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 3))
                     }
 
-                    // 偏差値バッジ（平均偏差値）
-                    if let avg = listing.averageDeviation {
+                    // 偏差値バッジ（平均偏差値）— 新築では不要のため非表示
+                    if !listing.isShinchiku, let avg = listing.averageDeviation {
                         DeviationBadge(value: avg)
                     }
 
