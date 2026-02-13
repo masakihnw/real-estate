@@ -207,13 +207,13 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
     python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "ハザード enrichment (新築) 失敗（続行）" >&2
 fi
 
-# 4.7c. 通勤時間 enrichment（廃止: iOS アプリ側で Apple Maps MKDirections を使って正確に計算する方式に移行）
-# 駅名ベースの概算は精度が低いため、パイプラインからの付与を停止
-# echo "通勤時間 enrichment 実行中..." >&2
-# python3 commute_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "通勤時間 enrichment (中古) 失敗（続行）" >&2
-# if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-#     python3 commute_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "通勤時間 enrichment (新築) 失敗（続行）" >&2
-# fi
+# 4.7c. 通勤時間 enrichment（駅名ベースのドアtoドア概算。iOS で事前表示するために付与）
+# iOS 実機では MKDirections がより正確な経路で上書きするが、初期表示用として有用
+echo "通勤時間 enrichment 実行中..." >&2
+python3 commute_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "通勤時間 enrichment (中古) 失敗（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 commute_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "通勤時間 enrichment (新築) 失敗（続行）" >&2
+fi
 
 # 4.7d. 不動産情報ライブラリ enrichment（区別成約価格相場の付与。API は叩かず、事前構築キャッシュを参照）
 if [ -f "data/reinfolib_prices.json" ]; then

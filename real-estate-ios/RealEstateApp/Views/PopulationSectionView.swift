@@ -143,13 +143,14 @@ struct PopulationSectionView: View {
                         y: .value("人口(万人)", manPop)
                     )
                     .foregroundStyle(Color.accentColor)
-                    .interpolationMethod(.catmullRom)
+                    .interpolationMethod(.monotone)
                     .lineStyle(StrokeStyle(lineWidth: 2))
 
                     AreaMark(
                         x: .value("年", entry.year),
                         y: .value("人口(万人)", manPop)
                     )
+                    .interpolationMethod(.monotone)
                     .foregroundStyle(
                         LinearGradient(
                             colors: [Color.accentColor.opacity(0.15), Color.accentColor.opacity(0.01)],

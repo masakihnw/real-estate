@@ -21,7 +21,7 @@ struct MonthlyPaymentSimulationView: View {
     @State private var downPaymentMan: Double = 0                         // 頭金（万円）
 
     // MARK: - 返済期間の選択肢
-    private static let yearOptions: [Int] = Array(stride(from: 5, through: 50, by: 5))
+    private static let yearOptions: [Int] = [20, 30, 35, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
 
     // MARK: - 計算値
 
@@ -116,23 +116,50 @@ struct MonthlyPaymentSimulationView: View {
                 HStack {
                     Text("\(interestRate, specifier: "%.2f")%")
                         .font(.system(.subheadline, design: .rounded).weight(.medium))
-                        .frame(width: 56, alignment: .trailing)
+                    Spacer()
                     Stepper("", value: $interestRate, in: 0.1...5.0, step: 0.01)
                         .labelsHidden()
                 }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
+                .background(Color(.systemGray6))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .stroke(Color(.systemGray4), lineWidth: 0.5)
+                )
             }
 
-            // 返済期間
+            // 返済期間（プルダウン）
             VStack(alignment: .leading, spacing: 4) {
                 Text("返済期間")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Picker("返済期間", selection: $loanYears) {
-                    ForEach(Self.yearOptions, id: \.self) { year in
-                        Text("\(year)年").tag(year)
+                Menu {
+                    Picker("返済期間", selection: $loanYears) {
+                        ForEach(Self.yearOptions, id: \.self) { year in
+                            Text("\(year)年").tag(year)
+                        }
                     }
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("\(loanYears)年")
+                            .font(.system(.subheadline, design: .rounded).weight(.medium))
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Image(systemName: "chevron.up.chevron.down")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color(.systemGray4), lineWidth: 0.5)
+                    )
                 }
-                .pickerStyle(.segmented)
             }
 
             // 頭金
@@ -144,13 +171,21 @@ struct MonthlyPaymentSimulationView: View {
                     HStack {
                         Text("\(Int(downPaymentMan))万円")
                             .font(.system(.subheadline, design: .rounded).weight(.medium))
-                            .frame(width: 80, alignment: .trailing)
+                            .frame(width: 80, alignment: .leading)
                         Slider(
                             value: $downPaymentMan,
                             in: 0...maxDownPayment,
                             step: max(maxDownPayment / 100, 10)
                         )
                     }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 4)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color(.systemGray4), lineWidth: 0.5)
+                    )
                 }
             }
 

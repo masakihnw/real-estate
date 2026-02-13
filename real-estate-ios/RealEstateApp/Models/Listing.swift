@@ -1107,17 +1107,23 @@ final class Listing: @unchecked Sendable {
             if stormSurge { results.append(("wind", "高潮浸水", .warning)) }
             if tsunami { results.append(("water.waves", "津波浸水", .danger)) }
             if liquefaction { results.append(("waveform.path.ecg", "液状化", .warning)) }
+            // 東京都地域危険度: コンパクトな1ラベルにまとめる（例: "建物倒壊3、火災4"）
+            var riskParts: [String] = []
+            var maxRiskSev: HazardSeverity = .warning
             if buildingCollapse >= 3 {
-                let sev: HazardSeverity = buildingCollapse >= 4 ? .danger : .warning
-                results.append(("building.2.crop.circle", "建物倒壊 ランク\(buildingCollapse)", sev))
+                riskParts.append("建物倒壊\(buildingCollapse)")
+                if buildingCollapse >= 4 { maxRiskSev = .danger }
             }
             if fire >= 3 {
-                let sev: HazardSeverity = fire >= 4 ? .danger : .warning
-                results.append(("flame.fill", "火災 ランク\(fire)", sev))
+                riskParts.append("火災\(fire)")
+                if fire >= 4 { maxRiskSev = .danger }
             }
             if combined >= 3 {
-                let sev: HazardSeverity = combined >= 4 ? .danger : .warning
-                results.append(("exclamationmark.triangle.fill", "総合危険度 ランク\(combined)", sev))
+                riskParts.append("総合\(combined)")
+                if combined >= 4 { maxRiskSev = .danger }
+            }
+            if !riskParts.isEmpty {
+                results.append(("exclamationmark.triangle.fill", riskParts.joined(separator: "、"), maxRiskSev))
             }
             return results
         }
@@ -1967,7 +1973,7 @@ extension Listing {
             latitude: dto.latitude,
             longitude: dto.longitude,
             hazardInfo: dto.hazard_info,
-            // commuteInfoJSON: JSON 概算は使わず Apple Maps (MKDirections) で正確に計算する
+            commuteInfoJSON: dto.commute_info,
             ssLookupStatus: dto.ss_lookup_status,
             ssProfitPct: dto.ss_profit_pct,
             ssOkiPrice70m2: dto.ss_oki_price_70m2,

@@ -177,12 +177,23 @@ final class CommuteTimeService {
 
         // Playground への経路
         if let pgResult = await Self.calculateRoute(from: origin, to: _RouteCoordinates.playground, destinationName: _RouteCoordinates.playgroundName) {
-            commuteData.playground = pgResult
+            // ダウングレード防止: 既存がパイプライン/MKDirections の正規経路で、新結果がフォールバック概算の場合は上書きしない
+            let existingIsBetter = commuteData.playground != nil
+                && !commuteData.playground!.isFallbackEstimate
+                && pgResult.isFallbackEstimate
+            if !existingIsBetter {
+                commuteData.playground = pgResult
+            }
         }
 
         // エムスリーキャリアへの経路
         if let m3Result = await Self.calculateRoute(from: origin, to: _RouteCoordinates.m3career, destinationName: _RouteCoordinates.m3careerName) {
-            commuteData.m3career = m3Result
+            let existingIsBetter = commuteData.m3career != nil
+                && !commuteData.m3career!.isFallbackEstimate
+                && m3Result.isFallbackEstimate
+            if !existingIsBetter {
+                commuteData.m3career = m3Result
+            }
         }
 
         return commuteData.encode()
@@ -196,6 +207,11 @@ final class CommuteTimeService {
         to destination: CLLocationCoordinate2D,
         destinationName: String
     ) async -> CommuteDestination? {
+        #if targetEnvironment(simulator)
+        // シミュレータでは MKDirections Transit が利用不可のためフォールバック概算を使用
+        print("[CommuteTimeService] ⚠️ シミュレータでは MKDirections Transit は利用不可。フォールバック概算を使用 → \(destinationName)")
+        return await Self.calculateFallbackRoute(from: origin, to: destination, destinationName: destinationName)
+        #else
         // 1st attempt: departureDate 指定（次の平日朝 8:00 出発）
         if let result = await Self.attemptTransitRoute(
             from: origin, to: destination, destinationName: destinationName,
@@ -215,9 +231,21 @@ final class CommuteTimeService {
             return result
         }
 
+        // 短い待機後に3回目のリトライ
+        try? await Task.sleep(nanoseconds: 2_000_000_000) // 2秒
+
+        // 3rd attempt: arrivalDate 指定（次の平日朝 9:00 到着）
+        if let result = await Self.attemptTransitRoute(
+            from: origin, to: destination, destinationName: destinationName,
+            arrivalDate: Self.nextWeekdayMorning(hour: 9)
+        ) {
+            return result
+        }
+
         // 全て失敗した場合のみフォールバック
-        print("[CommuteTimeService] 全リトライ失敗、フォールバック概算 → \(destinationName)")
+        print("[CommuteTimeService] 全リトライ失敗（3回）、フォールバック概算 → \(destinationName)")
         return await Self.calculateFallbackRoute(from: origin, to: destination, destinationName: destinationName)
+        #endif
     }
 
     /// MKDirections で Transit 経路を1回試行
@@ -225,15 +253,20 @@ final class CommuteTimeService {
         from origin: CLLocationCoordinate2D,
         to destination: CLLocationCoordinate2D,
         destinationName: String,
-        departureDate: Date?
+        departureDate: Date? = nil,
+        arrivalDate: Date? = nil
     ) async -> CommuteDestination? {
         let request = MKDirections.Request()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: origin))
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination))
         request.transportType = .transit
+        request.requestsAlternateRoutes = true
 
         if let departureDate {
             request.departureDate = departureDate
+        }
+        if let arrivalDate {
+            request.arrivalDate = arrivalDate
         }
 
         let directions = MKDirections(request: request)
@@ -256,8 +289,16 @@ final class CommuteTimeService {
                 calculatedAt: Date()
             )
         } catch {
-            let dateDesc = departureDate.map { "departure=\($0)" } ?? "no date"
-            print("[CommuteTimeService] 経路計算失敗 (\(dateDesc)) → \(destinationName): \(error.localizedDescription)")
+            let dateDesc: String
+            if let departureDate {
+                dateDesc = "departure=\(departureDate)"
+            } else if let arrivalDate {
+                dateDesc = "arrival=\(arrivalDate)"
+            } else {
+                dateDesc = "no date"
+            }
+            let errorCode = (error as? MKError).map { String($0.errorCode) } ?? "unknown"
+            print("[CommuteTimeService] 経路計算失敗 (\(dateDesc)) → \(destinationName): code=\(errorCode) \(error.localizedDescription)")
             return nil
         }
     }
@@ -326,11 +367,11 @@ final class CommuteTimeService {
         return max(0, transitSteps.count - 1)
     }
 
-    /// 次の平日（月〜金）の朝8:00 を返す（出発時刻として使用）
-    nonisolated private static func nextWeekdayMorning() -> Date {
+    /// 次の平日（月〜金）の指定時刻を返す（出発/到着時刻として使用）
+    nonisolated private static func nextWeekdayMorning(hour: Int = 8) -> Date {
         let calendar = Calendar(identifier: .gregorian)
-        var components = calendar.dateComponents([.year, .month, .day, .weekday], from: Date())
-        components.hour = 8
+        var components = calendar.dateComponents([.year, .month, .day], from: Date())
+        components.hour = hour
         components.minute = 0
         components.second = 0
 

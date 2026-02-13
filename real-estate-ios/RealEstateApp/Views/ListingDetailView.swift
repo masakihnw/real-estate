@@ -28,6 +28,8 @@ struct ListingDetailView: View {
     @State private var safariURL: URL?
     /// HIG: 破壊的操作の確認用（コメント削除）
     @State private var deletingCommentId: String?
+    /// 通勤時間計算中フラグ
+    @State private var isCalculatingCommute = false
 
     var body: some View {
         NavigationStack {
@@ -60,7 +62,12 @@ struct ListingDetailView: View {
                     // ⑤ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
                     propertyInfoSection
 
-                    // ⑤-b 通勤時間
+                    // ⑥ 月額支払いシミュレーション（中古・新築共通）
+                    if let priceMan = listing.priceMan, priceMan > 0 {
+                        MonthlyPaymentSimulationView(listing: listing)
+                    }
+
+                    // ⑦ 通勤時間
                     if listing.hasCommuteInfo {
                         Divider()
                         commuteSection
@@ -69,28 +76,16 @@ struct ListingDetailView: View {
                         commuteCalculateSection
                     }
 
-                    // ⑤-c 成約相場との比較（不動産情報ライブラリ）
-                    if listing.hasMarketData {
-                        Divider()
-                        MarketDataSectionView(listing: listing)
-                    }
-
-                    // ⑤-d エリア人口動態（e-Stat）
-                    if listing.hasPopulationData {
-                        Divider()
-                        PopulationSectionView(listing: listing)
-                    }
-
                     Divider()
 
-                    // ⑥ 住まいサーフィン評価
+                    // ⑧ 住まいサーフィン評価
                     if listing.hasSumaiSurfinData {
                         sumaiSurfinSection
                     } else {
                         sumaiSurfinUnavailableNotice
                     }
 
-                    // ⑥-b 周辺相場（住まいサーフィン）
+                    // ⑧-b 周辺相場（住まいサーフィン）
                     if listing.hasSurroundingProperties {
                         Divider()
                         surroundingPropertiesSection
@@ -98,21 +93,25 @@ struct ListingDetailView: View {
                             .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
                     }
 
-                    // ⑥-c 販売価格割安判定
-                    if listing.hasPriceJudgments {
-                        Divider()
-                        priceJudgmentsSection
-                            .padding(14)
-                            .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
-                    }
-
-                    // 値上がり・含み益シミュレーション
+                    // ⑨ 値上がり・含み益シミュレーション
                     if listing.hasSimulationData {
                         Divider()
                         SimulationSectionView(listing: listing)
                     }
 
-                    // ⑦ ハザード情報（低ランクでもデータがあれば表示）
+                    // ⑩ 成約相場との比較（不動産情報ライブラリ）
+                    if listing.hasMarketData {
+                        Divider()
+                        MarketDataSectionView(listing: listing)
+                    }
+
+                    // ⑪ エリア人口動態（e-Stat）
+                    if listing.hasPopulationData {
+                        Divider()
+                        PopulationSectionView(listing: listing)
+                    }
+
+                    // ⑫ ハザード情報（低ランクでもデータがあれば表示）
                     if listing.hasHazardData {
                         Divider()
                         hazardSection
@@ -120,7 +119,7 @@ struct ListingDetailView: View {
 
                     Divider()
 
-                    // ⑧ 外部サイトボタン or 掲載終了メッセージ
+                    // ⑬ 外部サイトボタン or 掲載終了メッセージ
                     if listing.isDelisted {
                         delistedNotice
                     } else {
@@ -268,11 +267,6 @@ struct ListingDetailView: View {
             DetailRow(title: "種別", value: listing.isShinchiku ? "新築マンション" : "中古マンション")
         }
         .listingGlassBackground()
-
-        // 月額支払いシミュレーション（中古・新築共通）
-        if let priceMan = listing.priceMan, priceMan > 0 {
-            MonthlyPaymentSimulationView(listing: listing)
-        }
     }
 
     @ViewBuilder
@@ -679,6 +673,43 @@ struct ListingDetailView: View {
                 .accessibilityLabel("エムスリーキャリアへの通勤経路を Google Maps で開く")
             }
 
+            // フォールバック概算の場合は再計算ボタン
+            if commute.hasFallbackEstimate {
+                Button {
+                    guard !isCalculatingCommute else { return }
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    isCalculatingCommute = true
+                    Task {
+                        await CommuteTimeService.shared.calculateForListing(listing, modelContext: modelContext)
+                        saveContext()
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            isCalculatingCommute = false
+                        }
+                        let generator = UINotificationFeedbackGenerator()
+                        generator.notificationOccurred(
+                            listing.parsedCommuteInfo.hasFallbackEstimate ? .warning : .success
+                        )
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        if isCalculatingCommute {
+                            ProgressView()
+                                .controlSize(.small)
+                            Text("再検索中...")
+                        } else {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                            Text("正確な経路を再検索")
+                        }
+                    }
+                    .font(.caption)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                }
+                .buttonStyle(.bordered)
+                .tint(.orange)
+                .disabled(isCalculatingCommute)
+            }
+
             // 注釈
             VStack(alignment: .leading, spacing: 2) {
                 Text("※ Apple Maps の公共交通機関経路に基づく自動計算です")
@@ -689,6 +720,7 @@ struct ListingDetailView: View {
         }
         .padding(14)
         .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+        .animation(.easeInOut(duration: 0.2), value: isCalculatingCommute)
     }
 
     @ViewBuilder
@@ -772,23 +804,50 @@ struct ListingDetailView: View {
                 .foregroundStyle(.secondary)
 
             Button {
+                guard !isCalculatingCommute else { return }
+                // 押下時の触覚フィードバック
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                isCalculatingCommute = true
                 Task {
                     await CommuteTimeService.shared.calculateForListing(listing, modelContext: modelContext)
                     saveContext()
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        isCalculatingCommute = false
+                    }
+                    // 完了時の触覚フィードバック
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(
+                        listing.parsedCommuteInfo.hasFallbackEstimate ? .warning : .success
+                    )
                 }
             } label: {
-                HStack {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                    Text("通勤時間を計算する")
+                HStack(spacing: 8) {
+                    if isCalculatingCommute {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("経路を検索中...")
+                    } else {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                        Text("通勤時間を計算する")
+                    }
                 }
                 .font(.subheadline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
             }
             .buttonStyle(.bordered)
+            .disabled(isCalculatingCommute)
+
+            if isCalculatingCommute {
+                Text("※ Apple Maps の公共交通機関経路を検索しています（数十秒かかる場合があります）")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .transition(.opacity)
+            }
         }
         .padding(14)
         .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+        .animation(.easeInOut(duration: 0.2), value: isCalculatingCommute)
     }
 
     // MARK: - ハザード情報セクション
@@ -1067,6 +1126,12 @@ struct ListingDetailView: View {
                     }
                     Spacer()
                 }
+            }
+
+            // 販売価格割安判定（住まいサーフィン評価の一部として表示）
+            if listing.hasPriceJudgments {
+                Divider()
+                priceJudgmentsSection
             }
         }
         .padding(14)
@@ -1468,7 +1533,7 @@ struct ListingDetailView: View {
         }
     }
 
-    // MARK: - 販売価格割安判定（中古のみ）
+    // MARK: - 販売価格割安判定（住まいサーフィン評価セクション内に表示）
 
     @ViewBuilder
     private var priceJudgmentsSection: some View {
