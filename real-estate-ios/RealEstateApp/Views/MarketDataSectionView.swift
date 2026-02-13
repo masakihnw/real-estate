@@ -42,7 +42,7 @@ struct MarketDataSectionView: View {
                 }
 
                 // ── 四半期推移チャート ──
-                if market.quarterlyM2Prices.count >= 3 || market.station?.quarterlyM2Prices.count ?? 0 >= 3 {
+                if market.quarterlyM2Prices.count >= 3 || (market.station?.quarterlyM2Prices.count ?? 0) >= 3 {
                     Divider()
                     trendChartSection(market)
                 }
@@ -68,7 +68,7 @@ struct MarketDataSectionView: View {
             // メイン: 乖離率表示
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("掲載価格 vs 成約相場")
+                    Text("掲載価格 vs 類似物件成約相場")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Text(market.priceRatioDisplay)
@@ -131,18 +131,19 @@ struct MarketDataSectionView: View {
             spacing: 10
         ) {
             areaInfoCell(
-                title: "成約相場",
+                title: "類似物件相場",
                 value: market.wardMedianM2PriceManDisplay,
-                icon: "yensign.circle"
+                icon: "yensign.circle",
+                subtitle: market.matchDescription
             )
             areaInfoCell(
-                title: "エリアトレンド",
+                title: "\(market.ward)トレンド",
                 value: market.trendDisplay,
                 icon: market.trendIconName,
                 color: trendColor(market.trend)
             )
             areaInfoCell(
-                title: "前年比",
+                title: "\(market.ward)前年比",
                 value: market.yoyDisplay,
                 icon: "chart.line.uptrend.xyaxis",
                 color: yoyColor(market.yoyChangePct)
@@ -155,9 +156,10 @@ struct MarketDataSectionView: View {
         title: String,
         value: String,
         icon: String,
-        color: Color = .primary
+        color: Color = .primary,
+        subtitle: String? = nil
     ) -> some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 3) {
             Image(systemName: icon)
                 .font(.system(size: 16))
                 .foregroundStyle(color)
@@ -170,9 +172,20 @@ struct MarketDataSectionView: View {
             Text(title)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            if let subtitle {
+                Text(subtitle)
+                    .font(.system(size: 8))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                    .multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
+        .padding(.horizontal, 4)
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .fill(Color(.systemGray6).opacity(0.5))
@@ -201,10 +214,10 @@ struct MarketDataSectionView: View {
             }
 
             ForEach(
-                Array(market.sameBuildingTransactions.prefix(5).enumerated()),
-                id: \.offset
-            ) { _, tx in
-                sameBuildingTransactionRow(tx)
+                0..<min(market.sameBuildingTransactions.count, 5),
+                id: \.self
+            ) { index in
+                sameBuildingTransactionRow(market.sameBuildingTransactions[index])
             }
 
             if market.sameBuildingTransactions.count > 5 {
@@ -448,11 +461,19 @@ struct MarketTrendChart: View {
     /// 凡例表示が必要か（駅データがある場合）
     private var showLegend: Bool { !stationQuarterlyPrices.isEmpty }
 
+    /// 区 + 駅の全四半期ラベルをマージ＆ソートした配列（X軸の正しい時系列順を保証）
+    private var sortedAllQuarters: [String] {
+        let wardLabels = quarterlyPrices.map(\.quarter)
+        let stationLabels = stationQuarterlyPrices.map(\.quarter)
+        let unique = Set(wardLabels + stationLabels)
+        return unique.sorted()          // "2021Q1" < "2024Q1" < "2025Q3" — 辞書順 = 時系列順
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Chart {
                 // 区レベル成約相場の推移
-                ForEach(Array(quarterlyPrices.enumerated()), id: \.offset) { _, qp in
+                ForEach(Array(quarterlyPrices.enumerated()), id: \.element.quarter) { _, qp in
                     let manPrice = Double(qp.medianM2Price) / 10000.0
                     LineMark(
                         x: .value("四半期", qp.quarter),
@@ -472,7 +493,7 @@ struct MarketTrendChart: View {
                 }
 
                 // 駅レベル成約相場の推移（オーバーレイ）
-                ForEach(Array(stationQuarterlyPrices.enumerated()), id: \.offset) { _, qp in
+                ForEach(Array(stationQuarterlyPrices.enumerated()), id: \.element.quarter) { _, qp in
                     let manPrice = Double(qp.medianM2Price) / 10000.0
                     LineMark(
                         x: .value("四半期", qp.quarter),
@@ -508,6 +529,7 @@ struct MarketTrendChart: View {
                         }
                 }
             }
+            .chartXScale(domain: sortedAllQuarters)
             .chartYAxis {
                 AxisMarks(position: .leading) { value in
                     AxisGridLine()

@@ -11,19 +11,19 @@ import MapKit
 import SwiftData
 import UIKit
 
+/// 経路計算用の定数（MainActor に依存せずバックグラウンドで参照可能）
+private enum _RouteCoordinates {
+    static let playground = CLLocationCoordinate2D(latitude: 35.688449, longitude: 139.743415)
+    static let playgroundName = "Playground株式会社"
+    static let m3career = CLLocationCoordinate2D(latitude: 35.666018, longitude: 139.743807)
+    static let m3careerName = "エムスリーキャリア"
+}
+
 @MainActor
 final class CommuteTimeService {
     static let shared = CommuteTimeService()
 
-    // MARK: - 目的地定義
-
-    /// Playground株式会社（〒102-0082 千代田区一番町4-6）
-    static let playgroundCoordinate = CLLocationCoordinate2D(latitude: 35.688449, longitude: 139.743415)
-    static let playgroundName = "Playground株式会社"
-
-    /// エムスリーキャリア株式会社（〒105-0001 港区虎ノ門4丁目1-28）
-    static let m3careerCoordinate = CLLocationCoordinate2D(latitude: 35.666018, longitude: 139.743807)
-    static let m3careerName = "エムスリーキャリア"
+    // MARK: - 目的地定義（_RouteCoordinates を参照、MainActor 非依存の実体はファイル先頭）
 
     /// 経路計算中かどうか
     private(set) var isCalculating = false
@@ -53,15 +53,15 @@ final class CommuteTimeService {
 
         var coordinate: CLLocationCoordinate2D {
             switch self {
-            case .playground: return CommuteTimeService.playgroundCoordinate
-            case .m3career: return CommuteTimeService.m3careerCoordinate
+            case .playground: return _RouteCoordinates.playground
+            case .m3career: return _RouteCoordinates.m3career
             }
         }
 
         var name: String {
             switch self {
-            case .playground: return CommuteTimeService.playgroundName
-            case .m3career: return CommuteTimeService.m3careerName
+            case .playground: return _RouteCoordinates.playgroundName
+            case .m3career: return _RouteCoordinates.m3careerName
             }
         }
     }
@@ -71,7 +71,6 @@ final class CommuteTimeService {
         guard let lat = listing.latitude, let lon = listing.longitude else { return }
 
         let dest = destination.coordinate
-        let destName = destination.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
 
         // Google Maps アプリがインストールされている場合はアプリで開く
         let appURLString = "comgooglemaps://?saddr=\(lat),\(lon)&daddr=\(dest.latitude),\(dest.longitude)&directionsmode=transit"
@@ -90,8 +89,11 @@ final class CommuteTimeService {
 
     // MARK: - バッチ計算
 
-    /// 座標を持つ全物件の通勤時間を計算（未計算 or 7日以上経過のみ）
-    func calculateForAllListings(modelContext: ModelContext) async {
+    /// 座標を持つ物件の通勤時間を計算
+    /// - 未計算の物件: 新規計算
+    /// - フォールバック概算（経路情報取得不可）の物件: 毎回リトライ
+    /// - 正常取得済みの物件: 7日以上経過した場合のみ再計算
+    func calculateForAllListings(modelContext: ModelContext, onError: ((String) -> Void)? = nil) async {
         guard !isCalculating else { return }
         isCalculating = true
         defer { isCalculating = false }
@@ -102,81 +104,150 @@ final class CommuteTimeService {
             listings = try modelContext.fetch(descriptor)
         } catch {
             print("[CommuteTimeService] 物件一覧の取得に失敗: \(error.localizedDescription)")
+            onError?("通勤時間の取得に失敗: \(error.localizedDescription)")
             return
         }
 
         let forceAll = needsRecalculation
         let targets = listings.filter { listing in
             guard listing.hasCoordinate else { return false }
-            // 座標更新時は全件再計算
+            // 座標更新時（オフィス移転など）は全件再計算
             if forceAll { return true }
-            // 未計算 or 7日以上経過で再計算
+
             let info = listing.parsedCommuteInfo
-            if let pg = info.playground, let m3 = info.m3career {
-                let sevenDaysAgo = Date().addingTimeInterval(-7 * 24 * 3600)
-                return pg.calculatedAt < sevenDaysAgo || m3.calculatedAt < sevenDaysAgo
-            }
-            return true
+
+            // 未計算の物件は対象
+            guard let pg = info.playground, let m3 = info.m3career else { return true }
+
+            // フォールバック概算の物件は毎回リトライ（経路取得の再試行）
+            if info.hasFallbackEstimate { return true }
+
+            // 正常取得済みの物件は 7日以上経過した場合のみ再計算
+            let sevenDaysAgo = Date().addingTimeInterval(-7 * 24 * 3600)
+            return pg.calculatedAt < sevenDaysAgo || m3.calculatedAt < sevenDaysAgo
         }
         if forceAll { needsRecalculation = false }
 
-        for listing in targets {
-            await calculateForListing(listing, modelContext: modelContext)
-            // レート制限回避: リクエスト間に少し間隔を空ける
-            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5秒
+        print("[CommuteTimeService] 計算対象: \(targets.count)件 / 全\(listings.count)件")
+
+        // ループ処理をバックグラウンドへ（MKDirections はスレッドセーフ）
+        let targetsData: [(listing: Listing, lat: Double, lon: Double, existingJSON: String?)] = targets.compactMap { listing in
+            guard let lat = listing.latitude, let lon = listing.longitude else { return nil }
+            return (listing, lat, lon, listing.commuteInfoJSON)
         }
 
-        await MainActor.run { SaveErrorHandler.shared.save(modelContext, source: "CommuteTime") }
+        do {
+            try await Task.detached(priority: .userInitiated) {
+                for (listing, lat, lon, existingJSON) in targetsData {
+                    try Task.checkCancellation()
+                    let origin = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+                    let encoded = await Self.computeCommuteJSON(origin: origin, existingJSON: existingJSON)
+                    await MainActor.run {
+                        if let encoded { listing.commuteInfoJSON = encoded }
+                    }
+                    try? await Task.sleep(nanoseconds: 500_000_000) // 0.5秒（レート制限回避）
+                }
+            }.value
+        } catch {
+            print("[CommuteTimeService] 通勤時間計算に失敗: \(error.localizedDescription)")
+            onError?("通勤時間の計算に失敗: \(error.localizedDescription)")
+        }
+
+        SaveErrorHandler.shared.save(modelContext, source: "CommuteTime")
     }
 
-    /// 単一物件の通勤時間を計算
-    func calculateForListing(_ listing: Listing, modelContext: ModelContext) async {
+    /// 単一物件の通勤時間を計算（MainActor / バックグラウンドのどちらからも呼び出し可能）
+    nonisolated func calculateForListing(_ listing: Listing, modelContext: ModelContext) async {
         guard let lat = listing.latitude, let lon = listing.longitude else { return }
         let origin = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        let encoded = await Self.computeCommuteJSON(origin: origin, existingJSON: listing.commuteInfoJSON)
+        await MainActor.run {
+            if let encoded { listing.commuteInfoJSON = encoded }
+        }
+    }
 
-        var commuteData = listing.parsedCommuteInfo
+    /// 経路計算のコアロジック（非 MainActor で実行可能、MKDirections はスレッドセーフ）
+    nonisolated private static func computeCommuteJSON(origin: CLLocationCoordinate2D, existingJSON: String?) async -> String? {
+        var commuteData: CommuteData
+        if let existingJSON, let data = existingJSON.data(using: .utf8) {
+            commuteData = (try? CommuteData.decoder.decode(CommuteData.self, from: data)) ?? CommuteData()
+        } else {
+            commuteData = CommuteData()
+        }
 
         // Playground への経路
-        if let pgResult = await calculateRoute(from: origin, to: Self.playgroundCoordinate, destinationName: Self.playgroundName) {
+        if let pgResult = await Self.calculateRoute(from: origin, to: _RouteCoordinates.playground, destinationName: _RouteCoordinates.playgroundName) {
             commuteData.playground = pgResult
         }
 
         // エムスリーキャリアへの経路
-        if let m3Result = await calculateRoute(from: origin, to: Self.m3careerCoordinate, destinationName: Self.m3careerName) {
+        if let m3Result = await Self.calculateRoute(from: origin, to: _RouteCoordinates.m3career, destinationName: _RouteCoordinates.m3careerName) {
             commuteData.m3career = m3Result
         }
 
-        // encode が nil を返した場合は既存データを消さない
-        if let encoded = commuteData.encode() {
-            listing.commuteInfoJSON = encoded
-        }
+        return commuteData.encode()
     }
 
     // MARK: - 経路計算
 
-    /// MKDirections で公共交通機関の経路を計算
-    private func calculateRoute(
+    /// MKDirections で公共交通機関の経路を計算（リトライ付き）
+    nonisolated private static func calculateRoute(
         from origin: CLLocationCoordinate2D,
         to destination: CLLocationCoordinate2D,
         destinationName: String
+    ) async -> CommuteDestination? {
+        // 1st attempt: departureDate 指定（次の平日朝 8:00 出発）
+        if let result = await Self.attemptTransitRoute(
+            from: origin, to: destination, destinationName: destinationName,
+            departureDate: Self.nextWeekdayMorning()
+        ) {
+            return result
+        }
+
+        // 短い待機後にリトライ（一時的なエラー対策）
+        try? await Task.sleep(nanoseconds: 2_000_000_000) // 2秒
+
+        // 2nd attempt: 日時指定なし（現在時刻ベース）
+        if let result = await Self.attemptTransitRoute(
+            from: origin, to: destination, destinationName: destinationName,
+            departureDate: nil
+        ) {
+            return result
+        }
+
+        // 全て失敗した場合のみフォールバック
+        print("[CommuteTimeService] 全リトライ失敗、フォールバック概算 → \(destinationName)")
+        return await Self.calculateFallbackRoute(from: origin, to: destination, destinationName: destinationName)
+    }
+
+    /// MKDirections で Transit 経路を1回試行
+    nonisolated private static func attemptTransitRoute(
+        from origin: CLLocationCoordinate2D,
+        to destination: CLLocationCoordinate2D,
+        destinationName: String,
+        departureDate: Date?
     ) async -> CommuteDestination? {
         let request = MKDirections.Request()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: origin))
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination))
         request.transportType = .transit
 
-        // 平日朝8:30到着で計算（次の平日の8:30）
-        request.arrivalDate = nextWeekdayMorning()
+        if let departureDate {
+            request.departureDate = departureDate
+        }
 
         let directions = MKDirections(request: request)
 
         do {
             let response = try await directions.calculate()
-            guard let route = response.routes.first else { return nil }
+            guard let route = response.routes.first else {
+                print("[CommuteTimeService] 経路なし（routes empty） → \(destinationName)")
+                return nil
+            }
 
             let minutes = Int(ceil(route.expectedTravelTime / 60.0))
-            let summary = buildRouteSummary(route: route, destinationName: destinationName)
-            let transfers = countTransfers(route: route)
+            let summary = Self.buildRouteSummary(route: route, destinationName: destinationName)
+            let transfers = Self.countTransfers(route: route)
 
             return CommuteDestination(
                 minutes: minutes,
@@ -185,14 +256,14 @@ final class CommuteTimeService {
                 calculatedAt: Date()
             )
         } catch {
-            print("[CommuteTimeService] 経路計算失敗 → \(destinationName): \(error.localizedDescription)")
-            // Transit が使えない場合は徒歩+車のフォールバック
-            return await calculateFallbackRoute(from: origin, to: destination, destinationName: destinationName)
+            let dateDesc = departureDate.map { "departure=\($0)" } ?? "no date"
+            print("[CommuteTimeService] 経路計算失敗 (\(dateDesc)) → \(destinationName): \(error.localizedDescription)")
+            return nil
         }
     }
 
     /// Transit 経路が取得できない場合のフォールバック（直線距離ベースの概算）
-    private func calculateFallbackRoute(
+    nonisolated private static func calculateFallbackRoute(
         from origin: CLLocationCoordinate2D,
         to destination: CLLocationCoordinate2D,
         destinationName: String
@@ -213,7 +284,7 @@ final class CommuteTimeService {
 
     /// 経路情報からサマリーテキストを生成
     /// 物件→（徒歩）→路線1「駅名」→路線2「駅名」→（徒歩）→目的地 形式
-    private func buildRouteSummary(route: MKRoute, destinationName: String) -> String {
+    nonisolated private static func buildRouteSummary(route: MKRoute, destinationName: String) -> String {
         let steps = route.steps.filter { !$0.instructions.isEmpty }
         if steps.isEmpty {
             let minutes = Int(ceil(route.expectedTravelTime / 60.0))
@@ -248,19 +319,19 @@ final class CommuteTimeService {
     }
 
     /// 乗り換え回数をカウント
-    private func countTransfers(route: MKRoute) -> Int {
+    nonisolated private static func countTransfers(route: MKRoute) -> Int {
         let transitSteps = route.steps.filter {
             $0.transportType == .transit
         }
         return max(0, transitSteps.count - 1)
     }
 
-    /// 次の平日（月〜金）の朝8:30 を返す（到着時刻として使用）
-    private func nextWeekdayMorning() -> Date {
+    /// 次の平日（月〜金）の朝8:00 を返す（出発時刻として使用）
+    nonisolated private static func nextWeekdayMorning() -> Date {
         let calendar = Calendar(identifier: .gregorian)
         var components = calendar.dateComponents([.year, .month, .day, .weekday], from: Date())
         components.hour = 8
-        components.minute = 30
+        components.minute = 0
         components.second = 0
 
         guard var date = calendar.date(from: components) else { return Date() }

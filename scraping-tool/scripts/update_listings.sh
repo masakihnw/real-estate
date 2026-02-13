@@ -88,6 +88,9 @@ fi
 if [ "$HAS_CHANGES" = false ]; then
     echo "中古・新築ともに変更なし（レポート・通知をスキップ）" >&2
     rm -f "$CURRENT" "$CURRENT_SHINCHIKU"
+    # 変更なしでもログは Firestore にアップロード（iOS アプリで最新の実行状況を確認できるように）
+    echo "ログを Firestore にアップロード中（変更なし）..." >&2
+    python3 upload_scraping_log.py "$LOG_FILE" --status success 2>&1 || echo "ログアップロード失敗" >&2
     exit 0
 fi
 
@@ -111,6 +114,10 @@ if [ -s "$CURRENT_SHINCHIKU" ]; then
     cp "$CURRENT_SHINCHIKU" "${OUTPUT_DIR}/latest_shinchiku.json"
     echo "新築: ${OUTPUT_DIR}/latest_shinchiku.json に保存" >&2
 fi
+
+# 3.5. enrichment 前バックアップ（enricher 失敗でファイル破損時の復元用）
+cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/latest.json.backup"
+[ -s "${OUTPUT_DIR}/latest_shinchiku.json" ] && cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/latest_shinchiku.json.backup" || true
 
 # 4.1. 総戸数・階数・権利形態キャッシュ更新（SUUMO 詳細ページを取得して data/building_units.json と data/html_cache/ を更新）
 echo "総戸数・階数・権利形態キャッシュを更新中（詳細ページ取得のため時間がかかります）..." >&2
@@ -151,8 +158,12 @@ fi
 # ─── 4.4. ジオコーディング（ss_address を活用して高精度に変換） ───
 # 4.4.1. 物件マップ用 HTML を生成（初回はジオコーディングで時間がかかることがあります）
 #         ss_address があれば優先使用し、番地レベルの精度で座標を取得する。
-echo "物件マップを生成中（ss_address 活用）..." >&2
-python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" || echo "地図の生成に失敗しました（続行）" >&2
+echo "物件マップを生成中（ss_address 活用、中古+新築）..." >&2
+SHINCHIKU_FLAG=""
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    SHINCHIKU_FLAG="--shinchiku ${OUTPUT_DIR}/latest_shinchiku.json"
+fi
+python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" $SHINCHIKU_FLAG || echo "地図の生成に失敗しました（続行）" >&2
 
 # 4.4.2. ジオコーディングキャッシュの座標を latest.json / latest_shinchiku.json に埋め込み
 echo "ジオコーディングを埋め込み中..." >&2
@@ -225,6 +236,18 @@ if [ -f "data/estat_population.json" ]; then
 else
     echo "e-Stat 人口動態 enrichment: data/estat_population.json が未生成のためスキップ" >&2
 fi
+
+# 3.6. enrichment 後の検証（JSON 破損時はバックアップから復元）
+if ! python3 -c "import json; json.load(open('${OUTPUT_DIR}/latest.json'))" 2>/dev/null; then
+    echo "⚠ latest.json が破損しているためバックアップから復元します" >&2
+    cp "${OUTPUT_DIR}/latest.json.backup" "${OUTPUT_DIR}/latest.json"
+fi
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ] && ! python3 -c "import json; json.load(open('${OUTPUT_DIR}/latest_shinchiku.json'))" 2>/dev/null; then
+    echo "⚠ latest_shinchiku.json が破損しているためバックアップから復元します" >&2
+    cp "${OUTPUT_DIR}/latest_shinchiku.json.backup" "${OUTPUT_DIR}/latest_shinchiku.json" 2>/dev/null || true
+fi
+# 復元後はバックアップを削除（次の実行用にクリーンな状態へ）
+rm -f "${OUTPUT_DIR}/latest.json.backup" "${OUTPUT_DIR}/latest_shinchiku.json.backup"
 
 # 4.7e. enrichment 完了後にレポートを最終再生成（ハザード・住まいサーフィン・不動産情報ライブラリ情報を反映）
 echo "レポートを最終再生成（enrichment 反映）..." >&2

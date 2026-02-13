@@ -11,6 +11,13 @@ struct ComparisonView: View {
     let listings: [Listing]
     @Environment(\.dismiss) private var dismiss
 
+    // 比較行の表示フラグを事前計算（body 内で何度も contains(where:) を呼ぶのを回避）
+    private var showProfitPct: Bool { listings.contains { $0.ssProfitPct != nil } }
+    private var showAppreciationRate: Bool { listings.contains { $0.ssAppreciationRate != nil } }
+    private var showPriceJudgment: Bool { listings.contains { $0.computedPriceJudgment != nil } }
+    private var showMarketData: Bool { listings.contains { $0.hasMarketData } }
+    private var showPopulationData: Bool { listings.contains { $0.hasPopulationData } }
+
     var body: some View {
         if listings.count < 2 {
             ContentUnavailableView {
@@ -35,28 +42,22 @@ struct ComparisonView: View {
                         labelCell("階数").accessibilityLabel("項目、階数")
                         labelCell("総戸数").accessibilityLabel("項目、総戸数")
                         labelCell("権利形態").accessibilityLabel("項目、権利形態")
-                        if listings.contains(where: { $0.ssProfitPct != nil }) {
+                        if showProfitPct {
                             labelCell("儲かる確率").accessibilityLabel("項目、儲かる確率")
                         }
-                        if listings.contains(where: { $0.ssAppreciationRate != nil }) {
+                        if showAppreciationRate {
                             labelCell("値上がり率").accessibilityLabel("項目、値上がり率")
                         }
-                        if listings.contains(where: { $0.computedPriceJudgment != nil }) {
+                        if showPriceJudgment {
                             labelCell("割安判定").accessibilityLabel("項目、割安判定")
                         }
-                        if listings.contains(where: { $0.hasMarketData }) {
+                        if showMarketData {
                             labelCell("成約相場比").accessibilityLabel("項目、成約相場比")
-                        }
-                        if listings.contains(where: { $0.hasMarketData }) {
                             labelCell("相場差額").accessibilityLabel("項目、相場差額")
-                        }
-                        if listings.contains(where: { $0.hasMarketData }) {
                             labelCell("エリア傾向").accessibilityLabel("項目、エリア傾向")
                         }
-                        if listings.contains(where: { $0.hasPopulationData }) {
+                        if showPopulationData {
                             labelCell("エリア人口").accessibilityLabel("項目、エリア人口")
-                        }
-                        if listings.contains(where: { $0.hasPopulationData }) {
                             labelCell("人口増減").accessibilityLabel("項目、人口増減")
                         }
                     }
@@ -91,31 +92,25 @@ struct ComparisonView: View {
                             valueCell(listing.stationName ?? "—")
                             valueCell(listing.walkDisplay)
                             valueCell(listing.isShinchiku ? listing.deliveryDateDisplay : listing.builtAgeDisplay)
-                            valueCell(listing.floorDisplay)
+                            valueCell(listing.floorDisplay.isEmpty ? "—" : listing.floorDisplay)
                             valueCell(listing.totalUnitsDisplay)
                             valueCell(listing.ownershipShort)
-                            if listings.contains(where: { $0.ssProfitPct != nil }) {
+                            if showProfitPct {
                                 valueCell(listing.ssProfitDisplay)
                             }
-                            if listings.contains(where: { $0.ssAppreciationRate != nil }) {
+                            if showAppreciationRate {
                                 valueCell(listing.ssAppreciationRate.map { String(format: "%.1f%%", $0) } ?? "—")
                             }
-                            if listings.contains(where: { $0.computedPriceJudgment != nil }) {
+                            if showPriceJudgment {
                                 valueCell(listing.computedPriceJudgment ?? "—")
                             }
-                            if listings.contains(where: { $0.hasMarketData }) {
+                            if showMarketData {
                                 valueCell(listing.parsedMarketData?.priceRatioDisplay ?? "—")
-                            }
-                            if listings.contains(where: { $0.hasMarketData }) {
                                 valueCell(listing.parsedMarketData?.priceDiffDisplay ?? "—")
-                            }
-                            if listings.contains(where: { $0.hasMarketData }) {
                                 valueCell(listing.parsedMarketData?.trendDisplay ?? "—")
                             }
-                            if listings.contains(where: { $0.hasPopulationData }) {
+                            if showPopulationData {
                                 valueCell(listing.parsedPopulationData?.populationDisplay ?? "—")
-                            }
-                            if listings.contains(where: { $0.hasPopulationData }) {
                                 valueCell(listing.parsedPopulationData?.popChange1yrDisplay ?? "—")
                             }
                         }

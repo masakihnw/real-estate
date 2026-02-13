@@ -22,9 +22,16 @@ on:
           - 'land_prices'
           - 'population'
 
+# update-listings.yml と同じデータファイルをコミットする可能性があるため、
+# 両ワークフロー間の git 競合を防止する
+concurrency:
+  group: update-listings
+  cancel-in-progress: false
+
 jobs:
   update-cache:
     runs-on: ubuntu-latest
+    timeout-minutes: 30  # API レート制限による長時間実行のセーフガード
     permissions:
       contents: write
 
@@ -33,12 +40,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scraping-tool/requirements.txt
 
       - name: Install dependencies
         working-directory: scraping-tool
@@ -81,7 +90,7 @@ jobs:
           if [ -n "$REINFOLIB_API_KEY" ]; then
             python3 reinfolib_cache_builder.py
           else
-            echo "REINFOLIB_API_KEY 未設定のためスキップ"
+            echo "::warning::REINFOLIB_API_KEY 未設定のためスキップ"
           fi
 
       - name: Build station prices cache (駅別成約価格)
@@ -93,7 +102,7 @@ jobs:
           if [ -n "$REINFOLIB_API_KEY" ]; then
             python3 scripts/fetch_station_prices.py --direct-api --resume --workers 8
           else
-            echo "REINFOLIB_API_KEY 未設定 → MCP経由で取得"
+            echo "::warning::REINFOLIB_API_KEY 未設定 → MCP経由で取得"
             python3 scripts/fetch_station_prices.py --resume --workers 8
           fi
 
@@ -106,7 +115,7 @@ jobs:
           if [ -n "$REINFOLIB_API_KEY" ]; then
             python3 reinfolib_land_price_builder.py
           else
-            echo "REINFOLIB_API_KEY 未設定のためスキップ"
+            echo "::warning::REINFOLIB_API_KEY 未設定のためスキップ"
           fi
 
       - name: Build population cache (人口動態)
@@ -118,7 +127,7 @@ jobs:
           if [ -n "$ESTAT_API_KEY" ]; then
             python3 estat_population_builder.py
           else
-            echo "ESTAT_API_KEY 未設定のためスキップ"
+            echo "::warning::ESTAT_API_KEY 未設定のためスキップ"
           fi
 
       - name: Commit and push
@@ -127,12 +136,14 @@ jobs:
           git config --local user.name "GitHub Action"
           
           # キャッシュファイルを追加
-          [ -f scraping-tool/data/reinfolib_prices.json ] && git add scraping-tool/data/reinfolib_prices.json
-          [ -f scraping-tool/data/reinfolib_trends.json ] && git add scraping-tool/data/reinfolib_trends.json
-          [ -f scraping-tool/data/reinfolib_raw_transactions.json ] && git add scraping-tool/data/reinfolib_raw_transactions.json
-          [ -f scraping-tool/data/station_price_history.json ] && git add scraping-tool/data/station_price_history.json
-          [ -f scraping-tool/data/reinfolib_land_prices.json ] && git add scraping-tool/data/reinfolib_land_prices.json
-          [ -f scraping-tool/data/estat_population.json ] && git add scraping-tool/data/estat_population.json
+          git add --ignore-missing \
+            scraping-tool/data/reinfolib_prices.json \
+            scraping-tool/data/reinfolib_trends.json \
+            scraping-tool/data/reinfolib_raw_transactions.json \
+            scraping-tool/data/station_price_history.json \
+            scraping-tool/data/reinfolib_land_prices.json \
+            scraping-tool/data/estat_population.json \
+            2>/dev/null || true
           
           DATE=$(date +%Y-%m-%d)
           QUARTER="Q$(( ($(date +%-m) - 1) / 3 + 1 ))"
@@ -144,8 +155,15 @@ jobs:
 
           自動更新: GitHub Actions (update-reinfolib-cache)"
             
-            git pull --rebase origin ${{ github.ref_name }}
-            git push origin HEAD:refs/heads/${{ github.ref_name }}
+            # rebase 方式で push（コンフリクト時はフォールバック）
+            if git pull --rebase origin ${{ github.ref_name }}; then
+              git push origin HEAD:refs/heads/${{ github.ref_name }}
+            else
+              echo "rebase 失敗: merge 方式にフォールバック" >&2
+              git rebase --abort
+              git pull --no-rebase -X ours origin ${{ github.ref_name }}
+              git push origin HEAD:refs/heads/${{ github.ref_name }}
+            fi
           fi
 
       - name: Notify failure to Slack

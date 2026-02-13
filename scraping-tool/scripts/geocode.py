@@ -95,6 +95,10 @@ def validate_tokyo_coordinate(address: str, lat: float, lon: float) -> bool:
     return True
 
 
+_memory_cache: Optional[dict] = None
+_memory_cache_loaded = False
+
+
 def _load_cache() -> dict:
     if not CACHE_PATH.exists():
         return {}
@@ -104,6 +108,15 @@ def _load_cache() -> dict:
         return {k: tuple(v) for k, v in data.items()}
     except (json.JSONDecodeError, TypeError):
         return {}
+
+
+def _get_cache() -> dict:
+    """In-memory cache loaded once on first use; avoids reloading JSON on every geocode() call."""
+    global _memory_cache, _memory_cache_loaded
+    if not _memory_cache_loaded:
+        _memory_cache = _load_cache()
+        _memory_cache_loaded = True
+    return _memory_cache
 
 
 def _save_cache(cache: dict) -> None:
@@ -169,7 +182,7 @@ def geocode(address: str) -> Optional[Tuple[float, float]]:
     if not address or not address.strip():
         return None
     key = address.strip()
-    cache = _load_cache()
+    cache = _get_cache()
     if key in cache:
         return cache[key]
 
@@ -196,7 +209,7 @@ def geocode(address: str) -> Optional[Tuple[float, float]]:
                     # バリデーション: 東京23区の範囲内かチェック
                     if validate_tokyo_coordinate(key, lat, lon):
                         cache[key] = (lat, lon)
-                        _save_cache(cache)
+                        _save_cache(cache)  # writes to disk; cache is _memory_cache, already updated
                         return (lat, lon)
                     else:
                         # バリデーション失敗 → 次のクエリ候補を試行

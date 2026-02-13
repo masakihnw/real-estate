@@ -391,7 +391,7 @@ struct GainChartView: View {
 // MARK: - チャートデータ構造
 
 struct ChartPoint: Identifiable {
-    let id = UUID()
+    var id: String { "\(caseName)-\(period)" }
     let caseName: String
     let period: String
     let value: Int

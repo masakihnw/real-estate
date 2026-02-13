@@ -7,9 +7,9 @@ import math
 from dataclasses import dataclass
 from typing import Optional
 
-# カスタマイズ可能な定数（含み益・資産性のローン残高試算と共通: 50年変動金利・金利1%）
+# カスタマイズ可能な定数（含み益・資産性のローン残高試算と共通: 50年変動金利・金利0.8%）
 LOAN_YEARS = 50
-ANNUAL_RATE_VARIABLE = 0.01   # 変動金利 年1%
+ANNUAL_RATE_VARIABLE = 0.008   # 変動金利 年0.8%（iOS アプリと統一）
 MONTHLY_OTHER_EXPENSES_MAN = 3.5  # 修繕積立など諸経費（万円/月）
 
 

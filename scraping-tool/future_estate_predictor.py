@@ -7,13 +7,14 @@
 
 from __future__ import annotations
 
-import math
-import re
+import sys
 from pathlib import Path
 from typing import Any, Literal, Optional
 
 import numpy as np
 import pandas as pd
+
+from shared_utils import calc_loan_residual_10y_yen, ward_from_address
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
@@ -22,7 +23,7 @@ WARD_POTENTIAL_PATH = DATA_DIR / "ward_potential.csv"
 # 売り出し→成約補正（東京カンテイ 2024下期乖離率）
 LISTING_TO_CONTRACT_RATIO = 0.958
 CURRENT_YEAR = 2026
-CURRENT_INTEREST_RATE = 0.01  # 現在金利1%
+CURRENT_INTEREST_RATE = 0.008  # 現在金利0.8%（iOS アプリと統一）
 
 # 賃料成長ポテンシャル別の係数（S=1.2倍, A=1.0, B=0.9, C=0.8）
 RENT_GROWTH_COEF = {"S": 1.2, "A": 1.0, "B": 0.9, "C": 0.8}
@@ -53,8 +54,6 @@ ZEH_RENOVATION_KEYWORDS = ["ZEH", "省エネ", "断熱", "リノベーション�
 IMPLIED_GAIN_RATIO_S = 0.10
 IMPLIED_GAIN_RATIO_A = 0.05
 IMPLIED_GAIN_RATIO_B = 0.0
-LOAN_YEARS = 50
-LOAN_MONTHS_AFTER_10Y = 10 * 12
 
 
 DEFAULT_MACRO_SCENARIOS = {
@@ -77,32 +76,6 @@ DEFAULT_MACRO_SCENARIOS = {
         "construction_cost": 0.01,
     },
 }
-
-
-def _ward_from_address(address: Optional[str]) -> Optional[str]:
-    """住所から区名を抽出。"""
-    if not address or not str(address).strip():
-        return None
-    s = str(address).strip()
-    m = re.search(r"(?:東京都)?([一-龥ぁ-んァ-ン]+区)", s)
-    if m:
-        return m.group(1).strip()
-    return None
-
-
-def _calc_loan_residual_10y_yen(price_yen: float) -> float:
-    """50年変動金利・金利1%・元利均等で10年後のローン残高（円）。"""
-    if price_yen <= 0:
-        return 0.0
-    price_man = price_yen / 10000
-    n = LOAN_YEARS * 12
-    r = CURRENT_INTEREST_RATE / 12
-    if r <= 0:
-        return price_yen * (1 - LOAN_MONTHS_AFTER_10Y / n)
-    monthly = price_man * r * math.pow(1 + r, n) / (math.pow(1 + r, n) - 1)
-    k = LOAN_MONTHS_AFTER_10Y
-    balance_man = price_man * math.pow(1 + r, k) - monthly * (math.pow(1 + r, k) - 1) / r
-    return max(0.0, balance_man) * 10000
 
 
 def _implied_gain_to_grade(implied_gain_ratio: float) -> str:
@@ -138,12 +111,16 @@ class FutureEstatePredictor:
             self._ward_potential = None
             self._loaded = True
             return
-        self._ward_potential = pd.read_csv(path, encoding="utf-8")
-        self._ward_potential["ward_name"] = self._ward_potential["ward_name"].astype(str).str.strip()
-        if "supply_constraint" in self._ward_potential.columns:
-            self._ward_potential["supply_constraint"] = pd.to_numeric(
-                self._ward_potential["supply_constraint"], errors="coerce"
-            ).fillna(1.0)
+        try:
+            self._ward_potential = pd.read_csv(path, encoding="utf-8")
+            self._ward_potential["ward_name"] = self._ward_potential["ward_name"].astype(str).str.strip()
+            if "supply_constraint" in self._ward_potential.columns:
+                self._ward_potential["supply_constraint"] = pd.to_numeric(
+                    self._ward_potential["supply_constraint"], errors="coerce"
+                ).fillna(1.0)
+        except Exception as e:
+            print(f"警告: ward_potential.csv の読み込みに失敗しました（空で続行）: {e}", file=sys.stderr)
+            self._ward_potential = None
         self._loaded = True
 
     def _ensure_loaded(self) -> None:
@@ -305,7 +282,7 @@ class FutureEstatePredictor:
                 "strategic_advice": "価格情報がありません。",
             }
         address = property_data.get("ss_address") or property_data.get("address") or property_data.get("住所") or property_data.get("addr")
-        ward_name = _ward_from_address(address) or property_data.get("ward")
+        ward_name = ward_from_address(address) or property_data.get("ward")
         rank, supply_constraint = self._get_ward_params(ward_name)
         current_valuation = int(round(listing_yen * LISTING_TO_CONTRACT_RATIO))
         current_rent = self._estimate_current_rent(property_data, rank)
@@ -336,7 +313,7 @@ class FutureEstatePredictor:
 
         # 資産性ランクは neutral シナリオの含み益率で判定
         neutral_price = forecast_2035.get("neutral", {}).get("price") or 0
-        loan_residual = _calc_loan_residual_10y_yen(current_valuation)
+        loan_residual = calc_loan_residual_10y_yen(current_valuation)
         implied_gain_yen = neutral_price - loan_residual
         implied_gain_ratio = implied_gain_yen / current_valuation if current_valuation else 0.0
         investment_grade = _implied_gain_to_grade(implied_gain_ratio)

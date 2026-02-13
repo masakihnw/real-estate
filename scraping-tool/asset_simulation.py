@@ -39,9 +39,9 @@ SIZE_FACTOR_UNDER_40 = 1.2     # 40㎡未満
 TYPE_FACTOR_TOWER = 0.9  # タワー: 値下がりしにくい
 # 非タワー: 1.0
 
-# ローン残高計算用（50年変動金利・金利1%・元利均等・10年後の残高。price_predictor と共通）
+# ローン残高計算用（50年変動金利・金利0.8%・元利均等・10年後の残高。price_predictor と共通）
 LOAN_YEARS = 50
-LOAN_ANNUAL_RATE = 0.01   # 1%
+LOAN_ANNUAL_RATE = 0.008   # 0.8%（iOS アプリと統一）
 LOAN_MONTHS = LOAN_YEARS * 12  # 600
 LOAN_MONTHS_AFTER_10Y = 10 * 12  # 120
 
@@ -252,17 +252,26 @@ def simulate_10year(
     )
 
 
-def simulate_10year_from_listing(listing: dict[str, Any]) -> SimulationResult:
+def simulate_10year_from_listing(
+    listing: dict[str, Any],
+    predictor: Optional["MansionPricePredictor"] = None,
+) -> SimulationResult:
     """
     物件辞書から10年シミュレーションを実行する。
 
     price_predictor の 10年後Standard予測・含み益・儲を使い、
     10年後の値上がり試算と資産性ランクと同一の数値を返す。
+
+    Args:
+        listing: 物件辞書
+        predictor: 省略時は新規作成して load_data() を呼ぶ。
+                  複数物件をループ処理する場合は事前に作成して渡すと CSV の重複読込を回避できる。
     """
     from price_predictor import MansionPricePredictor, listing_to_property_data
 
-    predictor = MansionPricePredictor()
-    predictor.load_data()
+    if predictor is None:
+        predictor = MansionPricePredictor()
+        predictor.load_data()
     prop = listing_to_property_data(listing)
     result = predictor.predict(prop)
 
@@ -297,6 +306,18 @@ def simulate_10year_from_listing(listing: dict[str, Any]) -> SimulationResult:
         implied_gain_man=round(implied_gain_man, 1),
         profit_level=profit_level,
     )
+
+
+def simulate_batch(listings: list[dict[str, Any]]) -> list[SimulationResult]:
+    """
+    複数物件を一度にシミュレーション（Predictor を使い回す）。
+    CSV の読込は1回のみで済むため、ループ処理より効率的。
+    """
+    from price_predictor import MansionPricePredictor
+
+    predictor = MansionPricePredictor()
+    predictor.load_data()
+    return [simulate_10year_from_listing(listing, predictor=predictor) for listing in listings]
 
 
 def format_implied_gain(implied_gain_man: Optional[float]) -> str:

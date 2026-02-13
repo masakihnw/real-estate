@@ -24,6 +24,8 @@ struct ListingListView: View {
     @State private var isCompareMode = false
     @State private var searchText = ""
     @FocusState private var isSearchFocused: Bool
+    /// フィルタ＋ソート結果のキャッシュ（body 再評価時の重計算を避ける）
+    @State private var cachedFiltered: [Listing] = []
 
     /// お気に入りタブの掲載状態フィルタ
     enum DelistFilter: String, CaseIterable {
@@ -83,63 +85,11 @@ struct ListingListView: View {
         return list
     }
 
-    var filteredAndSorted: [Listing] {
-        var list = baseList
+    /// フィルタ＋ソートを適用した結果（ロジックの実体）
+    private func computeFilteredAndSorted() -> [Listing] {
+        var list = filterStore.filter.apply(to: baseList)
 
-        // 価格未定フィルタ（includePriceUndecided が false なら除外）
-        if !filterStore.filter.includePriceUndecided {
-            list = list.filter { $0.priceMan != nil }
-        }
-
-        // フィルタ
-        // 新築は価格帯（priceMan〜priceMaxMan）を持つため、範囲交差で判定する
-        if let min = filterStore.filter.priceMin {
-            list = list.filter {
-                // 価格未定（priceMan == nil）かつ includePriceUndecided なら通過
-                guard $0.priceMan != nil || $0.priceMaxMan != nil else {
-                    return filterStore.filter.includePriceUndecided
-                }
-                let upper = $0.priceMaxMan ?? $0.priceMan ?? 0
-                return upper >= min
-            }
-        }
-        if let max = filterStore.filter.priceMax {
-            list = list.filter {
-                guard $0.priceMan != nil || $0.priceMaxMan != nil else {
-                    return filterStore.filter.includePriceUndecided
-                }
-                let lower = $0.priceMan ?? 0
-                return lower <= max
-            }
-        }
-        if !filterStore.filter.layouts.isEmpty {
-            list = list.filter { filterStore.filter.layouts.contains($0.layout ?? "") }
-        }
-        if !filterStore.filter.wards.isEmpty {
-            list = list.filter { listing in
-                guard let ward = ListingFilter.extractWard(from: listing.bestAddress) else { return false }
-                return filterStore.filter.wards.contains(ward)
-            }
-        }
-        if let max = filterStore.filter.walkMax {
-            list = list.filter { ($0.walkMin ?? 99) <= max }
-        }
-        if let min = filterStore.filter.areaMin {
-            list = list.filter { ($0.areaM2 ?? 0) >= min }
-        }
-        if !filterStore.filter.ownershipTypes.isEmpty {
-            list = list.filter { listing in
-                let o = listing.ownership ?? ""
-                return filterStore.filter.ownershipTypes.contains { type in
-                    switch type {
-                    case .ownership: return o.contains("所有権")
-                    case .leasehold: return o.contains("借地")
-                    }
-                }
-            }
-        }
-
-        // テキスト検索（物件名のみ）
+        // テキスト検索（物件名のみ・View専用）
         if isSearchActive {
             let query = searchText.lowercased().trimmingCharacters(in: .whitespaces)
             list = list.filter { listing in
@@ -185,6 +135,16 @@ struct ListingListView: View {
         return list
     }
 
+    /// キャッシュを再計算（onChange / onAppear から呼ぶ）
+    private func recomputeFiltered() {
+        cachedFiltered = computeFilteredAndSorted()
+    }
+
+    /// 表示用フィルタ＋ソート結果（キャッシュ。検索・ソート・フィルタ変更時のみ再計算）
+    private var filteredAndSorted: [Listing] {
+        cachedFiltered
+    }
+
     private var isSearchActive: Bool {
         !searchText.trimmingCharacters(in: .whitespaces).isEmpty
     }
@@ -223,13 +183,17 @@ struct ListingListView: View {
 
     /// 一覧内に存在する間取りの一意リスト（フィルタシートの選択肢用）
     private var availableLayouts: [String] {
-        let all = Set(baseList.compactMap(\.layout).filter { !$0.isEmpty })
-        return all.sorted()
+        ListingFilter.availableLayouts(from: baseList)
     }
 
     /// 一覧内に存在する区名のセット（フィルタシートの選択肢用）
     private var availableWards: Set<String> {
-        Set(baseList.compactMap { ListingFilter.extractWard(from: $0.bestAddress) })
+        ListingFilter.availableWards(from: baseList)
+    }
+
+    /// 路線別駅名リスト（フィルタシートの選択肢用）
+    private var availableRouteStations: [RouteStations] {
+        ListingFilter.availableRouteStations(from: baseList)
     }
 
     var body: some View {
@@ -357,13 +321,19 @@ struct ListingListView: View {
                 ComparisonView(listings: comparisonListings)
             }
             .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, filteredCount: filteredAndSorted.count, showPriceUndecidedToggle: propertyTypeFilter == "shinchiku")
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, filteredCount: filteredAndSorted.count, showPriceUndecidedToggle: propertyTypeFilter == "shinchiku")
             }
             .alert("データ取得エラー", isPresented: $showErrorAlert) {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(store.lastError ?? "不明なエラーが発生しました。")
             }
+            .onAppear { recomputeFiltered() }
+            .onChange(of: searchText) { _, _ in recomputeFiltered() }
+            .onChange(of: sortOrder) { _, _ in recomputeFiltered() }
+            .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
+            .onChange(of: delistFilter) { _, _ in recomputeFiltered() }
+            .onChange(of: baseList.count) { _, _ in recomputeFiltered() }
         }
     }
 
@@ -722,12 +692,23 @@ struct ListingRowView: View {
     var body: some View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 4) {
-                // 1行目: 物件名 + 📷 + 💬 + ♥
+                // 1行目: 物件名 + New + 📷 + 💬 + ♥
                 HStack(alignment: .center, spacing: 6) {
                     Text(listing.name)
                         .font(.subheadline.weight(.semibold))
                         .lineLimit(1)
                         .foregroundStyle(listing.isDelisted ? .secondary : .primary)
+
+                    // 前回の同期時に存在しなかった新着物件には New バッジ
+                    if listing.isNew {
+                        Text("New")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color.red)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
 
                     Spacer(minLength: 0)
 
@@ -763,24 +744,16 @@ struct ListingRowView: View {
                     .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
                 }
 
-                // 2行目: 価格 + Newバッジ + 騰落率/儲かる確率 + [掲載終了]
+                // 2行目: 所有権/定借 + 価格 + 騰落率/儲かる確率 + [掲載終了]
                 HStack(alignment: .center, spacing: 6) {
+                    // 所有権/定借バッジ（価格の左側に配置）
+                    OwnershipBadge(listing: listing, size: .small)
+
                     Text(listing.priceDisplayCompact)
                         .font(.footnote.weight(.bold))
                         .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
                         .lineLimit(1)
                         .layoutPriority(1)
-
-                    // 24時間以内に追加された物件には New バッジ
-                    if listing.isNew {
-                        Text("New")
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 2)
-                            .background(Color.red)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                    }
 
                     // 騰落率 / 儲かる確率バッジ
                     if listing.isShinchiku {
@@ -845,11 +818,11 @@ struct ListingRowView: View {
                         Text(listing.totalUnitsDisplay)
                     } else {
                         Text(listing.builtAgeDisplay)
-                        Text(listing.floorDisplay)
+                        if !listing.floorDisplay.isEmpty {
+                            Text(listing.floorDisplay)
+                        }
                         Text(listing.totalUnitsDisplay)
                     }
-                    // 所有権/定借バッジ（アイコン＋テキスト、一発で判別可能）
-                    OwnershipBadge(listing: listing, size: .small)
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -903,7 +876,7 @@ private struct BadgeRow: View {
     private var hazardBadges: some View {
         if listing.hasHazardRisk {
             let labels = listing.parsedHazardData.activeLabels
-            ForEach(Array(labels.enumerated()), id: \.offset) { _, item in
+            ForEach(Array(labels.enumerated()), id: \.element.label) { _, item in
                 HStack(spacing: 2) {
                     Image(systemName: item.icon)
                         .font(.caption2)

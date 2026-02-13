@@ -64,18 +64,35 @@ enum LoanCalculator {
         monthlyPayment(principal: principal, rate: ssAnnualRate, years: ssTermYears)
     }
 
-    /// 月額返済額を計算（万円単位）— 汎用
-    private static func monthlyPayment(principal: Double, rate: Double, years: Int) -> Double {
+    /// 月額返済額を計算（万円単位）— 汎用（動的シミュレーションフォームからも利用）
+    ///
+    /// - Parameters:
+    ///   - principal: 借入元本（万円）
+    ///   - rate: 年利（%）例: 0.8
+    ///   - years: 返済期間（年）
+    /// - Returns: 月額返済額（万円）
+    static func monthlyPayment(principal: Double, rate: Double, years: Int) -> Double {
         let monthlyRate = rate / 100.0 / 12.0
         let totalMonths = Double(years * 12)
 
-        if monthlyRate == 0 {
-            return principal / totalMonths
+        if monthlyRate == 0 || totalMonths == 0 {
+            return totalMonths > 0 ? principal / totalMonths : 0
         }
 
         // 元利均等返済: M = P * r * (1+r)^n / ((1+r)^n - 1)
         let factor = pow(1 + monthlyRate, totalMonths)
         return principal * monthlyRate * factor / (factor - 1)
+    }
+
+    /// 返済総額を計算（万円単位）— 汎用
+    ///
+    /// - Parameters:
+    ///   - principal: 借入元本（万円）
+    ///   - rate: 年利（%）例: 0.8
+    ///   - years: 返済期間（年）
+    /// - Returns: 返済総額（万円）
+    static func totalRepayment(principal: Double, rate: Double, years: Int) -> Double {
+        monthlyPayment(principal: principal, rate: rate, years: years) * Double(years * 12)
     }
 
     // MARK: - N年後のローン残高
@@ -110,6 +127,11 @@ enum LoanCalculator {
     static func simulate(listing: Listing) -> SimulationResult? {
         guard listing.hasSimulationData else { return nil }
 
+        let cacheKey = "\(listing.url)-\(listing.priceMan ?? 0)-\(listing.ssSimBest5yr ?? 0)"
+        if let cached = SimulationCache.get(cacheKey) {
+            return cached
+        }
+
         // ── 購入価格の決定 ──
         let purchasePrice: Int
         if listing.isShinchiku {
@@ -141,7 +163,7 @@ enum LoanCalculator {
         let bal5 = Int(round(balance5yr))
         let bal10 = Int(round(balance10yr))
 
-        return SimulationResult(
+        let result = SimulationResult(
             purchasePrice: purchasePrice,
             // 値上がり (予測売却価格)
             bestCase: .init(yr5: best5, yr10: best10),
@@ -155,6 +177,8 @@ enum LoanCalculator {
             gainStandard: .init(yr5: std5 - bal5, yr10: std10 - bal10),
             gainWorst: .init(yr5: worst5 - bal5, yr10: worst10 - bal10)
         )
+        SimulationCache.set(result, forKey: cacheKey)
+        return result
     }
 
     // MARK: - 変動率の導出
@@ -231,6 +255,24 @@ struct AppreciationRates {
     let standard10yr: Double
     let worst5yr: Double
     let worst10yr: Double
+}
+
+/// スレッドセーフなシミュレーション結果キャッシュ（listing URL + 主要パラメータでキー化）
+private enum SimulationCache {
+    private static var storage: [String: SimulationResult] = [:]
+    private static let lock = NSLock()
+
+    static func get(_ key: String) -> SimulationResult? {
+        lock.lock()
+        defer { lock.unlock() }
+        return storage[key]
+    }
+
+    static func set(_ value: SimulationResult, forKey key: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        storage[key] = value
+    }
 }
 
 struct SimulationResult {

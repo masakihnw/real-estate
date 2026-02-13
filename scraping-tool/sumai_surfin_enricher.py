@@ -24,7 +24,7 @@ from typing import Optional
 from urllib.parse import quote_plus  # noqa: F401 — 将来の拡張用に保持
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 
 from config import REQUEST_DELAY_SEC, REQUEST_RETRIES, USER_AGENT
 
@@ -44,45 +44,6 @@ TOKYO_PREFECTURE_ID = "13"
 CACHE_PATH = Path(__file__).parent / "data" / "sumai_surfin_cache.json"
 
 DELAY = max(REQUEST_DELAY_SEC, 1.5)  # 住まいサーフィンへは最低 1.5 秒間隔
-
-
-# ──────────────────────────── 販売価格判定（計算ベース） ────────────────────────────
-
-def compute_price_judgment(price_man: Optional[int],
-                           oki_price_70m2: Optional[int],
-                           area_m2: Optional[float]) -> Optional[str]:
-    """沖式中古時価(70㎡換算)と実面積から販売価格の割安/適正/割高を推定する。
-
-    計算方法:
-      oki_for_area = oki_price_70m2 / 70 × area_m2  (実面積換算の沖式時価)
-      ratio = price_man / oki_for_area
-
-    判定閾値:
-      ratio ≤ 0.95  → 割安  （掲載価格が沖式時価より 5%以上安い）
-      0.95 < ratio ≤ 1.10 → 適正（掲載価格が沖式時価の -5%〜+10% 以内）
-      ratio > 1.10  → 割高  （掲載価格が沖式時価より 10%以上高い）
-
-    ※ 70㎡換算の沖式時価はマンション全体の平均値であり、住戸固有の階数・向き等は
-      反映されていない。そのため住まいサーフィンの住戸別判定とは異なる場合がある。
-      割高側の閾値を +10% と広めに設定し、誤判定を軽減している。
-    """
-    if price_man is None or oki_price_70m2 is None or area_m2 is None:
-        return None
-    if oki_price_70m2 <= 0 or area_m2 <= 0:
-        return None
-
-    oki_for_area = oki_price_70m2 / 70.0 * area_m2
-    if oki_for_area <= 0:
-        return None
-
-    ratio = price_man / oki_for_area
-
-    if ratio <= 0.95:
-        return "割安"
-    elif ratio <= 1.10:
-        return "適正"
-    else:
-        return "割高"
 
 
 # ──────────────────────────── セッション ────────────────────────────
@@ -270,12 +231,15 @@ def search_property(session: requests.Session, name: str, cache: dict) -> Option
             return None  # 前回検索で見つからなかった
         return cached
 
+    # 検索キーワード: 広告装飾・棟名等を除去したクリーンな建物名を使用
+    search_keyword = _build_search_keyword(name)
+
     time.sleep(DELAY)
 
     try:
         params = {
             "prefecture_id": TOKYO_PREFECTURE_ID,
-            "keyword": name,
+            "keyword": search_keyword,
         }
         resp = None
         for attempt in range(REQUEST_RETRIES):
@@ -348,8 +312,10 @@ def _extract_search_result_inline(soup: BeautifulSoup, prop_url: str) -> dict:
     result: dict = {}
     page_text = soup.get_text()
 
-    # 検索結果カードの値上がり率: "値上がり率 79.2%" or "値上がり率 XX.X%"
-    # ただし "XX.X%" は非ログイン時のマスク値なので除外
+    # 検索結果カードの値上がり率: "値上がり率 79.2%"
+    # ※ 取得にはログインが必須（非ログイン時は "XX.X%" でマスクされる）。
+    #   正規表現が数値のみにマッチするため "XX.X%" は自然に除外されるが、
+    #   必ずログイン済みセッションで呼び出すこと。
     m = re.search(r"値上(?:が|り)り率\s*(\d+(?:\.\d+)?)\s*[%％]", page_text)
     if m:
         result["appreciation_rate"] = float(m.group(1))
@@ -357,13 +323,131 @@ def _extract_search_result_inline(soup: BeautifulSoup, prop_url: str) -> dict:
     return result
 
 
-def _normalize_name(s: str) -> str:
-    """物件名を正規化（全角→半角、空白削除、末尾の部屋番号削除など）。"""
+
+# ── ブランド名 英字→カタカナ変換辞書 ──
+# デベロッパーのマンションブランド名。住まいサーフィンではカタカナ表記が標準。
+# キーは小文字で格納し、大文字小文字を無視してマッチさせる。
+_BRAND_TO_KANA: dict[str, str] = {
+    "brillia": "ブリリア",          # 東京建物
+    "livcity": "リブシティ",        # スターツ
+    "belista": "ベリスタ",          # 大和地所レジデンス
+    "livio": "リビオ",             # 日鉄興和不動産
+    "cravia": "クレヴィア",         # 伊藤忠都市開発
+    "cielia": "シエリア",           # 関電不動産開発
+    "premia": "プレミア",
+    "arkmark": "アークマーク",       # フジクリエイション
+    "proud": "プラウド",            # 野村不動産
+    "ohana": "オハナ",             # 野村不動産
+    "atlas": "アトラス",            # 旭化成不動産レジデンス
+    "branz": "ブランズ",            # 東急不動産
+    "sola": "ソラ",
+}
+
+
+def _strip_ad_decorations(s: str) -> str:
+    """広告装飾・宣伝文句を除去して建物名を抽出する。"""
+    # 【...】を除去（【弊社限定取扱物件】、【売主物件】等）
+    s = re.sub(r'【[^】]*】', '', s)
+    # ◆で囲まれた装飾を除去（◆山手線 上野駅◆等）
+    s = re.sub(r'◆[^◆]+◆', ' ', s)
+    # 末尾の◆以降を除去（◆3LDK+W… 等の間取り情報）
+    s = re.sub(r'◆.*$', '', s)
+    # ■□■ 等の記号装飾を除去
+    s = re.sub(r'[■□]+\s*', '', s)
+    # ～以降の駅距離・説明文を除去
+    s = re.sub(r'[~～].*$', '', s)
+    # 末尾の広告文句
+    s = re.sub(r'ペット飼育可能.*$', '', s)
+    s = re.sub(r'[♪！!☆★]+$', '', s)
+    return s.strip()
+
+
+def _strip_parenthetical(s: str) -> str:
+    """括弧内の別名表記を除去する。（Brillia 大島 Pa…）等。"""
+    # 閉じ括弧がある場合
+    s = re.sub(r'[（(][^）)]*[）)]', '', s)
+    # 閉じ括弧がない場合（SUUMO の文字数制限で切れている）
+    s = re.sub(r'[（(][^）)]*$', '', s)
+    return s.strip()
+
+
+def _strip_wing_and_floor(s: str) -> str:
+    """棟名・階数を除去する。"""
+    # 棟名パターン（末尾）
+    s = re.sub(r'\s*[A-Za-z]棟$', '', s)                  # A棟, B棟
+    s = re.sub(r'\s*\d+号棟$', '', s)                      # 1号棟, 2号棟
+    s = re.sub(
+        r'\s*(ノース|サウス|イースト|ウエスト|ウェスト|テラス|セントラル)棟$',
+        '', s)                                             # ノース棟, テラス棟 等
+    # 階数パターン（末尾）
+    s = re.sub(r'\s*\d+[Ff]$', '', s)                      # 9F
+    s = re.sub(r'\s*地下?\d*階.*$', '', s)                  # 地下1階, 5階
+    s = re.sub(r'\s*\d+階.*$', '', s)                      # 5階
+    return s.strip()
+
+
+def _strip_trailing_english(s: str) -> str:
+    """末尾の英語サブネーム（GRAN WARD TERRACE, activewing 等）を除去する。
+
+    日本語文字の後に英字が続いている場合のみ適用。
+    先頭が英字の場合（THE ITABASHI等）は除去しない。
+    英字部分が3文字未満の場合はローマ数字（I, II 等）の可能性があるため除去しない。
+    """
+    # 日本語文字（ひらがな、カタカナ、長音記号、漢字）の最後の位置を探す
+    m = re.search(r'[ぁ-ゖァ-ヺー一-龥](?=[^ぁ-ゖァ-ヺー一-龥]*$)', s)
+    if m:
+        after = s[m.end():]
+        # 英字部分が3文字以上の場合のみ除去（I, II 等のローマ数字は残す）
+        alpha_only = re.sub(r'[^A-Za-z]', '', after)
+        if len(alpha_only) >= 3:
+            # ローマ数字のみの場合は除去しない（III, IV, VI 等）
+            if not re.fullmatch(r'[IVXLCDMivxlcdm]+', alpha_only):
+                s = s[:m.end()]
+    return s.strip()
+
+
+def _convert_brands_to_kana(s: str) -> str:
+    """英字ブランド名をカタカナに変換する。"""
+    for eng, kana in _BRAND_TO_KANA.items():
+        pattern = re.compile(re.escape(eng), re.IGNORECASE)
+        s = pattern.sub(kana, s)
+    return s
+
+
+def _clean_building_name(s: str) -> str:
+    """物件名から建物名を抽出する（広告装飾・棟名・英字ブランド等を除去）。
+
+    _normalize_name と _build_search_keyword の共通処理。
+    """
     import unicodedata
     s = unicodedata.normalize("NFKC", s)
-    s = re.sub(r"\s+", "", s)
-    # "○○マンション 5階" などの末尾階数を除去
-    s = re.sub(r"\d+階.*$", "", s)
+    s = _strip_ad_decorations(s)
+    s = _strip_parenthetical(s)
+    s = _convert_brands_to_kana(s)
+    s = _strip_wing_and_floor(s)
+    s = _strip_trailing_english(s)
+    s = re.sub(r'\s+', ' ', s).strip()
+    return s
+
+
+def _build_search_keyword(name: str) -> str:
+    """住まいサーフィン検索API用のキーワードを生成する（可読形式）。
+
+    広告装飾・棟名・英字ブランド名を除去してクリーンなマンション名を返す。
+    結果が短すぎる（3文字未満）場合は元の名前をフォールバックとして使用。
+    """
+    s = _clean_building_name(name)
+    return s if len(s) >= 3 else name
+
+
+def _normalize_name(s: str) -> str:
+    """物件名を正規化（キャッシュキー・類似度比較用）。
+
+    全角→半角、広告除去、棟名除去、ブランド変換、空白・区切り記号除去 → 小文字化。
+    """
+    s = _clean_building_name(s)
+    # 空白・区切り記号を除去（マッチング精度向上）
+    s = re.sub(r'[\s・\-=]', '', s)
     return s.lower()
 
 
@@ -704,49 +788,107 @@ def _validate_parsed_data(result: dict, url: str) -> dict:
 
 
 def _extract_profit_pct(soup: BeautifulSoup, html: str) -> Optional[int]:
-    """沖式儲かる確率（%）を抽出。"""
-    # パターン1: "儲かる確率" の近傍（200文字以内）から数値を探す
+    """沖式儲かる確率（%）を抽出。新築専用。
+
+    住まいサーフィンの新築ページに表示される「沖式儲かる確率」の整数パーセンテージを返す。
+    データが存在しない場合は None を返す。
+
+    抽出戦略:
+      パターン0 (DOM構造): p-per-label セクションから直接取得（最も確実）
+      パターン1 (HTML近傍): "儲かる確率" ラベル近傍 200 文字以内の数値+%
+      パターン2 (DOM探索): テキストノードの親要素から数値を探索
+
+    注意:
+      - (?<!\\.) を付与し、小数値の端数（例: "140.6%" の "6%"）を誤取得しない
+      - Comment ノード（<!--儲かる確率-->）のうち parent が <body>/<html> のものは
+        ツールチップ定義エリアであり、container.get_text() がページ全文になるため除外する
+      - ナビゲーションリンク内のテキスト（"沖式儲かる確率とは" 等）は除外する
+    """
+    # 整数% パターン（小数の端数を除外: "140.6%" の ".6%" にマッチしない）
+    _PCT_RE = r"(?<!\.)(\d{1,3})\s*[%％]"
+    _NO_DATA_RE = r"(?:xx|XX|ー{2,}|－{2,}|--)\s*[%％]"
+
+    # ── パターン0: DOM 構造から直接取得（最も確実） ──
+    # 構造例:
+    #   <div class="p-per-label">
+    #     <p class="p-per-label__name -new">沖式儲かる確率 ...</p>
+    #     <p class="p-per-label__num -new">86<span>%</span></p>
+    #   </div>
+    # ※ 値未確定の場合は "竣工後6ヶ月間掲載" 等のテキストが入る
+    found_label_structure = False
+    for label_el in soup.find_all(string=re.compile(r"儲かる確率")):
+        if isinstance(label_el, Comment):
+            continue
+        label_p = label_el.find_parent("p", class_=re.compile(r"p-per-label__name"))
+        if not label_p:
+            continue
+        # 同じ p-per-label コンテナ内の __num 要素を探す
+        per_label_div = label_p.find_parent(class_=re.compile(r"p-per-label"))
+        if not per_label_div:
+            continue
+        found_label_structure = True
+        num_el = per_label_div.find("p", class_=re.compile(r"p-per-label__num"))
+        if num_el:
+            num_text = num_el.get_text()
+            no_data = re.search(_NO_DATA_RE, num_text)
+            if no_data:
+                return None
+            m = re.search(_PCT_RE, num_text)
+            if m:
+                val = int(m.group(1))
+                if 0 <= val <= 100:
+                    return val
+    # ラベル構造が存在したが数値がない場合（"竣工後6ヶ月間掲載" 等）→ データなし
+    if found_label_structure:
+        return None
+
+    # ── パターン1: "儲かる確率" の近傍（200文字以内）から数値を探す ──
     # re.DOTALL + .*? で HTML 全体をスキャンすると、ユーザーレビュー等の
     # 無関係な数値を拾ってしまうため、検索範囲を制限する。
     m = re.search(r"儲かる確率", html)
     if m:
-        # "儲かる確率" の後ろ 200 文字以内で数値 + % を探す
         search_area = html[m.start():m.start() + 200]
-        # "xx%" や "--%" などデータなしパターンを検出 → None を返す
-        no_data = re.search(r"儲かる確率.*?(?:xx|XX|ー{2,}|－{2,}|--)\s*[%％]", search_area, re.DOTALL)
+        no_data = re.search(r"儲かる確率.*?" + _NO_DATA_RE, search_area, re.DOTALL)
         if no_data:
             return None
-        num = re.search(r"儲かる確率.*?(\d{1,3})\s*[%％]", search_area, re.DOTALL)
+        num = re.search(r"儲かる確率.*?" + _PCT_RE, search_area, re.DOTALL)
         if num:
             val = int(num.group(1))
-            # 儲かる確率は 0-100% の範囲
             if 0 <= val <= 100:
                 return val
 
-    # パターン2: DOM から探す（親要素の範囲に限定）
+    # ── パターン2: DOM から探す（親要素の範囲に限定） ──
     for el in soup.find_all(string=re.compile(r"儲かる確率")):
+        # HTML コメント（<!--儲かる確率-->）を除外
+        if isinstance(el, Comment):
+            continue
         parent = el.find_parent()
-        if parent:
-            # 近傍の数値を探す — コンテナ全体ではなく
-            # "儲かる確率" の後に出現する数値+%のみを対象にする
-            container = parent.find_parent()
-            if container:
-                text = container.get_text()
-                # "xx%" 等のデータなしパターンを先にチェック
-                profit_pos = text.find("儲かる確率")
-                if profit_pos >= 0:
-                    after_text = text[profit_pos:]
-                    no_data = re.search(r"儲かる確率.*?(?:xx|XX|ー{2,}|－{2,}|--)\s*[%％]", after_text, re.DOTALL)
-                    if no_data:
-                        return None
-                    num = re.search(r"儲かる確率.*?(\d{1,3})\s*[%％]", after_text, re.DOTALL)
-                else:
-                    # "儲かる確率" が見つからない場合は従来通り
-                    num = re.search(r"(\d{1,3})\s*[%％]", text)
-                if num:
-                    val = int(num.group(1))
-                    if 0 <= val <= 100:
-                        return val
+        if not parent:
+            continue
+        # ナビゲーション・フッターリンクのテキストを除外
+        el_text = str(el)
+        if re.search(r"儲かる確率(とは|上位|ランキング)", el_text):
+            continue
+        container = parent.find_parent()
+        if not container:
+            continue
+        # コンテナが広すぎる場合は除外（body/html = ページ全文で誤取得リスク大）
+        if container.name in ("html", "body", "[document]"):
+            continue
+        text = container.get_text()
+        profit_pos = text.find("儲かる確率")
+        if profit_pos >= 0:
+            after_text = text[profit_pos:]
+            no_data = re.search(r"儲かる確率.*?" + _NO_DATA_RE, after_text, re.DOTALL)
+            if no_data:
+                return None
+            num = re.search(r"儲かる確率.*?" + _PCT_RE, after_text, re.DOTALL)
+        else:
+            num = re.search(_PCT_RE, text)
+        if num:
+            val = int(num.group(1))
+            if 0 <= val <= 100:
+                return val
     return None
 
 
@@ -1048,10 +1190,15 @@ def _extract_surrounding_properties(soup: BeautifulSoup, html: str) -> Optional[
     返却形式:
       [
         {"name": "サンクタス大森ヴァッサーハウス", "appreciation_rate": 79.2, "oki_price_70m2": 7700},
-        {"name": "スターロワイヤル南大井", "oki_price_70m2": 7630},
+        {"name": "スターロワイヤル南大井", "appreciation_rate": null, "oki_price_70m2": 7630},
         ...
       ]
-    注意: 中古値上がり率はログイン時のみ表示（非ログイン時は "XX%" で表示されるため取得不可）
+    注意:
+      - 中古値上がり率の取得にはログインが必須。取得前に必ずログイン済みセッションを使用すること。
+      - 非ログイン時は "XX%" でマスクされるため数値を取得できない。
+        マスク値を検出した場合はログイン状態に問題がある可能性があるため警告を出力する。
+      - appreciation_rate は取得できなかった場合でも None として必ずキーを含める
+        （iOS 側で「未取得」を明示表示するため）。
     """
     results: list = []
 
@@ -1102,10 +1249,17 @@ def _extract_surrounding_properties(soup: BeautifulSoup, html: str) -> Optional[
                         entry["url"] = href
 
             # 中古値上がり率: 2番目のセル
+            # ※ 取得にはログインが必須。必ずログイン済みセッションで呼び出すこと。
+            entry["appreciation_rate"] = None  # デフォルト: 未取得
             if len(cells) >= 2:
                 rate_text = cells[1].get_text(strip=True)
-                # "XX%" はマスク値なので除外
-                if "XX" not in rate_text:
+                if "XX" in rate_text:
+                    # "XX%" はマスク値 → ログイン状態に問題がある可能性
+                    print(
+                        f"⚠ 周辺物件の値上がり率がマスク値(XX%)です。ログイン状態を確認してください: {entry.get('name', '?')}",
+                        file=sys.stderr,
+                    )
+                else:
                     rate_m = re.search(r"(\d+(?:\.\d+)?)\s*[%％]", rate_text)
                     if rate_m:
                         entry["appreciation_rate"] = float(rate_m.group(1))
@@ -1510,10 +1664,12 @@ def _finalize_radar_data(listing: dict, property_type: str = "chuko") -> None:
 # ──────────────────────────── メイン処理 ────────────────────────────
 
 def enrich_listings(input_path: str, output_path: str, session: requests.Session,
-                    property_type: str = "chuko") -> None:
+                    property_type: str = "chuko",
+                    retry_not_found: bool = False) -> None:
     """
     JSON ファイルの各物件に住まいサーフィンの評価データを付加する。
     property_type: "chuko" (中古) or "shinchiku" (新築)
+    retry_not_found: True の場合、キャッシュの null エントリをクリアして再検索する
     """
     output_path = Path(output_path)
 
@@ -1525,6 +1681,17 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         return
 
     cache = load_cache()
+
+    # --retry-not-found: 旧 null エントリをクリアして再検索可能にする
+    if retry_not_found:
+        null_keys = [k for k, v in cache.items() if v is None and not k.endswith("__inline")]
+        for k in null_keys:
+            del cache[k]
+            # 関連する __inline エントリも削除
+            cache.pop(k + "__inline", None)
+        if null_keys:
+            print(f"キャッシュから {len(null_keys)} 件の未発見エントリをクリア（再検索対象）", file=sys.stderr)
+            save_cache(cache)
     enriched_count = 0
     skip_count = 0
     not_found_count = 0
@@ -1571,6 +1738,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         # 検索
         prop_url = search_property(session, name, cache)
         if not prop_url:
+            listing["ss_lookup_status"] = "not_found"
             not_found_count += 1
             continue
 
@@ -1602,7 +1770,8 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         if data.get("ss_address"):
             listing["address"] = data["ss_address"]
 
-        if any(k.startswith("ss_") and k != "ss_sumai_surfin_url" for k in data):
+        if any(k.startswith("ss_") and k != "ss_sumai_surfin_url" and k != "ss_lookup_status" for k in data):
+            listing["ss_lookup_status"] = "found"
             enriched_count += 1
             parts = []
             if data.get("ss_profit_pct") is not None:
@@ -1627,6 +1796,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                 parts.append(f"変動率: {data['ss_forecast_change_rate']:+.1f}%")
             print(f"  ✓ {name} — {', '.join(parts) or 'URL取得'}", file=sys.stderr)
         else:
+            listing["ss_lookup_status"] = "no_data"
             no_data_count += 1
 
         # 進捗: 20件ごとにサマリー
@@ -1727,6 +1897,9 @@ def main() -> None:
                     help="ブラウザ自動化で追加データを取得（中古: 割安判定、新築: カスタムシミュレーション）")
     ap.add_argument("--browser-only", action="store_true",
                     help="ブラウザ自動化のみ実行（requests ベースの enrichment をスキップ）")
+    ap.add_argument("--retry-not-found", action="store_true",
+                    help="キャッシュの未発見(null)エントリをクリアして再検索する"
+                         "（名前正規化ロジック改善後に実行）")
     args = ap.parse_args()
 
     # 物件タイプの自動判定
@@ -1763,7 +1936,9 @@ def main() -> None:
             # ブラウザ enrichment はログイン失敗でもスキップ
             return
 
-        enrich_listings(args.input, args.output, session, property_type=prop_type)
+        enrich_listings(args.input, args.output, session,
+                        property_type=prop_type,
+                        retry_not_found=args.retry_not_found)
 
     # ── ブラウザ自動化 enrichment ──
     if args.browser or args.browser_only:

@@ -74,8 +74,8 @@ final class BackgroundRefreshManager {
             return
         }
 
-        // ModelContext はスレッドセーフではないため、MainActor 上で作成・使用する
-        let refreshTask = Task { @MainActor in
+        // バックグラウンドでリフレッシュ実行（MainActor を占有しない）
+        let refreshTask = Task {
             let context = ModelContext(modelContainer)
             await ListingStore.shared.refresh(modelContext: context)
         }

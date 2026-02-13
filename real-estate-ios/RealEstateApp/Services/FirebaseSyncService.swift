@@ -166,7 +166,7 @@ final class FirebaseSyncService {
     /// Firestore のアノテーションを取得し、ローカル SwiftData にマージする。
     /// ローカルに存在する物件の docID のみを対象にバッチ取得する。
     @MainActor
-    func pullAnnotations(modelContext: ModelContext) async {
+    func pullAnnotations(modelContext: ModelContext, onError: ((String) -> Void)? = nil) async {
         guard isAuthenticated else {
             print("[FirebaseSync] 未認証のため pull をスキップ")
             return
@@ -255,6 +255,7 @@ final class FirebaseSyncService {
             }
         } catch {
             print("[FirebaseSync] Pull 失敗: \(error.localizedDescription)")
+            onError?("Firebase いいね・メモの同期に失敗: \(error.localizedDescription)")
         }
     }
 
