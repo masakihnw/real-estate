@@ -2,7 +2,8 @@
 .DS_Store
 *.swp
 .idea/
-.cursor/
+.cursor/*
+!.cursor/rules/
 .vscode/
 
 # Build artifacts
