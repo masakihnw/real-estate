@@ -1261,6 +1261,13 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **ブラウザ自動操作** | Playwright（`sumai_surfin_browser.py`） |
 | **取得データ** | 沖式時価、儲かる確率、値上がり率、レーダーチャート、割安判定、ランキング等 |
 
+**沖式中古時価70㎡換算のデータソース優先順位:**
+
+| 優先度 | ソース | 説明 |
+|--------|--------|------|
+| 1（最優先） | 検索結果一覧ページのカード | `_extract_search_result_inline()` で物件カードから直接抽出。ヘルプ文の誤マッチリスクがなく最も信頼性が高い |
+| 2（フォールバック） | 物件詳細ページ | `_extract_oki_price_chuko()` で HTML 正規表現抽出。ページ下部のヘルプ文「例：X,XXX万円」の例示値を誤取得しないよう、マッチ直前の「例：」パターンを除外する |
+
 #### 5.5.3 不動産情報ライブラリエンリッチャー（reinfolib_enricher.py）
 
 | 項目 | 詳細 |
@@ -1623,6 +1630,30 @@ photos/{docId}/{photoId}   → 認証済みユーザーのみ読み書き
 | `REINFOLIB_API_KEY` | 不動産情報ライブラリ API キー（update-reinfolib-cache.yml で使用） |
 | `ESTAT_API_KEY` | e-Stat アプリケーション ID（update-reinfolib-cache.yml で使用） |
 | `GITHUB_TOKEN` | リポジトリ Read and Write 権限 |
+
+### 8.3 iOS デプロイスクリプト
+
+**ファイル**: `real-estate-ios/scripts/deploy.sh`
+
+CLI からアーカイブ → App Store Connect アップロードまでを一括実行するスクリプト。App Store Connect API Key で認証。
+
+#### コマンド
+
+| コマンド | 動作 |
+|---------|------|
+| `./scripts/deploy.sh` | アーカイブ + アップロード（フル実行） |
+| `./scripts/deploy.sh --archive` | アーカイブのみ |
+| `./scripts/deploy.sh --upload` | 既存アーカイブのアップロードのみ |
+| `./scripts/deploy.sh --setup` | API Key の初回セットアップ（対話式） |
+
+#### 前提条件
+
+| 項目 | 詳細 |
+|------|------|
+| **App Store Connect API Key** | `~/.config/real-estate-deploy/config` に Key ID・Issuer ID・キーパスを保存 |
+| **Apple Distribution 証明書** | キーチェーンに配布用証明書が必要（Xcode → Settings → Accounts → Manage Certificates で作成） |
+| **署名スタイル** | Automatic（`-allowProvisioningUpdates` で自動取得） |
+| **チーム ID** | `YRP5KV2X62` |
 
 ---
 
