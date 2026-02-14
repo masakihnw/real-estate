@@ -62,6 +62,25 @@ enum HazardLayer: String, CaseIterable, Identifiable {
         }
     }
 
+    /// GSI タイルデータが実際に存在する最大ズームレベル。
+    /// これを超えるズームでは MapKit が最大ズームのタイルを拡大表示する。
+    var maxNativeZoom: Int {
+        switch self {
+        case .tsunami:
+            // 津波浸水想定タイルは z=11 まで（z≥12 は全地点で 404）
+            return 11
+        case .inlandWater:
+            // 内水浸水想定タイルは東京都で z=9 まで（都府県により異なるが低い方に合わせる）
+            return 9
+        case .buildingCollapse, .bankErosion:
+            // 家屋倒壊・河岸侵食は z=4〜13（一部地域は z=14+ もあるが安定は 13）
+            return 13
+        default:
+            // 洪水・土砂・高潮・浸水継続・液状化(lcmfc2)・揺れやすさ(lcmfc2) は z=17
+            return 17
+        }
+    }
+
     var systemImage: String {
         switch self {
         case .flood: return "drop.triangle"
@@ -551,7 +570,8 @@ struct HazardMapView: UIViewRepresentable {
             let tileOverlay = MKTileOverlay(urlTemplate: urlTemplate)
             tileOverlay.canReplaceMapContent = false
             tileOverlay.minimumZ = 2
-            tileOverlay.maximumZ = 17
+            // maxNativeZoom を超えるズームでは MapKit が最大ズームのタイルを拡大表示
+            tileOverlay.maximumZ = layer.maxNativeZoom
             mapView.addOverlay(tileOverlay, level: .aboveRoads)
         }
 
