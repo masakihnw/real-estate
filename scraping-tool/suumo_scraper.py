@@ -460,6 +460,23 @@ def parse_suumo_detail_html(html: str) -> dict:
                 if val is not None and val > 0:
                     repair_reserve_fund = val
 
+    # 間取り図画像の抽出（alt="間取り図" の img タグから URL を取得）
+    floor_plan_images: list[str] = []
+    for img in soup.find_all("img"):
+        alt = (img.get("alt") or "").strip()
+        if "間取り" in alt:
+            # SUUMO は rel 属性にリサイズ URL を持つ（lazy-load）。src にフォールバック。
+            url = (img.get("rel") or img.get("src") or "").strip()
+            if isinstance(url, list):
+                url = url[0] if url else ""
+            if not url or url.startswith("data:"):
+                continue
+            # リサイズ URL の場合、大きいサイズに変更（アプリで鮮明に表示するため）
+            url = re.sub(r"[&?]w=\d+", "&w=1200", url)
+            url = re.sub(r"[&?]h=\d+", "&h=900", url)
+            if url not in floor_plan_images:
+                floor_plan_images.append(url)
+
     return {
         "total_units": total_units,
         "floor_position": floor_position,
@@ -468,6 +485,7 @@ def parse_suumo_detail_html(html: str) -> dict:
         "ownership": ownership,
         "management_fee": management_fee,
         "repair_reserve_fund": repair_reserve_fund,
+        "floor_plan_images": floor_plan_images if floor_plan_images else None,
     }
 
 

@@ -207,6 +207,26 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
     python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "ハザード enrichment (新築) 失敗（続行）" >&2
 fi
 
+# 4.7b. 間取り図画像 enrichment（HOME'S 詳細ページから間取り図 URL を取得）
+# SUUMO は build_units_cache → merge_detail_cache 経由で付与済み
+echo "間取り図画像 enrichment 実行中..." >&2
+python3 floor_plan_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "間取り図画像 enrichment (中古) 失敗（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 floor_plan_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "間取り図画像 enrichment (新築) 失敗（続行）" >&2
+fi
+
+# 4.7b-2. 間取り図画像を Firebase Storage にアップロード（URL の永続化）
+# SUUMO/HOME'S の画像 URL を Firebase Storage に保存し、掲載終了後も表示可能にする
+if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
+    echo "間取り図画像を Firebase Storage にアップロード中..." >&2
+    python3 upload_floor_plans.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "間取り図 Storage アップロード (中古) 失敗（続行）" >&2
+    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+        python3 upload_floor_plans.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "間取り図 Storage アップロード (新築) 失敗（続行）" >&2
+    fi
+else
+    echo "間取り図 Storage アップロード: FIREBASE_SERVICE_ACCOUNT 未設定のためスキップ" >&2
+fi
+
 # 4.7c. 通勤時間 enrichment（駅名ベースのドアtoドア概算。iOS で事前表示するために付与）
 # iOS 実機では MKDirections がより正確な経路で上書きするが、初期表示用として有用
 echo "通勤時間 enrichment 実行中..." >&2
@@ -352,7 +372,7 @@ ${SUMMARY}"
 レポート: scraping-tool/${REPORT_DIR}/report.md"
             
             # ステージング・コミット・プッシュ
-            git add scraping-tool/results/ 2>/dev/null || true
+            git add scraping-tool/results/ scraping-tool/data/floor_plan_storage_manifest.json 2>/dev/null || true
             if git diff --cached --quiet; then
                 echo "コミットする変更がありません" >&2
             else

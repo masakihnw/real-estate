@@ -8,5 +8,12 @@ service firebase.storage {
                    && request.resource.size < 10 * 1024 * 1024  // 最大 10MB
                    && request.resource.contentType.matches('image/.*');
     }
+
+    // 間取り図画像: 認証済みユーザーのみ読み取り可能
+    // 書き込みは Admin SDK（スクレイピングパイプライン）のみ
+    // ※ ダウンロード URL にトークンが含まれるため、AsyncImage からも直接読み込み可能
+    match /floor_plans/{imageId} {
+      allow read: if request.auth != null;
+    }
   }
 }

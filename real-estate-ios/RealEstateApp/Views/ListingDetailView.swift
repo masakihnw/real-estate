@@ -57,6 +57,12 @@ struct ListingDetailView: View {
                     // ④ 内見写真
                     PhotoSectionView(listing: listing)
 
+                    // ④-b 間取り図（SUUMO/HOME'S の物件詳細ページから取得した間取り図画像）
+                    if listing.hasFloorPlanImages {
+                        Divider()
+                        floorPlanSection
+                    }
+
                     Divider()
 
                     // ⑤ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
@@ -333,6 +339,91 @@ struct ListingDetailView: View {
                 }
             }
         }
+    }
+
+    // MARK: - 間取り図セクション
+
+    /// フルスクリーン表示用の間取り図 URL
+    @State private var fullScreenFloorPlanURL: URL?
+
+    @ViewBuilder
+    private var floorPlanSection: some View {
+        let images = listing.parsedFloorPlanImages
+
+        VStack(alignment: .leading, spacing: 10) {
+            Label("間取り図", systemImage: "square.split.2x2")
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundStyle(Color.accentColor)
+
+            if images.count == 1 {
+                // 1枚の場合: フル幅で表示
+                floorPlanImage(url: images[0])
+            } else {
+                // 複数の場合: 横スクロール
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(images, id: \.absoluteString) { url in
+                            floorPlanImage(url: url)
+                                .frame(width: 280)
+                        }
+                    }
+                }
+            }
+
+            Text("※ \(listing.source == "homes" ? "HOME'S" : "SUUMO") の物件詳細ページから取得した間取り図です")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(14)
+        .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+        .fullScreenCover(isPresented: Binding(
+            get: { fullScreenFloorPlanURL != nil },
+            set: { if !$0 { fullScreenFloorPlanURL = nil } }
+        )) {
+            if let url = fullScreenFloorPlanURL {
+                FloorPlanFullScreenView(url: url)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func floorPlanImage(url: URL) -> some View {
+        Button {
+            fullScreenFloorPlanURL = url
+        } label: {
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                case .failure:
+                    VStack(spacing: 6) {
+                        Image(systemName: "photo.badge.exclamationmark")
+                            .font(.title3)
+                        Text("画像を読み込めません")
+                            .font(.caption)
+                    }
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, minHeight: 150)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                case .empty:
+                    ZStack {
+                        Color(.systemGray6)
+                        ProgressView()
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 150)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                @unknown default:
+                    EmptyView()
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("間取り図を拡大表示")
     }
 
     // MARK: - ① コメントセクション
@@ -1784,6 +1875,109 @@ struct SafariView: UIViewControllerRepresentable {
     func updateUIViewController(_ vc: SFSafariViewController, context: Context) {}
 }
 
+/// 間取り図フルスクリーン表示（ピンチズーム対応）
+private struct FloorPlanFullScreenView: View {
+    @Environment(\.dismiss) private var dismiss
+    let url: URL
+    @State private var scale: CGFloat = 1.0
+    @State private var lastScale: CGFloat = 1.0
+    @State private var offset: CGSize = .zero
+    @State private var lastOffset: CGSize = .zero
+
+    var body: some View {
+        NavigationStack {
+            GeometryReader { geometry in
+                ZStack {
+                    Color.black.ignoresSafeArea()
+
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .scaleEffect(scale)
+                                .offset(offset)
+                                .gesture(
+                                    MagnifyGesture()
+                                        .onChanged { value in
+                                            scale = lastScale * value.magnification
+                                        }
+                                        .onEnded { value in
+                                            lastScale = max(1.0, scale)
+                                            scale = lastScale
+                                            if scale == 1.0 {
+                                                withAnimation(.easeInOut(duration: 0.2)) {
+                                                    offset = .zero
+                                                    lastOffset = .zero
+                                                }
+                                            }
+                                        }
+                                        .simultaneously(with:
+                                            DragGesture()
+                                                .onChanged { value in
+                                                    if scale > 1.0 {
+                                                        offset = CGSize(
+                                                            width: lastOffset.width + value.translation.width,
+                                                            height: lastOffset.height + value.translation.height
+                                                        )
+                                                    }
+                                                }
+                                                .onEnded { _ in
+                                                    lastOffset = offset
+                                                }
+                                        )
+                                )
+                                .onTapGesture(count: 2) {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        if scale > 1.0 {
+                                            scale = 1.0
+                                            lastScale = 1.0
+                                            offset = .zero
+                                            lastOffset = .zero
+                                        } else {
+                                            scale = 2.5
+                                            lastScale = 2.5
+                                        }
+                                    }
+                                }
+                        case .failure:
+                            VStack(spacing: 8) {
+                                Image(systemName: "photo.badge.exclamationmark")
+                                    .font(.largeTitle)
+                                Text("画像を読み込めません")
+                                    .font(.subheadline)
+                            }
+                            .foregroundStyle(.white.opacity(0.6))
+                        case .empty:
+                            ProgressView()
+                                .tint(.white)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title2)
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.white.opacity(0.8), .white.opacity(0.2))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .toolbarBackground(.hidden, for: .navigationBar)
+        }
+    }
+}
+
 /// 通勤カードのボタンスタイル: 押下時にスケール + 透明度で視覚フィードバック
 private struct CommuteCardButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -1794,7 +1988,7 @@ private struct CommuteCardButtonStyle: ButtonStyle {
     }
 }
 
-#Preview {
+#Preview("基本") {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     do {
         let container = try ModelContainer(for: Listing.self, configurations: config)
@@ -1812,6 +2006,85 @@ private struct CommuteCardButtonStyle: ButtonStyle {
             floorPosition: 5,
             floorTotal: 10,
             ownership: "所有権"
+        )
+        container.mainContext.insert(sample)
+        return ListingDetailView(listing: sample)
+            .modelContainer(container)
+    } catch {
+        return ContentUnavailableView {
+            Label("プレビューエラー", systemImage: "exclamationmark.triangle")
+        } description: {
+            Text(error.localizedDescription)
+        }
+    }
+}
+
+#Preview("間取り図あり（1枚）") {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    do {
+        let container = try ModelContainer(for: Listing.self, configurations: config)
+        // サンプル間取り図 URL（パブリックドメインのフロアプラン画像）
+        let floorPlanURLs = ["https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Bergansius_plan.jpg/800px-Bergansius_plan.jpg"]
+        let floorPlanJSON = String(data: try JSONSerialization.data(withJSONObject: floorPlanURLs), encoding: .utf8)
+        let sample = Listing(
+            source: "suumo",
+            url: "https://example.com/2",
+            name: "パークタワー渋谷",
+            priceMan: 12500,
+            address: "東京都渋谷区桜丘町1-1",
+            stationLine: "JR山手線「渋谷」徒歩3分／東京メトロ銀座線「渋谷」徒歩5分",
+            walkMin: 3,
+            areaM2: 72.5,
+            layout: "3LDK",
+            builtYear: 2018,
+            totalUnits: 250,
+            floorPosition: 15,
+            floorTotal: 30,
+            ownership: "所有権",
+            managementFee: 15000,
+            repairReserveFund: 12000,
+            floorPlanImagesJSON: floorPlanJSON
+        )
+        container.mainContext.insert(sample)
+        return ListingDetailView(listing: sample)
+            .modelContainer(container)
+    } catch {
+        return ContentUnavailableView {
+            Label("プレビューエラー", systemImage: "exclamationmark.triangle")
+        } description: {
+            Text(error.localizedDescription)
+        }
+    }
+}
+
+#Preview("間取り図あり（複数枚）") {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    do {
+        let container = try ModelContainer(for: Listing.self, configurations: config)
+        let floorPlanURLs = [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Bergansius_plan.jpg/800px-Bergansius_plan.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Camellia_Hill_Floor_Plan.jpg/800px-Camellia_Hill_Floor_Plan.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Gropius_house_-_first_floor_plan.png/800px-Gropius_house_-_first_floor_plan.png"
+        ]
+        let floorPlanJSON = String(data: try JSONSerialization.data(withJSONObject: floorPlanURLs), encoding: .utf8)
+        let sample = Listing(
+            source: "homes",
+            url: "https://example.com/3",
+            name: "ザ・パークハウス表参道",
+            priceMan: 18900,
+            address: "東京都港区南青山3-10-5",
+            stationLine: "東京メトロ銀座線「表参道」徒歩2分",
+            walkMin: 2,
+            areaM2: 85.3,
+            layout: "3LDK",
+            builtYear: 2020,
+            totalUnits: 80,
+            floorPosition: 8,
+            floorTotal: 15,
+            ownership: "所有権",
+            managementFee: 25000,
+            repairReserveFund: 18000,
+            floorPlanImagesJSON: floorPlanJSON
         )
         container.mainContext.insert(sample)
         return ListingDetailView(listing: sample)
