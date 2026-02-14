@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """
-REINS以外の物件サイト（SUUMO / HOME'S）から、10年住み替え前提の中古マンション条件に
-合う候補をスクレイピングし、CSV/JSON で出力する。新築マンションにも対応。
+SUUMO から10年住み替え前提の中古・新築マンション条件に合う候補をスクレイピングし、
+CSV/JSON で出力する。
+
+※ HOME'S は WAF が厳しく実用的な取得が困難なため、現在は無効化。
+  --source homes / both オプションは残っているが、定期実行では使用しない。
 
 利用規約: terms-check.md を参照。私的利用・軽負荷を前提とする。
 
-  python main.py                                  # 中古 SUUMO のみ
-  python main.py --source both                    # 中古 SUUMO + HOME'S
+  python main.py                                  # 中古 SUUMO のみ（デフォルト）
   python main.py --property-type shinchiku        # 新築 SUUMO のみ
-  python main.py --property-type shinchiku --source both  # 新築 SUUMO + HOME'S
   python main.py --max-pages 2 --no-filter        # フィルタなしで2ページ取得
   python main.py --output result.json
 """

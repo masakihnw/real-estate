@@ -33,9 +33,9 @@ trap 'echo "=== エラーにより中断 ===" >> "$LOG_FILE"; python3 upload_scr
 echo "=== 物件情報取得開始 ===" >&2
 echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
 
-# 1. データ取得（中古: SUUMO + HOME'S、結果がなくなるまで全ページ取得）
+# 1. データ取得（中古: SUUMO のみ。HOME'S は WAF が厳しく実用的な取得が困難なため無効化）
 echo "--- 中古マンション取得 ---" >&2
-python3 main.py --source both --property-type chuko -o "$CURRENT"
+python3 main.py --source suumo --property-type chuko -o "$CURRENT"
 
 if [ ! -s "$CURRENT" ]; then
     echo "エラー: 中古データが取得できませんでした" >&2
@@ -49,9 +49,9 @@ if [ "$COUNT" -eq 0 ]; then
 fi
 echo "中古取得件数: ${COUNT}件" >&2
 
-# 1.5. 新築データ取得（SUUMO + HOME'S）
+# 1.5. 新築データ取得（SUUMO のみ）
 echo "--- 新築マンション取得 ---" >&2
-python3 main.py --source both --property-type shinchiku -o "$CURRENT_SHINCHIKU" || echo "新築取得エラー（中古は続行）" >&2
+python3 main.py --source suumo --property-type shinchiku -o "$CURRENT_SHINCHIKU" || echo "新築取得エラー（中古は続行）" >&2
 
 SHINCHIKU_COUNT=0
 if [ -s "$CURRENT_SHINCHIKU" ]; then
@@ -207,8 +207,9 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
     python3 hazard_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "ハザード enrichment (新築) 失敗（続行）" >&2
 fi
 
-# 4.7b. 間取り図画像 enrichment（HOME'S 詳細ページから間取り図 URL を取得）
+# 4.7b. 間取り図画像 enrichment
 # SUUMO は build_units_cache → merge_detail_cache 経由で付与済み
+# HOME'S のみ対象のため、SUUMO のみ運用時は自動スキップされる
 echo "間取り図画像 enrichment 実行中..." >&2
 python3 floor_plan_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "間取り図画像 enrichment (中古) 失敗（続行）" >&2
 if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
@@ -216,7 +217,7 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
 fi
 
 # 4.7b-2. 間取り図画像を Firebase Storage にアップロード（URL の永続化）
-# SUUMO/HOME'S の画像 URL を Firebase Storage に保存し、掲載終了後も表示可能にする
+# SUUMO の画像 URL を Firebase Storage に保存し、掲載終了後も表示可能にする
 if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
     echo "間取り図画像を Firebase Storage にアップロード中..." >&2
     python3 upload_floor_plans.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "間取り図 Storage アップロード (中古) 失敗（続行）" >&2
