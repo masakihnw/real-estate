@@ -53,6 +53,9 @@ struct TransactionDetailView: View {
 
                 // 建物情報
                 Section("建物情報") {
+                    if let name = record.estimatedBuildingName, !name.isEmpty {
+                        row("推定物件名", name)
+                    }
                     row("所在地", record.displayAddress)
                     row("築年", "\(record.builtYear)年")
                     row("構造", record.structure)

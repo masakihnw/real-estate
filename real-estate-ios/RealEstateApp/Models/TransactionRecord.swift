@@ -65,6 +65,12 @@ final class TransactionRecord: @unchecked Sendable {
     /// 推定建物グループ ID（"districtCode-builtYear"）
     var buildingGroupId: String?
 
+    // MARK: - 推定物件名
+
+    /// スクレイピングデータとのクロスリファレンスで推定した物件名
+    /// 複数候補がある場合は " / " 区切り（例: "パークタワー東雲 / ブリリア有明"）
+    var estimatedBuildingName: String?
+
     // MARK: - 初期化
 
     init(
@@ -84,7 +90,8 @@ final class TransactionRecord: @unchecked Sendable {
         estimatedWalkMin: Int? = nil,
         latitude: Double? = nil,
         longitude: Double? = nil,
-        buildingGroupId: String? = nil
+        buildingGroupId: String? = nil,
+        estimatedBuildingName: String? = nil
     ) {
         self.txId = txId
         self.prefecture = prefecture
@@ -103,6 +110,7 @@ final class TransactionRecord: @unchecked Sendable {
         self.latitude = latitude
         self.longitude = longitude
         self.buildingGroupId = buildingGroupId
+        self.estimatedBuildingName = estimatedBuildingName
     }
 
     // MARK: - Computed
@@ -121,6 +129,14 @@ final class TransactionRecord: @unchecked Sendable {
     /// 表示用住所（例: "東京都江東区有明"）
     var displayAddress: String {
         "\(prefecture)\(ward)\(district)"
+    }
+
+    /// 表示用建物名（推定名がなければ住所+築年）
+    var displayBuildingName: String {
+        if let name = estimatedBuildingName, !name.isEmpty {
+            return name
+        }
+        return "\(ward)\(district) \(builtYear)年築"
     }
 
     /// 表示用の取引時期（例: "2025年 第2四半期"）
@@ -167,6 +183,7 @@ struct TransactionRecordDTO: Codable {
     var latitude: Double?
     var longitude: Double?
     var building_group_id: String?
+    var estimated_building_name: String?
 }
 
 /// transactions.json のトップレベル構造
@@ -192,6 +209,7 @@ struct BuildingGroupDTO: Codable {
     var avg_m2_price: Int?
     var periods: [String]?
     var latest_period: String?
+    var estimated_building_name: String?
 }
 
 struct TransactionMetadataDTO: Codable {
@@ -237,7 +255,8 @@ extension TransactionRecord {
             estimatedWalkMin: dto.estimated_walk_min,
             latitude: dto.latitude,
             longitude: dto.longitude,
-            buildingGroupId: dto.building_group_id
+            buildingGroupId: dto.building_group_id,
+            estimatedBuildingName: dto.estimated_building_name
         )
     }
 }

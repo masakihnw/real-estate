@@ -77,30 +77,62 @@ struct TransactionFilterSheet: View {
                     }
                 }
 
-                // 市区町村
-                let wards = TransactionFilter.availableWards(from: allRecords).sorted()
-                if !wards.isEmpty {
-                    Section("市区町村") {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 8) {
-                            ForEach(wards, id: \.self) { ward in
-                                let isSelected = filterStore.filter.wards.contains(ward)
+                // 市区町村（都道府県別）
+                let wardsByPref = TransactionFilter.availableWardsByPrefecture(from: allRecords)
+                if !wardsByPref.isEmpty {
+                    ForEach(wardsByPref, id: \.prefecture) { group in
+                        Section {
+                            // 都道府県の全選択 / 全解除トグル
+                            let allSelected = group.wards.allSatisfy { filterStore.filter.wards.contains($0) }
+                            HStack {
                                 Button {
-                                    if isSelected {
-                                        filterStore.filter.wards.remove(ward)
+                                    if allSelected {
+                                        for w in group.wards { filterStore.filter.wards.remove(w) }
                                     } else {
-                                        filterStore.filter.wards.insert(ward)
+                                        for w in group.wards { filterStore.filter.wards.insert(w) }
                                     }
                                 } label: {
-                                    Text(ward)
-                                        .font(.caption)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 6)
-                                        .background(isSelected ? Color.accentColor : Color(.systemGray5))
-                                        .foregroundColor(isSelected ? .white : .primary)
-                                        .clipShape(Capsule())
+                                    HStack(spacing: 4) {
+                                        Image(systemName: allSelected ? "checkmark.circle.fill" : "circle")
+                                            .foregroundStyle(allSelected ? Color.accentColor : .secondary)
+                                        Text("すべて")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
                                 .buttonStyle(.plain)
+                                Spacer()
+                                let selectedCount = group.wards.filter { filterStore.filter.wards.contains($0) }.count
+                                if selectedCount > 0 {
+                                    Text("\(selectedCount)/\(group.wards.count)")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
+
+                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 8) {
+                                ForEach(group.wards, id: \.self) { ward in
+                                    let isSelected = filterStore.filter.wards.contains(ward)
+                                    Button {
+                                        if isSelected {
+                                            filterStore.filter.wards.remove(ward)
+                                        } else {
+                                            filterStore.filter.wards.insert(ward)
+                                        }
+                                    } label: {
+                                        Text(ward)
+                                            .font(.caption)
+                                            .padding(.horizontal, 10)
+                                            .padding(.vertical, 6)
+                                            .background(isSelected ? Color.accentColor : Color(.systemGray5))
+                                            .foregroundColor(isSelected ? .white : .primary)
+                                            .clipShape(Capsule())
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        } header: {
+                            Text(group.prefecture)
                         }
                     }
                 }

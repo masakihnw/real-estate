@@ -184,5 +184,6 @@ final class TransactionStore {
         existing.latitude = new.latitude
         existing.longitude = new.longitude
         existing.buildingGroupId = new.buildingGroupId
+        existing.estimatedBuildingName = new.estimatedBuildingName
     }
 }
