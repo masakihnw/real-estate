@@ -185,8 +185,8 @@ App起動
         ├── [2] お気に入り → ListingListView(favoritesOnly: true)
         ├── [3] 成約 → TransactionTabView
         │   └── セグメントピッカー [一覧 | 地図]
-        │       ├── 一覧 → TransactionListView
-        │       └── 地図 → TransactionMapView
+        │       ├── 一覧 → TransactionListView（推定物件名あり、フィルタは都道府県別階層）
+        │       └── 地図 → TransactionMapView（1物件=1ピン、タップで BuildingGroupDetailView）
         └── [4] 設定 → SettingsView
 ```
 
@@ -1338,6 +1338,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **ジオコーディング** | 町丁目アドレス → 緯度経度（geocode_cache.json 優先、不足分は Nominatim API） |
 | **最寄駅推定** | ジオコーディング座標 + station_cache.json → Haversine 距離で最近傍駅を算出、直線距離 80m/分で徒歩推定 |
 | **建物グルーピング** | `(districtCode, builtYear)` の組で推定建物グループを構成。グループ別に取引件数、価格帯、平均 m² 単価を集計 |
+| **物件名推定** | `latest.json` / `latest_shinchiku.json` の既存スクレイピングデータとクロスリファレンス。市区町村+町丁目+築年（±1年）でマッチした物件名を `estimated_building_name` として付与。複数候補は " / " 区切り |
 | **実行間隔** | 四半期に1回（`update_listings.sh` から呼び出し、`REINFOLIB_API_KEY` 設定時のみ実行） |
 | **CLI オプション** | `--quarters N`（取得四半期数、デフォルト4）、`--output PATH`（出力先） |
 
@@ -1363,7 +1364,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
       "estimated_walk_min": 5,
       "latitude": 35.6358,
       "longitude": 139.7908,
-      "building_group_id": "131080020-2019"
+      "building_group_id": "131080020-2019",
+      "estimated_building_name": "シティタワー有明"
     }
   ],
   "building_groups": [
@@ -1374,7 +1376,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
       "built_year": 2019,
       "transaction_count": 5,
       "price_range_man": [6500, 9800],
-      "avg_m2_price": 1050000
+      "avg_m2_price": 1050000,
+      "estimated_building_name": "シティタワー有明"
     }
   ],
   "metadata": { ... }
@@ -1582,15 +1585,23 @@ reinfolib API（不動産情報ライブラリ）の成約価格情報から、c
 | `latitude` | Double? | ジオコーディング済み緯度（町丁目レベル） |
 | `longitude` | Double? | ジオコーディング済み経度（町丁目レベル） |
 
-#### グルーピング
+#### グルーピング・推定物件名
 
 | プロパティ | 型 | 説明 |
 |-----------|-----|------|
 | `buildingGroupId` | String? | 推定建物グループ ID（"districtCode-builtYear"） |
+| `estimatedBuildingName` | String? | スクレイピングデータとのクロスリファレンスで推定した物件名。複数候補は " / " 区切り |
+
+#### 物件名推定ロジック
+
+`build_transaction_feed.py` が `latest.json` / `latest_shinchiku.json` のスクレイピング済み物件データをリファレンスとして使用。  
+マッチ条件: **市区町村名 + 町丁目名 + 築年（±1年）** が一致する物件の名前を候補として付与。  
+複数候補がある場合は最大3件を " / " 区切りで連結。  
+マッチしない場合は `null` となり、iOS アプリ側では「{市区町村}{町丁目} {築年}年築」を代替表示する。
 
 #### データソース・制約
 
-- **匿名データ**: 建物名は含まれない。町丁目+築年で推定建物をグルーピング
+- **匿名データ**: 建物名は含まれない。町丁目+築年で推定建物をグルーピング。物件名は既存スクレイピングデータからの推定
 - **最寄駅は推定値**: reinfolib API の成約データには駅情報がないため、ジオコーディング座標から最近傍駅を算出
 - **対象範囲**: 首都圏（東京都・神奈川県・埼玉県・千葉県）
 - **フィルタ済み**: config.py の購入条件（価格 7,500〜10,000万円、60㎡以上、2-3LDK、築20年以内）
@@ -1602,12 +1613,16 @@ reinfolib API（不動産情報ライブラリ）の成約価格情報から、c
 | `priceMin` | Int? | 最低価格（万円） |
 | `priceMax` | Int? | 最高価格（万円） |
 | `layouts` | Set\<String\> | 間取りフィルタ |
-| `wards` | Set\<String\> | 市区町村フィルタ |
+| `wards` | Set\<String\> | 市区町村フィルタ（都道府県別に階層表示） |
 | `stations` | Set\<String\> | 駅名フィルタ |
 | `walkMax` | Int? | 推定徒歩上限（分） |
 | `areaMin` | Double? | 面積下限（㎡） |
 | `builtYearMin` | Int? | 築年下限 |
 | `tradePeriods` | Set\<String\> | 取引時期フィルタ（例: "2025Q2"） |
+
+**フィルタシートの市区町村表示**:  
+`TransactionFilterSheet` ではフラットなリストではなく、都道府県別セクション（東京都→神奈川県→埼玉県→千葉県の順）に分けて表示。  
+各都道府県セクションに「すべて」トグルボタンを設け、都道府県単位での一括選択/解除が可能。
 
 **メソッド**
 

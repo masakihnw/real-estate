@@ -78,6 +78,23 @@ struct TransactionFilter: Equatable {
         Set(records.map(\.ward))
     }
 
+    /// 都道府県別に市区町村をグルーピングして返す（ソート済み）
+    static func availableWardsByPrefecture(from records: [TransactionRecord]) -> [(prefecture: String, wards: [String])] {
+        var prefWards: [String: Set<String>] = [:]
+        for record in records {
+            prefWards[record.prefecture, default: []].insert(record.ward)
+        }
+        // 都道府県の表示順: 東京都 → 神奈川県 → 埼玉県 → 千葉県 → その他
+        let prefOrder = ["東京都", "神奈川県", "埼玉県", "千葉県"]
+        return prefWards
+            .sorted { lhs, rhs in
+                let li = prefOrder.firstIndex(of: lhs.key) ?? 99
+                let ri = prefOrder.firstIndex(of: rhs.key) ?? 99
+                return li < ri
+            }
+            .map { (prefecture: $0.key, wards: $0.value.sorted()) }
+    }
+
     static func availableStations(from records: [TransactionRecord]) -> [String] {
         Set(records.compactMap(\.nearestStation)).sorted()
     }

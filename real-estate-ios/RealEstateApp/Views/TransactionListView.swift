@@ -21,7 +21,7 @@ struct TransactionListView: View {
     }
 
     /// 建物グループ単位でグルーピング
-    private var groupedRecords: [(groupId: String, label: String, records: [TransactionRecord])] {
+    private var groupedRecords: [(groupId: String, label: String, estimatedName: String?, records: [TransactionRecord])] {
         var groups: [String: [TransactionRecord]] = [:]
         for record in filteredRecords {
             let key = record.buildingGroupId ?? record.txId
@@ -29,8 +29,9 @@ struct TransactionListView: View {
         }
         return groups.map { (groupId, records) in
             let sample = records.first!
-            let label = "\(sample.ward)\(sample.district)　\(sample.builtYear)年築"
-            return (groupId: groupId, label: label, records: records.sorted { $0.tradePeriod > $1.tradePeriod })
+            let estimatedName = records.compactMap(\.estimatedBuildingName).first
+            let label = estimatedName ?? "\(sample.ward)\(sample.district)　\(sample.builtYear)年築"
+            return (groupId: groupId, label: label, estimatedName: estimatedName, records: records.sorted { $0.tradePeriod > $1.tradePeriod })
         }
         .sorted { lhs, rhs in
             // 直近の取引があるグループを上に
@@ -101,7 +102,7 @@ struct TransactionListView: View {
         .listStyle(.insetGrouped)
     }
 
-    private func groupHeaderView(group: (groupId: String, label: String, records: [TransactionRecord])) -> some View {
+    private func groupHeaderView(group: (groupId: String, label: String, estimatedName: String?, records: [TransactionRecord])) -> some View {
         let sample = group.records.first!
         let prices = group.records.map(\.priceMan)
         let avgM2 = group.records.map(\.m2Price).reduce(0, +) / max(group.records.count, 1)
@@ -110,8 +111,16 @@ struct TransactionListView: View {
             HStack {
                 Image(systemName: "building.2.fill")
                     .foregroundStyle(.purple)
-                Text(group.label)
-                    .font(.subheadline.bold())
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(group.label)
+                        .font(.subheadline.bold())
+                    // 推定名がある場合は住所+築年も補足表示
+                    if group.estimatedName != nil {
+                        Text("\(sample.ward)\(sample.district)　\(sample.builtYear)年築")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 Spacer()
                 Text("\(group.records.count)件")
                     .font(.caption)

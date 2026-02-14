@@ -292,7 +292,86 @@ def find_nearest_station(
 
 
 # ---------------------------------------------------------------------------
-# 6. レコード変換・グルーピング
+# 6. 物件名推定（既存のスクレイピングデータとのクロスリファレンス）
+# ---------------------------------------------------------------------------
+
+LISTING_FILES = [
+    os.path.join(RESULTS_DIR, "latest.json"),
+    os.path.join(RESULTS_DIR, "latest_shinchiku.json"),
+]
+
+
+def build_building_name_reference() -> Dict[str, List[str]]:
+    """
+    latest.json / latest_shinchiku.json から
+    (ward, district, built_year) → [物件名] のルックアップを構築。
+    """
+    ref: Dict[str, List[str]] = {}
+    for path in LISTING_FILES:
+        if not os.path.exists(path):
+            continue
+        with open(path, "r", encoding="utf-8") as f:
+            listings = json.load(f)
+        for item in listings:
+            addr = item.get("address", "")
+            name = item.get("name", "")
+            by = item.get("built_year")
+            if not addr or not name or not by:
+                continue
+            # "東京都港区港南４" → ward="港区", district_raw="港南４"
+            m = re.match(
+                r"^(東京都|神奈川県|埼玉県|千葉県)([\w]+?[区市町村])([\w]+)", addr
+            )
+            if not m:
+                continue
+            ward = m.group(2)
+            district_raw = m.group(3)
+            # 末尾の数字・丁目を除去: "港南４" → "港南"
+            district = re.sub(r"[\d０-９]+丁目?$|[\d０-９]+$", "", district_raw)
+            key = f"{ward}|{district}|{by}"
+            if name not in ref.get(key, []):
+                ref.setdefault(key, []).append(name)
+    return ref
+
+
+def estimate_building_name(
+    ward: str,
+    district: str,
+    built_year: int,
+    reference: Dict[str, List[str]],
+) -> Optional[str]:
+    """
+    (ward, district, built_year) から物件名を推定。
+    完全一致 → ±1年 の順で検索。複数候補は " / " 区切りで返す。
+    """
+    candidates: List[str] = []
+    # 完全一致を優先
+    exact_key = f"{ward}|{district}|{built_year}"
+    if exact_key in reference:
+        candidates.extend(reference[exact_key])
+    # ±1年で追加候補を探す
+    for delta in [-1, 1]:
+        key = f"{ward}|{district}|{built_year + delta}"
+        if key in reference:
+            for name in reference[key]:
+                if name not in candidates:
+                    candidates.append(name)
+    if not candidates:
+        return None
+    # 重複を除去しつつ最大3候補まで
+    seen = set()
+    unique = []
+    for c in candidates:
+        # 全角スペース後のサブ名 (e.g. "グローリオ蘆花公園　テラス棟") は正規化
+        normalized = re.sub(r"\s+", " ", c).strip()
+        if normalized not in seen:
+            seen.add(normalized)
+            unique.append(normalized)
+    return " / ".join(unique[:3])
+
+
+# ---------------------------------------------------------------------------
+# 7. レコード変換・グルーピング
 # ---------------------------------------------------------------------------
 
 def make_transaction_id(item: dict, city_code: str, period: str) -> str:
@@ -307,6 +386,7 @@ def build_transaction_record(
     period_label: str,
     geocode_results: Dict[str, Optional[Tuple[float, float]]],
     stations: Dict[str, Tuple[float, float]],
+    name_reference: Optional[Dict[str, List[str]]] = None,
 ) -> Optional[dict]:
     """API レスポンス1件 → transactions.json 用レコードに変換。"""
     tp = parse_trade_price(item)
@@ -346,6 +426,13 @@ def build_transaction_record(
     # 推定建物グループ ID
     building_group_id = f"{district_code}-{built_year}" if district_code and built_year else None
 
+    # 物件名推定
+    estimated_name = None
+    if name_reference and built_year:
+        estimated_name = estimate_building_name(
+            city_name, district_name, built_year, name_reference
+        )
+
     tx_id = make_transaction_id(item, city_info["id"], period_label)
 
     return {
@@ -366,6 +453,7 @@ def build_transaction_record(
         "latitude": lat,
         "longitude": lon,
         "building_group_id": building_group_id,
+        "estimated_building_name": estimated_name,
     }
 
 
@@ -383,6 +471,12 @@ def build_building_groups(transactions: List[dict]) -> List[dict]:
         m2_prices = [t["m2_price"] for t in txs]
         periods = sorted(set(t["trade_period"] for t in txs))
         sample = txs[0]
+        # 推定物件名: グループ内のいずれかの取引に推定名がある場合はそれを採用
+        estimated_name = None
+        for t in txs:
+            if t.get("estimated_building_name"):
+                estimated_name = t["estimated_building_name"]
+                break
         result.append({
             "group_id": gid,
             "prefecture": sample["prefecture"],
@@ -399,6 +493,7 @@ def build_building_groups(transactions: List[dict]) -> List[dict]:
             "avg_m2_price": round(sum(m2_prices) / len(m2_prices)),
             "periods": periods,
             "latest_period": periods[-1] if periods else None,
+            "estimated_building_name": estimated_name,
         })
     return result
 
@@ -490,12 +585,18 @@ def main() -> None:
     stations = load_station_cache()
     print(f"  駅データ: {len(stations)} 駅", file=sys.stderr)
 
+    # --- Phase 3.5: 物件名推定用リファレンス構築 ---
+    print("\n--- 物件名推定リファレンス構築 ---", file=sys.stderr)
+    name_reference = build_building_name_reference()
+    print(f"  リファレンスキー: {len(name_reference)} 件", file=sys.stderr)
+
     # --- Phase 4: レコード変換 ---
     print("\n--- レコード変換・グルーピング ---", file=sys.stderr)
     transactions: List[dict] = []
     for item, city_info, period in all_matched:
         rec = build_transaction_record(
-            item, city_info, period, geocode_results, stations
+            item, city_info, period, geocode_results, stations,
+            name_reference=name_reference,
         )
         if rec:
             transactions.append(rec)
@@ -512,8 +613,9 @@ def main() -> None:
     # 建物グループ構築
     building_groups = build_building_groups(transactions)
 
+    named_count = sum(1 for bg in building_groups if bg.get("estimated_building_name"))
     print(f"  取引レコード: {len(transactions)} 件", file=sys.stderr)
-    print(f"  推定建物グループ: {len(building_groups)} 件", file=sys.stderr)
+    print(f"  推定建物グループ: {len(building_groups)} 件（物件名推定: {named_count} 件）", file=sys.stderr)
 
     # --- Phase 5: 出力 ---
     output = {
