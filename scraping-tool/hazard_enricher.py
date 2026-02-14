@@ -53,8 +53,9 @@ GSI_HAZARD_TILES: dict[str, tuple[str, str]] = {
         "津波浸水想定",
     ),
     "liquefaction": (
-        "https://disaportaldata.gsi.go.jp/raster/08_liquid/{z}/{x}/{y}.png",
-        "液状化リスク",
+        # 08_liquid は GSI オープンデータ非公開 (404) のため治水地形分類図で代替
+        "https://cyberjapandata.gsi.go.jp/xyz/lcmfc2/{z}/{x}/{y}.png",
+        "液状化（地形分類）",
     ),
     "inland_water": (
         "https://disaportaldata.gsi.go.jp/raster/02_naisui_data/{z}/{x}/{y}.png",

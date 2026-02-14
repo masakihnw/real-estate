@@ -30,7 +30,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 45  # スクレイパーハング時のセーフガード
+    timeout-minutes: 180  # 23区全スクレイピング + enrichment パイプラインに十分な余裕（45分ではSUUMO全区取得だけで超過する）
     permissions:
       contents: write  # コミット・プッシュに必要（リポジトリ設定でも「Read and write」を有効にすること）
 

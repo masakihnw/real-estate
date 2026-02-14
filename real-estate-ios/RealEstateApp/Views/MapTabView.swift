@@ -22,7 +22,7 @@ enum HazardLayer: String, CaseIterable, Identifiable {
     case sediment = "土砂災害警戒"
     case stormSurge = "高潮浸水想定"
     case tsunami = "津波浸水想定"
-    case liquefaction = "液状化リスク"
+    case liquefaction = "液状化（地形分類）"
     case seismicRisk = "地盤の揺れやすさ"
     // 追加レイヤー
     case inlandWater = "内水浸水想定"
@@ -44,9 +44,13 @@ enum HazardLayer: String, CaseIterable, Identifiable {
         case .tsunami:
             return "https://disaportaldata.gsi.go.jp/raster/04_tsunami_newlegend_data/{z}/{x}/{y}.png"
         case .liquefaction:
-            return "https://disaportaldata.gsi.go.jp/raster/08_liquid/{z}/{x}/{y}.png"
+            // 08_liquid は GSI オープンデータとして公開されておらず 404 のため、
+            // 治水地形分類図（lcmfc2）を代替表示。地形が液状化リスクの主要因。
+            return "https://cyberjapandata.gsi.go.jp/xyz/lcmfc2/{z}/{x}/{y}.png"
         case .seismicRisk:
-            return "https://disaportaldata.gsi.go.jp/raster/13_jibanshindou/{z}/{x}/{y}.png"
+            // 13_jibanshindou は GSI オープンデータとして公開されておらず 404 のため、
+            // 治水地形分類図（lcmfc2）と同データを表示（地形が揺れやすさの主要因）。
+            return "https://cyberjapandata.gsi.go.jp/xyz/lcmfc2/{z}/{x}/{y}.png"
         case .inlandWater:
             return "https://disaportaldata.gsi.go.jp/raster/02_naisui_data/{z}/{x}/{y}.png"
         case .floodDuration:
@@ -87,9 +91,9 @@ enum HazardLayer: String, CaseIterable, Identifiable {
         case .tsunami:
             return "最大クラスの津波が発生した場合に想定される浸水の深さ。"
         case .liquefaction:
-            return "地震時に地盤が液状化するリスクの程度。埋立地や河川沿いで高リスク。"
+            return "治水地形分類図による地形区分。旧河道・後背湿地・埋立地・干拓地など液状化リスクが高い地形を色分け表示。液状化リスク専用タイルはGSIオープンデータ非公開のため、地形分類で代替。"
         case .seismicRisk:
-            return "地盤の揺れやすさ(表層地盤増幅率)。数値が大きいほど地盤が軟弱で揺れが増幅される。"
+            return "治水地形分類図による地形区分。軟弱地盤（旧河道・後背湿地等）は揺れが増幅されやすい。揺れやすさ専用タイルはGSIオープンデータ非公開のため、地形分類で代替。"
         case .floodDuration:
             return "河川氾濫による浸水が継続する時間の想定。長期間の浸水はライフライン途絶等に直結。"
         case .buildingCollapse:
@@ -139,18 +143,20 @@ enum HazardLayer: String, CaseIterable, Identifiable {
                 (Color.red.opacity(0.7), "特別警戒区域(レッドゾーン)"),
             ]
         case .liquefaction:
+            // 治水地形分類図（lcmfc2）の地形区分色 — 液状化リスクとの対応
             return [
-                (Color(red: 0.55, green: 0.82, blue: 0.55), "液状化の可能性 低"),
-                (Color(red: 0.96, green: 0.88, blue: 0.40), "液状化の可能性 中"),
-                (Color(red: 0.96, green: 0.55, blue: 0.30), "液状化の可能性 高"),
-                (Color(red: 0.90, green: 0.20, blue: 0.20), "液状化の可能性 極高"),
+                (Color(red: 0.55, green: 0.78, blue: 0.90), "旧河道・後背湿地（高リスク）"),
+                (Color(red: 0.75, green: 0.85, blue: 0.70), "氾濫平野（中〜高リスク）"),
+                (Color(red: 0.95, green: 0.85, blue: 0.55), "自然堤防・扇状地（中リスク）"),
+                (Color(red: 0.85, green: 0.70, blue: 0.50), "台地・段丘（低リスク）"),
             ]
         case .seismicRisk:
+            // 治水地形分類図（lcmfc2）の地形区分色 — 揺れやすさとの対応
             return [
-                (Color(red: 0.55, green: 0.82, blue: 0.55), "増幅率 低い"),
-                (Color(red: 0.96, green: 0.88, blue: 0.40), "増幅率 やや大"),
-                (Color(red: 0.96, green: 0.55, blue: 0.30), "増幅率 大きい"),
-                (Color(red: 0.90, green: 0.20, blue: 0.20), "増幅率 非常に大"),
+                (Color(red: 0.55, green: 0.78, blue: 0.90), "旧河道・後背湿地（揺れやすい）"),
+                (Color(red: 0.75, green: 0.85, blue: 0.70), "氾濫平野（やや揺れやすい）"),
+                (Color(red: 0.95, green: 0.85, blue: 0.55), "自然堤防・扇状地（普通）"),
+                (Color(red: 0.85, green: 0.70, blue: 0.50), "台地・段丘（揺れにくい）"),
             ]
         case .floodDuration:
             return [
@@ -1128,10 +1134,10 @@ struct MapTabView: View {
                     )
                     sheetDivider
 
-                    // 液状化
+                    // 液状化（地形分類）
                     hazardToggleRowWithReason(
                         .liquefaction,
-                        reason: "地盤沈下でマンション傾斜→修繕費億単位のリスク。埋立地は要注意",
+                        reason: "地盤沈下でマンション傾斜→修繕費億単位のリスク。埋立地は要注意。治水地形分類図で地形を確認",
                         area: "湾岸エリア（江東区豊洲・有明・お台場）、荒川・隅田川沿い"
                     )
                     sheetDivider
@@ -1176,10 +1182,10 @@ struct MapTabView: View {
                     )
                     sheetDivider
 
-                    // 地盤の揺れやすさ
+                    // 地盤の揺れやすさ（地形分類で代替表示）
                     hazardToggleRowWithReason(
                         .seismicRisk,
-                        reason: "軟弱地盤は揺れが増幅され家具転倒・設備破損リスクが上がる",
+                        reason: "軟弱地盤は揺れが増幅され家具転倒・設備破損リスクが上がる。治水地形分類図で地盤特性を確認",
                         area: "旧河道・埋立地（荒川沿い、東京湾岸、隅田川周辺）"
                     )
 
@@ -1274,7 +1280,10 @@ struct MapTabView: View {
                     // 出典
                     hazardSectionHeader("出典")
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("国土地理院ハザードマップポータルサイトのタイルデータを利用しています。")
+                        Text("国土地理院ハザードマップポータルサイト・地理院タイルのデータを利用しています。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text("液状化・揺れやすさは治水地形分類図（国土地理院）で代替表示しています。")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Text("© 国土地理院 / 東京都都市整備局")
