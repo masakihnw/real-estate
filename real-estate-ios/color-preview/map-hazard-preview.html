@@ -286,22 +286,22 @@ function toggleBaseMap() {
 
 // === Hazard layers ===
 const hazardMeta = {
-  flood:            { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🌊', name: '洪水浸水',    color: '#3D70C2' },
-  inlandWater:      { url: 'https://disaportaldata.gsi.go.jp/raster/02_naisui_data/{z}/{x}/{y}.png',              opacity: 0.6, icon: '💧', name: '内水浸水',    color: '#66BAD9' },
-  sediment:         { url: 'https://disaportaldata.gsi.go.jp/raster/05_dosekiryukeikaikuiki/{z}/{x}/{y}.png',     opacity: 0.6, icon: '⛰',  name: '土砂災害',    color: '#E6A817' },
-  stormSurge:       { url: 'https://disaportaldata.gsi.go.jp/raster/03_hightide_l2_shinsuishin_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🌊', name: '高潮浸水', color: '#943D94' },
-  tsunami:          { url: 'https://disaportaldata.gsi.go.jp/raster/04_tsunami_newlegend_data/{z}/{x}/{y}.png',   opacity: 0.6, icon: '🌊', name: '津波浸水',    color: '#5B3DA4' },
-  liquefaction:     { url: 'https://cyberjapandata.gsi.go.jp/xyz/lcmfc2/{z}/{x}/{y}.png',                         opacity: 0.6, icon: '〰',  name: '液状化(地形分類)',  color: '#F58C4D' },
-  seismicRisk:      { url: 'https://cyberjapandata.gsi.go.jp/xyz/lcmfc2/{z}/{x}/{y}.png',                         opacity: 0.5, icon: '📊', name: '揺れやすさ(地形分類)', color: '#E63333' },
-  floodDuration:    { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_keizoku_data/{z}/{x}/{y}.png',    opacity: 0.6, icon: '⏱',  name: '浸水継続',    color: '#3D70C2' },
-  buildingCollapse: { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_kaokutoukai_hanran_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🏚', name: '家屋倒壊(氾)', color: '#E63333' },
-  bankErosion:      { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_kaokutoukai_kagan_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🏚', name: '家屋倒壊(河)', color: '#CC4444' },
+  flood:            { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🌊', name: '洪水浸水',    color: '#3D70C2', maxNativeZoom: 17 },
+  inlandWater:      { url: 'https://disaportaldata.gsi.go.jp/raster/02_naisui_data/{z}/{x}/{y}.png',              opacity: 0.6, icon: '💧', name: '内水浸水',    color: '#66BAD9', maxNativeZoom: 9 },
+  sediment:         { url: 'https://disaportaldata.gsi.go.jp/raster/05_dosekiryukeikaikuiki/{z}/{x}/{y}.png',     opacity: 0.6, icon: '⛰',  name: '土砂災害',    color: '#E6A817', maxNativeZoom: 17 },
+  stormSurge:       { url: 'https://disaportaldata.gsi.go.jp/raster/03_hightide_l2_shinsuishin_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🌊', name: '高潮浸水', color: '#943D94', maxNativeZoom: 17 },
+  tsunami:          { url: 'https://disaportaldata.gsi.go.jp/raster/04_tsunami_newlegend_data/{z}/{x}/{y}.png',   opacity: 0.6, icon: '🌊', name: '津波浸水',    color: '#5B3DA4', maxNativeZoom: 11 },
+  liquefaction:     { url: 'https://cyberjapandata.gsi.go.jp/xyz/lcmfc2/{z}/{x}/{y}.png',                         opacity: 0.6, icon: '〰',  name: '液状化(地形分類)',  color: '#F58C4D', maxNativeZoom: 17 },
+  seismicRisk:      { url: 'https://cyberjapandata.gsi.go.jp/xyz/lcmfc2/{z}/{x}/{y}.png',                         opacity: 0.5, icon: '📊', name: '揺れやすさ(地形分類)', color: '#E63333', maxNativeZoom: 17 },
+  floodDuration:    { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_keizoku_data/{z}/{x}/{y}.png',    opacity: 0.6, icon: '⏱',  name: '浸水継続',    color: '#3D70C2', maxNativeZoom: 17 },
+  buildingCollapse: { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_kaokutoukai_hanran_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🏚', name: '家屋倒壊(氾)', color: '#E63333', maxNativeZoom: 13 },
+  bankErosion:      { url: 'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_kaokutoukai_kagan_data/{z}/{x}/{y}.png', opacity: 0.6, icon: '🏚', name: '家屋倒壊(河)', color: '#CC4444', maxNativeZoom: 13 },
 };
 
 const hazardLayers = {};
 const layerState = {};
 for (const [key, cfg] of Object.entries(hazardMeta)) {
-  hazardLayers[key] = L.tileLayer(cfg.url, { opacity: cfg.opacity, maxZoom: 18, attribution: '国土地理院ハザードマップ' });
+  hazardLayers[key] = L.tileLayer(cfg.url, { opacity: cfg.opacity, maxZoom: 18, maxNativeZoom: cfg.maxNativeZoom, attribution: '国土地理院ハザードマップ' });
   layerState[key] = false;
 }
 
