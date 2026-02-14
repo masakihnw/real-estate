@@ -54,6 +54,10 @@ final class Listing: @unchecked Sendable {
     /// フォーマット: [{"id":"...","fileName":"...","createdAt":"ISO8601"}]
     var photosJSON: String?
 
+    /// 間取り図画像 URL の JSON 文字列（スクレイピングツールから取得）
+    /// フォーマット: ["https://...image1.jpg", "https://...image2.jpg"]
+    var floorPlanImagesJSON: String?
+
     // MARK: - 新築対応フィールド
 
     /// 物件種別: "chuko" or "shinchiku"
@@ -203,6 +207,7 @@ final class Listing: @unchecked Sendable {
         managementFee: Int? = nil,
         repairReserveFund: Int? = nil,
         listWardRoman: String? = nil,
+        floorPlanImagesJSON: String? = nil,
         fetchedAt: Date = .now,
         addedAt: Date = .now,
         memo: String? = nil,
@@ -268,6 +273,7 @@ final class Listing: @unchecked Sendable {
         self.managementFee = managementFee
         self.repairReserveFund = repairReserveFund
         self.listWardRoman = listWardRoman
+        self.floorPlanImagesJSON = floorPlanImagesJSON
         self.fetchedAt = fetchedAt
         self.addedAt = addedAt
         self.memo = memo
@@ -1246,6 +1252,23 @@ final class Listing: @unchecked Sendable {
     /// 写真があるか
     var hasPhotos: Bool { photosJSON != nil && photoCount > 0 }
 
+    // MARK: - 間取り図画像
+
+    /// floorPlanImagesJSON をパースして URL 配列で返す
+    var parsedFloorPlanImages: [URL] {
+        guard let json = floorPlanImagesJSON,
+              let data = json.data(using: .utf8),
+              let arr = try? JSONSerialization.jsonObject(with: data) as? [String] else {
+            return []
+        }
+        return arr.compactMap { URL(string: $0) }
+    }
+
+    /// 間取り図画像があるか
+    var hasFloorPlanImages: Bool {
+        floorPlanImagesJSON != nil && !parsedFloorPlanImages.isEmpty
+    }
+
     // MARK: - 通勤時間
 
     /// パース済み通勤時間データ（キャッシュ付き）
@@ -1811,6 +1834,9 @@ struct ListingDTO: Codable {
     var ss_surrounding_properties: String?
     var ss_price_judgments: String?
 
+    // 間取り図画像 URL 配列（スクレイピングツールから取得）
+    var floor_plan_images: [String]?
+
     // 通勤時間（駅ベース概算、パイプライン側で付与）
     var commute_info: String?
 
@@ -1950,6 +1976,12 @@ extension Listing {
               let rawName = dto.name, !rawName.isEmpty else { return nil }
         let name = cleanListingName(rawName)
         guard !name.isEmpty else { return nil }
+        // floor_plan_images 配列を JSON 文字列に変換
+        var floorPlanJSON: String?
+        if let images = dto.floor_plan_images, !images.isEmpty,
+           let data = try? JSONSerialization.data(withJSONObject: images) {
+            floorPlanJSON = String(data: data, encoding: .utf8)
+        }
         return Listing(
             source: dto.source,
             url: url,
@@ -1971,6 +2003,7 @@ extension Listing {
             managementFee: dto.management_fee,
             repairReserveFund: dto.repair_reserve_fund,
             listWardRoman: dto.list_ward_roman,
+            floorPlanImagesJSON: floorPlanJSON,
             fetchedAt: fetchedAt,
             propertyType: dto.property_type ?? "chuko",
             duplicateCount: dto.duplicate_count ?? 1,

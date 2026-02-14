@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-13  
+> **最終更新**: 2026-02-14  
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -81,7 +81,7 @@ real-estate/
      │    │              scraping_config,   │
      │    │              scraping_logs      │
      │    │ Auth       : Google Sign-In     │
-     │    │ Storage    : 内見写真            │
+     │    │ Storage    : 内見写真, 間取り図    │
      │    │ FCM        : プッシュ通知        │
      │    └─────────────────────────────────┘
      │              │
@@ -286,6 +286,7 @@ Sheet として表示。以下のセクションで構成:
 | ③ | **住所** | 住所テキスト + Google Maps リンク |
 | ④ | **コメント** | 入力フィールド + コメント一覧（編集・削除可） |
 | ⑤ | **内見写真** | PhotoSectionView（撮影・ライブラリ選択・フルスクリーン表示） |
+| ⑤-b | **間取り図** | `hasFloorPlanImages` の場合のみ。SUUMO/HOME'S の物件詳細ページから取得した間取り図画像を Firebase Storage 経由で表示（掲載終了後も永続表示可能）。タップでピンチズーム対応のフルスクリーン表示。複数枚の場合は横スクロール |
 | ⑥ | **物件基本情報** | 下記の共通項目 + 中古/新築固有項目を表示 |
 | ⑦ | **月額支払いシミュレーション** | `priceMan > 0` の場合（中古・新築共通）。下記の計算ロジックで動的に算出。タップでフォーム展開し金利・返済期間・頭金を変更可能 |
 | ⑧ | **通勤時間** | Playground / M3Career への通勤時間（MKDirections）+ Google Maps リンク。座標ありかつ未取得の場合は計算ボタン表示 |
@@ -343,7 +344,7 @@ n = 返済回数（月）= 返済年数 × 12
 |---------|------|
 | `LoanCalculator.swift` | 計算ロジック。`monthlyPayment(principal:rate:years:)` / `totalRepayment(principal:rate:years:)`。`simulate(listing:)` は listing URL + 主要パラメータでセッション内キャッシュし、body 再評価時の再計算を回避 |
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
-| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, commentSection, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等） |
+| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, commentSection, floorPlanSection, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等）。`FloorPlanFullScreenView` は間取り図のピンチズーム対応フルスクリーン表示 |
 | `loan_calc.py` (Python) | Slack 通知・レポート用の月額計算（同一パラメータ） |
 
 **物件基本情報の表示項目**
@@ -835,6 +836,13 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 16 | アップロード状態表示 | 自動 | アップロード中は ProgressView、完了後はクラウドアイコン表示 |
 | 17 | 投稿者名表示 | 自動 | 他ユーザーの写真には投稿者名を表示 |
 
+#### 間取り図
+
+| # | 機能 | 操作 | 詳細 |
+|---|------|------|------|
+| 17-b | 間取り図表示 | 閲覧 | `hasFloorPlanImages` の場合のみ。Firebase Storage から間取り図画像を表示（1枚=フル幅、複数枚=横スクロール）。画像は掲載終了後も永続的に表示可能 |
+| 17-c | フルスクリーン表示 | 画像タップ | 間取り図をフルスクリーンで表示（ピンチズーム・ダブルタップズーム対応） |
+
 #### 物件基本情報
 
 | # | 機能 | 操作 | 詳細 |
@@ -1177,6 +1185,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
    ├── embed_geocode.py       → ジオコーディング（住所→座標、ss_address を優先使用）
    ├── geocode_cross_validator.py → 座標の相互検証 + 修正試行
    ├── hazard_enricher.py     → ハザード情報付与
+   ├── floor_plan_enricher.py → 間取り図画像URL付与（HOME'S詳細ページから取得。SUUMOはbuild_units_cache経由）
+   ├── upload_floor_plans.py  → 間取り図画像をFirebase Storageにアップロード（URL永続化）
    ├── commute_enricher.py    → 通勤時間付与（駅名ベースのドアtoドア概算）
    ├── reinfolib_enricher.py  → 不動産情報ライブラリ成約相場付与（事前構築キャッシュ参照）
    └── estat_enricher.py      → e-Stat 人口動態付与（事前構築キャッシュ参照）
@@ -1283,6 +1293,16 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **データソース** | `data/estat_population.json`（事前構築キャッシュ） |
 | **付与データ** | 区の人口、世帯数、前年比、5年変動、年次推移 |
 | **キャッシュ構築** | `estat_population_builder.py`（別ワークフローで実行） |
+
+#### 5.5.5 間取り図画像エンリッチャー（floor_plan_enricher.py）
+
+| 項目 | 詳細 |
+|------|------|
+| **データソース** | SUUMO: `build_units_cache.py` → `parse_suumo_detail_html()` で詳細ページ HTML から `alt="間取り図"` の img タグを抽出。HOME'S: `floor_plan_enricher.py` が詳細ページを取得し、`#floorplan` セクション / `alt` に「間取」を含む img タグ / src に `floorplan`/`madori` を含む img タグから画像 URL を抽出 |
+| **付与データ** | `floor_plan_images`: 間取り図画像 URL の配列（SUUMO はリサイズ URL w=1200&h=900、HOME'S は元画像 URL） |
+| **HTMLキャッシュ** | SUUMO: `data/html_cache/`（build_units_cache.py と共有）、HOME'S: `data/homes_html_cache/`（独自キャッシュ） |
+| **Firebase Storage 永続化** | `upload_floor_plans.py` が画像を Firebase Storage `floor_plans/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
+| **iOS 側フィールド** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換。URL は Firebase Storage のダウンロード URL） |
 
 ### 5.6 通勤時間ツール
 
@@ -1555,6 +1575,9 @@ GitHub Actions のサービスアカウント（Firebase Admin SDK）はルー�
 photos/{docId}/{photoId}   → 認証済みユーザーのみ読み書き
                               サイズ上限: 10MB
                               コンテンツタイプ: image/*
+floor_plans/{imageId}      → 認証済みユーザーのみ読み取り
+                              書き込みは Admin SDK（パイプライン）のみ
+                              ※ ダウンロード URL にトークンを含むため AsyncImage から直接読み込み可
 ```
 
 ### 7.4 Firebase Cloud Messaging
@@ -1590,13 +1613,15 @@ photos/{docId}/{photoId}   → 認証済みユーザーのみ読み書き
 4. scripts/update_listings.sh --no-git
    ├── main.py（スクレイピング）
    ├── check_changes.py（差分チェック → 変更なしなら早期終了）
-   ├── build_units_cache.py（総戸数・階数・権利形態キャッシュ更新）
+   ├── build_units_cache.py（総戸数・階数・権利形態・間取り図キャッシュ更新）
    ├── merge_detail_cache.py（詳細キャッシュマージ）
    ├── sumai_surfin_enricher.py（住まいサーフィン + ss_address 取得）
    ├── build_map_viewer.py（地図ビューア生成 + ジオコーディング）
    ├── embed_geocode.py（座標埋め込み）
    ├── geocode_cross_validator.py（座標相互検証 + 修正）
    ├── hazard_enricher.py（ハザード情報）
+   ├── floor_plan_enricher.py（HOME'S 間取り図画像URL取得）
+   ├── upload_floor_plans.py（間取り図画像→Firebase Storageアップロード）
    ├── reinfolib_enricher.py（不動産情報ライブラリ相場）
    ├── estat_enricher.py（e-Stat 人口動態）
    ├── generate_report.py（レポート生成）
@@ -1739,7 +1764,7 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 |------|------|
 | **認証** | Google サインイン + メールホワイトリスト |
 | **Firestore** | 認証済みユーザーのみ読み書き |
-| **Storage** | 認証済みユーザーのみ、10MB/画像のみ制限 |
+| **Storage** | 認証済みユーザーのみ。内見写真: 10MB/画像のみ制限。間取り図: 読み取りのみ（Admin SDK が書き込み） |
 | **Admin SDK** | サービスアカウントは Firestore ルールの制約を受けない |
 | **環境変数** | シークレットは GitHub Actions Secrets で管理、`.env` は `.gitignore` |
 
@@ -1833,7 +1858,8 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
     "ss_appreciation_rate": 12.5,
     "ss_radar_data": "{...}",
     "hazard_info": "{...}",
-    "commute_info": "{...}"
+    "commute_info": "{...}",
+    "floor_plan_images": ["https://firebasestorage.googleapis.com/v0/b/real-estate-app-5b869.firebasestorage.app/o/floor_plans%2Fabc123def456.jpg?alt=media&token=..."]
   }
 ]
 ```

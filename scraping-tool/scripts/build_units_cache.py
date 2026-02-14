@@ -139,6 +139,8 @@ def _detail_to_cache_entry(parsed: dict) -> dict:
         entry["management_fee"] = parsed["management_fee"]
     if parsed.get("repair_reserve_fund") is not None:
         entry["repair_reserve_fund"] = parsed["repair_reserve_fund"]
+    if parsed.get("floor_plan_images"):
+        entry["floor_plan_images"] = parsed["floor_plan_images"]
     return entry
 
 
