@@ -94,12 +94,17 @@ def fetch_list_page(
     session: requests.Session,
     page: int = 1,
     ward_roman: Optional[str] = None,
+    url_params: Optional[dict[str, str]] = None,
 ) -> str:
-    """一覧ページのHTMLを取得。ward_roman 指定時は /ms/chuko/tokyo/sc_XXX/ を使用。"""
+    """一覧ページのHTMLを取得。ward_roman 指定時は /ms/chuko/tokyo/sc_XXX/ を使用。
+    url_params が指定された場合、クエリパラメータとして追加（価格・面積等のプリフィルタ用）。"""
     if ward_roman is not None:
         url = LIST_URL_WARD_ROMAN.format(ward=ward_roman)
+        params = dict(url_params) if url_params else {}
         if page > 1:
-            url = f"{url}?page={page}"
+            params["page"] = str(page)
+        if params:
+            url = f"{url}?{'&'.join(f'{k}={v}' for k, v in params.items())}"
     else:
         url = LIST_URL_TEMPLATE
         if page > 1:
@@ -574,19 +579,37 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
 # 全ページ取得時の安全上限（無限ループ防止）
 SUUMO_MAX_PAGES_SAFETY = 100
 
+# 早期打ち切り: 連続 N ページで新規通過0件ならその区の残りページをスキップ
+# URL プリフィルタ適用後でも通過しない物件が多い区での無駄なリクエストを削減
+EARLY_EXIT_PAGES = 20
+
 
 def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Iterator[SuumoListing]:
     """SUUMO 東京23区の中古マンションを取得。全23区を sc_区のローマ字（sc_koto, sc_kita 等）で同様に区ごとに取得。max_pages=0 のときは結果がなくなるまで全ページ取得。"""
     session = create_session()
     seen_urls: set[str] = set()
     limit = max_pages if max_pages and max_pages > 0 else SUUMO_MAX_PAGES_SAFETY
+
+    # apply_filter 時は価格・面積を URL パラメータでプリフィルタ（ページ数を大幅削減）
+    # SUUMO の /ms/chuko/tokyo/sc_XXX/ は kb, kt, mb, mt パラメータに対応
+    url_params: Optional[dict[str, str]] = None
+    if apply_filter:
+        url_params = {
+            "kb": str(PRICE_MIN_MAN),
+            "kt": str(PRICE_MAX_MAN),
+            "mb": str(int(AREA_MIN_M2)),
+            "mt": str(int(AREA_MAX_M2)) if AREA_MAX_M2 is not None else "9999999",
+        }
+        print(f"SUUMO: URL プリフィルタ適用（{PRICE_MIN_MAN}万〜{PRICE_MAX_MAN}万, {AREA_MIN_M2}m²以上）", file=sys.stderr)
+
     for ward_roman in SUUMO_23_WARD_ROMAN:  # 全23区を同じ方式で取得
         p = 1
         ward_total_parsed = 0
         ward_total_passed = 0
+        pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
         while p <= limit:
             try:
-                html = fetch_list_page(session, p, ward_roman=ward_roman)
+                html = fetch_list_page(session, p, ward_roman=ward_roman, url_params=url_params)
             except requests.exceptions.HTTPError as e:
                 # リトライ後も 5xx の場合はそのページをスキップして続行（ジョブ全体は落とさない）
                 if e.response is not None and 500 <= e.response.status_code < 600:
@@ -613,6 +636,14 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
                         yield row
                         passed += 1
             ward_total_passed += passed
+            # 早期打ち切り判定: 連続 N ページで新規通過0件ならスキップ
+            if passed > 0:
+                pages_since_last_pass = 0
+            else:
+                pages_since_last_pass += 1
+            if pages_since_last_pass >= EARLY_EXIT_PAGES:
+                print(f"SUUMO: sc_{ward_roman} 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {ward_total_passed}件）", file=sys.stderr)
+                break
             # 進捗: 10ページごとにサマリー
             if p % 10 == 0:
                 print(f"SUUMO: sc_{ward_roman} ...{p}ページ処理済 (通過: {ward_total_passed}件)", file=sys.stderr)
