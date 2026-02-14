@@ -61,6 +61,14 @@ LIST_URL_PAGE = "https://www.homes.co.jp/mansion/chuko/tokyo/23ku/list/?page={pa
 # 全ページ取得時の安全上限（無限ループ防止）
 HOMES_MAX_PAGES_SAFETY = 100
 
+# 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
+HOMES_EARLY_EXIT_PAGES = 20
+
+# スクレイピング全体のタイムリミット（秒）。HOME'S は WAF が厳しく、
+# 1ページに最大7分（WAF リトライ30+60+90+120秒）かかることがあるため、
+# 全体の実行時間を制限して CI/CD パイプライン全体のタイムアウトを防ぐ。
+HOMES_SCRAPE_TIMEOUT_SEC = 30 * 60  # 30分
+
 
 @dataclass
 class HomesListing:
@@ -510,7 +518,14 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
     page = 1
     total_parsed = 0
     total_passed = 0
+    pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
+    start_time = time.monotonic()
     while page <= limit:
+        # タイムリミットチェック（WAF 遅延でパイプライン全体がタイムアウトするのを防止）
+        elapsed = time.monotonic() - start_time
+        if elapsed > HOMES_SCRAPE_TIMEOUT_SEC:
+            print(f"HOME'S: タイムリミット到達（{int(elapsed)}秒, {page - 1}ページ処理済, 通過: {total_passed}件）", file=sys.stderr)
+            break
         url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
         try:
             html = fetch_list_page(session, url)
@@ -534,6 +549,14 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
                 yield row
                 passed += 1
         total_passed += passed
+        # 早期打ち切り判定: 連続 N ページで新規通過0件なら中断
+        if passed > 0:
+            pages_since_last_pass = 0
+        else:
+            pages_since_last_pass += 1
+        if pages_since_last_pass >= HOMES_EARLY_EXIT_PAGES:
+            print(f"HOME'S: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）", file=sys.stderr)
+            break
         # 進捗: 10ページごとにサマリー
         if page % 10 == 0:
             print(f"HOME'S: ...{page}ページ処理済 (通過: {total_passed}件)", file=sys.stderr)

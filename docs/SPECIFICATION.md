@@ -1236,6 +1236,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |------|------|
 | **パース対象** | JSON-LD + HTML（`mod-mergeBuilding`, `mod-listKks`） |
 | **WAF 対策** | AWS WAF 検知機能（`is_waf_challenge`）、長めのリクエスト間隔（5秒） |
+| **早期打ち切り** | 連続20ページで新規通過0件なら中断（`HOMES_EARLY_EXIT_PAGES=20`） |
+| **タイムリミット** | 30分（`HOMES_SCRAPE_TIMEOUT_SEC=1800`）。HOME'S は WAF で1ページ最大7分かかることがあり、全体の実行時間を制限 |
 | **出力** | `HomesListing` dataclass |
 
 #### 5.3.3 SUUMO 新築（suumo_shinchiku_scraper.py）
@@ -1250,6 +1252,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 項目 | 詳細 |
 |------|------|
 | **パース対象** | JSON-LD + カード形式 HTML |
+| **早期打ち切り** | 連続20ページで新規通過0件なら中断（`HOMES_SHINCHIKU_EARLY_EXIT_PAGES=20`） |
+| **タイムリミット** | 30分（`HOMES_SHINCHIKU_SCRAPE_TIMEOUT_SEC=1800`） |
 | **出力** | `HomesShinchikuListing` dataclass |
 
 ### 5.4 フィルタ・重複除去
@@ -1864,6 +1868,7 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | **路線** | JR / 東京メトロ / 都営 / 主要私鉄 | 需要の厚い路線に限定 |
 | **リクエスト間隔** | SUUMO: 2秒 / HOME'S: 5秒 | 負荷軽減・WAF 対策 |
 | **タイムアウト** | 60秒 / リトライ3回 | 安定性確保 |
+| **HOME'S スクレイプ上限** | 30分 or 連続20ページ通過0件 | WAF 遅延によるパイプライン全体タイムアウト防止 |
 
 ### 9.2 Firestore 経由の条件上書き
 
