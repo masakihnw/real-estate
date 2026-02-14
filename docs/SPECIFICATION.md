@@ -1170,24 +1170,24 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 ### 5.1 データソース
 
-| ソース | 種別 | URL パターン |
-|--------|------|-------------|
-| **SUUMO 中古** | 中古マンション | `suumo.jp/ms/chuko/tokyo/sc_{ward}/?kb={min}&kt={max}&mb={area}&mt=9999999` |
-| **HOME'S 中古** | 中古マンション | `homes.co.jp/mansion/chuko/tokyo/23ku/list/` |
-| **SUUMO 新築** | 新築マンション | `suumo.jp/jj/bukken/ichiran/JJ011FC001/?ar=030&bs=010&ta=13` |
-| **HOME'S 新築** | 新築マンション | `homes.co.jp/mansion/shinchiku/tokyo/list/` |
-| **住まいサーフィン** | 評価データ | `sumai-surfin.com`（ログイン必要） |
-| **国土地理院** | ハザードデータ | GSI タイル（`disaportaldata.gsi.go.jp`） |
-| **東京都** | 地域危険度 | GeoJSON（GitHub raw） |
+| ソース | 種別 | URL パターン | 状態 |
+|--------|------|-------------|------|
+| **SUUMO 中古** | 中古マンション | `suumo.jp/ms/chuko/tokyo/sc_{ward}/?kb={min}&kt={max}&mb={area}&mt=9999999` | 有効 |
+| **SUUMO 新築** | 新築マンション | `suumo.jp/jj/bukken/ichiran/JJ011FC001/?ar=030&bs=010&ta=13` | 有効 |
+| ~~HOME'S 中古~~ | 中古マンション | `homes.co.jp/mansion/chuko/tokyo/23ku/list/` | **無効**（WAF により実用的な取得が困難） |
+| ~~HOME'S 新築~~ | 新築マンション | `homes.co.jp/mansion/shinchiku/tokyo/list/` | **無効**（同上） |
+| **住まいサーフィン** | 評価データ | `sumai-surfin.com`（ログイン必要） | 有効 |
+| **国土地理院** | ハザードデータ | GSI タイル（`disaportaldata.gsi.go.jp`） | 有効 |
+| **東京都** | 地域危険度 | GeoJSON（GitHub raw） | 有効 |
 
 ### 5.2 スクレイピングパイプライン
 
 ```
 1. main.py（スクレイピング実行）
    ├── suumo_scraper.py       → SUUMO 中古物件取得
-   ├── homes_scraper.py       → HOME'S 中古物件取得
    ├── suumo_shinchiku_scraper.py → SUUMO 新築物件取得
-   └── homes_shinchiku_scraper.py → HOME'S 新築物件取得
+   ├── (homes_scraper.py)      → HOME'S 中古（現在無効）
+   └── (homes_shinchiku_scraper.py) → HOME'S 新築（現在無効）
        ↓ フィルタ・重複除去
 2. results/latest.json, results/latest_shinchiku.json 出力
    check_changes.py → 前回との差分チェック（変更なし → 早期終了）
@@ -1202,7 +1202,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
    ├── embed_geocode.py       → ジオコーディング（住所→座標、ss_address を優先使用）
    ├── geocode_cross_validator.py → 座標の相互検証 + 修正試行
    ├── hazard_enricher.py     → ハザード情報付与
-   ├── floor_plan_enricher.py → 間取り図画像URL付与（HOME'S詳細ページから取得。SUUMOはbuild_units_cache経由）
+   ├── floor_plan_enricher.py → 間取り図画像URL付与（HOME'S 無効化により現在は自動スキップ。SUUMOはbuild_units_cache経由で付与済み）
    ├── upload_floor_plans.py  → 間取り図画像をFirebase Storageにアップロード（URL永続化）
    ├── commute_enricher.py    → 通勤時間付与（駅名ベースのドアtoドア概算）
    ├── reinfolib_enricher.py  → 不動産情報ライブラリ成約相場付与（事前構築キャッシュ参照）
@@ -1230,15 +1230,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **早期打ち切り** | 連続20ページで新規通過0件の区はスキップ（`EARLY_EXIT_PAGES=20`） |
 | **出力** | `SuumoListing` dataclass |
 
-#### 5.3.2 HOME'S 中古（homes_scraper.py）
+#### 5.3.2 ~~HOME'S 中古（homes_scraper.py）~~ — 現在無効
 
-| 項目 | 詳細 |
-|------|------|
-| **パース対象** | JSON-LD + HTML（`mod-mergeBuilding`, `mod-listKks`） |
-| **WAF 対策** | AWS WAF 検知機能（`is_waf_challenge`）、長めのリクエスト間隔（5秒） |
-| **早期打ち切り** | 連続20ページで新規通過0件なら中断（`HOMES_EARLY_EXIT_PAGES=20`） |
-| **タイムリミット** | 30分（`HOMES_SCRAPE_TIMEOUT_SEC=1800`）。HOME'S は WAF で1ページ最大7分かかることがあり、全体の実行時間を制限 |
-| **出力** | `HomesListing` dataclass |
+> **無効化理由**: AWS WAF が GitHub Actions の IP を積極的にブロックし、1ページあたり最大7分のリトライが発生。30ページ処理しても通過0件という状況が続いたため無効化。コードは `--source homes` / `--source both` で再有効化可能。
 
 #### 5.3.3 SUUMO 新築（suumo_shinchiku_scraper.py）
 
@@ -1247,14 +1241,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **取得フィールド** | 基本情報 + 価格レンジ、面積レンジ、間取りレンジ、引渡時期 |
 | **出力** | `SuumoShinchikuListing` dataclass |
 
-#### 5.3.4 HOME'S 新築（homes_shinchiku_scraper.py）
+#### 5.3.4 ~~HOME'S 新築（homes_shinchiku_scraper.py）~~ — 現在無効
 
-| 項目 | 詳細 |
-|------|------|
-| **パース対象** | JSON-LD + カード形式 HTML |
-| **早期打ち切り** | 連続20ページで新規通過0件なら中断（`HOMES_SHINCHIKU_EARLY_EXIT_PAGES=20`） |
-| **タイムリミット** | 30分（`HOMES_SHINCHIKU_SCRAPE_TIMEOUT_SEC=1800`） |
-| **出力** | `HomesShinchikuListing` dataclass |
+> 中古と同様の理由で無効化。
 
 ### 5.4 フィルタ・重複除去
 
@@ -1324,9 +1313,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | 項目 | 詳細 |
 |------|------|
-| **データソース** | SUUMO: `build_units_cache.py` → `parse_suumo_detail_html()` で詳細ページ HTML から `alt="間取り図"` の img タグを抽出。HOME'S: `floor_plan_enricher.py` が詳細ページを取得し、`#floorplan` セクション / `alt` に「間取」を含む img タグ / src に `floorplan`/`madori` を含む img タグから画像 URL を抽出 |
-| **付与データ** | `floor_plan_images`: 間取り図画像 URL の配列（SUUMO はリサイズ URL w=1200&h=900、HOME'S は元画像 URL） |
-| **HTMLキャッシュ** | SUUMO: `data/html_cache/`（build_units_cache.py と共有）、HOME'S: `data/homes_html_cache/`（独自キャッシュ） |
+| **データソース** | SUUMO: `build_units_cache.py` → `parse_suumo_detail_html()` で詳細ページ HTML から `alt="間取り図"` の img タグを抽出（HOME'S は無効化のため現在未使用） |
+| **付与データ** | `floor_plan_images`: 間取り図画像 URL の配列（SUUMO はリサイズ URL w=1200&h=900） |
+| **HTMLキャッシュ** | SUUMO: `data/html_cache/`（build_units_cache.py と共有） |
 | **Firebase Storage 永続化** | `upload_floor_plans.py` が画像を Firebase Storage `floor_plans/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
 | **iOS 側フィールド** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換。URL は Firebase Storage のダウンロード URL） |
 
@@ -1789,7 +1778,7 @@ floor_plans/{imageId}      → 認証済みユーザーのみ読み取り
    ├── embed_geocode.py（座標埋め込み）
    ├── geocode_cross_validator.py（座標相互検証 + 修正）
    ├── hazard_enricher.py（ハザード情報）
-   ├── floor_plan_enricher.py（HOME'S 間取り図画像URL取得）
+   ├── floor_plan_enricher.py（間取り図画像URL取得。HOME'S 無効化により現在自動スキップ）
    ├── upload_floor_plans.py（間取り図画像→Firebase Storageアップロード）
    ├── reinfolib_enricher.py（不動産情報ライブラリ相場）
    ├── estat_enricher.py（e-Stat 人口動態）
@@ -1866,9 +1855,9 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | **駅徒歩** | 7分以内 | ドラフト条件の厳格化 |
 | **総戸数** | 50戸以上 | 管理安定性・流動性 |
 | **路線** | JR / 東京メトロ / 都営 / 主要私鉄 | 需要の厚い路線に限定 |
-| **リクエスト間隔** | SUUMO: 2秒 / HOME'S: 5秒 | 負荷軽減・WAF 対策 |
+| **リクエスト間隔** | SUUMO: 2秒 | 負荷軽減 |
 | **タイムアウト** | 60秒 / リトライ3回 | 安定性確保 |
-| **HOME'S スクレイプ上限** | 30分 or 連続20ページ通過0件 | WAF 遅延によるパイプライン全体タイムアウト防止 |
+| **HOME'S** | **無効**（コード残存、定期実行では未使用） | WAF によりCI/CDパイプラインがタイムアウトするため無効化 |
 
 ### 9.2 Firestore 経由の条件上書き
 
