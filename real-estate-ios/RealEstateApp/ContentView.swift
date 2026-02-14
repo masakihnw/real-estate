@@ -2,7 +2,8 @@
 //  ContentView.swift
 //  RealEstateApp
 //
-//  HIG: TabView で主要オブジェクト（中古・新築・地図・お気に入り・設定）を切り替え。
+//  HIG: TabView で主要オブジェクト（物件・地図・お気に入り・成約・設定）を切り替え。
+//  物件タブは中古/新築をセグメントピッカーで切替。成約タブは一覧/地図を切替。
 //  iOS 26 ではタブバーに Liquid Glass が適用される。
 //
 
@@ -13,6 +14,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(ListingStore.self) private var store
+    @Environment(TransactionStore.self) private var transactionStore
     @Environment(SaveErrorHandler.self) private var saveErrorHandler
     private let networkMonitor = NetworkMonitor.shared
     /// 通知タップ時のディープリンク用。コメント通知で渡される listingIdentityKey に該当する物件を探す。
@@ -28,22 +30,22 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            ListingListView(propertyTypeFilter: "chuko")
-                .tabItem { Label("中古", systemImage: "building.2") }
+            PropertyListingTabView()
+                .tabItem { Label("物件", systemImage: "building.2") }
                 .tag(0)
-                .accessibilityLabel("中古マンション")
-            ListingListView(propertyTypeFilter: "shinchiku")
-                .tabItem { Label("新築", systemImage: "sparkles") }
-                .tag(1)
-                .accessibilityLabel("新築マンション")
+                .accessibilityLabel("物件一覧")
             MapTabView()
                 .tabItem { Label("地図", systemImage: "map") }
-                .tag(2)
+                .tag(1)
                 .accessibilityLabel("地図で探す")
             ListingListView(favoritesOnly: true)
                 .tabItem { Label("お気に入り", systemImage: "heart") }
-                .tag(3)
+                .tag(2)
                 .accessibilityLabel("お気に入り物件")
+            TransactionTabView()
+                .tabItem { Label("成約", systemImage: "chart.bar.doc.horizontal") }
+                .tag(3)
+                .accessibilityLabel("成約実績")
             SettingsView()
                 .tabItem { Label("設定", systemImage: "gearshape") }
                 .tag(4)
@@ -79,6 +81,10 @@ struct ContentView: View {
             if store.lastFetchedAt == nil || allListings.isEmpty {
                 await store.refresh(modelContext: modelContext)
             }
+            // 成約実績も初回は自動取得
+            if transactionStore.lastFetchedAt == nil {
+                await transactionStore.refresh(modelContext: modelContext)
+            }
         }
         .onChange(of: scenePhase) { _, newPhase in
             // F4: フォアグラウンド復帰時に一定間隔経過していたら自動更新
@@ -87,6 +93,13 @@ struct ContentView: View {
                 if elapsed >= autoRefreshInterval {
                     Task {
                         await store.refresh(modelContext: modelContext)
+                    }
+                }
+                // 成約実績も自動更新（1時間間隔）
+                let txElapsed = -(transactionStore.lastFetchedAt ?? .distantPast).timeIntervalSinceNow
+                if txElapsed >= 60 * 60 {
+                    Task {
+                        await transactionStore.refresh(modelContext: modelContext)
                     }
                 }
             }
@@ -119,5 +132,6 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environment(ListingStore.shared)
-        .modelContainer(for: Listing.self, inMemory: true)
+        .environment(TransactionStore.shared)
+        .modelContainer(for: [Listing.self, TransactionRecord.self], inMemory: true)
 }

@@ -326,10 +326,20 @@ for f in "${REPORT_DIR}"/report_*.md; do
     mv "$f" "${OLD_REPORT_DIR}/" 2>/dev/null || true
 done
 
+# 4.8b. 成約実績フィード構築（REINFOLIB_API_KEY が設定されている場合のみ）
+# 首都圏の成約データを取得・フィルタ・ジオコードして transactions.json を生成
+if [ -n "${REINFOLIB_API_KEY:-}" ]; then
+    echo "成約実績フィード構築中（首都圏、API コールのため時間がかかります）..." >&2
+    python3 build_transaction_feed.py --quarters 4 --output "${OUTPUT_DIR}/transactions.json" || echo "成約実績フィード構築失敗（続行）" >&2
+else
+    echo "成約実績フィード: REINFOLIB_API_KEY 未設定のためスキップ" >&2
+fi
+
 echo "=== 完了 ===" >&2
 echo "レポート: $REPORT" >&2
 echo "最新（中古）: ${OUTPUT_DIR}/latest.json" >&2
 echo "最新（新築）: ${OUTPUT_DIR}/latest_shinchiku.json" >&2
+echo "成約実績: ${OUTPUT_DIR}/transactions.json" >&2
 
 # ログを Firestore にアップロード（iOS アプリから閲覧・コピー可能にする）
 echo "ログを Firestore にアップロード中..." >&2
@@ -372,7 +382,7 @@ ${SUMMARY}"
 レポート: scraping-tool/${REPORT_DIR}/report.md"
             
             # ステージング・コミット・プッシュ
-            git add scraping-tool/results/ scraping-tool/data/floor_plan_storage_manifest.json 2>/dev/null || true
+            git add scraping-tool/results/ scraping-tool/data/floor_plan_storage_manifest.json scraping-tool/data/geocode_cache.json 2>/dev/null || true
             if git diff --cached --quiet; then
                 echo "コミットする変更がありません" >&2
             else
