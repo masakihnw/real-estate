@@ -8,12 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		01AC50EEF3497F0AB63CDE10 /* PhotoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F421EAE268593C2F547849 /* PhotoSectionView.swift */; };
+		052D2F6975980CCE8DDA01B8 /* TransactionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7EB56BA37D75701E3BF605 /* TransactionRecord.swift */; };
 		08302B487BC34805D033B4ED /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 463ED4D07DE39B4BA2486230 /* FirebaseStorage */; };
 		0CC098563697CD703E9693C8 /* FilterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5170FEF60A5876BE1C839DA3 /* FilterStore.swift */; };
 		0E04EDAC2E32A4D19103DC14 /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BEA489E06E9E2D64C98F3B0 /* PushNotificationService.swift */; };
 		12B65D4123AAFFE21EAF8D07 /* RadarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94333B46786557992552519 /* RadarChartView.swift */; };
 		13F2D3B8066ED1C37940E12B /* NotificationScheduleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */; };
 		1D30A4CF74D6451DE51B23CE /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */; };
+		1F72CE93F21F2E14D524D3D9 /* TransactionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5DAB8EDCE8C47645261F77 /* TransactionFilter.swift */; };
 		1F831EA70E43C0800109C454 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D04A0A3D3357841F2D446A36 /* FirebaseFirestore */; };
 		242A17AE57A5070DD5A8680F /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC4ACF084AE947A9DBA4E12 /* ComparisonView.swift */; };
 		27560686B331DE043F6A5E92 /* MapTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6454CFFAE2040D4976E28754 /* MapTabView.swift */; };
@@ -30,25 +32,32 @@
 		6A37F920CBBA5FC9545DEF3F /* ListingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5549338A98AC303BCC728D /* ListingStore.swift */; };
 		6B368955BF644132571E4C9D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A46680E300D1AAFC546F4450 /* FirebaseAuth */; };
 		7040BD509BB73F81C2B3CD3D /* LoanCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853FEEF66F713933C5CC415D /* LoanCalculator.swift */; };
+		713D6244BCC833B25493C5BB /* TransactionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF29EF90FA22A62705C9CB6 /* TransactionDetailView.swift */; };
 		72188035EBF232524AD778B9 /* SimulationChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8462396154DCAD49363D09 /* SimulationChartView.swift */; };
+		7C2DC3F1723DF5B611734921 /* TransactionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */; };
 		7CCCDC03AC2811D2C49DD09B /* PopulationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A050CCBF6353433066A86B6E /* PopulationSectionView.swift */; };
 		812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */; };
+		81C95C9E5465F0DB3B10143A /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2B439F060EE0745A8D2196 /* TransactionListView.swift */; };
 		8EE4894DFCD5C7C657DD928E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E93033C63E637E6276CAC6 /* ContentView.swift */; };
 		948D0660EF2CF57D6812BC9F /* ScrapingLogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */; };
 		9565CB22F8F354C845B24ACF /* ScrapingConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C320640BB97A0C9698B93CCE /* ScrapingConfigView.swift */; };
 		9A14A66302216E03F2C22E2D /* MarketDataSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE6DA3D07E981F3E46C50FC /* MarketDataSectionView.swift */; };
 		9ADBC2C61259A3B927778797 /* RealEstateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291B37863ADE9217F18FD55 /* RealEstateAppApp.swift */; };
+		A0B33EC2E6F5533C53E1F616 /* TransactionFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB2D6D1A77B7BA38487E021 /* TransactionFilterSheet.swift */; };
 		A4CBD4C7F34B166222CCED63 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */; };
 		A525C4CBAA6599D35B521432 /* MonthlyPaymentSimulationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4844FC75E2D807C80E501B /* MonthlyPaymentSimulationView.swift */; };
 		AF2FFB77E10B601CC9B0C452 /* PhotoSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0177284EAD44FBAB79F578AE /* PhotoSyncService.swift */; };
+		AFBD3E49115FBE9B15638925 /* TransactionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DC892696F0E098888C28B1 /* TransactionMapView.swift */; };
 		B3DED758AAB9646802BDDAC5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743ACD98A09AC230E7A67B19 /* SettingsView.swift */; };
 		BB733BB9BB4EF0FEC253805F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */; };
 		C0E762D91A03E361EA0FEC5F /* SaveErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD3E9BA23AEB1C1A566EF4D /* SaveErrorHandler.swift */; };
+		CC96986E6F49533736E0051D /* PropertyListingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */; };
 		D02597AD698F8E60CF1F11D4 /* WalkthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1FD6AB10F203FC324097D8 /* WalkthroughView.swift */; };
 		D0CB8E0312FD2887D70458A7 /* ListingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607511ACC91ACD538F163E71 /* ListingListView.swift */; };
 		DB0AB520BA62A5369467B414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97732299FBD4E61C33F84F0E /* Assets.xcassets */; };
 		E15EBCDC8733B11F8335BE72 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 5F1D26818CB6AB5F58F31BF3 /* GoogleSignIn */; };
 		E90E0D85B2F8D6947FC40CA2 /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC96D67CAA5AB454825D2D8 /* Listing.swift */; };
+		EA48E6A5AA87F02E06F986C8 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BF7C431D158CB3C8FED573 /* TransactionStore.swift */; };
 		EC934A96DDAED4A671D915A3 /* ScrapingConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D33E9EF2F06718A077B1DAD /* ScrapingConfigService.swift */; };
 		F105169E54EE4FDD30D61D04 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7391AC642FF221BD72EBEB /* AuthService.swift */; };
 /* End PBXBuildFile section */
@@ -56,15 +65,19 @@
 /* Begin PBXFileReference section */
 		0177284EAD44FBAB79F578AE /* PhotoSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSyncService.swift; sourceTree = "<group>"; };
 		0291B37863ADE9217F18FD55 /* RealEstateAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealEstateAppApp.swift; sourceTree = "<group>"; };
+		03BF7C431D158CB3C8FED573 /* TransactionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionStore.swift; sourceTree = "<group>"; };
 		03E93033C63E637E6276CAC6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		0E59A9E4A8BFE0ABFF87EBAE /* RealEstateApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RealEstateApp.entitlements; sourceTree = "<group>"; };
 		18B9F19E6E3E1CFCE1CCEFC8 /* ScrapingLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogView.swift; sourceTree = "<group>"; };
 		18F421EAE268593C2F547849 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
+		1B7EB56BA37D75701E3BF605 /* TransactionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionRecord.swift; sourceTree = "<group>"; };
 		1FD386389CA29A884559D46A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		283EFC574DD3B5C822974FB1 /* RealEstateApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RealEstateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A8462396154DCAD49363D09 /* SimulationChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationChartView.swift; sourceTree = "<group>"; };
 		32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseSyncService.swift; sourceTree = "<group>"; };
+		3BF29EF90FA22A62705C9CB6 /* TransactionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailView.swift; sourceTree = "<group>"; };
+		3D5DAB8EDCE8C47645261F77 /* TransactionFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFilter.swift; sourceTree = "<group>"; };
 		438CDAB54F0C420E60FF2E31 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshManager.swift; sourceTree = "<group>"; };
 		4C01B541CE8BDAC3B3E2C7BD /* CommuteTimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteTimeService.swift; sourceTree = "<group>"; };
 		4C995EEEF715507A0F81387E /* ListingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingDetailView.swift; sourceTree = "<group>"; };
@@ -72,9 +85,11 @@
 		4DC4ACF084AE947A9DBA4E12 /* ComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonView.swift; sourceTree = "<group>"; };
 		4E1FD6AB10F203FC324097D8 /* WalkthroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkthroughView.swift; sourceTree = "<group>"; };
 		5170FEF60A5876BE1C839DA3 /* FilterStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterStore.swift; sourceTree = "<group>"; };
+		55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyListingTabView.swift; sourceTree = "<group>"; };
 		607511ACC91ACD538F163E71 /* ListingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingListView.swift; sourceTree = "<group>"; };
 		6454CFFAE2040D4976E28754 /* MapTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTabView.swift; sourceTree = "<group>"; };
 		743ACD98A09AC230E7A67B19 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		7AB2D6D1A77B7BA38487E021 /* TransactionFilterSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFilterSheet.swift; sourceTree = "<group>"; };
 		7BC96D67CAA5AB454825D2D8 /* Listing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Listing.swift; sourceTree = "<group>"; };
 		7BEA489E06E9E2D64C98F3B0 /* PushNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
 		8447D247A0B8090F08AAF59D /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
@@ -88,13 +103,16 @@
 		A94333B46786557992552519 /* RadarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarChartView.swift; sourceTree = "<group>"; };
 		AFD3E9BA23AEB1C1A566EF4D /* SaveErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveErrorHandler.swift; sourceTree = "<group>"; };
 		B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStorageService.swift; sourceTree = "<group>"; };
+		BB2B439F060EE0745A8D2196 /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
 		C320640BB97A0C9698B93CCE /* ScrapingConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingConfigView.swift; sourceTree = "<group>"; };
 		CD7391AC642FF221BD72EBEB /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilter.swift; sourceTree = "<group>"; };
 		D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogService.swift; sourceTree = "<group>"; };
 		E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		E6DC892696F0E098888C28B1 /* TransactionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionMapView.swift; sourceTree = "<group>"; };
 		EA3890AAC58D1F45D703CF33 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		EA5549338A98AC303BCC728D /* ListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingStore.swift; sourceTree = "<group>"; };
+		EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTabView.swift; sourceTree = "<group>"; };
 		F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,6 +148,7 @@
 				AFD3E9BA23AEB1C1A566EF4D /* SaveErrorHandler.swift */,
 				4D33E9EF2F06718A077B1DAD /* ScrapingConfigService.swift */,
 				D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */,
+				03BF7C431D158CB3C8FED573 /* TransactionStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -141,6 +160,8 @@
 				7BC96D67CAA5AB454825D2D8 /* Listing.swift */,
 				D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */,
 				853FEEF66F713933C5CC415D /* LoanCalculator.swift */,
+				3D5DAB8EDCE8C47645261F77 /* TransactionFilter.swift */,
+				1B7EB56BA37D75701E3BF605 /* TransactionRecord.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -200,11 +221,17 @@
 				8D4844FC75E2D807C80E501B /* MonthlyPaymentSimulationView.swift */,
 				18F421EAE268593C2F547849 /* PhotoSectionView.swift */,
 				A050CCBF6353433066A86B6E /* PopulationSectionView.swift */,
+				55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */,
 				A94333B46786557992552519 /* RadarChartView.swift */,
 				C320640BB97A0C9698B93CCE /* ScrapingConfigView.swift */,
 				18B9F19E6E3E1CFCE1CCEFC8 /* ScrapingLogView.swift */,
 				743ACD98A09AC230E7A67B19 /* SettingsView.swift */,
 				2A8462396154DCAD49363D09 /* SimulationChartView.swift */,
+				3BF29EF90FA22A62705C9CB6 /* TransactionDetailView.swift */,
+				7AB2D6D1A77B7BA38487E021 /* TransactionFilterSheet.swift */,
+				BB2B439F060EE0745A8D2196 /* TransactionListView.swift */,
+				E6DC892696F0E098888C28B1 /* TransactionMapView.swift */,
+				EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */,
 				4E1FD6AB10F203FC324097D8 /* WalkthroughView.swift */,
 			);
 			path = Views;
@@ -318,6 +345,7 @@
 				812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */,
 				AF2FFB77E10B601CC9B0C452 /* PhotoSyncService.swift in Sources */,
 				7CCCDC03AC2811D2C49DD09B /* PopulationSectionView.swift in Sources */,
+				CC96986E6F49533736E0051D /* PropertyListingTabView.swift in Sources */,
 				0E04EDAC2E32A4D19103DC14 /* PushNotificationService.swift in Sources */,
 				12B65D4123AAFFE21EAF8D07 /* RadarChartView.swift in Sources */,
 				9ADBC2C61259A3B927778797 /* RealEstateAppApp.swift in Sources */,
@@ -328,6 +356,14 @@
 				60C7ADC29DD467CE2EF0F6D3 /* ScrapingLogView.swift in Sources */,
 				B3DED758AAB9646802BDDAC5 /* SettingsView.swift in Sources */,
 				72188035EBF232524AD778B9 /* SimulationChartView.swift in Sources */,
+				713D6244BCC833B25493C5BB /* TransactionDetailView.swift in Sources */,
+				1F72CE93F21F2E14D524D3D9 /* TransactionFilter.swift in Sources */,
+				A0B33EC2E6F5533C53E1F616 /* TransactionFilterSheet.swift in Sources */,
+				81C95C9E5465F0DB3B10143A /* TransactionListView.swift in Sources */,
+				AFBD3E49115FBE9B15638925 /* TransactionMapView.swift in Sources */,
+				052D2F6975980CCE8DDA01B8 /* TransactionRecord.swift in Sources */,
+				EA48E6A5AA87F02E06F986C8 /* TransactionStore.swift in Sources */,
+				7C2DC3F1723DF5B611734921 /* TransactionTabView.swift in Sources */,
 				D02597AD698F8E60CF1F11D4 /* WalkthroughView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,7 +405,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -477,7 +513,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

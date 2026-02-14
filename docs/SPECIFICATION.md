@@ -177,10 +177,16 @@ App起動
 └── 認証済み → ContentView
     ├── 初回ログイン → WalkthroughView（7ページ オンボーディング）
     └── TabView（5タブ）
-        ├── [0] 中古 → ListingListView(propertyTypeFilter: "chuko")
-        ├── [1] 新築 → ListingListView(propertyTypeFilter: "shinchiku")
-        ├── [2] 地図 → MapTabView
-        ├── [3] お気に入り → ListingListView(favoritesOnly: true)
+        ├── [0] 物件 → PropertyListingTabView
+        │   └── セグメントピッカー [中古 | 新築]
+        │       ├── 中古 → ListingListView(propertyTypeFilter: "chuko")
+        │       └── 新築 → ListingListView(propertyTypeFilter: "shinchiku")
+        ├── [1] 地図 → MapTabView
+        ├── [2] お気に入り → ListingListView(favoritesOnly: true)
+        ├── [3] 成約 → TransactionTabView
+        │   └── セグメントピッカー [一覧 | 地図]
+        │       ├── 一覧 → TransactionListView
+        │       └── 地図 → TransactionMapView
         └── [4] 設定 → SettingsView
 ```
 
@@ -1320,7 +1326,62 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **Firebase Storage 永続化** | `upload_floor_plans.py` が画像を Firebase Storage `floor_plans/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
 | **iOS 側フィールド** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換。URL は Firebase Storage のダウンロード URL） |
 
-### 5.6 通勤時間ツール
+### 5.6 成約実績フィード構築（build_transaction_feed.py）
+
+首都圏（東京都・神奈川県・埼玉県・千葉県）の成約実績データを取得・フィルタ・ジオコード・集約して iOS アプリ向け `transactions.json` を生成するバッチスクリプト。
+
+| 項目 | 詳細 |
+|------|------|
+| **入力** | reinfolib API（成約価格情報 `priceClassification=02`）、`data/shutoken_city_codes.json`、`data/geocode_cache.json`、`data/station_cache.json` |
+| **出力** | `results/transactions.json` |
+| **フィルタ条件** | `config.py` の購入条件（価格帯・面積・間取り・築年）を適用 |
+| **ジオコーディング** | 町丁目アドレス → 緯度経度（geocode_cache.json 優先、不足分は Nominatim API） |
+| **最寄駅推定** | ジオコーディング座標 + station_cache.json → Haversine 距離で最近傍駅を算出、直線距離 80m/分で徒歩推定 |
+| **建物グルーピング** | `(districtCode, builtYear)` の組で推定建物グループを構成。グループ別に取引件数、価格帯、平均 m² 単価を集計 |
+| **実行間隔** | 四半期に1回（`update_listings.sh` から呼び出し、`REINFOLIB_API_KEY` 設定時のみ実行） |
+| **CLI オプション** | `--quarters N`（取得四半期数、デフォルト4）、`--output PATH`（出力先） |
+
+#### transactions.json 構造
+
+```json
+{
+  "transactions": [
+    {
+      "id": "tx-xxxxxxxxx",
+      "prefecture": "東京都",
+      "ward": "江東区",
+      "district": "有明",
+      "district_code": "131080020",
+      "price_man": 7800,
+      "area_m2": 70.0,
+      "m2_price": 1114286,
+      "layout": "3LDK",
+      "built_year": 2019,
+      "structure": "RC",
+      "trade_period": "2025Q2",
+      "nearest_station": "有明テニスの森",
+      "estimated_walk_min": 5,
+      "latitude": 35.6358,
+      "longitude": 139.7908,
+      "building_group_id": "131080020-2019"
+    }
+  ],
+  "building_groups": [
+    {
+      "group_id": "131080020-2019",
+      "ward": "江東区",
+      "district": "有明",
+      "built_year": 2019,
+      "transaction_count": 5,
+      "price_range_man": [6500, 9800],
+      "avg_m2_price": 1050000
+    }
+  ],
+  "metadata": { ... }
+}
+```
+
+### 5.7 通勤時間ツール
 
 | ファイル | 用途 | ステータス |
 |---------|------|---------|
@@ -1382,6 +1443,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | `data/estat_population.json` | JSON | e-Stat 区別人口・世帯数キャッシュ |
 | `data/sumai_surfin_cache.json` | JSON | 住まいサーフィン検索結果キャッシュ |
 | `data/station_passengers.json` | JSON | 駅乗降客数データ |
+| `data/shutoken_city_codes.json` | JSON | 首都圏（1都3県）市区町村コード一覧 |
+| `results/transactions.json` | JSON | 首都圏成約実績フィード（iOS アプリ向け） |
 
 ---
 
@@ -1488,7 +1551,71 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `reinfolibMarketData` | String? | 不動産情報ライブラリの成約価格相場データ JSON（パイプライン側で付与） |
 | `estatPopulationData` | String? | e-Stat（総務省統計局）の人口・世帯数データ JSON（パイプライン側で付与） |
 
-### 6.2 ListingFilter
+### 6.2 TransactionRecord（SwiftData @Model）
+
+iOS アプリの成約実績データモデル。`scraping-tool/results/transactions.json` の1取引に対応。  
+reinfolib API（不動産情報ライブラリ）の成約価格情報から、config.py の購入条件に合致するレコードを抽出したもの。
+
+#### 取引情報
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `txId` | String | ユニーク ID（`@Attribute(.unique)`、"tx-" + MD5ハッシュ12桁） |
+| `prefecture` | String | 都道府県（例: "東京都"） |
+| `ward` | String | 市区町村（例: "江東区"） |
+| `district` | String | 町丁目（例: "有明"） |
+| `districtCode` | String | 町丁目コード（例: "131080020"） |
+| `priceMan` | Int | 成約価格（万円） |
+| `areaM2` | Double | 専有面積（㎡） |
+| `m2Price` | Int | m²単価（円/㎡） |
+| `layout` | String | 間取り（例: "3LDK"） |
+| `builtYear` | Int | 築年（例: 2019） |
+| `structure` | String | 構造（例: "RC", "SRC"） |
+| `tradePeriod` | String | 取引時期（例: "2025Q2"） |
+
+#### 推定位置情報
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `nearestStation` | String? | 推定最寄駅名（geocode + station_cache.json から算出） |
+| `estimatedWalkMin` | Int? | 推定徒歩分（直線距離ベース、精度 ±2-3分） |
+| `latitude` | Double? | ジオコーディング済み緯度（町丁目レベル） |
+| `longitude` | Double? | ジオコーディング済み経度（町丁目レベル） |
+
+#### グルーピング
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `buildingGroupId` | String? | 推定建物グループ ID（"districtCode-builtYear"） |
+
+#### データソース・制約
+
+- **匿名データ**: 建物名は含まれない。町丁目+築年で推定建物をグルーピング
+- **最寄駅は推定値**: reinfolib API の成約データには駅情報がないため、ジオコーディング座標から最近傍駅を算出
+- **対象範囲**: 首都圏（東京都・神奈川県・埼玉県・千葉県）
+- **フィルタ済み**: config.py の購入条件（価格 7,500〜10,000万円、60㎡以上、2-3LDK、築20年以内）
+
+### 6.3 TransactionFilter
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `priceMin` | Int? | 最低価格（万円） |
+| `priceMax` | Int? | 最高価格（万円） |
+| `layouts` | Set\<String\> | 間取りフィルタ |
+| `wards` | Set\<String\> | 市区町村フィルタ |
+| `stations` | Set\<String\> | 駅名フィルタ |
+| `walkMax` | Int? | 推定徒歩上限（分） |
+| `areaMin` | Double? | 面積下限（㎡） |
+| `builtYearMin` | Int? | 築年下限 |
+| `tradePeriods` | Set\<String\> | 取引時期フィルタ（例: "2025Q2"） |
+
+**メソッド**
+
+| メソッド | 説明 |
+|---------|------|
+| `apply(to records: [TransactionRecord]) -> [TransactionRecord]` | フィルタ条件を適用 |
+
+### 6.5 ListingFilter
 
 | プロパティ | 型 | 説明 |
 |-----------|-----|------|
@@ -1515,7 +1642,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 
 **RouteStations**（ListingFilter.swift で定義）: `routeName` と `stationNames` を持つ Equatable 構造体。フィルタシートの路線・駅選択 UI で使用。
 
-### 6.3 CommentData
+### 6.6 CommentData
 
 | プロパティ | 型 | 説明 |
 |-----------|-----|------|
@@ -1526,7 +1653,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `createdAt` | String | 作成日時（ISO 8601） |
 | `editedAt` | String? | 編集日時（ISO 8601）。nil なら未編集 |
 
-### 6.4 ScrapingConfig
+### 6.7 ScrapingConfig
 
 Firestore で共有されるスクレイピング条件:
 
@@ -1542,7 +1669,7 @@ Firestore で共有されるスクレイピング条件:
 | `layoutPrefixOk` | [String] | 間取りプレフィックス |
 | `allowedLineKeywords` | [String] | 路線キーワード |
 
-### 6.5 キー定義
+### 6.8 キー定義
 
 | キー名 | 構成要素 | 用途 |
 |--------|---------|------|
@@ -1666,6 +1793,7 @@ floor_plans/{imageId}      → 認証済みユーザーのみ読み取り
 | 2 | `fetch_station_prices.py` → `data/station_price_history.json` |
 | 3 | `reinfolib_land_price_builder.py` → `data/reinfolib_land_prices.json` |
 | 4 | `estat_population_builder.py` → `data/estat_population.json` |
+| 5 | `build_transaction_feed.py` → `results/transactions.json`（首都圏成約実績フィード） |
 
 #### 必要なシークレット
 
@@ -1824,7 +1952,7 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | `FIREBASE_SERVICE_ACCOUNT` | Firebase サービスアカウント JSON | GitHub Actions, firestore_config_loader.py, upload_scraping_log.py, send_push.py |
 | `FIREBASE_PROJECT_ID` | FCM フォールバック | send_push.py |
 | `SLACK_WEBHOOK_URL` | Slack Webhook URL | GitHub Actions, slack_notify.py |
-| `REINFOLIB_API_KEY` | 不動産情報ライブラリ API キー | update-reinfolib-cache.yml, reinfolib_cache_builder.py, fetch_station_prices.py |
+| `REINFOLIB_API_KEY` | 不動産情報ライブラリ API キー | update-reinfolib-cache.yml, reinfolib_cache_builder.py, fetch_station_prices.py, build_transaction_feed.py |
 | `ESTAT_API_KEY` | e-Stat アプリケーション ID | update-reinfolib-cache.yml, estat_population_builder.py |
 
 ---
