@@ -146,6 +146,7 @@ jobs:
             scraping-tool/data/reinfolib_trends.json \
             scraping-tool/data/reinfolib_land_prices.json \
             scraping-tool/data/estat_population.json \
+            scraping-tool/data/floor_plan_storage_manifest.json \
             2>/dev/null || true
           # 東京都地域危険度 GeoJSON（初回生成時のみ）
           [ -d scraping-tool/results/risk_geojson ] && git add scraping-tool/results/risk_geojson/
@@ -155,13 +156,17 @@ jobs:
           レポート: scraping-tool/results/report/report.md
           自動更新: GitHub Actions" || exit 0
 
+          # パイプラインが生成するキャッシュ（HTML等）が unstaged で残り
+          # git pull --rebase が失敗するのを防ぐため、stash してから pull する
+          git stash --quiet 2>/dev/null || true
+
           # rebase 方式で push（コンフリクト時は最新の実行結果を優先）
           # rebase 失敗時は abort → merge --strategy=ours で確実に push する
           if git pull --rebase -X theirs origin ${{ github.ref_name }}; then
             git push origin HEAD:refs/heads/${{ github.ref_name }}
           else
             echo "rebase 失敗: merge 方式にフォールバック" >&2
-            git rebase --abort
+            git rebase --abort 2>/dev/null || true
             git pull --no-rebase -X ours origin ${{ github.ref_name }}
             git push origin HEAD:refs/heads/${{ github.ref_name }}
           fi
