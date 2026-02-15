@@ -31,6 +31,7 @@ CONFIG_FILE="$CONFIG_DIR/config"
 ARCHIVE_PATH="/tmp/RealEstateApp.xcarchive"
 EXPORT_PATH="/tmp/RealEstateExport"
 EXPORT_OPTIONS="/tmp/RealEstateExportOptions.plist"
+DERIVED_DATA="/tmp/RealEstateAppDerivedData"
 
 # ── ヘルパー ──────────────────────────────────────────
 RED='\033[0;31m'
@@ -108,6 +109,7 @@ do_archive() {
         -scheme "$SCHEME" \
         -configuration Release \
         -archivePath "$ARCHIVE_PATH" \
+        -derivedDataPath "$DERIVED_DATA" \
         -destination 'generic/platform=iOS' \
         archive \
         2>&1 | tail -5
