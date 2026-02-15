@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """
-首都圏（1都3県）の成約実績データを取得・フィルタ・ジオコード・集約して
+東京23区の成約実績データを取得・フィルタ・ジオコード・集約して
 iOS アプリ向け transactions.json を生成するバッチスクリプト。
 
+スクレイピングツール（suumo_scraper.py）と同じ購入条件に合致する成約物件のみを
+対象とし、一貫した検索条件でデータを提供する。
+
 処理フロー:
-  1. shutoken_city_codes.json から市区町村コードをロード
+  1. shutoken_city_codes.json から東京23区の市区町村コードのみロード
   2. reinfolib API で成約データを取得（中古マンション等、直近4四半期）
   3. config.py の購入条件でフィルタ（価格・面積・間取り・築年）
   4. 町丁目レベルでジオコーディング（geocode_cache.json + Nominatim）
   5. station_cache.json から最寄駅を推定
-  6. (district_code, built_year) で推定建物グルーピング
-  7. results/transactions.json に出力
+  6. 駅徒歩フィルタ（WALK_MIN_MAX 以内のみ通過）
+  7. (district_code, built_year) で推定建物グルーピング
+  8. results/transactions.json に出力
 
 使い方:
   REINFOLIB_API_KEY=xxx python3 build_transaction_feed.py
@@ -46,13 +50,15 @@ from reinfolib_cache_builder import (
     PRICE_ENDPOINT,
 )
 
-# config.py のフィルタ条件をインポート
+# config.py のフィルタ条件をインポート（スクレイピングと同一条件）
 from config import (
     PRICE_MIN_MAN,
     PRICE_MAX_MAN,
     AREA_MIN_M2,
     LAYOUT_PREFIX_OK,
     BUILT_YEAR_MIN,
+    WALK_MIN_MAX,
+    TOKYO_23_WARDS,
 )
 
 # ---------------------------------------------------------------------------
@@ -73,8 +79,8 @@ REQUEST_DELAY_SEC = 2
 # ジオコーディング間隔（秒 — Nominatim の利用規約に準拠）
 GEOCODE_DELAY_SEC = 1.1
 
-# 都道府県コード → 都道府県名
-PREF_NAMES = {"11": "埼玉県", "12": "千葉県", "13": "東京都", "14": "神奈川県"}
+# 都道府県コード → 都道府県名（東京23区のみ対象）
+PREF_NAMES = {"13": "東京都"}
 
 # 直線距離 → 徒歩推定の係数（直線 80m ≒ 実道路 100m ≒ 徒歩1分）
 WALK_SPEED_M_PER_MIN = 80
@@ -86,19 +92,28 @@ WALK_SPEED_M_PER_MIN = 80
 
 def load_city_codes() -> List[Dict[str, str]]:
     """
-    shutoken_city_codes.json から [{id, name, prefecture, pref_name}] をロード。
+    shutoken_city_codes.json から東京23区のみ [{id, name, prefecture, pref_name}] をロード。
+
+    スクレイピングツールと同じ検索条件（東京23区限定）に合わせるため、
+    config.py の TOKYO_23_WARDS に含まれる区のみを対象とする。
     """
     with open(CITY_CODES_PATH, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     cities: List[Dict[str, str]] = []
-    for pref_code, pref_info in data["prefectures"].items():
-        pref_name = pref_info["name"]
-        for city in pref_info["cities"]:
+    # 東京都（pref_code=13）の23区のみ
+    tokyo = data["prefectures"].get("13")
+    if not tokyo:
+        print("警告: shutoken_city_codes.json に東京都データがありません", file=sys.stderr)
+        return cities
+
+    pref_name = tokyo["name"]
+    for city in tokyo["cities"]:
+        if city["name"] in TOKYO_23_WARDS:
             cities.append({
                 "id": city["id"],
                 "name": city["name"],
-                "prefecture": pref_code,
+                "prefecture": "13",
                 "pref_name": pref_name,
             })
     return cities
@@ -504,7 +519,7 @@ def build_building_groups(transactions: List[dict]) -> List[dict]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(
-        description="首都圏成約実績データを取得・フィルタ・ジオコードして transactions.json を生成"
+        description="東京23区の成約実績データを取得・フィルタ・ジオコードして transactions.json を生成"
     )
     ap.add_argument(
         "--quarters", type=int, default=4,
@@ -527,11 +542,12 @@ def main() -> None:
     periods = get_recent_periods(args.quarters)
     period_labels = [f"{y}Q{q}" for y, q in periods]
 
-    print("=== 首都圏成約実績フィード構築開始 ===", file=sys.stderr)
-    print(f"  対象市区町村: {len(cities)} 件", file=sys.stderr)
+    print("=== 東京23区 成約実績フィード構築開始 ===", file=sys.stderr)
+    print(f"  対象区: {len(cities)} 区（東京23区）", file=sys.stderr)
     print(f"  対象期間: {period_labels}", file=sys.stderr)
     print(f"  フィルタ: {PRICE_MIN_MAN}〜{PRICE_MAX_MAN}万, {AREA_MIN_M2}㎡+, "
-          f"間取り{LAYOUT_PREFIX_OK}, 築{BUILT_YEAR_MIN}年以降", file=sys.stderr)
+          f"間取り{LAYOUT_PREFIX_OK}, 築{BUILT_YEAR_MIN}年以降, "
+          f"徒歩{WALK_MIN_MAX}分以内", file=sys.stderr)
 
     # --- Phase 1: API からデータ取得 + フィルタ ---
     all_matched: List[Tuple[dict, Dict[str, str], str]] = []  # (item, city_info, period)
@@ -610,6 +626,18 @@ def main() -> None:
             unique_transactions.append(tx)
     transactions = unique_transactions
 
+    # --- Phase 4.5: 駅徒歩フィルタ（スクレイピングと同一条件） ---
+    pre_walk_count = len(transactions)
+    transactions = [
+        tx for tx in transactions
+        if tx.get("estimated_walk_min") is not None
+        and tx["estimated_walk_min"] <= WALK_MIN_MAX
+    ]
+    walk_filtered = pre_walk_count - len(transactions)
+    if walk_filtered > 0:
+        print(f"  徒歩{WALK_MIN_MAX}分超フィルタ: {walk_filtered} 件除外 "
+              f"→ 残 {len(transactions)} 件", file=sys.stderr)
+
     # 建物グループ構築
     building_groups = build_building_groups(transactions)
 
@@ -630,10 +658,11 @@ def main() -> None:
                 "area_min_m2": AREA_MIN_M2,
                 "layout_prefix": list(LAYOUT_PREFIX_OK),
                 "built_year_min": BUILT_YEAR_MIN,
+                "walk_min_max": WALK_MIN_MAX,
             },
             "transaction_count": len(transactions),
             "building_group_count": len(building_groups),
-            "scope": "首都圏（東京都・神奈川県・埼玉県・千葉県）",
+            "scope": "東京23区",
         },
     }
 
@@ -642,12 +671,12 @@ def main() -> None:
 
     print(f"\n=== 完了: {args.output} ({len(transactions)} 件) ===", file=sys.stderr)
 
-    # サマリー
-    by_pref: Dict[str, int] = {}
+    # サマリー（区別）
+    by_ward: Dict[str, int] = {}
     for tx in transactions:
-        by_pref[tx["prefecture"]] = by_pref.get(tx["prefecture"], 0) + 1
-    for pref, count in sorted(by_pref.items()):
-        print(f"  {pref}: {count} 件", file=sys.stderr)
+        by_ward[tx["ward"]] = by_ward.get(tx["ward"], 0) + 1
+    for ward, count in sorted(by_ward.items()):
+        print(f"  {ward}: {count} 件", file=sys.stderr)
 
 
 if __name__ == "__main__":

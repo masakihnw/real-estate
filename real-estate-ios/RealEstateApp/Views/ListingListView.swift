@@ -691,6 +691,41 @@ struct ListingRowView: View {
 
     var body: some View {
         Button(action: onTap) {
+            HStack(alignment: .top, spacing: 10) {
+                // サムネイル画像（SUUMO の最初の画像がある場合のみ表示）
+                if let thumbURL = listing.thumbnailURL {
+                    AsyncImage(url: thumbURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 72, height: 72)
+                                .clipped()
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        case .failure:
+                            ZStack {
+                                Color(.systemGray6)
+                                Image(systemName: "building.2")
+                                    .font(.title3)
+                                    .foregroundStyle(.quaternary)
+                            }
+                            .frame(width: 72, height: 72)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        case .empty:
+                            ZStack {
+                                Color(.systemGray6)
+                                ProgressView()
+                                    .controlSize(.small)
+                            }
+                            .frame(width: 72, height: 72)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                }
+
             VStack(alignment: .leading, spacing: 4) {
                 // 1行目: 物件名 + New + 📷 + 💬 + ♥
                 HStack(alignment: .center, spacing: 6) {
@@ -841,6 +876,7 @@ struct ListingRowView: View {
                     BadgeRow(listing: listing)
                 }
             }
+            } // HStack (thumbnail + content)
             .padding(.vertical, 4)
             .opacity(listing.isDelisted ? 0.75 : 1.0)
         }

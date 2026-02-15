@@ -57,16 +57,10 @@ struct ListingDetailView: View {
                     // ④ 内見写真
                     PhotoSectionView(listing: listing)
 
-                    // ④-b 間取り図（SUUMO/HOME'S の物件詳細ページから取得した間取り図画像）
-                    if listing.hasFloorPlanImages {
+                    // ④-b 物件画像ギャラリー（間取り図＋SUUMO物件写真を統合表示）
+                    if listing.hasFloorPlanImages || listing.hasSuumoImages {
                         Divider()
-                        floorPlanSection
-                    }
-
-                    // ④-c SUUMO 物件写真（外観・室内・水回り等）
-                    if listing.hasSuumoImages {
-                        Divider()
-                        suumoImagesSection
+                        propertyImagesGallery
                     }
 
                     Divider()
@@ -347,186 +341,109 @@ struct ListingDetailView: View {
         }
     }
 
-    // MARK: - 間取り図セクション
+    // MARK: - 物件画像ギャラリー（間取り図 + SUUMO 物件写真を統合）
 
-    /// フルスクリーン表示用の間取り図 URL
-    @State private var fullScreenFloorPlanURL: URL?
+    /// フルスクリーン表示用の画像 URL
+    @State private var fullScreenGalleryURL: URL?
 
+    /// 間取り図（先頭）→ SUUMO 物件写真を1つの横スクロールで表示
     @ViewBuilder
-    private var floorPlanSection: some View {
-        let images = listing.parsedFloorPlanImages
+    private var propertyImagesGallery: some View {
+        let floorPlans = listing.parsedFloorPlanImages
+        let suumoImages = listing.parsedSuumoImages
+        let totalCount = floorPlans.count + suumoImages.count
 
         VStack(alignment: .leading, spacing: 10) {
-            Label("間取り図", systemImage: "square.split.2x2")
+            Label("物件画像", systemImage: "photo.on.rectangle.angled")
                 .font(.subheadline)
                 .fontWeight(.bold)
                 .foregroundStyle(Color.accentColor)
 
-            if images.count == 1 {
-                // 1枚の場合: フル幅で表示
-                floorPlanImage(url: images[0])
+            if totalCount == 1, let singleURL = floorPlans.first ?? suumoImages.first?.resolvedURL {
+                // 1枚のみの場合: フル幅で表示
+                galleryImage(url: singleURL, label: floorPlans.first != nil ? "間取り図" : suumoImages.first?.label ?? "")
             } else {
-                // 複数の場合: 横スクロール
+                // 複数枚: 横スクロール（間取り図が先頭、その後にSUUMO写真）
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
-                        ForEach(images, id: \.absoluteString) { url in
-                            floorPlanImage(url: url)
-                                .frame(width: 280)
+                        // 間取り図（先頭に配置）
+                        ForEach(floorPlans, id: \.absoluteString) { url in
+                            galleryImage(url: url, label: "間取り図")
+                        }
+                        // SUUMO 物件写真
+                        ForEach(suumoImages) { img in
+                            if let url = img.resolvedURL {
+                                galleryImage(url: url, label: img.label)
+                            }
                         }
                     }
                 }
             }
 
-            Text("※ \(listing.source == "homes" ? "HOME'S" : "SUUMO") の物件詳細ページから取得した間取り図です")
+            Text("※ \(listing.source == "homes" ? "HOME'S" : "SUUMO") の物件詳細ページから取得した画像です")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
         .padding(14)
         .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
         .fullScreenCover(isPresented: Binding(
-            get: { fullScreenFloorPlanURL != nil },
-            set: { if !$0 { fullScreenFloorPlanURL = nil } }
+            get: { fullScreenGalleryURL != nil },
+            set: { if !$0 { fullScreenGalleryURL = nil } }
         )) {
-            if let url = fullScreenFloorPlanURL {
+            if let url = fullScreenGalleryURL {
                 FloorPlanFullScreenView(url: url)
             }
         }
     }
 
     @ViewBuilder
-    private func floorPlanImage(url: URL) -> some View {
+    private func galleryImage(url: URL, label: String) -> some View {
         Button {
-            fullScreenFloorPlanURL = url
+            fullScreenGalleryURL = url
         } label: {
-            AsyncImage(url: url) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
+            VStack(spacing: 4) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 200, height: 150)
+                            .clipped()
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    case .failure:
+                        ZStack {
+                            Color(.systemGray6)
+                            VStack(spacing: 4) {
+                                Image(systemName: "photo.badge.exclamationmark")
+                                    .font(.title3)
+                                Text("読み込み失敗")
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(.secondary)
+                        }
+                        .frame(width: 200, height: 150)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
-                case .failure:
-                    VStack(spacing: 6) {
-                        Image(systemName: "photo.badge.exclamationmark")
-                            .font(.title3)
-                        Text("画像を読み込めません")
-                            .font(.caption)
+                    case .empty:
+                        ZStack {
+                            Color(.systemGray6)
+                            ProgressView()
+                        }
+                        .frame(width: 200, height: 150)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    @unknown default:
+                        EmptyView()
                     }
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, minHeight: 150)
-                    .background(Color(.systemGray6))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                case .empty:
-                    ZStack {
-                        Color(.systemGray6)
-                        ProgressView()
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 150)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                @unknown default:
-                    EmptyView()
                 }
+
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("間取り図を拡大表示")
-    }
-
-    // MARK: - SUUMO 物件写真セクション
-
-    /// フルスクリーン表示用の SUUMO 物件写真 URL
-    @State private var fullScreenSuumoImageURL: URL?
-
-    @ViewBuilder
-    private var suumoImagesSection: some View {
-        let groups = listing.groupedSuumoImages
-
-        VStack(alignment: .leading, spacing: 12) {
-            Label("物件写真", systemImage: "camera")
-                .font(.subheadline)
-                .fontWeight(.bold)
-                .foregroundStyle(Color.accentColor)
-
-            ForEach(Array(groups.enumerated()), id: \.offset) { _, group in
-                VStack(alignment: .leading, spacing: 6) {
-                    // カテゴリヘッダー
-                    Label(group.category.rawValue, systemImage: group.category.iconName)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.secondary)
-
-                    // 横スクロール画像リスト
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(group.images) { img in
-                                suumoImageThumbnail(img)
-                            }
-                        }
-                    }
-                }
-            }
-
-            Text("※ SUUMO の物件詳細ページから取得した写真です")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-        }
-        .padding(14)
-        .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
-        .fullScreenCover(isPresented: Binding(
-            get: { fullScreenSuumoImageURL != nil },
-            set: { if !$0 { fullScreenSuumoImageURL = nil } }
-        )) {
-            if let url = fullScreenSuumoImageURL {
-                FloorPlanFullScreenView(url: url)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func suumoImageThumbnail(_ img: Listing.SuumoImage) -> some View {
-        if let url = img.resolvedURL {
-            Button {
-                fullScreenSuumoImageURL = url
-            } label: {
-                VStack(spacing: 4) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 140, height: 105)
-                                .clipped()
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                        case .failure:
-                            ZStack {
-                                Color(.systemGray6)
-                                Image(systemName: "photo.badge.exclamationmark")
-                                    .foregroundStyle(.secondary)
-                            }
-                            .frame(width: 140, height: 105)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                        case .empty:
-                            ZStack {
-                                Color(.systemGray6)
-                                ProgressView()
-                            }
-                            .frame(width: 140, height: 105)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
-
-                    Text(img.label)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("\(img.label)を拡大表示")
-        }
+        .accessibilityLabel("\(label)を拡大表示")
     }
 
     // MARK: - ① コメントセクション
