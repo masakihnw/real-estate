@@ -5,7 +5,7 @@
 - 詳細・厳格化の考え方: ../docs/10year-index-mansion-conditions-draft.md
 - 初回ヒアリングの希望条件: ../docs/initial-consultation.md
 
-【厳格化適用済み】徒歩7分・築20年以内・専有60㎡以上（上限なし）・総戸数50戸以上・路線限定（山手線・メジャー私鉄など）。価格・総戸数は一覧で取れる範囲で反映。
+【厳格化適用済み】徒歩10分・築15年以内・専有55㎡以上（上限なし）・総戸数50戸以上・路線限定（山手線・メジャー私鉄など）。価格・総戸数は一覧で取れる範囲で反映。
 """
 
 import datetime
@@ -21,22 +21,22 @@ TOKYO_23_WARDS = (
 # SUUMO URL で東京23区以外と判定する都県パス（/ms/chuko/kanagawa/ 等）
 NON_TOKYO_23_URL_PATHS = ("/kanagawa/", "/chiba/", "/saitama/", "/ibaraki/", "/tochigi/", "/gunma/")
 
-# 価格帯（万円）: 7,500万〜1億
-PRICE_MIN_MAN = 7500
-PRICE_MAX_MAN = 10000
+# 価格帯（万円）: 9,000万〜1.2億
+PRICE_MIN_MAN = 9000
+PRICE_MAX_MAN = 12000
 
-# 専有面積（㎡）: 60以上、上限なし
-AREA_MIN_M2 = 60
+# 専有面積（㎡）: 55以上、上限なし
+AREA_MIN_M2 = 55
 AREA_MAX_M2 = None  # None のときは上限チェックなし（AREA_MIN_M2 以上のみ）
 
 # 間取り: 2LDK〜3LDK 中心（2LDK, 3LDK, 2DK, 3DK など含む）
 LAYOUT_PREFIX_OK = ("2", "3")  # 2LDK, 3LDK, 2DK, 3DK
 
-# 築年: 築20年以内（実行年の20年前以降の竣工）
-BUILT_YEAR_MIN = datetime.date.today().year - 20
+# 築年: 築15年以内（実行年の15年前以降の竣工）
+BUILT_YEAR_MIN = datetime.date.today().year - 15
 
-# 駅徒歩: 7分以内に統一（厳格化: ドラフト「5分以内・上限10分」に寄せる）
-WALK_MIN_MAX = 7
+# 駅徒歩: 10分以内
+WALK_MIN_MAX = 10
 
 # 総戸数: 50戸以上（一覧で取得できればフィルタに組み込む）
 TOTAL_UNITS_MIN = 50

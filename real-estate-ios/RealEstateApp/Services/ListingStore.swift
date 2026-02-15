@@ -352,6 +352,8 @@ final class ListingStore {
         existing.deliveryDate = new.deliveryDate
         // 間取り図画像（JSON 由来なので上書き）
         existing.floorPlanImagesJSON = new.floorPlanImagesJSON
+        // SUUMO 物件写真（JSON 由来なので上書き）
+        existing.suumoImagesJSON = new.suumoImagesJSON
         // ハザード情報（JSON 由来なので上書き）
         existing.hazardInfo = new.hazardInfo
         // 住まいサーフィン評価データ（JSON 由来なので上書き）

@@ -58,6 +58,10 @@ final class Listing: @unchecked Sendable {
     /// フォーマット: ["https://...image1.jpg", "https://...image2.jpg"]
     var floorPlanImagesJSON: String?
 
+    /// SUUMO 物件写真 JSON 文字列（スクレイピングツールから取得）
+    /// フォーマット: [{"url":"https://...","label":"リビング"}, ...]
+    var suumoImagesJSON: String?
+
     // MARK: - 新築対応フィールド
 
     /// 物件種別: "chuko" or "shinchiku"
@@ -208,6 +212,7 @@ final class Listing: @unchecked Sendable {
         repairReserveFund: Int? = nil,
         listWardRoman: String? = nil,
         floorPlanImagesJSON: String? = nil,
+        suumoImagesJSON: String? = nil,
         fetchedAt: Date = .now,
         addedAt: Date = .now,
         memo: String? = nil,
@@ -274,6 +279,7 @@ final class Listing: @unchecked Sendable {
         self.repairReserveFund = repairReserveFund
         self.listWardRoman = listWardRoman
         self.floorPlanImagesJSON = floorPlanImagesJSON
+        self.suumoImagesJSON = suumoImagesJSON
         self.fetchedAt = fetchedAt
         self.addedAt = addedAt
         self.memo = memo
@@ -1269,6 +1275,74 @@ final class Listing: @unchecked Sendable {
         floorPlanImagesJSON != nil && !parsedFloorPlanImages.isEmpty
     }
 
+    // MARK: - SUUMO 物件写真
+
+    /// SUUMO 物件写真1枚のデータ
+    struct SuumoImage: Codable, Identifiable {
+        var url: String
+        var label: String
+
+        var id: String { url }
+
+        var resolvedURL: URL? { URL(string: url) }
+
+        /// カテゴリ分類
+        enum Category: String, CaseIterable {
+            case exterior = "外観"
+            case interior = "室内"
+            case water = "水回り"
+            case other = "その他"
+
+            var iconName: String {
+                switch self {
+                case .exterior: return "building.2"
+                case .interior: return "sofa"
+                case .water: return "drop"
+                case .other: return "photo"
+                }
+            }
+        }
+
+        /// label からカテゴリを判定
+        var category: Category {
+            if label.contains("外観") || label.contains("エントランス") { return .exterior }
+            if label.contains("リビング") || label.contains("キッチン") || label.contains("居室")
+                || label.contains("収納") || label.contains("眺望") || label.contains("バルコニー")
+                || label.contains("玄関") {
+                return .interior
+            }
+            if label.contains("浴室") || label.contains("洗面") || label.contains("トイレ") {
+                return .water
+            }
+            return .other
+        }
+    }
+
+    /// suumoImagesJSON をパースして SuumoImage 配列で返す
+    var parsedSuumoImages: [SuumoImage] {
+        guard let json = suumoImagesJSON,
+              let data = json.data(using: .utf8) else { return [] }
+        return (try? JSONDecoder().decode([SuumoImage].self, from: data)) ?? []
+    }
+
+    /// SUUMO 物件写真があるか
+    var hasSuumoImages: Bool {
+        suumoImagesJSON != nil && !parsedSuumoImages.isEmpty
+    }
+
+    /// カテゴリ別にグルーピングした SUUMO 物件写真
+    var groupedSuumoImages: [(category: SuumoImage.Category, images: [SuumoImage])] {
+        let images = parsedSuumoImages
+        var groups: [(SuumoImage.Category, [SuumoImage])] = []
+        for cat in SuumoImage.Category.allCases {
+            let matched = images.filter { $0.category == cat }
+            if !matched.isEmpty {
+                groups.append((cat, matched))
+            }
+        }
+        return groups
+    }
+
     // MARK: - 通勤時間
 
     /// パース済み通勤時間データ（キャッシュ付き）
@@ -1837,6 +1911,9 @@ struct ListingDTO: Codable {
     // 間取り図画像 URL 配列（スクレイピングツールから取得）
     var floor_plan_images: [String]?
 
+    // SUUMO 物件写真（スクレイピングツールから取得）
+    var suumo_images: [Listing.SuumoImage]?
+
     // 通勤時間（駅ベース概算、パイプライン側で付与）
     var commute_info: String?
 
@@ -1982,6 +2059,12 @@ extension Listing {
            let data = try? JSONSerialization.data(withJSONObject: images) {
             floorPlanJSON = String(data: data, encoding: .utf8)
         }
+        // suumo_images 配列を JSON 文字列に変換
+        var suumoImagesJSON: String?
+        if let imgs = dto.suumo_images, !imgs.isEmpty,
+           let data = try? JSONEncoder().encode(imgs) {
+            suumoImagesJSON = String(data: data, encoding: .utf8)
+        }
         return Listing(
             source: dto.source,
             url: url,
@@ -2004,6 +2087,7 @@ extension Listing {
             repairReserveFund: dto.repair_reserve_fund,
             listWardRoman: dto.list_ward_roman,
             floorPlanImagesJSON: floorPlanJSON,
+            suumoImagesJSON: suumoImagesJSON,
             fetchedAt: fetchedAt,
             propertyType: dto.property_type ?? "chuko",
             duplicateCount: dto.duplicate_count ?? 1,
