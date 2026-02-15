@@ -728,7 +728,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |---|------|------|------|
 | 1 | 物件名検索 | テキスト入力 | インクリメンタル検索。物件名でフィルタ。 |
 | 2 | 検索クリア | クリアボタン | 検索テキストを空にする |
-| 3 | 一覧表示 | 自動 | 物件をリスト形式で表示（サムネイル画像、物件名、価格、間取り、面積、徒歩、バッジ）。SUUMO 物件写真がある場合は最初の画像（通常は外観写真）をカード左側に 72x72pt のサムネイルとして表示 |
+| 3 | 一覧表示 | 自動 | 物件をリスト形式で表示（サムネイル画像、物件名、価格、間取り、面積、徒歩、バッジ）。SUUMO 物件写真がある場合は外観写真を優先してカード左側に幅 100pt のサムネイルとして表示（元画像のアスペクト比を維持、外観写真がない場合は先頭画像にフォールバック） |
 | 4 | 空状態 | 自動 | データなし時に「データを取得」ボタン付きの案内を表示 |
 | 5 | フィルタ空状態 | 自動 | フィルタ条件に合う物件がない時に「フィルタをリセット」ボタンを表示 |
 
@@ -1192,14 +1192,15 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 3. エンリッチメント（update_listings.sh 内で順次実行）
    ├── （latest.json / latest_shinchiku.json を .backup に退避後、enricher 実行）
    ├── （enrichment 後に JSON 検証；破損時は .backup から復元）
-   ├── build_units_cache.py   → 総戸数・階数・権利形態キャッシュ更新（SUUMO 詳細ページ取得）
+   ├── build_units_cache.py   → 総戸数・階数・権利形態キャッシュ更新（SUUMO 中古詳細ページ取得）
    ├── merge_detail_cache.py  → 詳細キャッシュを latest.json にマージ
+   ├── shinchiku_detail_enricher.py → 新築マンション詳細ページから物件写真・間取り図取得（サムネイル + 間取りタブ条件フィルタ）
    ├── sumai_surfin_enricher.py → 住まいサーフィン評価付与（ss_address 取得含む）
    ├── build_map_viewer.py    → 地図ビューア生成（中古+新築、ピン色: 青=中古/緑=新築。argparse: json_path, --previous, --shinchiku, --limit, --output）
    ├── embed_geocode.py       → ジオコーディング（住所→座標、ss_address を優先使用）
    ├── geocode_cross_validator.py → 座標の相互検証 + 修正試行
    ├── hazard_enricher.py     → ハザード情報付与
-   ├── floor_plan_enricher.py → 間取り図画像URL付与（HOME'S 無効化により現在は自動スキップ。SUUMOはbuild_units_cache経由で付与済み）
+   ├── floor_plan_enricher.py → 間取り図画像URL付与（HOME'S 無効化により現在は自動スキップ。中古SUUMOはbuild_units_cache経由、新築は shinchiku_detail_enricher 経由で付与済み）
    ├── upload_floor_plans.py  → 間取り図画像・物件写真をFirebase Storageにアップロード（URL永続化）
    ├── commute_enricher.py    → 通勤時間付与（駅名ベースのドアtoドア概算）
    ├── reinfolib_enricher.py  → 不動産情報ライブラリ成約相場付与（事前構築キャッシュ参照）
@@ -1231,11 +1232,13 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 > **無効化理由**: AWS WAF が GitHub Actions の IP を積極的にブロックし、1ページあたり最大7分のリトライが発生。30ページ処理しても通過0件という状況が続いたため無効化。コードは `--source homes` / `--source both` で再有効化可能。
 
-#### 5.3.3 SUUMO 新築（suumo_shinchiku_scraper.py）
+#### 5.3.3 SUUMO 新築（suumo_shinchiku_scraper.py + shinchiku_detail_enricher.py）
 
 | 項目 | 詳細 |
 |------|------|
-| **取得フィールド** | 基本情報 + 価格レンジ、面積レンジ、間取りレンジ、引渡時期 |
+| **一覧取得フィールド** | 基本情報 + 価格レンジ、面積レンジ、間取りレンジ、引渡時期 |
+| **詳細ページ enrichment** | `shinchiku_detail_enricher.py` がメインページから物件写真（`suumo_images`、サムネイル用）、間取りタブ（`{url}madori/`）から検索条件合致の間取り図（`floor_plan_images`）を取得 |
+| **間取りフィルタ** | 間取りタブの全タイプから `LAYOUT_PREFIX_OK`（= "2", "3"）に合致するもののみ採用 |
 | **出力** | `SuumoShinchikuListing` dataclass |
 
 #### 5.3.4 ~~HOME'S 新築（homes_shinchiku_scraper.py）~~ — 現在無効
@@ -1305,18 +1308,35 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **付与データ** | 区の人口、世帯数、前年比、5年変動、年次推移 |
 | **キャッシュ構築** | `estat_population_builder.py`（別ワークフローで実行） |
 
-#### 5.5.5 間取り図・物件写真エンリッチャー（floor_plan_enricher.py / upload_floor_plans.py）
+#### 5.5.5 間取り図・物件写真エンリッチャー
+
+##### 中古（build_units_cache.py → merge_detail_cache.py / floor_plan_enricher.py）
 
 | 項目 | 詳細 |
 |------|------|
 | **データソース** | SUUMO: `build_units_cache.py` → `parse_suumo_detail_html()` で詳細ページ HTML から画像を抽出。`alt="間取り図"` → `floor_plan_images`、それ以外の物件画像（外観・リビング・キッチン・浴室等）→ `suumo_images`（HOME'S は無効化のため現在未使用） |
 | **付与データ（間取り図）** | `floor_plan_images`: 間取り図画像 URL の配列（SUUMO はリサイズ URL w=1200&h=900） |
 | **付与データ（物件写真）** | `suumo_images`: `[{url, label}]` 形式の物件写真配列。label は SUUMO の alt 属性（"現地外観写真", "リビング", "キッチン" 等）。サイトロゴ・担当者写真・spacer 等の非物件画像は除外 |
-| **HTMLキャッシュ** | SUUMO: `data/html_cache/`（build_units_cache.py と共有） |
+| **HTMLキャッシュ** | `data/html_cache/`（build_units_cache.py と共有） |
+
+##### 新築（shinchiku_detail_enricher.py）
+
+| 項目 | 詳細 |
+|------|------|
+| **データソース** | SUUMO 新築マンション詳細ページ（メインページ + 間取りタブ `{url}madori/`）から画像を取得 |
+| **物件写真（サムネイル用）** | メインページから外観/完成予想図/モデルルーム等の写真を `suumo_images` として取得。一覧画面で中古と同様にサムネイル表示される |
+| **間取り図（条件フィルタ付き）** | 間取りタブから各住戸タイプの間取り図を取得し、`LAYOUT_PREFIX_OK`（= "2", "3"）に合致するタイプのみ `floor_plan_images` に格納。例: 1LDK〜4LDK の全5タイプ中、2LDK・3LDK の2タイプのみ採用 |
+| **レイアウト抽出** | 画像の `alt` 属性、および親要素のテキストから間取りパターン（例: "3LDK"）を抽出し、`LAYOUT_PREFIX_OK` でフィルタ |
+| **HTMLキャッシュ** | `data/shinchiku_html_cache/`（独立キャッシュ。再取得で復元可能なため Git 管理外） |
+
+##### 共通（upload_floor_plans.py）
+
+| 項目 | 詳細 |
+|------|------|
 | **Firebase Storage 永続化** | `upload_floor_plans.py` が間取り図を `floor_plans/{hash}.{ext}`、物件写真を `property_images/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
 | **iOS 側フィールド（間取り図）** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換） |
 | **iOS 側フィールド（物件写真）** | `Listing.suumoImagesJSON`（JSON 文字列 → `parsedSuumoImages: [SuumoImage]` で構造体配列に変換。`SuumoImage` は `url`/`label` を持ち、`category` で外観/室内/水回り/その他に自動分類） |
-| **サムネイル URL** | `Listing.thumbnailURL: URL?`（computed）。SUUMO 物件写真の最初の画像（通常は外観写真）の URL を返す。一覧カードのサムネイル表示に使用 |
+| **サムネイル URL** | `Listing.thumbnailURL: URL?`（computed）。SUUMO 物件写真の先頭画像を使用。一覧カードのサムネイル表示（72x72pt）に使用。中古・新築ともに同じロジック |
 
 ### 5.6 成約実績フィード構築（build_transaction_feed.py）
 
@@ -1777,8 +1797,9 @@ property_images/{imageId}    → 認証済みユーザーのみ読み取り
 4. scripts/update_listings.sh --no-git
    ├── main.py（スクレイピング）
    ├── check_changes.py（差分チェック → 変更なしなら早期終了）
-   ├── build_units_cache.py（総戸数・階数・権利形態・間取り図・物件写真キャッシュ更新）
-   ├── merge_detail_cache.py（詳細キャッシュマージ）
+   ├── build_units_cache.py（中古: 総戸数・階数・権利形態・間取り図・物件写真キャッシュ更新）
+   ├── merge_detail_cache.py（中古: 詳細キャッシュマージ）
+   ├── shinchiku_detail_enricher.py（新築: 物件写真・間取り図取得。間取りタブから条件合致分をフィルタ）
    ├── sumai_surfin_enricher.py（住まいサーフィン + ss_address 取得）
    ├── build_map_viewer.py（地図ビューア生成 + ジオコーディング）
    ├── embed_geocode.py（座標埋め込み）

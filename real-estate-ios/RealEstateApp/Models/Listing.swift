@@ -1343,9 +1343,15 @@ final class Listing: @unchecked Sendable {
         return groups
     }
 
-    /// 一覧カードのサムネイル用 URL（SUUMO の最初の画像 = 通常は外観写真）
+    /// 一覧カードのサムネイル用 URL（外観写真を優先、なければ先頭画像にフォールバック）
     var thumbnailURL: URL? {
-        parsedSuumoImages.first?.resolvedURL
+        let images = parsedSuumoImages
+        // 外観カテゴリの画像を優先
+        if let exterior = images.first(where: { $0.category == .exterior }) {
+            return exterior.resolvedURL
+        }
+        // 外観写真がない場合は先頭画像にフォールバック
+        return images.first?.resolvedURL
     }
 
     // MARK: - 通勤時間

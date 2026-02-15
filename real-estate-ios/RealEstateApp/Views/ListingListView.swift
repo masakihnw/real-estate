@@ -692,16 +692,15 @@ struct ListingRowView: View {
     var body: some View {
         Button(action: onTap) {
             HStack(alignment: .top, spacing: 10) {
-                // サムネイル画像（SUUMO の最初の画像がある場合のみ表示）
+                // サムネイル画像（外観写真を優先表示・元画像の比率を維持）
                 if let thumbURL = listing.thumbnailURL {
                     AsyncImage(url: thumbURL) { phase in
                         switch phase {
                         case .success(let image):
                             image
                                 .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 72, height: 72)
-                                .clipped()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 100)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                         case .failure:
                             ZStack {
@@ -710,7 +709,7 @@ struct ListingRowView: View {
                                     .font(.title3)
                                     .foregroundStyle(.quaternary)
                             }
-                            .frame(width: 72, height: 72)
+                            .frame(width: 100, height: 75)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                         case .empty:
                             ZStack {
@@ -718,7 +717,7 @@ struct ListingRowView: View {
                                 ProgressView()
                                     .controlSize(.small)
                             }
-                            .frame(width: 72, height: 72)
+                            .frame(width: 100, height: 75)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                         @unknown default:
                             EmptyView()
