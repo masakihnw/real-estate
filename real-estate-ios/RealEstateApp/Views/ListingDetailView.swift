@@ -13,6 +13,8 @@ struct ListingDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     let listing: Listing
+    /// 内見メモ（コメント＋写真）オーバーレイ表示フラグ
+    @State private var showNotesOverlay = false
     /// コメント入力テキスト
     @State private var newCommentText: String = ""
     @FocusState private var isCommentFocused: Bool
@@ -49,13 +51,8 @@ struct ListingDetailView: View {
 
                     Divider()
 
-                    // ③ コメント（家族間共有）
-                    commentSection
-
-                    Divider()
-
-                    // ④ 内見写真
-                    PhotoSectionView(listing: listing)
+                    // ③④ 内見メモ（コメント・写真）— アイコンタップでオーバーレイ表示
+                    notesCompactButton
 
                     // ④-b 物件画像ギャラリー（間取り図＋SUUMO物件写真を統合表示）
                     if listing.hasFloorPlanImages || listing.hasSuumoImages {
@@ -175,6 +172,9 @@ struct ListingDetailView: View {
                     SafariView(url: url)
                         .ignoresSafeArea()
                 }
+            }
+            .sheet(isPresented: $showNotesOverlay) {
+                notesOverlaySheet
             }
         }
     }
@@ -446,7 +446,96 @@ struct ListingDetailView: View {
         .accessibilityLabel("\(label)を拡大表示")
     }
 
-    // MARK: - ① コメントセクション
+    // MARK: - ③④ 内見メモ コンパクトボタン
+
+    /// 物件詳細画面にインラインで表示する、内見メモ（写真＋コメント）へのアイコンボタン。
+    /// タップすると `notesOverlaySheet` をシートとして表示する。
+    @ViewBuilder
+    private var notesCompactButton: some View {
+        let comments = listing.parsedComments
+        let photos = listing.parsedPhotos
+
+        Button {
+            showNotesOverlay = true
+        } label: {
+            HStack(spacing: 0) {
+                HStack(spacing: 14) {
+                    // 写真アイコン＋件数
+                    HStack(spacing: 4) {
+                        Image(systemName: "camera.fill")
+                            .font(.subheadline)
+                        if !photos.isEmpty {
+                            Text("\(photos.count)")
+                                .font(.caption)
+                                .monospacedDigit()
+                        }
+                    }
+
+                    // コメントアイコン＋件数
+                    HStack(spacing: 4) {
+                        Image(systemName: "bubble.left.and.bubble.right.fill")
+                            .font(.subheadline)
+                        if !comments.isEmpty {
+                            Text("\(comments.count)")
+                                .font(.caption)
+                                .monospacedDigit()
+                        }
+                    }
+                }
+                .foregroundStyle(.secondary)
+
+                Spacer()
+
+                HStack(spacing: 4) {
+                    Text("内見メモ")
+                        .font(.caption)
+                    Image(systemName: "chevron.right")
+                        .font(.caption2)
+                }
+                .foregroundStyle(.tertiary)
+            }
+            .padding(.vertical, 10)
+            .padding(.horizontal, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(.ultraThinMaterial)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("内見メモを表示（写真 \(photos.count)件、コメント \(comments.count)件）")
+    }
+
+    // MARK: - ③④ 内見メモ オーバーレイシート
+
+    /// 内見メモ（コメント＋写真）のオーバーレイシート内容。
+    private var notesOverlaySheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing) {
+                    // コメント
+                    commentSection
+
+                    Divider()
+
+                    // 内見写真
+                    PhotoSectionView(listing: listing)
+                }
+                .padding(.horizontal, 14)
+            }
+            .navigationTitle("内見メモ")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("閉じる") { showNotesOverlay = false }
+                }
+            }
+            .scrollDismissesKeyboard(.interactively)
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+    }
+
+    // MARK: - コメントセクション
 
     @ViewBuilder
     private var commentSection: some View {
