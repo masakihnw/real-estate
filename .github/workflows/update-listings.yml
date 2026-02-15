@@ -21,13 +21,13 @@ on:
           - 'true'
           - 'false'
 
-# 同時実行を防止: スクレイピング中に別の実行が始まると rebase コンフリクトが起きるため
-# 前回の実行が失敗してキューに滞留すると待機時間が timeout に食い込むため、
-# cancel-in-progress: true で古い実行をキャンセルして新しい実行を優先する。
+# 同時実行を防止: スクレイピング中に別の実行が始まると rebase コンフリクトが起きるため。
+# cancel-in-progress: false で、新しい実行は前の実行完了まで待機（キューに1件保持）。
+# ワークフローが1〜2時間かかるため、true にすると次のスケジュール実行で毎回キャンセルされてしまう。
 # git push 時は stash + rebase で安全にマージする。
 concurrency:
   group: update-listings
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   update:
