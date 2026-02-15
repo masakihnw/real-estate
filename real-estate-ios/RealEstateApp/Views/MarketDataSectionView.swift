@@ -196,11 +196,74 @@ struct MarketDataSectionView: View {
         )
     }
 
-    // MARK: - 同一マンション候補の成約事例
+    // MARK: - 同一マンション候補の成約事例（間取り別サマリー）
+
+    /// 間取り別に集計したサマリー
+    private struct LayoutSummary: Identifiable {
+        let id: String           // floorPlan
+        let floorPlan: String
+        let count: Int
+        let avgPriceMan: Int
+        let avgM2Price: Int
+        let avgArea: Double
+        let transactions: [Listing.MarketData.SameBuildingTransaction]
+        let isMatchingLayout: Bool  // 閲覧中の物件と同じ間取りか
+
+        var avgPriceDisplay: String {
+            if avgPriceMan >= 10000 {
+                return String(format: "%.1f億円", Double(avgPriceMan) / 10000.0)
+            }
+            return "\(avgPriceMan)万円"
+        }
+
+        var avgM2PriceManDisplay: String {
+            String(format: "%.1f万/m²", Double(avgM2Price) / 10000.0)
+        }
+    }
+
+    /// 成約事例を間取り別に集計
+    private func buildLayoutSummaries(
+        _ market: Listing.MarketData
+    ) -> [LayoutSummary] {
+        // 間取り別にグルーピング
+        var grouped: [String: [Listing.MarketData.SameBuildingTransaction]] = [:]
+        for tx in market.sameBuildingTransactions {
+            let key = tx.floorPlan.isEmpty ? "不明" : tx.floorPlan
+            grouped[key, default: []].append(tx)
+        }
+
+        let listingLayout = listing.layout ?? ""
+
+        return grouped.map { floorPlan, txs in
+            let avgPrice = txs.reduce(0) { $0 + $1.tradePriceMan } / txs.count
+            let avgM2 = txs.reduce(0) { $0 + $1.m2Price } / txs.count
+            let avgArea = txs.reduce(0.0) { $0 + $1.area } / Double(txs.count)
+            // 間取りが一致するか（"3LDK" が含まれるかで判定）
+            let isMatch = !listingLayout.isEmpty && floorPlan == listingLayout
+            return LayoutSummary(
+                id: floorPlan,
+                floorPlan: floorPlan,
+                count: txs.count,
+                avgPriceMan: avgPrice,
+                avgM2Price: avgM2,
+                avgArea: avgArea,
+                transactions: txs.sorted { $0.period > $1.period },
+                isMatchingLayout: isMatch
+            )
+        }
+        // 閲覧中の物件と同じ間取りを先頭に、あとは件数順
+        .sorted { a, b in
+            if a.isMatchingLayout != b.isMatchingLayout { return a.isMatchingLayout }
+            return a.count > b.count
+        }
+    }
 
     @ViewBuilder
     private func sameBuildingSection(_ market: Listing.MarketData) -> some View {
+        let summaries = buildLayoutSummaries(market)
+
         VStack(alignment: .leading, spacing: 10) {
+            // ヘッダー
             HStack(spacing: 6) {
                 Image(systemName: "building.fill")
                     .font(.caption)
@@ -217,18 +280,9 @@ struct MarketDataSectionView: View {
                     .foregroundStyle(.tertiary)
             }
 
-            ForEach(
-                0..<min(market.sameBuildingTransactions.count, 5),
-                id: \.self
-            ) { index in
-                sameBuildingTransactionRow(market.sameBuildingTransactions[index])
-            }
-
-            if market.sameBuildingTransactions.count > 5 {
-                Text("他 \(market.sameBuildingTransactions.count - 5)件")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                    .frame(maxWidth: .infinity, alignment: .center)
+            // 間取り別サマリー（DisclosureGroup で明細展開）
+            ForEach(summaries) { summary in
+                layoutSummaryRow(summary)
             }
 
             // 注意書き
@@ -236,6 +290,72 @@ struct MarketDataSectionView: View {
                 .font(.system(size: 9))
                 .foregroundStyle(.quaternary)
         }
+    }
+
+    @ViewBuilder
+    private func layoutSummaryRow(_ summary: LayoutSummary) -> some View {
+        DisclosureGroup {
+            // 展開時: 個別の成約明細
+            VStack(spacing: 4) {
+                ForEach(
+                    Array(summary.transactions.enumerated()),
+                    id: \.offset
+                ) { _, tx in
+                    sameBuildingTransactionRow(tx)
+                }
+            }
+            .padding(.top, 4)
+        } label: {
+            // サマリー行: 間取り・平均価格・件数
+            HStack(spacing: 8) {
+                // 間取りラベル
+                Text(summary.floorPlan)
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundStyle(summary.isMatchingLayout ? Color.orange : .primary)
+                    .frame(width: 48, alignment: .leading)
+
+                // 同間取りマーク
+                if summary.isMatchingLayout {
+                    Text("同間取り")
+                        .font(.system(size: 8))
+                        .fontWeight(.medium)
+                        .foregroundStyle(.orange)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
+                        .background(Color.orange.opacity(0.12))
+                        .clipShape(Capsule())
+                }
+
+                Spacer()
+
+                // 平均成約価格
+                VStack(alignment: .trailing, spacing: 1) {
+                    Text("平均 \(summary.avgPriceDisplay)")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
+                    Text(summary.avgM2PriceManDisplay)
+                        .font(.system(size: 9))
+                        .foregroundStyle(.secondary)
+                }
+
+                // 件数
+                Text("\(summary.count)件")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .frame(width: 28, alignment: .trailing)
+            }
+        }
+        .tint(.secondary)
+        .padding(.vertical, 6)
+        .padding(.horizontal, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(summary.isMatchingLayout
+                      ? Color.orange.opacity(0.06)
+                      : Color(.systemGray6).opacity(0.5))
+        )
     }
 
     @ViewBuilder
@@ -249,11 +369,10 @@ struct MarketDataSectionView: View {
                 .foregroundStyle(.secondary)
                 .frame(width: 72, alignment: .leading)
 
-            // 間取り+面積
-            Text("\(tx.floorPlan) \(String(format: "%.0fm²", tx.area))")
+            // 面積
+            Text(String(format: "%.0fm²", tx.area))
                 .font(.caption2)
-                .fontWeight(.medium)
-                .frame(width: 80, alignment: .leading)
+                .frame(width: 40, alignment: .leading)
 
             Spacer()
 
@@ -269,11 +388,11 @@ struct MarketDataSectionView: View {
                 .foregroundStyle(.secondary)
                 .frame(width: 64, alignment: .trailing)
         }
-        .padding(.vertical, 4)
-        .padding(.horizontal, 8)
+        .padding(.vertical, 3)
+        .padding(.horizontal, 6)
         .background(
-            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(Color.orange.opacity(0.04))
+            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                .fill(Color.orange.opacity(0.03))
         )
     }
 
