@@ -126,6 +126,14 @@ python3 scripts/build_units_cache.py "${OUTPUT_DIR}/latest.json" || echo "キャ
 # 4.2. 今回の latest.json にキャッシュをマージ
 python3 scripts/merge_detail_cache.py "${OUTPUT_DIR}/latest.json" || echo "詳細キャッシュのマージに失敗しました（続行）" >&2
 
+# 4.2b. 新築マンション詳細ページ enrichment（物件写真・間取り図取得）
+# メインページから外観/完成予想図等の写真（サムネイル用）を取得し、
+# 間取りタブから検索条件に合致する間取り図を取得する
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    echo "新築マンション詳細ページ enrichment 実行中（物件写真・間取り図取得）..." >&2
+    python3 shinchiku_detail_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "新築詳細 enrichment 失敗（続行）" >&2
+fi
+
 # ─── 4.3. 住まいサーフィン enrichment（ジオコーディングの前に実行） ───
 # 住まいサーフィンの物件概要から番地レベルの正確な住所（ss_address）を取得する。
 # この ss_address を後続のジオコーディングで使うことで座標精度を大幅に向上させる。
@@ -208,7 +216,8 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
 fi
 
 # 4.7b. 間取り図画像 enrichment
-# SUUMO は build_units_cache → merge_detail_cache 経由で付与済み
+# 中古 SUUMO は build_units_cache → merge_detail_cache 経由で付与済み
+# 新築 SUUMO は shinchiku_detail_enricher.py で付与済み（間取りタブから条件合致分を取得）
 # HOME'S のみ対象のため、SUUMO のみ運用時は自動スキップされる
 echo "間取り図画像 enrichment 実行中..." >&2
 python3 floor_plan_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "間取り図画像 enrichment (中古) 失敗（続行）" >&2
