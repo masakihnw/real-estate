@@ -522,8 +522,8 @@ def main() -> None:
         description="東京23区の成約実績データを取得・フィルタ・ジオコードして transactions.json を生成"
     )
     ap.add_argument(
-        "--quarters", type=int, default=4,
-        help="取得する四半期数（デフォルト: 4 = 過去1年）",
+        "--quarters", type=int, default=20,
+        help="取得する四半期数（デフォルト: 20 = 過去5年）",
     )
     ap.add_argument(
         "--output", default=OUTPUT_PATH,

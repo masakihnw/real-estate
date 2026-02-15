@@ -77,6 +77,7 @@ jobs:
           SUMAI_USER: ${{ secrets.SUMAI_USER }}
           SUMAI_PASS: ${{ secrets.SUMAI_PASS }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          REINFOLIB_API_KEY: ${{ secrets.REINFOLIB_API_KEY }}
         run: |
           chmod +x scripts/update_listings.sh
           ./scripts/update_listings.sh --no-git  # レポート・latest/previous まで。コミットは後続ステップで実行
