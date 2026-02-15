@@ -1343,6 +1343,11 @@ final class Listing: @unchecked Sendable {
         return groups
     }
 
+    /// 一覧カードのサムネイル用 URL（SUUMO の最初の画像 = 通常は外観写真）
+    var thumbnailURL: URL? {
+        parsedSuumoImages.first?.resolvedURL
+    }
+
     // MARK: - 通勤時間
 
     /// パース済み通勤時間データ（キャッシュ付き）

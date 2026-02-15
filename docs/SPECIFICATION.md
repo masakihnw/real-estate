@@ -292,8 +292,7 @@ Sheet として表示。以下のセクションで構成:
 | ③ | **住所** | 住所テキスト + Google Maps リンク |
 | ④ | **コメント** | 入力フィールド + コメント一覧（編集・削除可） |
 | ⑤ | **内見写真** | PhotoSectionView（撮影・ライブラリ選択・フルスクリーン表示） |
-| ⑤-b | **間取り図** | `hasFloorPlanImages` の場合のみ。SUUMO/HOME'S の物件詳細ページから取得した間取り図画像を Firebase Storage 経由で表示（掲載終了後も永続表示可能）。タップでピンチズーム対応のフルスクリーン表示。複数枚の場合は横スクロール |
-| ⑤-c | **物件写真** | `hasSuumoImages` の場合のみ。SUUMO の物件詳細ページから取得した物件写真（外観・室内・水回り等）を Firebase Storage 経由で表示。カテゴリ別（外観/室内/水回り/その他）にグルーピングし横スクロール。タップでフルスクリーン表示 |
+| ⑤-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。タップでピンチズーム対応のフルスクリーン表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
 | ⑥ | **物件基本情報** | 下記の共通項目 + 中古/新築固有項目を表示 |
 | ⑦ | **月額支払いシミュレーション** | `priceMan > 0` の場合（中古・新築共通）。下記の計算ロジックで動的に算出。タップでフォーム展開し金利・返済期間・頭金を変更可能 |
 | ⑧ | **通勤時間** | Playground / M3Career への通勤時間（MKDirections）+ Google Maps リンク。座標ありかつ未取得の場合は計算ボタン表示 |
@@ -351,7 +350,7 @@ n = 返済回数（月）= 返済年数 × 12
 |---------|------|
 | `LoanCalculator.swift` | 計算ロジック。`monthlyPayment(principal:rate:years:)` / `totalRepayment(principal:rate:years:)`。`simulate(listing:)` は listing URL + 主要パラメータでセッション内キャッシュし、body 再評価時の再計算を回避 |
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
-| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, commentSection, floorPlanSection, suumoImagesSection, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等）。`FloorPlanFullScreenView` は間取り図・物件写真のピンチズーム対応フルスクリーン表示（共用） |
+| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等）。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー。`FloorPlanFullScreenView` はピンチズーム対応フルスクリーン表示（共用） |
 | `loan_calc.py` (Python) | Slack 通知・レポート用の月額計算（同一パラメータ） |
 
 **物件基本情報の表示項目**
@@ -730,7 +729,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |---|------|------|------|
 | 1 | 物件名検索 | テキスト入力 | インクリメンタル検索。物件名でフィルタ。 |
 | 2 | 検索クリア | クリアボタン | 検索テキストを空にする |
-| 3 | 一覧表示 | 自動 | 物件をリスト形式で表示（物件名、価格、間取り、面積、徒歩、バッジ） |
+| 3 | 一覧表示 | 自動 | 物件をリスト形式で表示（サムネイル画像、物件名、価格、間取り、面積、徒歩、バッジ）。SUUMO 物件写真がある場合は最初の画像（通常は外観写真）をカード左側に 72x72pt のサムネイルとして表示 |
 | 4 | 空状態 | 自動 | データなし時に「データを取得」ボタン付きの案内を表示 |
 | 5 | フィルタ空状態 | 自動 | フィルタ条件に合う物件がない時に「フィルタをリセット」ボタンを表示 |
 
@@ -858,15 +857,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 17-b | 間取り図表示 | 閲覧 | `hasFloorPlanImages` の場合のみ。Firebase Storage から間取り図画像を表示（1枚=フル幅、複数枚=横スクロール）。画像は掲載終了後も永続的に表示可能 |
-| 17-c | フルスクリーン表示 | 画像タップ | 間取り図をフルスクリーンで表示（ピンチズーム・ダブルタップズーム対応） |
-
-#### SUUMO 物件写真
-
-| # | 機能 | 操作 | 詳細 |
-|---|------|------|------|
-| 17-d | 物件写真ギャラリー | 閲覧 | `hasSuumoImages` の場合のみ。SUUMO 詳細ページの物件写真（外観、リビング、キッチン、浴室、トイレ、収納、眺望等）をカテゴリ別（外観/室内/水回り/その他）にグルーピングして横スクロール表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
-| 17-e | 物件写真フルスクリーン | 画像タップ | 物件写真をフルスクリーンで表示（FloorPlanFullScreenView を共用、ピンチズーム・ダブルタップズーム対応） |
+| 17-b | 物件画像ギャラリー | 閲覧 | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO 物件写真（外観・リビング・キッチン・浴室等）を後続に配置した統合横スクロール。各画像にラベル表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
+| 17-c | フルスクリーン表示 | 画像タップ | 画像をフルスクリーンで表示（ピンチズーム・ダブルタップズーム対応） |
 
 #### 物件基本情報
 
@@ -1328,16 +1320,19 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **Firebase Storage 永続化** | `upload_floor_plans.py` が間取り図を `floor_plans/{hash}.{ext}`、物件写真を `property_images/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
 | **iOS 側フィールド（間取り図）** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換） |
 | **iOS 側フィールド（物件写真）** | `Listing.suumoImagesJSON`（JSON 文字列 → `parsedSuumoImages: [SuumoImage]` で構造体配列に変換。`SuumoImage` は `url`/`label` を持ち、`category` で外観/室内/水回り/その他に自動分類） |
+| **サムネイル URL** | `Listing.thumbnailURL: URL?`（computed）。SUUMO 物件写真の最初の画像（通常は外観写真）の URL を返す。一覧カードのサムネイル表示に使用 |
 
 ### 5.6 成約実績フィード構築（build_transaction_feed.py）
 
-首都圏（東京都・神奈川県・埼玉県・千葉県）の成約実績データを取得・フィルタ・ジオコード・集約して iOS アプリ向け `transactions.json` を生成するバッチスクリプト。
+東京23区の成約実績データを取得・フィルタ・ジオコード・集約して iOS アプリ向け `transactions.json` を生成するバッチスクリプト。スクレイピングツール（suumo_scraper.py）と同じ購入条件に合致する成約物件のみを対象とし、一貫した検索条件でデータを提供する。
 
 | 項目 | 詳細 |
 |------|------|
-| **入力** | reinfolib API（成約価格情報 `priceClassification=02`）、`data/shutoken_city_codes.json`、`data/geocode_cache.json`、`data/station_cache.json` |
+| **入力** | reinfolib API（成約価格情報 `priceClassification=02`）、`data/shutoken_city_codes.json`（東京23区のみ使用）、`data/geocode_cache.json`、`data/station_cache.json` |
 | **出力** | `results/transactions.json` |
-| **フィルタ条件** | `config.py` の購入条件（価格帯・面積・間取り・築年）を適用 |
+| **対象地域** | 東京23区のみ（`config.py` の `TOKYO_23_WARDS` で定義。`shutoken_city_codes.json` から東京都 pref_code=13 の23区コードのみロード） |
+| **フィルタ条件** | `config.py` の購入条件を適用（価格帯・面積・間取り・築年 + 駅徒歩）。スクレイピングと同一条件 |
+| **駅徒歩フィルタ** | ジオコーディング・最寄駅推定後に `estimated_walk_min <= WALK_MIN_MAX`（10分以内）でフィルタ。座標が取得できず徒歩推定できなかったレコードも除外 |
 | **ジオコーディング** | 町丁目アドレス → 緯度経度（geocode_cache.json 優先、不足分は Nominatim API） |
 | **最寄駅推定** | ジオコーディング座標 + station_cache.json → Haversine 距離で最近傍駅を算出、直線距離 80m/分で徒歩推定 |
 | **建物グルーピング** | `(districtCode, builtYear)` の組で推定建物グループを構成。グループ別に取引件数、価格帯、平均 m² 単価を集計 |
@@ -1450,7 +1445,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | `data/sumai_surfin_cache.json` | JSON | 住まいサーフィン検索結果キャッシュ |
 | `data/station_passengers.json` | JSON | 駅乗降客数データ |
 | `data/shutoken_city_codes.json` | JSON | 首都圏（1都3県）市区町村コード一覧 |
-| `results/transactions.json` | JSON | 首都圏成約実績フィード（iOS アプリ向け） |
+| `results/transactions.json` | JSON | 東京23区成約実績フィード（iOS アプリ向け、スクレイピングと同一検索条件） |
 
 ---
 
@@ -1562,7 +1557,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 ### 6.2 TransactionRecord（SwiftData @Model）
 
 iOS アプリの成約実績データモデル。`scraping-tool/results/transactions.json` の1取引に対応。  
-reinfolib API（不動産情報ライブラリ）の成約価格情報から、config.py の購入条件に合致するレコードを抽出したもの。
+reinfolib API（不動産情報ライブラリ）の成約価格情報から、config.py の購入条件（価格帯・面積・間取り・築年・東京23区・駅徒歩10分以内）に合致するレコードを抽出したもの。スクレイピングツールと同一の検索条件を適用。
 
 #### 取引情報
 
@@ -1816,7 +1811,7 @@ property_images/{imageId}    → 認証済みユーザーのみ読み取り
 | 2 | `fetch_station_prices.py` → `data/station_price_history.json` |
 | 3 | `reinfolib_land_price_builder.py` → `data/reinfolib_land_prices.json` |
 | 4 | `estat_population_builder.py` → `data/estat_population.json` |
-| 5 | `build_transaction_feed.py` → `results/transactions.json`（首都圏成約実績フィード） |
+| 5 | `build_transaction_feed.py` → `results/transactions.json`（東京23区成約実績フィード） |
 
 #### 必要なシークレット
 
