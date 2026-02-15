@@ -340,7 +340,7 @@ done
 # 首都圏の成約データを取得・フィルタ・ジオコードして transactions.json を生成
 if [ -n "${REINFOLIB_API_KEY:-}" ]; then
     echo "成約実績フィード構築中（首都圏、API コールのため時間がかかります）..." >&2
-    python3 build_transaction_feed.py --quarters 4 --output "${OUTPUT_DIR}/transactions.json" || echo "成約実績フィード構築失敗（続行）" >&2
+    python3 build_transaction_feed.py --quarters 20 --output "${OUTPUT_DIR}/transactions.json" || echo "成約実績フィード構築失敗（続行）" >&2
 else
     echo "成約実績フィード: REINFOLIB_API_KEY 未設定のためスキップ" >&2
 fi

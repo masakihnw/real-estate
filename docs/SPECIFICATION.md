@@ -1353,8 +1353,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **最寄駅推定** | ジオコーディング座標 + station_cache.json → Haversine 距離で最近傍駅を算出、直線距離 80m/分で徒歩推定 |
 | **建物グルーピング** | `(districtCode, builtYear)` の組で推定建物グループを構成。グループ別に取引件数、価格帯、平均 m² 単価を集計 |
 | **物件名推定** | `latest.json` / `latest_shinchiku.json` の既存スクレイピングデータとクロスリファレンス。市区町村+町丁目+築年（±1年）でマッチした物件名を `estimated_building_name` として付与。複数候補は " / " 区切り |
-| **実行間隔** | 四半期に1回（`update_listings.sh` から呼び出し、`REINFOLIB_API_KEY` 設定時のみ実行） |
-| **CLI オプション** | `--quarters N`（取得四半期数、デフォルト4）、`--output PATH`（出力先） |
+| **取得期間** | 直近20四半期（約5年分）。成約価格情報は四半期終了後 約3ヶ月遅れで公開されるため、直近1四半期はデータなしになることが多い |
+| **実行間隔** | `update_listings.sh` から毎回呼び出し（`REINFOLIB_API_KEY` 設定時のみ実行）。CI（update-listings.yml）でも自動実行 |
+| **CLI オプション** | `--quarters N`（取得四半期数、デフォルト20）、`--output PATH`（出力先） |
 
 #### transactions.json 構造
 
@@ -1811,6 +1812,7 @@ property_images/{imageId}    → 認証済みユーザーのみ読み取り
    ├── estat_enricher.py（e-Stat 人口動態）
    ├── generate_report.py（レポート生成）
    ├── send_push.py（FCM プッシュ通知）
+   ├── build_transaction_feed.py（成約実績フィード構築、REINFOLIB_API_KEY 設定時のみ）
    └── upload_scraping_log.py（実行ログ → Firestore）
 5. 変更あり + Slack 通知タイム → slack_notify.py（Slack 通知、1日1回 6:30 JST のみ）
 6. 変更あり → git commit & push
@@ -1828,7 +1830,6 @@ property_images/{imageId}    → 認証済みユーザーのみ読み取り
 | 2 | `fetch_station_prices.py` → `data/station_price_history.json` |
 | 3 | `reinfolib_land_price_builder.py` → `data/reinfolib_land_prices.json` |
 | 4 | `estat_population_builder.py` → `data/estat_population.json` |
-| 5 | `build_transaction_feed.py` → `results/transactions.json`（東京23区成約実績フィード） |
 
 #### 必要なシークレット
 
@@ -1838,7 +1839,7 @@ property_images/{imageId}    → 認証済みユーザーのみ読み取り
 | `SUMAI_PASS` | 住まいサーフィン パスワード |
 | `FIREBASE_SERVICE_ACCOUNT` | Firebase サービスアカウント JSON 文字列 |
 | `SLACK_WEBHOOK_URL` | Slack Webhook URL |
-| `REINFOLIB_API_KEY` | 不動産情報ライブラリ API キー（update-reinfolib-cache.yml で使用） |
+| `REINFOLIB_API_KEY` | 不動産情報ライブラリ API キー（update-listings.yml / update-reinfolib-cache.yml で使用） |
 | `ESTAT_API_KEY` | e-Stat アプリケーション ID（update-reinfolib-cache.yml で使用） |
 | `GITHUB_TOKEN` | リポジトリ Read and Write 権限 |
 
@@ -1988,7 +1989,7 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | `FIREBASE_SERVICE_ACCOUNT` | Firebase サービスアカウント JSON | GitHub Actions, firestore_config_loader.py, upload_scraping_log.py, send_push.py |
 | `FIREBASE_PROJECT_ID` | FCM フォールバック | send_push.py |
 | `SLACK_WEBHOOK_URL` | Slack Webhook URL | GitHub Actions, slack_notify.py |
-| `REINFOLIB_API_KEY` | 不動産情報ライブラリ API キー | update-reinfolib-cache.yml, reinfolib_cache_builder.py, fetch_station_prices.py, build_transaction_feed.py |
+| `REINFOLIB_API_KEY` | 不動産情報ライブラリ API キー | update-listings.yml, update-reinfolib-cache.yml, reinfolib_cache_builder.py, fetch_station_prices.py, build_transaction_feed.py |
 | `ESTAT_API_KEY` | e-Stat アプリケーション ID | update-reinfolib-cache.yml, estat_population_builder.py |
 
 ---
