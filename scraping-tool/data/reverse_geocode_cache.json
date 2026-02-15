@@ -294,5 +294,237 @@
 "quarter": "常盤台",
 "neighbourhood": "常盤台一丁目",
 "city_district": ""
+},
+"35.690719,139.694153": {
+"display_name": "中央通り, 西新宿二丁目, 西新宿, 新宿区, 東京都, 160-8484, 日本",
+"city": "新宿区",
+"suburb": "",
+"quarter": "西新宿",
+"neighbourhood": "西新宿二丁目",
+"city_district": ""
+},
+"35.684424,139.689700": {
+"display_name": "西新宿三丁目, 西新宿, 新宿区, 東京都, 160-0023, 日本",
+"city": "新宿区",
+"suburb": "",
+"quarter": "西新宿",
+"neighbourhood": "西新宿三丁目",
+"city_district": ""
+},
+"35.734621,139.753096": {
+"display_name": "本駒込五丁目, 本駒込, 文京区, 東京都, 113-0021, 日本",
+"city": "文京区",
+"suburb": "",
+"quarter": "本駒込",
+"neighbourhood": "本駒込五丁目",
+"city_district": ""
+},
+"35.726760,139.746660": {
+"display_name": "旧白山通り, 本駒込二丁目, 本駒込, 文京区, 東京都, 112-0001, 日本",
+"city": "文京区",
+"suburb": "",
+"quarter": "本駒込",
+"neighbourhood": "本駒込二丁目",
+"city_district": ""
+},
+"35.708025,139.752307": {
+"display_name": "春日通り, 春日一丁目, 春日, 文京区, 東京都, 112-0003, 日本",
+"city": "文京区",
+"suburb": "",
+"quarter": "春日",
+"neighbourhood": "春日一丁目",
+"city_district": ""
+},
+"35.727751,139.745043": {
+"display_name": "白山通り, 千石一丁目, 千石, 文京区, 東京都, 112-0011, 日本",
+"city": "文京区",
+"suburb": "",
+"quarter": "千石",
+"neighbourhood": "千石一丁目",
+"city_district": ""
+},
+"35.705830,139.665633": {
+"display_name": "中野通り, 中野五丁目, 中野, 中野区, 東京都, 164-0001, 日本",
+"city": "中野区",
+"suburb": "",
+"quarter": "中野",
+"neighbourhood": "中野五丁目",
+"city_district": ""
+},
+"35.705828,139.670936": {
+"display_name": "中野五丁目, 中野, 中野区, 東京都, 164-0002, 日本",
+"city": "中野区",
+"suburb": "",
+"quarter": "中野",
+"neighbourhood": "中野五丁目",
+"city_district": ""
+},
+"35.725359,139.790844": {
+"display_name": "国際通り, 竜泉二丁目, 竜泉, 台東区, 東京都, 110-0012, 日本",
+"city": "台東区",
+"suburb": "",
+"quarter": "竜泉",
+"neighbourhood": "竜泉二丁目",
+"city_district": ""
+},
+"35.714410,139.790328": {
+"display_name": "西浅草三丁目, 西浅草, 台東区, 東京都, 111-0035, 日本",
+"city": "台東区",
+"suburb": "",
+"quarter": "西浅草",
+"neighbourhood": "西浅草三丁目",
+"city_district": ""
+},
+"35.710420,139.801742": {
+"display_name": "墨堤通り, 吾妻橋二丁目, 吾妻橋, 墨田区, 東京都, 130-0001, 日本",
+"city": "墨田区",
+"suburb": "吾妻橋",
+"quarter": "",
+"neighbourhood": "吾妻橋二丁目",
+"city_district": ""
+},
+"35.690322,139.795762": {
+"display_name": "千歳二丁目, 千歳, 墨田区, 東京都, 130-0025, 日本",
+"city": "墨田区",
+"suburb": "千歳",
+"quarter": "",
+"neighbourhood": "千歳二丁目",
+"city_district": ""
+},
+"35.732584,139.767217": {
+"display_name": "西日暮里五丁目, 西日暮里, 荒川区, 東京都, 116-0013, 日本",
+"city": "荒川区",
+"suburb": "",
+"quarter": "西日暮里",
+"neighbourhood": "西日暮里五丁目",
+"city_district": ""
+},
+"35.732562,139.770318": {
+"display_name": "西日暮里二丁目, 西日暮里, 荒川区, 東京都, 116-0013, 日本",
+"city": "荒川区",
+"suburb": "",
+"quarter": "西日暮里",
+"neighbourhood": "西日暮里二丁目",
+"city_district": ""
+},
+"35.729484,139.781765": {
+"display_name": "カンカン森通り, 東日暮里三丁目, 東日暮里, 荒川区, 東京都, 116-0014, 日本",
+"city": "荒川区",
+"suburb": "",
+"quarter": "東日暮里",
+"neighbourhood": "東日暮里三丁目",
+"city_district": ""
+},
+"35.725292,139.778742": {
+"display_name": "尾竹橋通り, 東日暮里四丁目, 東日暮里, 荒川区, 東京都, 116-0014, 日本",
+"city": "荒川区",
+"suburb": "",
+"quarter": "東日暮里",
+"neighbourhood": "東日暮里四丁目",
+"city_district": ""
+},
+"35.732120,139.881273": {
+"display_name": "南小岩七丁目, 南小岩, 江戸川区, 東京都, 133-0057, 日本",
+"city": "江戸川区",
+"suburb": "",
+"quarter": "南小岩",
+"neighbourhood": "南小岩七丁目",
+"city_district": ""
+},
+"35.668853,139.623291": {
+"display_name": "上北沢三丁目, 上北沢, 世田谷区, 東京都, 156-0057, 日本",
+"city": "世田谷区",
+"suburb": "",
+"quarter": "上北沢",
+"neighbourhood": "上北沢三丁目",
+"city_district": ""
+},
+"35.666196,139.620025": {
+"display_name": "赤堤通り, 上北沢二丁目, 上北沢, 世田谷区, 東京都, 156-0056, 日本",
+"city": "世田谷区",
+"suburb": "",
+"quarter": "上北沢",
+"neighbourhood": "上北沢二丁目",
+"city_district": ""
+},
+"35.668979,139.600747": {
+"display_name": "駅前通り, 南烏山四丁目, 南烏山, 世田谷区, 東京都, 157-0062, 日本",
+"city": "世田谷区",
+"suburb": "",
+"quarter": "南烏山",
+"neighbourhood": "南烏山四丁目",
+"city_district": ""
+},
+"35.668673,139.611058": {
+"display_name": "南烏山一丁目, 南烏山, 世田谷区, 東京都, 158-0063, 日本",
+"city": "世田谷区",
+"suburb": "",
+"quarter": "南烏山",
+"neighbourhood": "南烏山一丁目",
+"city_district": ""
+},
+"35.695925,139.674238": {
+"display_name": "新橋通り, 本町三丁目, 本町, 中野区, 東京都, 164-0012, 日本",
+"city": "中野区",
+"suburb": "",
+"quarter": "本町",
+"neighbourhood": "本町三丁目",
+"city_district": ""
+},
+"35.742260,139.712693": {
+"display_name": "補助第73号線, 池袋本町三丁目, 池袋本町, 板橋, 豊島区, 東京都, 170-0011, 日本",
+"city": "豊島区",
+"suburb": "板橋",
+"quarter": "池袋本町",
+"neighbourhood": "池袋本町三丁目",
+"city_district": ""
+},
+"35.753940,139.737449": {
+"display_name": "北本通り, 王子一丁目, 王子, 北区, 東京都, 114-0002, 日本",
+"city": "北区",
+"suburb": "",
+"quarter": "王子",
+"neighbourhood": "王子一丁目",
+"city_district": ""
+},
+"35.767407,139.737266": {
+"display_name": "王子五丁目, 王子, 北区, 東京都, 114-0002, 日本",
+"city": "北区",
+"suburb": "",
+"quarter": "王子",
+"neighbourhood": "王子五丁目",
+"city_district": ""
+},
+"35.750299,139.758034": {
+"display_name": "荒川遊園通り, 西尾久五丁目, 西尾久, 荒川区, 東京都, 116-0011, 日本",
+"city": "荒川区",
+"suburb": "",
+"quarter": "西尾久",
+"neighbourhood": "西尾久五丁目",
+"city_district": ""
+},
+"35.747421,139.753646": {
+"display_name": "昭和町二丁目, 昭和町, 北区, 東京都, 114-0011, 日本",
+"city": "北区",
+"suburb": "",
+"quarter": "昭和町",
+"neighbourhood": "昭和町二丁目",
+"city_district": ""
+},
+"35.763822,139.732548": {
+"display_name": "王子五丁目, 王子, 北区, 東京都, 114-0002, 日本",
+"city": "北区",
+"suburb": "",
+"quarter": "王子",
+"neighbourhood": "王子五丁目",
+"city_district": ""
+},
+"35.757787,139.736163": {
+"display_name": "王子二丁目, 王子, 北区, 東京都, 114-0002, 日本",
+"city": "北区",
+"suburb": "",
+"quarter": "王子",
+"neighbourhood": "王子二丁目",
+"city_district": ""
 }
 }
