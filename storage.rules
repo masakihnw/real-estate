@@ -15,5 +15,11 @@ service firebase.storage {
     match /floor_plans/{imageId} {
       allow read: if request.auth != null;
     }
+
+    // SUUMO 物件写真: 認証済みユーザーのみ読み取り可能
+    // 書き込みは Admin SDK（スクレイピングパイプライン）のみ
+    match /property_images/{imageId} {
+      allow read: if request.auth != null;
+    }
   }
 }

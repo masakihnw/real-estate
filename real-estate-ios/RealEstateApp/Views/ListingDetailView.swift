@@ -63,6 +63,12 @@ struct ListingDetailView: View {
                         floorPlanSection
                     }
 
+                    // ④-c SUUMO 物件写真（外観・室内・水回り等）
+                    if listing.hasSuumoImages {
+                        Divider()
+                        suumoImagesSection
+                    }
+
                     Divider()
 
                     // ⑤ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
@@ -424,6 +430,103 @@ struct ListingDetailView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("間取り図を拡大表示")
+    }
+
+    // MARK: - SUUMO 物件写真セクション
+
+    /// フルスクリーン表示用の SUUMO 物件写真 URL
+    @State private var fullScreenSuumoImageURL: URL?
+
+    @ViewBuilder
+    private var suumoImagesSection: some View {
+        let groups = listing.groupedSuumoImages
+
+        VStack(alignment: .leading, spacing: 12) {
+            Label("物件写真", systemImage: "camera")
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .foregroundStyle(Color.accentColor)
+
+            ForEach(Array(groups.enumerated()), id: \.offset) { _, group in
+                VStack(alignment: .leading, spacing: 6) {
+                    // カテゴリヘッダー
+                    Label(group.category.rawValue, systemImage: group.category.iconName)
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+
+                    // 横スクロール画像リスト
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(group.images) { img in
+                                suumoImageThumbnail(img)
+                            }
+                        }
+                    }
+                }
+            }
+
+            Text("※ SUUMO の物件詳細ページから取得した写真です")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(14)
+        .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+        .fullScreenCover(isPresented: Binding(
+            get: { fullScreenSuumoImageURL != nil },
+            set: { if !$0 { fullScreenSuumoImageURL = nil } }
+        )) {
+            if let url = fullScreenSuumoImageURL {
+                FloorPlanFullScreenView(url: url)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func suumoImageThumbnail(_ img: Listing.SuumoImage) -> some View {
+        if let url = img.resolvedURL {
+            Button {
+                fullScreenSuumoImageURL = url
+            } label: {
+                VStack(spacing: 4) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 140, height: 105)
+                                .clipped()
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        case .failure:
+                            ZStack {
+                                Color(.systemGray6)
+                                Image(systemName: "photo.badge.exclamationmark")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(width: 140, height: 105)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        case .empty:
+                            ZStack {
+                                Color(.systemGray6)
+                                ProgressView()
+                            }
+                            .frame(width: 140, height: 105)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+
+                    Text(img.label)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("\(img.label)を拡大表示")
+        }
     }
 
     // MARK: - ① コメントセクション

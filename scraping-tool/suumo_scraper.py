@@ -467,20 +467,42 @@ def parse_suumo_detail_html(html: str) -> dict:
 
     # 間取り図画像の抽出（alt="間取り図" の img タグから URL を取得）
     floor_plan_images: list[str] = []
+    # SUUMO 物件写真の抽出（間取り図以外の物件画像を label 付きで収集）
+    suumo_images: list[dict[str, str]] = []
+    # 除外パターン: サイトロゴ・担当者・バナー・spacer 等の非物件画像
+    _EXCLUDE_ALT = {"SUUMO(スーモ)", "suumo", "担当者", ""}
+    _EXCLUDE_SRC_PARTS = ("spacer.gif", "/logo", "/btn", "/close", "/inc_", "/pagetop", "imgover")
+
+    seen_urls: set[str] = set()
     for img in soup.find_all("img"):
         alt = (img.get("alt") or "").strip()
+        # SUUMO は rel 属性にリサイズ URL を持つ（lazy-load）。src にフォールバック。
+        raw_url = (img.get("rel") or img.get("src") or "").strip()
+        if isinstance(raw_url, list):
+            raw_url = raw_url[0] if raw_url else ""
+        if not raw_url or raw_url.startswith("data:"):
+            continue
+        # サイト画像を除外
+        if alt in _EXCLUDE_ALT:
+            continue
+        if any(part in raw_url for part in _EXCLUDE_SRC_PARTS):
+            continue
+        # resizeImage を含まない URL は物件画像ではない（SUUMO の物件写真は resizeImage 経由）
+        if "resizeImage" not in raw_url and "suumo.com" not in raw_url:
+            continue
+
+        # リサイズ URL の場合、大きいサイズに変更（アプリで鮮明に表示するため）
+        url = re.sub(r"[&?]w=\d+", "&w=1200", raw_url)
+        url = re.sub(r"[&?]h=\d+", "&h=900", url)
+
+        if url in seen_urls:
+            continue
+        seen_urls.add(url)
+
         if "間取り" in alt:
-            # SUUMO は rel 属性にリサイズ URL を持つ（lazy-load）。src にフォールバック。
-            url = (img.get("rel") or img.get("src") or "").strip()
-            if isinstance(url, list):
-                url = url[0] if url else ""
-            if not url or url.startswith("data:"):
-                continue
-            # リサイズ URL の場合、大きいサイズに変更（アプリで鮮明に表示するため）
-            url = re.sub(r"[&?]w=\d+", "&w=1200", url)
-            url = re.sub(r"[&?]h=\d+", "&h=900", url)
-            if url not in floor_plan_images:
-                floor_plan_images.append(url)
+            floor_plan_images.append(url)
+        else:
+            suumo_images.append({"url": url, "label": alt})
 
     return {
         "total_units": total_units,
@@ -491,6 +513,7 @@ def parse_suumo_detail_html(html: str) -> dict:
         "management_fee": management_fee,
         "repair_reserve_fund": repair_reserve_fund,
         "floor_plan_images": floor_plan_images if floor_plan_images else None,
+        "suumo_images": suumo_images if suumo_images else None,
     }
 
 

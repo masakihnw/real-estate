@@ -141,6 +141,8 @@ def _detail_to_cache_entry(parsed: dict) -> dict:
         entry["repair_reserve_fund"] = parsed["repair_reserve_fund"]
     if parsed.get("floor_plan_images"):
         entry["floor_plan_images"] = parsed["floor_plan_images"]
+    if parsed.get("suumo_images"):
+        entry["suumo_images"] = parsed["suumo_images"]
     return entry
 
 

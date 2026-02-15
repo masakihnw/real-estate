@@ -199,6 +199,53 @@ def upload_to_storage(bucket, blob_path: str, data: bytes, content_type: str) ->
     return download_url
 
 
+def _upload_url(
+    session: requests.Session,
+    bucket,
+    manifest: dict[str, str],
+    original_url: str,
+    storage_dir: str,
+    stats: dict[str, int],
+) -> str:
+    """1つの画像 URL を Firebase Storage にアップロードし、結果 URL を返す。
+
+    既にアップロード済みの場合はマニフェストから返す。
+    失敗時は元の URL をそのまま返す。
+    """
+    # 既に Firebase Storage URL の場合はスキップ
+    if FIREBASE_STORAGE_HOST in original_url:
+        stats["skipped"] += 1
+        return original_url
+
+    # マニフェストにキャッシュがある場合
+    if original_url in manifest:
+        stats["cached"] += 1
+        return manifest[original_url]
+
+    # 画像をダウンロード
+    result = download_image(session, original_url)
+    if result is None:
+        stats["failed"] += 1
+        return original_url
+
+    data, content_type = result
+    ext = _content_type_to_ext(content_type)
+    url_hash = _url_to_hash(original_url)
+    blob_path = f"{storage_dir}/{url_hash}{ext}"
+
+    try:
+        firebase_url = upload_to_storage(bucket, blob_path, data, content_type)
+        manifest[original_url] = firebase_url
+        stats["uploaded"] += 1
+        # レート制限回避
+        time.sleep(UPLOAD_DELAY_SEC)
+        return firebase_url
+    except Exception as e:
+        print(f"  アップロード失敗: {e}", file=sys.stderr)
+        stats["failed"] += 1
+        return original_url
+
+
 def process_listings(listings: list[dict], bucket, manifest: dict[str, str]) -> dict:
     """listings 内の floor_plan_images URL を Firebase Storage URL に置き換える。
 
@@ -231,44 +278,8 @@ def process_listings(listings: list[dict], bucket, manifest: dict[str, str]) -> 
 
         new_urls: list[str] = []
         for original_url in images:
-            # 既に Firebase Storage URL の場合はスキップ
-            if FIREBASE_STORAGE_HOST in original_url:
-                new_urls.append(original_url)
-                stats["skipped"] += 1
-                continue
-
-            # マニフェストにキャッシュがある場合
-            if original_url in manifest:
-                new_urls.append(manifest[original_url])
-                stats["cached"] += 1
-                continue
-
-            # 画像をダウンロード
-            result = download_image(session, original_url)
-            if result is None:
-                # ダウンロード失敗時は元の URL を維持
-                new_urls.append(original_url)
-                stats["failed"] += 1
-                continue
-
-            data, content_type = result
-            ext = _content_type_to_ext(content_type)
-            url_hash = _url_to_hash(original_url)
-            blob_path = f"floor_plans/{url_hash}{ext}"
-
-            try:
-                firebase_url = upload_to_storage(bucket, blob_path, data, content_type)
-                new_urls.append(firebase_url)
-                manifest[original_url] = firebase_url
-                stats["uploaded"] += 1
-            except Exception as e:
-                print(f"  アップロード失敗: {e}", file=sys.stderr)
-                new_urls.append(original_url)
-                stats["failed"] += 1
-                continue
-
-            # レート制限回避
-            time.sleep(UPLOAD_DELAY_SEC)
+            new_url = _upload_url(session, bucket, manifest, original_url, "floor_plans", stats)
+            new_urls.append(new_url)
 
         listing["floor_plan_images"] = new_urls
         processed += 1
@@ -276,6 +287,54 @@ def process_listings(listings: list[dict], bucket, manifest: dict[str, str]) -> 
         # 進捗表示
         if processed % 20 == 0:
             print(f"  ...{processed}/{target_count}件処理済", file=sys.stderr)
+
+    return stats
+
+
+def process_suumo_images(listings: list[dict], bucket, manifest: dict[str, str]) -> dict:
+    """listings 内の suumo_images[].url を Firebase Storage URL に置き換える。
+
+    suumo_images は [{url: str, label: str}, ...] の形式。
+
+    Returns:
+        統計情報の辞書 {"uploaded": int, "cached": int, "failed": int, "skipped": int}
+    """
+    session = _create_session()
+    stats = {"uploaded": 0, "cached": 0, "failed": 0, "skipped": 0}
+
+    target_count = sum(
+        1
+        for r in listings
+        if isinstance(r, dict) and r.get("suumo_images")
+    )
+    if target_count == 0:
+        print("SUUMO 物件写真を持つ物件はありません", file=sys.stderr)
+        return stats
+
+    print(
+        f"SUUMO 物件写真 Storage アップロード: {target_count}件の物件を処理します",
+        file=sys.stderr,
+    )
+
+    processed = 0
+    for listing in listings:
+        images = listing.get("suumo_images")
+        if not images or not isinstance(images, list):
+            continue
+
+        new_images: list[dict[str, str]] = []
+        for img in images:
+            if not isinstance(img, dict) or "url" not in img:
+                continue
+            original_url = img["url"]
+            new_url = _upload_url(session, bucket, manifest, original_url, "property_images", stats)
+            new_images.append({"url": new_url, "label": img.get("label", "")})
+
+        listing["suumo_images"] = new_images
+        processed += 1
+
+        if processed % 20 == 0:
+            print(f"  ...{processed}/{target_count}件処理済（物件写真）", file=sys.stderr)
 
     return stats
 
@@ -314,8 +373,11 @@ def main() -> None:
     # マニフェスト読み込み
     manifest = _load_manifest()
 
-    # 処理実行
+    # 処理実行: 間取り図
     stats = process_listings(listings, bucket, manifest)
+
+    # 処理実行: SUUMO 物件写真
+    suumo_stats = process_suumo_images(listings, bucket, manifest)
 
     # マニフェスト保存
     _save_manifest(manifest)
@@ -332,6 +394,14 @@ def main() -> None:
         f"マニフェストキャッシュ {stats['cached']}件, "
         f"既存Storage {stats['skipped']}件, "
         f"失敗 {stats['failed']}件",
+        file=sys.stderr,
+    )
+    print(
+        f"物件写真 Storage: "
+        f"新規アップロード {suumo_stats['uploaded']}件, "
+        f"マニフェストキャッシュ {suumo_stats['cached']}件, "
+        f"既存Storage {suumo_stats['skipped']}件, "
+        f"失敗 {suumo_stats['failed']}件",
         file=sys.stderr,
     )
 
