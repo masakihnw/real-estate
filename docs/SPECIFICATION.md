@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-15  
+> **最終更新**: 2026-02-16  
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -1226,7 +1226,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **パース対象** | `div.property_unit-content` / カセットレイアウト |
 | **取得フィールド** | name, price, address, station_line, walk_min, area_m2, layout, built_year, floor, ownership |
 | **総戸数** | `building_units.json`（詳細ページキャッシュ）から取得 |
-| **URL プリフィルタ** | `apply_filter=True` 時、価格（`kb`/`kt`）・面積（`mb`/`mt`）を URL パラメータに付与しサーバーサイドで絞り込み。ページ数を大幅削減（例: 千代田区 100ページ→0ページ） |
+| **フィルタ方式** | ローカルフィルタのみ。SUUMO の区別 URL（`/ms/chuko/tokyo/sc_XXX/`）は `kb`/`kt`/`mb`/`mt` クエリパラメータ非対応（エラーページが返る）のため、URL プリフィルタは無効化済み。全ページ取得後に `apply_conditions` で絞り込み |
 | **早期打ち切り** | 連続20ページで新規通過0件の区はスキップ（`EARLY_EXIT_PAGES=20`） |
 | **出力** | `SuumoListing` dataclass |
 
@@ -1249,10 +1249,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 #### フィルタ条件（`apply_conditions`）
 
-各スクレイパーの結果に対して以下の条件でフィルタ（2段階フィルタ）:
+各スクレイパーの結果に対して以下の条件でローカルフィルタ（`apply_conditions`）:
 
-1. **URL プリフィルタ**（SUUMO）: 価格・面積を URL パラメータでサーバーサイド絞り込み → 取得ページ数を大幅削減
-2. **ローカルフィルタ**（`apply_conditions`）: 以下の全条件で精密フィルタ
+> **注意**: SUUMO の区別 URL は URL クエリパラメータによるサーバーサイド絞り込みに非対応のため、全ページ取得後にローカルで絞り込む方式に統一
 
 - 東京23区以内
 - 価格: `PRICE_MIN_MAN`〜`PRICE_MAX_MAN`

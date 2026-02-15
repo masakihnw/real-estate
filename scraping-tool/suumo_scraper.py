@@ -613,17 +613,12 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
     seen_urls: set[str] = set()
     limit = max_pages if max_pages and max_pages > 0 else SUUMO_MAX_PAGES_SAFETY
 
-    # apply_filter 時は価格・面積を URL パラメータでプリフィルタ（ページ数を大幅削減）
-    # SUUMO の /ms/chuko/tokyo/sc_XXX/ は kb, kt, mb, mt パラメータに対応
+    # NOTE: /ms/chuko/tokyo/sc_XXX/ はクエリパラメータ (kb, kt, mb, mt) を
+    # サポートしていない（エラーページが返る）。ローカルフィルタ (apply_conditions) のみで絞り込む。
     url_params: Optional[dict[str, str]] = None
     if apply_filter:
-        url_params = {
-            "kb": str(PRICE_MIN_MAN),
-            "kt": str(PRICE_MAX_MAN),
-            "mb": str(int(AREA_MIN_M2)),
-            "mt": str(int(AREA_MAX_M2)) if AREA_MAX_M2 is not None else "9999999",
-        }
-        print(f"SUUMO: URL プリフィルタ適用（{PRICE_MIN_MAN}万〜{PRICE_MAX_MAN}万, {AREA_MIN_M2}m²以上）", file=sys.stderr)
+        print(f"SUUMO: ローカルフィルタ適用（{PRICE_MIN_MAN}万〜{PRICE_MAX_MAN}万, {AREA_MIN_M2}m²以上, "
+              f"築{BUILT_YEAR_MIN}年以降, 徒歩{WALK_MIN_MAX}分以内）", file=sys.stderr)
 
     for ward_roman in SUUMO_23_WARD_ROMAN:  # 全23区を同じ方式で取得
         p = 1
