@@ -290,9 +290,8 @@ Sheet として表示。以下のセクションで構成:
 | ① | **掲載終了バナー** | `isDelisted` = true のとき表示 |
 | ② | **物件名** | タイトル表示 |
 | ③ | **住所** | 住所テキスト + Google Maps リンク |
-| ④ | **コメント** | 入力フィールド + コメント一覧（編集・削除可） |
-| ⑤ | **内見写真** | PhotoSectionView（撮影・ライブラリ選択・フルスクリーン表示） |
-| ⑤-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。タップでピンチズーム対応のフルスクリーン表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
+| ④ | **内見メモ（コンパクトボタン）** | カメラアイコン + コメントアイコン + 件数をインライン表示。タップで内見メモオーバーレイ（シート）を開く。コメント入力・写真追加は全てオーバーレイ内で操作 |
+| ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。タップでピンチズーム対応のフルスクリーン表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
 | ⑥ | **物件基本情報** | 下記の共通項目 + 中古/新築固有項目を表示 |
 | ⑦ | **月額支払いシミュレーション** | `priceMan > 0` の場合（中古・新築共通）。下記の計算ロジックで動的に算出。タップでフォーム展開し金利・返済期間・頭金を変更可能 |
 | ⑧ | **通勤時間** | Playground / M3Career への通勤時間（MKDirections）+ Google Maps リンク。座標ありかつ未取得の場合は計算ボタン表示 |
@@ -350,7 +349,7 @@ n = 返済回数（月）= 返済年数 × 12
 |---------|------|
 | `LoanCalculator.swift` | 計算ロジック。`monthlyPayment(principal:rate:years:)` / `totalRepayment(principal:rate:years:)`。`simulate(listing:)` は listing URL + 主要パラメータでセッション内キャッシュし、body 再評価時の再計算を回避 |
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
-| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等）。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー。`FloorPlanFullScreenView` はピンチズーム対応フルスクリーン表示（共用） |
+| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等）。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー。`FloorPlanFullScreenView` はピンチズーム対応フルスクリーン表示（共用） |
 | `loan_calc.py` (Python) | Slack 通知・レポート用の月額計算（同一パラメータ） |
 
 **物件基本情報の表示項目**
@@ -516,7 +515,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 - 横スクロールテーブル形式
 - 比較項目: 価格、間取り、面積、築年、徒歩、階数、総戸数、権利形態、住まいサーフィン評価
 
-#### 3.3.8 内見写真（PhotoSectionView）
+#### 3.3.8 内見写真（PhotoSectionView）— 内見メモオーバーレイ内に表示
 
 | 機能 | 詳細 |
 |------|------|
@@ -818,7 +817,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 1 | 閉じる | ツールバーボタン | Sheet を閉じる |
 | 2 | 共有 | ツールバー ShareLink | 物件 URL を共有 |
 | 3 | いいね | ツールバーハートボタン | いいね ON/OFF → Firestore 同期 |
-| 4 | キーボード非表示 | 画面タップ | コメント入力中のキーボードを閉じる |
+| 4 | キーボード非表示 | 画面タップ | 内見メモオーバーレイ内のコメント入力中にキーボードを閉じる |
 
 #### 掲載状態
 
@@ -832,21 +831,19 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |---|------|------|------|
 | 6 | Google Maps で開く | 住所タップ | Google Maps アプリ（またはブラウザ）で住所を検索 |
 
-#### コメント機能
+#### 内見メモ（オーバーレイ）
+
+物件詳細画面にはカメラ＋コメントアイコンのコンパクトボタンのみ表示。タップで内見メモオーバーレイ（`.sheet` / `.medium` + `.large` detents）を開く。オーバーレイ内でコメント・写真を操作する。
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 7 | コメント投稿 | テキスト入力 + 送信ボタン | コメントを追加 → Firestore 同期 |
-| 8 | コメント編集 | 編集ボタン | 既存コメントのテキストを編集モードに → 更新 |
+| 6b | 内見メモを開く | コンパクトボタンタップ | 写真件数・コメント件数付きアイコンボタン → オーバーレイシートを表示 |
+| 7 | コメント投稿 | テキスト入力 + 送信ボタン | オーバーレイ内でコメントを追加 → Firestore 同期 |
+| 8 | コメント編集 | 編集ボタン | オーバーレイ内で既存コメントのテキストを編集モードに → 更新 |
 | 9 | コメント削除 | 削除ボタン | 確認ダイアログ表示 → 削除 → Firestore 同期 |
 | 10 | 編集キャンセル | キャンセルボタン | 編集モードを解除してテキストを元に戻す |
-
-#### 内見写真
-
-| # | 機能 | 操作 | 詳細 |
-|---|------|------|------|
-| 11 | 写真撮影 | カメラボタン | カメラを起動して撮影 → ローカル保存 + Firebase Storage アップロード |
-| 12 | ライブラリから選択 | フォトライブラリボタン | PhotosPicker で画像選択 → 保存 + アップロード |
+| 11 | 写真撮影 | カメラボタン | オーバーレイ内でカメラを起動して撮影 → ローカル保存 + Firebase Storage アップロード |
+| 12 | ライブラリから選択 | フォトライブラリボタン | オーバーレイ内で PhotosPicker で画像選択 → 保存 + アップロード |
 | 13 | サムネイル表示 | 横スクロール | 保存済み写真のサムネイルを横スクロールで一覧 |
 | 14 | フルスクリーン表示 | サムネイルタップ | 写真をフルスクリーンで表示（スワイプで切替） |
 | 15 | 写真削除 | サムネイル右上の×ボタン | 確認ダイアログ → ローカル + クラウドから削除 |
@@ -1157,14 +1154,14 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 中古/新築一覧 | 22 |
 | お気に入り | 22 + 3 = 25 |
 | フィルタシート | 13 |
-| 物件詳細 | 58 |
+| 物件詳細 | 59 |
 | 物件比較 | 7 |
 | 地図 | 32 |
 | 設定 | 19 |
 | スクレイピング条件 | 15 |
 | スクレイピングログ | 10 |
 | グローバル | 10 |
-| **合計** | **約222機能** |
+| **合計** | **約223機能** |
 
 ## 5. スクレイピングツール仕様
 
