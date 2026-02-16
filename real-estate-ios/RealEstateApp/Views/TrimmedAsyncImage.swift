@@ -4,7 +4,7 @@ import UIKit
 // MARK: - トリミング済み画像キャッシュ
 
 /// 余白トリミング済み画像を NSCache で保持するシングルトン
-private final class TrimmedImageCache: @unchecked Sendable {
+final class TrimmedImageCache: @unchecked Sendable {
     static let shared = TrimmedImageCache()
     private let cache = NSCache<NSString, UIImage>()
 
@@ -28,6 +28,10 @@ private final class TrimmedImageCache: @unchecked Sendable {
 struct TrimmedAsyncImage: View {
     let url: URL
     let width: CGFloat
+    /// 固定高さ。省略時は `width * 0.75`
+    var height: CGFloat?
+
+    private var resolvedHeight: CGFloat { height ?? width * 0.75 }
 
     @State private var loadedImage: UIImage?
     @State private var loadPhase: Phase = .loading
@@ -41,8 +45,9 @@ struct TrimmedAsyncImage: View {
                 if let loadedImage {
                     Image(uiImage: loadedImage)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: width)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: width, height: resolvedHeight)
+                        .clipped()
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
             case .failure:
@@ -53,7 +58,7 @@ struct TrimmedAsyncImage: View {
                     ProgressView()
                         .controlSize(.small)
                 }
-                .frame(width: width, height: width * 0.75)
+                .frame(width: width, height: resolvedHeight)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }
@@ -69,7 +74,7 @@ struct TrimmedAsyncImage: View {
                 .font(.title3)
                 .foregroundStyle(.quaternary)
         }
-        .frame(width: width, height: width * 0.75)
+        .frame(width: width, height: resolvedHeight)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 

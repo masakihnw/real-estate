@@ -132,12 +132,12 @@ def main() -> None:
             except Exception as e:
                 print(f"# {name} {type_label}取得エラー: {e}", file=sys.stderr)
 
-    # 物件名のノイズ除去（「新築マンション」prefix、「閲覧済」suffix、「掲載物件X件」等）
+    # 物件名のノイズ除去（「新築マンション」prefix、「閲覧済」suffix、「掲載物件X件」、
+    # 「ペット可」等の条件タグ）
     for row in all_rows:
         if row.get("name"):
             cleaned = clean_listing_name(row["name"])
-            if cleaned:
-                row["name"] = cleaned
+            row["name"] = cleaned if cleaned else "（不明）"
 
     # 同一物件（名前・間取り・広さ・価格・住所・築年・駅徒歩が全て一致）を1件にまとめる
     all_rows = dedupe_listings(all_rows)

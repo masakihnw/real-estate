@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI提案 - 展開カード + スワイプページャー</title>
+<style>
+  :root { --pw: 375px; --ph: 812px; --a: #007AFF; --bg: #FFFFFF; --card: #F8F8FB; --text: #1C1C1E; --sub: #999; --faint: #C0C0C4; --green: #34C759; --red: #FF3B30; --orange: #FF9500; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #E8E8ED; color: var(--text); }
+  header { text-align: center; padding: 36px 20px 8px; }
+  header h1 { font-size: 22px; font-weight: 700; }
+  header p { color: #888; font-size: 11px; margin-top: 4px; }
+
+  .snav { display: flex; justify-content: center; gap: 6px; padding: 12px 10px; position: sticky; top: 0; z-index: 200; background: rgba(232,232,237,0.95); backdrop-filter: blur(12px); flex-wrap: wrap; }
+  .stab { padding: 7px 16px; border: 1px solid #ccc; border-radius: 18px; background: #fff; color: #888; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .stab.on { background: var(--text); color: #fff; border-color: var(--text); }
+  .stab:hover:not(.on) { border-color: #999; color: #555; }
+
+  .sec { display: none; padding: 20px; justify-content: center; gap: 28px; flex-wrap: wrap; max-width: 1500px; margin: 0 auto; }
+  .sec.on { display: flex; }
+
+  .pcol { text-align: center; }
+  .pcol h3 { font-size: 11px; font-weight: 700; color: #888; margin-bottom: 8px; letter-spacing: 1px; }
+  .phone { width: var(--pw); height: var(--ph); border-radius: 44px; overflow: hidden; border: 3px solid #d5d5d8; box-shadow: 0 8px 32px rgba(0,0,0,0.10); }
+  .ps { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); color: var(--text); }
+  .sbar { height: 54px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 6px; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .nav { padding: 6px 16px 10px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .nav-t { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+  .scr { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: none; }
+  .scr::-webkit-scrollbar { display: none; }
+  .btab { height: 78px; display: flex; align-items: center; justify-content: space-around; padding-bottom: 16px; flex-shrink: 0; border-top: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.97); }
+  .bt { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 9px; color: var(--sub); }
+  .bt.on { color: var(--a); }
+
+  /* ===== LIST CARD ===== */
+  .lc { padding: 10px 12px; border-radius: 12px; background: var(--card); margin-bottom: 6px; cursor: default; }
+  .ln { display: flex; align-items: center; flex-wrap: wrap; column-gap: 5px; row-gap: 1px; margin-bottom: 3px; width: 100%; }
+  .ln-name { font-size: 13px; font-weight: 600; line-height: 1.3; flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ln-price { font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .ln-heart { font-size: 14px; flex-shrink: 0; line-height: 1; }
+  .ln-spacer { flex: 0 0 100%; height: 0; order: 5; }
+  .ln-cmt { font-size: 9px; color: var(--sub); flex-shrink: 0; display: flex; align-items: center; gap: 2px; }
+  .lb { padding: 1px 4px; border-radius: 3px; font-weight: 600; font-size: 9px; white-space: nowrap; flex-shrink: 0; }
+  .lm { font-size: 11px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; width: 100%; }
+  .ls { font-size: 10px; color: #ccc; margin-top: 2px; width: 100%; }
+  .hz-row { display: flex; gap: 4px; flex-wrap: nowrap; align-items: center; margin-top: 3px; }
+  .hz-chip { display: inline-flex; align-items: center; gap: 2px; padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+  .hz-chip.warn { background: rgba(255,159,10,0.12); color: var(--orange); }
+  .hz-chip.danger { background: rgba(255,59,48,0.10); color: var(--red); }
+  .own-circle { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0; line-height: 1; }
+  .own-circle.own { background: var(--a); }
+  .own-circle.lease { background: #E68A00; }
+  .cm-row { display: flex; gap: 6px; margin-top: 3px; }
+  .cm-badge { display: inline-flex; align-items: center; gap: 3px; padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+  .cm-badge.pg { background: rgba(0,122,255,0.08); color: var(--a); }
+  .cm-badge.m3 { background: rgba(255,59,48,0.08); color: var(--red); }
+
+  /* ===== EXPAND TOGGLE ===== */
+  .expand-toggle { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 6px; padding: 4px 0 0; border-top: 1px solid rgba(0,0,0,0.04); cursor: pointer; user-select: none; }
+  .expand-toggle span { font-size: 10px; color: var(--a); font-weight: 500; }
+  .expand-toggle .chevron { font-size: 8px; color: var(--a); transition: transform 0.25s ease; }
+  .lc.expanded .expand-toggle .chevron { transform: rotate(180deg); }
+  .expand-toggle .unit-count { font-size: 9px; color: var(--sub); font-weight: 400; }
+
+  /* ===== EXPAND CONTENT ===== */
+  .expand-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .lc.expanded .expand-content { max-height: 400px; }
+  .expand-inner { padding-top: 8px; }
+
+  /* Unit table */
+  .unit-table { width: 100%; border-collapse: collapse; }
+  .unit-table th { font-size: 9px; color: var(--sub); font-weight: 600; text-align: left; padding: 4px 6px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .unit-table td { font-size: 11px; padding: 5px 6px; border-bottom: 1px solid rgba(0,0,0,0.03); }
+  .unit-table tr:last-child td { border-bottom: none; }
+  .unit-table .price-cell { font-weight: 700; color: var(--a); }
+  .unit-table .price-cell.green { color: var(--green); }
+  .unit-table tr:hover { background: rgba(0,122,255,0.03); }
+  .unit-table tr { cursor: pointer; }
+
+  /* No expand indicator */
+  .no-expand { display: flex; align-items: center; justify-content: center; padding: 4px 0 0; margin-top: 6px; border-top: 1px solid rgba(0,0,0,0.04); }
+  .no-expand span { font-size: 9px; color: var(--faint); }
+
+  /* ===== DETAIL PAGER ===== */
+  .page-indicator { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 4px 0; flex-shrink: 0; }
+  .page-indicator .page-num { font-size: 11px; font-weight: 600; color: var(--sub); }
+  .page-indicator .page-dots { display: flex; gap: 4px; }
+  .page-indicator .dot { width: 6px; height: 6px; border-radius: 50%; background: #D1D1D6; transition: all 0.2s; }
+  .page-indicator .dot.active { width: 18px; border-radius: 3px; background: var(--a); }
+
+  .pager-swipe { flex: 1; overflow: hidden; position: relative; }
+  .pager-track { display: flex; transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94); height: 100%; }
+  .pager-page { flex: 0 0 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 14px; }
+  .pager-page::-webkit-scrollbar { display: none; }
+
+  .swipe-hint { position: absolute; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--sub); z-index: 10; cursor: pointer; transition: opacity 0.2s; }
+  .swipe-hint:hover { background: rgba(0,0,0,0.10); }
+  .swipe-hint.left { left: 4px; }
+  .swipe-hint.right { right: 4px; }
+  .swipe-hint.disabled { opacity: 0; pointer-events: none; }
+
+  /* Detail sections */
+  .d-name { font-size: 16px; font-weight: 700; line-height: 1.3; margin-bottom: 2px; }
+  .d-addr { font-size: 11px; color: var(--sub); margin-bottom: 8px; }
+  .ds { background: var(--card); border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+  .ds-t { font-size: 10px; font-weight: 700; color: #aaa; margin-bottom: 4px; letter-spacing: 0.3px; }
+  .dr { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 12px; }
+  .dr:last-child { border-bottom: none; }
+  .dr-l { color: var(--sub); font-size: 11px; }
+  .dr-v { font-weight: 600; }
+  .ss { border-radius: 10px; padding: 10px; margin-bottom: 8px; background: rgba(0,122,255,0.03); border: 1px solid rgba(0,122,255,0.08); }
+  .ss-t { font-size: 10px; font-weight: 700; color: var(--a); margin-bottom: 5px; }
+  .ss-r { display: flex; gap: 6px; font-size: 10px; margin-bottom: 2px; }
+  /* Floor plan gallery in detail */
+  .d-gallery { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; -webkit-overflow-scrolling: touch; }
+  .d-gallery::-webkit-scrollbar { display: none; }
+  .d-gallery-item { flex-shrink: 0; width: 140px; height: 100px; border-radius: 8px; background: #f0f0f3; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .d-gallery-item .fp-placeholder { color: #ccc; font-size: 28px; }
+  .d-gallery-item .fp-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); color: #fff; font-size: 8px; padding: 2px 6px; text-align: center; }
+
+  /* Description block */
+  .desc-block { max-width: 700px; margin: 0 auto 20px; padding: 16px 20px; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .desc-block h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .desc-block p { font-size: 12px; color: #666; line-height: 1.7; margin-bottom: 6px; }
+  .desc-block .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .desc-block .tag.new { background: rgba(0,122,255,0.10); color: var(--a); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>UI提案プレビュー v2</h1>
+  <p>展開カード（部屋比較）+ 全物件スワイプページャー（建物比較）</p>
+</header>
+
+<div class="snav">
+  <button class="stab on" onclick="showS('expand',this)">展開カード（一覧）</button>
+  <button class="stab" onclick="showS('pager',this)">スワイプページャー（詳細）</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- EXPANDABLE CARDS -->
+<!-- ============================================================ -->
+<div id="s-expand" class="sec on">
+
+  <div class="desc-block">
+    <h3>提案1: 展開カード - 同一マンション内の部屋比較</h3>
+    <p><span class="tag new">NEW</span> 複数戸売出中の物件カードに「3戸売出中 ▼」トグルを表示。タップすると各住戸の間取り・面積・価格・階数を一覧表示。</p>
+    <p>単独売出の物件にはトグルなし（現状通り）。新築の場合は間取りバリエーションを展開表示。</p>
+    <p>画像やローン試算は詳細画面で確認する設計です。</p>
+  </div>
+
+  <!-- 中古: 複数戸売出 -->
+  <div class="pcol"><h3>中古 - 複数戸売出あり</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><div class="nav-t" style="font-size:22px;">中古マンション</div></div>
+    <div style="padding:0 12px 8px;"><div style="background:#E8E8ED;border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:6px;"><span style="color:#999;font-size:14px;">🔍</span><span style="color:#999;font-size:13px;">物件名で検索</span></div></div>
+    <div class="scr" style="padding:0 12px;">
+
+      <!-- Card 1: 3戸売出 (expandable) -->
+      <div class="lc" id="card1">
+        <div class="ln"><span class="own-circle own">所</span><span class="ln-name">パークシティ豊洲 B棟</span><span class="ln-cmt">📷 3</span><span class="ln-cmt">💬 2</span><span class="ln-heart" style="color:var(--red);">♥</span></div>
+        <div class="ln"><span class="ln-price" style="color:var(--a);">8,980万〜1.08億</span><span class="lb" style="background:rgba(52,199,89,0.10);color:var(--green);">↑18%</span><span class="lb" style="background:rgba(128,0,255,0.08);color:#8000FF;">3戸売出中</span></div>
+        <div class="lm">3LDK 72.5〜85.0㎡ 築18年 660戸</div>
+        <div class="ls">東京メトロ有楽町線「豊洲」徒歩4分</div>
+        <div class="hz-row"><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span></div>
+        <div class="cm-row"><span class="cm-badge pg">🏢 32分</span><span class="cm-badge m3">🏥 25分</span></div>
+
+        <div class="expand-content">
+          <div class="expand-inner">
+            <table class="unit-table">
+              <thead><tr><th>間取り</th><th>面積</th><th>価格</th><th>階</th></tr></thead>
+              <tbody>
+                <tr><td>3LDK</td><td>72.5㎡</td><td class="price-cell">8,980万</td><td>15階/20階</td></tr>
+                <tr><td>3LDK</td><td>78.2㎡</td><td class="price-cell">9,480万</td><td>18階/20階</td></tr>
+                <tr><td>3LDK</td><td>85.0㎡</td><td class="price-cell">1.08億</td><td>20階/20階</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="expand-toggle" onclick="toggleExpand(document.getElementById('card1'))">
+          <span>3戸売出中</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+
+      <!-- Card 2: 単独 (no expand) -->
+      <div class="lc">
+        <div class="ln"><span class="own-circle own">所</span><span class="ln-name">ブリリアタワー東京</span><span class="ln-cmt">📷 1</span><span class="ln-heart" style="color:var(--faint);">♡</span></div>
+        <div class="ln"><span class="ln-price" style="color:var(--a);">7,480万</span><span class="lb" style="background:rgba(52,199,89,0.10);color:var(--green);">↑12%</span><span class="lb" style="background:rgba(0,122,255,0.08);color:var(--a);">偏差値 58</span></div>
+        <div class="lm">2LDK 61.2㎡ 築12年 8階/23階建 348戸</div>
+        <div class="ls">東京メトロ有楽町線「月島」徒歩6分</div>
+        <div class="cm-row"><span class="cm-badge pg">🏢 28分</span><span class="cm-badge m3">🏥 22分</span></div>
+      </div>
+
+      <!-- Card 3: 単独 -->
+      <div class="lc">
+        <div class="ln"><span class="own-circle own">所</span><span class="ln-name">プラウド文京小石川</span><span class="ln-heart" style="color:var(--faint);">♡</span></div>
+        <div class="ln"><span class="ln-price" style="color:var(--a);">9,500万</span><span class="lb" style="background:rgba(52,199,89,0.10);color:var(--green);">↑25%</span><span class="lb" style="background:rgba(0,122,255,0.08);color:var(--a);">偏差値 65</span></div>
+        <div class="lm">3LDK 68.0㎡ 築5年 10階/15階建 120戸</div>
+        <div class="ls">東京メトロ丸ノ内線「茗荷谷」徒歩3分</div>
+        <div class="cm-row"><span class="cm-badge pg">🏢 18分</span><span class="cm-badge m3">🏥 28分</span></div>
+      </div>
+
+      <!-- Card 4: 2戸売出 (expandable) -->
+      <div class="lc" id="card4">
+        <div class="ln"><span class="own-circle lease">借</span><span class="ln-name">ザ・パークハウス晴海</span><span class="ln-cmt">📷 2</span><span class="ln-heart" style="color:var(--red);">♥</span></div>
+        <div class="ln"><span class="ln-price" style="color:var(--a);">6,280万〜6,980万</span><span class="lb" style="background:rgba(255,59,48,0.08);color:var(--red);">↓3%</span><span class="lb" style="background:rgba(128,0,255,0.08);color:#8000FF;">2戸売出中</span></div>
+        <div class="lm">2LDK 55.3〜60.1㎡ 築8年 200戸</div>
+        <div class="ls">都営大江戸線「勝どき」徒歩7分</div>
+        <div class="hz-row"><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span><span class="hz-chip danger">🔥 火災4</span></div>
+        <div class="cm-row"><span class="cm-badge pg">🏢 35分</span><span class="cm-badge m3">🏥 28分</span></div>
+
+        <div class="expand-content">
+          <div class="expand-inner">
+            <table class="unit-table">
+              <thead><tr><th>間取り</th><th>面積</th><th>価格</th><th>階</th></tr></thead>
+              <tbody>
+                <tr><td>2LDK</td><td>55.3㎡</td><td class="price-cell">6,280万</td><td>6階/18階</td></tr>
+                <tr><td>2LDK</td><td>60.1㎡</td><td class="price-cell">6,980万</td><td>12階/18階</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="expand-toggle" onclick="toggleExpand(document.getElementById('card4'))">
+          <span>2戸売出中</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+
+      <!-- Card 5: 単独 -->
+      <div class="lc">
+        <div class="ln"><span class="own-circle own">所</span><span class="ln-name">シティタワー有明</span><span class="ln-heart" style="color:var(--faint);">♡</span></div>
+        <div class="ln"><span class="ln-price" style="color:var(--a);">5,980万</span><span class="lb" style="background:rgba(52,199,89,0.10);color:var(--green);">↑8%</span></div>
+        <div class="lm">2LDK 58.1㎡ 築10年 12階/33階建 486戸</div>
+        <div class="ls">りんかい線「有明」徒歩5分</div>
+        <div class="hz-row"><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span></div>
+        <div class="cm-row"><span class="cm-badge pg">🏢 42分</span><span class="cm-badge m3">🏥 35分</span></div>
+      </div>
+
+    </div>
+    <div class="btab"><div class="bt on">🏢 中古</div><div class="bt">✨ 新築</div><div class="bt">🗺 地図</div><div class="bt">♥ お気に入り</div><div class="bt">⚙ 設定</div></div>
+  </div></div></div>
+
+  <!-- 新築: バリエーション展開 -->
+  <div class="pcol"><h3>新築 - 間取りバリエーション</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav"><div class="nav-t" style="font-size:22px;">新築マンション</div></div>
+    <div style="padding:0 12px 8px;"><div style="background:#E8E8ED;border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:6px;"><span style="color:#999;font-size:14px;">🔍</span><span style="color:#999;font-size:13px;">物件名で検索</span></div></div>
+    <div class="scr" style="padding:0 12px;">
+
+      <!-- Shinchiku 1: variants -->
+      <div class="lc" id="card-s1">
+        <div class="ln"><span class="ln-name">HARUMI FLAG SUN VILLAGE</span><span class="ln-heart" style="color:var(--red);">♥</span></div>
+        <div class="ln"><span class="ln-price" style="color:var(--green);">6,000万〜1.2億</span><span class="lb" style="background:rgba(0,122,255,0.10);color:var(--a);">儲かる 82%</span></div>
+        <div class="lm">2LDK〜3LDK 61〜100㎡ 2025年入居 52階建 4,145戸</div>
+        <div class="ls">都営大江戸線「勝どき」徒歩12分</div>
+        <div class="hz-row"><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span></div>
+        <div class="cm-row"><span class="cm-badge pg">🏢 38分</span><span class="cm-badge m3">🏥 30分</span></div>
+
+        <div class="expand-content">
+          <div class="expand-inner">
+            <table class="unit-table">
+              <thead><tr><th>間取り</th><th>面積</th><th>価格</th><th>階建</th></tr></thead>
+              <tbody>
+                <tr><td>2LDK</td><td>61.0㎡</td><td class="price-cell green">6,000万</td><td>52階建</td></tr>
+                <tr><td>2LDK</td><td>68.5㎡</td><td class="price-cell green">7,200万</td><td>52階建</td></tr>
+                <tr><td>3LDK</td><td>78.0㎡</td><td class="price-cell green">8,500万</td><td>52階建</td></tr>
+                <tr><td>3LDK</td><td>85.2㎡</td><td class="price-cell green">9,800万</td><td>52階建</td></tr>
+                <tr><td>3LDK</td><td>100.0㎡</td><td class="price-cell green">1.2億</td><td>52階建</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="expand-toggle" onclick="toggleExpand(document.getElementById('card-s1'))">
+          <span>5タイプ</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+
+      <!-- Shinchiku 2: variants -->
+      <div class="lc" id="card-s2">
+        <div class="ln"><span class="ln-name">ブランズタワー豊洲</span><span class="ln-heart" style="color:var(--faint);">♡</span></div>
+        <div class="ln"><span class="ln-price" style="color:var(--green);">7,500万〜1.5億</span><span class="lb" style="background:rgba(0,122,255,0.10);color:var(--a);">儲かる 76%</span></div>
+        <div class="lm">2LDK〜3LDK 55〜86㎡ 2026年入居 37階建 1,152戸</div>
+        <div class="ls">東京メトロ有楽町線「豊洲」徒歩5分</div>
+        <div class="hz-row"><span class="hz-chip warn">💧 洪水浸水</span><span class="hz-chip warn">〰 液状化</span></div>
+        <div class="cm-row"><span class="cm-badge pg">🏢 33分</span><span class="cm-badge m3">🏥 26分</span></div>
+
+        <div class="expand-content">
+          <div class="expand-inner">
+            <table class="unit-table">
+              <thead><tr><th>間取り</th><th>面積</th><th>価格</th><th>階建</th></tr></thead>
+              <tbody>
+                <tr><td>2LDK</td><td>55.0㎡</td><td class="price-cell green">7,500万</td><td>37階建</td></tr>
+                <tr><td>2LDK</td><td>65.0㎡</td><td class="price-cell green">9,200万</td><td>37階建</td></tr>
+                <tr><td>3LDK</td><td>72.0㎡</td><td class="price-cell green">1.1億</td><td>37階建</td></tr>
+                <tr><td>3LDK</td><td>86.0㎡</td><td class="price-cell green">1.5億</td><td>37階建</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="expand-toggle" onclick="toggleExpand(document.getElementById('card-s2'))">
+          <span>4タイプ</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+
+      <!-- Shinchiku 3 -->
+      <div class="lc" id="card-s3">
+        <div class="ln"><span class="ln-name">パークタワー勝どき</span><span class="ln-heart" style="color:var(--faint);">♡</span></div>
+        <div class="ln"><span class="ln-price" style="color:var(--green);">8,000万〜2億</span><span class="lb" style="background:rgba(0,122,255,0.10);color:var(--a);">儲かる 91%</span></div>
+        <div class="lm">2LDK〜3LDK 55〜82㎡ 2025年入居 44階建 2,786戸</div>
+        <div class="ls">都営大江戸線「勝どき」徒歩1分</div>
+        <div class="cm-row"><span class="cm-badge pg">🏢 36分</span><span class="cm-badge m3">🏥 28分</span></div>
+
+        <div class="expand-content">
+          <div class="expand-inner">
+            <table class="unit-table">
+              <thead><tr><th>間取り</th><th>面積</th><th>価格</th><th>階建</th></tr></thead>
+              <tbody>
+                <tr><td>2LDK</td><td>55.0㎡</td><td class="price-cell green">8,000万</td><td>44階建</td></tr>
+                <tr><td>2LDK</td><td>62.0㎡</td><td class="price-cell green">9,500万</td><td>44階建</td></tr>
+                <tr><td>3LDK</td><td>70.5㎡</td><td class="price-cell green">1.3億</td><td>44階建</td></tr>
+                <tr><td>3LDK</td><td>82.0㎡</td><td class="price-cell green">2.0億</td><td>44階建</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="expand-toggle" onclick="toggleExpand(document.getElementById('card-s3'))">
+          <span>4タイプ</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="btab"><div class="bt">🏢 中古</div><div class="bt on">✨ 新築</div><div class="bt">🗺 地図</div><div class="bt">♥ お気に入り</div><div class="bt">⚙ 設定</div></div>
+  </div></div></div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- SWIPE PAGER -->
+<!-- ============================================================ -->
+<div id="s-pager" class="sec">
+
+  <div class="desc-block">
+    <h3>提案2: 全物件スワイプページャー</h3>
+    <p><span class="tag new">NEW</span> 物件詳細画面で左右スワイプすると、フィルタ・ソート結果の順にすべての物件を横断できます。一覧に戻らず次の物件を確認できます。</p>
+    <p>上部にページインジケーター（「2/5 物件」＋ドット）を表示。画像・試算・住まいサーフィン評価などフル詳細は従来通り詳細画面で。</p>
+  </div>
+
+  <div class="pcol"><h3>詳細画面 - 全物件スワイプ</h3><div class="phone"><div class="ps">
+    <div class="sbar"><span>9:41</span><span style="opacity:.3">📶 🔋</span></div>
+    <div class="nav">
+      <span style="color:var(--a);font-size:13px;cursor:pointer;">閉じる</span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="display:inline-flex;align-items:center;color:var(--a);font-size:14px;">⇧</span>
+        <span style="font-size:18px;color:var(--red);cursor:pointer;" id="pager-heart">♥</span>
+      </div>
+    </div>
+
+    <div class="page-indicator">
+      <span class="page-num" id="page-num">1 / 5 物件</span>
+    </div>
+    <div class="page-indicator" style="padding-top:0;">
+      <div class="page-dots" id="page-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+
+    <div class="pager-swipe" id="pager-swipe">
+      <div class="swipe-hint left disabled" id="hint-left" onclick="pagerGo(-1)">&#8249;</div>
+      <div class="swipe-hint right" id="hint-right" onclick="pagerGo(1)">&#8250;</div>
+
+      <div class="pager-track" id="pager-track">
+
+        <!-- Page 1: パークシティ豊洲 -->
+        <div class="pager-page">
+          <div class="d-name">パークシティ豊洲 B棟</div>
+          <div class="d-addr">東京都江東区豊洲5丁目 → Google Maps</div>
+          <div style="display:flex;gap:4px;margin-bottom:8px;align-items:center;">
+            <span style="display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:4px;background:rgba(0,122,255,0.08);color:var(--a);font-size:9px;font-weight:600;">📷 3</span>
+            <span style="display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,0.04);color:var(--sub);font-size:9px;font-weight:600;">💬 2</span>
+          </div>
+          <div class="d-gallery">
+            <div class="d-gallery-item"><span class="fp-placeholder">🏠</span><div class="fp-label">間取り図 3LDK</div></div>
+            <div class="d-gallery-item" style="background:#e8f0fe;"><span class="fp-placeholder">🏢</span><div class="fp-label">外観</div></div>
+            <div class="d-gallery-item" style="background:#fef7e0;"><span class="fp-placeholder">🛋</span><div class="fp-label">リビング</div></div>
+          </div>
+          <div class="ds">
+            <div class="ds-t">物件基本情報</div>
+            <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">8,980万円</span></div>
+            <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 72.5㎡</span></div>
+            <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2008年3月（築18年）</span></div>
+            <div class="dr"><span class="dr-l">階数</span><span class="dr-v">15階 / 20階建</span></div>
+            <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">660戸</span></div>
+            <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+          </div>
+          <div class="ss">
+            <div class="ss-t">住まいサーフィン評価</div>
+            <div class="ss-r"><span>中古値上がり率</span><span style="color:var(--green);font-weight:700;">+18%</span></div>
+            <div class="ss-r"><span>沖式中古時価（70㎡）</span><span style="font-weight:700;">9,200万円</span></div>
+            <div class="ss-r"><span>購入判定</span><span style="color:var(--green);font-weight:700;">やや割安</span></div>
+          </div>
+          <div class="ds">
+            <div class="ds-t">月額シミュレーション</div>
+            <div class="dr"><span class="dr-l">ローン返済</span><span class="dr-v" style="color:var(--a);">171,287円</span></div>
+            <div class="dr"><span class="dr-l">管理費 + 修繕</span><span class="dr-v">32,200円</span></div>
+            <div class="dr"><span class="dr-l">月額合計</span><span class="dr-v" style="font-size:14px;color:var(--a);">203,487円</span></div>
+          </div>
+          <div style="height:60px;"></div>
+        </div>
+
+        <!-- Page 2: ブリリアタワー東京 -->
+        <div class="pager-page">
+          <div class="d-name">ブリリアタワー東京</div>
+          <div class="d-addr">東京都中央区月島1丁目 → Google Maps</div>
+          <div class="d-gallery">
+            <div class="d-gallery-item"><span class="fp-placeholder">🏠</span><div class="fp-label">間取り図 2LDK</div></div>
+            <div class="d-gallery-item" style="background:#e8f0fe;"><span class="fp-placeholder">🏢</span><div class="fp-label">外観</div></div>
+          </div>
+          <div class="ds">
+            <div class="ds-t">物件基本情報</div>
+            <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">7,480万円</span></div>
+            <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">2LDK / 61.2㎡</span></div>
+            <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2014年1月（築12年）</span></div>
+            <div class="dr"><span class="dr-l">階数</span><span class="dr-v">8階 / 23階建</span></div>
+            <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">348戸</span></div>
+            <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+          </div>
+          <div class="ss">
+            <div class="ss-t">住まいサーフィン評価</div>
+            <div class="ss-r"><span>中古値上がり率</span><span style="color:var(--green);font-weight:700;">+12%</span></div>
+            <div class="ss-r"><span>沖式中古時価（70㎡）</span><span style="font-weight:700;">8,100万円</span></div>
+            <div class="ss-r"><span>購入判定</span><span style="font-weight:700;color:var(--orange);">適正</span></div>
+          </div>
+          <div class="ds">
+            <div class="ds-t">月額シミュレーション</div>
+            <div class="dr"><span class="dr-l">ローン返済</span><span class="dr-v" style="color:var(--a);">142,648円</span></div>
+            <div class="dr"><span class="dr-l">管理費 + 修繕</span><span class="dr-v">28,300円</span></div>
+            <div class="dr"><span class="dr-l">月額合計</span><span class="dr-v" style="font-size:14px;color:var(--a);">170,948円</span></div>
+          </div>
+          <div style="height:60px;"></div>
+        </div>
+
+        <!-- Page 3: プラウド文京小石川 -->
+        <div class="pager-page">
+          <div class="d-name">プラウド文京小石川</div>
+          <div class="d-addr">東京都文京区小石川4丁目 → Google Maps</div>
+          <div class="d-gallery">
+            <div class="d-gallery-item"><span class="fp-placeholder">🏠</span><div class="fp-label">間取り図 3LDK</div></div>
+          </div>
+          <div class="ds">
+            <div class="ds-t">物件基本情報</div>
+            <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">9,500万円</span></div>
+            <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">3LDK / 68.0㎡</span></div>
+            <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2021年6月（築5年）</span></div>
+            <div class="dr"><span class="dr-l">階数</span><span class="dr-v">10階 / 15階建</span></div>
+            <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">120戸</span></div>
+            <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+          </div>
+          <div class="ss">
+            <div class="ss-t">住まいサーフィン評価</div>
+            <div class="ss-r"><span>中古値上がり率</span><span style="color:var(--green);font-weight:700;">+25%</span></div>
+            <div class="ss-r"><span>沖式中古時価（70㎡）</span><span style="font-weight:700;">10,500万円</span></div>
+            <div class="ss-r"><span>購入判定</span><span style="color:var(--green);font-weight:700;">割安</span></div>
+          </div>
+          <div style="height:60px;"></div>
+        </div>
+
+        <!-- Page 4: ザ・パークハウス晴海 -->
+        <div class="pager-page">
+          <div class="d-name">ザ・パークハウス晴海</div>
+          <div class="d-addr">東京都中央区晴海3丁目 → Google Maps</div>
+          <div class="ds">
+            <div class="ds-t">物件基本情報</div>
+            <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">6,280万円</span></div>
+            <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">2LDK / 55.3㎡</span></div>
+            <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2018年3月（築8年）</span></div>
+            <div class="dr"><span class="dr-l">階数</span><span class="dr-v">6階 / 18階建</span></div>
+            <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">200戸</span></div>
+            <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">定期借地</span></div>
+          </div>
+          <div class="ss">
+            <div class="ss-t">住まいサーフィン評価</div>
+            <div class="ss-r"><span>中古値上がり率</span><span style="color:var(--red);font-weight:700;">-3%</span></div>
+            <div class="ss-r"><span>沖式中古時価（70㎡）</span><span style="font-weight:700;">6,800万円</span></div>
+            <div class="ss-r"><span>購入判定</span><span style="font-weight:700;color:var(--red);">やや割高</span></div>
+          </div>
+          <div style="height:60px;"></div>
+        </div>
+
+        <!-- Page 5: シティタワー有明 -->
+        <div class="pager-page">
+          <div class="d-name">シティタワー有明</div>
+          <div class="d-addr">東京都江東区有明1丁目 → Google Maps</div>
+          <div class="ds">
+            <div class="ds-t">物件基本情報</div>
+            <div class="dr"><span class="dr-l">価格</span><span class="dr-v" style="color:var(--a);">5,980万円</span></div>
+            <div class="dr"><span class="dr-l">間取り / 面積</span><span class="dr-v">2LDK / 58.1㎡</span></div>
+            <div class="dr"><span class="dr-l">築年</span><span class="dr-v">2016年5月（築10年）</span></div>
+            <div class="dr"><span class="dr-l">階数</span><span class="dr-v">12階 / 33階建</span></div>
+            <div class="dr"><span class="dr-l">総戸数</span><span class="dr-v">486戸</span></div>
+            <div class="dr"><span class="dr-l">権利形態</span><span class="dr-v">所有権</span></div>
+          </div>
+          <div class="ss">
+            <div class="ss-t">住まいサーフィン評価</div>
+            <div class="ss-r"><span>中古値上がり率</span><span style="color:var(--green);font-weight:700;">+8%</span></div>
+            <div class="ss-r"><span>沖式中古時価（70㎡）</span><span style="font-weight:700;">6,200万円</span></div>
+            <div class="ss-r"><span>購入判定</span><span style="font-weight:700;color:var(--orange);">適正</span></div>
+          </div>
+          <div style="height:60px;"></div>
+        </div>
+
+      </div>
+    </div>
+  </div></div></div>
+</div>
+
+<script>
+function showS(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.stab').forEach(b => b.classList.remove('on'));
+  document.getElementById('s-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function toggleExpand(card) {
+  card.classList.toggle('expanded');
+}
+
+// Pager
+let currentPage = 0;
+const totalPages = 5;
+
+function updatePager() {
+  document.getElementById('pager-track').style.transform = `translateX(-${currentPage * 100}%)`;
+  document.getElementById('page-num').textContent = `${currentPage + 1} / ${totalPages} 物件`;
+  document.querySelectorAll('#page-dots .dot').forEach((d, i) => d.classList.toggle('active', i === currentPage));
+  document.getElementById('hint-left').classList.toggle('disabled', currentPage === 0);
+  document.getElementById('hint-right').classList.toggle('disabled', currentPage === totalPages - 1);
+  document.querySelectorAll('.pager-page').forEach(p => p.scrollTop = 0);
+}
+
+function pagerGo(dir) {
+  const next = currentPage + dir;
+  if (next >= 0 && next < totalPages) { currentPage = next; updatePager(); }
+}
+
+let touchStartX = 0;
+document.getElementById('pager-swipe')?.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+document.getElementById('pager-swipe')?.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) pagerGo(diff > 0 ? 1 : -1);
+});
+</script>
+
+</body>
+</html>
