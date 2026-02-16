@@ -3858,7 +3858,7 @@
       "latitude": 35.7042507,
       "longitude": 139.7783633,
       "building_group_id": "131060190-2022",
-      "estimated_building_name": "シティハウス御徒町 スカイツリービューのお部屋♪"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fa539fe0805e",
@@ -4198,7 +4198,7 @@
       "latitude": 35.7042507,
       "longitude": 139.7783633,
       "building_group_id": "131060190-2021",
-      "estimated_building_name": "シティハウス御徒町 スカイツリービューのお部屋♪"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c06b103dffaf",
@@ -20306,7 +20306,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "シティハウス御徒町 スカイツリービューのお部屋♪"
+      "estimated_building_name": null
     },
     {
       "group_id": "131060190-2022",
@@ -20329,7 +20329,7 @@
         "2023Q1"
       ],
       "latest_period": "2023Q1",
-      "estimated_building_name": "シティハウス御徒町 スカイツリービューのお部屋♪"
+      "estimated_building_name": null
     },
     {
       "group_id": "131060200-2021",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-16T19:53:54",
+    "updated_at": "2026-02-16T21:38:31",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
