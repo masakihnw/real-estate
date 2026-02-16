@@ -9,17 +9,20 @@ service firebase.storage {
                    && request.resource.contentType.matches('image/.*');
     }
 
-    // 間取り図画像: 認証済みユーザーのみ読み取り可能
+    // 間取り図画像: 公開読み取り可能
     // 書き込みは Admin SDK（スクレイピングパイプライン）のみ
-    // ※ ダウンロード URL にトークンが含まれるため、AsyncImage からも直接読み込み可能
+    // ※ SUUMO/HOME'S の公開物件写真を Firebase Storage にキャッシュしたもの。
+    //    ダウンロードトークンが無効化されると AsyncImage から 403 になるため、
+    //    認証不要の公開読み取りに変更（2026-02-16）。
     match /floor_plans/{imageId} {
-      allow read: if request.auth != null;
+      allow read: if true;
     }
 
-    // SUUMO 物件写真: 認証済みユーザーのみ読み取り可能
+    // SUUMO 物件写真: 公開読み取り可能
     // 書き込みは Admin SDK（スクレイピングパイプライン）のみ
+    // ※ 上記と同じ理由で公開読み取りに変更。
     match /property_images/{imageId} {
-      allow read: if request.auth != null;
+      allow read: if true;
     }
   }
 }
