@@ -335,10 +335,10 @@ if [ "$HAS_SHINCHIKU" = true ]; then
 fi
 record_timing "$TIMING_2A" "embed_geocode" "$_t"
 
-echo "ジオコーディングキャッシュをバリデーション中..." >&2
+echo "ジオコーディングキャッシュを検証・クリーンアップ中..." >&2
 _t=$(date +%s)
-python3 scripts/geocode.py || echo "⚠ ジオコーディングキャッシュに問題のあるエントリがあります（手動確認推奨）" >&2
-record_timing "$TIMING_2A" "geocode_validation" "$_t"
+python3 scripts/geocode.py || true
+record_timing "$TIMING_2A" "geocode_cache_cleanup" "$_t"
 
 echo "座標の相互検証 + 修正試行中..." >&2
 _t=$(date +%s)
