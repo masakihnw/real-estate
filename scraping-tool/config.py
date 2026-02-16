@@ -35,8 +35,8 @@ LAYOUT_PREFIX_OK = ("2", "3")  # 2LDK, 3LDK, 2DK, 3DK
 # 築年: 築15年以内（実行年の15年前以降の竣工）
 BUILT_YEAR_MIN = datetime.date.today().year - 15
 
-# 駅徒歩: 10分以内
-WALK_MIN_MAX = 10
+# 駅徒歩: 8分以内
+WALK_MIN_MAX = 8
 
 # 総戸数: 50戸以上（一覧で取得できればフィルタに組み込む）
 TOTAL_UNITS_MIN = 50
