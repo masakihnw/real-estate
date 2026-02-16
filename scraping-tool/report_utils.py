@@ -27,11 +27,70 @@ def best_address(listing: dict) -> str:
 
 
 def normalize_listing_name(name: str) -> str:
-    """同一判定用に物件名を正規化。全角・半角スペース等を除いて比較する。"""
+    """同一判定用に物件名を正規化。iOS cleanListingName と同等の装飾除去を行い、
+    空白を除いて比較する。"""
     if not name:
         return ""
-    s = (name or "").strip()
+    import unicodedata
+    s = unicodedata.normalize("NFKC", name).strip()
+    # 「掲載物件X件」「見学予約」「noimage」は物件名ではない
+    if re.match(r"^掲載物件\d+件$", s):
+        return ""
+    if s in ("見学予約", "noimage"):
+        return ""
+    # 【...】を除去
+    s = re.sub(r"【[^】]*】", "", s)
+    # ◆以降をすべて除去
+    s = re.sub(r"◆.*$", "", s)
+    # ■□ 記号装飾を除去
+    s = re.sub(r"[■□]+\s*", "", s)
+    # ～以降を除去
+    s = re.sub(r"[~～].*$", "", s)
+    # 末尾の広告文句
+    s = re.sub(r"ペット飼育可能.*$", "", s)
+    s = re.sub(r"[♪！!☆★]+$", "", s)
+    # 括弧内の別名表記を除去
+    s = re.sub(r"[（(][^）)]*[）)]", "", s)
+    s = re.sub(r"[（(][^）)]*$", "", s)
+    s = s.strip()
+    # 棟名の除去
+    s = re.sub(r"\s*[A-Za-z]棟$", "", s)
+    s = re.sub(r"\s*\d+号棟$", "", s)
+    s = re.sub(r"\s*(ノース|サウス|イースト|ウエスト|ウェスト|テラス|セントラル)棟$", "", s)
+    # 階数の除去
+    s = re.sub(r"\s*\d+[Ff]$", "", s)
+    s = re.sub(r"\s*(?:地下)?\d+階.*$", "", s)
+    # PROJECT + 説明文の除去
+    s = re.sub(r"\s+PROJECT\s+.*$", "", s, flags=re.IGNORECASE)
+    # 不動産説明文の除去
+    s = re.sub(
+        r"\s+(角部屋|リフォーム済み?|フルリフォーム|リノベーション|フルリノベーション"
+        r"|大規模修繕.*|ペット(?:可|飼育可|相談)|新規.*リノベ.*"
+        r"|南東向|南西向|北東向|北西向|南向き?|北向き?|東向き?|西向き?"
+        r"|即入居可?|オーナーチェンジ).*$",
+        "", s
+    )
+    # プレフィックス除去
+    s = re.sub(r"^新築マンション\s*", "", s).strip()
+    s = re.sub(r"^マンション未入居\s*", "", s).strip()
+    s = re.sub(r"^マンション\s*", "", s).strip()
+    # 末尾の「閲覧済」を除去
+    s = re.sub(r"閲覧済$", "", s).strip()
+    # 販売期情報を除去
+    s = re.sub(r"\s*[（(]\s*第\d+期\s*\d*次?\s*[）)]\s*$", "", s).strip()
+    s = re.sub(r"\s*第\d+期\s*\d*次?\s*$", "", s).strip()
+    # 空白をすべて除去（比較用）
     return re.sub(r"\s+", "", s)
+
+
+def _extract_station_name(station_line: str) -> str:
+    """路線・駅テキストから駅名のみを抽出する。
+    例: 'ＪＲ総武線（秋葉原～千葉）「錦糸町」徒歩5分' → '錦糸町'
+    """
+    if not station_line:
+        return ""
+    m = re.search(r"[「『]([^」』]+)[」』]", station_line)
+    return m.group(1).strip() if m else ""
 
 
 _NOT_A_NAME_EXACT: set[str] = {
@@ -129,15 +188,15 @@ def clean_listing_name(name: str) -> str:
 
 
 def identity_key(r: dict) -> tuple:
-    """同一物件の識別用キー（価格を除く）。差分検出で「同じ物件で価格だけ変わった → updated」とするために使う。"""
+    """同一物件の識別用キー（価格を除く）。差分検出で「同じ物件で価格だけ変わった → updated」とするために使う。
+    station_line は駅名のみに正規化（路線テキストの表記揺れを吸収）。"""
     return (
         normalize_listing_name(r.get("name") or ""),
         (r.get("layout") or "").strip(),
         r.get("area_m2"),
         (r.get("address") or "").strip(),
         r.get("built_year"),
-        (r.get("station_line") or "").strip(),
-        r.get("walk_min"),
+        _extract_station_name(r.get("station_line") or ""),
     )
 
 
@@ -170,9 +229,12 @@ def listing_has_property_changes(curr: dict, prev: dict) -> bool:
 
 
 def listing_key(r: dict) -> tuple:
-    """ユニーク判定用キー（名前・間取り・面積・価格・住所・築年・路線・徒歩）。
+    """ユニーク判定用キー（名前・間取り・面積・価格・住所・築年・駅名）。
     全フィールドが一致する物件を同一とみなす。dedupe_listings 側で
-    duplicate_count として戸数を集計する。"""
+    duplicate_count として戸数を集計する。
+    station_line は駅名のみに正規化し、walk_min は除外。
+    SUUMOの路線表記揺れ（ＪＲ総武線 vs ＪＲ総武線快速 等）や
+    同一駅での徒歩分数違い（5分 vs 6分）による重複を防ぐ。"""
     return (
         normalize_listing_name(r.get("name") or ""),
         (r.get("layout") or "").strip(),
@@ -180,8 +242,7 @@ def listing_key(r: dict) -> tuple:
         r.get("price_man"),
         (r.get("address") or "").strip(),
         r.get("built_year"),
-        (r.get("station_line") or "").strip(),
-        r.get("walk_min"),
+        _extract_station_name(r.get("station_line") or ""),
     )
 
 
