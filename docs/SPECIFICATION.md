@@ -246,7 +246,7 @@ App起動
 
 ##### マンション単位グルーピングと展開カード
 
-一覧画面では `buildingGroupKey`（物件名 + 住所 + 築年 + 総戸数 + 駅徒歩 + 権利形態）が一致する物件を同一マンションとしてグルーピングし、1マンション = 1カードとして表示する（`ListingGroup`）。価格・間取り・面積・階数は住戸ごとに異なるためグルーピングキーに含めない。
+一覧画面では `buildingGroupKey`（クリーニング済み物件名（空白除去） + 正規化住所（丁目レベル） + 階建て + 権利形態）が一致する物件を同一マンションとしてグルーピングし、1マンション = 1カードとして表示する（`ListingGroup`）。以下の項目はSUUMOのデータ不整合が多いためキーに含めない: 価格・間取り・面積・階数（住戸ごとに異なる）、駅徒歩（掲載ページごとに異なる最寄駅が記載される）、総戸数（864/255/866等の不整合）、築年（2008/2009等のブレ）。物件名は `cleanListingName` でクリーニング後、全ホワイトスペースを除去して比較する。住所は `normalizeAddressForGrouping` で丁目レベルに正規化（番・号を除去）。
 
 | 条件 | 表示 |
 |------|------|
@@ -1281,7 +1281,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    ├── convert_risk_geojson.py（初回のみ）
    ├── generate_report.py → Markdown レポート
    ├── send_push.py → FCM プッシュ通知
-   ├── slack_notify.py → Slack 通知（1日1回 6:30 JST のみ）
+   ├── slack_notify.py → Slack 通知（1日1回 7:00 JST 頃）
    └── git commit & push
 ```
 
@@ -1363,7 +1363,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 #### 重複除去（`dedupe_listings`）
 
-`listing_key` = (name, layout, area, price, address, built_year, station_line, walk_min) の組み合わせで一意化。重複件数は `duplicate_count` に記録。
+`listing_key` = (normalize_listing_name(name), layout, area, price, address, built_year, station_name) の組み合わせで一意化。重複件数は `duplicate_count` に記録。`station_line` の路線テキスト（ＪＲ総武線 vs ＪＲ総武線快速 等の表記揺れ）ではなく駅名のみを使用し、`walk_min` はキーから除外。`normalize_listing_name` は◆装飾・【】・階数・PROJECT等の説明文を除去してから空白除去する強化版正規化を適用。
 
 ### 5.6 エンリッチャー
 
@@ -1631,7 +1631,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 
 | プロパティ | 型 | 説明 |
 |-----------|-----|------|
-| `buildingGroupKey` | String (computed) | 同一マンション判定用キー。`cleanListingName(name)` + `address` + `builtYear` + `totalUnits` + `walkMin` + `ownership` を `\|` 区切りで結合。価格・間取り・面積・階数は住戸ごとに異なるため含めない。一覧画面のランタイムグルーピングに使用 |
+| `buildingGroupKey` | String (computed) | 同一マンション判定用キー。`cleanListingName(name)`（空白除去） + `normalizeAddressForGrouping(address)`（丁目レベル） + `floorTotal` + `ownership` を `\|` 区切りで結合。walkMin・totalUnits・builtYear はSUUMOデータ不整合が多いためキーから除外。一覧画面のランタイムグルーピングに使用 |
 
 #### 住まいサーフィン評価データ
 
@@ -1809,8 +1809,8 @@ Firestore で共有されるスクレイピング条件:
 
 | キー名 | 構成要素 | 用途 |
 |--------|---------|------|
-| **identity_key** | name + layout + area_m2 + address + built_year + station_line + walk_min | 同一物件の判定（**価格を含まない**） |
-| **listing_key** | name + layout + area_m2 + price + address + built_year + station_line + walk_min | 重複除去（**価格を含む**） |
+| **identity_key** | normalize_listing_name(name) + layout + area_m2 + address + built_year + station_name | 同一物件の判定（**価格を含まない**、駅名のみ使用） |
+| **listing_key** | normalize_listing_name(name) + layout + area_m2 + price + address + built_year + station_name | 重複除去（**価格を含む**、駅名のみ使用） |
 
 ---
 
@@ -1886,7 +1886,7 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 
 | 項目 | 値 |
 |------|------|
-| **トリガー** | 2時間ごと + 21:30 UTC (6:30 JST) + `workflow_dispatch` |
+| **トリガー** | 2時間ごと (`0 */2 * * *`) + `workflow_dispatch`。22:00 UTC (7:00 JST) の回で Slack 通知 |
 | **Concurrency** | `scrape-listings`, `cancel-in-progress: false` |
 | **timeout-minutes** | 60 |
 | **出力** | artifact: `scrape-results`, `scrape-previous`, `scrape-metadata`, `scrape-caches` |
@@ -2062,8 +2062,8 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | 用語 | 定義 |
 |------|------|
 | **listing** | 物件1件のデータ |
-| **identity_key** | 名前・間取り・面積・住所・築年・路線・徒歩で一意化するキー（価格を含まない） |
-| **listing_key** | identity_key + 価格。重複除去に使用 |
+| **identity_key** | 正規化物件名・間取り・面積・住所・築年・駅名で一意化するキー（価格を含まない、路線テキストではなく駅名のみ使用） |
+| **listing_key** | identity_key + 価格。重複除去に使用（路線テキストではなく駅名のみ使用） |
 | **annotation** | いいね・コメント・写真のユーザーデータ。Firebase Firestore で家族間共有 |
 | **property_type** | `"chuko"`（中古）または `"shinchiku"`（新築） |
 | **hazard overlay** | 国土地理院のハザードマップタイルを地図に重畳表示するレイヤー。液状化・揺れやすさは GSI タイル非公開のため治水地形分類図（`lcmfc2`）で代替 |

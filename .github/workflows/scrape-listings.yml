@@ -7,9 +7,8 @@ name: Scrape Listings
 on:
   schedule:
     # 2時間ごとに実行（1日12回）
+    # 22:00 UTC (7:00 JST) の回で Slack 通知を送信
     - cron: '0 */2 * * *'
-    # 毎朝 6:30 JST (21:30 UTC) - この回の WF2 実行で Slack 通知を送信
-    - cron: '30 21 * * *'
   workflow_dispatch:
     inputs:
       send_slack:

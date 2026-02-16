@@ -106,10 +106,9 @@ fi
 
 IS_SLACK_TIME=false
 CURRENT_HOUR=$(date -u +%H)
-CURRENT_MIN=$(date -u +%M)
 
-# 21:25-21:45 UTC (6:25-6:45 JST) = Slack 通知タイム
-if [ "$CURRENT_HOUR" = "21" ] && [ "$CURRENT_MIN" -ge 25 ] && [ "$CURRENT_MIN" -le 45 ]; then
+# 22:00 UTC (7:00 JST) の回 = Slack 通知タイム
+if [ "$CURRENT_HOUR" = "22" ]; then
     IS_SLACK_TIME=true
 fi
 

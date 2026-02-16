@@ -355,17 +355,49 @@ final class Listing: @unchecked Sendable {
     // MARK: - マンション単位グルーピング
 
     /// 同一マンション判定用キー。
-    /// 価格・間取り・面積・階数は住戸ごとに異なるため含めない。
     /// 一覧画面で同一マンション内の複数住戸をグルーピングして展開表示するために使用。
+    ///
+    /// マスト条件（4項目）:
+    /// 1. cleanListingName（空白除去）― 建物名
+    /// 2. normalizedAddress（丁目レベル）― 所在地
+    /// 3. floorTotal ― 何階建て（同一敷地内の別棟を区別）
+    /// 4. ownership ― 権利形態
+    ///
+    /// 除外した項目と理由:
+    /// - walkMin: SUUMOページごとに異なる最寄駅が記載されるため不一致が生じる
+    /// - totalUnits: SUUMOのデータ不整合が多い（864/255/866等）
+    /// - builtYear: まれにデータ不整合あり（2008/2009等）
+    /// - 価格・間取り・面積・階数: 住戸ごとに異なる
     var buildingGroupKey: String {
-        [
-            Self.cleanListingName(name),
-            (address ?? "").trimmingCharacters(in: .whitespaces),
-            builtYear.map(String.init) ?? "",
-            totalUnits.map(String.init) ?? "",
-            walkMin.map(String.init) ?? "",
+        let cleanName = Self.cleanListingName(name)
+            .replacingOccurrences(of: #"\s+"#, with: "", options: .regularExpression)
+        let normalizedAddr = Self.normalizeAddressForGrouping(address ?? "")
+        return [
+            cleanName,
+            normalizedAddr,
+            floorTotal.map(String.init) ?? "",
             (ownership ?? "").trimmingCharacters(in: .whitespaces)
         ].joined(separator: "|")
+    }
+
+    /// 住所を丁目レベルに正規化する（番・号を除去）。
+    /// 同一マンションでもSUUMO掲載により `若葉３` と `若葉３－２` のように
+    /// 番地以下の精度が異なるケースがあるため、最初の数字ブロックまでを使用。
+    ///
+    /// 例:
+    /// - `東京都北区王子５-1-2` → `東京都北区王子5`
+    /// - `東京都新宿区若葉３－２` → `東京都新宿区若葉3`
+    /// - `東京都墨田区江東橋２－９－１` → `東京都墨田区江東橋2`
+    static func normalizeAddressForGrouping(_ addr: String) -> String {
+        var s = addr.precomposedStringWithCompatibilityMapping
+            .trimmingCharacters(in: .whitespaces)
+        // 最初の数字ブロックの後のセパレータ（-／ー／－）以降を除去
+        s = s.replacingOccurrences(
+            of: #"(\d+)\s*[ー－\-/／].*$"#,
+            with: "$1",
+            options: .regularExpression
+        )
+        return s
     }
 
     // MARK: - Display Properties
@@ -2033,11 +2065,11 @@ extension Listing {
         if s == "見学予約" || s == "noimage" { return "" }
 
         // ── 広告装飾の除去 ──
-        // 【...】を除去（【弊社限定取扱物件】、【売主物件】等）
+        // 【...】を除去（【弊社限定取扱物件】、【売主物件】、【VECS】等）
         s = s.replacingOccurrences(of: #"【[^】]*】"#, with: "", options: .regularExpression)
-        // ◆で囲まれた装飾を除去（◆山手線 上野駅◆等）
-        s = s.replacingOccurrences(of: #"◆[^◆]+◆"#, with: " ", options: .regularExpression)
-        // 末尾の◆以降を除去（◆3LDK+W… 等の間取り情報）
+        // ◆以降をすべて除去（◆2LDk◆角部屋◆リフォーム済◆… 等の装飾全体）
+        // ペア除去（◆X◆）ではなく最初の◆から末尾まで一括除去することで
+        // 残留テキスト（角部屋、ペット可等）を防ぐ
         s = s.replacingOccurrences(of: #"◆.*$"#, with: "", options: .regularExpression)
         // ■□ 等の記号装飾を除去
         s = s.replacingOccurrences(of: #"[■□]+\s*"#, with: "", options: .regularExpression)
@@ -2071,7 +2103,7 @@ extension Listing {
 
         // ── 階数の除去 ──
         s = s.replacingOccurrences(of: #"\s*\d+[Ff]$"#, with: "", options: .regularExpression)
-        s = s.replacingOccurrences(of: #"\s*地下?\d*階.*$"#, with: "", options: .regularExpression)
+        s = s.replacingOccurrences(of: #"\s*(?:地下)?\d+階.*$"#, with: "", options: .regularExpression)
 
         // ── 末尾の英語サブネーム除去 ──
         // 日本語文字の後に続く英字列を除去（GRAN WARD TERRACE, activewing 等）
@@ -2090,6 +2122,17 @@ extension Listing {
         // 販売期情報を除去: 「( 第2期 2次 )」「第1期1次」
         if let range = s.range(of: #"\s*[（(]\s*第\d+期\s*\d*次?\s*[）)]\s*$"#, options: .regularExpression) { s = String(s[..<range.lowerBound]).trimmingCharacters(in: .whitespaces) }
         if let range = s.range(of: #"\s*第\d+期\s*\d*次?\s*$"#, options: .regularExpression) { s = String(s[..<range.lowerBound]).trimmingCharacters(in: .whitespaces) }
+
+        // ── 不動産説明文の除去 ──
+        // 「PROJECT 東南角部屋・新規リノベーション」等、建物名に続く説明的テキスト
+        s = s.replacingOccurrences(of: #"\s+PROJECT\s+.*$"#, with: "", options: [.regularExpression, .caseInsensitive])
+        // 建物名の後に残る不動産用語を除去（角部屋、リフォーム済 等）
+        // 先頭に空白がある場合のみ除去（建物名の一部を壊さないため）
+        s = s.replacingOccurrences(
+            of: #"\s+(角部屋|リフォーム済み?|フルリフォーム|リノベーション|フルリノベーション|大規模修繕.*|ペット(?:可|飼育可|相談)|新規.*リノベ.*|南東向|南西向|北東向|北西向|南向き?|北向き?|東向き?|西向き?|即入居可?|オーナーチェンジ).*$"#,
+            with: "",
+            options: .regularExpression
+        )
 
         // 連続スペースを正規化
         s = s.replacingOccurrences(of: #"\s{2,}"#, with: " ", options: .regularExpression)
