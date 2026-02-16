@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-16  
+> **最終更新**: 2026-02-17  
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -244,6 +244,29 @@ App起動
 
 > **一覧バッジ高さ統一ルール**: 一覧行内の全バッジ（New / 所有権・定借 / 騰落率 / 儲かる確率 / 偏差値 / 複数戸売出 / 掲載終了 / ハザード / 通勤時間）は、`.padding(.vertical, 2)` + `.padding(.horizontal, 5)` + `cornerRadius: 4` で統一し、高さを揃える。
 
+##### マンション単位グルーピングと展開カード
+
+一覧画面では `buildingGroupKey`（物件名 + 住所 + 築年 + 総戸数 + 駅徒歩 + 権利形態）が一致する物件を同一マンションとしてグルーピングし、1マンション = 1カードとして表示する（`ListingGroup`）。価格・間取り・面積・階数は住戸ごとに異なるためグルーピングキーに含めない。
+
+| 条件 | 表示 |
+|------|------|
+| グループ内1件のみ | 通常カード（従来通り） |
+| グループ内2件以上 | 代表物件のカード + 展開トグル（「N戸売出中 ▼」） |
+
+展開トグルをタップすると、カード下部に住戸テーブルが表示される:
+
+| 列 | 内容 |
+|----|------|
+| 間取り | `layout`（例: 3LDK） |
+| 面積 | `areaDisplay`（例: 72.5㎡） |
+| 価格 | `priceDisplayCompact`（例: 8,980万） |
+| 階 | `floorDisplay`（例: 15階/20階建） |
+
+- 各行はボタンとして機能し、タップでその住戸の詳細画面（スワイプページャー）に遷移する
+- 展開/折りたたみは `.easeInOut(duration: 0.25)` アニメーション付き
+- 展開中は2行目の「複数戸売出バッジ」は非表示（トグルに統合）
+- 画像・ローン試算・SS評価は展開に含めない（詳細画面で確認）
+
 **中古タブ固有の要素**
 
 | 行 | 要素 | 詳細 |
@@ -280,9 +303,11 @@ App起動
 
 フィルタ状態は `FilterStore`（`@Observable`）でタブごとに独立管理（OOUI: 中古/新築/お気に入りで干渉しない）。
 
-#### 3.3.4 物件詳細画面（ListingDetailView）
+#### 3.3.4 物件詳細画面（ListingDetailView / ListingDetailPagerView）
 
-Sheet として表示。以下のセクションで構成:
+Sheet として表示。一覧画面から開く場合は `ListingDetailPagerView`（スワイプページャー）でラップされ、フィルタ済み全物件を横スワイプで横断比較可能。各ページは `ListingDetailView` をそのまま表示する。ページャーは画面下部にフローティングのページインジケーター（`< 3 / 15 >`）を表示し、現在位置の把握とタップによる前後移動が可能。
+
+以下のセクションで構成:
 
 **共通セクション（中古・新築共通）**
 
@@ -292,7 +317,7 @@ Sheet として表示。以下のセクションで構成:
 | ② | **物件名** | タイトル表示 |
 | ③ | **住所** | 住所テキスト + Google Maps リンク |
 | ④ | **内見メモ（コンパクトボタン）** | カメラアイコン + コメントアイコン + 件数をインライン表示。タップで内見メモオーバーレイ（シート）を開く。コメント入力・写真追加は全てオーバーレイ内で操作 |
-| ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。タップでピンチズーム対応のフルスクリーン表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
+| ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。サムネイル・フルスクリーンともに白余白を自動トリミングして画像コンテンツを最大化。タップでフルスクリーン表示（横スワイプで前後画像に移動可能、ページインジケーター・画像ラベル表示）。Firebase Storage 経由で掲載終了後も永続表示可能 |
 | ⑥ | **物件基本情報** | 下記の共通項目 + 中古/新築固有項目を表示 |
 | ⑦ | **月額支払いシミュレーション** | `priceMan > 0` の場合（中古・新築共通）。下記の計算ロジックで動的に算出。タップでフォーム展開し金利・返済期間・頭金を変更可能 |
 | ⑧ | **通勤時間** | Playground / M3Career への通勤時間（MKDirections）+ Google Maps リンク。座標ありかつ未取得の場合は計算ボタン表示 |
@@ -350,7 +375,8 @@ n = 返済回数（月）= 返済年数 × 12
 |---------|------|
 | `LoanCalculator.swift` | 計算ロジック。`monthlyPayment(principal:rate:years:)` / `totalRepayment(principal:rate:years:)`。`simulate(listing:)` は listing URL + 主要パラメータでセッション内キャッシュし、body 再評価時の再計算を回避 |
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
-| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等）。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー。`FloorPlanFullScreenView` はピンチズーム対応フルスクリーン表示（共用） |
+| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等）。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・ページインジケーター表示） |
+| `ListingDetailPagerView.swift` | 全物件スワイプページャー。`TabView(.page)` でフィルタ済み物件リストを横スワイプで横断比較。各ページは `ListingDetailView` をそのまま表示。画面下部にフローティングページインジケーター（`.regularMaterial` + `Capsule` で視認性確保）。一覧画面の `.sheet(item:)` から `cachedFiltered` とタップされた物件のインデックスを受け取って初期表示 |
 | `loan_calc.py` (Python) | Slack 通知・レポート用の月額計算（同一パラメータ） |
 
 **物件基本情報の表示項目**
@@ -750,7 +776,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |---|------|------|------|
 | 1 | 物件名検索 | テキスト入力 | インクリメンタル検索。物件名でフィルタ。 |
 | 2 | 検索クリア | クリアボタン | 検索テキストを空にする |
-| 3 | 一覧表示 | 自動 | 物件をリスト形式で表示（サムネイル画像、物件名、価格、間取り、面積、徒歩、バッジ）。SUUMO 物件写真がある場合は外観写真を優先してカード左側に幅 100pt のサムネイルとして表示（`TrimmedAsyncImage` で周囲の白余白を自動トリミング・元画像のアスペクト比を維持、外観写真がない場合は先頭画像にフォールバック） |
+| 3 | 一覧表示 | 自動 | 物件をリスト形式で表示（サムネイル画像、物件名、価格、間取り、面積、徒歩、バッジ）。SUUMO 物件写真がある場合は外観写真を優先してカード左側に幅 100pt・高さ 75pt の固定サイズサムネイルとして表示（`TrimmedAsyncImage` で周囲の白余白を自動トリミング・`.fill` + クリップで高さを統一、外観写真がない場合は先頭画像にフォールバック） |
 | 4 | 空状態 | 自動 | データなし時に「データを取得」ボタン付きの案内を表示 |
 | 5 | フィルタ空状態 | 自動 | フィルタ条件に合う物件がない時に「フィルタをリセット」ボタンを表示 |
 
@@ -775,9 +801,11 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 13 | 物件詳細表示 | 行タップ | Sheet で物件詳細画面を表示 |
+| 13 | 物件詳細表示 | 行タップ | Sheet でスワイプページャー（ListingDetailPagerView）を表示。フィルタ済み全物件を横スワイプで比較可能 |
 | 14 | いいね | 右スワイプ | いいね ON/OFF 切替 → Firestore 同期 |
 | 15 | 詳細を開く | 左スワイプ | 詳細画面を Sheet で表示 |
+| 15b | 住戸展開 | 展開トグルタップ | 同一マンション内に2件以上の住戸がある場合、住戸テーブル（間取り・面積・価格・階）を展開/折りたたみ |
+| 15c | 住戸詳細表示 | 住戸行タップ | 展開テーブル内の住戸行をタップすると、その住戸の詳細画面をページャーで表示 |
 
 #### 比較機能
 
@@ -830,7 +858,15 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 ---
 
-### 4.6 物件詳細画面（ListingDetailView）
+### 4.6 物件詳細画面（ListingDetailView / ListingDetailPagerView）
+
+#### スワイプページャー
+
+| # | 機能 | 操作 | 詳細 |
+|---|------|------|------|
+| 0a | 物件切替 | 左右スワイプ | フィルタ済み全物件を横スワイプで移動。各ページは ListingDetailView をそのまま表示 |
+| 0b | ページ移動 | インジケーターの矢印タップ | 前後の物件に移動（先頭/末尾では無効化） |
+| 0c | 位置確認 | 自動 | 画面下部フローティングカプセルに「3 / 15」形式で現在位置を表示 |
 
 #### ヘッダー操作
 
@@ -876,8 +912,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 17-b | 物件画像ギャラリー | 閲覧 | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO 物件写真（外観・リビング・キッチン・浴室等）を後続に配置した統合横スクロール。各画像にラベル表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
-| 17-c | フルスクリーン表示 | 画像タップ | 画像をフルスクリーンで表示（ピンチズーム・ダブルタップズーム対応） |
+| 17-b | 物件画像ギャラリー | 閲覧 | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO 物件写真（外観・リビング・キッチン・浴室等）を後続に配置した統合横スクロール。各画像にラベル表示。サムネイルは白余白を自動トリミングして画像コンテンツを最大化。Firebase Storage 経由で掲載終了後も永続表示可能 |
+| 17-c | フルスクリーン表示 | 画像タップ | 画像をフルスクリーンで表示。横スワイプで前後の画像に移動可能（TabView ページング）。ページインジケーター・画像ラベル・枚数カウンター表示。白余白は自動トリミング済み。隣接画像を先読みしてスムーズなスワイプ体験を提供 |
 
 #### 物件基本情報
 
@@ -1289,7 +1325,25 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 > 中古と同様の理由で無効化。権利形態（ownership）取得ロジックは実装済み（テーブルの「権利形態」「敷地の権利形態」「権利」ラベル + `parse_ownership` / `parse_ownership_from_text` フォールバック）。
 
-### 5.4 フィルタ・重複除去
+### 5.4 物件名クリーニング（`clean_listing_name`）
+
+`report_utils.py` の `clean_listing_name()` が各スクレイパー内部および `main.py` の後処理で適用され、物件名のノイズを除去する。
+
+| 処理 | 例 |
+|------|---|
+| プレフィックス除去 | 「新築マンション」「マンション未入居」「マンション」を先頭から除去 |
+| サフィックス除去 | 末尾の「閲覧済」を除去 |
+| 販売期情報除去 | 「第1期1次」「( 第2期 2次 )」を末尾から除去 |
+| キャッチコピー抽出 | 「眺望良好「XXX」」→「XXX」（括弧外が路線名・駅名でない場合） |
+| 非物件名テキスト除外 | 「掲載物件X件」→ 空 |
+| 条件タグ除外 | 「ペット可」「リフォーム済」「角部屋」等の物件特徴タグ → 空 |
+| 路線情報のみ除外 | 「○○線○○駅徒歩X分」のみのテキスト → 空 |
+
+**条件タグ除外（`_is_feature_tag`）**: CSS クラス `title` / `name` にマッチするバッジ要素や h2-h4 見出しから物件条件テキスト（「ペット可」「即入居可」「リノベーション済」等）が物件名として誤抽出されるのを防ぐ。完全一致リスト（`_NOT_A_NAME_EXACT`）とパターンマッチ（`_NOT_A_NAME_PATTERNS`）の2段階で判定。クリーニング後に条件タグだけが残った場合も再判定して空を返す。
+
+`main.py` の後処理では `clean_listing_name` が空を返した場合に「（不明）」をフォールバック値として設定する。
+
+### 5.5 フィルタ・重複除去
 
 #### フィルタ条件（`apply_conditions`）
 
@@ -1311,9 +1365,9 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 `listing_key` = (name, layout, area, price, address, built_year, station_line, walk_min) の組み合わせで一意化。重複件数は `duplicate_count` に記録。
 
-### 5.5 エンリッチャー
+### 5.6 エンリッチャー
 
-#### 5.5.1 ハザードエンリッチャー（hazard_enricher.py）
+#### 5.6.1 ハザードエンリッチャー（hazard_enricher.py）
 
 国土地理院タイルと東京都地域危険度 GeoJSON から以下を付与:
 
@@ -1321,7 +1375,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 - 液状化（地形分類）— 治水地形分類図 `lcmfc2` で代替
 - 建物倒壊危険度、火災危険度、総合危険度
 
-#### 5.5.2 住まいサーフィンエンリッチャー（sumai_surfin_enricher.py）
+#### 5.6.2 住まいサーフィンエンリッチャー（sumai_surfin_enricher.py）
 
 | 項目 | 詳細 |
 |------|------|
@@ -1336,7 +1390,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | 1（最優先） | 検索結果一覧ページのカード | `_extract_search_result_inline()` で物件カードから直接抽出。ヘルプ文の誤マッチリスクがなく最も信頼性が高い |
 | 2（フォールバック） | 物件詳細ページ | `_extract_oki_price_chuko()` で HTML 正規表現抽出。ページ下部のヘルプ文「例：X,XXX万円」の例示値を誤取得しないよう、マッチ直前の「例：」パターンを除外する |
 
-#### 5.5.3 不動産情報ライブラリエンリッチャー（reinfolib_enricher.py）
+#### 5.6.3 不動産情報ライブラリエンリッチャー（reinfolib_enricher.py）
 
 | 項目 | 詳細 |
 |------|------|
@@ -1344,7 +1398,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **付与データ** | 区・駅レベルの成約 m² 単価、相場乖離率、前年比、四半期推移（区: 過去5年分）、同一マンション成約事例 |
 | **キャッシュ構築** | `reinfolib_cache_builder.py`（`YEARS_BACK=5` で過去5年分の四半期推移を取得）/ `fetch_station_prices.py`（別ワークフローで実行） |
 
-#### 5.5.4 e-Stat 人口動態エンリッチャー（estat_enricher.py）
+#### 5.6.4 e-Stat 人口動態エンリッチャー（estat_enricher.py）
 
 | 項目 | 詳細 |
 |------|------|
@@ -1352,7 +1406,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **付与データ** | 区の人口、世帯数、前年比、5年変動、年次推移 |
 | **キャッシュ構築** | `estat_population_builder.py`（別ワークフローで実行） |
 
-#### 5.5.5 間取り図・物件写真エンリッチャー
+#### 5.6.5 間取り図・物件写真エンリッチャー
 
 ##### 中古（build_units_cache.py → merge_detail_cache.py / floor_plan_enricher.py）
 
@@ -1380,9 +1434,9 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **Firebase Storage 永続化** | `upload_floor_plans.py` が間取り図を `floor_plans/{hash}.{ext}`、物件写真を `property_images/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
 | **iOS 側フィールド（間取り図）** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換） |
 | **iOS 側フィールド（物件写真）** | `Listing.suumoImagesJSON`（JSON 文字列 → `parsedSuumoImages: [SuumoImage]` で構造体配列に変換。`SuumoImage` は `url`/`label` を持ち、`category` で外観/室内/水回り/その他に自動分類） |
-| **サムネイル URL** | `Listing.thumbnailURL: URL?`（computed）。SUUMO 物件写真から外観カテゴリ（`category == .exterior`）の画像を優先的に選択し、外観写真がない場合は先頭画像にフォールバック。一覧カードでは `TrimmedAsyncImage` で白余白を自動トリミングして幅 100pt・元画像のアスペクト比維持で表示（NSCache でトリミング済み画像をキャッシュ） |
+| **サムネイル URL** | `Listing.thumbnailURL: URL?`（computed）。SUUMO 物件写真から外観カテゴリ（`category == .exterior`）の画像を優先的に選択し、外観写真がない場合は先頭画像にフォールバック。一覧カードでは `TrimmedAsyncImage` で白余白を自動トリミング・幅 100pt × 高さ 75pt の固定サイズで `.fill` + クリップ表示（NSCache でトリミング済み画像をキャッシュ） |
 
-### 5.6 成約実績フィード構築（build_transaction_feed.py）
+### 5.7 成約実績フィード構築（build_transaction_feed.py）
 
 東京23区の成約実績データを取得・フィルタ・ジオコード・集約して iOS アプリ向け `transactions.json` を生成するバッチスクリプト。スクレイピングツール（suumo_scraper.py）と同じ購入条件に合致する成約物件のみを対象とし、一貫した検索条件でデータを提供する。
 
@@ -1443,7 +1497,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 }
 ```
 
-### 5.7 通勤時間ツール
+### 5.8 通勤時間ツール
 
 | ファイル | 用途 | ステータス |
 |---------|------|---------|
@@ -1454,13 +1508,13 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **data/commute_playground.json** | 駅名 → Playground までの電車時間（分）のルックアップテーブル | `commute_auto_audit.py` で更新 |
 | **data/commute_m3career.json** | 駅名 → M3Career までの電車時間（分）のルックアップテーブル | `commute_auto_audit.py` で更新 |
 
-#### 5.6.1 通勤エンリッチャー（commute_enricher.py）オプション
+#### 5.8.1 通勤エンリッチャー（commute_enricher.py）オプション
 
 | オプション | 説明 |
 |-----------|------|
 | `--force` | 既存の `commute_info` があってもスキップせず、再計算して上書きする。指定しない場合は既存データがある物件はスキップ（デフォルト動作）。`enrich_commute()` の `force: bool = False` パラメータに対応。 |
 
-### 5.7 分析・予測
+### 5.9 分析・予測
 
 | ファイル | 機能 |
 |---------|------|
@@ -1473,7 +1527,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 `price_predictor` と `future_estate_predictor` は `shared_utils` を利用。CSV/JSON 読込は try/except で囲み、ファイル欠損時は警告を出して空 DataFrame・デフォルトで続行。
 
-### 5.8 レポート生成
+### 5.10 レポート生成
 
 `generate_report.py` が以下のレポートを Markdown で生成:
 
@@ -1486,7 +1540,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **駅別一覧** | 駅ごとの物件リスト |
 | **オプション** | 資産ランク、通勤時間、ローン情報（有効な場合） |
 
-### 5.9 出力ファイル
+### 5.11 出力ファイル
 
 | ファイル | 形式 | 内容 |
 |---------|------|------|
@@ -1572,6 +1626,12 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `latitude` | Double? | 緯度 |
 | `longitude` | Double? | 経度 |
 | `duplicateCount` | Int | 重複集約数 |
+
+#### マンション単位グルーピング（computed property）
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `buildingGroupKey` | String (computed) | 同一マンション判定用キー。`cleanListingName(name)` + `address` + `builtYear` + `totalUnits` + `walkMin` + `ownership` を `\|` 区切りで結合。価格・間取り・面積・階数は住戸ごとに異なるため含めない。一覧画面のランタイムグルーピングに使用 |
 
 #### 住まいサーフィン評価データ
 

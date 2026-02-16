@@ -352,6 +352,22 @@ final class Listing: @unchecked Sendable {
         return "\(duplicateCount)戸売出中"
     }
 
+    // MARK: - マンション単位グルーピング
+
+    /// 同一マンション判定用キー。
+    /// 価格・間取り・面積・階数は住戸ごとに異なるため含めない。
+    /// 一覧画面で同一マンション内の複数住戸をグルーピングして展開表示するために使用。
+    var buildingGroupKey: String {
+        [
+            Self.cleanListingName(name),
+            (address ?? "").trimmingCharacters(in: .whitespaces),
+            builtYear.map(String.init) ?? "",
+            totalUnits.map(String.init) ?? "",
+            walkMin.map(String.init) ?? "",
+            (ownership ?? "").trimmingCharacters(in: .whitespaces)
+        ].joined(separator: "|")
+    }
+
     // MARK: - Display Properties
 
     // MARK: - 価格フォーマット

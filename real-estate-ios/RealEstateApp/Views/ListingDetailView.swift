@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import SafariServices
+import UIKit
 
 struct ListingDetailView: View {
     @Environment(\.dismiss) private var dismiss
@@ -360,15 +361,27 @@ struct ListingDetailView: View {
 
     // MARK: - 物件画像ギャラリー（間取り図 + SUUMO 物件写真を統合）
 
-    /// フルスクリーン表示用の画像 URL
-    @State private var fullScreenGalleryURL: URL?
+    /// フルスクリーン表示用の画像インデックス
+    @State private var fullScreenGalleryIndex: Int?
+
+    /// ギャラリー画像一覧（間取り図 + SUUMO 物件写真）
+    private var allGalleryItems: [(url: URL, label: String)] {
+        var items: [(url: URL, label: String)] = []
+        for url in listing.parsedFloorPlanImages {
+            items.append((url: url, label: "間取り図"))
+        }
+        for img in listing.parsedSuumoImages {
+            if let url = img.resolvedURL {
+                items.append((url: url, label: img.label))
+            }
+        }
+        return items
+    }
 
     /// 間取り図（先頭）→ SUUMO 物件写真を1つの横スクロールで表示
     @ViewBuilder
     private var propertyImagesGallery: some View {
-        let floorPlans = listing.parsedFloorPlanImages
-        let suumoImages = listing.parsedSuumoImages
-        let totalCount = floorPlans.count + suumoImages.count
+        let items = allGalleryItems
 
         VStack(alignment: .leading, spacing: 10) {
             Label("物件画像", systemImage: "photo.on.rectangle.angled")
@@ -376,22 +389,15 @@ struct ListingDetailView: View {
                 .fontWeight(.bold)
                 .foregroundStyle(Color.accentColor)
 
-            if totalCount == 1, let singleURL = floorPlans.first ?? suumoImages.first?.resolvedURL {
+            if items.count == 1 {
                 // 1枚のみの場合: フル幅で表示
-                galleryImage(url: singleURL, label: floorPlans.first != nil ? "間取り図" : suumoImages.first?.label ?? "")
-            } else {
+                galleryImage(index: 0, url: items[0].url, label: items[0].label)
+            } else if items.count > 1 {
                 // 複数枚: 横スクロール（間取り図が先頭、その後にSUUMO写真）
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
-                        // 間取り図（先頭に配置）
-                        ForEach(floorPlans, id: \.absoluteString) { url in
-                            galleryImage(url: url, label: "間取り図")
-                        }
-                        // SUUMO 物件写真
-                        ForEach(suumoImages) { img in
-                            if let url = img.resolvedURL {
-                                galleryImage(url: url, label: img.label)
-                            }
+                        ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                            galleryImage(index: index, url: item.url, label: item.label)
                         }
                     }
                 }
@@ -404,63 +410,20 @@ struct ListingDetailView: View {
         .padding(14)
         .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
         .fullScreenCover(isPresented: Binding(
-            get: { fullScreenGalleryURL != nil },
-            set: { if !$0 { fullScreenGalleryURL = nil } }
+            get: { fullScreenGalleryIndex != nil },
+            set: { if !$0 { fullScreenGalleryIndex = nil } }
         )) {
-            if let url = fullScreenGalleryURL {
-                FloorPlanFullScreenView(url: url)
+            if let index = fullScreenGalleryIndex {
+                GalleryFullScreenView(items: allGalleryItems, initialIndex: index)
             }
         }
     }
 
     @ViewBuilder
-    private func galleryImage(url: URL, label: String) -> some View {
-        Button {
-            fullScreenGalleryURL = url
-        } label: {
-            VStack(spacing: 4) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 200, height: 150)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    case .failure:
-                        ZStack {
-                            Color(.systemGray6)
-                            VStack(spacing: 4) {
-                                Image(systemName: "photo.badge.exclamationmark")
-                                    .font(.title3)
-                                Text("読み込み失敗")
-                                    .font(.caption2)
-                            }
-                            .foregroundStyle(.secondary)
-                        }
-                        .frame(width: 200, height: 150)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                    case .empty:
-                        ZStack {
-                            Color(.systemGray6)
-                            ProgressView()
-                        }
-                        .frame(width: 200, height: 150)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
-
-                Text(label)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
+    private func galleryImage(index: Int, url: URL, label: String) -> some View {
+        GalleryThumbnailView(url: url, label: label) {
+            fullScreenGalleryIndex = index
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel("\(label)を拡大表示")
     }
 
     // MARK: - ③④ 内見メモ コンパクトボタン
@@ -2001,73 +1964,123 @@ struct SafariView: UIViewControllerRepresentable {
     func updateUIViewController(_ vc: SFSafariViewController, context: Context) {}
 }
 
-/// 間取り図フルスクリーン表示（ピンチズーム対応）
-private struct FloorPlanFullScreenView: View {
-    @Environment(\.dismiss) private var dismiss
+// MARK: - ギャラリーサムネイル（余白トリミング済み）
+
+/// ギャラリー用サムネイル。画像を非同期ロードし白余白をトリミングして表示する。
+private struct GalleryThumbnailView: View {
     let url: URL
-    @State private var scale: CGFloat = 1.0
-    @State private var lastScale: CGFloat = 1.0
-    @State private var offset: CGSize = .zero
-    @State private var lastOffset: CGSize = .zero
+    let label: String
+    let onTap: () -> Void
+
+    @State private var loadedImage: UIImage?
+    @State private var loadPhase: LoadPhase = .loading
+
+    private enum LoadPhase { case loading, success, failure }
+
+    var body: some View {
+        Button(action: onTap) {
+            VStack(spacing: 4) {
+                thumbnailContent
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(label)を拡大表示")
+        .task(id: url) {
+            await loadAndTrim()
+        }
+    }
+
+    @ViewBuilder
+    private var thumbnailContent: some View {
+        switch loadPhase {
+        case .success:
+            if let loadedImage {
+                Image(uiImage: loadedImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 200, height: 150)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+        case .failure:
+            ZStack {
+                Color(.systemGray6)
+                VStack(spacing: 4) {
+                    Image(systemName: "photo.badge.exclamationmark")
+                        .font(.title3)
+                    Text("読み込み失敗")
+                        .font(.caption2)
+                }
+                .foregroundStyle(.secondary)
+            }
+            .frame(width: 200, height: 150)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        case .loading:
+            ZStack {
+                Color(.systemGray6)
+                ProgressView()
+            }
+            .frame(width: 200, height: 150)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+    }
+
+    private func loadAndTrim() async {
+        let cacheKey = url.absoluteString
+        if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
+            loadedImage = cached
+            loadPhase = .success
+            return
+        }
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            guard let original = UIImage(data: data) else {
+                loadPhase = .failure
+                return
+            }
+            let trimmed = original.trimmingWhitespaceBorder()
+            TrimmedImageCache.shared.set(trimmed, for: cacheKey)
+            loadedImage = trimmed
+            loadPhase = .success
+        } catch {
+            loadPhase = .failure
+        }
+    }
+}
+
+// MARK: - ギャラリーフルスクリーン表示（横スワイプ対応・余白トリミング済み）
+
+/// 物件画像のフルスクリーン表示。横スワイプで前後の画像に移動でき、白余白は自動トリミングされる。
+private struct GalleryFullScreenView: View {
+    let items: [(url: URL, label: String)]
+    let initialIndex: Int
+    @Environment(\.dismiss) private var dismiss
+    @State private var currentIndex: Int
+    @State private var loadedImages: [Int: UIImage] = [:]
+    @State private var failedIndices: Set<Int> = []
+
+    init(items: [(url: URL, label: String)], initialIndex: Int) {
+        self.items = items
+        self.initialIndex = initialIndex
+        _currentIndex = State(initialValue: initialIndex)
+    }
 
     var body: some View {
         NavigationStack {
-            GeometryReader { geometry in
-                ZStack {
-                    Color.black.ignoresSafeArea()
-
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
+            TabView(selection: $currentIndex) {
+                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                    ZStack {
+                        Color.black.ignoresSafeArea()
+                        if let image = loadedImages[index] {
+                            Image(uiImage: image)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .scaleEffect(scale)
-                                .offset(offset)
-                                .gesture(
-                                    MagnifyGesture()
-                                        .onChanged { value in
-                                            scale = lastScale * value.magnification
-                                        }
-                                        .onEnded { value in
-                                            lastScale = max(1.0, scale)
-                                            scale = lastScale
-                                            if scale == 1.0 {
-                                                withAnimation(.easeInOut(duration: 0.2)) {
-                                                    offset = .zero
-                                                    lastOffset = .zero
-                                                }
-                                            }
-                                        }
-                                        .simultaneously(with:
-                                            DragGesture()
-                                                .onChanged { value in
-                                                    if scale > 1.0 {
-                                                        offset = CGSize(
-                                                            width: lastOffset.width + value.translation.width,
-                                                            height: lastOffset.height + value.translation.height
-                                                        )
-                                                    }
-                                                }
-                                                .onEnded { _ in
-                                                    lastOffset = offset
-                                                }
-                                        )
-                                )
-                                .onTapGesture(count: 2) {
-                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                        if scale > 1.0 {
-                                            scale = 1.0
-                                            lastScale = 1.0
-                                            offset = .zero
-                                            lastOffset = .zero
-                                        } else {
-                                            scale = 2.5
-                                            lastScale = 2.5
-                                        }
-                                    }
-                                }
-                        case .failure:
+                                .padding(.horizontal, 4)
+                        } else if failedIndices.contains(index) {
                             VStack(spacing: 8) {
                                 Image(systemName: "photo.badge.exclamationmark")
                                     .font(.largeTitle)
@@ -2075,18 +2088,35 @@ private struct FloorPlanFullScreenView: View {
                                     .font(.subheadline)
                             }
                             .foregroundStyle(.white.opacity(0.6))
-                        case .empty:
+                        } else {
                             ProgressView()
                                 .tint(.white)
-                        @unknown default:
-                            EmptyView()
                         }
                     }
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .tag(index)
+                    .task {
+                        await loadImage(at: index)
+                    }
                 }
             }
+            .tabViewStyle(.page(indexDisplayMode: items.count > 1 ? .automatic : .never))
+            .background(Color.black.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    VStack(spacing: 2) {
+                        if items.count > 1 {
+                            Text("\(currentIndex + 1) / \(items.count)")
+                                .font(.subheadline)
+                                .foregroundStyle(.white.opacity(0.7))
+                        }
+                        if currentIndex >= 0, currentIndex < items.count {
+                            Text(items[currentIndex].label)
+                                .font(.caption2)
+                                .foregroundStyle(.white.opacity(0.5))
+                        }
+                    }
+                }
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         dismiss()
@@ -2100,6 +2130,38 @@ private struct FloorPlanFullScreenView: View {
                 }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+        }
+        .onChange(of: currentIndex) { _, newIndex in
+            // 前後の画像を先読み
+            Task {
+                if newIndex > 0 { await loadImage(at: newIndex - 1) }
+                if newIndex < items.count - 1 { await loadImage(at: newIndex + 1) }
+            }
+        }
+    }
+
+    private func loadImage(at index: Int) async {
+        guard index >= 0, index < items.count else { return }
+        guard loadedImages[index] == nil, !failedIndices.contains(index) else { return }
+        let url = items[index].url
+        let cacheKey = url.absoluteString
+
+        if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
+            loadedImages[index] = cached
+            return
+        }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            guard let original = UIImage(data: data) else {
+                failedIndices.insert(index)
+                return
+            }
+            let trimmed = original.trimmingWhitespaceBorder()
+            TrimmedImageCache.shared.set(trimmed, for: cacheKey)
+            loadedImages[index] = trimmed
+        } catch {
+            failedIndices.insert(index)
         }
     }
 }

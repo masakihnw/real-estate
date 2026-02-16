@@ -50,6 +50,7 @@ from scraper_common import (
     station_passengers_ok,
     line_ok,
 )
+from report_utils import clean_listing_name
 
 BASE_URL = "https://suumo.jp"
 
@@ -179,7 +180,7 @@ def _parse_suumo_unit(bloc, base_url: str) -> Optional[SuumoListing]:
             txt = bloc.get_text()
             m = re.search(rf"{re.escape(label)}\s*[\s\n]*([^\n]+)", txt)
             return (m.group(1).strip() if m else "").strip()
-        name = get_val("物件名") or "（不明）"
+        name = clean_listing_name(get_val("物件名")) or "（不明）"
         price_man = parse_price(get_val("販売価格"))
         address = get_val("所在地")
         station_line = get_val("沿線・駅")
@@ -227,7 +228,7 @@ def _parse_cassette(div, base_url: str) -> Optional[SuumoListing]:
     """cassetteitem っぽい div から1件分を取り出す。"""
     try:
         title_el = div.find(class_=re.compile(r"content-title|title|cassetteitem_content-title"))
-        name = (title_el.get_text(strip=True) or "").strip() if title_el else ""
+        name = clean_listing_name((title_el.get_text(strip=True) or "").strip()) if title_el else ""
 
         # 価格
         price_el = div.find(string=re.compile(r"販売価格|価格"))
@@ -301,7 +302,7 @@ def _parse_property_block(bloc, base_url: str) -> Optional[SuumoListing]:
     url = urljoin(base_url, a["href"]) if a else ""
 
     name_el = bloc.find(class_=re.compile(r"title|name|content-title"))
-    name = (name_el.get_text(strip=True) or "").strip() if name_el else ""
+    name = clean_listing_name((name_el.get_text(strip=True) or "").strip()) if name_el else ""
 
     m = re.search(r"間取り\s*([^\s]+)", text)
     layout = (m.group(1).strip() if m else "").strip()
@@ -355,12 +356,13 @@ def _parse_fallback(soup: BeautifulSoup, base_url: str) -> list[SuumoListing]:
         url = urljoin(base_url, link["href"]) if link and link.get("href") else ""
 
         name_el = wrap.find(class_=re.compile(r"title|content-title|name"))
-        name = (name_el.get_text(strip=True) or "").strip() if name_el else ""
+        name = clean_listing_name((name_el.get_text(strip=True) or "").strip()) if name_el else ""
         if not name:
             for h in wrap.find_all(["h2", "h3", "h4"]):
                 t = h.get_text(strip=True)
-                if t and len(t) < 100 and "万円" not in t:
-                    name = t
+                cleaned = clean_listing_name(t)
+                if cleaned and len(cleaned) < 100 and "万円" not in cleaned:
+                    name = cleaned
                     break
         floor_position = parse_floor_position(txt) or parse_floor_position(name or "")
         floor_total = parse_floor_total(txt) or parse_floor_total(name or "")
