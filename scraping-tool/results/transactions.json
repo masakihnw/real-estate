@@ -9101,26 +9101,6 @@
       "estimated_building_name": null
     },
     {
-      "id": "tx-01a020c49eb9",
-      "prefecture": "東京都",
-      "ward": "新宿区",
-      "district": "西早稲田",
-      "district_code": "131040690",
-      "price_man": 11000,
-      "area_m2": 80.0,
-      "m2_price": 1375000,
-      "layout": "3LDK",
-      "built_year": 2016,
-      "structure": "RC",
-      "trade_period": "2021Q4",
-      "nearest_station": "早稲田",
-      "estimated_walk_min": 9,
-      "latitude": 35.7105658,
-      "longitude": 139.7155732,
-      "building_group_id": "131040690-2016",
-      "estimated_building_name": null
-    },
-    {
       "id": "tx-3a808e111e48",
       "prefecture": "東京都",
       "ward": "新宿区",
@@ -9658,7 +9638,47 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013",
-      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-890ff4522186",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "大京町",
+      "district_code": "131040490",
+      "price_man": 9500,
+      "area_m2": 70.0,
+      "m2_price": 1357143,
+      "layout": "2LDK",
+      "built_year": 2014,
+      "structure": "RC",
+      "trade_period": "2022Q2",
+      "nearest_station": "信濃町",
+      "estimated_walk_min": 7,
+      "latitude": 35.6838591,
+      "longitude": 139.7171366,
+      "building_group_id": "131040490-2014",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-ebdfb9ca41da",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "大京町",
+      "district_code": "131040490",
+      "price_man": 9300,
+      "area_m2": 70.0,
+      "m2_price": 1328571,
+      "layout": "2LDK",
+      "built_year": 2011,
+      "structure": "RC",
+      "trade_period": "2022Q2",
+      "nearest_station": "信濃町",
+      "estimated_walk_min": 7,
+      "latitude": 35.6838591,
+      "longitude": 139.7171366,
+      "building_group_id": "131040490-2011",
+      "estimated_building_name": null
     },
     {
       "id": "tx-890ff4522186",
@@ -10761,26 +10781,6 @@
       "estimated_building_name": null
     },
     {
-      "id": "tx-31ce2dd02b3d",
-      "prefecture": "東京都",
-      "ward": "新宿区",
-      "district": "西早稲田",
-      "district_code": "131040690",
-      "price_man": 11000,
-      "area_m2": 75.0,
-      "m2_price": 1466667,
-      "layout": "3LDK",
-      "built_year": 2016,
-      "structure": "RC",
-      "trade_period": "2023Q2",
-      "nearest_station": "早稲田",
-      "estimated_walk_min": 9,
-      "latitude": 35.7105658,
-      "longitude": 139.7155732,
-      "building_group_id": "131040690-2016",
-      "estimated_building_name": null
-    },
-    {
       "id": "tx-2ee36b2d051f",
       "prefecture": "東京都",
       "ward": "新宿区",
@@ -11538,7 +11538,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013",
-      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4d16198382ee",
@@ -12698,46 +12698,6 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2015",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-a51eec9c66af",
-      "prefecture": "東京都",
-      "ward": "新宿区",
-      "district": "西早稲田",
-      "district_code": "131040690",
-      "price_man": 11000,
-      "area_m2": 80.0,
-      "m2_price": 1375000,
-      "layout": "2LDK",
-      "built_year": 2015,
-      "structure": "RC",
-      "trade_period": "2025Q1",
-      "nearest_station": "早稲田",
-      "estimated_walk_min": 9,
-      "latitude": 35.7105658,
-      "longitude": 139.7155732,
-      "building_group_id": "131040690-2015",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-086dc9500f52",
-      "prefecture": "東京都",
-      "ward": "新宿区",
-      "district": "西早稲田",
-      "district_code": "131040690",
-      "price_man": 9500,
-      "area_m2": 65.0,
-      "m2_price": 1461538,
-      "layout": "3LDK",
-      "built_year": 2015,
-      "structure": "RC",
-      "trade_period": "2025Q1",
-      "nearest_station": "早稲田",
-      "estimated_walk_min": 9,
-      "latitude": 35.7105658,
-      "longitude": 139.7155732,
-      "building_group_id": "131040690-2015",
       "estimated_building_name": null
     },
     {
@@ -18258,7 +18218,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f8593182e49c",
@@ -18278,7 +18238,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ca6321548a5f",
@@ -18418,7 +18378,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9814912a6d50",
@@ -18598,7 +18558,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-371538c3f024",
@@ -18618,7 +18578,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fde39368a4ef",
@@ -18658,7 +18618,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ba3e91f842b4",
@@ -18778,7 +18738,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3119a8b059c1",
@@ -18798,7 +18758,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-245c973c91f4",
@@ -18958,7 +18918,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7f46409c3642",
@@ -18978,7 +18938,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a9c8cf465b02",
@@ -19118,7 +19078,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4407435dfd03",
@@ -19158,7 +19118,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b31195c4ca31",
@@ -19178,7 +19138,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-26c523e24633",
@@ -19198,7 +19158,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9d98078856ad",
@@ -19438,7 +19398,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-8224ce06b88d",
@@ -19478,7 +19438,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3be87f54a778",
@@ -19538,7 +19498,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-eeac7b838d1f",
@@ -19558,7 +19518,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c1c481d13fcc",
@@ -19918,7 +19878,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-68247a509acc",
@@ -19978,7 +19938,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d8345937593f",
@@ -20038,7 +19998,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-8154c686eadf",
@@ -20358,7 +20318,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-129e00d1314a",
@@ -20378,7 +20338,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3a7249d016d2",
@@ -20518,7 +20478,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3489020a2d5b",
@@ -20598,7 +20558,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-abbe5af98e49",
@@ -20618,7 +20578,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-508594ba33d8",
@@ -20638,7 +20598,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e4e1e0501957",
@@ -20938,7 +20898,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-44da5c30db2d",
@@ -20958,7 +20918,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e5ebcfdc6f4d",
@@ -21058,7 +21018,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-cf2fc03b61f1",
@@ -21138,7 +21098,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-00982d50d039",
@@ -21238,7 +21198,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-1150faf1108c",
@@ -21338,7 +21298,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-967c018dc21d",
@@ -21358,7 +21318,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e17a5b6323c2",
@@ -21418,7 +21378,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f0d9733a3f3c",
@@ -22078,7 +22038,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-74bc2a0002e5",
@@ -22098,7 +22058,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0b0da29235d7",
@@ -22138,7 +22098,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-772fe20aa7a4",
@@ -22158,7 +22118,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-8afe83d009c1",
@@ -22178,7 +22138,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-aed9c14685e6",
@@ -22198,7 +22158,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4330b49b1bb1",
@@ -22218,7 +22178,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-970bbca572cf",
@@ -22258,7 +22218,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9a6ef91c8ab0",
@@ -22678,7 +22638,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2013",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5c26975b21bd",
@@ -22698,7 +22658,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-350c523021b4",
@@ -22718,7 +22678,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-13a995ccd674",
@@ -22818,7 +22778,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-816b7fc17470",
@@ -23458,7 +23418,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e3994b7f26c8",
@@ -23538,7 +23498,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7c7ec615cbcb",
@@ -23558,7 +23518,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2013",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3b71efd61563",
@@ -23618,7 +23578,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-274f9640747b",
@@ -23798,7 +23758,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f7b5950479e6",
@@ -23818,7 +23778,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6c2ba80bb18f",
@@ -24118,7 +24078,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-900d4b998b69",
@@ -24138,7 +24098,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4fee745c3d10",
@@ -24358,7 +24318,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2014",
-      "estimated_building_name": "クレヴィア住吉"
+      "estimated_building_name": null
     },
     {
       "id": "tx-072338fc22d1",
@@ -24738,7 +24698,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2013",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6b10b9cc6655",
@@ -24818,7 +24778,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2013",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-605ee53823d1",
@@ -24838,7 +24798,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-21caef577537",
@@ -24898,7 +24858,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9ee6217116d8",
@@ -25638,7 +25598,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-087a21927524",
@@ -25658,7 +25618,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2013",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6b49bb12f26c",
@@ -25678,7 +25638,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ac745983cd35",
@@ -25698,7 +25658,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5a72cb0ec2f3",
@@ -25718,7 +25678,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-42cf2d3f7657",
@@ -25738,7 +25698,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b0328c0580ad",
@@ -25758,7 +25718,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2013",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-473373022307",
@@ -26218,7 +26178,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2014",
-      "estimated_building_name": "クレヴィア住吉"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4e555506cbb9",
@@ -26338,7 +26298,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9234b6016286",
@@ -26358,7 +26318,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2013",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-83f58fc68dc7",
@@ -26378,7 +26338,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2014",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5692b589b88a",
@@ -29918,7 +29878,7 @@
       "latitude": 35.5572648,
       "longitude": 139.7331679,
       "building_group_id": "131110350-2016",
-      "estimated_building_name": null
+      "estimated_building_name": "ステーションツインタワーズ糀谷フロント・ウエスト"
     },
     {
       "id": "tx-7a3f38be6c4b",
@@ -29978,7 +29938,7 @@
       "latitude": 35.5572648,
       "longitude": 139.7331679,
       "building_group_id": "131110350-2016",
-      "estimated_building_name": null
+      "estimated_building_name": "ステーションツインタワーズ糀谷フロント・ウエスト"
     },
     {
       "id": "tx-7a23657f7ccf",
@@ -30038,7 +29998,7 @@
       "latitude": 35.5572648,
       "longitude": 139.7331679,
       "building_group_id": "131110350-2016",
-      "estimated_building_name": null
+      "estimated_building_name": "ステーションツインタワーズ糀谷フロント・ウエスト"
     },
     {
       "id": "tx-c6d3691fa764",
@@ -31498,7 +31458,7 @@
       "latitude": 35.6539857,
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011",
-      "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-95e0963c68f6",
@@ -31778,7 +31738,7 @@
       "latitude": 35.6539857,
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011",
-      "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-77d64946b578",
@@ -31798,7 +31758,7 @@
       "latitude": 35.6539857,
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011",
-      "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-1a7d0eafc04a",
@@ -32538,7 +32498,7 @@
       "latitude": 35.6539857,
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011",
-      "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-119cb84726d1",
@@ -32738,7 +32698,7 @@
       "latitude": 35.6539857,
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011",
-      "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2c9d8b054995",
@@ -32758,7 +32718,7 @@
       "latitude": 35.6539857,
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011",
-      "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-73ea3178730f",
@@ -33058,7 +33018,7 @@
       "latitude": 35.6539857,
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011",
-      "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ed63e3c5b1f2",
@@ -39298,7 +39258,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e3b68282e73d",
@@ -39318,7 +39278,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-78be52d455dd",
@@ -39378,7 +39338,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ee09466b9e90",
@@ -39438,7 +39398,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-849d3d997237",
@@ -39498,7 +39458,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c8775a1b4a74",
@@ -39518,7 +39478,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-bef7e456fea4",
@@ -39558,7 +39518,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4c79073d688b",
@@ -41761,7 +41721,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
+      "estimated_building_name": null
     },
     {
       "group_id": "131040540-2021",
@@ -45361,7 +45321,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "クレヴィア住吉"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080080-2018",
@@ -46056,7 +46016,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080330-2014",
@@ -46096,7 +46056,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "オークプレイス豊洲"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080330-2016",
@@ -47733,7 +47693,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "ステーションツインタワーズ糀谷フロント・ウエスト"
     },
     {
       "group_id": "131120040-2016",
@@ -48715,7 +48675,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120550-2014",
@@ -51495,7 +51455,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "group_id": "131190190-2024",
@@ -51955,7 +51915,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-16T07:27:01",
+    "updated_at": "2026-02-16T10:58:53",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
@@ -51992,8 +51952,8 @@
       "built_year_min": 2011,
       "walk_min_max": 10
     },
-    "transaction_count": 2019,
-    "building_group_count": 464,
+    "transaction_count": 1626,
+    "building_group_count": 446,
     "scope": "東京23区"
   }
 }
