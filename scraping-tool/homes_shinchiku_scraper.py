@@ -31,7 +31,7 @@ from config import (
     REQUEST_TIMEOUT_SEC,
     REQUEST_RETRIES,
 )
-from parse_utils import parse_price_range, parse_area_range, parse_walk_min_best, parse_total_units, parse_floor_total_lenient, layout_range_ok
+from parse_utils import parse_price_range, parse_area_range, parse_walk_min_best, parse_total_units, parse_floor_total_lenient, parse_ownership, parse_ownership_from_text, layout_range_ok
 from report_utils import clean_listing_name
 from scraper_common import create_session, is_waf_challenge, load_station_passengers, station_passengers_ok, line_ok, is_tokyo_23_by_address
 
@@ -264,6 +264,12 @@ def _extract_card_listings(soup: BeautifulSoup) -> list[HomesShinchikuListing]:
         total_units = parse_total_units(text)
         floor_total = parse_floor_total_lenient(text)
 
+        # 権利形態
+        ownership_raw = _table_value("権利形態") or _table_value("敷地の権利形態") or _table_value("権利")
+        ownership = parse_ownership(ownership_raw) if ownership_raw else None
+        if not ownership:
+            ownership = parse_ownership_from_text(text)
+
         if not name and not url:
             continue
 
@@ -281,6 +287,7 @@ def _extract_card_listings(soup: BeautifulSoup) -> list[HomesShinchikuListing]:
             delivery_date=delivery_date,
             total_units=total_units,
             floor_total=floor_total,
+            ownership=ownership or None,
         ))
     return items
 
@@ -403,6 +410,12 @@ def _parse_homes_block(block) -> Optional[HomesShinchikuListing]:
         total_units = parse_total_units(text)
         floor_total = parse_floor_total_lenient(text)
 
+        # 権利形態
+        ownership_raw = get_val("権利形態") or get_val("敷地の権利形態") or get_val("権利")
+        ownership = parse_ownership(ownership_raw) if ownership_raw else None
+        if not ownership:
+            ownership = parse_ownership_from_text(text)
+
         return HomesShinchikuListing(
             url=url,
             name=name or "（不明）",
@@ -417,6 +430,7 @@ def _parse_homes_block(block) -> Optional[HomesShinchikuListing]:
             delivery_date=delivery_date,
             total_units=total_units,
             floor_total=floor_total,
+            ownership=ownership or None,
         )
     except Exception:
         return None
