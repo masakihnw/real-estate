@@ -15,6 +15,7 @@ struct TransactionListView: View {
     @Environment(TransactionStore.self) private var store
 
     @State private var selectedRecord: TransactionRecord?
+    @State private var expandedGroups: Set<String> = []
 
     private var filteredRecords: [TransactionRecord] {
         filterStore.filter.apply(to: allRecords)
@@ -86,15 +87,25 @@ struct TransactionListView: View {
             // 建物グループごとのセクション
             ForEach(groupedRecords, id: \.groupId) { group in
                 Section {
-                    // グループヘッダー情報
                     groupHeaderView(group: group)
-
-                    // 個別取引
-                    ForEach(group.records, id: \.txId) { record in
-                        transactionRow(record)
-                            .onTapGesture {
-                                selectedRecord = record
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                if expandedGroups.contains(group.groupId) {
+                                    expandedGroups.remove(group.groupId)
+                                } else {
+                                    expandedGroups.insert(group.groupId)
+                                }
                             }
+                        }
+
+                    if expandedGroups.contains(group.groupId) {
+                        ForEach(group.records, id: \.txId) { record in
+                            transactionRow(record)
+                                .onTapGesture {
+                                    selectedRecord = record
+                                }
+                        }
                     }
                 }
             }
@@ -106,6 +117,7 @@ struct TransactionListView: View {
         let sample = group.records.first!
         let prices = group.records.map(\.priceMan)
         let avgM2 = group.records.map(\.m2Price).reduce(0, +) / max(group.records.count, 1)
+        let isExpanded = expandedGroups.contains(group.groupId)
 
         return VStack(alignment: .leading, spacing: 6) {
             HStack {
@@ -114,7 +126,6 @@ struct TransactionListView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(group.label)
                         .font(.subheadline.bold())
-                    // 推定名がある場合は住所+築年も補足表示
                     if group.estimatedName != nil {
                         Text("\(sample.ward)\(sample.district)　\(sample.builtYear)年築")
                             .font(.caption2)
@@ -128,6 +139,9 @@ struct TransactionListView: View {
                     .padding(.vertical, 2)
                     .background(Color.purple.opacity(0.15))
                     .clipShape(Capsule())
+                Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             HStack(spacing: 16) {
                 if let station = sample.nearestStation, let walk = sample.estimatedWalkMin {

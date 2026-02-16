@@ -559,13 +559,19 @@ final class Listing: @unchecked Sendable {
         let segments = line.components(separatedBy: CharacterSet(charactersIn: "／/"))
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
-        return segments.map { seg in
-            // 路線名・駅名抽出
+
+        var result: [StationInfo] = []
+        var pendingRoute: String?
+
+        for seg in segments {
+            // 路線名・駅名抽出（「」括弧あり）
             var route = ""
             var name = seg
+            var hasBrackets = false
             if let s = seg.firstIndex(of: "「"), let e = seg.firstIndex(of: "」"), s < e {
                 route = String(seg[seg.startIndex..<s]).trimmingCharacters(in: .whitespaces)
                 name = String(seg[seg.index(after: s)..<e])
+                hasBrackets = true
             }
             // 徒歩分数抽出
             var walk: Int? = nil
@@ -575,8 +581,46 @@ final class Listing: @unchecked Sendable {
                     walk = Int(matched[numRange])
                 }
             }
-            return StationInfo(fullText: seg, routeName: route, stationName: name, walkMin: walk)
+
+            // 括弧も徒歩もない & 路線名らしい → 次セグメントとマージ用に保持
+            let isRouteOnly = !hasBrackets && walk == nil
+                && (seg.contains("線") || seg.hasSuffix("ライン"))
+            if isRouteOnly {
+                if let existing = pendingRoute {
+                    result.append(StationInfo(fullText: existing, routeName: existing, stationName: "", walkMin: nil))
+                }
+                pendingRoute = seg
+                continue
+            }
+
+            // 括弧なしの場合、駅名から徒歩部分を除去
+            if !hasBrackets {
+                name = seg.replacingOccurrences(of: #"[\s　]*徒歩\s*約?\s*\d+\s*分.*$"#, with: "", options: .regularExpression)
+                    .trimmingCharacters(in: .whitespaces)
+                if name.isEmpty { name = seg }
+            }
+
+            // 保留中の路線名があればマージ
+            if let pending = pendingRoute {
+                if route.isEmpty { route = pending }
+                result.append(StationInfo(
+                    fullText: "\(pending) \(seg)",
+                    routeName: route,
+                    stationName: name,
+                    walkMin: walk
+                ))
+                pendingRoute = nil
+            } else {
+                result.append(StationInfo(fullText: seg, routeName: route, stationName: name, walkMin: walk))
+            }
         }
+
+        // 末尾に路線名だけ残った場合
+        if let pending = pendingRoute {
+            result.append(StationInfo(fullText: pending, routeName: pending, stationName: "", walkMin: nil))
+        }
+
+        return result
     }
 
     /// 最寄駅のテキスト（最初の駅）
