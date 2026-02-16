@@ -1,0 +1,450 @@
+name: Enrich and Report
+
+# WF2: 加工+レポートワークフロー
+# WF1 (Scrape Listings) 完了時に自動起動。
+# 中古/新築/成約実績の enrichment を並列実行し、finalize でレポート生成・コミット。
+# cancel-in-progress: true — 新しいスクレイプデータが来たら古い加工をキャンセル。
+
+on:
+  workflow_run:
+    workflows: ["Scrape Listings"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: '使用する Scrape Listings の run ID (空欄で最新)'
+        required: false
+        type: string
+
+concurrency:
+  group: enrich-and-report
+  cancel-in-progress: true
+
+jobs:
+  # ──────────────────────────── Job 0: check ────────────────────────────
+  check:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    timeout-minutes: 5
+    outputs:
+      has_changes: ${{ steps.read.outputs.has_changes }}
+      is_slack_time: ${{ steps.read.outputs.is_slack_time }}
+      date: ${{ steps.read.outputs.date }}
+      run_id: ${{ steps.resolve.outputs.run_id }}
+
+    steps:
+      - name: Resolve run ID
+        id: resolve
+        run: |
+          if [ -n "${{ github.event.inputs.run_id }}" ]; then
+            echo "run_id=${{ github.event.inputs.run_id }}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ github.event.workflow_run.id }}" ]; then
+            echo "run_id=${{ github.event.workflow_run.id }}" >> $GITHUB_OUTPUT
+          else
+            echo "::error::run ID が特定できません"
+            exit 1
+          fi
+
+      - name: Download metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-metadata
+          run-id: ${{ steps.resolve.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read metadata
+        id: read
+        run: |
+          if [ -f metadata.json ]; then
+            HAS_CHANGES=$(python3 -c "import json; print(str(json.load(open('metadata.json'))['has_changes']).lower())")
+            IS_SLACK_TIME=$(python3 -c "import json; print(str(json.load(open('metadata.json'))['is_slack_time']).lower())")
+            DATE=$(python3 -c "import json; print(json.load(open('metadata.json'))['date'])")
+            echo "has_changes=${HAS_CHANGES}" >> $GITHUB_OUTPUT
+            echo "is_slack_time=${IS_SLACK_TIME}" >> $GITHUB_OUTPUT
+            echo "date=${DATE}" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "is_slack_time=false" >> $GITHUB_OUTPUT
+            echo "date=$(date +%Y%m%d_%H%M%S)" >> $GITHUB_OUTPUT
+          fi
+
+  # ──────────────────────────── Job 1: enrich-chuko ────────────────────────────
+  enrich-chuko:
+    needs: check
+    if: needs.check.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scraping-tool/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: pip install -r requirements.txt
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}
+
+      - name: Install Playwright browser
+        working-directory: scraping-tool
+        run: |
+          python3 -c "import playwright" 2>/dev/null && playwright install chromium --with-deps || echo "playwright インストールスキップ"
+
+      - name: Download scrape results
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-results
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/results/
+
+      - name: Download cache files
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-caches
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/data/
+        continue-on-error: true
+
+      - name: Prepare input
+        working-directory: scraping-tool
+        run: |
+          # raw → enrichment 用にリネーム
+          cp results/latest_raw.json results/latest.json
+
+      - name: Run enrichment
+        working-directory: scraping-tool
+        env:
+          SUMAI_USER: ${{ secrets.SUMAI_USER }}
+          SUMAI_PASS: ${{ secrets.SUMAI_PASS }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          chmod +x scripts/run_enrich.sh
+          ./scripts/run_enrich.sh --property-type chuko
+
+      - name: Upload enriched results
+        uses: actions/upload-artifact@v4
+        with:
+          name: enriched-chuko
+          path: |
+            scraping-tool/results/latest.json
+            scraping-tool/data/geocode_cache.json
+            scraping-tool/data/sumai_surfin_cache.json
+            scraping-tool/data/floor_plan_storage_manifest.json
+            scraping-tool/data/station_cache.json
+            scraping-tool/data/reverse_geocode_cache.json
+            scraping-tool/data/building_units.json
+          retention-days: 1
+
+  # ──────────────────────────── Job 2: enrich-shinchiku ────────────────────────────
+  enrich-shinchiku:
+    needs: check
+    if: needs.check.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scraping-tool/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: pip install -r requirements.txt
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}
+
+      - name: Install Playwright browser
+        working-directory: scraping-tool
+        run: |
+          python3 -c "import playwright" 2>/dev/null && playwright install chromium --with-deps || echo "playwright インストールスキップ"
+
+      - name: Download scrape results
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-results
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/results/
+
+      - name: Download cache files
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-caches
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/data/
+        continue-on-error: true
+
+      - name: Prepare input
+        working-directory: scraping-tool
+        run: |
+          if [ -f results/latest_shinchiku_raw.json ]; then
+            cp results/latest_shinchiku_raw.json results/latest_shinchiku.json
+          else
+            echo "新築データなし: スキップ"
+            exit 0
+          fi
+
+      - name: Run enrichment
+        working-directory: scraping-tool
+        env:
+          SUMAI_USER: ${{ secrets.SUMAI_USER }}
+          SUMAI_PASS: ${{ secrets.SUMAI_PASS }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -f results/latest_shinchiku.json ]; then
+            chmod +x scripts/run_enrich.sh
+            ./scripts/run_enrich.sh --property-type shinchiku
+          fi
+
+      - name: Upload enriched results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: enriched-shinchiku
+          path: |
+            scraping-tool/results/latest_shinchiku.json
+            scraping-tool/data/geocode_cache.json
+            scraping-tool/data/sumai_surfin_cache.json
+            scraping-tool/data/floor_plan_storage_manifest.json
+            scraping-tool/data/station_cache.json
+            scraping-tool/data/reverse_geocode_cache.json
+          retention-days: 1
+          if-no-files-found: warn
+
+  # ──────────────────────────── Job 3: build-transaction-feed ────────────────────────────
+  build-transaction-feed:
+    needs: check
+    if: needs.check.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scraping-tool/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: pip install -r requirements.txt
+
+      - name: Download cache files
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-caches
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/data/
+        continue-on-error: true
+
+      - name: Download scrape results for name reference
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-results
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/results/
+        continue-on-error: true
+
+      - name: Prepare references
+        working-directory: scraping-tool
+        run: |
+          # build_transaction_feed が参照する latest/latest_shinchiku を配置
+          [ -f results/latest_raw.json ] && cp results/latest_raw.json results/latest.json || true
+          [ -f results/latest_shinchiku_raw.json ] && cp results/latest_shinchiku_raw.json results/latest_shinchiku.json || true
+
+      - name: Build transaction feed
+        working-directory: scraping-tool
+        env:
+          REINFOLIB_API_KEY: ${{ secrets.REINFOLIB_API_KEY }}
+        run: |
+          if [ -n "$REINFOLIB_API_KEY" ]; then
+            python3 build_transaction_feed.py --quarters 20 --output results/transactions.json
+          else
+            echo "REINFOLIB_API_KEY 未設定のためスキップ"
+          fi
+
+      - name: Upload transaction feed
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transactions
+          path: scraping-tool/results/transactions.json
+          retention-days: 1
+          if-no-files-found: warn
+
+  # ──────────────────────────── Job 4: finalize ────────────────────────────
+  finalize:
+    needs: [check, enrich-chuko, enrich-shinchiku, build-transaction-feed]
+    if: "!cancelled() && needs.check.outputs.has_changes == 'true'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scraping-tool/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: |
+          pip install -r requirements.txt
+          pip install geopandas shapely fiona || echo "geopandas インストール失敗（GeoJSON 変換はスキップ）"
+
+      # 各ジョブの成果物をダウンロード (一部失敗OK)
+      - name: Download enriched chuko
+        uses: actions/download-artifact@v4
+        with:
+          name: enriched-chuko
+          path: scraping-tool/enriched-chuko/
+        continue-on-error: true
+
+      - name: Download enriched shinchiku
+        uses: actions/download-artifact@v4
+        with:
+          name: enriched-shinchiku
+          path: scraping-tool/enriched-shinchiku/
+        continue-on-error: true
+
+      - name: Download transactions
+        uses: actions/download-artifact@v4
+        with:
+          name: transactions
+          path: scraping-tool/transactions/
+        continue-on-error: true
+
+      - name: Download previous data
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-previous
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/results/
+        continue-on-error: true
+
+      - name: Download cache files
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-caches
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/data/
+        continue-on-error: true
+
+      - name: Run finalize
+        working-directory: scraping-tool
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          chmod +x scripts/run_finalize.sh
+          ./scripts/run_finalize.sh \
+            --is-slack-time "${{ needs.check.outputs.is_slack_time }}" \
+            --date "${{ needs.check.outputs.date }}"
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          DATE="${{ needs.check.outputs.date }}"
+          COUNT=$(jq length scraping-tool/results/latest.json 2>/dev/null || echo 0)
+
+          git add scraping-tool/results/
+          git add --ignore-missing \
+            scraping-tool/data/building_units.json \
+            scraping-tool/data/geocode_cache.json \
+            scraping-tool/data/sumai_surfin_cache.json \
+            scraping-tool/data/reinfolib_prices.json \
+            scraping-tool/data/reinfolib_trends.json \
+            scraping-tool/data/reinfolib_land_prices.json \
+            scraping-tool/data/estat_population.json \
+            scraping-tool/data/floor_plan_storage_manifest.json \
+            scraping-tool/data/station_cache.json \
+            scraping-tool/data/reverse_geocode_cache.json \
+            2>/dev/null || true
+          [ -d scraping-tool/results/risk_geojson ] && git add scraping-tool/results/risk_geojson/
+
+          if git diff --cached --quiet; then
+            echo "コミットする変更がありません"
+            exit 0
+          fi
+
+          git commit -m "Update listings: ${DATE}
+
+          取得件数: ${COUNT}件
+          レポート: scraping-tool/results/report/report.md
+          自動更新: GitHub Actions (enrich-and-report)" || exit 0
+
+          git stash --quiet 2>/dev/null || true
+
+          if git pull --rebase -X theirs origin ${{ github.ref_name }}; then
+            git push origin HEAD:refs/heads/${{ github.ref_name }}
+          else
+            echo "rebase 失敗: merge 方式にフォールバック" >&2
+            git rebase --abort 2>/dev/null || true
+            git pull --no-rebase -X ours origin ${{ github.ref_name }}
+            git push origin HEAD:refs/heads/${{ github.ref_name }}
+          fi
+
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-type: application/json' \
+              -d "{\"text\": \":rotating_light: *Enrich & Report 失敗*\nワークフロー: ${{ github.workflow }}\n実行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+          fi

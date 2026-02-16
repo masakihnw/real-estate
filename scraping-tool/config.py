@@ -38,8 +38,8 @@ BUILT_YEAR_MIN = datetime.date.today().year - 15
 # 駅徒歩: 8分以内
 WALK_MIN_MAX = 8
 
-# 総戸数: 50戸以上（一覧で取得できればフィルタに組み込む）
-TOTAL_UNITS_MIN = 50
+# 総戸数: 30戸以上（一覧で取得できればフィルタに組み込む）
+TOTAL_UNITS_MIN = 30
 
 # 路線: 山手線・メジャー私鉄などに限定。空のときは路線フィルタなし。
 # 最寄り路線名（station_line）にいずれかが含まれる物件のみ通過。

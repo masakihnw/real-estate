@@ -22,10 +22,10 @@ on:
           - 'land_prices'
           - 'population'
 
-# update-listings.yml と同じデータファイルをコミットする可能性があるため、
-# 両ワークフロー間の git 競合を防止する
+# 独自の concurrency group で update-listings / enrich-and-report と干渉しない。
+# git push 時の競合は rebase/merge フォールバックで対処。
 concurrency:
-  group: update-listings
+  group: update-reinfolib-cache
   cancel-in-progress: false
 
 jobs:
