@@ -280,7 +280,7 @@ struct ListingDetailView: View {
         let stations = listing.parsedStations
         if !stations.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                // メイン行：ラベル左、駅名+徒歩右（DetailRow と同じレイアウト）
+                // メイン行
                 Button {
                     if stations.count > 1 {
                         withAnimation(.easeInOut(duration: 0.25)) {
@@ -304,8 +304,7 @@ struct ListingDetailView: View {
                                 .foregroundStyle(.secondary)
                             }
                         }
-                        Text(stations[0].fullText)
-                            .font(ListingObjectStyle.detailValue)
+                        stationRow(stations[0])
                     }
                     .padding(12)
                     .listingGlassBackground()
@@ -316,19 +315,9 @@ struct ListingDetailView: View {
                 if isStationsExpanded && stations.count > 1 {
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(stations.dropFirst()) { station in
-                            HStack {
-                                Text(station.fullText)
-                                    .font(ListingObjectStyle.detailValue)
-                                Spacer()
-                                if let walk = station.walkMin {
-                                    Text("徒歩\(walk)分")
-                                        .font(.caption)
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
+                            stationRow(station)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
                             if station.id != stations.last?.id {
                                 Divider().padding(.leading, 12)
                             }
@@ -336,6 +325,34 @@ struct ListingDetailView: View {
                     }
                     .listingGlassBackground()
                     .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+            }
+        }
+    }
+
+    /// 駅情報1件分のレイアウト（路線名＋駅名・徒歩）
+    @ViewBuilder
+    private func stationRow(_ station: Listing.StationInfo) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            if !station.routeName.isEmpty {
+                Text(station.routeName)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            HStack {
+                if !station.stationName.isEmpty {
+                    Text(station.stationName)
+                        .font(ListingObjectStyle.detailValue)
+                } else {
+                    Text(station.fullText)
+                        .font(ListingObjectStyle.detailValue)
+                }
+                Spacer()
+                if let walk = station.walkMin {
+                    Text("徒歩\(walk)分")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
                 }
             }
         }

@@ -54,6 +54,7 @@
 		CC96986E6F49533736E0051D /* PropertyListingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */; };
 		D02597AD698F8E60CF1F11D4 /* WalkthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1FD6AB10F203FC324097D8 /* WalkthroughView.swift */; };
 		D0CB8E0312FD2887D70458A7 /* ListingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607511ACC91ACD538F163E71 /* ListingListView.swift */; };
+		D894CEAB397F8943B10687D6 /* TrimmedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19119F6570B5BC09CB87F0B2 /* TrimmedAsyncImage.swift */; };
 		DB0AB520BA62A5369467B414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97732299FBD4E61C33F84F0E /* Assets.xcassets */; };
 		E15EBCDC8733B11F8335BE72 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 5F1D26818CB6AB5F58F31BF3 /* GoogleSignIn */; };
 		E90E0D85B2F8D6947FC40CA2 /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC96D67CAA5AB454825D2D8 /* Listing.swift */; };
@@ -71,6 +72,7 @@
 		0E59A9E4A8BFE0ABFF87EBAE /* RealEstateApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RealEstateApp.entitlements; sourceTree = "<group>"; };
 		18B9F19E6E3E1CFCE1CCEFC8 /* ScrapingLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogView.swift; sourceTree = "<group>"; };
 		18F421EAE268593C2F547849 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
+		19119F6570B5BC09CB87F0B2 /* TrimmedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrimmedAsyncImage.swift; sourceTree = "<group>"; };
 		1B7EB56BA37D75701E3BF605 /* TransactionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionRecord.swift; sourceTree = "<group>"; };
 		1FD386389CA29A884559D46A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		283EFC574DD3B5C822974FB1 /* RealEstateApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RealEstateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -232,6 +234,7 @@
 				BB2B439F060EE0745A8D2196 /* TransactionListView.swift */,
 				E6DC892696F0E098888C28B1 /* TransactionMapView.swift */,
 				EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */,
+				19119F6570B5BC09CB87F0B2 /* TrimmedAsyncImage.swift */,
 				4E1FD6AB10F203FC324097D8 /* WalkthroughView.swift */,
 			);
 			path = Views;
@@ -364,6 +367,7 @@
 				052D2F6975980CCE8DDA01B8 /* TransactionRecord.swift in Sources */,
 				EA48E6A5AA87F02E06F986C8 /* TransactionStore.swift in Sources */,
 				7C2DC3F1723DF5B611734921 /* TransactionTabView.swift in Sources */,
+				D894CEAB397F8943B10687D6 /* TrimmedAsyncImage.swift in Sources */,
 				D02597AD698F8E60CF1F11D4 /* WalkthroughView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -405,7 +409,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 35;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -513,7 +517,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 35;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

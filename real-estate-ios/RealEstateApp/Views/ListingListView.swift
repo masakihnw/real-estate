@@ -692,37 +692,9 @@ struct ListingRowView: View {
     var body: some View {
         Button(action: onTap) {
             HStack(alignment: .top, spacing: 10) {
-                // サムネイル画像（外観写真を優先表示・元画像の比率を維持）
+                // サムネイル画像（外観写真を優先・余白自動トリミング）
                 if let thumbURL = listing.thumbnailURL {
-                    AsyncImage(url: thumbURL) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 100)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                        case .failure:
-                            ZStack {
-                                Color(.systemGray6)
-                                Image(systemName: "building.2")
-                                    .font(.title3)
-                                    .foregroundStyle(.quaternary)
-                            }
-                            .frame(width: 100, height: 75)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                        case .empty:
-                            ZStack {
-                                Color(.systemGray6)
-                                ProgressView()
-                                    .controlSize(.small)
-                            }
-                            .frame(width: 100, height: 75)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
+                    TrimmedAsyncImage(url: thumbURL, width: 100)
                 }
 
             VStack(alignment: .leading, spacing: 4) {
