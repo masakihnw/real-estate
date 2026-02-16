@@ -81,8 +81,12 @@ struct ContentView: View {
             if store.lastFetchedAt == nil || allListings.isEmpty {
                 await store.refresh(modelContext: modelContext)
             }
-            // 成約実績も初回は自動取得
-            if transactionStore.lastFetchedAt == nil {
+            // 成約実績: 初回 or SwiftData が空なら自動取得
+            // スキーマバージョン変更で SwiftData がリセットされても lastFetchedAt は
+            // UserDefaults に残るため、件数チェックで空状態を検出する（Listing と同様）。
+            let txDescriptor = FetchDescriptor<TransactionRecord>()
+            let txCount = (try? modelContext.fetchCount(txDescriptor)) ?? 0
+            if transactionStore.lastFetchedAt == nil || txCount == 0 {
                 await transactionStore.refresh(modelContext: modelContext)
             }
         }
