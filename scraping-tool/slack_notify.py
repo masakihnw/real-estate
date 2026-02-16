@@ -49,29 +49,25 @@ def format_diff_message(
             lines.append(f"  ❌ 削除: {removed_count}件")
         lines.append("")
 
-    # 新規物件（最大5件）
+    # 新規物件（全件表示）
     if diff["new"]:
         lines.append("*🆕 新規物件*")
-        for r in sorted(diff["new"], key=lambda x: x.get("price_man") or 0)[:5]:
+        for r in sorted(diff["new"], key=lambda x: x.get("price_man") or 0):
             name = r.get("name", "")[:40]
             price = format_price(r.get("price_man"))
             layout = r.get("layout", "-")
             area_str = format_area(r.get("area_m2"))
             lines.append(f"  • {name}")
             lines.append(f"    {price} | {layout} | {area_str}")
-        if len(diff["new"]) > 5:
-            lines.append(f"  ... 他 {len(diff['new']) - 5}件")
         lines.append("")
 
-    # 削除された物件（最大5件）
+    # 削除された物件（全件表示）
     if diff["removed"]:
         lines.append("*❌ 削除された物件*")
-        for r in diff["removed"][:5]:
+        for r in diff["removed"]:
             name = r.get("name", "")[:40]
             price = format_price(r.get("price_man"))
             lines.append(f"  • {name} ({price})")
-        if len(diff["removed"]) > 5:
-            lines.append(f"  ... 他 {len(diff['removed']) - 5}件")
         lines.append("")
 
     if new_count == 0 and removed_count == 0:
@@ -274,28 +270,24 @@ def build_slack_message_from_listings(
         lines.append(f"  ❌ *削除*: {rem_c}件")
         lines.append("")
 
-    # 新規追加された物件（区に関係なく一番上）
+    # 新規追加された物件（全件表示、価格昇順）
     if diff_new_a:
         lines.append("*🆕 新規追加された物件*")
-        for r in sorted(diff_new_a, key=lambda x: x.get("price_man") or 0)[:10]:
+        for r in sorted(diff_new_a, key=lambda x: x.get("price_man") or 0):
             url = r.get("url", "")
             lines.append(_listing_line_slack(r, url))
-        if len(diff_new_a) > 10:
-            lines.append(f"  … 他 {len(diff_new_a) - 10}件")
         lines.append("")
 
-    # 削除された物件（最大5件）。戸数・階数・権利を必ず含める
+    # 削除された物件（全件表示）。戸数・階数・権利を必ず含める
     if diff_removed_a:
         lines.append("*❌ 削除された物件*")
-        for r in diff_removed_a[:5]:
+        for r in diff_removed_a:
             floor_str = format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure"))
             units = format_total_units(r.get("total_units"))
             ownership_str = format_ownership(r.get("ownership"))
             map_url_val = google_maps_url(r.get("name") or best_address(r))
             map_part = f" ｜ <{map_url_val}|Map>" if map_url_val else ""
             lines.append(f"• {(r.get('name') or '')[:28]} ｜ {format_price(r.get('price_man'))} ｜ {floor_str} ｜ {units} ｜ {ownership_str}{map_part}")
-        if len(diff_removed_a) > 5:
-            lines.append(f"  … 他 {len(diff_removed_a) - 5}件")
         lines.append("")
 
     # 末尾にもレポート・地図リンク（冒頭で既に出しているが、長文の最後にも）
