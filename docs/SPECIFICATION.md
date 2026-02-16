@@ -1201,39 +1201,67 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 ### 5.2 スクレイピングパイプライン
 
+パイプラインは5フェーズ構成（Phase 1 / 2a / 2b / 2c / 3）。共有キャッシュへの書き込みは Phase 2a で順次実行し、読み取り専用の enricher は Phase 2b で3トラック並列実行する。各ステップの所要時間は自動計測され、ログ末尾にサマリーとして出力される。
+
 ```
-1. main.py（スクレイピング実行）
-   ├── suumo_scraper.py       → SUUMO 中古物件取得
-   ├── suumo_shinchiku_scraper.py → SUUMO 新築物件取得
-   ├── (homes_scraper.py)      → HOME'S 中古（現在無効）
-   └── (homes_shinchiku_scraper.py) → HOME'S 新築（現在無効）
-       ↓ フィルタ・重複除去
-2. results/latest.json, results/latest_shinchiku.json 出力
+Phase 1: スクレイピング（中古・新築を並列実行）
+   ├── main.py --property-type chuko     → SUUMO 中古物件取得  ─┐
+   └── main.py --property-type shinchiku → SUUMO 新築物件取得  ─┤ 並列
+       ↓ フィルタ・重複除去                                      ┘
    check_changes.py → 前回との差分チェック（変更なし → 早期終了）
+   results/latest.json, results/latest_shinchiku.json 出力
+   convert_risk_geojson.py → 地域危険度 GeoJSON（初回のみ）
        ↓
-3. エンリッチメント（update_listings.sh 内で順次実行）
-   ├── （latest.json / latest_shinchiku.json を .backup に退避後、enricher 実行）
-   ├── （enrichment 後に JSON 検証；破損時は .backup から復元）
-   ├── build_units_cache.py   → 総戸数・階数・権利形態キャッシュ更新（SUUMO 中古詳細ページ取得）
-   ├── merge_detail_cache.py  → 詳細キャッシュを latest.json にマージ
-   ├── shinchiku_detail_enricher.py → 新築マンション詳細ページから物件写真・間取り図取得（サムネイル + 間取りタブ条件フィルタ）
-   ├── sumai_surfin_enricher.py → 住まいサーフィン評価付与（ss_address 取得含む）
-   ├── build_map_viewer.py    → 地図ビューア生成（中古+新築、ピン色: 青=中古/緑=新築。argparse: json_path, --previous, --shinchiku, --limit, --output）
-   ├── embed_geocode.py       → ジオコーディング（住所→座標、ss_address を優先使用）
-   ├── geocode_cross_validator.py → 座標の相互検証 + 修正試行
-   ├── hazard_enricher.py     → ハザード情報付与
-   ├── floor_plan_enricher.py → 間取り図画像URL付与（HOME'S 無効化により現在は自動スキップ。中古SUUMOはbuild_units_cache経由、新築は shinchiku_detail_enricher 経由で付与済み）
-   ├── upload_floor_plans.py  → 間取り図画像・物件写真をFirebase Storageにアップロード（URL永続化）
-   ├── commute_enricher.py    → 通勤時間付与（駅名ベースのドアtoドア概算）
-   ├── reinfolib_enricher.py  → 不動産情報ライブラリ成約相場付与（事前構築キャッシュ参照）
-   └── estat_enricher.py      → e-Stat 人口動態付与（事前構築キャッシュ参照）
+Phase 2a: 共有キャッシュ書き込み enricher（順次実行で競合回避）
+   ├── build_units_cache.py (中古)          ─┐ 並列（別キャッシュ）
+   ├── shinchiku_detail_enricher.py (新築)   ─┘
+   ├── merge_detail_cache.py (中古)
+   ├── sumai_surfin_enricher.py (中古)  ← sumai_surfin_cache.json 書き込み
+   ├── sumai_surfin_enricher.py (新築)  ← 同上（順次で安全）
+   ├── build_map_viewer.py (中古+新築)  ← geocode_cache.json 書き込み
+   ├── embed_geocode.py (中古+新築)     ← geocode_cache.json 読み取りのみ
+   ├── geocode.py (バリデーション)
+   ├── geocode_cross_validator.py (中古) ← geocode_cache.json 等の書き込み
+   └── geocode_cross_validator.py (新築) ← 同上（順次で安全）
        ↓
-4. generate_report.py → Markdown レポート生成
-5. send_push.py       → FCM プッシュ通知（新着ありの場合）
-6. upload_scraping_log.py → Firestore にログ保存
-7. slack_notify.py    → Slack 通知（1日1回 6:30 JST のみ）
-8. git commit & push
+Phase 2b: 読み取り専用 enricher（3トラック並列実行）
+   Track A: 中古（latest.json のみ操作） ──────────┐
+   ├── hazard_enricher.py     → ハザード情報       │
+   ├── floor_plan_enricher.py → 間取り図画像URL     │ 3トラック
+   ├── commute_enricher.py    → 通勤時間           │ 並列実行
+   ├── reinfolib_enricher.py  → 不動産情報ライブラリ│
+   └── estat_enricher.py      → e-Stat 人口動態    │
+                                                    │
+   Track B: 新築（latest_shinchiku.json のみ操作） ─┤
+   ├── hazard_enricher.py     → ハザード情報       │
+   ├── floor_plan_enricher.py → 間取り図画像URL     │
+   ├── commute_enricher.py    → 通勤時間           │
+   ├── reinfolib_enricher.py  → 不動産情報ライブラリ│
+   └── estat_enricher.py      → e-Stat 人口動態    │
+                                                    │
+   Track C: 成約実績フィード（完全独立） ───────────┘
+   └── build_transaction_feed.py
+       ↓
+Phase 2c: 共有マニフェスト書き込み（順次実行）
+   ├── upload_floor_plans.py (中古)  ← floor_plan_storage_manifest.json
+   └── upload_floor_plans.py (新築)  ← 同上（順次で安全）
+       ↓
+Phase 3: 合流
+   ├── JSON バリデーション（破損時はバックアップから復元）
+   ├── generate_report.py → Markdown レポート最終生成
+   ├── send_push.py       → FCM プッシュ通知（新着ありの場合）
+   ├── upload_scraping_log.py → Firestore にログ保存
+   ├── slack_notify.py    → Slack 通知（1日1回 6:30 JST のみ）
+   └── git commit & push
 ```
+
+> **共有キャッシュの安全性設計**: `sumai_surfin_cache.json`、`geocode_cache.json`、`station_cache.json`、`reverse_geocode_cache.json`、`floor_plan_storage_manifest.json` は複数の enricher が読み書きする共有リソース。これらに書き込むステップは Phase 2a / 2c で**順次実行**し、並列書き込みによるデータロスを防止する。Phase 2b のトラックはこれらのキャッシュを**読み取りのみ**で使用するため安全に並列化可能。
+
+> **Phase 2a 内の部分並列化**: `build_units_cache.py`（`data/html_cache/`）と `shinchiku_detail_enricher.py`（`data/shinchiku_html_cache/`）は別々のキャッシュディレクトリを使用するため、Phase 2a 内で並列実行する。`build_map_viewer.py` は中古・新築両方の `ss_address` が確定した後に実行されるため、ジオコーディング精度が向上する。
+
+> **プロセス管理**: バックグラウンドプロセスの PID を `register_bg_pid` で登録し、ERR trap 発生時に `kill_bg_pids` で確実に停止する。Phase 1 で中古スクレイピングが失敗した場合、実行中の新築プロセスも停止してから終了する。
+
+> **所要時間計測**: `record_timing` 関数が各ステップの所要時間をフェーズ別 TSV ファイル（`results/.timing/*.tsv`）に記録し、`print_timing_summary` がパイプライン終了時（正常終了・エラー中断とも）にサマリーテーブルを出力する。
 
 > **Note**: `commute_enricher.py` はパイプラインで有効化済み。駅名ベースのドアtoドア概算を `commute_info` として JSON に付与し、iOS アプリでの即時表示に使用。iOS 実機では MKDirections でより正確な経路を取得して上書き。
 
@@ -1808,7 +1836,7 @@ property_images/{imageId}    → 認証済みユーザーのみ読み取り
 
 | 項目 | 値 | 備考 |
 |------|------|------|
-| **timeout-minutes** | 180 | 23区全スクレイピング + enrichment パイプラインに十分な余裕 |
+| **timeout-minutes** | 360 | GitHub Actions 最大値（6時間）。23区全スクレイピング + enrichment パイプラインが3時間超になるケースに対応 |
 | **同時実行制御** | `cancel-in-progress: false` | 実行中のジョブが完了するまで新規実行はキュー待機 |
 
 #### ジョブフロー
@@ -1817,25 +1845,30 @@ property_images/{imageId}    → 認証済みユーザーのみ読み取り
 1. actions/checkout
 2. actions/setup-python@v5 (Python 3.9)
 3. pip install -r scraping-tool/requirements.txt
-4. scripts/update_listings.sh --no-git
-   ├── main.py（スクレイピング）
+4. scripts/update_listings.sh --no-git（5フェーズパイプライン）
+   Phase 1: スクレイピング（中古 + 新築を並列実行）
+   ├── main.py --property-type chuko  ─┐ 並列
+   └── main.py --property-type shinchiku ┘
    ├── check_changes.py（差分チェック → 変更なしなら早期終了）
-   ├── build_units_cache.py（中古: 総戸数・階数・権利形態・間取り図・物件写真キャッシュ更新）
-   ├── merge_detail_cache.py（中古: 詳細キャッシュマージ）
-   ├── shinchiku_detail_enricher.py（新築: 物件写真・間取り図取得。間取りタブから条件合致分をフィルタ）
-   ├── sumai_surfin_enricher.py（住まいサーフィン + ss_address 取得）
-   ├── build_map_viewer.py（地図ビューア生成 + ジオコーディング）
-   ├── embed_geocode.py（座標埋め込み）
-   ├── geocode_cross_validator.py（座標相互検証 + 修正）
-   ├── hazard_enricher.py（ハザード情報）
-   ├── floor_plan_enricher.py（間取り図画像URL取得。HOME'S 無効化により現在自動スキップ）
-   ├── upload_floor_plans.py（間取り図画像・物件写真→Firebase Storageアップロード）
-   ├── reinfolib_enricher.py（不動産情報ライブラリ相場）
-   ├── estat_enricher.py（e-Stat 人口動態）
-   ├── generate_report.py（レポート生成）
+       ↓
+   Phase 2a: 共有キャッシュ書き込み enricher（順次実行）
+   ├── build_units_cache + shinchiku_detail_enricher（並列: 別キャッシュ）
+   ├── merge_detail_cache
+   ├── sumai_surfin (中古 → 新築: 順次)
+   └── geocoding pipeline (build_map_viewer → embed_geocode → cross_validator)
+       ↓
+   Phase 2b: 読み取り専用 enricher（3トラック並列実行）
+   ├── Track A（中古）: hazard → floor_plan → commute → reinfolib → estat
+   ├── Track B（新築）: hazard → floor_plan → commute → reinfolib → estat
+   └── Track C: build_transaction_feed
+       ↓
+   Phase 2c: 共有マニフェスト書き込み（順次実行）
+   └── upload_floor_plans (中古 → 新築)
+       ↓
+   Phase 3: 合流
+   ├── JSON バリデーション + generate_report.py
    ├── send_push.py（FCM プッシュ通知）
-   ├── build_transaction_feed.py（成約実績フィード構築、REINFOLIB_API_KEY 設定時のみ）
-   └── upload_scraping_log.py（実行ログ → Firestore）
+   └── upload_scraping_log.py（実行ログ + 所要時間サマリー → Firestore）
 5. 変更あり + Slack 通知タイム → slack_notify.py（Slack 通知、1日1回 6:30 JST のみ）
 6. 変更あり → git commit & push
 ```
