@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-17  
+> **最終更新**: 2026-02-18  
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -325,7 +325,7 @@ Sheet として表示。一覧画面から開く場合は `ListingDetailPagerVie
 | ⑨-b | **周辺相場（住まいサーフィン）** | `hasSurroundingProperties` の場合のみ。周辺中古マンションの相場一覧（折りたたみ） |
 | ⑩ | **値上がり・含み益シミュレーション** | `hasSimulationData` の場合のみ。5年/10年の楽観・標準・悲観の3シナリオ + 含み益チャート |
 | ⑪ | **成約相場との比較** | `hasMarketData` の場合のみ。MarketDataSectionView で成約データと比較表示 |
-| ⑫ | **エリア人口動態** | `hasPopulationData` の場合のみ。PopulationSectionView で人口推移を表示 |
+| ⑫ | **エリア人口動態** | `hasPopulationData` の場合のみ。PopulationSectionView で人口推移・高齢化率推移を表示 |
 | ⑬ | **ハザード情報** | `hasHazardData` の場合のみ。洪水、内水、土砂、高潮、津波、液状化 の各リスクレベル |
 | ⑭ | **外部リンク** | SUUMO / HOME'S 詳細ページ、住まいサーフィンページ。掲載終了時は掲載終了メッセージに置換 |
 
@@ -977,8 +977,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 50 | 人口・世帯数サマリー | 閲覧 | 区の人口、世帯数、前年比、5年変動を4カラムで表示 |
+| 50 | 人口・世帯数・高齢化率サマリー | 閲覧 | 区の人口、世帯数、高齢化率、前年比、5年変動を3カラムグリッドで表示。高齢化率は `hasAgingData` の場合のみ表示（25%以上: オレンジ、20%以上: デフォルト、20%未満: ポジティブカラー） |
 | 51 | 人口推移チャート | 閲覧 | 区の人口推移を折れ線+エリアチャートで表示（monotone 補間）。AreaMark は yMin 基準の明示的ベースライン、Y軸ラベルは stride に応じた動的フォーマット（≥1→整数万、≥0.1→小数1桁万、その他→小数2桁万）でコンパクト表示 |
+| 52 | 高齢化率推移チャート | 閲覧 | `hasAgingData` の場合のみ。全国平均（灰色破線）・23区平均（青破線）・当該区（アクセントカラー実線）の3本折れ線を国勢調査5年間隔（2000-2020）で表示。Y軸は%表示、凡例をチャート下部に配置 |
 
 #### ハザード情報セクション
 
@@ -1402,9 +1403,10 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 | 項目 | 詳細 |
 |------|------|
-| **データソース** | `data/estat_population.json`（事前構築キャッシュ） |
-| **付与データ** | 区の人口、世帯数、前年比、5年変動、年次推移 |
-| **キャッシュ構築** | `estat_population_builder.py`（別ワークフローで実行） |
+| **データソース** | `data/estat_population.json` + `data/estat_aging.json`（事前構築キャッシュ） |
+| **付与データ** | 区の人口、世帯数、前年比、5年変動、年次推移、高齢化率（当該区・全国平均・23区平均の推移） |
+| **キャッシュ構築** | `estat_population_builder.py`（人口・世帯数）、`estat_aging_builder.py`（高齢化率）（別ワークフローで実行） |
+| **高齢化率データ** | 国勢調査（2000, 2005, 2010, 2015, 2020）の年齢3区分データから65歳以上人口割合を取得。全国・23区平均・区別の3系列 |
 
 #### 5.6.5 間取り図・物件写真エンリッチャー
 
@@ -1673,7 +1675,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `hazardInfo` | String? | ハザード情報 JSON |
 | `commuteInfoJSON` | String? | 通勤時間情報 JSON（パイプラインの `commute_info` から初期値を取り込み、MKDirections で上書き可能） |
 | `reinfolibMarketData` | String? | 不動産情報ライブラリの成約価格相場データ JSON（パイプライン側で付与） |
-| `estatPopulationData` | String? | e-Stat（総務省統計局）の人口・世帯数データ JSON（パイプライン側で付与） |
+| `estatPopulationData` | String? | e-Stat（総務省統計局）の人口・世帯数・高齢化率データ JSON（パイプライン側で付与）。高齢化率は国勢調査5年ごとの全国平均・23区平均・当該区の3系列推移を含む |
 
 ### 6.2 TransactionRecord（SwiftData @Model）
 
@@ -1929,6 +1931,7 @@ check → 変更なしなら全後続ジョブ skip
 | 2 | `fetch_station_prices.py` → `data/station_price_history.json` |
 | 3 | `reinfolib_land_price_builder.py` → `data/reinfolib_land_prices.json` |
 | 4 | `estat_population_builder.py` → `data/estat_population.json` |
+| 5 | `estat_aging_builder.py` → `data/estat_aging.json` |
 
 #### 必要なシークレット
 
@@ -2089,7 +2092,7 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | `FIREBASE_PROJECT_ID` | FCM フォールバック | send_push.py |
 | `SLACK_WEBHOOK_URL` | Slack Webhook URL | GitHub Actions, slack_notify.py |
 | `REINFOLIB_API_KEY` | 不動産情報ライブラリ API キー | update-listings.yml, update-reinfolib-cache.yml, reinfolib_cache_builder.py, fetch_station_prices.py, build_transaction_feed.py |
-| `ESTAT_API_KEY` | e-Stat アプリケーション ID | update-reinfolib-cache.yml, estat_population_builder.py |
+| `ESTAT_API_KEY` | e-Stat アプリケーション ID | update-reinfolib-cache.yml, estat_population_builder.py, estat_aging_builder.py |
 
 ---
 
