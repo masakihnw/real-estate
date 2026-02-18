@@ -1,0 +1,625 @@
+{
+  "national_aging_history": [
+    {
+      "year": "2000",
+      "aging_rate": 17.3
+    },
+    {
+      "year": "2005",
+      "aging_rate": 20.2
+    },
+    {
+      "year": "2010",
+      "aging_rate": 23.0
+    },
+    {
+      "year": "2015",
+      "aging_rate": 26.6
+    },
+    {
+      "year": "2020",
+      "aging_rate": 28.6
+    }
+  ],
+  "tokyo23_avg_aging_history": [
+    {
+      "year": "2000",
+      "aging_rate": 17.5
+    },
+    {
+      "year": "2005",
+      "aging_rate": 18.9
+    },
+    {
+      "year": "2010",
+      "aging_rate": 20.2
+    },
+    {
+      "year": "2015",
+      "aging_rate": 21.4
+    },
+    {
+      "year": "2020",
+      "aging_rate": 21.1
+    }
+  ],
+  "by_ward": {
+    "千代田区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 17.0
+        },
+        {
+          "year": "2005",
+          "aging_rate": 18.0
+        },
+        {
+          "year": "2010",
+          "aging_rate": 19.3
+        },
+        {
+          "year": "2015",
+          "aging_rate": 19.9
+        },
+        {
+          "year": "2020",
+          "aging_rate": 18.9
+        }
+      ],
+      "latest_aging_rate": 18.9
+    },
+    "中央区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 19.5
+        },
+        {
+          "year": "2005",
+          "aging_rate": 17.5
+        },
+        {
+          "year": "2010",
+          "aging_rate": 16.2
+        },
+        {
+          "year": "2015",
+          "aging_rate": 16.7
+        },
+        {
+          "year": "2020",
+          "aging_rate": 16.3
+        }
+      ],
+      "latest_aging_rate": 16.3
+    },
+    "港区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 18.0
+        },
+        {
+          "year": "2005",
+          "aging_rate": 17.7
+        },
+        {
+          "year": "2010",
+          "aging_rate": 17.3
+        },
+        {
+          "year": "2015",
+          "aging_rate": 17.9
+        },
+        {
+          "year": "2020",
+          "aging_rate": 17.1
+        }
+      ],
+      "latest_aging_rate": 17.1
+    },
+    "新宿区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 16.8
+        },
+        {
+          "year": "2005",
+          "aging_rate": 17.9
+        },
+        {
+          "year": "2010",
+          "aging_rate": 19.2
+        },
+        {
+          "year": "2015",
+          "aging_rate": 20.0
+        },
+        {
+          "year": "2020",
+          "aging_rate": 19.3
+        }
+      ],
+      "latest_aging_rate": 19.3
+    },
+    "文京区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 16.6
+        },
+        {
+          "year": "2005",
+          "aging_rate": 17.5
+        },
+        {
+          "year": "2010",
+          "aging_rate": 18.7
+        },
+        {
+          "year": "2015",
+          "aging_rate": 19.5
+        },
+        {
+          "year": "2020",
+          "aging_rate": 18.9
+        }
+      ],
+      "latest_aging_rate": 18.9
+    },
+    "台東区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 22.2
+        },
+        {
+          "year": "2005",
+          "aging_rate": 23.0
+        },
+        {
+          "year": "2010",
+          "aging_rate": 23.7
+        },
+        {
+          "year": "2015",
+          "aging_rate": 24.3
+        },
+        {
+          "year": "2020",
+          "aging_rate": 23.9
+        }
+      ],
+      "latest_aging_rate": 23.9
+    },
+    "墨田区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 19.4
+        },
+        {
+          "year": "2005",
+          "aging_rate": 20.8
+        },
+        {
+          "year": "2010",
+          "aging_rate": 22.2
+        },
+        {
+          "year": "2015",
+          "aging_rate": 23.2
+        },
+        {
+          "year": "2020",
+          "aging_rate": 22.9
+        }
+      ],
+      "latest_aging_rate": 22.9
+    },
+    "江東区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 16.6
+        },
+        {
+          "year": "2005",
+          "aging_rate": 18.0
+        },
+        {
+          "year": "2010",
+          "aging_rate": 19.3
+        },
+        {
+          "year": "2015",
+          "aging_rate": 21.0
+        },
+        {
+          "year": "2020",
+          "aging_rate": 21.3
+        }
+      ],
+      "latest_aging_rate": 21.3
+    },
+    "品川区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 17.3
+        },
+        {
+          "year": "2005",
+          "aging_rate": 18.6
+        },
+        {
+          "year": "2010",
+          "aging_rate": 19.9
+        },
+        {
+          "year": "2015",
+          "aging_rate": 21.2
+        },
+        {
+          "year": "2020",
+          "aging_rate": 20.7
+        }
+      ],
+      "latest_aging_rate": 20.7
+    },
+    "目黒区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 15.5
+        },
+        {
+          "year": "2005",
+          "aging_rate": 17.0
+        },
+        {
+          "year": "2010",
+          "aging_rate": 18.6
+        },
+        {
+          "year": "2015",
+          "aging_rate": 19.7
+        },
+        {
+          "year": "2020",
+          "aging_rate": 19.3
+        }
+      ],
+      "latest_aging_rate": 19.3
+    },
+    "大田区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 17.6
+        },
+        {
+          "year": "2005",
+          "aging_rate": 19.3
+        },
+        {
+          "year": "2010",
+          "aging_rate": 21.2
+        },
+        {
+          "year": "2015",
+          "aging_rate": 22.7
+        },
+        {
+          "year": "2020",
+          "aging_rate": 22.8
+        }
+      ],
+      "latest_aging_rate": 22.8
+    },
+    "世田谷区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 15.3
+        },
+        {
+          "year": "2005",
+          "aging_rate": 16.7
+        },
+        {
+          "year": "2010",
+          "aging_rate": 18.1
+        },
+        {
+          "year": "2015",
+          "aging_rate": 19.6
+        },
+        {
+          "year": "2020",
+          "aging_rate": 19.7
+        }
+      ],
+      "latest_aging_rate": 19.7
+    },
+    "渋谷区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 16.2
+        },
+        {
+          "year": "2005",
+          "aging_rate": 17.3
+        },
+        {
+          "year": "2010",
+          "aging_rate": 18.6
+        },
+        {
+          "year": "2015",
+          "aging_rate": 19.1
+        },
+        {
+          "year": "2020",
+          "aging_rate": 18.3
+        }
+      ],
+      "latest_aging_rate": 18.3
+    },
+    "中野区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 16.5
+        },
+        {
+          "year": "2005",
+          "aging_rate": 18.6
+        },
+        {
+          "year": "2010",
+          "aging_rate": 20.3
+        },
+        {
+          "year": "2015",
+          "aging_rate": 21.2
+        },
+        {
+          "year": "2020",
+          "aging_rate": 20.6
+        }
+      ],
+      "latest_aging_rate": 20.6
+    },
+    "杉並区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 16.3
+        },
+        {
+          "year": "2005",
+          "aging_rate": 18.3
+        },
+        {
+          "year": "2010",
+          "aging_rate": 20.0
+        },
+        {
+          "year": "2015",
+          "aging_rate": 21.3
+        },
+        {
+          "year": "2020",
+          "aging_rate": 20.9
+        }
+      ],
+      "latest_aging_rate": 20.9
+    },
+    "豊島区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 17.7
+        },
+        {
+          "year": "2005",
+          "aging_rate": 19.0
+        },
+        {
+          "year": "2010",
+          "aging_rate": 20.4
+        },
+        {
+          "year": "2015",
+          "aging_rate": 20.7
+        },
+        {
+          "year": "2020",
+          "aging_rate": 19.3
+        }
+      ],
+      "latest_aging_rate": 19.3
+    },
+    "北区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 21.0
+        },
+        {
+          "year": "2005",
+          "aging_rate": 22.8
+        },
+        {
+          "year": "2010",
+          "aging_rate": 24.3
+        },
+        {
+          "year": "2015",
+          "aging_rate": 25.2
+        },
+        {
+          "year": "2020",
+          "aging_rate": 25.0
+        }
+      ],
+      "latest_aging_rate": 25.0
+    },
+    "荒川区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 20.9
+        },
+        {
+          "year": "2005",
+          "aging_rate": 22.1
+        },
+        {
+          "year": "2010",
+          "aging_rate": 23.2
+        },
+        {
+          "year": "2015",
+          "aging_rate": 24.1
+        },
+        {
+          "year": "2020",
+          "aging_rate": 23.7
+        }
+      ],
+      "latest_aging_rate": 23.7
+    },
+    "板橋区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 17.0
+        },
+        {
+          "year": "2005",
+          "aging_rate": 19.0
+        },
+        {
+          "year": "2010",
+          "aging_rate": 21.0
+        },
+        {
+          "year": "2015",
+          "aging_rate": 22.5
+        },
+        {
+          "year": "2020",
+          "aging_rate": 22.6
+        }
+      ],
+      "latest_aging_rate": 22.6
+    },
+    "練馬区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 15.3
+        },
+        {
+          "year": "2005",
+          "aging_rate": 17.7
+        },
+        {
+          "year": "2010",
+          "aging_rate": 20.0
+        },
+        {
+          "year": "2015",
+          "aging_rate": 22.0
+        },
+        {
+          "year": "2020",
+          "aging_rate": 22.3
+        }
+      ],
+      "latest_aging_rate": 22.3
+    },
+    "足立区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 18.0
+        },
+        {
+          "year": "2005",
+          "aging_rate": 20.5
+        },
+        {
+          "year": "2010",
+          "aging_rate": 23.1
+        },
+        {
+          "year": "2015",
+          "aging_rate": 25.2
+        },
+        {
+          "year": "2020",
+          "aging_rate": 25.7
+        }
+      ],
+      "latest_aging_rate": 25.7
+    },
+    "葛飾区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 18.4
+        },
+        {
+          "year": "2005",
+          "aging_rate": 20.5
+        },
+        {
+          "year": "2010",
+          "aging_rate": 22.6
+        },
+        {
+          "year": "2015",
+          "aging_rate": 24.2
+        },
+        {
+          "year": "2020",
+          "aging_rate": 24.5
+        }
+      ],
+      "latest_aging_rate": 24.5
+    },
+    "江戸川区": {
+      "aging_rate_history": [
+        {
+          "year": "2000",
+          "aging_rate": 14.3
+        },
+        {
+          "year": "2005",
+          "aging_rate": 16.3
+        },
+        {
+          "year": "2010",
+          "aging_rate": 18.5
+        },
+        {
+          "year": "2015",
+          "aging_rate": 20.8
+        },
+        {
+          "year": "2020",
+          "aging_rate": 21.5
+        }
+      ],
+      "latest_aging_rate": 21.5
+    }
+  },
+  "updated_at": "2026-02-18T16:03:51",
+  "data_source": "e-Stat 国勢調査（総務省）"
+}

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-物件 JSON に e-Stat 人口動態データを付与する enricher。
+物件 JSON に e-Stat 人口動態データ・高齢化率データを付与する enricher。
 
-data/estat_population.json を参照し、各物件に以下のフィールドを追加する:
+data/estat_population.json + data/estat_aging.json を参照し、
+各物件に以下のフィールドを追加する:
 
   estat_population_data (JSON文字列):
     {
@@ -11,14 +12,12 @@ data/estat_population.json を参照し、各物件に以下のフィールド�
       "latest_households": 287840,
       "pop_change_1yr_pct": 1.5,
       "pop_change_5yr_pct": 7.8,
-      "population_history": [
-        {"year": "2020", "population": 524310},
-        ...
-      ],
-      "household_history": [
-        {"year": "2020", "households": 271500},
-        ...
-      ],
+      "population_history": [...],
+      "household_history": [...],
+      "aging_rate_history": [{"year": "2000", "aging_rate": 16.6}, ...],
+      "latest_aging_rate": 21.3,
+      "national_aging_history": [{"year": "2000", "aging_rate": 17.3}, ...],
+      "tokyo23_avg_aging_history": [{"year": "2000", "aging_rate": 17.5}, ...],
       "data_source": "e-Stat（総務省統計局）"
     }
 
@@ -41,6 +40,7 @@ from typing import Optional
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 POPULATION_CACHE = os.path.join(DATA_DIR, "estat_population.json")
+AGING_CACHE = os.path.join(DATA_DIR, "estat_aging.json")
 
 
 def load_json_file(path: str) -> Optional[dict]:
@@ -72,9 +72,10 @@ def extract_ward(address: Optional[str]) -> Optional[str]:
 def enrich_estat_population(listings: list) -> int:
     """
     物件リストに estat_population_data を追加する。
-    既にある場合はスキップ。
+    人口動態データ + 高齢化率データを統合して付与。
     """
     population = load_json_file(POPULATION_CACHE)
+    aging = load_json_file(AGING_CACHE)
 
     if not population:
         print("警告: estat_population.json が見つかりません。スキップします。", file=sys.stderr)
@@ -84,14 +85,13 @@ def enrich_estat_population(listings: list) -> int:
     pop_by_ward = population.get("by_ward", {})
     data_source = population.get("data_source", "e-Stat（総務省統計局）")
 
+    aging_by_ward = aging.get("by_ward", {}) if aging else {}
+    national_aging = aging.get("national_aging_history", []) if aging else []
+    tokyo23_avg_aging = aging.get("tokyo23_avg_aging_history", []) if aging else []
+
     enriched_count = 0
 
     for listing in listings:
-        # 既にデータがある場合はスキップ
-        if listing.get("estat_population_data"):
-            continue
-
-        # 住所から区名を抽出（ss_address 優先）
         ward = extract_ward(listing.get("ss_address") or listing.get("address"))
         if not ward:
             continue
@@ -110,6 +110,13 @@ def enrich_estat_population(listings: list) -> int:
             "household_history": ward_data.get("household_history", []),
             "data_source": data_source,
         }
+
+        ward_aging = aging_by_ward.get(ward, {})
+        if ward_aging:
+            pop_data["aging_rate_history"] = ward_aging.get("aging_rate_history", [])
+            pop_data["latest_aging_rate"] = ward_aging.get("latest_aging_rate")
+            pop_data["national_aging_history"] = national_aging
+            pop_data["tokyo23_avg_aging_history"] = tokyo23_avg_aging
 
         listing["estat_population_data"] = json.dumps(
             pop_data, ensure_ascii=False

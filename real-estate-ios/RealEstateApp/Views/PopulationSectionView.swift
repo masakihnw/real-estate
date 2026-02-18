@@ -32,6 +32,12 @@ struct PopulationSectionView: View {
                     populationTrendChart(pop)
                 }
 
+                // ── 高齢化率推移チャート ──
+                if pop.hasAgingData {
+                    Divider()
+                    agingRateChart(pop)
+                }
+
                 // フッター
                 HStack(spacing: 4) {
                     Image(systemName: "info.circle")
@@ -53,6 +59,7 @@ struct PopulationSectionView: View {
             columns: [
                 GridItem(.flexible()),
                 GridItem(.flexible()),
+                GridItem(.flexible()),
             ],
             spacing: 10
         ) {
@@ -68,6 +75,14 @@ struct PopulationSectionView: View {
                 icon: "house.fill",
                 color: .primary
             )
+            if pop.hasAgingData {
+                summaryCell(
+                    title: "高齢化率",
+                    value: pop.latestAgingRateDisplay,
+                    icon: "figure.senior",
+                    color: agingRateColor(pop.latestAgingRate)
+                )
+            }
             summaryCell(
                 title: "前年比",
                 value: pop.popChange1yrDisplay,
@@ -234,11 +249,158 @@ struct PopulationSectionView: View {
         return niceNorm * magnitude
     }
 
+    // MARK: - 高齢化率チャート
+
+    private static let agingLineNational = "全国平均"
+    private static let agingLine23Avg = "23区平均"
+
+    @ViewBuilder
+    private func agingRateChart(_ pop: Listing.PopulationData) -> some View {
+        let allRates: [Double] = (
+            pop.agingRateHistory.map(\.rate) +
+            pop.nationalAgingHistory.map(\.rate) +
+            pop.tokyo23AvgAgingHistory.map(\.rate)
+        )
+        let minVal = (allRates.min() ?? 10) - 2
+        let maxVal = (allRates.max() ?? 30) + 2
+        let stride = niceStride(for: maxVal - minVal, targetTicks: 4)
+
+        VStack(alignment: .leading, spacing: 8) {
+            Text("高齢化率の推移（国勢調査）")
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+
+            Chart {
+                ForEach(pop.nationalAgingHistory, id: \.year) { entry in
+                    LineMark(
+                        x: .value("年", entry.year),
+                        y: .value("率", entry.rate),
+                        series: .value("系列", Self.agingLineNational)
+                    )
+                    .foregroundStyle(.gray)
+                    .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
+                    .interpolationMethod(.monotone)
+
+                    PointMark(
+                        x: .value("年", entry.year),
+                        y: .value("率", entry.rate)
+                    )
+                    .foregroundStyle(.gray)
+                    .symbolSize(16)
+                }
+
+                ForEach(pop.tokyo23AvgAgingHistory, id: \.year) { entry in
+                    LineMark(
+                        x: .value("年", entry.year),
+                        y: .value("率", entry.rate),
+                        series: .value("系列", Self.agingLine23Avg)
+                    )
+                    .foregroundStyle(.blue.opacity(0.6))
+                    .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 3]))
+                    .interpolationMethod(.monotone)
+
+                    PointMark(
+                        x: .value("年", entry.year),
+                        y: .value("率", entry.rate)
+                    )
+                    .foregroundStyle(.blue.opacity(0.6))
+                    .symbolSize(16)
+                }
+
+                ForEach(pop.agingRateHistory, id: \.year) { entry in
+                    LineMark(
+                        x: .value("年", entry.year),
+                        y: .value("率", entry.rate),
+                        series: .value("系列", pop.ward)
+                    )
+                    .foregroundStyle(Color.accentColor)
+                    .lineStyle(StrokeStyle(lineWidth: 2.5))
+                    .interpolationMethod(.monotone)
+
+                    PointMark(
+                        x: .value("年", entry.year),
+                        y: .value("率", entry.rate)
+                    )
+                    .foregroundStyle(Color.accentColor)
+                    .symbolSize(28)
+                }
+            }
+            .chartYScale(domain: minVal ... maxVal)
+            .chartYAxis {
+                AxisMarks(position: .leading, values: .stride(by: stride)) { value in
+                    AxisGridLine()
+                    AxisValueLabel {
+                        if let v = value.as(Double.self) {
+                            Text(String(format: "%.0f%%", v))
+                                .font(.caption2)
+                                .monospacedDigit()
+                        }
+                    }
+                }
+            }
+            .chartXAxis {
+                AxisMarks { value in
+                    AxisValueLabel {
+                        if let label = value.as(String.self) {
+                            Text(label)
+                                .font(.caption2)
+                        }
+                    }
+                }
+            }
+            .chartForegroundStyleScale([
+                Self.agingLineNational: Color.gray,
+                Self.agingLine23Avg: Color.blue.opacity(0.6),
+                pop.ward: Color.accentColor,
+            ])
+            .chartLegend(position: .bottom, spacing: 4) {
+                HStack(spacing: 12) {
+                    agingLegendItem(Self.agingLineNational, color: .gray, dashed: true)
+                    agingLegendItem(Self.agingLine23Avg, color: .blue.opacity(0.6), dashed: true)
+                    agingLegendItem(pop.ward, color: .accentColor, dashed: false)
+                }
+            }
+            .frame(height: 200)
+            .clipped()
+        }
+    }
+
+    @ViewBuilder
+    private func agingLegendItem(_ label: String, color: Color, dashed: Bool) -> some View {
+        HStack(spacing: 4) {
+            if dashed {
+                Rectangle()
+                    .fill(color)
+                    .frame(width: 12, height: 1.5)
+                    .overlay(
+                        Rectangle()
+                            .stroke(style: StrokeStyle(lineWidth: 1.5, dash: [3, 2]))
+                            .foregroundStyle(color)
+                    )
+            } else {
+                Rectangle()
+                    .fill(color)
+                    .frame(width: 12, height: 2.5)
+            }
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+    }
+
     // MARK: - ヘルパー
 
     private func changeColor(_ pct: Double?) -> Color {
         guard let pct else { return .primary }
         if abs(pct) < 0.3 { return .primary }
         return pct > 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor
+    }
+
+    private func agingRateColor(_ rate: Double?) -> Color {
+        guard let rate else { return .primary }
+        if rate >= 25 { return .orange }
+        if rate >= 20 { return .primary }
+        return DesignSystem.positiveColor
     }
 }

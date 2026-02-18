@@ -1804,9 +1804,20 @@ final class Listing: @unchecked Sendable {
         var householdHistory: [YearValue]   // 年次世帯数推移
         var dataSource: String
 
+        // 高齢化率（65歳以上人口割合）— 国勢調査5年ごと
+        var agingRateHistory: [AgingEntry]          // 当該区の推移
+        var nationalAgingHistory: [AgingEntry]      // 全国平均
+        var tokyo23AvgAgingHistory: [AgingEntry]    // 23区平均
+        var latestAgingRate: Double?
+
         struct YearValue {
             var year: String
             var value: Int
+        }
+
+        struct AgingEntry {
+            var year: String
+            var rate: Double
         }
 
         /// 人口変動率テキスト（例: "+1.5%"）
@@ -1839,9 +1850,18 @@ final class Listing: @unchecked Sendable {
             return "\(latestHouseholds.formatted())世帯"
         }
 
+        var latestAgingRateDisplay: String {
+            guard let rate = latestAgingRate else { return "—" }
+            return String(format: "%.1f%%", rate)
+        }
+
         /// 人口変動が増加傾向か
         var isPopGrowing: Bool {
             (popChange1yrPct ?? 0) > 0
+        }
+
+        var hasAgingData: Bool {
+            !agingRateHistory.isEmpty
         }
     }
 
@@ -1880,6 +1900,15 @@ final class Listing: @unchecked Sendable {
             return PopulationData.YearValue(year: year, value: hh)
         }
 
+        func parseAgingEntries(_ key: String) -> [PopulationData.AgingEntry] {
+            let raw = dict[key] as? [[String: Any]] ?? []
+            return raw.compactMap { h in
+                guard let year = h["year"] as? String,
+                      let rate = h["aging_rate"] as? Double else { return nil }
+                return PopulationData.AgingEntry(year: year, rate: rate)
+            }
+        }
+
         return PopulationData(
             ward: ward,
             latestPopulation: population,
@@ -1888,7 +1917,11 @@ final class Listing: @unchecked Sendable {
             popChange5yrPct: dict["pop_change_5yr_pct"] as? Double,
             populationHistory: popHistory,
             householdHistory: hhHistory,
-            dataSource: dict["data_source"] as? String ?? "e-Stat（総務省統計局）"
+            dataSource: dict["data_source"] as? String ?? "e-Stat（総務省統計局）",
+            agingRateHistory: parseAgingEntries("aging_rate_history"),
+            nationalAgingHistory: parseAgingEntries("national_aging_history"),
+            tokyo23AvgAgingHistory: parseAgingEntries("tokyo23_avg_aging_history"),
+            latestAgingRate: dict["latest_aging_rate"] as? Double
         )
     }
 
