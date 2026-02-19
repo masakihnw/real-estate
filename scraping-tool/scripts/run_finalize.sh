@@ -58,23 +58,40 @@ done
 
 echo "--- 成果物配置 ---" >&2
 
-# enriched-chuko/latest.json → results/latest.json
-if [ -f "enriched-chuko/latest.json" ]; then
-    # previous を保存 (レポート差分用)
+# enriched-chuko の latest.json を配置
+# upload-artifact@v4 は共通祖先 (scraping-tool/) を除去するため、
+# ダウンロード先には results/latest.json として展開される
+CHUKO_ENRICHED=""
+for candidate in "enriched-chuko/latest.json" "enriched-chuko/results/latest.json"; do
+    if [ -f "$candidate" ]; then
+        CHUKO_ENRICHED="$candidate"
+        break
+    fi
+done
+if [ -n "$CHUKO_ENRICHED" ]; then
     cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
-    cp "enriched-chuko/latest.json" "${OUTPUT_DIR}/latest.json"
-    echo "中古: enriched データを配置" >&2
+    cp "$CHUKO_ENRICHED" "${OUTPUT_DIR}/latest.json"
+    echo "中古: enriched データを配置 (from ${CHUKO_ENRICHED})" >&2
 else
-    echo "警告: enriched-chuko/latest.json が見つかりません（前回データを維持）" >&2
+    echo "警告: enriched-chuko の latest.json が見つかりません（前回データを維持）" >&2
+    ls -R enriched-chuko/ 2>/dev/null || echo "  enriched-chuko/ ディレクトリ自体が存在しません" >&2
 fi
 
-# enriched-shinchiku/latest_shinchiku.json → results/latest_shinchiku.json
-if [ -f "enriched-shinchiku/latest_shinchiku.json" ]; then
+# enriched-shinchiku の latest_shinchiku.json を配置
+SHINCHIKU_ENRICHED=""
+for candidate in "enriched-shinchiku/latest_shinchiku.json" "enriched-shinchiku/results/latest_shinchiku.json"; do
+    if [ -f "$candidate" ]; then
+        SHINCHIKU_ENRICHED="$candidate"
+        break
+    fi
+done
+if [ -n "$SHINCHIKU_ENRICHED" ]; then
     cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/previous_shinchiku.json" 2>/dev/null || true
-    cp "enriched-shinchiku/latest_shinchiku.json" "${OUTPUT_DIR}/latest_shinchiku.json"
-    echo "新築: enriched データを配置" >&2
+    cp "$SHINCHIKU_ENRICHED" "${OUTPUT_DIR}/latest_shinchiku.json"
+    echo "新築: enriched データを配置 (from ${SHINCHIKU_ENRICHED})" >&2
 else
-    echo "警告: enriched-shinchiku/latest_shinchiku.json が見つかりません（前回データを維持）" >&2
+    echo "警告: enriched-shinchiku の latest_shinchiku.json が見つかりません（前回データを維持）" >&2
+    ls -R enriched-shinchiku/ 2>/dev/null || echo "  enriched-shinchiku/ ディレクトリ自体が存在しません" >&2
 fi
 
 # transactions
