@@ -42,7 +42,7 @@ def test_normalize_listing_name_spaces():
 # --- identity_key vs listing_key ---
 
 
-def _listing(name="A", layout="2LDK", area_m2=65.0, price_man=8000, address="東京都目黒区", built_year=2020, station_line="祐天寺", walk_min=5, total_units=100):
+def _listing(name="A", layout="2LDK", area_m2=65.0, price_man=8000, address="東京都目黒区", built_year=2020, station_line="祐天寺", walk_min=5):
     return {
         "name": name,
         "layout": layout,
@@ -52,7 +52,6 @@ def _listing(name="A", layout="2LDK", area_m2=65.0, price_man=8000, address="東
         "built_year": built_year,
         "station_line": station_line,
         "walk_min": walk_min,
-        "total_units": total_units,
     }
 
 

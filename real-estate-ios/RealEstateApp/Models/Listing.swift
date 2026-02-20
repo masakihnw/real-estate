@@ -329,7 +329,8 @@ final class Listing: @unchecked Sendable {
     // MARK: - Identity
 
     /// 同一物件判定用（report_utils.identity_key と同一フィールド・同一順序）。
-    /// 価格・walk_min は含めない。station_line は駅名のみ抽出して表記揺れを吸収。
+    /// 価格・walk_min・total_units は重複集約の代表レコード変更で変動するため含めない。
+    /// station_line は駅名のみ抽出して表記揺れを吸収。
     var identityKey: String {
         [
             Self.cleanListingName(name)
@@ -338,8 +339,7 @@ final class Listing: @unchecked Sendable {
             areaM2.map { "\($0)" } ?? "",
             (address ?? "").trimmingCharacters(in: .whitespaces),
             builtYear.map { "\($0)" } ?? "",
-            Self.extractStationName(from: stationLine ?? ""),
-            totalUnits.map { "\($0)" } ?? ""
+            Self.extractStationName(from: stationLine ?? "")
         ].joined(separator: "|")
     }
 
