@@ -1282,7 +1282,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    ├── convert_risk_geojson.py（初回のみ）
    ├── generate_report.py → Markdown レポート
    ├── send_push.py → FCM プッシュ通知
-   ├── slack_notify.py → Slack 通知（1日1回 7:00 JST 頃）
+   ├── slack_notify.py → Slack 通知（1日1回 6:00〜10:00 JST の回）
    └── git commit & push
 ```
 
@@ -1888,7 +1888,7 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 
 | 項目 | 値 |
 |------|------|
-| **トリガー** | 2時間ごと (`0 */2 * * *`) + `workflow_dispatch`。22:00 UTC (7:00 JST) の回で Slack 通知 |
+| **トリガー** | 2時間ごと (`0 */2 * * *`) + `workflow_dispatch`。6:00〜10:00 JST (21:00〜01:00 UTC) の回で Slack 通知 |
 | **Concurrency** | `scrape-listings`, `cancel-in-progress: false` |
 | **timeout-minutes** | 60 |
 | **出力** | artifact: `scrape-results`, `scrape-previous`, `scrape-metadata`, `scrape-caches` |

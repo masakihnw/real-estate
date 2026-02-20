@@ -17,6 +17,7 @@ OUTPUT_DIR="results"
 mkdir -p "$OUTPUT_DIR"
 
 DATE=$(TZ=Asia/Tokyo date +%Y%m%d_%H%M%S)
+STARTED_HOUR_UTC=$(date -u +%H)
 
 echo "=== WF1: Scrape Listings ===" >&2
 echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
@@ -105,12 +106,12 @@ fi
 # ──────────────────────────── Phase 3: Slack 通知時間判定 ────────────────────────────
 
 IS_SLACK_TIME=false
-CURRENT_HOUR=$(date -u +%H)
 
-# 22:00 UTC (7:00 JST) の回 = Slack 通知タイム
-if [ "$CURRENT_HOUR" = "22" ]; then
-    IS_SLACK_TIME=true
-fi
+# 6:00-10:00 JST (21:00-01:00 UTC) の回で Slack 通知
+# スクリプト開始時に取得した UTC 時刻で判定（スクレイピング所要時間の影響を受けない）
+case "$STARTED_HOUR_UTC" in
+    21|22|23|00) IS_SLACK_TIME=true ;;
+esac
 
 # ──────────────────────────── Phase 4: metadata.json 出力 ────────────────────────────
 
