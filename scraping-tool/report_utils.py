@@ -189,7 +189,8 @@ def clean_listing_name(name: str) -> str:
 
 def identity_key(r: dict) -> tuple:
     """同一物件の識別用キー（価格を除く）。差分検出で「同じ物件で価格だけ変わった → updated」とするために使う。
-    station_line は駅名のみに正規化（路線テキストの表記揺れを吸収）。"""
+    station_line は駅名のみに正規化（路線テキストの表記揺れを吸収）。
+    iOS Listing.identityKey と同一フィールド・同一順序を維持すること。"""
     return (
         normalize_listing_name(r.get("name") or ""),
         (r.get("layout") or "").strip(),
@@ -197,6 +198,7 @@ def identity_key(r: dict) -> tuple:
         (r.get("address") or "").strip(),
         r.get("built_year"),
         _extract_station_name(r.get("station_line") or ""),
+        r.get("total_units"),
     )
 
 

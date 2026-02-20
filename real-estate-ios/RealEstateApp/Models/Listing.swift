@@ -328,17 +328,30 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - Identity
 
-    /// 同一物件判定用（report_utils.identity_key 相当）。価格は含めない。
+    /// 同一物件判定用（report_utils.identity_key と同一フィールド・同一順序）。
+    /// 価格・walk_min は含めない。station_line は駅名のみ抽出して表記揺れを吸収。
     var identityKey: String {
         [
-            name.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " ", with: ""),
-            layout ?? "",
+            Self.cleanListingName(name)
+                .replacingOccurrences(of: #"\s+"#, with: "", options: .regularExpression),
+            (layout ?? "").trimmingCharacters(in: .whitespaces),
             areaM2.map { "\($0)" } ?? "",
-            address ?? "",
+            (address ?? "").trimmingCharacters(in: .whitespaces),
             builtYear.map { "\($0)" } ?? "",
-            stationLine ?? "",
-            walkMin.map { "\($0)" } ?? ""
+            Self.extractStationName(from: stationLine ?? ""),
+            totalUnits.map { "\($0)" } ?? ""
         ].joined(separator: "|")
+    }
+
+    /// station_line から駅名のみを抽出する（report_utils._extract_station_name 相当）。
+    /// 例: "ＪＲ総武線（秋葉原～千葉）「錦糸町」徒歩5分" → "錦糸町"
+    static func extractStationName(from stationLine: String) -> String {
+        guard !stationLine.isEmpty,
+              let match = stationLine.range(of: #"[「『]([^」』]+)[」』]"#, options: .regularExpression) else {
+            return ""
+        }
+        let inner = stationLine[match]
+        return String(inner.dropFirst().dropLast()).trimmingCharacters(in: .whitespaces)
     }
 
     var isShinchiku: Bool { propertyType == "shinchiku" }

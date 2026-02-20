@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-18  
+> **最終更新**: 2026-02-20  
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -595,7 +595,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **ETag キャッシュ** | レスポンスの ETag を保存し、`If-None-Match` で 304 判定 |
 | **並列取得** | 中古・新築を `async let` で並列リクエスト |
 | **JSON デコード** | `Task.detached(priority: .userInitiated)` でバックグラウンド実行 |
-| **新規検出** | 既存の `identityKey` に存在しない物件 → `isNew = true` + ローカル通知。同期ごとに既存物件の `isNew` をリセットし、新規挿入物件のみ `isNew = true` に設定。304 Not Modified 時も `isNew` をリセットし、New バッジが残り続けないようにする |
+| **新規検出** | 既存の `identityKey` に存在しない物件 → `isNew = true` + ローカル通知。同期ごとに既存物件の `isNew` をリセットし、新規挿入物件のみ `isNew = true` に設定。304 Not Modified 時も `isNew` をリセットし、New バッジが残り続けないようにする。`identityKey` は Python 側と同一ロジック（`cleanListingName` で正規化した物件名・駅名のみ抽出・`walk_min` 除外）で、`station_line` の表記揺れや `walk_min` 変動による誤検出を防止 |
 | **自動更新** | フォアグラウンド復帰時に15分経過していれば自動 refresh |
 | **lastError** | メインの JSON 取得・同期エラー（致命的）。UI に表示 |
 | **syncWarning** | 非致命的な同期警告（Firebase いいね・メモ、通勤時間計算など）。`pullAnnotations` / `calculateForAllListings` 失敗時に設定。UI で任意表示可能 |
@@ -1811,7 +1811,7 @@ Firestore で共有されるスクレイピング条件:
 
 | キー名 | 構成要素 | 用途 |
 |--------|---------|------|
-| **identity_key** | normalize_listing_name(name) + layout + area_m2 + address + built_year + station_name | 同一物件の判定（**価格を含まない**、駅名のみ使用） |
+| **identity_key** | normalize_listing_name(name) + layout + area_m2 + address + built_year + station_name + total_units | 同一物件の判定（**価格・walk_min を含まない**、駅名のみ使用）。Python と iOS で同一フィールド・同一順序 |
 | **listing_key** | normalize_listing_name(name) + layout + area_m2 + price + address + built_year + station_name | 重複除去（**価格を含む**、駅名のみ使用） |
 
 ---
@@ -2065,13 +2065,13 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | 用語 | 定義 |
 |------|------|
 | **listing** | 物件1件のデータ |
-| **identity_key** | 正規化物件名・間取り・面積・住所・築年・駅名で一意化するキー（価格を含まない、路線テキストではなく駅名のみ使用） |
+| **identity_key** | 正規化物件名・間取り・面積・住所・築年・駅名・総戸数で一意化するキー（価格・walk_min を含まない、路線テキストではなく駅名のみ使用）。Python（`report_utils.identity_key`）と iOS（`Listing.identityKey`）で同一フィールド・同一順序を維持 |
 | **listing_key** | identity_key + 価格。重複除去に使用（路線テキストではなく駅名のみ使用） |
 | **annotation** | いいね・コメント・写真のユーザーデータ。Firebase Firestore で家族間共有 |
 | **property_type** | `"chuko"`（中古）または `"shinchiku"`（新築） |
 | **hazard overlay** | 国土地理院のハザードマップタイルを地図に重畳表示するレイヤー。液状化・揺れやすさは GSI タイル非公開のため治水地形分類図（`lcmfc2`）で代替 |
 | **enricher** | スクレイピング後にデータを付加するスクリプト群（通勤・ハザード・住まいサーフィン） |
-| **identity_key → docId** | SHA256(identity_key) の先頭16文字。Firestore のドキュメント ID |
+| **identity_key → docId** | SHA256(identity_key) の先頭16文字。Firestore のドキュメント ID。identity_key の変更に伴い docId も変わるため注意 |
 | **ETag** | HTTP キャッシュ制御ヘッダー。304 Not Modified でダウンロードをスキップ |
 | **Liquid Glass** | iOS 26 のデザインシステム。半透明のガラス質感 |
 | **OOUI** | Object-Oriented User Interface。オブジェクト中心の UI 設計 |
