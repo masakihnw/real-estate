@@ -2378,7 +2378,7 @@
       "latitude": 35.7096282,
       "longitude": 139.7397745,
       "building_group_id": "131050070-2016",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-048c5ed5e2de",
@@ -2578,7 +2578,7 @@
       "latitude": 35.7096282,
       "longitude": 139.7397745,
       "building_group_id": "131050070-2016",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d6f5dcb2cc4e",
@@ -2638,7 +2638,7 @@
       "latitude": 35.7096282,
       "longitude": 139.7397745,
       "building_group_id": "131050070-2016",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ede3b40e5fe4",
@@ -2758,7 +2758,7 @@
       "latitude": 35.7096282,
       "longitude": 139.7397745,
       "building_group_id": "131050070-2016",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-82ead294cd4b",
@@ -2918,7 +2918,7 @@
       "latitude": 35.7096282,
       "longitude": 139.7397745,
       "building_group_id": "131050070-2016",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fe105c3df7ce",
@@ -2938,7 +2938,7 @@
       "latitude": 35.7096282,
       "longitude": 139.7397745,
       "building_group_id": "131050070-2016",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4ddf9031f8b2",
@@ -3178,7 +3178,7 @@
       "latitude": 35.7096282,
       "longitude": 139.7397745,
       "building_group_id": "131050070-2016",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6140073c7b21",
@@ -3198,7 +3198,7 @@
       "latitude": 35.7096282,
       "longitude": 139.7397745,
       "building_group_id": "131050070-2016",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-83d63bfee972",
@@ -3878,7 +3878,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-cc94e3bb961c",
@@ -3898,7 +3898,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-bc17bba36d8c",
@@ -3918,7 +3918,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-32bdb91adb5b",
@@ -3938,7 +3938,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-666badfbd5ae",
@@ -3978,7 +3978,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-4260e1697822",
@@ -4318,7 +4318,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-56ea873cf0aa",
@@ -4338,7 +4338,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-88695abb0c63",
@@ -4598,7 +4598,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-2c7017393157",
@@ -19432,7 +19432,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": "Ｂｒｉｌｌｉａ文京江戸川橋"
+      "estimated_building_name": null
     },
     {
       "group_id": "131050080-2014",
@@ -20379,7 +20379,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "レーベンリヴァーレ浅草 エヴァープライド / 浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
     },
     {
       "group_id": "131060230-2016",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-21T19:44:42",
+    "updated_at": "2026-02-21T21:33:30",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
