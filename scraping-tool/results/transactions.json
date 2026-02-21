@@ -14638,7 +14638,7 @@
       "latitude": 35.6908488,
       "longitude": 139.6755198,
       "building_group_id": "131140180-2015",
-      "estimated_building_name": "ザ・パークハウス中野弥生町テラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-50f62bfaf3bb",
@@ -24046,7 +24046,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "ザ・パークハウス中野弥生町テラス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140180-2024",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-20T23:34:25",
+    "updated_at": "2026-02-21T07:54:11",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
