@@ -13378,7 +13378,7 @@
       "latitude": 35.7133664,
       "longitude": 139.66418,
       "building_group_id": "131140010-2014",
-      "estimated_building_name": "ミッドアベニュー中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ed64e9782e5d",
@@ -13638,7 +13638,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fab280f42266",
@@ -13678,7 +13678,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3d6197cd0516",
@@ -13958,7 +13958,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-659ebc5f8b80",
@@ -14138,7 +14138,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b4067fa8e51e",
@@ -14238,7 +14238,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2020",
-      "estimated_building_name": "ルジェンテ新中野 STATION ONE"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9bd5ac9f33fa",
@@ -14258,7 +14258,7 @@
       "latitude": 35.6997511,
       "longitude": 139.6750207,
       "building_group_id": "131140080-2019",
-      "estimated_building_name": "オープンレジデンシア中野中央"
+      "estimated_building_name": null
     },
     {
       "id": "tx-16585d07409d",
@@ -14378,7 +14378,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2020",
-      "estimated_building_name": "ルジェンテ新中野 STATION ONE"
+      "estimated_building_name": null
     },
     {
       "id": "tx-edecc155185c",
@@ -14638,7 +14638,7 @@
       "latitude": 35.6908488,
       "longitude": 139.6755198,
       "building_group_id": "131140180-2015",
-      "estimated_building_name": "ザ・パークハウス中野弥生町テラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-50f62bfaf3bb",
@@ -14658,7 +14658,7 @@
       "latitude": 35.6908488,
       "longitude": 139.6755198,
       "building_group_id": "131140180-2024",
-      "estimated_building_name": "クレヴィア中野新橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ad7faca80d3c",
@@ -23403,7 +23403,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": "ミッドアベニュー中野"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140010-2019",
@@ -23596,7 +23596,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "オープンレジデンシア中野中央"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140090-2012",
@@ -23677,7 +23677,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140120-2011",
@@ -24023,7 +24023,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "ルジェンテ新中野 STATION ONE"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140180-2015",
@@ -24046,7 +24046,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "ザ・パークハウス中野弥生町テラス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140180-2024",
@@ -24069,7 +24069,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "クレヴィア中野新橋"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140190-2012",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-22T07:58:27",
+    "updated_at": "2026-02-22T19:43:49",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
