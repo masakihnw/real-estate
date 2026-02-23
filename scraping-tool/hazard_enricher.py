@@ -22,7 +22,9 @@ import math
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Lock
 from typing import Any, Optional
 
 import requests
@@ -69,6 +71,7 @@ _session.headers.update({"User-Agent": "real-estate-hazard-enricher/1.0"})
 
 # タイルキャッシュ（同一座標近傍の物件で同じタイルを再取得しない）
 _tile_cache: dict[str, Optional[bytes]] = {}
+_tile_cache_lock = Lock()
 
 # ────────────────────────────────────────────────────────
 # 東京都地域危険度 GeoJSON 設定
@@ -120,19 +123,24 @@ TILE_FETCH_BACKOFF_SEC = 2
 
 def _fetch_tile(url: str) -> Optional[bytes]:
     """タイル画像を取得（キャッシュ付き）。404/エラーなら None。2–3回リトライしてから None をキャッシュ。"""
-    if url in _tile_cache:
-        return _tile_cache[url]
+    with _tile_cache_lock:
+        if url in _tile_cache:
+            return _tile_cache[url]
     for attempt in range(TILE_FETCH_RETRIES):
         try:
             resp = _session.get(url, timeout=10)
             if resp.status_code == 200 and len(resp.content) > 100:
-                _tile_cache[url] = resp.content
-                return resp.content
+                content = resp.content
+                with _tile_cache_lock:
+                    _tile_cache[url] = content
+                return content
         except requests.RequestException:
             pass
         if attempt < TILE_FETCH_RETRIES - 1:
             time.sleep(TILE_FETCH_BACKOFF_SEC * (attempt + 1))
-    _tile_cache[url] = None
+    with _tile_cache_lock:
+        if url not in _tile_cache:
+            _tile_cache[url] = None
     return None
 
 
@@ -288,14 +296,18 @@ def enrich_hazard(listings: list[dict]) -> list[dict]:
 
         hazard: dict[str, Any] = {}
 
-        # GSI ハザードタイルチェック
-        for key in GSI_HAZARD_TILES:
+        # GSI ハザードタイルチェック（タイル種別ごとに並列取得）
+        def _check_one(key: str) -> tuple[str, bool]:
+            time.sleep(0.05)  # タイルサーバーへの負荷軽減（GSI の利用規約に配慮）
             try:
-                hazard[key] = check_gsi_hazard(lat, lng, key)
+                return (key, check_gsi_hazard(lat, lng, key))
             except Exception:
-                hazard[key] = False
-            # タイルサーバーへの負荷軽減（GSI の利用規約に配慮）
-            time.sleep(0.05)
+                return (key, False)
+
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            results = list(executor.map(_check_one, GSI_HAZARD_TILES))
+        for key, value in results:
+            hazard[key] = value
 
         # 東京都地域危険度チェック
         for key in RISK_TYPES:

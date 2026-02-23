@@ -296,11 +296,14 @@ def compare_listings(current: list[dict], previous: Optional[list[dict]] = None)
 
 
 def row_merge_key(r: dict) -> tuple:
-    """同一行にまとめるキー: 物件名・価格・間取りが同じなら1行にする。名前は正規化して全角スペース差を無視。"""
+    """同一行にまとめるキー: 物件名・価格・間取り・住所・築年が同じなら1行にする。
+    listing_key との差異（address/built_year 欠落）で異なる建物が誤マージされる問題を修正。"""
     return (
         normalize_listing_name(r.get("name") or ""),
         r.get("price_man"),
         (r.get("layout") or "").strip(),
+        (r.get("address") or "").strip(),
+        r.get("built_year"),
     )
 
 

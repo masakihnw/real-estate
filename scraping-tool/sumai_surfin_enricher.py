@@ -19,6 +19,7 @@ import os
 import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Optional
 from urllib.parse import quote_plus  # noqa: F401 — 将来の拡張用に保持
@@ -1750,29 +1751,22 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
     no_data_count = 0
     target_count = 0
 
+    # 1) 既に enrichment 済みで住所のみ必要な物件を先に処理（メインスレッド、順次）
     for i, listing in enumerate(listings):
         name = listing.get("name", "")
         if not name:
             continue
-
-        # 既に enrichment 済みならスキップ
-        # 新築は ss_profit_pct / ss_m2_discount、中古は ss_oki_price_70m2 / ss_appreciation_rate で判定
-        # ただし ss_address がない場合は住所取得のために再処理する
         if property_type == "shinchiku":
             already = (listing.get("ss_profit_pct") is not None
                        or listing.get("ss_m2_discount") is not None
                        or listing.get("ss_purchase_judgment") is not None)
         else:
             already = listing.get("ss_oki_price_70m2") is not None or listing.get("ss_appreciation_rate") is not None
-
         needs_address = not listing.get("ss_address")
-
         if already and not needs_address:
             skip_count += 1
             continue
-
         if already and needs_address:
-            # 住所のみ追加取得（評価データは既に取得済み）
             url = listing.get("ss_sumai_surfin_url")
             if url:
                 fetched = _fetch_property_page(session, url)
@@ -1785,81 +1779,102 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             skip_count += 1
             continue
 
-        target_count += 1
+    # 2) 未 enrichment の物件を抽出（並列ループ用）
+    to_enrich: list[tuple[int, dict]] = []
+    for i, listing in enumerate(listings):
+        name = listing.get("name", "")
+        if not name:
+            continue
+        if property_type == "shinchiku":
+            already = (listing.get("ss_profit_pct") is not None
+                       or listing.get("ss_m2_discount") is not None
+                       or listing.get("ss_purchase_judgment") is not None)
+        else:
+            already = listing.get("ss_oki_price_70m2") is not None or listing.get("ss_appreciation_rate") is not None
+        needs_address = not listing.get("ss_address")
+        if already and not needs_address:
+            continue
+        if already and needs_address:
+            continue
+        to_enrich.append((i, listing))
+    target_count = len(to_enrich)
 
-        # 検索
-        prop_url = search_property(session, name, cache)
+    def _enrich_one(index: int, listing: dict) -> tuple[str, dict | None]:
+        """1件の物件を enrichment する。戻り値: (status, data or None)。"""
+        name = listing.get("name", "")
+        user = os.environ.get("SUMAI_USER", "")
+        password = os.environ.get("SUMAI_PASS", "")
+        worker_session = _create_session()
+        if not user or not password or not login(worker_session, user, password):
+            return "login_failed", None
+        prop_url = search_property(worker_session, name, cache)
         if not prop_url:
             listing["ss_lookup_status"] = "not_found"
-            not_found_count += 1
-            continue
-
-        # 検索結果ページのインラインデータを取得（値上がり率等のフォールバック用）
+            return "not_found", None
         clean_name = _normalize_name(name)
         inline_data = cache.get(clean_name + "__inline", {})
-
-        # ページパース（中古・新築で専用パーサーを使い分け）
         if property_type == "chuko":
-            data = parse_chuko_page(session, prop_url)
+            data = parse_chuko_page(worker_session, prop_url)
         else:
-            data = parse_shinchiku_page(session, prop_url)
-
-        # 検索結果のインラインデータで補完・上書き
-        # 沖式中古時価: 検索結果一覧の値を優先
-        # （詳細ページの正規表現はヘルプ文の例示値「例：7,000万円」等を誤取得することがある）
+            data = parse_shinchiku_page(worker_session, prop_url)
         if inline_data.get("oki_price_70m2") is not None:
             data["ss_oki_price_70m2"] = inline_data["oki_price_70m2"]
-        # 値上がり率: detail ページで取得できなかった場合のフォールバック
         if "ss_appreciation_rate" not in data and inline_data.get("appreciation_rate"):
             data["ss_appreciation_rate"] = inline_data["appreciation_rate"]
-
-        # データをマージ
         for k, v in data.items():
             listing[k] = v
-
-        # ── 販売価格判定 ──
-        # ss_value_judgment は sumai_surfin_browser.py のブラウザ自動化
-        # （「販売価格が割安か判定する」ボタン）で取得するのが正。
-        # 静的HTMLの固定費判定は誤マッチしやすいため使用しない。
-        # ブラウザ自動化未実行時は iOS 側で沖式時価比較のフォールバック計算を行う。
-
-        # 住まいサーフィンの住所を正として listing の address を上書き
         if data.get("ss_address"):
             listing["address"] = data["ss_address"]
+        return "ok", data
 
-        if any(k.startswith("ss_") and k != "ss_sumai_surfin_url" and k != "ss_lookup_status" for k in data):
-            listing["ss_lookup_status"] = "found"
-            enriched_count += 1
-            parts = []
-            if data.get("ss_profit_pct") is not None:
-                parts.append(f"儲かる確率: {data['ss_profit_pct']}%")
-            if data.get("ss_appreciation_rate") is not None:
-                parts.append(f"値上がり率: {data['ss_appreciation_rate']}%")
-            if data.get("ss_value_judgment"):
-                parts.append(f"判定: {data['ss_value_judgment']}")
-            if data.get("ss_past_market_trends"):
-                parts.append("相場推移✓")
-            if data.get("ss_favorite_count") is not None:
-                parts.append(f"お気に入り: {data['ss_favorite_count']}点")
-            if data.get("ss_surrounding_properties"):
-                parts.append("周辺相場✓")
-            if data.get("ss_radar_data"):
-                parts.append("レーダー✓")
-            if data.get("ss_sim_best_5yr") is not None:
-                parts.append("シミュレーション✓")
-            if data.get("ss_loan_balance_5yr") is not None:
-                parts.append("ローン残高✓")
-            if data.get("ss_forecast_change_rate") is not None:
-                parts.append(f"変動率: {data['ss_forecast_change_rate']:+.1f}%")
-            print(f"  ✓ {name} — {', '.join(parts) or 'URL取得'}", file=sys.stderr)
-        else:
-            listing["ss_lookup_status"] = "no_data"
-            no_data_count += 1
-
-        # 進捗: 20件ごとにサマリー
-        processed = enriched_count + not_found_count + no_data_count
-        if processed > 0 and processed % 20 == 0:
-            print(f"  住まいサーフィン進捗: {processed}/{target_count}件処理済 (成功: {enriched_count})", file=sys.stderr)
+    # 3) ThreadPoolExecutor で並列処理（max_workers=3、各ワーカー内で DELAY を維持）
+    idx_to_listing = {idx: lst for idx, lst in to_enrich}
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        futures = {executor.submit(_enrich_one, idx, lst): idx for idx, lst in to_enrich}
+        processed = 0
+        for future in as_completed(futures):
+            idx = futures[future]
+            listing = idx_to_listing[idx]
+            try:
+                status, data = future.result()
+                if status == "login_failed":
+                    continue
+                if status == "not_found":
+                    not_found_count += 1
+                elif status == "ok" and data:
+                    if any(k.startswith("ss_") and k != "ss_sumai_surfin_url" and k != "ss_lookup_status" for k in data):
+                        listing["ss_lookup_status"] = "found"
+                        enriched_count += 1
+                        parts = []
+                        if data.get("ss_profit_pct") is not None:
+                            parts.append(f"儲かる確率: {data['ss_profit_pct']}%")
+                        if data.get("ss_appreciation_rate") is not None:
+                            parts.append(f"値上がり率: {data['ss_appreciation_rate']}%")
+                        if data.get("ss_value_judgment"):
+                            parts.append(f"判定: {data['ss_value_judgment']}")
+                        if data.get("ss_past_market_trends"):
+                            parts.append("相場推移✓")
+                        if data.get("ss_favorite_count") is not None:
+                            parts.append(f"お気に入り: {data['ss_favorite_count']}点")
+                        if data.get("ss_surrounding_properties"):
+                            parts.append("周辺相場✓")
+                        if data.get("ss_radar_data"):
+                            parts.append("レーダー✓")
+                        if data.get("ss_sim_best_5yr") is not None:
+                            parts.append("シミュレーション✓")
+                        if data.get("ss_loan_balance_5yr") is not None:
+                            parts.append("ローン残高✓")
+                        if data.get("ss_forecast_change_rate") is not None:
+                            parts.append(f"変動率: {data['ss_forecast_change_rate']:+.1f}%")
+                        print(f"  ✓ {listing.get('name', '')} — {', '.join(parts) or 'URL取得'}", file=sys.stderr)
+                    else:
+                        listing["ss_lookup_status"] = "no_data"
+                        no_data_count += 1
+                processed += 1
+                if processed > 0 and processed % 20 == 0:
+                    print(f"  住まいサーフィン進捗: {processed}/{target_count}件処理済 (成功: {enriched_count})", file=sys.stderr)
+            except Exception as e:
+                print(f"  住まいサーフィン: エラー ({listing.get('name', '?')}): {e}", file=sys.stderr)
 
     # キャッシュ保存
     save_cache(cache)
