@@ -1623,7 +1623,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `featureTagsJSON` | String? | 特徴タグ JSON（例: `["駅徒歩5分以内","2沿線以上利用可"]`。SUUMO の gapSuumoPcForKr から取得） |
 | `listWardRoman` | String? | 区（ローマ字） |
 | `fetchedAt` | Date | 取得日時 |
-| `addedAt` | Date | 初回追加日時（同期で上書きしない） |
+| `addedAt` | Date | 初回追加日時（同期で上書きしない。新規挿入時は `fetchedAt` と同一値を使用し、同一バッチ内の挿入順による差異を防ぐ） |
 
 #### ユーザーデータ
 
