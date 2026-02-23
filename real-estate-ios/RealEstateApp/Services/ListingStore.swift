@@ -288,6 +288,7 @@ final class ListingStore {
                     } else {
                         newCount += 1
                         listing.isNew = true
+                        listing.addedAt = fetchedAt
                         modelContext.insert(listing)
                     }
                 }
