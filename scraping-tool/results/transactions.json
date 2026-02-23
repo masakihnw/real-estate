@@ -14838,7 +14838,7 @@
       "latitude": 35.6822563,
       "longitude": 139.6213132,
       "building_group_id": "131150230-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス杉並高井戸プレイス"
     },
     {
       "id": "tx-8fe8064ba16c",
@@ -14958,7 +14958,7 @@
       "latitude": 35.6822563,
       "longitude": 139.6213132,
       "building_group_id": "131150230-2017",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス杉並高井戸プレイス"
     },
     {
       "id": "tx-996b930d9e9c",
@@ -14998,7 +14998,7 @@
       "latitude": 35.6822563,
       "longitude": 139.6213132,
       "building_group_id": "131150230-2017",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス杉並高井戸プレイス"
     },
     {
       "id": "tx-5575189e35ea",
@@ -15518,7 +15518,7 @@
       "latitude": 35.6822563,
       "longitude": 139.6213132,
       "building_group_id": "131150230-2017",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス杉並高井戸プレイス"
     },
     {
       "id": "tx-67f4a49db590",
@@ -24263,7 +24263,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス杉並高井戸プレイス"
     },
     {
       "group_id": "131150230-2018",
@@ -24286,7 +24286,7 @@
         "2022Q1"
       ],
       "latest_period": "2022Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス杉並高井戸プレイス"
     },
     {
       "group_id": "131150260-2012",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-23T18:08:10",
+    "updated_at": "2026-02-23T21:55:44",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
