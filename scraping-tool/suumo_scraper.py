@@ -33,6 +33,7 @@ from config import (
     TOKYO_23_WARDS,
     NON_TOKYO_23_URL_PATHS,
     SUUMO_23_WARD_ROMAN,
+    SUUMO_23_WARD_SC_CODES,
 )
 from parse_utils import (
     parse_price,
@@ -56,6 +57,31 @@ BASE_URL = "https://suumo.jp"
 
 # 23区ごと一覧: /ms/chuko/tokyo/sc_XXX/ 。2ページ目以降は ?page=N
 LIST_URL_WARD_ROMAN = "https://suumo.jp/ms/chuko/tokyo/sc_{ward}/"
+# 23区ごと一覧（サーバーサイドフィルタ対応版）: JJ012FC001 エンドポイント
+# sc=区コード, kb=下限(万), kt=上限(万), mb=面積下限(㎡), et=徒歩上限(分) でサーバー側絞り込み。
+# mb/et は SUUMO が受け付ける固定値のみ使用可（任意値はエラー）。2ページ目以降は &pn=N
+LIST_URL_WARD_FILTERED = (
+    "https://suumo.jp/jj/bukken/ichiran/JJ012FC001/"
+    "?ar=030&bs=011&ta=13&sc={sc}"
+)
+
+# SUUMO JJ012FC001 が受け付ける mb（面積下限）の固定値（任意値はエラーになる）
+_SUUMO_MB_VALUES = (20, 30, 40, 50, 60, 70, 80, 90, 100)
+# SUUMO JJ012FC001 が受け付ける et（駅徒歩上限）の固定値
+_SUUMO_ET_VALUES = (1, 3, 5, 7, 10, 15, 20)
+
+
+def _snap_mb(area_min: float) -> Optional[int]:
+    """AREA_MIN_M2 を SUUMO が受け付ける mb 値に切り捨て（取りこぼし防止）。"""
+    candidates = [v for v in _SUUMO_MB_VALUES if v <= area_min]
+    return max(candidates) if candidates else None
+
+
+def _snap_et(walk_max: int) -> Optional[int]:
+    """WALK_MIN_MAX を SUUMO が受け付ける et 値に切り上げ（取りこぼし防止）。"""
+    candidates = [v for v in _SUUMO_ET_VALUES if v >= walk_max]
+    return min(candidates) if candidates else None
+
 # 東京都全体一覧（従来・参考）: 多摩地域が先に並ぶため23区物件は後ろのページになりがち
 LIST_URL_TEMPLATE = (
     "https://suumo.jp/jj/bukken/ichiran/JJ010FJ001/"
@@ -96,10 +122,17 @@ def fetch_list_page(
     page: int = 1,
     ward_roman: Optional[str] = None,
     url_params: Optional[dict[str, str]] = None,
+    filtered_base_url: Optional[str] = None,
 ) -> str:
-    """一覧ページのHTMLを取得。ward_roman 指定時は /ms/chuko/tokyo/sc_XXX/ を使用。
+    """一覧ページのHTMLを取得。
+    filtered_base_url が指定された場合は JJ012FC001 形式の URL を使用（サーバーサイドフィルタ）。
+    ward_roman 指定時は /ms/chuko/tokyo/sc_XXX/ を使用。
     url_params が指定された場合、クエリパラメータとして追加（価格・面積等のプリフィルタ用）。"""
-    if ward_roman is not None:
+    if filtered_base_url is not None:
+        url = filtered_base_url
+        if page > 1:
+            url = f"{url}&pn={page}"
+    elif ward_roman is not None:
         url = LIST_URL_WARD_ROMAN.format(ward=ward_roman)
         params = dict(url_params) if url_params else {}
         if page > 1:
@@ -615,21 +648,37 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
     seen_urls: set[str] = set()
     limit = max_pages if max_pages and max_pages > 0 else SUUMO_MAX_PAGES_SAFETY
 
-    # NOTE: /ms/chuko/tokyo/sc_XXX/ はクエリパラメータ (kb, kt, mb, mt) を
-    # サポートしていない（エラーページが返る）。ローカルフィルタ (apply_conditions) のみで絞り込む。
-    url_params: Optional[dict[str, str]] = None
+    mb = _snap_mb(AREA_MIN_M2) if apply_filter else None
+    et = _snap_et(WALK_MIN_MAX) if apply_filter else None
+
     if apply_filter:
-        print(f"SUUMO: ローカルフィルタ適用（{PRICE_MIN_MAN}万〜{PRICE_MAX_MAN}万, {AREA_MIN_M2}m²以上, "
-              f"築{BUILT_YEAR_MIN}年以降, 徒歩{WALK_MIN_MAX}分以内）", file=sys.stderr)
+        print(f"SUUMO: サーバーサイドフィルタ（価格{PRICE_MIN_MAN}〜{PRICE_MAX_MAN}万"
+              f"{f', 面積{mb}㎡以上' if mb else ''}"
+              f"{f', 徒歩{et}分以内' if et else ''}"
+              f"） + ローカルフィルタ（面積{AREA_MIN_M2}m²以上, 築{BUILT_YEAR_MIN}年以降, 徒歩{WALK_MIN_MAX}分以内）",
+              file=sys.stderr)
 
     for ward_roman in SUUMO_23_WARD_ROMAN:  # 全23区を同じ方式で取得
+        # サーバーサイドフィルタ: JJ012FC001 URL で kb/kt/mb/et を指定し、
+        # 対象外の物件をサーバー側で除外（早期打ち切りによる取りこぼし防止）
+        filtered_base_url: Optional[str] = None
+        if apply_filter:
+            sc_code = SUUMO_23_WARD_SC_CODES.get(ward_roman)
+            if sc_code:
+                filtered_base_url = LIST_URL_WARD_FILTERED.format(sc=sc_code)
+                filtered_base_url += f"&kb={PRICE_MIN_MAN}&kt={PRICE_MAX_MAN}"
+                if mb is not None:
+                    filtered_base_url += f"&mb={mb}"
+                if et is not None:
+                    filtered_base_url += f"&et={et}"
+
         p = 1
         ward_total_parsed = 0
         ward_total_passed = 0
         pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
         while p <= limit:
             try:
-                html = fetch_list_page(session, p, ward_roman=ward_roman, url_params=url_params)
+                html = fetch_list_page(session, p, ward_roman=ward_roman, filtered_base_url=filtered_base_url)
             except requests.exceptions.HTTPError as e:
                 # リトライ後も 5xx の場合はそのページをスキップして続行（ジョブ全体は落とさない）
                 if e.response is not None and 500 <= e.response.status_code < 600:

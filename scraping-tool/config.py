@@ -63,6 +63,19 @@ SUUMO_23_WARD_ROMAN = (
     "toshima", "kita", "itabashi",
 )
 
+# SUUMO JJ012FC001 URL 用の区コード（JIS市区町村コード）
+# /jj/bukken/ichiran/JJ012FC001/?sc=XXXXX でサーバーサイド価格フィルタを利用する際に使用
+SUUMO_23_WARD_SC_CODES: dict[str, str] = {
+    "chiyoda": "13101", "chuo": "13102", "minato": "13103",
+    "shinjuku": "13104", "bunkyo": "13105", "taito": "13106",
+    "sumida": "13107", "koto": "13108", "shinagawa": "13109",
+    "meguro": "13110", "ota": "13111", "setagaya": "13112",
+    "shibuya": "13113", "nakano": "13114", "suginami": "13115",
+    "toshima": "13116", "kita": "13117", "arakawa": "13118",
+    "itabashi": "13119", "nerima": "13120", "adachi": "13121",
+    "katsushika": "13122", "edogawa": "13123",
+}
+
 # リクエスト間隔（秒）: 負荷軽減のため
 REQUEST_DELAY_SEC = 2
 # HOME'S 専用のリクエスト間隔（秒）: AWS WAF ボット検知対策のため長めに設定
