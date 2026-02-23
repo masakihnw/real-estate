@@ -343,6 +343,13 @@ final class ListingStore {
         existing.ownership = new.ownership
         existing.managementFee = new.managementFee
         existing.repairReserveFund = new.repairReserveFund
+        existing.direction = new.direction
+        existing.balconyAreaM2 = new.balconyAreaM2
+        existing.parking = new.parking
+        existing.constructor = new.constructor
+        existing.zoning = new.zoning
+        existing.repairFundOnetime = new.repairFundOnetime
+        existing.featureTagsJSON = new.featureTagsJSON
         existing.listWardRoman = new.listWardRoman
         existing.fetchedAt = new.fetchedAt
         existing.propertyType = new.propertyType

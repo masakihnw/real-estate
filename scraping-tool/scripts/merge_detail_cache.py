@@ -14,7 +14,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = ROOT / "data" / "building_units.json"
-KEYS = ("total_units", "floor_position", "floor_total", "floor_structure", "ownership", "management_fee", "repair_reserve_fund", "floor_plan_images", "suumo_images")
+KEYS = (
+    "total_units", "floor_position", "floor_total", "floor_structure",
+    "ownership", "management_fee", "repair_reserve_fund",
+    "direction", "balcony_area_m2", "parking", "constructor", "zoning",
+    "repair_fund_onetime", "delivery_date", "feature_tags",
+    "floor_plan_images", "suumo_images",
+)
 
 
 def main() -> None:

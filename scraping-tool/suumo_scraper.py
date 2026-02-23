@@ -390,23 +390,49 @@ def _parse_fallback(soup: BeautifulSoup, base_url: str) -> list[SuumoListing]:
     return items
 
 
+def _parse_js_gap_object(html: str) -> dict:
+    """SUUMO 詳細ページの gapSuumoPcForKr JavaScript オブジェクトから構造化データを抽出する。
+
+    SUUMO はページ上部の <script> に GTM 用の gapSuumoPcForKr 変数を埋め込んでおり、
+    HTML テーブルよりも信頼性の高い構造化データが格納されている。
+    """
+    result: dict = {}
+    m = re.search(r"var\s+gapSuumoPcForKr\s*=\s*\[\s*\{(.*?)\}\s*\]", html, re.DOTALL)
+    if not m:
+        return result
+
+    blob = m.group(1)
+
+    def _extract_str(key: str) -> Optional[str]:
+        pat = rf'{key}\s*:\s*"([^"]*)"'
+        match = re.search(pat, blob)
+        return match.group(1).strip() if match and match.group(1).strip() else None
+
+    def _extract_list(key: str) -> list[str]:
+        pat = rf'{key}\s*:\s*\[([^\]]*)\]'
+        match = re.search(pat, blob)
+        if not match:
+            return []
+        items = re.findall(r'"([^"]+)"', match.group(1))
+        return [item.strip() for item in items if item.strip()]
+
+    result["direction"] = _extract_str("muki")
+    result["feature_tags"] = _extract_list("tokuchoPickupList") or None
+    return result
+
+
 def parse_suumo_detail_html(html: str) -> dict:
     """SUUMO 物件詳細ページのHTMLから物件属性をパースする。
 
     詳細ページを自動取得する機能は含まない。HTML文字列を渡して利用する。
-    戻り値: {"total_units": int|None, "floor_position": int|None, "floor_total": int|None,
-             "floor_structure": str|None, "ownership": str|None,
-             "management_fee": int|None, "repair_reserve_fund": int|None}
-    floor_structure は "RC13階地下1階建" など表示用文字列。ownership は「所有権」「借地権」等。
-    management_fee は管理費（円/月）。repair_reserve_fund は修繕積立金（円/月）。
 
-    想定HTML構造（docs/suumo.html 参照）:
-    - th に「総戸数」を含む行の直後 td → "38戸" など → total_units
-    - th に「所在階」または「所在階/構造・階建」を含む行の td → "12階" または "12階/RC13階地下1階建"
-    - th に「構造・階建て」を含む行の td → "RC13階地下1階建" など
-    - th に「権利形態」または「敷地の権利形態」を含む行の td → "所有権" など → ownership
-    - th に「管理費」を含む行の td → "1万8000円／月（委託(通勤)）" → management_fee
-    - th に「修繕積立金」を含む行の td → "1万7580円／月" → repair_reserve_fund
+    取得フィールド:
+    - total_units, floor_position, floor_total, floor_structure, ownership
+    - management_fee, repair_reserve_fund
+    - direction, balcony_area_m2, parking, constructor, zoning
+    - repair_fund_onetime, delivery_date
+    - feature_tags (JavaScript gapSuumoPcForKr から取得)
+    - floor_plan_images, suumo_images
     """
     soup = BeautifulSoup(html, "lxml")
     total_units: Optional[int] = None
@@ -416,6 +442,16 @@ def parse_suumo_detail_html(html: str) -> dict:
     ownership: Optional[str] = None
     management_fee: Optional[int] = None
     repair_reserve_fund: Optional[int] = None
+    direction: Optional[str] = None
+    balcony_area_m2: Optional[float] = None
+    parking: Optional[str] = None
+    constructor: Optional[str] = None
+    zoning: Optional[str] = None
+    repair_fund_onetime: Optional[int] = None
+    delivery_date: Optional[str] = None
+
+    # Phase 2: JavaScript オブジェクトから構造化データを取得
+    js_data = _parse_js_gap_object(html)
 
     for tr in soup.find_all("tr"):
         cells = tr.find_all(["th", "td"], recursive=False)
@@ -437,35 +473,58 @@ def parse_suumo_detail_html(html: str) -> dict:
                 m2 = re.search(r"(?:RC|SRC|鉄骨)?(\d+)\s*階(?:\s*地下\d+階)?\s*建", td_text)
                 if m2:
                     floor_total = int(m2.group(1))
-                # "12階/RC13階地下1階建" の形式なら / 以降を構造として保存
                 if "/" in td_text:
                     after_slash = td_text.split("/", 1)[1].strip()
                     if after_slash:
                         floor_structure = after_slash
 
             if "構造・階建" in th_text:
-                # 「RC13階地下1階建」のように「○階建」で終わる部分から階数を取る（所在階の「12階」にマッチしないよう）
                 m = re.search(r"(?:RC|SRC|鉄骨)?(\d+)\s*階(?:\s*地下\d+階)?\s*建", td_text)
                 if m:
                     floor_total = int(m.group(1))
-                # 「所在階/構造・階建」の同一セルでなく、別行の「構造・階建て」セルなら td 全体を構造とする
                 if "所在階" not in th_text and td_text.strip():
                     floor_structure = td_text.strip()
 
             if "権利形態" in th_text and td_text.strip():
                 ownership = td_text.strip()
 
-            # 管理費: "1万8000円／月（委託(通勤)）" → 18000
             if "管理費" in th_text and "修繕" not in th_text:
                 val = parse_monthly_yen(td_text)
                 if val is not None and val > 0:
                     management_fee = val
 
-            # 修繕積立金: "1万7580円／月" → 17580（「修繕積立基金」は一時金なので除外）
             if "修繕積立金" in th_text and "基金" not in th_text:
                 val = parse_monthly_yen(td_text)
                 if val is not None and val > 0:
                     repair_reserve_fund = val
+
+            # --- Phase 1: 追加フィールド ---
+
+            if th_text == "向き" or (th_text.endswith("向き") and len(th_text) <= 4):
+                if td_text and td_text != "-":
+                    direction = td_text
+
+            if "その他面積" in th_text:
+                m = re.search(r"バルコニー[面積：:\s]*(\d+(?:\.\d+)?)\s*m", td_text)
+                if m:
+                    balcony_area_m2 = float(m.group(1))
+
+            if "駐車場" in th_text and td_text and td_text != "-":
+                parking = td_text
+
+            if th_text == "施工" and td_text and td_text != "-":
+                constructor = td_text
+
+            if "用途地域" in th_text and td_text and td_text != "-":
+                zoning = td_text
+
+            if "修繕積立基金" in th_text:
+                val = parse_monthly_yen(td_text)
+                if val is not None and val > 0:
+                    repair_fund_onetime = val
+
+            if "引渡可能時期" in th_text and td_text and td_text != "-":
+                delivery_date = td_text
 
     # 間取り図画像の抽出（alt="間取り図" の img タグから URL を取得）
     floor_plan_images: list[str] = []
@@ -506,6 +565,13 @@ def parse_suumo_detail_html(html: str) -> dict:
         else:
             suumo_images.append({"url": url, "label": alt})
 
+    # direction: JS データを優先し、HTML テーブルでフォールバック
+    if not direction and js_data.get("direction"):
+        direction = js_data["direction"]
+
+    # feature_tags: JS データからのみ取得
+    feature_tags = js_data.get("feature_tags")
+
     return {
         "total_units": total_units,
         "floor_position": floor_position,
@@ -514,6 +580,14 @@ def parse_suumo_detail_html(html: str) -> dict:
         "ownership": ownership,
         "management_fee": management_fee,
         "repair_reserve_fund": repair_reserve_fund,
+        "direction": direction,
+        "balcony_area_m2": balcony_area_m2,
+        "parking": parking,
+        "constructor": constructor,
+        "zoning": zoning,
+        "repair_fund_onetime": repair_fund_onetime,
+        "delivery_date": delivery_date,
+        "feature_tags": feature_tags,
         "floor_plan_images": floor_plan_images if floor_plan_images else None,
         "suumo_images": suumo_images if suumo_images else None,
     }
