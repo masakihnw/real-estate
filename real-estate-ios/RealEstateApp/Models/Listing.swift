@@ -512,6 +512,30 @@ final class Listing: @unchecked Sendable {
         return "—"
     }
 
+    /// 平米単価（万円/㎡）。価格と面積の両方が必要
+    var m2UnitPrice: Double? {
+        guard let price = priceMan, let area = areaM2, area > 0 else { return nil }
+        return Double(price) / area
+    }
+
+    /// 坪単価（万円/坪）。1坪 = 3.30578㎡
+    var tsuboUnitPrice: Double? {
+        guard let m2Price = m2UnitPrice else { return nil }
+        return m2Price * 3.30578
+    }
+
+    /// 表示用: 平米単価
+    var m2UnitPriceDisplay: String {
+        guard let price = m2UnitPrice else { return "—" }
+        return String(format: "%.1f万円/㎡", price)
+    }
+
+    /// 表示用: 坪単価
+    var tsuboUnitPriceDisplay: String {
+        guard let price = tsuboUnitPrice else { return "—" }
+        return String(format: "%.1f万円/坪", price)
+    }
+
     /// 表示用: 駅徒歩
     var walkDisplay: String {
         guard let w = walkMin else { return "—" }
