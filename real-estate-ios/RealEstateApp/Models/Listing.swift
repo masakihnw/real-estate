@@ -411,15 +411,23 @@ final class Listing: @unchecked Sendable {
     /// - builtYear: まれにデータ不整合あり（2008/2009等）
     /// - 価格・間取り・面積・階数: 住戸ごとに異なる
     var buildingGroupKey: String {
+        // キャッシュ無効化: name + address + floorTotal + ownership を結合してソースキーとする
+        let sourceKey = "\(name)|\(address ?? "")|\(floorTotal ?? -1)|\(ownership ?? "")"
+        if let cached = _cachedBuildingGroupKey, _cachedBuildingGroupKeySource == sourceKey {
+            return cached
+        }
         let cleanName = Self.cleanListingName(name)
             .replacingOccurrences(of: #"\s+"#, with: "", options: .regularExpression)
         let normalizedAddr = Self.normalizeAddressForGrouping(address ?? "")
-        return [
+        let key = [
             cleanName,
             normalizedAddr,
             floorTotal.map(String.init) ?? "",
             (ownership ?? "").trimmingCharacters(in: .whitespaces)
         ].joined(separator: "|")
+        _cachedBuildingGroupKey = key
+        _cachedBuildingGroupKeySource = sourceKey
+        return key
     }
 
     /// 住所を丁目レベルに正規化する（番・号を除去）。
@@ -866,6 +874,8 @@ final class Listing: @unchecked Sendable {
     // ソース JSON が変わった場合は自動的にキャッシュを無効化する。
 
     @Transient private var _cache = ListingJSONCache()
+    @Transient private var _cachedBuildingGroupKey: String?
+    @Transient private var _cachedBuildingGroupKeySource: String?
 
     /// JSON パース結果のインメモリキャッシュ。Listing ごとに1つ保持。
     private class ListingJSONCache {
@@ -879,6 +889,8 @@ final class Listing: @unchecked Sendable {
         var marketData: (source: String?, result: MarketData?)?
         var populationData: (source: String?, result: PopulationData?)?
         var marketTrends: (source: String?, result: [MarketTrendEntry])?
+        var suumoImages: (source: String?, result: [SuumoImage])?
+        var floorPlanImages: (source: String?, result: [URL])?
     }
 
     // MARK: - 周辺物件データ
@@ -1430,10 +1442,18 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - 間取り図画像
 
-    /// floorPlanImagesJSON をパースして URL 配列で返す
+    /// floorPlanImagesJSON をパースして URL 配列で返す（キャッシュ付き）
     var parsedFloorPlanImages: [URL] {
-        guard let json = floorPlanImagesJSON,
-              let data = json.data(using: .utf8),
+        if let cached = _cache.floorPlanImages, cached.source == floorPlanImagesJSON {
+            return cached.result
+        }
+        let result = Self._parseFloorPlanImages(floorPlanImagesJSON)
+        _cache.floorPlanImages = (floorPlanImagesJSON, result)
+        return result
+    }
+
+    private static func _parseFloorPlanImages(_ json: String?) -> [URL] {
+        guard let json, let data = json.data(using: .utf8),
               let arr = try? JSONSerialization.jsonObject(with: data) as? [String] else {
             return []
         }
@@ -1488,10 +1508,18 @@ final class Listing: @unchecked Sendable {
         }
     }
 
-    /// suumoImagesJSON をパースして SuumoImage 配列で返す
+    /// suumoImagesJSON をパースして SuumoImage 配列で返す（キャッシュ付き）
     var parsedSuumoImages: [SuumoImage] {
-        guard let json = suumoImagesJSON,
-              let data = json.data(using: .utf8) else { return [] }
+        if let cached = _cache.suumoImages, cached.source == suumoImagesJSON {
+            return cached.result
+        }
+        let result = Self._parseSuumoImages(suumoImagesJSON)
+        _cache.suumoImages = (suumoImagesJSON, result)
+        return result
+    }
+
+    private static func _parseSuumoImages(_ json: String?) -> [SuumoImage] {
+        guard let json, let data = json.data(using: .utf8) else { return [] }
         return (try? JSONDecoder().decode([SuumoImage].self, from: data)) ?? []
     }
 

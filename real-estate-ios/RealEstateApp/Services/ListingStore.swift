@@ -155,10 +155,16 @@ final class ListingStore {
             NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
         }
 
+        let bothNotModified = !chukoResult.hadChanges && chukoResult.error == nil
+            && !shinResult.hadChanges && shinResult.error == nil
+
         // Firestore からアノテーション（いいね・メモ）を取得してマージ
-        await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
-            Task { @MainActor in
-                syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+        // 両ソースが304（データ変更なし）の場合はスキップ
+        if !bothNotModified {
+            await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                Task { @MainActor in
+                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                }
             }
         }
 
@@ -241,17 +247,15 @@ final class ListingStore {
         switch fetchResult {
         case .notModified:
             // データ未変更でも前回の isNew フラグをリセットする
-            // （リセットしないと 304 が続く限り New バッジが残り続ける）
+            // isNew == true のものだけをフェッチして更新（全件ロード回避）
             do {
-                let predicate = #Predicate<Listing> { $0.propertyType == propertyType }
-                let descriptor = FetchDescriptor<Listing>(predicate: predicate)
-                let existing = try modelContext.fetch(descriptor)
-                var hadResets = false
-                for e in existing where e.isNew {
-                    e.isNew = false
-                    hadResets = true
+                let predicate = #Predicate<Listing> {
+                    $0.propertyType == propertyType && $0.isNew == true
                 }
-                if hadResets {
+                let descriptor = FetchDescriptor<Listing>(predicate: predicate)
+                let newOnes = try modelContext.fetch(descriptor)
+                if !newOnes.isEmpty {
+                    for e in newOnes { e.isNew = false }
                     try modelContext.save()
                 }
             } catch {
