@@ -91,8 +91,13 @@ struct ContentView: View {
             }
         }
         .onChange(of: scenePhase) { _, newPhase in
-            // F4: フォアグラウンド復帰時に一定間隔経過していたら自動更新
             if newPhase == .active {
+                // アプリ復帰 = ユーザーが新着を確認できる状態
+                // 累積カウント・バッジ・デリバリー済み通知をクリアする。
+                // この後の refresh で新着があれば改めてカウント・通知が設定される。
+                NotificationScheduleService.shared.resetAccumulatedCount()
+
+                // F4: フォアグラウンド復帰時に一定間隔経過していたら自動更新
                 let elapsed = -(store.lastFetchedAt ?? .distantPast).timeIntervalSinceNow
                 if elapsed >= autoRefreshInterval {
                     Task {

@@ -287,6 +287,22 @@ def main() -> None:
                 print(f"Comparing with previous: {previous_path} ({len(previous_listings)} listings)")
         except Exception:
             pass
+    # --shinchiku 指定時は previous_shinchiku.json も比較対象に含める
+    # これがないと新築物件が毎回全件 is_new=true になる
+    if shinchiku_path_str:
+        prev_shinchiku_path = previous_path.parent / "previous_shinchiku.json"
+        if prev_shinchiku_path.exists():
+            try:
+                with open(prev_shinchiku_path, encoding="utf-8") as f:
+                    prev_shin = json.load(f)
+                if isinstance(prev_shin, list):
+                    if previous_listings is None:
+                        previous_listings = prev_shin
+                    else:
+                        previous_listings = previous_listings + prev_shin
+                    print(f"Comparing with previous shinchiku: {prev_shinchiku_path} ({len(prev_shin)} listings)")
+            except Exception:
+                pass
     print(f"Loading {len(listings)} listings ({len(listings) - shinchiku_count} chuko + {shinchiku_count} shinchiku)...")
     map_data = build_map_data(listings, previous_listings)
     new_count = sum(1 for p in map_data if p.get("is_new"))
