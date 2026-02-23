@@ -871,7 +871,7 @@ struct ListingRowView: View {
                     }
                 }
 
-                // 3行目: 間取り・面積・築年/入居・階・権利・戸数
+                // 3行目: 間取り・面積・築年/入居・階・向き・戸数
                 HStack(spacing: 4) {
                     Text(listing.layout ?? "—")
                     Text(listing.areaDisplay)
@@ -885,6 +885,9 @@ struct ListingRowView: View {
                         Text(listing.builtAgeDisplay)
                         if !listing.floorDisplay.isEmpty {
                             Text(listing.floorDisplay)
+                        }
+                        if let dir = listing.direction, !dir.isEmpty {
+                            Text(dir)
                         }
                         Text(listing.totalUnitsDisplay)
                     }

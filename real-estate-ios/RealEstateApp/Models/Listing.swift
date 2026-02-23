@@ -32,6 +32,21 @@ final class Listing: @unchecked Sendable {
     var managementFee: Int?
     /// 修繕積立金（円/月。SUUMO/HOME'S 詳細ページから取得）
     var repairReserveFund: Int?
+    /// 向き（方角。例: "南", "北西"）
+    var direction: String?
+    /// バルコニー面積（㎡）
+    var balconyAreaM2: Double?
+    /// 駐車場（例: "空有 月額20,000円〜25,000円"）
+    var parking: String?
+    /// 施工会社（例: "大林組"）
+    var constructor: String?
+    /// 用途地域（例: "商業地域"）
+    var zoning: String?
+    /// 修繕積立基金（円。一時金。SUUMO 詳細ページから取得）
+    var repairFundOnetime: Int?
+    /// 特徴タグ（JSON 文字列。SUUMO の gapSuumoPcForKr から取得）
+    /// フォーマット: ["駅徒歩5分以内","2沿線以上利用可",...]
+    var featureTagsJSON: String?
     var listWardRoman: String?
     var fetchedAt: Date
 
@@ -210,6 +225,13 @@ final class Listing: @unchecked Sendable {
         ownership: String? = nil,
         managementFee: Int? = nil,
         repairReserveFund: Int? = nil,
+        direction: String? = nil,
+        balconyAreaM2: Double? = nil,
+        parking: String? = nil,
+        constructor: String? = nil,
+        zoning: String? = nil,
+        repairFundOnetime: Int? = nil,
+        featureTagsJSON: String? = nil,
         listWardRoman: String? = nil,
         floorPlanImagesJSON: String? = nil,
         suumoImagesJSON: String? = nil,
@@ -277,6 +299,13 @@ final class Listing: @unchecked Sendable {
         self.ownership = ownership
         self.managementFee = managementFee
         self.repairReserveFund = repairReserveFund
+        self.direction = direction
+        self.balconyAreaM2 = balconyAreaM2
+        self.parking = parking
+        self.constructor = constructor
+        self.zoning = zoning
+        self.repairFundOnetime = repairFundOnetime
+        self.featureTagsJSON = featureTagsJSON
         self.listWardRoman = listWardRoman
         self.floorPlanImagesJSON = floorPlanImagesJSON
         self.suumoImagesJSON = suumoImagesJSON
@@ -762,6 +791,42 @@ final class Listing: @unchecked Sendable {
     var totalUnitsDisplay: String {
         guard let u = totalUnits else { return "—" }
         return "\(u)戸"
+    }
+
+    /// 表示用: 向き
+    var directionDisplay: String {
+        direction ?? "—"
+    }
+
+    /// 表示用: バルコニー面積
+    var balconyAreaDisplay: String {
+        guard let area = balconyAreaM2 else { return "—" }
+        return String(format: "%.2f㎡", area)
+    }
+
+    /// 表示用: 修繕積立基金（一時金）
+    var repairFundOnetimeDisplay: String {
+        guard let val = repairFundOnetime else { return "—" }
+        let man = Double(val) / 10000.0
+        if man >= 1.0 {
+            return String(format: "%.1f万円", man)
+        }
+        return "\(val.formatted())円"
+    }
+
+    /// featureTagsJSON をパースして文字列配列で返す
+    var parsedFeatureTags: [String] {
+        guard let json = featureTagsJSON,
+              let data = json.data(using: .utf8),
+              let arr = try? JSONSerialization.jsonObject(with: data) as? [String] else {
+            return []
+        }
+        return arr
+    }
+
+    /// 特徴タグがあるか
+    var hasFeatureTags: Bool {
+        featureTagsJSON != nil && !parsedFeatureTags.isEmpty
     }
 
     /// 表示用: 追加日（static DateFormatter で毎回のアロケーションを回避）
@@ -2016,6 +2081,13 @@ struct ListingDTO: Codable {
     var ownership: String?
     var management_fee: Int?
     var repair_reserve_fund: Int?
+    var direction: String?
+    var balcony_area_m2: Double?
+    var parking: String?
+    var constructor: String?
+    var zoning: String?
+    var repair_fund_onetime: Int?
+    var feature_tags: [String]?
     var list_ward_roman: String?
 
     // 重複集約
@@ -2225,6 +2297,12 @@ extension Listing {
            let data = try? JSONEncoder().encode(imgs) {
             suumoImagesJSON = String(data: data, encoding: .utf8)
         }
+        // feature_tags 配列を JSON 文字列に変換
+        var featureTagsJSON: String?
+        if let tags = dto.feature_tags, !tags.isEmpty,
+           let data = try? JSONSerialization.data(withJSONObject: tags) {
+            featureTagsJSON = String(data: data, encoding: .utf8)
+        }
         return Listing(
             source: dto.source,
             url: url,
@@ -2245,6 +2323,13 @@ extension Listing {
             ownership: dto.ownership,
             managementFee: dto.management_fee,
             repairReserveFund: dto.repair_reserve_fund,
+            direction: dto.direction,
+            balconyAreaM2: dto.balcony_area_m2,
+            parking: dto.parking,
+            constructor: dto.constructor,
+            zoning: dto.zoning,
+            repairFundOnetime: dto.repair_fund_onetime,
+            featureTagsJSON: featureTagsJSON,
             listWardRoman: dto.list_ward_roman,
             floorPlanImagesJSON: floorPlanJSON,
             suumoImagesJSON: suumoImagesJSON,

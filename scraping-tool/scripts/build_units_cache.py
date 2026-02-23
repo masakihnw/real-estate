@@ -125,20 +125,17 @@ def fetch_detail(session: requests.Session, url: str) -> str:
 def _detail_to_cache_entry(parsed: dict) -> dict:
     """parse_suumo_detail_html の戻り値を building_units.json 用のエントリに変換。None は含めない。"""
     entry = {}
-    if parsed.get("total_units") is not None:
-        entry["total_units"] = parsed["total_units"]
-    if parsed.get("floor_position") is not None:
-        entry["floor_position"] = parsed["floor_position"]
-    if parsed.get("floor_total") is not None:
-        entry["floor_total"] = parsed["floor_total"]
-    if parsed.get("floor_structure") is not None:
-        entry["floor_structure"] = parsed["floor_structure"]
-    if parsed.get("ownership") is not None:
-        entry["ownership"] = parsed["ownership"]
-    if parsed.get("management_fee") is not None:
-        entry["management_fee"] = parsed["management_fee"]
-    if parsed.get("repair_reserve_fund") is not None:
-        entry["repair_reserve_fund"] = parsed["repair_reserve_fund"]
+    _SCALAR_KEYS = (
+        "total_units", "floor_position", "floor_total", "floor_structure",
+        "ownership", "management_fee", "repair_reserve_fund",
+        "direction", "balcony_area_m2", "parking", "constructor", "zoning",
+        "repair_fund_onetime", "delivery_date",
+    )
+    for key in _SCALAR_KEYS:
+        if parsed.get(key) is not None:
+            entry[key] = parsed[key]
+    if parsed.get("feature_tags"):
+        entry["feature_tags"] = parsed["feature_tags"]
     if parsed.get("floor_plan_images"):
         entry["floor_plan_images"] = parsed["floor_plan_images"]
     if parsed.get("suumo_images"):
