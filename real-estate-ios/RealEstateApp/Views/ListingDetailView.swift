@@ -237,6 +237,8 @@ struct ListingDetailView: View {
 
         VStack(spacing: 0) {
             DetailRow(title: "価格", value: listing.priceDisplay, accentValue: true)
+            DetailRow(title: "平米単価", value: listing.m2UnitPriceDisplay)
+            DetailRow(title: "坪単価", value: listing.tsuboUnitPriceDisplay)
             if let dupText = listing.duplicateCountDisplay {
                 DetailRow(title: "売出戸数", value: dupText)
             }
