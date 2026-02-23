@@ -220,16 +220,14 @@ def layout_range_ok(layout: str) -> bool:
 
 
 def parse_monthly_yen(s: str) -> Optional[int]:
-    """「1万8000円／月」「5000円／月」「1万7580円／月（委託(通勤)）」などから月額円を返す。"""
+    """「1万8000円／月」「5000円／月」「18,000円」「1万7580円／月（委託(通勤)）」などから円額を返す。"""
     if not s:
         return None
-    # 括弧内の注記を除去
     s = re.sub(r"[（(][^）)]*[）)]", "", s).strip()
-    # "−" "なし" "-" は None
     if re.match(r"^[-−–—なし]+$", s.strip()):
         return None
     if "万" in s:
-        m = re.search(r"([0-9.]+)\s*万\s*([0-9.]*)\s*円", s)
+        m = re.search(r"([0-9.]+)\s*万\s*([0-9.]*)\s*円?", s)
         if m:
             man = float(m.group(1))
             yen = float(m.group(2) or 0)
@@ -237,7 +235,29 @@ def parse_monthly_yen(s: str) -> Optional[int]:
     m = re.search(r"([0-9,]+)\s*円", s)
     if m:
         return int(m.group(1).replace(",", ""))
+    # 「円」なしのカンマ区切り数値にもフォールバック（"18,000" 等）
+    m = re.search(r"([0-9]{1,3}(?:,[0-9]{3})+)", s)
+    if m:
+        return int(m.group(1).replace(",", ""))
+    # 純粋な数値（"18000" 等）
+    m = re.search(r"(\d{4,})", s)
+    if m:
+        return int(m.group(1))
     return None
+
+
+# ──────────────────────────── 住所 ────────────────────────────
+
+
+def extract_ward(address: Optional[str]) -> Optional[str]:
+    """住所文字列から区名を抽出 (例: '東京都江東区豊洲5丁目' → '江東区')。"""
+    if not address:
+        return None
+    m = re.search(r"(?<=[都道府県])\S+?区", address)
+    return m.group(0) if m else None
+
+
+# ──────────────────────────── 権利形態 ────────────────────────────
 
 
 def parse_ownership(text: str) -> Optional[str]:

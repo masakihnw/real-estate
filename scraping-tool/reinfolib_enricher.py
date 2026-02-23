@@ -62,6 +62,8 @@ import sys
 import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
+from parse_utils import extract_ward as _extract_ward_shared
+
 # ---------------------------------------------------------------------------
 # キャッシュ読み込み
 # ---------------------------------------------------------------------------
@@ -86,13 +88,8 @@ def load_json_file(path: str) -> Optional[dict]:
 # ---------------------------------------------------------------------------
 
 def extract_ward(address: Optional[str]) -> Optional[str]:
-    """住所文字列から区名を抽出 (例: '東京都江東区豊洲5丁目' → '江東区')。"""
-    if not address:
-        return None
-    m = re.search(r"(?<=[都道府県])\S+?区", address)
-    if m:
-        return m.group(0)
-    return None
+    """住所文字列から区名を抽出。parse_utils.extract_ward に委譲。"""
+    return _extract_ward_shared(address)
 
 
 def extract_district(address: Optional[str]) -> Optional[str]:
