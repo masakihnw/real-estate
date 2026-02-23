@@ -191,18 +191,23 @@ final class NotificationScheduleService {
         rescheduleNotifications()
     }
 
-    /// 通知が表示/タップされた時に呼ぶ。カウントをリセットする。
+    /// 通知が表示/タップされた時、またはアプリがフォアグラウンドに復帰した時に呼ぶ。
+    /// カウントをリセットし、保留中のスケジュール通知をキャンセルし、
+    /// デリバリー済みの通知とバッジもクリアする。
     func resetAccumulatedCount() {
         accumulatedNewCount = 0
-        // 次の通知はカウントが0なので不要 → 一旦全部消す
         cancelAllScheduledNotifications()
+        // デリバリー済みのスケジュール通知を通知センターから除去
+        let deliveredIDs = (0..<10).map { "scheduled-listing-\($0)" }
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: deliveredIDs)
+        // アプリバッジをクリア
+        UNUserNotificationCenter.current().setBadgeCount(0) { _ in }
     }
 
     /// 全スケジュール済み通知をキャンセル
     func cancelAllScheduledNotifications() {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(
-            withIdentifiers: scheduleTimes.enumerated().map { "scheduled-listing-\($0.offset)" }
-        )
+        let ids = (0..<10).map { "scheduled-listing-\($0)" }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids)
     }
 
     /// スケジュール時刻を更新して再登録

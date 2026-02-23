@@ -607,7 +607,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **並列取得** | 中古・新築を `async let` で並列リクエスト |
 | **JSON デコード** | `Task.detached(priority: .userInitiated)` でバックグラウンド実行 |
 | **新規検出** | 既存の `identityKey` に存在しない物件 → `isNew = true` + ローカル通知。同期ごとに既存物件の `isNew` をリセットし、新規挿入物件のみ `isNew = true` に設定。304 Not Modified 時も `isNew` をリセットし、New バッジが残り続けないようにする。`identityKey` は Python 側と同一ロジック（`cleanListingName` で正規化した物件名・駅名のみ抽出・`walk_min` 除外）で、`station_line` の表記揺れや `walk_min` 変動による誤検出を防止 |
-| **自動更新** | フォアグラウンド復帰時に15分経過していれば自動 refresh |
+| **自動更新** | フォアグラウンド復帰時に15分経過していれば自動 refresh。復帰時にローカル通知の累積カウント・バッジもリセット |
 | **lastError** | メインの JSON 取得・同期エラー（致命的）。UI に表示 |
 | **syncWarning** | 非致命的な同期警告（Firebase いいね・メモ、通勤時間計算など）。`pullAnnotations` / `calculateForAllListings` 失敗時に設定。UI で任意表示可能 |
 | **fetchCount エラー** | `fetchCount` 失敗時は do/catch でログ出力し、デフォルト 0 でフルフェッチを強制 |
@@ -650,7 +650,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | サービス | 種類 | 詳細 |
 |---------|------|------|
-| **NotificationScheduleService** | ローカル通知 | 新規物件追加時に蓄積 → スケジュール時刻にまとめて配信。新コメント・新写真も通知。 |
+| **NotificationScheduleService** | ローカル通知 | 新規物件追加時に蓄積 → スケジュール時刻にまとめて配信。新コメント・新写真も通知。アプリがフォアグラウンドに復帰した時点で累積カウント・バッジ・デリバリー済み通知をリセットし、その後の refresh で見つかった新着のみ再カウントする。 |
 | **PushNotificationService** | FCM リモート通知 | トピック `new_listings` を購読。GitHub Actions からスクレイピング後に送信。 |
 | **BackgroundRefreshManager** | バックグラウンド更新 | `BGAppRefreshTask` で定期的に JSON 取得 → 新着検出 → ローカル通知 |
 
@@ -1249,7 +1249,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | ソース | 種別 | URL パターン | 状態 |
 |--------|------|-------------|------|
-| **SUUMO 中古** | 中古マンション | `suumo.jp/ms/chuko/tokyo/sc_{ward}/?kb={min}&kt={max}&mb={area}&mt=9999999` | 有効 |
+| **SUUMO 中古** | 中古マンション | `suumo.jp/jj/bukken/ichiran/JJ012FC001/?ar=030&bs=011&ta=13&sc={ward_code}&kb={min}&kt={max}&mb={area}&et={walk}`（サーバーサイドフィルタ付き）。フィルタなし時は `suumo.jp/ms/chuko/tokyo/sc_{ward}/` | 有効 |
 | **SUUMO 新築** | 新築マンション | `suumo.jp/jj/bukken/ichiran/JJ011FC001/?ar=030&bs=010&ta=13` | 有効 |
 | ~~HOME'S 中古~~ | 中古マンション | `homes.co.jp/mansion/chuko/tokyo/23ku/list/` | **無効**（WAF により実用的な取得が困難） |
 | ~~HOME'S 新築~~ | 新築マンション | `homes.co.jp/mansion/shinchiku/tokyo/list/` | **無効**（同上） |
@@ -1326,8 +1326,9 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **取得フィールド** | name, price, address, station_line, walk_min, area_m2, layout, built_year, floor, ownership |
 | **総戸数** | `building_units.json`（詳細ページキャッシュ）から取得 |
 | **詳細ページパース** | `parse_suumo_detail_html()` が HTML テーブルから direction（向き）、balcony_area_m2、parking、constructor（施工会社）、zoning（用途地域）、repair_fund_onetime（修繕積立基金）、delivery_date（引渡時期、中古の引渡可能時期）を抽出。JavaScript `gapSuumoPcForKr` オブジェクトから direction（muki）、feature_tags（tokuchoPickupList）を `_parse_js_gap_object()` で取得。direction は JS を優先し HTML でフォールバック、feature_tags は JS からのみ |
-| **フィルタ方式** | ローカルフィルタのみ。SUUMO の区別 URL（`/ms/chuko/tokyo/sc_XXX/`）は `kb`/`kt`/`mb`/`mt` クエリパラメータ非対応（エラーページが返る）のため、URL プリフィルタは無効化済み。全ページ取得後に `apply_conditions` で絞り込み |
-| **早期打ち切り** | 連続20ページで新規通過0件の区はスキップ（`EARLY_EXIT_PAGES=20`） |
+| **フィルタ方式** | サーバーサイドフィルタ + ローカルフィルタの2段構成。`apply_filter=True` 時は SUUMO の JJ012FC001 エンドポイント（`/jj/bukken/ichiran/JJ012FC001/?sc={ward_code}&kb={price_min}&kt={price_max}&mb={area_min}&et={walk_max}`）でサーバー側で価格帯・面積・駅徒歩を絞り込んでからローカルで `apply_conditions` を適用。`mb`/`et` は SUUMO が受け付ける固定値のみ使用可（`_snap_mb` で切り捨て、`_snap_et` で切り上げ）。`apply_filter=False` 時は従来の `/ms/chuko/tokyo/sc_XXX/` URL でフィルタなし取得。区コードは `SUUMO_23_WARD_SC_CODES`（JIS市区町村コード）で管理 |
+| **徒歩パース** | `parse_walk_min` は「徒歩N分」「歩N分」の両形式に対応 |
+| **早期打ち切り** | 連続20ページで新規通過0件の区はスキップ（`EARLY_EXIT_PAGES=20`）。サーバーサイドフィルタ（価格・面積・徒歩）により対象外物件が事前に除外されるため、早期打ち切りによる取りこぼしは大幅に軽減 |
 | **出力** | `SuumoListing` dataclass |
 
 #### 5.3.2 ~~HOME'S 中古（homes_scraper.py）~~ — 現在無効
@@ -1371,7 +1372,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 各スクレイパーの結果に対して以下の条件でローカルフィルタ（`apply_conditions`）:
 
-> **注意**: SUUMO の区別 URL は URL クエリパラメータによるサーバーサイド絞り込みに非対応のため、全ページ取得後にローカルで絞り込む方式に統一
+> **サーバーサイドフィルタ**: SUUMO 中古では JJ012FC001 エンドポイントの `kb`/`kt`（価格）、`mb`（面積下限）、`et`（駅徒歩上限）パラメータでサーバー側の絞り込みを行う。`mb`/`et` は SUUMO が受け付ける固定値のみ使用可（mb: 20,30,40,50,60,70,80,90,100、et: 1,3,5,7,10,15,20）。config 値は `_snap_mb`（切り捨て）・`_snap_et`（切り上げ）で最寄り固定値に丸める。ローカルフィルタはこの結果に対してさらに正確な面積・間取り・築年・徒歩等の条件で絞り込む2段構成
 
 - 東京23区以内
 - 価格: `PRICE_MIN_MAN`〜`PRICE_MAX_MAN`

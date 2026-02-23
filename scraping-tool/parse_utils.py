@@ -104,10 +104,10 @@ def parse_area_range(text: str) -> tuple[Optional[float], Optional[float]]:
 
 
 def parse_walk_min(s: str) -> Optional[int]:
-    """「徒歩4分」「徒歩約3分」などから分を返す（最初のマッチ）。中古スクレイパー用。"""
+    """「徒歩4分」「徒歩約3分」「歩6分」などから分を返す（最初のマッチ）。中古スクレイパー用。"""
     if not s:
         return None
-    m = re.search(r"徒歩\s*約?\s*([0-9]+)\s*分", s)
+    m = re.search(r"(?:徒歩|歩)\s*約?\s*([0-9]+)\s*分", s)
     if m:
         return int(m.group(1))
     return None
