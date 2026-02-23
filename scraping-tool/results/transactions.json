@@ -298,7 +298,7 @@
       "latitude": 35.7191358,
       "longitude": 139.6999816,
       "building_group_id": "131040410-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "id": "tx-5505e9397169",
@@ -558,7 +558,7 @@
       "latitude": 35.7191358,
       "longitude": 139.6999816,
       "building_group_id": "131040410-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "id": "tx-3212632751d4",
@@ -638,7 +638,7 @@
       "latitude": 35.7191358,
       "longitude": 139.6999816,
       "building_group_id": "131040410-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "id": "tx-819ef7a2995b",
@@ -678,7 +678,7 @@
       "latitude": 35.7191358,
       "longitude": 139.6999816,
       "building_group_id": "131040410-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "id": "tx-9af500c90ba1",
@@ -698,7 +698,7 @@
       "latitude": 35.7191358,
       "longitude": 139.6999816,
       "building_group_id": "131040410-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "id": "tx-e5db080af59a",
@@ -1498,7 +1498,7 @@
       "latitude": 35.7191358,
       "longitude": 139.6999816,
       "building_group_id": "131040410-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "id": "tx-cf4c72def9c8",
@@ -1758,7 +1758,7 @@
       "latitude": 35.7191358,
       "longitude": 139.6999816,
       "building_group_id": "131040410-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "id": "tx-532d838e7305",
@@ -4118,7 +4118,7 @@
       "latitude": 35.7042507,
       "longitude": 139.7783633,
       "building_group_id": "131060190-2014",
-      "estimated_building_name": "シティハウス秋葉原イーストレジデンス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b69ab640f046",
@@ -4918,7 +4918,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-5d5ef1138d40",
@@ -4938,7 +4938,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-6d2cd747982b",
@@ -4958,7 +4958,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-eca44d5b0a7b",
@@ -5018,7 +5018,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2019",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス東陽町翠賓閣 / プラウド東陽町サウス"
     },
     {
       "id": "tx-4765088e6256",
@@ -5038,7 +5038,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "クレヴィア住吉扇橋"
+      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
     },
     {
       "id": "tx-124f4e748254",
@@ -5058,7 +5058,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2022",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-aba5e60e8b5f",
@@ -5078,7 +5078,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-480e5fbd16a7",
@@ -5138,7 +5138,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
     },
     {
       "id": "tx-32aceeccfd2f",
@@ -5158,7 +5158,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2022",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-d4d31bf99452",
@@ -5178,7 +5178,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-13a3b4f00f95",
@@ -5238,7 +5238,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-b09be1843364",
@@ -5278,7 +5278,7 @@
       "latitude": 35.6918189,
       "longitude": 139.8160147,
       "building_group_id": "131080430-2014",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ錦糸町猿江恩賜公園"
     },
     {
       "id": "tx-9a49bb933b57",
@@ -5398,7 +5398,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-a166777a0626",
@@ -5418,7 +5418,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-4c3000f98c62",
@@ -5518,7 +5518,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "クレヴィア住吉扇橋"
+      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
     },
     {
       "id": "tx-c7de4cdfa660",
@@ -5618,7 +5618,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-44c706d0e05b",
@@ -5638,7 +5638,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-944ee30dcee8",
@@ -5658,7 +5658,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-643ff849bf4b",
@@ -5698,7 +5698,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-59d97bbc8752",
@@ -5718,7 +5718,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-b63d3a9649c9",
@@ -5738,7 +5738,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-fe1e2ae5bf06",
@@ -5758,7 +5758,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-e78443967f59",
@@ -5798,7 +5798,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-b5b3c4991095",
@@ -5818,7 +5818,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-bc319b66c992",
@@ -5878,7 +5878,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-e82f2f0093d4",
@@ -5958,7 +5958,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-7613f633372c",
@@ -6018,7 +6018,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-0566bb2d4e30",
@@ -6058,7 +6058,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-61c2b6932421",
@@ -6118,7 +6118,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-b8f09a4b6812",
@@ -6178,7 +6178,7 @@
       "latitude": 35.6899027,
       "longitude": 139.8350597,
       "building_group_id": "131080090-2023",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大島パークサイド（Brillia 大島 Pa…"
     },
     {
       "id": "tx-365c9b8ae0ab",
@@ -6198,7 +6198,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-7aee3fcacce0",
@@ -6338,7 +6338,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-004334cb2c51",
@@ -6358,7 +6358,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-35a3d5815cf0",
@@ -6498,7 +6498,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-d6e3fd4c56ce",
@@ -6578,7 +6578,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-b13b5f490cda",
@@ -6638,7 +6638,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-919deaa78f82",
@@ -6678,7 +6678,7 @@
       "latitude": 35.6899027,
       "longitude": 139.8350597,
       "building_group_id": "131080090-2023",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大島パークサイド（Brillia 大島 Pa…"
     },
     {
       "id": "tx-f7d9913d4f17",
@@ -6698,7 +6698,7 @@
       "latitude": 35.6899027,
       "longitude": 139.8350597,
       "building_group_id": "131080090-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "パレステージ大島"
     },
     {
       "id": "tx-0fac933b736e",
@@ -6718,7 +6718,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-0019501a95ae",
@@ -6818,7 +6818,7 @@
       "latitude": 35.6899027,
       "longitude": 139.8350597,
       "building_group_id": "131080090-2023",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大島パークサイド（Brillia 大島 Pa…"
     },
     {
       "id": "tx-6b493885b6fb",
@@ -6838,7 +6838,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-835b75dc2e6c",
@@ -6858,7 +6858,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-4fee745c3d10",
@@ -6878,7 +6878,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-af202bd52690",
@@ -6958,7 +6958,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-44178d7a1465",
@@ -7158,7 +7158,7 @@
       "latitude": 35.6861541,
       "longitude": 139.8149685,
       "building_group_id": "131080150-2016",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ東京住吉"
     },
     {
       "id": "tx-6b10b9cc6655",
@@ -7198,7 +7198,7 @@
       "latitude": 35.6899027,
       "longitude": 139.8350597,
       "building_group_id": "131080090-2023",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大島パークサイド（Brillia 大島 Pa…"
     },
     {
       "id": "tx-62d95e6c9dae",
@@ -7218,7 +7218,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-9ee6217116d8",
@@ -7278,7 +7278,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-83cfdd757790",
@@ -7498,7 +7498,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
     },
     {
       "id": "tx-8547beff4778",
@@ -7518,7 +7518,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
     },
     {
       "id": "tx-259a2ffb8d2c",
@@ -7538,7 +7538,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
     },
     {
       "id": "tx-422023e2c712",
@@ -7558,7 +7558,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2019",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス東陽町翠賓閣 / プラウド東陽町サウス"
     },
     {
       "id": "tx-e2b30bbf56ba",
@@ -7578,7 +7578,7 @@
       "latitude": 35.6918189,
       "longitude": 139.8160147,
       "building_group_id": "131080430-2014",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ錦糸町猿江恩賜公園"
     },
     {
       "id": "tx-ec37049c8947",
@@ -7598,7 +7598,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-c4d8a3f3a0cb",
@@ -7618,7 +7618,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "クレヴィア住吉扇橋"
+      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
     },
     {
       "id": "tx-82e870163227",
@@ -7638,7 +7638,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-74ef268aee98",
@@ -7658,7 +7658,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-3d82702d82f6",
@@ -7718,7 +7718,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-e92238cd07b1",
@@ -7838,7 +7838,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-23b3885e7363",
@@ -7858,7 +7858,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-99863640671e",
@@ -8018,7 +8018,7 @@
       "latitude": 35.6899027,
       "longitude": 139.8350597,
       "building_group_id": "131080090-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ミッドランドアベニュー"
     },
     {
       "id": "tx-a9c9137f0eb7",
@@ -8038,7 +8038,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "id": "tx-5725a31463a3",
@@ -8078,7 +8078,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-1320196b1584",
@@ -8218,7 +8218,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-b3d0cd711f23",
@@ -8258,7 +8258,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "id": "tx-3148abacfbf6",
@@ -8358,7 +8358,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
     },
     {
       "id": "tx-1d123b4563a5",
@@ -8398,7 +8398,7 @@
       "latitude": 35.6918189,
       "longitude": 139.8160147,
       "building_group_id": "131080430-2014",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ錦糸町猿江恩賜公園"
     },
     {
       "id": "tx-a0d004fe47b1",
@@ -9438,7 +9438,7 @@
       "latitude": 35.6237433,
       "longitude": 139.7052921,
       "building_group_id": "131090080-2014",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンシア武蔵小山"
     },
     {
       "id": "tx-ad06b8b70810",
@@ -9458,7 +9458,7 @@
       "latitude": 35.6237433,
       "longitude": 139.7052921,
       "building_group_id": "131090080-2014",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンシア武蔵小山"
     },
     {
       "id": "tx-a4f02a4bd718",
@@ -9698,7 +9698,7 @@
       "latitude": 35.6164098,
       "longitude": 139.6803867,
       "building_group_id": "131100110-2017",
-      "estimated_building_name": null
+      "estimated_building_name": "クレイシア目黒都立大学"
     },
     {
       "id": "tx-bfe64b9ba55a",
@@ -9778,7 +9778,7 @@
       "latitude": 35.6164098,
       "longitude": 139.6803867,
       "building_group_id": "131100110-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "クレイシア目黒都立大学"
     },
     {
       "id": "tx-7b771219b58e",
@@ -9798,7 +9798,7 @@
       "latitude": 35.6164098,
       "longitude": 139.6803867,
       "building_group_id": "131100110-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "クレイシア目黒都立大学"
     },
     {
       "id": "tx-12d0bed74e09",
@@ -9838,7 +9838,7 @@
       "latitude": 35.6164098,
       "longitude": 139.6803867,
       "building_group_id": "131100110-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "クレイシア目黒都立大学"
     },
     {
       "id": "tx-5df34ddeb4d5",
@@ -9998,7 +9998,7 @@
       "latitude": 35.574447,
       "longitude": 139.7045511,
       "building_group_id": "131110010-2019",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド池上"
     },
     {
       "id": "tx-fa012e62df8b",
@@ -10058,7 +10058,7 @@
       "latitude": 35.574447,
       "longitude": 139.7045511,
       "building_group_id": "131110010-2019",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド池上"
     },
     {
       "id": "tx-6a2144934a7f",
@@ -10298,7 +10298,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-fcf3dccb09ce",
@@ -10318,7 +10318,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2015",
-      "estimated_building_name": null
+      "estimated_building_name": "ディアナコート用賀翠景"
     },
     {
       "id": "tx-b8cb709d9534",
@@ -10918,7 +10918,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-0c7f2a6dc4f7",
@@ -10938,7 +10938,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2015",
-      "estimated_building_name": null
+      "estimated_building_name": "ディアナコート用賀翠景"
     },
     {
       "id": "tx-938ad4b00815",
@@ -11298,7 +11298,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-1b52c8bf4650",
@@ -11518,7 +11518,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-2d00ceb5bd0f",
@@ -11558,7 +11558,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2015",
-      "estimated_building_name": null
+      "estimated_building_name": "ディアナコート用賀翠景"
     },
     {
       "id": "tx-c63b752c3bfe",
@@ -11678,7 +11678,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-dc7ffd8bd65f",
@@ -11738,7 +11738,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2015",
-      "estimated_building_name": null
+      "estimated_building_name": "ディアナコート用賀翠景"
     },
     {
       "id": "tx-89475d736ee3",
@@ -12098,7 +12098,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-53f4c06efa7a",
@@ -12118,7 +12118,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-08d35cc38871",
@@ -12158,7 +12158,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2016",
-      "estimated_building_name": null
+      "estimated_building_name": "ディアナコート用賀翠景"
     },
     {
       "id": "tx-ab9bed26d746",
@@ -12478,7 +12478,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-2cc3a9188b91",
@@ -12738,7 +12738,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-1791b73a7843",
@@ -12758,7 +12758,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2019",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "id": "tx-69173469a06f",
@@ -13218,7 +13218,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-c08b04beaa8c",
@@ -13298,7 +13298,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-bca7e6bc3b4a",
@@ -13318,7 +13318,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-4e70ecacb532",
@@ -13378,7 +13378,7 @@
       "latitude": 35.7133664,
       "longitude": 139.66418,
       "building_group_id": "131140010-2014",
-      "estimated_building_name": null
+      "estimated_building_name": "ミッドアベニュー中野"
     },
     {
       "id": "tx-ed64e9782e5d",
@@ -13638,7 +13638,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "グランツオーベル中野"
     },
     {
       "id": "tx-fab280f42266",
@@ -13658,7 +13658,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-646b37045611",
@@ -13678,7 +13678,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "グランツオーベル中野"
     },
     {
       "id": "tx-3d6197cd0516",
@@ -13838,7 +13838,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-36addad25500",
@@ -13958,7 +13958,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "グランツオーベル中野"
     },
     {
       "id": "tx-659ebc5f8b80",
@@ -14138,7 +14138,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": null
+      "estimated_building_name": "グランツオーベル中野"
     },
     {
       "id": "tx-b4067fa8e51e",
@@ -14258,7 +14258,7 @@
       "latitude": 35.6997511,
       "longitude": 139.6750207,
       "building_group_id": "131140080-2019",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンシア中野中央"
     },
     {
       "id": "tx-16585d07409d",
@@ -14658,7 +14658,7 @@
       "latitude": 35.6908488,
       "longitude": 139.6755198,
       "building_group_id": "131140180-2024",
-      "estimated_building_name": null
+      "estimated_building_name": "クレヴィア中野新橋"
     },
     {
       "id": "tx-ad7faca80d3c",
@@ -14718,7 +14718,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-08f3d6c9c2de",
@@ -15318,7 +15318,7 @@
       "latitude": 35.6935241,
       "longitude": 139.6576038,
       "building_group_id": "131150360-2015",
-      "estimated_building_name": null
+      "estimated_building_name": "グローベルザ・スクエア東高円寺"
     },
     {
       "id": "tx-bd0a503def72",
@@ -15898,7 +15898,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-40344e8ba01e",
@@ -16058,7 +16058,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-553503cb9037",
@@ -16278,7 +16278,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-d8adb9b2b500",
@@ -16298,7 +16298,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-612a55dd5720",
@@ -16378,7 +16378,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-bfbc6c01ab5a",
@@ -16398,7 +16398,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-1828afcf5cf5",
@@ -16458,7 +16458,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-16ed98c0096a",
@@ -16478,7 +16478,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-f266a9e03ba2",
@@ -16498,7 +16498,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-caaa01b4e9e1",
@@ -16618,7 +16618,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-9c55a953f7e9",
@@ -16638,7 +16638,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-732ceecd205d",
@@ -16658,7 +16658,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-d36e06862f28",
@@ -16678,7 +16678,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-18c2a63f0273",
@@ -16738,7 +16738,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-15c02372e066",
@@ -16758,7 +16758,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "id": "tx-e5d96eed00f6",
@@ -17038,7 +17038,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-ab426b0d5876",
@@ -17098,7 +17098,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-4f2edae73fe8",
@@ -17238,7 +17238,7 @@
       "latitude": 35.7855026,
       "longitude": 139.723336,
       "building_group_id": "131170060-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "シティタワー赤羽テラス"
     },
     {
       "id": "tx-96310f3a0f0c",
@@ -17258,7 +17258,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-a2dce148d479",
@@ -17278,7 +17278,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-92cf0d551743",
@@ -17298,7 +17298,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-7bf5190c4118",
@@ -17318,7 +17318,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-d31f8b078ec6",
@@ -17338,7 +17338,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-d6cf4520859a",
@@ -17478,7 +17478,7 @@
       "latitude": 35.7322021,
       "longitude": 139.7666684,
       "building_group_id": "131180030-2017",
-      "estimated_building_name": "アトラス日暮里ウエストレジデンス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a2f4ed5bc1e7",
@@ -17498,7 +17498,7 @@
       "latitude": 35.7322021,
       "longitude": 139.7666684,
       "building_group_id": "131180030-2018",
-      "estimated_building_name": "アトラス日暮里ウエストレジデンス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5e4417e4a764",
@@ -17518,7 +17518,7 @@
       "latitude": 35.7322021,
       "longitude": 139.7666684,
       "building_group_id": "131180030-2018",
-      "estimated_building_name": "アトラス日暮里ウエストレジデンス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a3c32bda920f",
@@ -18018,7 +18018,7 @@
       "latitude": 35.7436117,
       "longitude": 139.6043049,
       "building_group_id": "131200150-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "ライオンズ石神井公園ステーションゲート"
     },
     {
       "id": "tx-817b8141f5b0",
@@ -18058,7 +18058,7 @@
       "latitude": 35.7436117,
       "longitude": 139.6043049,
       "building_group_id": "131200150-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "ライオンズ石神井公園ステーションゲート"
     },
     {
       "id": "tx-a5129c8de9e1",
@@ -18158,7 +18158,7 @@
       "latitude": 35.7436117,
       "longitude": 139.6043049,
       "building_group_id": "131200150-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "ライオンズ石神井公園ステーションゲート"
     },
     {
       "id": "tx-7e369512557d",
@@ -18809,7 +18809,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "group_id": "131040410-2021",
@@ -18833,7 +18833,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド高田馬場"
     },
     {
       "group_id": "131040500-2013",
@@ -20283,7 +20283,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": "シティハウス秋葉原イーストレジデンス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131060190-2021",
@@ -20904,7 +20904,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "クレヴィア住吉扇橋"
+      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
     },
     {
       "group_id": "131080080-2020",
@@ -20956,7 +20956,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ミッドランドアベニュー"
     },
     {
       "group_id": "131080090-2020",
@@ -20979,7 +20979,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "パレステージ大島"
     },
     {
       "group_id": "131080090-2023",
@@ -21005,7 +21005,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大島パークサイド（Brillia 大島 Pa…"
     },
     {
       "group_id": "131080100-2012",
@@ -21061,7 +21061,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "group_id": "131080100-2022",
@@ -21085,7 +21085,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
     },
     {
       "group_id": "131080120-2017",
@@ -21189,7 +21189,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ東京住吉"
     },
     {
       "group_id": "131080160-2014",
@@ -21245,7 +21245,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ザ 湾岸タワー レックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
     },
     {
       "group_id": "131080180-2014",
@@ -21477,7 +21477,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
     },
     {
       "group_id": "131080300-2019",
@@ -21501,7 +21501,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス東陽町翠賓閣 / プラウド東陽町サウス"
     },
     {
       "group_id": "131080300-2024",
@@ -21549,7 +21549,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ錦糸町猿江恩賜公園"
     },
     {
       "group_id": "131090010-2020",
@@ -21808,7 +21808,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンシア武蔵小山"
     },
     {
       "group_id": "131090240-2012",
@@ -21930,7 +21930,7 @@
         "2022Q1"
       ],
       "latest_period": "2022Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "クレイシア目黒都立大学"
     },
     {
       "group_id": "131100110-2018",
@@ -21955,7 +21955,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "クレイシア目黒都立大学"
     },
     {
       "group_id": "131100120-2019",
@@ -22074,7 +22074,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド池上"
     },
     {
       "group_id": "131110040-2015",
@@ -22276,7 +22276,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "group_id": "131120120-2019",
@@ -22299,7 +22299,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランプルーヴ上馬"
     },
     {
       "group_id": "131120200-2012",
@@ -23172,7 +23172,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "ディアナコート用賀翠景"
     },
     {
       "group_id": "131120600-2016",
@@ -23195,7 +23195,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "ディアナコート用賀翠景"
     },
     {
       "group_id": "131120600-2018",
@@ -23403,7 +23403,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "ミッドアベニュー中野"
     },
     {
       "group_id": "131140010-2019",
@@ -23596,7 +23596,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンシア中野中央"
     },
     {
       "group_id": "131140090-2012",
@@ -23624,7 +23624,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "group_id": "131140090-2017",
@@ -23677,7 +23677,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "グランツオーベル中野"
     },
     {
       "group_id": "131140120-2011",
@@ -24069,7 +24069,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "クレヴィア中野新橋"
     },
     {
       "group_id": "131140190-2012",
@@ -24458,7 +24458,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "グローベルザ・スクエア東高円寺"
     },
     {
       "group_id": "131160020-2011",
@@ -24590,7 +24590,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田"
     },
     {
       "group_id": "131160140-2014",
@@ -24838,7 +24838,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "シティタワー赤羽テラス"
     },
     {
       "group_id": "131170080-2018",
@@ -24864,7 +24864,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "group_id": "131170080-2022",
@@ -25030,7 +25030,7 @@
         "2023Q4"
       ],
       "latest_period": "2023Q4",
-      "estimated_building_name": "アトラス日暮里ウエストレジデンス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131180030-2018",
@@ -25054,7 +25054,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "アトラス日暮里ウエストレジデンス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131180030-2022",
@@ -25296,7 +25296,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "ライオンズ石神井公園ステーションゲート"
     },
     {
       "group_id": "131200150-2022",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-23T08:15:25",
+    "updated_at": "2026-02-23T18:08:10",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
