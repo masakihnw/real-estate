@@ -260,6 +260,12 @@ struct ListingDetailView: View {
                 }
             }())
             DetailRow(title: "総戸数", value: listing.totalUnits.map { "\($0)戸" } ?? "—")
+            if let dir = listing.direction, !dir.isEmpty {
+                DetailRow(title: "向き", value: dir)
+            }
+            if let balcony = listing.balconyAreaM2 {
+                DetailRow(title: "バルコニー", value: String(format: "%.2f㎡", balcony))
+            }
             if let ownership = listing.ownership, !ownership.isEmpty {
                 HStack {
                     Text("権利形態")
@@ -271,9 +277,49 @@ struct ListingDetailView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
             }
+            if let zoning = listing.zoning, !zoning.isEmpty {
+                DetailRow(title: "用途地域", value: zoning)
+            }
+            if let parking = listing.parking, !parking.isEmpty {
+                DetailRow(title: "駐車場", value: parking)
+            }
+            if let constructor = listing.constructor, !constructor.isEmpty {
+                DetailRow(title: "施工", value: constructor)
+            }
+            if let fund = listing.repairFundOnetime {
+                DetailRow(title: "修繕積立基金", value: listing.repairFundOnetimeDisplay)
+            }
+            if !listing.isShinchiku, let delivery = listing.deliveryDate, !delivery.isEmpty {
+                DetailRow(title: "引渡時期", value: delivery)
+            }
             DetailRow(title: "種別", value: listing.isShinchiku ? "新築マンション" : "中古マンション")
+            if listing.hasFeatureTags {
+                featureTagsRow
+            }
         }
         .listingGlassBackground()
+    }
+
+    @ViewBuilder
+    private var featureTagsRow: some View {
+        let tags = listing.parsedFeatureTags
+        VStack(alignment: .leading, spacing: 6) {
+            Text("特徴")
+                .font(ListingObjectStyle.detailLabel)
+                .foregroundStyle(.secondary)
+            FlowLayout(spacing: 6) {
+                ForEach(tags, id: \.self) { tag in
+                    Text(tag)
+                        .font(.caption)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.accentColor.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                }
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
     }
 
     @ViewBuilder

@@ -136,16 +136,39 @@ final class CommuteTimeService {
             return (listing, lat, lon, listing.commuteInfoJSON)
         }
 
+        // 並列度2で経路計算（MKDirections レート制限回避のため控えめ）
+        let concurrency = 2
         do {
             try await Task.detached(priority: .userInitiated) {
-                for (listing, lat, lon, existingJSON) in targetsData {
+                // チャンク単位で並列実行し、完了後にまとめて MainActor で更新
+                for chunk in stride(from: 0, to: targetsData.count, by: concurrency) {
                     try Task.checkCancellation()
-                    let origin = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-                    let encoded = await Self.computeCommuteJSON(origin: origin, existingJSON: existingJSON)
-                    await MainActor.run {
-                        if let encoded { listing.commuteInfoJSON = encoded }
+                    let end = min(chunk + concurrency, targetsData.count)
+                    let batch = Array(targetsData[chunk..<end])
+
+                    let results: [(Listing, String?)] = await withTaskGroup(of: (Listing, String?).self) { group in
+                        for (listing, lat, lon, existingJSON) in batch {
+                            group.addTask {
+                                let origin = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+                                let encoded = await Self.computeCommuteJSON(origin: origin, existingJSON: existingJSON)
+                                return (listing, encoded)
+                            }
+                        }
+                        var collected: [(Listing, String?)] = []
+                        for await result in group {
+                            collected.append(result)
+                        }
+                        return collected
                     }
-                    try? await Task.sleep(nanoseconds: 500_000_000) // 0.5秒（レート制限回避）
+
+                    // バッチ単位で MainActor 更新（ホップ回数削減）
+                    await MainActor.run {
+                        for (listing, encoded) in results {
+                            if let encoded { listing.commuteInfoJSON = encoded }
+                        }
+                    }
+
+                    try? await Task.sleep(nanoseconds: 500_000_000)
                 }
             }.value
         } catch {

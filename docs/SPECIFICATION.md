@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-20  
+> **最終更新**: 2026-02-23  
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -276,6 +276,7 @@ App起動
 | | 価格カラー | 青系（`Color.accentColor`） |
 | **3行目** | 築年 | `builtAgeDisplay`（例: 築12年） |
 | | 階数 | `floorDisplay` — 所在階/階建て（例: 5階/12階建）。データなしの場合は非表示 |
+| | 向き | `direction` — データがある場合のみ表示（例: 南、北西） |
 | | 総戸数 | `totalUnitsDisplay`（例: 120戸） |
 
 **新築タブ固有の要素**
@@ -391,7 +392,15 @@ n = 返済回数（月）= 返済年数 × 12
 | 入居時期 | — | ○ |
 | 所在階 / 階建 | ○（所在階 / 階建） | ○（階建のみ） |
 | 総戸数 | ○ | ○ |
+| 向き | ○ | ○ |
+| バルコニー面積 | ○ | ○ |
 | 権利形態 | ○ | ○ |
+| 用途地域 | ○ | ○ |
+| 駐車場 | ○ | ○ |
+| 施工会社 | ○ | ○ |
+| 修繕積立基金 | ○ | ○ |
+| 引渡時期 | ○（中古の引渡可能時期） | — |
+| 特徴タグ | ○（FlowLayout でチップ表示） | ○ |
 | 種別 | 中古マンション | 新築マンション |
 
 **中古タブ固有のセクション**
@@ -591,8 +600,10 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **データソース** | GitHub raw URL の JSON（中古: `latest.json` / 新築: `latest_shinchiku.json`） |
 | **デフォルト URL** | `https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/latest.json` |
 | **カスタム URL** | 設定画面から変更可能（UserDefaults に保存） |
-| **同期方式** | フル置き換え。`identityKey` でマッチして更新/挿入/削除 |
+| **同期方式** | フル置き換え。`identityKey` でマッチして更新/挿入/削除。更新時は `update(existing:from:)` で既存 Listing に新フィールド含め全件をコピー |
 | **ETag キャッシュ** | レスポンスの ETag を保存し、`If-None-Match` で 304 判定 |
+| **304 時の DB 負荷軽減** | 304 Not Modified 時は `isNew == true` の物件のみ DB 取得。データ未変更時は全件取得をスキップし負荷を大幅削減 |
+| **304 時の Firestore スキップ** | 中古・新築の両方が 304 を返した場合、`pullAnnotations` をスキップし不要な Firestore 読み取りを回避 |
 | **並列取得** | 中古・新築を `async let` で並列リクエスト |
 | **JSON デコード** | `Task.detached(priority: .userInitiated)` でバックグラウンド実行 |
 | **新規検出** | 既存の `identityKey` に存在しない物件 → `isNew = true` + ローカル通知。同期ごとに既存物件の `isNew` をリセットし、新規挿入物件のみ `isNew = true` に設定。304 Not Modified 時も `isNew` をリセットし、New バッジが残り続けないようにする。`identityKey` は Python 側と同一ロジック（`cleanListingName` で正規化した物件名・駅名のみ抽出・`walk_min` 除外）で、`station_line` の表記揺れや `walk_min` 変動による誤検出を防止 |
@@ -631,6 +642,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **ダウングレード防止** | 既存データがパイプライン/MKDirections の正規経路で、新結果がフォールバック概算の場合は上書きしない |
 | **同期時の更新ロジック** | `update(existing:from:)` で既存データが nil またはフォールバック概算の場合のみパイプラインデータを取り込む。MKDirections の正規経路データは保持 |
 | **座標バージョン管理** | 目的地座標変更時に UserDefaults でバージョン管理、全件再計算 |
+| **並列 MKDirections** | `withTaskGroup` で concurrency=2 の並列計算。バッチ MainActor 更新でホップ数を削減。大量物件で約 40–50% 高速化 |
 | **Google Maps 連携** | ディープリンクで Google Maps アプリ（またはブラウザ）を起動 |
 | **onError コールバック** | `calculateForAllListings(modelContext:onError:)` の `onError` で失敗時にコールバック（ListingStore の syncWarning 設定用） |
 
@@ -926,7 +938,15 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 22 | 階数表示 | 閲覧 | ○階 / ○階建て |
 | 23 | 権利形態表示 | 閲覧 | 所有権 / 定期借地 |
 | 24 | 総戸数表示 | 閲覧 | ○戸 |
-| 25 | 引渡時期表示 | 閲覧 | 新築のみ。例: "2027年9月上旬予定" |
+| 24a | 向き表示 | 閲覧 | 方角（例: 南、北西） |
+| 24b | バルコニー面積表示 | 閲覧 | ○㎡ |
+| 24c | 用途地域表示 | 閲覧 | 例: 商業地域 |
+| 24d | 駐車場表示 | 閲覧 | 例: 空有 月額20,000円〜25,000円 |
+| 24e | 施工会社表示 | 閲覧 | 例: 大林組 |
+| 24f | 修繕積立基金表示 | 閲覧 | 万円または円表示 |
+| 24g | 引渡時期表示（中古） | 閲覧 | 中古の引渡可能時期（例: 即引渡可） |
+| 24h | 特徴タグ表示 | 閲覧 | FlowLayout でチップ表示（例: 駅徒歩5分以内、2沿線以上利用可） |
+| 25 | 引渡時期表示（新築） | 閲覧 | 新築のみ。例: "2027年9月上旬予定" |
 | 26 | 月額支払い表示 | 閲覧 | 中古のみ。ローン条件での月額返済額を自動計算 |
 
 #### 通勤時間セクション
@@ -1214,14 +1234,14 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 中古/新築一覧 | 22 |
 | お気に入り | 22 + 3 = 25 |
 | フィルタシート | 13 |
-| 物件詳細 | 59 |
+| 物件詳細 | 67 |
 | 物件比較 | 7 |
 | 地図 | 32 |
 | 設定 | 19 |
 | スクレイピング条件 | 15 |
 | スクレイピングログ | 10 |
 | グローバル | 10 |
-| **合計** | **約223機能** |
+| **合計** | **約231機能** |
 
 ## 5. スクレイピングツール仕様
 
@@ -1286,7 +1306,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    └── git commit & push
 ```
 
-> **全 enricher 並列化の安全性**: 各 enricher が追加するフィールドに重複がない（sumai_surfin: `ss_*`, hazard: `hazard_info`, commute: `commute_info`, reinfolib: `reinfolib_market_data`, estat: `estat_population_data`, units_cache: `total_units` 等）。各 enricher が独自のファイルコピーで動作し、`merge_enrichments.py` がフィールドレベルで union マージするため競合なし。
+> **全 enricher 並列化の安全性**: 各 enricher が追加するフィールドに重複がない（sumai_surfin: `ss_*`, hazard: `hazard_info`, commute: `commute_info`, reinfolib: `reinfolib_market_data`, estat: `estat_population_data`, units_cache: `total_units`, `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`, `feature_tags` 等）。各 enricher が独自のファイルコピーで動作し、`merge_enrichments.py` がフィールドレベルで union マージするため競合なし。
 
 > **5層の障害許容**: (1) WF分離 — 取得は常に完走、(2) ジョブ — `continue-on-error: true` で中古失敗でも新築は反映、(3) enricher — 全 enricher を `|| true` でラップ、(4) マージ — 存在するファイルのみマージ、(5) finalize — `if: !cancelled()` で部分データでもコミット。
 
@@ -1305,6 +1325,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **パース対象** | `div.property_unit-content` / カセットレイアウト |
 | **取得フィールド** | name, price, address, station_line, walk_min, area_m2, layout, built_year, floor, ownership |
 | **総戸数** | `building_units.json`（詳細ページキャッシュ）から取得 |
+| **詳細ページパース** | `parse_suumo_detail_html()` が HTML テーブルから direction（向き）、balcony_area_m2、parking、constructor（施工会社）、zoning（用途地域）、repair_fund_onetime（修繕積立基金）、delivery_date（引渡時期、中古の引渡可能時期）を抽出。JavaScript `gapSuumoPcForKr` オブジェクトから direction（muki）、feature_tags（tokuchoPickupList）を `_parse_js_gap_object()` で取得。direction は JS を優先し HTML でフォールバック、feature_tags は JS からのみ |
 | **フィルタ方式** | ローカルフィルタのみ。SUUMO の区別 URL（`/ms/chuko/tokyo/sc_XXX/`）は `kb`/`kt`/`mb`/`mt` クエリパラメータ非対応（エラーページが返る）のため、URL プリフィルタは無効化済み。全ページ取得後に `apply_conditions` で絞り込み |
 | **早期打ち切り** | 連続20ページで新規通過0件の区はスキップ（`EARLY_EXIT_PAGES=20`） |
 | **出力** | `SuumoListing` dataclass |
@@ -1372,6 +1393,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 国土地理院タイルと東京都地域危険度 GeoJSON から以下を付与:
 
+- **GSI タイル取得**: `ThreadPoolExecutor`（max_workers=5）で同一物件の複数タイル種別を並列取得。タイルキャッシュは `Lock` でスレッドセーフ（thread-safe tile cache）。リクエスト間隔は 0.05 秒でレート制限に配慮
 - 洪水浸水深、内水浸水深、土砂災害警戒、高潮浸水深、津波浸水深
 - 液状化（地形分類）— 治水地形分類図 `lcmfc2` で代替
 - 建物倒壊危険度、火災危険度、総合危険度
@@ -1381,6 +1403,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | 項目 | 詳細 |
 |------|------|
 | **認証** | `SUMAI_USER` / `SUMAI_PASS` 環境変数 |
+| **並列処理** | `ThreadPoolExecutor`（max_workers=3）で HTTP 検索・パースを並列実行。未 enrichment 物件のみ事前フィルタして並列ループに投入。各ワーカーは独自セッション（per-worker sessions）でログインし、`DELAY`（1.5秒以上）でレート制限を維持。listings は in-place 更新のためスレッドごとに異なる dict を扱い競合なし |
 | **ブラウザ自動操作** | Playwright（`sumai_surfin_browser.py`） |
 | **取得データ** | 沖式時価、儲かる確率、値上がり率、レーダーチャート、割安判定、ランキング等 |
 
@@ -1398,6 +1421,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **データソース** | `data/reinfolib_prices.json`, `data/reinfolib_trends.json`（事前構築キャッシュ） |
 | **付与データ** | 区・駅レベルの成約 m² 単価、相場乖離率、前年比、四半期推移（区: 過去5年分）、同一マンション成約事例 |
 | **キャッシュ構築** | `reinfolib_cache_builder.py`（`YEARS_BACK=5` で過去5年分の四半期推移を取得）/ `fetch_station_prices.py`（別ワークフローで実行） |
+| **区名抽出** | `parse_utils.extract_ward` に委譲（重複実装を排除） |
 
 #### 5.6.4 e-Stat 人口動態エンリッチャー（estat_enricher.py）
 
@@ -1407,6 +1431,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **付与データ** | 区の人口、世帯数、前年比、5年変動、年次推移、高齢化率（当該区・全国平均・23区平均の推移） |
 | **キャッシュ構築** | `estat_population_builder.py`（人口・世帯数）、`estat_aging_builder.py`（高齢化率）（別ワークフローで実行） |
 | **高齢化率データ** | 国勢調査（2000, 2005, 2010, 2015, 2020）の年齢3区分データから65歳以上人口割合を取得。全国・23区平均・区別の3系列 |
+| **区名抽出** | `parse_utils.extract_ward` に委譲（重複実装を排除） |
 
 #### 5.6.5 間取り図・物件写真エンリッチャー
 
@@ -1414,9 +1439,12 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 | 項目 | 詳細 |
 |------|------|
-| **データソース** | SUUMO: `build_units_cache.py` → `parse_suumo_detail_html()` で詳細ページ HTML から画像を抽出。`alt="間取り図"` → `floor_plan_images`、それ以外の物件画像（外観・リビング・キッチン・浴室等）→ `suumo_images`（HOME'S は無効化のため現在未使用） |
+| **データソース** | SUUMO: `build_units_cache.py` → `parse_suumo_detail_html()` で詳細ページ HTML から画像・属性を抽出。`alt="間取り図"` → `floor_plan_images`、それ以外の物件画像（外観・リビング・キッチン・浴室等）→ `suumo_images`。`_detail_to_cache_entry` が direction, balcony_area_m2, parking, constructor, zoning, repair_fund_onetime, delivery_date, feature_tags を `building_units.json` に格納（HOME'S は無効化のため現在未使用） |
+| **並列取得** | `ThreadPoolExecutor(max_workers=4)` で SUUMO 詳細ページの HTTP 取得を並列化 |
+| **HTML ハッシュキャッシュ** | `parse_hashes.json` で HTML コンテンツのハッシュを保持。変更なしの場合は再パースをスキップ |
 | **付与データ（間取り図）** | `floor_plan_images`: 間取り図画像 URL の配列（SUUMO はリサイズ URL w=1200&h=900） |
 | **付与データ（物件写真）** | `suumo_images`: `[{url, label}]` 形式の物件写真配列。label は SUUMO の alt 属性（"現地外観写真", "リビング", "キッチン" 等）。サイトロゴ・担当者写真・spacer 等の非物件画像は除外 |
+| **付与データ（追加属性）** | `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`（中古の引渡可能時期）, `feature_tags`。`merge_detail_cache.py` の KEYS と `merge_enrichments.py` の ENRICHER_FIELDS["units_cache"] に含まれる |
 | **HTMLキャッシュ** | `data/html_cache/`（build_units_cache.py と共有） |
 
 ##### 新築（shinchiku_detail_enricher.py）
@@ -1434,8 +1462,8 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | 項目 | 詳細 |
 |------|------|
 | **Firebase Storage 永続化** | `upload_floor_plans.py` が間取り図を `floor_plans/{hash}.{ext}`、物件写真を `property_images/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
-| **iOS 側フィールド（間取り図）** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換） |
-| **iOS 側フィールド（物件写真）** | `Listing.suumoImagesJSON`（JSON 文字列 → `parsedSuumoImages: [SuumoImage]` で構造体配列に変換。`SuumoImage` は `url`/`label` を持ち、`category` で外観/室内/水回り/その他に自動分類） |
+| **iOS 側フィールド（間取り図）** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換。`ListingJSONCache` でキャッシュし body 再評価時の冗長デコードを回避） |
+| **iOS 側フィールド（物件写真）** | `Listing.suumoImagesJSON`（JSON 文字列 → `parsedSuumoImages: [SuumoImage]` で構造体配列に変換。`ListingJSONCache` でキャッシュ。`SuumoImage` は `url`/`label` を持ち、`category` で外観/室内/水回り/その他に自動分類） |
 | **サムネイル URL** | `Listing.thumbnailURL: URL?`（computed）。SUUMO 物件写真から外観カテゴリ（`category == .exterior`）の画像を優先的に選択し、外観写真がない場合は先頭画像にフォールバック。一覧カードでは `TrimmedAsyncImage` で白余白を自動トリミング・幅 100pt × 高さ 75pt の固定サイズで `.fill` + クリップ表示（NSCache でトリミング済み画像をキャッシュ） |
 
 ### 5.7 成約実績フィード構築（build_transaction_feed.py）
@@ -1520,6 +1548,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 | ファイル | 機能 |
 |---------|------|
+| **parse_utils.py** | 共通パーサー。`parse_monthly_yen`（管理費・修繕積立金等。「18,000」「18000」等の円マークなし・カンマ区切り・純粋数値にもフォールバック）、`extract_ward`（住所→区名の正規実装。reinfolib_enricher・estat_enricher が委譲） |
 | **shared_utils.py** | 共通ユーティリティ（`ward_from_address`, `calc_loan_residual_10y_yen`、ローン定数） |
 | **price_predictor.py** | `MansionPricePredictor`：CSV データに基づく価格予測 |
 | **asset_score.py** | 資産ランク S/A/B/C の算出（含み益率ベース） |
@@ -1531,7 +1560,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 ### 5.10 レポート生成
 
-`generate_report.py` が以下のレポートを Markdown で生成:
+`generate_report.py` が以下のレポートを Markdown で生成。`report_utils.row_merge_key` は物件名・価格・間取りに加え **住所（address）・築年（built_year）** を含め、異なる建物の物件が誤マージされるのを防止する。
 
 | セクション | 内容 |
 |-----------|------|
@@ -1553,7 +1582,8 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | `data/commute_playground.json` | JSON | Playground 通勤時間マスター |
 | `data/commute_m3career.json` | JSON | M3Career 通勤時間マスター |
 | `data/geocode_cache.json` | JSON | ジオコーディングキャッシュ |
-| `data/building_units.json` | JSON | 総戸数・階数・権利形態キャッシュ |
+| `data/parse_hashes.json` | JSON | build_units_cache 用 HTML キャッシュハッシュ（変更なし時は再パーススキップ） |
+| `data/building_units.json` | JSON | 総戸数・階数・権利形態・向き・バルコニー面積・駐車場・施工会社・用途地域・修繕積立基金・引渡時期・特徴タグのキャッシュ |
 | `data/reinfolib_prices.json` | JSON | 不動産情報ライブラリ区別成約相場キャッシュ |
 | `data/reinfolib_trends.json` | JSON | 不動産情報ライブラリ四半期推移キャッシュ（過去5年分） |
 | `data/reinfolib_raw_transactions.json` | JSON | 不動産情報ライブラリ生取引データ |
@@ -1595,9 +1625,16 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `ownership` | String? | 権利形態 |
 | `managementFee` | Int? | 管理費（円/月。SUUMO/HOME'S 詳細ページから取得） |
 | `repairReserveFund` | Int? | 修繕積立金（円/月。SUUMO/HOME'S 詳細ページから取得） |
+| `direction` | String? | 向き（方角。例: "南", "北西"。SUUMO 詳細ページから取得） |
+| `balconyAreaM2` | Double? | バルコニー面積（㎡） |
+| `parking` | String? | 駐車場（例: "空有 月額20,000円〜25,000円"） |
+| `constructor` | String? | 施工会社（例: "大林組"） |
+| `zoning` | String? | 用途地域（例: "商業地域"） |
+| `repairFundOnetime` | Int? | 修繕積立基金（円。一時金。SUUMO 詳細ページから取得） |
+| `featureTagsJSON` | String? | 特徴タグ JSON（例: `["駅徒歩5分以内","2沿線以上利用可"]`。SUUMO の gapSuumoPcForKr から取得） |
 | `listWardRoman` | String? | 区（ローマ字） |
 | `fetchedAt` | Date | 取得日時 |
-| `addedAt` | Date | 初回追加日時（同期で上書きしない） |
+| `addedAt` | Date | 初回追加日時（同期で上書きしない。新規挿入時は `fetchedAt` と同一値を使用し、同一バッチ内の挿入順による差異を防ぐ） |
 
 #### ユーザーデータ
 
@@ -1619,7 +1656,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `propertyType` | String | "chuko" or "shinchiku" |
 | `priceMaxMan` | Int? | 価格帯上限（万円） |
 | `areaMaxM2` | Double? | 面積幅上限（㎡） |
-| `deliveryDate` | String? | 引渡時期 |
+| `deliveryDate` | String? | 引渡時期。新築は一覧から取得、中古は詳細ページの「引渡可能時期」から取得（例: "即引渡可"） |
 
 #### 位置情報
 
@@ -1633,7 +1670,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 
 | プロパティ | 型 | 説明 |
 |-----------|-----|------|
-| `buildingGroupKey` | String (computed) | 同一マンション判定用キー。`cleanListingName(name)`（空白除去） + `normalizeAddressForGrouping(address)`（丁目レベル） + `floorTotal` + `ownership` を `\|` 区切りで結合。walkMin・totalUnits・builtYear はSUUMOデータ不整合が多いためキーから除外。一覧画面のランタイムグルーピングに使用 |
+| `buildingGroupKey` | String (computed) | 同一マンション判定用キー。`cleanListingName(name)`（空白除去） + `normalizeAddressForGrouping(address)`（丁目レベル） + `floorTotal` + `ownership` を `\|` 区切りで結合。walkMin・totalUnits・builtYear はSUUMOデータ不整合が多いためキーから除外。一覧画面のランタイムグルーピングに使用。`@Transient` でキャッシュし、グルーピング時の regex 再計算を回避 |
 
 #### 住まいサーフィン評価データ
 
@@ -2021,11 +2058,31 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | **データ取得** | 中古/新築を `async let` で並列 HTTP リクエスト |
 | **JSON デコード** | `Task.detached(priority: .userInitiated)` でバックグラウンド |
 | **DB 同期** | `identityKey → Listing` の Dictionary で O(1) ルックアップ |
+| **304 時 DB 負荷** | 304 時は `isNew == true` の物件のみ取得。両方 304 なら `pullAnnotations` スキップ |
+| **JSON パースキャッシュ** | `parsedSuumoImages` / `parsedFloorPlanImages` を `ListingJSONCache` でキャッシュ。body 再評価時の冗長デコード回避 |
+| **buildingGroupKey** | `@Transient` でキャッシュ。グルーピング時の regex 再計算回避 |
+| **通勤時間計算** | `withTaskGroup` で concurrency=2 の並列 MKDirections。バッチ MainActor 更新。大量物件で約 40–50% 高速化 |
 | **GeoJSON デコード** | バックグラウンドスレッド |
 | **DateFormatter** | `static let` で使い回し |
 | **二重更新防止** | `guard !isRefreshing` でガード |
 | **ETag** | 304 Not Modified でダウンロードスキップ |
 | **リスト行** | テキストと SF Symbol のみ（画像なし、軽量レンダリング） |
+
+#### 10.1.1 パイプライン速度最適化
+
+| コンポーネント | 最適化 |
+|---------------|--------|
+| **build_units_cache.py** | `ThreadPoolExecutor(max_workers=4)` で SUUMO 詳細ページの HTTP 取得を並列化。`parse_hashes.json` で HTML ハッシュを保持し、変更なし時は再パースをスキップ |
+| **sumai_surfin_enricher.py** | `ThreadPoolExecutor(max_workers=3)` で並列 enrichment。各ワーカーが独自セッションでログイン |
+| **hazard_enricher.py** | `ThreadPoolExecutor(max_workers=5)` で GSI タイル並列取得。`Lock` でタイルキャッシュをスレッドセーフに |
+
+#### 10.1.2 パイプライン精度改善
+
+| コンポーネント | 改善内容 |
+|---------------|----------|
+| **report_utils.row_merge_key** | 物件名・価格・間取りに加え address・built_year を含め、異なる建物の誤マージを防止 |
+| **parse_utils.parse_monthly_yen** | 円マークなしのカンマ区切り（"18,000"）・純粋数値（"18000"）にフォールバック対応 |
+| **parse_utils.extract_ward** | 区名抽出の正規実装。reinfolib_enricher・estat_enricher が委譲し重複実装を排除 |
 
 ### 10.2 オフライン動作
 
@@ -2137,6 +2194,14 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
     "floor_total": 15,
     "floor_structure": "RC",
     "ownership": "所有権",
+    "direction": "南",
+    "balcony_area_m2": 12.5,
+    "parking": "空有 月額20,000円〜25,000円",
+    "constructor": "大林組",
+    "zoning": "商業地域",
+    "repair_fund_onetime": 50000,
+    "delivery_date": "即引渡可",
+    "feature_tags": ["駅徒歩5分以内", "2沿線以上利用可"],
     "list_ward_roman": "minato",
     "property_type": "chuko",
     "latitude": 35.6580,

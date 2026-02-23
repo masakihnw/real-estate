@@ -16,7 +16,9 @@ import hashlib
 import json
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+from threading import Lock
 from typing import Optional
 
 import requests
@@ -68,14 +70,17 @@ def _read_cached_html(url: str, manifest: dict[str, str]) -> Optional[str]:
         return None
 
 
-def _write_html_cache(url: str, html: str, manifest: dict[str, str]) -> None:
+def _write_html_cache(url: str, html: str, manifest: dict[str, str], manifest_lock: Optional[Lock] = None) -> None:
     """HTML をキャッシュに保存し、manifest を更新する。"""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     h = _url_to_hash(url)
     path = CACHE_DIR / f"{h}.html"
     path.write_text(html, encoding="utf-8")
-    manifest[url] = h
-    _save_manifest(manifest)
+    if manifest_lock:
+        with manifest_lock:
+            manifest[url] = h
+    else:
+        manifest[url] = h
 
 
 def fetch_detail(session: requests.Session, url: str) -> str:
@@ -125,25 +130,42 @@ def fetch_detail(session: requests.Session, url: str) -> str:
 def _detail_to_cache_entry(parsed: dict) -> dict:
     """parse_suumo_detail_html の戻り値を building_units.json 用のエントリに変換。None は含めない。"""
     entry = {}
-    if parsed.get("total_units") is not None:
-        entry["total_units"] = parsed["total_units"]
-    if parsed.get("floor_position") is not None:
-        entry["floor_position"] = parsed["floor_position"]
-    if parsed.get("floor_total") is not None:
-        entry["floor_total"] = parsed["floor_total"]
-    if parsed.get("floor_structure") is not None:
-        entry["floor_structure"] = parsed["floor_structure"]
-    if parsed.get("ownership") is not None:
-        entry["ownership"] = parsed["ownership"]
-    if parsed.get("management_fee") is not None:
-        entry["management_fee"] = parsed["management_fee"]
-    if parsed.get("repair_reserve_fund") is not None:
-        entry["repair_reserve_fund"] = parsed["repair_reserve_fund"]
+    _SCALAR_KEYS = (
+        "total_units", "floor_position", "floor_total", "floor_structure",
+        "ownership", "management_fee", "repair_reserve_fund",
+        "direction", "balcony_area_m2", "parking", "constructor", "zoning",
+        "repair_fund_onetime", "delivery_date",
+    )
+    for key in _SCALAR_KEYS:
+        if parsed.get(key) is not None:
+            entry[key] = parsed[key]
+    if parsed.get("feature_tags"):
+        entry["feature_tags"] = parsed["feature_tags"]
     if parsed.get("floor_plan_images"):
         entry["floor_plan_images"] = parsed["floor_plan_images"]
     if parsed.get("suumo_images"):
         entry["suumo_images"] = parsed["suumo_images"]
     return entry
+
+
+CONCURRENT_WORKERS = 4
+
+
+def _html_content_hash(html: str) -> str:
+    """HTML コンテンツの MD5 ハッシュ（パーススキップ用）。"""
+    return hashlib.md5(html.encode("utf-8")).hexdigest()
+
+
+def _fetch_one(url: str, manifest: dict, manifest_lock: Lock) -> tuple[str, Optional[str]]:
+    """1件の詳細ページを取得してキャッシュに保存。(url, html) を返す。"""
+    session = requests.Session()
+    try:
+        html = fetch_detail(session, url)
+        _write_html_cache(url, html, manifest, manifest_lock)
+        return (url, html)
+    except Exception as e:
+        print(f"  取得失敗 {url[:50]}...: {e}", file=sys.stderr)
+        return (url, None)
 
 
 def main() -> None:
@@ -166,13 +188,23 @@ def main() -> None:
         try:
             with open(BUILDING_UNITS_PATH, "r", encoding="utf-8") as f:
                 raw = json.load(f)
-            # 既存が URL → int の場合はそのまま。URL → dict もそのまま。
             existing = raw
         except (json.JSONDecodeError, OSError) as e:
             print(f"警告: building_units.json の読み込みに失敗（空キャッシュで続行）: {e}", file=sys.stderr)
 
+    # パース済み HTML のコンテンツハッシュ → 前回パース結果が同一 HTML なら再パース不要
+    parse_hash_path = ROOT / "data" / "parse_hashes.json"
+    parse_hashes: dict[str, str] = {}
+    if parse_hash_path.exists():
+        try:
+            with open(parse_hash_path, "r", encoding="utf-8") as f:
+                parse_hashes = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            pass
+
     manifest = _load_manifest()
-    # キャッシュにない URL 数＝初回は全件、2回目以降は新規・未キャッシュのみ
+    manifest_lock = Lock()
+
     to_fetch = [u for u in suumo_urls if _read_cached_html(u, manifest) is None]
     if to_fetch:
         print(
@@ -182,25 +214,39 @@ def main() -> None:
         if len(to_fetch) == len(suumo_urls):
             print("（初回のため全件取得します）", file=sys.stderr)
 
-    session = requests.Session()
+    # Phase 1: 未キャッシュ URL を並列フェッチ
+    fetched_htmls: dict[str, str] = {}
+    if to_fetch:
+        with ThreadPoolExecutor(max_workers=CONCURRENT_WORKERS) as pool:
+            futures = {pool.submit(_fetch_one, url, manifest, manifest_lock): url for url in to_fetch}
+            for future in as_completed(futures):
+                url, html = future.result()
+                if html is not None:
+                    fetched_htmls[url] = html
+
+        _save_manifest(manifest)
+        print(f"  HTML新規取得完了: {len(fetched_htmls)}/{len(to_fetch)}件成功", file=sys.stderr)
+
+    # Phase 2: 全 URL をパース（キャッシュ済み HTML + 新規取得 HTML）
     updated = 0
-    fetched = 0
+    skipped = 0
 
     for url in suumo_urls:
-        html = _read_cached_html(url, manifest)
+        html = fetched_htmls.get(url) or _read_cached_html(url, manifest)
         if html is None:
-            try:
-                html = fetch_detail(session, url)
-                _write_html_cache(url, html, manifest)
-                fetched += 1
-            except Exception as e:
-                print(f"  取得失敗 {url[:50]}...: {e}", file=sys.stderr)
-                continue
+            continue
+
+        # HTML 未変更ならパーススキップ（既存エントリが存在する場合のみ）
+        content_hash = _html_content_hash(html)
+        if url in existing and parse_hashes.get(url) == content_hash:
+            skipped += 1
+            continue
 
         parsed = parse_suumo_detail_html(html)
         entry = _detail_to_cache_entry(parsed)
         if entry:
             existing[url] = entry
+            parse_hashes[url] = content_hash
             updated += 1
             units = parsed.get("total_units")
             if units is not None:
@@ -211,8 +257,13 @@ def main() -> None:
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
     tmp_path.replace(BUILDING_UNITS_PATH)
+
+    # パースハッシュの保存
+    with open(parse_hash_path, "w", encoding="utf-8") as f:
+        json.dump(parse_hashes, f, ensure_ascii=False)
+
     print(
-        f"キャッシュ保存: {BUILDING_UNITS_PATH} ({len(existing)}件、今回{updated}件更新・HTML新規取得{fetched}件)",
+        f"キャッシュ保存: {BUILDING_UNITS_PATH} ({len(existing)}件、今回{updated}件更新・{skipped}件スキップ・HTML新規取得{len(fetched_htmls)}件)",
         file=sys.stderr,
     )
 
