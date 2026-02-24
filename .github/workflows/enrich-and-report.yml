@@ -3,7 +3,8 @@ name: Enrich and Report
 # WF2: 加工+レポートワークフロー
 # WF1 (Scrape Listings) 完了時に自動起動。
 # 中古/新築/成約実績の enrichment を並列実行し、finalize でレポート生成・コミット。
-# cancel-in-progress: true — 新しいスクレイプデータが来たら古い加工をキャンセル。
+# cancel-in-progress: false — 実行中のジョブは完了まで走り切り、
+# 次の実行はキューで待機（GitHub Actions はキューに1件のみ保持）。
 
 on:
   workflow_run:
@@ -18,7 +19,7 @@ on:
 
 concurrency:
   group: enrich-and-report
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # ──────────────────────────── Job 0: check ────────────────────────────
