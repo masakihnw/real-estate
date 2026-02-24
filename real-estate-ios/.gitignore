@@ -22,6 +22,7 @@ xcuserdata/
 # CocoaPods
 Pods/
 *.xcworkspace
+!*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
 # fastlane
 fastlane/report.xml
