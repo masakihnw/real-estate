@@ -447,7 +447,7 @@ struct ListingFilterSheet: View {
 
     @ViewBuilder
     private var layoutChipsContent: some View {
-        FlowLayout(spacing: 6) {
+        FlowLayout(spacing: 8) {
             ForEach(availableLayouts, id: \.self) { layout in
                 FilterChip(
                     label: layout,
@@ -463,7 +463,7 @@ struct ListingFilterSheet: View {
 
     @ViewBuilder
     private var ownershipChipsContent: some View {
-        FlowLayout(spacing: 6) {
+        HStack(spacing: 8) {
             ForEach(OwnershipType.allCases, id: \.self) { type in
                 FilterChip(
                     label: type.rawValue,
@@ -476,6 +476,7 @@ struct ListingFilterSheet: View {
                     }
                 }
             }
+            Spacer()
         }
     }
 
@@ -483,7 +484,7 @@ struct ListingFilterSheet: View {
 
     @ViewBuilder
     private var propertyTypeChipsContent: some View {
-        FlowLayout(spacing: 6) {
+        FlowLayout(spacing: 8) {
             ForEach(PropertyTypeFilter.allCases, id: \.self) { type in
                 FilterChip(
                     label: type.rawValue,
@@ -587,11 +588,35 @@ struct ListingFilterSheet: View {
     private var wardGridContent: some View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach(wardGroups, id: \.area) { group in
-                Text(group.area)
-                    .font(.caption2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.tertiary)
-                    .padding(.top, 4)
+                let selectedCount = group.wards.filter { filter.wards.contains($0) }.count
+                let allSelected = selectedCount == group.wards.count
+                Button {
+                    withAnimation {
+                        if allSelected {
+                            for w in group.wards { filter.wards.remove(w) }
+                        } else {
+                            for w in group.wards { filter.wards.insert(w) }
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: allSelected ? "checkmark.circle.fill" : (selectedCount > 0 ? "minus.circle.fill" : "circle"))
+                            .font(.subheadline)
+                            .foregroundStyle(selectedCount > 0 ? Color.accentColor : .secondary)
+                        Text(group.area)
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundStyle(selectedCount > 0 ? .primary : .secondary)
+                        if selectedCount > 0 && !allSelected {
+                            Text("\(selectedCount)/\(group.wards.count)")
+                                .font(.caption2)
+                                .foregroundStyle(Color.accentColor)
+                        }
+                    }
+                    .padding(.top, 6)
+                }
+                .buttonStyle(.plain)
+
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 6) {
                     ForEach(group.wards, id: \.self) { ward in
                         let inData = availableWards.contains(ward)
@@ -600,9 +625,9 @@ struct ListingFilterSheet: View {
                             toggleSet(&filter.wards, value: ward)
                         } label: {
                             Text(ward)
-                                .font(.caption2)
+                                .font(.caption)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 6)
+                                .padding(.vertical, 8)
                                 .background(
                                     isSelected
                                         ? Color.accentColor.opacity(0.10)
@@ -738,14 +763,14 @@ private struct PresetChipSection<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 6) {
             if let label {
                 Text(label)
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
+                HStack(spacing: 8) {
                     content()
                 }
             }
@@ -763,9 +788,9 @@ private struct PresetChip: View {
     var body: some View {
         Button(action: action) {
             Text(label)
-                .font(.caption)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 7)
+                .font(.subheadline)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
                 .background(isSelected ? Color.accentColor : Color(.systemBackground))
                 .foregroundStyle(isSelected ? .white : .secondary)
                 .clipShape(Capsule())
@@ -779,7 +804,7 @@ private struct PresetChip: View {
     }
 }
 
-// MARK: - FilterChip (multi-select, unchanged)
+// MARK: - FilterChip (multi-select)
 
 private struct FilterChip: View {
     let label: String
@@ -789,9 +814,9 @@ private struct FilterChip: View {
     var body: some View {
         Button(action: action) {
             Text(label)
-                .font(.caption)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 7)
+                .font(.subheadline)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
                 .background(isSelected ? Color.accentColor : Color(.systemBackground))
                 .foregroundStyle(isSelected ? .white : .secondary)
                 .clipShape(Capsule())
