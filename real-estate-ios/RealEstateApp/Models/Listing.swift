@@ -396,38 +396,68 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - マンション単位グルーピング
 
+    // MARK: - マンション名グルーピング用の誤字補正
+    private static let knownNameTypos: [(pattern: String, replacement: String)] = [
+        ("レジテンス", "レジデンス"),
+        ("フォレスコート", "フォレストコート"),
+    ]
+
     /// 同一マンション判定用キー。
     /// 一覧画面で同一マンション内の複数住戸をグルーピングして展開表示するために使用。
     ///
-    /// マスト条件（4項目）:
-    /// 1. cleanListingName（空白除去）― 建物名
-    /// 2. normalizedAddress（丁目レベル）― 所在地
-    /// 3. floorTotal ― 何階建て（同一敷地内の別棟を区別）
-    /// 4. ownership ― 権利形態
+    /// マスト条件（2項目）:
+    /// 1. cleanListingName（空白・中黒除去 + 誤字補正）― 建物名
+    /// 2. ward（区名）― 所在エリア
+    ///
+    /// 住所は区名のみ使用する理由:
+    /// - 番地の有無（大山町 vs 大山町54番5）でグルーピングが分裂する問題を解消
+    /// - SUUMOの住所誤入力（代田 vs 代沢）でも物件名が同一なら集約できる
+    /// - マンション名は開発会社が一意に登録するため、同一区内で同名の別建物は実質存在しない
+    /// - 同一敷地内の別棟は棟名（コート名、タワー名等）で名前から区別される
     ///
     /// 除外した項目と理由:
+    /// - floorTotal: SUUMOページにより取得できない場合がありnil/値の不一致が頻発
+    /// - ownership: SUUMOページにより取得できない場合がありnil/値の不一致が頻発
     /// - walkMin: SUUMOページごとに異なる最寄駅が記載されるため不一致が生じる
     /// - totalUnits: SUUMOのデータ不整合が多い（864/255/866等）
     /// - builtYear: まれにデータ不整合あり（2008/2009等）
     /// - 価格・間取り・面積・階数: 住戸ごとに異なる
     var buildingGroupKey: String {
-        // キャッシュ無効化: name + address + floorTotal + ownership を結合してソースキーとする
-        let sourceKey = "\(name)|\(address ?? "")|\(floorTotal ?? -1)|\(ownership ?? "")"
+        let sourceKey = "\(name)|\(address ?? "")"
         if let cached = _cachedBuildingGroupKey, _cachedBuildingGroupKeySource == sourceKey {
             return cached
         }
-        let cleanName = Self.cleanListingName(name)
+        var cleanName = Self.cleanListingName(name)
             .replacingOccurrences(of: #"\s+"#, with: "", options: .regularExpression)
-        let normalizedAddr = Self.normalizeAddressForGrouping(address ?? "")
+        cleanName = cleanName.replacingOccurrences(of: "・", with: "")
+        for typo in Self.knownNameTypos {
+            cleanName = cleanName.replacingOccurrences(of: typo.pattern, with: typo.replacement)
+        }
+        let ward = Self.extractWardFromAddress(address ?? "")
         let key = [
             cleanName,
-            normalizedAddr,
-            floorTotal.map(String.init) ?? "",
-            (ownership ?? "").trimmingCharacters(in: .whitespaces)
+            ward,
         ].joined(separator: "|")
         _cachedBuildingGroupKey = key
         _cachedBuildingGroupKeySource = sourceKey
         return key
+    }
+
+    /// 東京23区のリスト（buildingGroupKey の区名抽出用）
+    private static let tokyo23Wards: [String] = [
+        "千代田区", "中央区", "港区", "新宿区", "文京区", "台東区", "墨田区", "江東区",
+        "品川区", "目黒区", "大田区", "世田谷区", "渋谷区", "中野区", "杉並区", "豊島区",
+        "北区", "荒川区", "板橋区", "練馬区", "足立区", "葛飾区", "江戸川区",
+    ]
+
+    /// 住所から区名を抽出する（例: "東京都世田谷区代田３" → "世田谷区"）。
+    /// buildingGroupKey で使用。同一区内で同名マンションは実質存在しないため、
+    /// 区レベルの精度で十分。
+    static func extractWardFromAddress(_ addr: String) -> String {
+        for ward in tokyo23Wards {
+            if addr.contains(ward) { return ward }
+        }
+        return ""
     }
 
     /// 住所を丁目レベルに正規化する（番・号を除去）。
@@ -2240,10 +2270,18 @@ extension Listing {
         // ── 広告装飾の除去 ──
         // 【...】を除去（【弊社限定取扱物件】、【売主物件】、【VECS】等）
         s = s.replacingOccurrences(of: #"【[^】]*】"#, with: "", options: .regularExpression)
-        // ◆以降をすべて除去（◆2LDk◆角部屋◆リフォーム済◆… 等の装飾全体）
-        // ペア除去（◆X◆）ではなく最初の◆から末尾まで一括除去することで
-        // 残留テキスト（角部屋、ペット可等）を防ぐ
-        s = s.replacingOccurrences(of: #"◆.*$"#, with: "", options: .regularExpression)
+        // ◆NAME◆ → NAME（先頭◆で囲まれた物件名を抽出）
+        if s.hasPrefix("◆"), s.hasSuffix("◆") {
+            let inner = String(s.dropFirst().dropLast())
+            if !inner.contains("◆") {
+                s = inner.trimmingCharacters(in: .whitespaces)
+            } else {
+                s = s.replacingOccurrences(of: #"◆.*$"#, with: "", options: .regularExpression)
+            }
+        } else {
+            // ◆以降をすべて除去（◆2LDk◆角部屋◆リフォーム済◆… 等の装飾全体）
+            s = s.replacingOccurrences(of: #"◆.*$"#, with: "", options: .regularExpression)
+        }
         // ■□ 等の記号装飾を除去
         s = s.replacingOccurrences(of: #"[■□]+\s*"#, with: "", options: .regularExpression)
         // ～以降の駅距離・説明文を除去

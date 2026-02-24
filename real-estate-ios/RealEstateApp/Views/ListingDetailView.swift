@@ -45,6 +45,7 @@ struct ListingDetailView: View {
                     Text(listing.name)
                         .font(.title2)
                         .fontWeight(.semibold)
+                        .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     // ② 住所（Google Maps アイコンボタン）— ss_address 優先
