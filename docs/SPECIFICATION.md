@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-23  
+> **最終更新**: 2026-02-24  
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -228,7 +228,7 @@ App起動
 | 行 | 要素 | 詳細 |
 |----|------|------|
 | **1行目** | 物件名 | `.subheadline.weight(.semibold)`、1行制限。掲載終了物件はセカンダリカラー |
-| | New バッジ | 前回同期時に存在しなかった新着物件に赤バッジ表示（物件名の右、カメラアイコンの左） |
+| | New バッジ | サーバーサイドで判定された新着物件（前回スクレイピングとの差分比較で `is_new: true`）に赤バッジ表示（物件名の右、カメラアイコンの左） |
 | | 📷 写真数 | 写真がある場合のみ表示（カメラアイコン + 枚数） |
 | | 💬 コメント数 | コメントがある場合のみ表示（吹き出しアイコン + 件数） |
 | | ♥ いいねボタン | 赤ハート（いいね済み）/ グレーハート（未いいね） |
@@ -608,7 +608,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **304 時の Firestore スキップ** | 中古・新築の両方が 304 を返した場合、`pullAnnotations` をスキップし不要な Firestore 読み取りを回避 |
 | **並列取得** | 中古・新築を `async let` で並列リクエスト |
 | **JSON デコード** | `Task.detached(priority: .userInitiated)` でバックグラウンド実行 |
-| **新規検出** | 既存の `identityKey` に存在しない物件 → `isNew = true` + ローカル通知。同期ごとに既存物件の `isNew` をリセットし、新規挿入物件のみ `isNew = true` に設定。304 Not Modified 時も `isNew` をリセットし、New バッジが残り続けないようにする。`identityKey` は Python 側と同一ロジック（`cleanListingName` で正規化した物件名・駅名のみ抽出・`walk_min` 除外）で、`station_line` の表記揺れや `walk_min` 変動による誤検出を防止 |
+| **新規検出** | サーバーサイド判定: スクレイピングパイプラインが `previous.json` との `identity_key` ベース差分比較で `is_new` フラグを `latest.json` に注入。iOS アプリは DTO の `is_new` をそのまま `isNew` に反映（クライアントサイドでの独自判定は行わない）。既存物件の `isNew` は同期ごとにリセット。304 Not Modified 時も `isNew` をリセットし、New バッジが残り続けないようにする。`identityKey` は Python 側と同一ロジック（`cleanListingName` で正規化した物件名・駅名のみ抽出・`walk_min` 除外）で、Slack 通知・地図・プッシュ通知・iOS アプリで一貫した新規判定を行う |
 | **自動更新** | フォアグラウンド復帰時に15分経過していれば自動 refresh。復帰時にローカル通知の累積カウント・バッジもリセット |
 | **lastError** | メインの JSON 取得・同期エラー（致命的）。UI に表示 |
 | **syncWarning** | 非致命的な同期警告（Firebase いいね・メモ、通勤時間計算など）。`pullAnnotations` / `calculateForAllListings` 失敗時に設定。UI で任意表示可能 |
@@ -1301,11 +1301,12 @@ Job 3: build-transaction-feed（完全独立、~15min）
 
 Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    ├── merge_caches.py（geocode, sumai_surfin, manifest を union マージ）
+   ├── inject_is_new（previous.json との identity_key 差分比較で is_new フラグを latest.json に注入）
    ├── build_map_viewer.py（中古+新築の地図生成）
    ├── geocode.py（キャッシュクリーンアップ）
    ├── convert_risk_geojson.py（初回のみ）
    ├── generate_report.py → Markdown レポート
-   ├── send_push.py → FCM プッシュ通知
+   ├── send_push.py → FCM プッシュ通知（is_new フラグのカウントで新着件数を算出）
    ├── slack_notify.py → Slack 通知（1日1回 6:00〜10:00 JST の回）
    └── git commit & push
 ```
@@ -1649,7 +1650,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `isLiked` | Bool | いいね状態 |
 | `commentsJSON` | String? | コメント JSON（Firestore 同期） |
 | `isDelisted` | Bool | 掲載終了フラグ |
-| `isNew` | Bool | 前回同期時に存在しなかった新着フラグ（同期ごとにリセット。304 応答時も確実にリセット） |
+| `isNew` | Bool | サーバーサイドで判定された新着フラグ（JSON の `is_new` から取得。同期ごとにリセット。304 応答時も確実にリセット） |
 | `photosJSON` | String? | 内見写真メタデータ JSON |
 | `floorPlanImagesJSON` | String? | 間取り図画像 URL の JSON 文字列。`["url1", "url2"]` 形式。Firebase Storage のダウンロード URL |
 | `suumoImagesJSON` | String? | SUUMO 物件写真の JSON 文字列。`[{"url":"...","label":"リビング"}, ...]` 形式。カテゴリ別（外観/室内/水回り/その他）にグルーピングして表示 |
@@ -1914,7 +1915,7 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 | **トピック** | `new_listings` |
 | **送信元** | GitHub Actions（`send_push.py`）→ FCM HTTP v1 API |
 | **受信** | iOS アプリ（`PushNotificationService` / `AppDelegate`） |
-| **トリガー** | スクレイピングで新着物件検出時 |
+| **トリガー** | スクレイピングで新着物件検出時（`latest.json` の `is_new` フラグをカウント） |
 
 ---
 
@@ -2219,7 +2220,8 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
     "ss_radar_data": "{...}",
     "hazard_info": "{...}",
     "commute_info": "{...}",
-    "floor_plan_images": ["https://firebasestorage.googleapis.com/v0/b/real-estate-app-5b869.firebasestorage.app/o/floor_plans%2Fabc123def456.jpg?alt=media&token=..."]
+    "floor_plan_images": ["https://firebasestorage.googleapis.com/v0/b/real-estate-app-5b869.firebasestorage.app/o/floor_plans%2Fabc123def456.jpg?alt=media&token=..."],
+    "is_new": false
   }
 ]
 ```
@@ -2246,7 +2248,8 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
     "ownership": "所有権",
     "property_type": "shinchiku",
     "latitude": 35.6600,
-    "longitude": 139.7000
+    "longitude": 139.7000,
+    "is_new": true
   }
 ]
 ```

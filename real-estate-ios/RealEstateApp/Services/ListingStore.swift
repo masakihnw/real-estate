@@ -290,8 +290,8 @@ final class ListingStore {
                         if same.isDelisted { same.isDelisted = false }
                         update(same, from: listing)
                     } else {
-                        newCount += 1
-                        listing.isNew = true
+                        // listing.isNew は DTO の is_new（サーバーサイド判定）を引き継いでいる
+                        if listing.isNew { newCount += 1 }
                         listing.addedAt = fetchedAt
                         modelContext.insert(listing)
                     }

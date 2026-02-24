@@ -100,6 +100,36 @@ if [ -f "transactions/transactions.json" ]; then
     echo "成約実績: データを配置" >&2
 fi
 
+# ──────────────────────────── is_new フラグ注入 ────────────────────────────
+
+echo "--- is_new フラグ注入 ---" >&2
+
+python3 -c "
+import json, sys
+sys.path.insert(0, '.')
+from report_utils import inject_is_new, load_json
+from pathlib import Path
+
+out = '${OUTPUT_DIR}'
+
+cur = load_json(Path(f'{out}/latest.json'))
+prev = load_json(Path(f'{out}/previous.json'), missing_ok=True, default=[])
+inject_is_new(cur, prev or None)
+with open(f'{out}/latest.json', 'w', encoding='utf-8') as f:
+    json.dump(cur, f, ensure_ascii=False)
+
+cur_s = load_json(Path(f'{out}/latest_shinchiku.json'), missing_ok=True, default=[])
+prev_s = load_json(Path(f'{out}/previous_shinchiku.json'), missing_ok=True, default=[])
+if cur_s:
+    inject_is_new(cur_s, prev_s or None)
+    with open(f'{out}/latest_shinchiku.json', 'w', encoding='utf-8') as f:
+        json.dump(cur_s, f, ensure_ascii=False)
+
+new_c = sum(1 for r in cur if r.get('is_new'))
+new_s = sum(1 for r in cur_s if r.get('is_new'))
+print(f'is_new 注入完了: 中古 {new_c}/{len(cur)}件, 新築 {new_s}/{len(cur_s)}件', file=sys.stderr)
+" || echo "is_new 注入失敗（続行）" >&2
+
 # ──────────────────────────── 地図生成 ────────────────────────────
 
 echo "--- 地図生成 ---" >&2
@@ -154,22 +184,15 @@ echo "[TIMING] report: $(( ($(date +%s) - _t) ))s" >&2
 
 if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
     echo "プッシュ通知送信中..." >&2
-    NEW_CHUKO=0
-    NEW_SHINCHIKU=0
-    if [ -f "${OUTPUT_DIR}/previous.json" ]; then
-        NEW_CHUKO=$(python3 -c "
+    NEW_CHUKO=$(python3 -c "
 import json
-cur = {item.get('url','') for item in json.load(open('${OUTPUT_DIR}/latest.json'))}
-prev = {item.get('url','') for item in json.load(open('${OUTPUT_DIR}/previous.json'))}
-print(len(cur - prev))
+print(sum(1 for r in json.load(open('${OUTPUT_DIR}/latest.json')) if r.get('is_new')))
 " 2>/dev/null || echo "0")
-    fi
-    if [ -f "${OUTPUT_DIR}/previous_shinchiku.json" ] && [ -f "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    NEW_SHINCHIKU=0
+    if [ -f "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
         NEW_SHINCHIKU=$(python3 -c "
 import json
-cur = {item.get('url','') for item in json.load(open('${OUTPUT_DIR}/latest_shinchiku.json'))}
-prev = {item.get('url','') for item in json.load(open('${OUTPUT_DIR}/previous_shinchiku.json'))}
-print(len(cur - prev))
+print(sum(1 for r in json.load(open('${OUTPUT_DIR}/latest_shinchiku.json')) if r.get('is_new')))
 " 2>/dev/null || echo "0")
     fi
     python3 scripts/send_push.py --new-count "$NEW_CHUKO" --shinchiku-count "$NEW_SHINCHIKU" \

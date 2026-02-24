@@ -62,7 +62,7 @@ final class Listing: @unchecked Sendable {
     var commentsJSON: String?
     /// サイトから掲載が終了した（JSON から消えた）物件
     var isDelisted: Bool
-    /// 前回の同期時に存在しなかった新着物件（Newバッジ表示用。同期ごとにリセット）
+    /// サーバーサイドで判定された新着物件フラグ（前回スクレイピングとの差分比較。Newバッジ表示用）
     var isNew: Bool
 
     /// 内見写真メタデータ JSON 文字列（ローカル保存）
@@ -2195,6 +2195,9 @@ struct ListingDTO: Codable {
 
     // e-Stat 人口動態データ（パイプライン側で付与）
     var estat_population_data: String?
+
+    // サーバーサイドで判定された新着フラグ（前回スクレイピングとの差分比較）
+    var is_new: Bool?
 }
 
 extension Listing {
@@ -2386,6 +2389,7 @@ extension Listing {
             floorPlanImagesJSON: floorPlanJSON,
             suumoImagesJSON: suumoImagesJSON,
             fetchedAt: fetchedAt,
+            isNew: dto.is_new ?? false,
             propertyType: dto.property_type ?? "chuko",
             duplicateCount: dto.duplicate_count ?? 1,
             priceMaxMan: dto.price_max_man,
