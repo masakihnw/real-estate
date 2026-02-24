@@ -246,7 +246,7 @@ App起動
 
 ##### マンション単位グルーピングと展開カード
 
-一覧画面では `buildingGroupKey`（クリーニング済み物件名（空白除去） + 正規化住所（丁目レベル） + 階建て + 権利形態）が一致する物件を同一マンションとしてグルーピングし、1マンション = 1カードとして表示する（`ListingGroup`）。以下の項目はSUUMOのデータ不整合が多いためキーに含めない: 価格・間取り・面積・階数（住戸ごとに異なる）、駅徒歩（掲載ページごとに異なる最寄駅が記載される）、総戸数（864/255/866等の不整合）、築年（2008/2009等のブレ）。物件名は `cleanListingName` でクリーニング後、全ホワイトスペースを除去して比較する。住所は `normalizeAddressForGrouping` で丁目レベルに正規化（番・号を除去）。
+一覧画面では `buildingGroupKey`（クリーニング済み物件名（空白・中黒除去 + 誤字補正） + 区名）が一致する物件を同一マンションとしてグルーピングし、1マンション = 1カードとして表示する（`ListingGroup`）。住所は区名のみ使用（`extractWardFromAddress`）。番地の有無（大山町 vs 大山町54番5）やSUUMO住所誤入力（代田 vs 代沢）でもマンション名が同一なら集約できる。マンション名は開発会社が一意に登録するため、同一区内で同名の別建物は実質存在しない。同一敷地内の別棟は棟名（コート名、タワー名等）で名前から区別される。以下の項目はSUUMOのデータ不整合が多いためキーに含めない: 価格・間取り・面積・階数（住戸ごとに異なる）、駅徒歩（掲載ページごとに異なる最寄駅が記載される）、総戸数（864/255/866等の不整合）、築年（2008/2009等のブレ）、階建て（SUUMOページにより取得できない場合がありnil/値の不一致が頻発）、権利形態（同様にnil不一致が頻発）。物件名は `cleanListingName` でクリーニング後、全ホワイトスペースを除去し、中黒（・）を除去（ザ・レジデンス ↔ ザレジデンス 等の表記揺れ吸収）、既知の誤字を補正（レジテンス→レジデンス 等）して比較する。
 
 | 条件 | 表示 |
 |------|------|
@@ -315,7 +315,7 @@ Sheet として表示。一覧画面から開く場合は `ListingDetailPagerVie
 | # | セクション | 内容 |
 |---|-----------|------|
 | ① | **掲載終了バナー** | `isDelisted` = true のとき表示 |
-| ② | **物件名** | タイトル表示 |
+| ② | **物件名** | タイトル表示。テキスト選択可能（`.textSelection(.enabled)`）で長押しコピー対応 |
 | ③ | **住所** | 住所テキスト + Google Maps リンク |
 | ④ | **内見メモ（コンパクトボタン）** | カメラアイコン + コメントアイコン + 件数をインライン表示。タップで内見メモオーバーレイ（シート）を開く。コメント入力・写真追加は全てオーバーレイ内で操作 |
 | ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。サムネイル・フルスクリーンともに白余白を自動トリミングして画像コンテンツを最大化。タップでフルスクリーン表示（横スワイプで前後画像に移動可能、ページインジケーター・画像ラベル表示）。Firebase Storage 経由で掲載終了後も永続表示可能 |
@@ -1391,7 +1391,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 #### 重複除去（`dedupe_listings`）
 
-`listing_key` = (normalize_listing_name(name), layout, area, price, address, built_year, station_name) の組み合わせで一意化。重複件数は `duplicate_count` に記録。`station_line` の路線テキスト（ＪＲ総武線 vs ＪＲ総武線快速 等の表記揺れ）ではなく駅名のみを使用し、`walk_min` はキーから除外。`normalize_listing_name` は◆装飾・【】・階数・PROJECT等の説明文を除去してから空白除去する強化版正規化を適用。
+`listing_key` = (normalize_listing_name(name), layout, area, price, normalized_address, built_year, station_name) の組み合わせで一意化。重複件数は `duplicate_count` に記録。`station_line` の路線テキスト（ＪＲ総武線 vs ＪＲ総武線快速 等の表記揺れ）ではなく駅名のみを使用し、`walk_min` はキーから除外。address は `_normalize_address_for_key` で丁目レベルに正規化（番地以下の精度差を吸収）。`normalize_listing_name` は◆装飾・【】・階数・PROJECT等の説明文を除去し、空白除去・中黒（・）除去・既知の誤字補正を行う強化版正規化を適用。◆NAME◆ パターン（先頭◆で囲まれた物件名）は内容を抽出して空文字化を防止。
 
 ### 5.6 エンリッチャー
 
@@ -1676,7 +1676,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 
 | プロパティ | 型 | 説明 |
 |-----------|-----|------|
-| `buildingGroupKey` | String (computed) | 同一マンション判定用キー。`cleanListingName(name)`（空白除去） + `normalizeAddressForGrouping(address)`（丁目レベル） + `floorTotal` + `ownership` を `\|` 区切りで結合。walkMin・totalUnits・builtYear はSUUMOデータ不整合が多いためキーから除外。一覧画面のランタイムグルーピングに使用。`@Transient` でキャッシュし、グルーピング時の regex 再計算を回避 |
+| `buildingGroupKey` | String (computed) | 同一マンション判定用キー。`cleanListingName(name)`（空白除去 + 中黒除去 + 誤字補正） + `extractWardFromAddress(address)`（区名のみ）を `\|` 区切りで結合。住所は区名のみ使用し、番地の有無や住所誤入力を吸収。floorTotal・ownership・walkMin・totalUnits・builtYear はSUUMOデータの欠損や不整合が多いためキーから除外。同一敷地内の別棟は棟名（コート名、タワー名等）で区別される。一覧画面のランタイムグルーピングに使用。`@Transient` でキャッシュし、グルーピング時の regex 再計算を回避 |
 
 #### 住まいサーフィン評価データ
 
@@ -1854,8 +1854,8 @@ Firestore で共有されるスクレイピング条件:
 
 | キー名 | 構成要素 | 用途 |
 |--------|---------|------|
-| **identity_key** | normalize_listing_name(name) + layout + area_m2 + address + built_year + station_name | 同一物件の判定（**価格・walk_min・total_units を含まない**、駅名のみ使用）。Python と iOS で同一フィールド・同一順序 |
-| **listing_key** | normalize_listing_name(name) + layout + area_m2 + price + address + built_year + station_name | 重複除去（**価格を含む**、駅名のみ使用） |
+| **identity_key** | normalize_listing_name(name) + layout + area_m2 + normalized_address + built_year + station_name | 同一物件の判定（**価格・walk_min・total_units を含まない**、駅名のみ使用、住所は丁目レベルに正規化）。Python と iOS で同一フィールド・同一順序 |
+| **listing_key** | normalize_listing_name(name) + layout + area_m2 + price + normalized_address + built_year + station_name | 重複除去（**価格を含む**、駅名のみ使用、住所は丁目レベルに正規化） |
 
 ---
 
@@ -2128,8 +2128,8 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | 用語 | 定義 |
 |------|------|
 | **listing** | 物件1件のデータ |
-| **identity_key** | 正規化物件名・間取り・面積・住所・築年・駅名で一意化するキー（価格・walk_min・total_units を含まない、路線テキストではなく駅名のみ使用）。Python（`report_utils.identity_key`）と iOS（`Listing.identityKey`）で同一フィールド・同一順序を維持 |
-| **listing_key** | identity_key + 価格。重複除去に使用（路線テキストではなく駅名のみ使用） |
+| **identity_key** | 正規化物件名・間取り・面積・正規化住所（丁目レベル）・築年・駅名で一意化するキー（価格・walk_min・total_units を含まない、路線テキストではなく駅名のみ使用）。Python（`report_utils.identity_key`）と iOS（`Listing.identityKey`）で同一フィールド・同一順序を維持。物件名の正規化には中黒除去・既知誤字補正を含む |
+| **listing_key** | identity_key + 価格。重複除去に使用（路線テキストではなく駅名のみ使用、住所は丁目レベルに正規化） |
 | **annotation** | いいね・コメント・写真のユーザーデータ。Firebase Firestore で家族間共有 |
 | **property_type** | `"chuko"`（中古）または `"shinchiku"`（新築） |
 | **hazard overlay** | 国土地理院のハザードマップタイルを地図に重畳表示するレイヤー。液状化・揺れやすさは GSI タイル非公開のため治水地形分類図（`lcmfc2`）で代替 |

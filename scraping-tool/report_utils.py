@@ -26,6 +26,12 @@ def best_address(listing: dict) -> str:
     return (listing.get("ss_address") or listing.get("address") or "").strip()
 
 
+_KNOWN_NAME_TYPOS: list[tuple[str, str]] = [
+    ("レジテンス", "レジデンス"),
+    ("フォレスコート", "フォレストコート"),
+]
+
+
 def normalize_listing_name(name: str) -> str:
     """同一判定用に物件名を正規化。iOS cleanListingName と同等の装飾除去を行い、
     空白を除いて比較する。"""
@@ -40,8 +46,13 @@ def normalize_listing_name(name: str) -> str:
         return ""
     # 【...】を除去
     s = re.sub(r"【[^】]*】", "", s)
-    # ◆以降をすべて除去
-    s = re.sub(r"◆.*$", "", s)
+    # ◆NAME◆ → NAME（先頭◆で囲まれた物件名を抽出）
+    m = re.match(r"^◆([^◆]+)◆\s*$", s)
+    if m:
+        s = m.group(1).strip()
+    else:
+        # ◆以降をすべて除去（装飾テキスト）
+        s = re.sub(r"◆.*$", "", s)
     # ■□ 記号装飾を除去
     s = re.sub(r"[■□]+\s*", "", s)
     # ～以降を除去
@@ -80,7 +91,13 @@ def normalize_listing_name(name: str) -> str:
     s = re.sub(r"\s*[（(]\s*第\d+期\s*\d*次?\s*[）)]\s*$", "", s).strip()
     s = re.sub(r"\s*第\d+期\s*\d*次?\s*$", "", s).strip()
     # 空白をすべて除去（比較用）
-    return re.sub(r"\s+", "", s)
+    s = re.sub(r"\s+", "", s)
+    # 中黒（・）を除去（ザ・レジデンス ↔ ザレジデンス の表記揺れを吸収）
+    s = s.replace("・", "")
+    # SUUMO 掲載データの既知の誤字を補正
+    for typo, correct in _KNOWN_NAME_TYPOS:
+        s = s.replace(typo, correct)
+    return s
 
 
 def _extract_station_name(station_line: str) -> str:
@@ -187,16 +204,31 @@ def clean_listing_name(name: str) -> str:
     return s
 
 
+def _normalize_address_for_key(address: str) -> str:
+    """住所を丁目レベルに正規化（番・号を除去）。
+    iOS normalizeAddressForGrouping と同等。SUUMOの住所表記揺れを吸収する。
+    例: '東京都世田谷区上北沢５-13-2' → '東京都世田谷区上北沢5'
+        '東京都世田谷区上北沢５-１３－２' → '東京都世田谷区上北沢5'
+        '東京都世田谷区上北沢５' → '東京都世田谷区上北沢5'
+    """
+    import unicodedata
+    if not address:
+        return ""
+    s = unicodedata.normalize("NFKC", address).strip()
+    s = re.sub(r"(\d+)\s*[-ー－/／].*$", r"\1", s)
+    return s
+
+
 def identity_key(r: dict) -> tuple:
     """同一物件の識別用キー（価格を除く）。差分検出で「同じ物件で価格だけ変わった → updated」とするために使う。
     station_line は駅名のみに正規化（路線テキストの表記揺れを吸収）。
-    iOS Listing.identityKey と同一フィールド・同一順序を維持すること。
+    address は丁目レベルに正規化（番地以下の精度差を吸収）。
     total_units / walk_min は重複集約の代表レコード変更で変動するため含めない。"""
     return (
         normalize_listing_name(r.get("name") or ""),
         (r.get("layout") or "").strip(),
         r.get("area_m2"),
-        (r.get("address") or "").strip(),
+        _normalize_address_for_key(r.get("address") or ""),
         r.get("built_year"),
         _extract_station_name(r.get("station_line") or ""),
     )
@@ -235,6 +267,7 @@ def listing_key(r: dict) -> tuple:
     全フィールドが一致する物件を同一とみなす。dedupe_listings 側で
     duplicate_count として戸数を集計する。
     station_line は駅名のみに正規化し、walk_min は除外。
+    address は丁目レベルに正規化（番地以下の精度差を吸収）。
     SUUMOの路線表記揺れ（ＪＲ総武線 vs ＪＲ総武線快速 等）や
     同一駅での徒歩分数違い（5分 vs 6分）による重複を防ぐ。"""
     return (
@@ -242,7 +275,7 @@ def listing_key(r: dict) -> tuple:
         (r.get("layout") or "").strip(),
         r.get("area_m2"),
         r.get("price_man"),
-        (r.get("address") or "").strip(),
+        _normalize_address_for_key(r.get("address") or ""),
         r.get("built_year"),
         _extract_station_name(r.get("station_line") or ""),
     )
