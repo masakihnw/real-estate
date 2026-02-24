@@ -45,6 +45,7 @@ real-estate/
 ├── storage.rules              # Firebase Storage ルール
 ├── real-estate-ios/           # iOS アプリ（SwiftUI + SwiftData）
 │   ├── RealEstateApp/         # アプリ本体ソースコード
+│   ├── ci_scripts/            # Xcode Cloud スクリプト
 │   ├── docs/                  # iOS アプリ設計ドキュメント
 │   └── project.yml            # XcodeGen 設定
 └── scraping-tool/             # Python スクレイピングパイプライン
@@ -2011,6 +2012,36 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | **Apple Distribution 証明書** | キーチェーンに配布用証明書が必要（Xcode → Settings → Accounts → Manage Certificates で作成） |
 | **署名スタイル** | Automatic（`-allowProvisioningUpdates` で自動取得） |
 | **チーム ID** | `YRP5KV2X62` |
+
+### 8.4 Xcode Cloud（TestFlight 自動アップロード）
+
+main ブランチへの push 時に iOS アプリを自動ビルドし、TestFlight へアップロードする。手動トリガーも常に利用可能。
+
+**ワークフロー設定**
+
+| 項目 | 値 |
+|------|------|
+| **ワークフロー名** | TestFlight Release |
+| **トリガー** | main ブランチへの push（`real-estate-ios/` 配下の変更時のみ）+ 手動実行 |
+| **アクション** | Archive → TestFlight (Internal Testing Only) |
+| **Scheme** | RealEstateApp |
+| **Platform** | iOS |
+
+**ci_scripts**
+
+`real-estate-ios/ci_scripts/ci_post_clone.sh` — Xcode Cloud がクローン後に実行するスクリプト。
+
+| 処理 | 詳細 |
+|------|------|
+| **ビルド番号自動設定** | Xcode Cloud の `$CI_BUILD_NUMBER` 環境変数を使用し、`Info.plist` の `CFBundleVersion` と `project.pbxproj` の `CURRENT_PROJECT_VERSION` を自動更新。ローカルビルドでは既存の値がそのまま使われる |
+
+**ビルド番号管理の変更**
+
+Xcode Cloud 導入前は以下3ファイルのビルド番号を手動で更新していたが、`CI_BUILD_NUMBER` による自動インクリメントにより手動更新は不要になった:
+
+- `real-estate-ios/RealEstateApp/Info.plist`（`CFBundleVersion`）
+- `real-estate-ios/project.yml`（`CURRENT_PROJECT_VERSION`）
+- `real-estate-ios/RealEstateApp.xcodeproj/project.pbxproj`（`CURRENT_PROJECT_VERSION`）
 
 ---
 
