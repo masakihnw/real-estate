@@ -248,6 +248,24 @@ def listing_key(r: dict) -> tuple:
     )
 
 
+def inject_is_new(
+    current: list[dict],
+    previous: Optional[list[dict]] = None,
+) -> list[dict]:
+    """各リスティングに is_new フラグを付与して返す。
+    previous が None/空の場合は全て is_new=False（初回実行時に全件 New になるのを防ぐ）。
+    Slack 通知の差分検出と同じ identity_key ベースの比較を使う。"""
+    if not previous:
+        for r in current:
+            r["is_new"] = False
+        return current
+    diff = compare_listings(current, previous)
+    new_keys = {identity_key(r) for r in diff["new"]}
+    for r in current:
+        r["is_new"] = identity_key(r) in new_keys
+    return current
+
+
 def compare_listings(current: list[dict], previous: Optional[list[dict]] = None) -> dict[str, Any]:
     """前回結果と比較して差分を検出。同一物件は identity_key で判定し、価格や総戸数などのプロパティ変更があれば updated とする。"""
     if not previous:
