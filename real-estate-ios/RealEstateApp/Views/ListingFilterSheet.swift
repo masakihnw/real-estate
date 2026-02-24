@@ -22,6 +22,7 @@ private let wardGroups: [(area: String, wards: [String])] = [
 
 struct ListingFilterSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(FilterTemplateStore.self) private var templateStore
     @Binding var filter: ListingFilter
     let availableLayouts: [String]
     let availableWards: Set<String>
@@ -34,6 +35,13 @@ struct ListingFilterSheet: View {
     // キャンセル時に復元するための元フィルタ
     @State private var originalFilter = ListingFilter()
     @State private var didApply = false
+
+    // テンプレート保存用
+    @State private var showSaveAlert = false
+    @State private var templateName = ""
+    // テンプレートリネーム用
+    @State private var renamingTemplate: FilterTemplate?
+    @State private var renameText = ""
 
     // 価格の範囲
     private let priceRange: ClosedRange<Double> = 5000...15000
@@ -147,10 +155,43 @@ struct ListingFilterSheet: View {
                     Button("閉じる") { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button("リセット") {
-                        withAnimation { filter.reset() }
+                    HStack(spacing: 12) {
+                        templateMenu
+                        Button("リセット") {
+                            withAnimation { filter.reset() }
+                        }
+                        .foregroundStyle(Color.accentColor)
                     }
-                    .foregroundStyle(Color.accentColor)
+                }
+            }
+            .alert("テンプレートを保存", isPresented: $showSaveAlert) {
+                TextField("テンプレート名", text: $templateName)
+                Button("保存") {
+                    let name = templateName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !name.isEmpty else { return }
+                    templateStore.save(name: name, filter: filter)
+                    templateName = ""
+                }
+                Button("キャンセル", role: .cancel) { templateName = "" }
+            } message: {
+                Text("現在のフィルタ条件に名前を付けて保存します（最大\(FilterTemplateStore.maxTemplates)件）")
+            }
+            .alert("テンプレート名を変更", isPresented: Binding(
+                get: { renamingTemplate != nil },
+                set: { if !$0 { renamingTemplate = nil } }
+            )) {
+                TextField("テンプレート名", text: $renameText)
+                Button("変更") {
+                    if let t = renamingTemplate {
+                        let name = renameText.trimmingCharacters(in: .whitespacesAndNewlines)
+                        if !name.isEmpty { templateStore.rename(t, to: name) }
+                    }
+                    renamingTemplate = nil
+                    renameText = ""
+                }
+                Button("キャンセル", role: .cancel) {
+                    renamingTemplate = nil
+                    renameText = ""
                 }
             }
             .onAppear { originalFilter = filter }
@@ -159,6 +200,65 @@ struct ListingFilterSheet: View {
                     filter = originalFilter
                 }
             }
+        }
+    }
+
+    // MARK: - Template Menu
+
+    @ViewBuilder
+    private var templateMenu: some View {
+        Menu {
+            Button {
+                showSaveAlert = true
+            } label: {
+                Label("現在の条件を保存…", systemImage: "square.and.arrow.down")
+            }
+            .disabled(!templateStore.canSave || !filter.isActive)
+
+            if !templateStore.templates.isEmpty {
+                Divider()
+
+                ForEach(templateStore.templates) { template in
+                    Button {
+                        withAnimation { filter = template.filter }
+                    } label: {
+                        Label(template.name, systemImage: "line.3.horizontal.decrease.circle")
+                    }
+                }
+
+                Divider()
+
+                Menu {
+                    ForEach(templateStore.templates) { template in
+                        Button {
+                            renameText = template.name
+                            renamingTemplate = template
+                        } label: {
+                            Label(template.name, systemImage: "pencil")
+                        }
+                    }
+                } label: {
+                    Label("名前を変更…", systemImage: "pencil")
+                }
+
+                Menu {
+                    ForEach(templateStore.templates) { template in
+                        Button(role: .destructive) {
+                            templateStore.delete(template)
+                        } label: {
+                            Label(template.name, systemImage: "trash")
+                        }
+                    }
+                } label: {
+                    Label("削除…", systemImage: "trash")
+                }
+            }
+        } label: {
+            Image(systemName: templateStore.templates.isEmpty
+                  ? "bookmark"
+                  : "bookmark.fill")
+                .font(.body)
+                .foregroundStyle(Color.accentColor)
         }
     }
 
@@ -601,4 +701,5 @@ private struct FilterChip: View {
         filteredCount: 12,
         showPriceUndecidedToggle: true
     )
+    .environment(FilterTemplateStore())
 }

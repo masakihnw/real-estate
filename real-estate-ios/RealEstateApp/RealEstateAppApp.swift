@@ -87,6 +87,8 @@ struct RealEstateAppApp: App {
         BackgroundRefreshManager.shared.registerTask()
     }
 
+    private let filterTemplateStore = FilterTemplateStore()
+
     var body: some Scene {
         WindowGroup {
             RootView(sharedModelContainer: sharedModelContainer)
@@ -96,6 +98,7 @@ struct RealEstateAppApp: App {
                 .environment(AuthService.shared)
                 .environment(SaveErrorHandler.shared)
                 .environment(PhotoSyncService.shared)
+                .environment(filterTemplateStore)
                 .preferredColorScheme(.light) // ライトモード固定
                 .onOpenURL { url in
                     // Google Sign-In のコールバック URL を処理
