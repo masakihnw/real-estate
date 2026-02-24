@@ -2,7 +2,8 @@
 //  ListingFilterSheet.swift
 //  RealEstateApp
 //
-//  アコーディオン折りたたみ式フィルタ。スライダー + チップ + 区グリッド。
+//  プリセットチップ列 + アコーディオン式フィルタ。
+//  改善: チップ列方式 / セクション個別クリア / アクティブ数バッジ / 自動展開
 //
 
 import SwiftUI
@@ -18,6 +19,13 @@ private let wardGroups: [(area: String, wards: [String])] = [
     ("多摩エリア", ["杉並区", "中野区"]),
 ]
 
+// MARK: - プリセット定義
+
+private let pricePresets: [Int] = [5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000]
+private let tsuboPresets: [Double] = [200, 250, 300, 350, 400, 450, 500]
+private let walkPresets: [Int] = [3, 5, 7, 10, 15, 20]
+private let areaPresets: [Double] = [45, 50, 55, 60, 65, 70, 75, 80]
+
 // MARK: - Filter Sheet
 
 struct ListingFilterSheet: View {
@@ -26,104 +34,120 @@ struct ListingFilterSheet: View {
     @Binding var filter: ListingFilter
     let availableLayouts: [String]
     let availableWards: Set<String>
-    /// 路線別駅名リスト（路線名順）
     let availableRouteStations: [RouteStations]
     let filteredCount: Int
-    /// 新築タブから呼ばれた場合に true（価格未定トグルを表示）
     var showPriceUndecidedToggle: Bool = false
+    var showPropertyTypeFilter: Bool = false
 
-    // キャンセル時に復元するための元フィルタ
     @State private var originalFilter = ListingFilter()
     @State private var didApply = false
 
-    // テンプレート保存用
     @State private var showSaveAlert = false
     @State private var templateName = ""
-    // テンプレートリネーム用
     @State private var renamingTemplate: FilterTemplate?
     @State private var renameText = ""
 
-    // 価格の範囲
-    private let priceRange: ClosedRange<Double> = 5000...15000
-    private let priceStep: Double = 500
-    // 徒歩の範囲
-    private let walkRange: ClosedRange<Double> = 1...20
-    // 面積の範囲
-    private let areaRange: ClosedRange<Double> = 45...100
-
-    /// 物件種別フィルタを表示するか（地図タブから呼ばれた場合に true）
-    var showPropertyTypeFilter: Bool = false
+    private var activeFilterCount: Int {
+        var count = 0
+        if filter.propertyType != .all { count += 1 }
+        if filter.priceMin != nil || filter.priceMax != nil || !filter.includePriceUndecided { count += 1 }
+        if filter.tsuboUnitPriceMin != nil || filter.tsuboUnitPriceMax != nil { count += 1 }
+        if !filter.layouts.isEmpty { count += 1 }
+        if filter.walkMax != nil { count += 1 }
+        if !filter.stations.isEmpty { count += 1 }
+        if filter.areaMin != nil { count += 1 }
+        if !filter.ownershipTypes.isEmpty { count += 1 }
+        if !filter.wards.isEmpty { count += 1 }
+        return count
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    // 物件種別（地図タブ用）
                     if showPropertyTypeFilter {
                         FilterAccordion(
                             title: "物件種別",
-                            summary: propertyTypeSummary
+                            summary: propertyTypeSummary,
+                            isActiveSection: filter.propertyType != .all,
+                            onClear: { filter.propertyType = .all }
                         ) {
                             propertyTypeChipsContent
                         }
                     }
 
-                    // 価格帯
                     FilterAccordion(
                         title: "価格帯",
-                        summary: priceSummary
+                        summary: priceSummary,
+                        isActiveSection: filter.priceMin != nil || filter.priceMax != nil || !filter.includePriceUndecided,
+                        onClear: { filter.priceMin = nil; filter.priceMax = nil; filter.includePriceUndecided = true }
                     ) {
-                        priceSliderContent
+                        priceChipsContent
                     }
 
-                    // 間取り
+                    FilterAccordion(
+                        title: "坪単価",
+                        summary: tsuboSummary,
+                        isActiveSection: filter.tsuboUnitPriceMin != nil || filter.tsuboUnitPriceMax != nil,
+                        onClear: { filter.tsuboUnitPriceMin = nil; filter.tsuboUnitPriceMax = nil }
+                    ) {
+                        tsuboChipsContent
+                    }
+
                     if !availableLayouts.isEmpty {
                         FilterAccordion(
                             title: "間取り",
-                            summary: layoutSummary
+                            summary: layoutSummary,
+                            isActiveSection: !filter.layouts.isEmpty,
+                            onClear: { filter.layouts.removeAll() }
                         ) {
                             layoutChipsContent
                         }
                     }
 
-                    // 駅徒歩
                     FilterAccordion(
                         title: "駅徒歩",
-                        summary: walkSummary
+                        summary: walkSummary,
+                        isActiveSection: filter.walkMax != nil,
+                        onClear: { filter.walkMax = nil }
                     ) {
-                        walkSliderContent
+                        walkChipsContent
                     }
 
-                    // 駅名
                     if !availableRouteStations.isEmpty {
                         FilterAccordion(
                             title: "駅名",
-                            summary: stationSummary
+                            summary: stationSummary,
+                            isActiveSection: !filter.stations.isEmpty,
+                            onClear: { filter.stations.removeAll() }
                         ) {
                             stationPickerContent
                         }
                     }
 
-                    // 広さ
                     FilterAccordion(
                         title: "広さ",
-                        summary: areaSummary
+                        summary: areaSummary,
+                        isActiveSection: filter.areaMin != nil,
+                        onClear: { filter.areaMin = nil }
                     ) {
-                        areaSliderContent
+                        areaChipsContent
                     }
 
-                    // 権利形態
                     FilterAccordion(
                         title: "権利形態",
-                        summary: ownershipSummary
+                        summary: ownershipSummary,
+                        isActiveSection: !filter.ownershipTypes.isEmpty,
+                        onClear: { filter.ownershipTypes.removeAll() }
                     ) {
                         ownershipChipsContent
                     }
 
-                    // エリア（区）
                     FilterAccordion(
                         title: "エリア（区）",
-                        summary: wardSummary
+                        summary: wardSummary,
+                        isActiveSection: !filter.wards.isEmpty,
+                        onClear: { filter.wards.removeAll() }
                     ) {
                         wardGridContent
                     }
@@ -148,7 +172,7 @@ struct ListingFilterSheet: View {
                 .padding(.bottom, 8)
                 .background(.regularMaterial)
             }
-            .navigationTitle("フィルタ")
+            .navigationTitle(activeFilterCount > 0 ? "フィルタ (\(activeFilterCount))" : "フィルタ")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -270,11 +294,22 @@ struct ListingFilterSheet: View {
 
     private var priceSummary: String {
         if let min = filter.priceMin, let max = filter.priceMax {
-            return "\(min)万〜\(max)万"
+            return "\(formatPrice(min))〜\(formatPrice(max))"
         } else if let min = filter.priceMin {
-            return "\(min)万〜"
+            return "\(formatPrice(min))〜"
         } else if let max = filter.priceMax {
-            return "〜\(max)万"
+            return "〜\(formatPrice(max))"
+        }
+        return "指定なし"
+    }
+
+    private var tsuboSummary: String {
+        if let min = filter.tsuboUnitPriceMin, let max = filter.tsuboUnitPriceMax {
+            return "\(Int(min))〜\(Int(max))万/坪"
+        } else if let min = filter.tsuboUnitPriceMin {
+            return "\(Int(min))万/坪〜"
+        } else if let max = filter.tsuboUnitPriceMax {
+            return "〜\(Int(max))万/坪"
         }
         return "指定なし"
     }
@@ -312,58 +347,98 @@ struct ListingFilterSheet: View {
         return "\(sorted.prefix(2).joined(separator: ", ")) 他\(sorted.count - 2)区"
     }
 
-    // MARK: - Price Slider
+    // MARK: - Price Chips
 
     @ViewBuilder
-    private var priceSliderContent: some View {
-        VStack(spacing: 6) {
-            let minVal = Double(filter.priceMin ?? Int(priceRange.lowerBound))
-            let maxVal = Double(filter.priceMax ?? Int(priceRange.upperBound))
-            HStack {
-                Text("\(Int(minVal))万")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Text("\(Int(maxVal))万")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+    private var priceChipsContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            PresetChipSection(label: "下限") {
+                PresetChip(label: "指定なし", isSelected: filter.priceMin == nil) {
+                    filter.priceMin = nil
+                }
+                ForEach(pricePresets.filter { $0 < (filter.priceMax ?? Int.max) }, id: \.self) { value in
+                    PresetChip(label: formatPrice(value), isSelected: filter.priceMin == value) {
+                        filter.priceMin = value
+                    }
+                }
             }
-            HStack(spacing: 8) {
-                Text("下限")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                Slider(
-                    value: Binding(
-                        get: { Double(filter.priceMin ?? Int(priceRange.lowerBound)) },
-                        set: { filter.priceMin = Int($0) == Int(priceRange.lowerBound) ? nil : Int($0) }
-                    ),
-                    in: priceRange,
-                    step: priceStep
-                )
-                .tint(.accentColor)
+            PresetChipSection(label: "上限") {
+                ForEach(pricePresets.filter { $0 > (filter.priceMin ?? 0) }, id: \.self) { value in
+                    PresetChip(label: formatPrice(value), isSelected: filter.priceMax == value) {
+                        filter.priceMax = value
+                    }
+                }
+                PresetChip(label: "指定なし", isSelected: filter.priceMax == nil) {
+                    filter.priceMax = nil
+                }
             }
-            HStack(spacing: 8) {
-                Text("上限")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                Slider(
-                    value: Binding(
-                        get: { Double(filter.priceMax ?? Int(priceRange.upperBound)) },
-                        set: { filter.priceMax = Int($0) == Int(priceRange.upperBound) ? nil : Int($0) }
-                    ),
-                    in: priceRange,
-                    step: priceStep
-                )
-                .tint(.accentColor)
-            }
-            // 新築タブのみ: 価格未定を含むかどうかのトグル
             if showPriceUndecidedToggle {
                 Toggle(isOn: $filter.includePriceUndecided) {
                     Text("価格未定の物件を含む")
                         .font(.caption)
                 }
                 .tint(.accentColor)
-                .padding(.top, 4)
+                .padding(.top, 2)
+            }
+        }
+    }
+
+    // MARK: - Tsubo Chips
+
+    @ViewBuilder
+    private var tsuboChipsContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            PresetChipSection(label: "下限") {
+                PresetChip(label: "指定なし", isSelected: filter.tsuboUnitPriceMin == nil) {
+                    filter.tsuboUnitPriceMin = nil
+                }
+                ForEach(tsuboPresets.filter { $0 < (filter.tsuboUnitPriceMax ?? .infinity) }, id: \.self) { value in
+                    PresetChip(label: "\(Int(value))万/坪", isSelected: filter.tsuboUnitPriceMin == value) {
+                        filter.tsuboUnitPriceMin = value
+                    }
+                }
+            }
+            PresetChipSection(label: "上限") {
+                ForEach(tsuboPresets.filter { $0 > (filter.tsuboUnitPriceMin ?? 0) }, id: \.self) { value in
+                    PresetChip(label: "\(Int(value))万/坪", isSelected: filter.tsuboUnitPriceMax == value) {
+                        filter.tsuboUnitPriceMax = value
+                    }
+                }
+                PresetChip(label: "指定なし", isSelected: filter.tsuboUnitPriceMax == nil) {
+                    filter.tsuboUnitPriceMax = nil
+                }
+            }
+        }
+    }
+
+    // MARK: - Walk Chips
+
+    @ViewBuilder
+    private var walkChipsContent: some View {
+        PresetChipSection {
+            PresetChip(label: "指定なし", isSelected: filter.walkMax == nil) {
+                filter.walkMax = nil
+            }
+            ForEach(walkPresets, id: \.self) { value in
+                PresetChip(label: "\(value)分以内", isSelected: filter.walkMax == value) {
+                    filter.walkMax = value
+                }
+            }
+        }
+    }
+
+    // MARK: - Area Chips
+
+    @ViewBuilder
+    private var areaChipsContent: some View {
+        PresetChipSection {
+            PresetChip(label: "指定なし", isSelected: filter.areaMin == nil) {
+                filter.areaMin = nil
+            }
+            ForEach(areaPresets, id: \.self) { value in
+                PresetChip(label: "\(Int(value))㎡以上", isSelected: filter.areaMin == value) {
+                    filter.areaMin = value
+                }
             }
         }
     }
@@ -384,26 +459,38 @@ struct ListingFilterSheet: View {
         }
     }
 
-    // MARK: - Walk Slider
+    // MARK: - Ownership Chips
 
     @ViewBuilder
-    private var walkSliderContent: some View {
-        VStack(spacing: 4) {
-            let val = Double(filter.walkMax ?? Int(walkRange.upperBound))
-            HStack {
-                Slider(
-                    value: Binding(
-                        get: { val },
-                        set: { filter.walkMax = Int($0) == Int(walkRange.upperBound) ? nil : Int($0) }
-                    ),
-                    in: walkRange,
-                    step: 1
-                )
-                .tint(.accentColor)
-                Text(filter.walkMax.map { "\($0)分以内" } ?? "指定なし")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(width: 70, alignment: .trailing)
+    private var ownershipChipsContent: some View {
+        FlowLayout(spacing: 6) {
+            ForEach(OwnershipType.allCases, id: \.self) { type in
+                FilterChip(
+                    label: type.rawValue,
+                    isSelected: filter.ownershipTypes.contains(type)
+                ) {
+                    if filter.ownershipTypes.contains(type) {
+                        filter.ownershipTypes.remove(type)
+                    } else {
+                        filter.ownershipTypes.insert(type)
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Property Type Chips
+
+    @ViewBuilder
+    private var propertyTypeChipsContent: some View {
+        FlowLayout(spacing: 6) {
+            ForEach(PropertyTypeFilter.allCases, id: \.self) { type in
+                FilterChip(
+                    label: type.rawValue,
+                    isSelected: filter.propertyType == type
+                ) {
+                    filter.propertyType = type
+                }
             }
         }
     }
@@ -413,7 +500,6 @@ struct ListingFilterSheet: View {
     @ViewBuilder
     private var stationPickerContent: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // 選択中の駅を一括クリアボタン
             if !filter.stations.isEmpty {
                 Button {
                     withAnimation { filter.stations.removeAll() }
@@ -433,7 +519,6 @@ struct ListingFilterSheet: View {
             ForEach(availableRouteStations, id: \.routeName) { routeGroup in
                 DisclosureGroup {
                     VStack(alignment: .leading, spacing: 0) {
-                        // 路線内一括選択/解除
                         let allSelected = routeGroup.stationNames.allSatisfy { filter.stations.contains($0) }
                         Button {
                             withAnimation {
@@ -496,66 +581,6 @@ struct ListingFilterSheet: View {
         }
     }
 
-    // MARK: - Area Slider
-
-    @ViewBuilder
-    private var areaSliderContent: some View {
-        VStack(spacing: 4) {
-            let val = filter.areaMin ?? areaRange.lowerBound
-            HStack {
-                Slider(
-                    value: Binding(
-                        get: { val },
-                        set: { filter.areaMin = $0 <= areaRange.lowerBound ? nil : $0 }
-                    ),
-                    in: areaRange,
-                    step: 5
-                )
-                .tint(.accentColor)
-                Text(filter.areaMin.map { "\(Int($0))㎡以上" } ?? "指定なし")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(width: 70, alignment: .trailing)
-            }
-        }
-    }
-
-    // MARK: - Ownership Chips
-
-    @ViewBuilder
-    private var ownershipChipsContent: some View {
-        FlowLayout(spacing: 6) {
-            ForEach(OwnershipType.allCases, id: \.self) { type in
-                FilterChip(
-                    label: type.rawValue,
-                    isSelected: filter.ownershipTypes.contains(type)
-                ) {
-                    if filter.ownershipTypes.contains(type) {
-                        filter.ownershipTypes.remove(type)
-                    } else {
-                        filter.ownershipTypes.insert(type)
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: - Property Type Chips
-
-    @ViewBuilder
-    private var propertyTypeChipsContent: some View {
-        FlowLayout(spacing: 6) {
-            ForEach(PropertyTypeFilter.allCases, id: \.self) { type in
-                FilterChip(
-                    label: type.rawValue,
-                    isSelected: filter.propertyType == type
-                ) {
-                    filter.propertyType = type
-                }
-            }
-        }
-    }
-
     // MARK: - Ward Grid
 
     @ViewBuilder
@@ -613,20 +638,53 @@ struct ListingFilterSheet: View {
             set.insert(value)
         }
     }
+
+    private func formatPrice(_ man: Int) -> String {
+        if man >= 10000 {
+            let oku = Double(man) / 10000.0
+            if oku == oku.rounded() {
+                return "\(Int(oku))億"
+            }
+            return String(format: "%.1f億", oku)
+        }
+        return "\(man)万"
+    }
 }
 
-// MARK: - FilterAccordion
+// MARK: - FilterAccordion (with auto-expand & section clear)
 
 private struct FilterAccordion<Content: View>: View {
     let title: String
     let summary: String
+    let isActiveSection: Bool
+    let onClear: (() -> Void)?
     @ViewBuilder let content: () -> Content
-    @State private var isExpanded = false
+    @State private var isExpanded: Bool? = nil
+
+    init(
+        title: String,
+        summary: String,
+        isActiveSection: Bool = false,
+        onClear: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.title = title
+        self.summary = summary
+        self.isActiveSection = isActiveSection
+        self.onClear = onClear
+        self.content = content
+    }
+
+    private var expanded: Bool {
+        isExpanded ?? isActiveSection
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             Button {
-                withAnimation(.easeInOut(duration: 0.25)) { isExpanded.toggle() }
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    isExpanded = !expanded
+                }
             } label: {
                 HStack {
                     Text(title)
@@ -640,16 +698,26 @@ private struct FilterAccordion<Content: View>: View {
                             .foregroundStyle(Color.accentColor)
                             .lineLimit(1)
                     }
+                    if isActiveSection, let onClear {
+                        Button {
+                            withAnimation { onClear() }
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
                     Image(systemName: "chevron.down")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                        .rotationEffect(.degrees(expanded ? 180 : 0))
                 }
                 .padding(.vertical, 12)
             }
             .buttonStyle(.plain)
 
-            if isExpanded {
+            if expanded {
                 content()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 12)
@@ -663,7 +731,55 @@ private struct FilterAccordion<Content: View>: View {
     }
 }
 
-// MARK: - FilterChip
+// MARK: - PresetChipSection (horizontal scroll row)
+
+private struct PresetChipSection<Content: View>: View {
+    var label: String? = nil
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            if let label {
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    content()
+                }
+            }
+        }
+    }
+}
+
+// MARK: - PresetChip
+
+private struct PresetChip: View {
+    let label: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.caption)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(isSelected ? Color.accentColor : Color(.systemBackground))
+                .foregroundStyle(isSelected ? .white : .secondary)
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule()
+                        .stroke(isSelected ? Color.accentColor : Color(.separator).opacity(0.5), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+// MARK: - FilterChip (multi-select, unchanged)
 
 private struct FilterChip: View {
     let label: String

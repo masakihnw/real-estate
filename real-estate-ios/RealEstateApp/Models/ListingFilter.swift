@@ -29,6 +29,8 @@ struct ListingFilter: Equatable, Codable {
     var priceMin: Int? = nil              // 万円
     var priceMax: Int? = nil              // 万円
     var includePriceUndecided: Bool = true // 新築で価格未定の物件を含むか
+    var tsuboUnitPriceMin: Double? = nil  // 万円/坪
+    var tsuboUnitPriceMax: Double? = nil  // 万円/坪
     var layouts: Set<String> = []         // 空 = 全て
     var wards: Set<String> = []           // 空 = 全て（区名: "江東区" 等）
     var stations: Set<String> = []        // 空 = 全て（駅名: "品川" 等）
@@ -38,11 +40,11 @@ struct ListingFilter: Equatable, Codable {
     var propertyType: PropertyTypeFilter = .all   // 新築/中古/すべて
 
     var isActive: Bool {
-        priceMin != nil || priceMax != nil || !includePriceUndecided || !layouts.isEmpty || !wards.isEmpty || !stations.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty || propertyType != .all
+        priceMin != nil || priceMax != nil || !includePriceUndecided || tsuboUnitPriceMin != nil || tsuboUnitPriceMax != nil || !layouts.isEmpty || !wards.isEmpty || !stations.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty || propertyType != .all
     }
 
     mutating func reset() {
-        priceMin = nil; priceMax = nil; includePriceUndecided = true; layouts = []; wards = []; stations = []; walkMax = nil; areaMin = nil; ownershipTypes = []; propertyType = .all
+        priceMin = nil; priceMax = nil; includePriceUndecided = true; tsuboUnitPriceMin = nil; tsuboUnitPriceMax = nil; layouts = []; wards = []; stations = []; walkMax = nil; areaMin = nil; ownershipTypes = []; propertyType = .all
     }
 
     /// 住所から区名を抽出（例: "東京都江東区豊洲5丁目" → "江東区"）
@@ -86,6 +88,20 @@ struct ListingFilter: Equatable, Codable {
                 guard $0.priceMan != nil || $0.priceMaxMan != nil else { return includePriceUndecided }
                 let lower = $0.priceMan ?? 0
                 return lower <= max
+            }
+        }
+
+        // 坪単価
+        if let min = tsuboUnitPriceMin {
+            list = list.filter {
+                guard let tp = $0.tsuboUnitPrice else { return false }
+                return tp >= min
+            }
+        }
+        if let max = tsuboUnitPriceMax {
+            list = list.filter {
+                guard let tp = $0.tsuboUnitPrice else { return false }
+                return tp <= max
             }
         }
 
