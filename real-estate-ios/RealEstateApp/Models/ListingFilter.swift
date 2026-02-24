@@ -10,14 +10,14 @@ import Foundation
 
 // MARK: - 権利形態フィルタ
 
-enum OwnershipType: String, CaseIterable, Hashable {
+enum OwnershipType: String, CaseIterable, Hashable, Codable {
     case ownership = "所有権"
     case leasehold = "定期借地"
 }
 
 // MARK: - 物件種別フィルタ
 
-enum PropertyTypeFilter: String, CaseIterable, Hashable {
+enum PropertyTypeFilter: String, CaseIterable, Hashable, Codable {
     case all = "すべて"
     case chuko = "中古"
     case shinchiku = "新築"
@@ -25,7 +25,7 @@ enum PropertyTypeFilter: String, CaseIterable, Hashable {
 
 // MARK: - フィルタ条件
 
-struct ListingFilter: Equatable {
+struct ListingFilter: Equatable, Codable {
     var priceMin: Int? = nil              // 万円
     var priceMax: Int? = nil              // 万円
     var includePriceUndecided: Bool = true // 新築で価格未定の物件を含むか
