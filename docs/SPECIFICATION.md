@@ -1298,7 +1298,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 ### 5.2 スクレイピングパイプライン
 
-パイプラインは **2つの GitHub Actions ワークフロー**に分離されている。WF1（Scrape Listings）がデータ取得を行い、WF2（Enrich & Report）が加工・レポート生成を行う。WF1 は 20-40分で完走するため 2時間スケジュールでキャンセルされない。WF2 は `cancel-in-progress: true` で、新しいスクレイプデータが来たら古い加工をキャンセルして最新データで再開する。
+パイプラインは **2つの GitHub Actions ワークフロー**に分離されている。WF1（Scrape Listings）がデータ取得を行い、WF2（Enrich & Report）が加工・レポート生成を行う。WF1 は 20-40分で完走するため 2時間スケジュールでキャンセルされない。WF2 は `cancel-in-progress: false` で、実行中のジョブは完了まで走り切り、次の実行はキューで待機する（GitHub Actions はキューに1件のみ保持）。
 
 #### WF1: Scrape Listings（`scripts/run_scrape.sh`）
 
@@ -1995,7 +1995,7 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 | 項目 | 値 |
 |------|------|
 | **トリガー** | `workflow_run: [Scrape Listings] completed` + `workflow_dispatch` |
-| **Concurrency** | `enrich-and-report`, `cancel-in-progress: true` |
+| **Concurrency** | `enrich-and-report`, `cancel-in-progress: false` |
 | **ジョブ数** | 5 (check, enrich-chuko, enrich-shinchiku, build-transaction-feed, finalize) |
 
 ```
@@ -2010,7 +2010,7 @@ check → 変更なしなら全後続ジョブ skip
       merge_caches → build_map_viewer → generate_report → send_push → slack_notify → git commit & push
 ```
 
-> **cancel-in-progress: true の意味**: WF2 実行中に新しい WF1 が完了すると、古い WF2 をキャンセルして最新データで WF2 を再起動する。古いデータの加工を続ける意味がないため合理的。finalize ジョブは `if: !cancelled()` で、キャンセル時はコミットしない。
+> **cancel-in-progress: false の意味**: WF2 実行中に新しい WF1 が完了しても、実行中の WF2 は完了まで走り切る。新しい WF2 はキューで待機し、現在の実行が終わってから開始される。GitHub Actions は concurrency group あたりキューに1件のみ保持するため、複数の待機が溜まることはない。enrich-chuko が約2時間かかり、WF1 が2時間ごとに実行されるため、cancel-in-progress: true だと毎回キャンセルされてしまう問題を回避する。
 
 ### 8.2 不動産情報ライブラリ・人口動態キャッシュ更新ワークフロー
 
