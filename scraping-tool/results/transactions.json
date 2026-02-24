@@ -7158,7 +7158,7 @@
       "latitude": 35.6861541,
       "longitude": 139.8149685,
       "building_group_id": "131080150-2016",
-      "estimated_building_name": "グローリオ東京住吉"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6b10b9cc6655",
@@ -21189,7 +21189,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "グローリオ東京住吉"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080160-2014",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-23T23:50:21",
+    "updated_at": "2026-02-24T10:00:18",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
