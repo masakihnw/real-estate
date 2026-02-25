@@ -613,6 +613,17 @@ struct HazardMapView: UIViewRepresentable {
             self.parent = parent
         }
 
+        static func scoreColor(_ score: Int?) -> UIColor {
+            guard let score else { return .systemBlue }
+            switch score {
+            case 80...: return .systemGreen
+            case 65..<80: return .systemBlue
+            case 50..<65: return .systemOrange
+            case 35..<50: return .systemGray
+            default: return .systemRed
+            }
+        }
+
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let tileOverlay = overlay as? MKTileOverlay {
                 return MKTileOverlayRenderer(overlay: tileOverlay)
@@ -636,7 +647,6 @@ struct HazardMapView: UIViewRepresentable {
                 ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
 
             view.annotation = annotation
-            // HTML準拠: いいね=赤、新築=緑、中古=青
             if listing.isLiked {
                 view.markerTintColor = UIColor.systemRed
                 view.glyphImage = UIImage(systemName: "heart.fill")
@@ -644,7 +654,7 @@ struct HazardMapView: UIViewRepresentable {
                 view.markerTintColor = UIColor.systemGreen
                 view.glyphImage = UIImage(systemName: "building.2.fill")
             } else {
-                view.markerTintColor = UIColor.systemBlue
+                view.markerTintColor = Self.scoreColor(listing.listingScore)
                 view.glyphImage = UIImage(systemName: "building.2.fill")
             }
             view.titleVisibility = .hidden
@@ -832,8 +842,11 @@ struct HazardMapView: UIViewRepresentable {
                     if listing.isLiked {
                         markerView.markerTintColor = .systemRed
                         markerView.glyphImage = UIImage(systemName: "heart.fill")
+                    } else if listing.isShinchiku {
+                        markerView.markerTintColor = .systemGreen
+                        markerView.glyphImage = UIImage(systemName: "building.2.fill")
                     } else {
-                        markerView.markerTintColor = listing.isShinchiku ? .systemGreen : .systemBlue
+                        markerView.markerTintColor = Self.scoreColor(listing.listingScore)
                         markerView.glyphImage = UIImage(systemName: "building.2.fill")
                     }
                 }

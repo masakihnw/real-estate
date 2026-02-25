@@ -51,6 +51,9 @@ struct ListingDetailView: View {
                     // ② 住所（Google Maps アイコンボタン）— ss_address 優先
                     addressSection
 
+                    // ②-b サマリーカード（主要指標を視覚的に集約）
+                    summaryCardSection
+
                     Divider()
 
                     // ③④ 内見メモ（コメント・写真）— アイコンタップでオーバーレイ表示
@@ -208,6 +211,49 @@ struct ListingDetailView: View {
             .background(Color.orange)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous))
         }
+    }
+
+    // MARK: - ②-b サマリーカード
+
+    @ViewBuilder
+    private var summaryCardSection: some View {
+        let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+        LazyVGrid(columns: columns, spacing: 10) {
+            summaryItem(icon: "yensign.circle.fill", label: "価格", value: listing.priceDisplayCompact, color: .blue)
+            summaryItem(icon: "ruler.fill", label: "面積", value: listing.areaM2 != nil ? String(format: "%.1f㎡", listing.areaM2!) : "—", color: .green)
+            summaryItem(icon: "figure.walk", label: "徒歩", value: listing.walkMin != nil ? "\(listing.walkMin!)分" : "—", color: .orange)
+            summaryItem(icon: "building.2.fill", label: "築年", value: builtYearShortDisplay, color: .purple)
+            summaryItem(icon: "square.grid.3x3.fill", label: "間取り", value: listing.layout ?? "—", color: .teal)
+            summaryItem(icon: "chart.bar.fill", label: "㎡単価", value: listing.m2UnitPriceDisplay, color: .indigo)
+        }
+        .padding(12)
+        .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+    }
+
+    private func summaryItem(icon: String, label: String, value: String, color: Color) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundStyle(color)
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+    }
+
+    private var builtYearShortDisplay: String {
+        guard let year = listing.builtYear else { return "—" }
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let age = currentYear - year
+        if age <= 0 { return "新築" }
+        return "築\(age)年"
     }
 
     // MARK: - ② 住所（Google Maps アイコンボタン）
@@ -2337,8 +2383,13 @@ private struct GalleryFullScreenView: View {
                     }
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: items.count > 1 ? .automatic : .never))
+            .tabViewStyle(.page(indexDisplayMode: .never))
             .background(Color.black.ignoresSafeArea())
+            .overlay(alignment: .bottom) {
+                if items.count > 1 {
+                    galleryMiniMap
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -2374,6 +2425,53 @@ private struct GalleryFullScreenView: View {
             Task {
                 if newIndex > 0 { await loadImage(at: newIndex - 1) }
                 if newIndex < items.count - 1 { await loadImage(at: newIndex + 1) }
+            }
+        }
+    }
+
+    private var galleryMiniMap: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                currentIndex = index
+                            }
+                        } label: {
+                            Group {
+                                if let img = loadedImages[index] {
+                                    Image(uiImage: img)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                } else {
+                                    Rectangle()
+                                        .fill(Color.white.opacity(0.15))
+                                        .overlay {
+                                            ProgressView().tint(.white.opacity(0.5)).scaleEffect(0.5)
+                                        }
+                                }
+                            }
+                            .frame(width: 48, height: 36)
+                            .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                    .stroke(index == currentIndex ? Color.white : Color.clear, lineWidth: 2)
+                            )
+                            .opacity(index == currentIndex ? 1.0 : 0.5)
+                        }
+                        .buttonStyle(.plain)
+                        .id(index)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+            }
+            .background(.ultraThinMaterial.opacity(0.8))
+            .onChange(of: currentIndex) { _, newIndex in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    proxy.scrollTo(newIndex, anchor: .center)
+                }
             }
         }
     }
