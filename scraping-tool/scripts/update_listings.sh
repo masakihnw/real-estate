@@ -611,6 +611,17 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ] && ! python3 -c "import json; js
 fi
 rm -f "${OUTPUT_DIR}/latest.json.backup" "${OUTPUT_DIR}/latest_shinchiku.json.backup"
 
+# ─── データ品質検証 ───
+echo "データ品質検証中..." >&2
+python3 scripts/validate_data.py "${OUTPUT_DIR}/latest.json" \
+    --previous "${OUTPUT_DIR}/previous.json" --label "中古" \
+    || echo "⚠ データ品質検証で問題が検出されました" >&2
+if [ "$HAS_SHINCHIKU" = true ] && [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 scripts/validate_data.py "${OUTPUT_DIR}/latest_shinchiku.json" \
+        --previous "${OUTPUT_DIR}/previous_shinchiku.json" --label "新築" \
+        || echo "⚠ データ品質検証（新築）で問題が検出されました" >&2
+fi
+
 # ─── 投資スコア・供給トレンド注入（enrichment 完了後） ───
 echo "投資スコア注入中..." >&2
 _t=$(date +%s)
@@ -702,6 +713,10 @@ print_timing_summary
 
 # タイミングディレクトリをクリーンアップ
 rm -rf "$TIMING_DIR"
+
+# ─── キャッシュクリーンアップ ───
+echo "キャッシュクリーンアップ中..." >&2
+python3 scripts/cache_manager.py --stats --cleanup || echo "⚠ キャッシュクリーンアップ失敗（続行）" >&2
 
 # ─── ログを Firestore にアップロード ───
 echo "ログを Firestore にアップロード中..." >&2

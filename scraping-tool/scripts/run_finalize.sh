@@ -306,5 +306,22 @@ done
 # enriched-* ワーキングディレクトリを削除
 rm -rf enriched-chuko enriched-shinchiku transactions
 
+# ──────────────────────────── データ品質検証 ────────────────────────────
+
+echo "--- データ品質検証 ---" >&2
+python3 scripts/validate_data.py "${OUTPUT_DIR}/latest.json" \
+    --previous "${OUTPUT_DIR}/previous.json" --label "中古" \
+    || echo "データ品質検証（中古）で問題が検出されました" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 scripts/validate_data.py "${OUTPUT_DIR}/latest_shinchiku.json" \
+        --previous "${OUTPUT_DIR}/previous_shinchiku.json" --label "新築" \
+        || echo "データ品質検証（新築）で問題が検出されました" >&2
+fi
+
+# ──────────────────────────── キャッシュクリーンアップ ────────────────────────────
+
+echo "--- キャッシュクリーンアップ ---" >&2
+python3 scripts/cache_manager.py --stats --cleanup || echo "キャッシュクリーンアップ失敗（続行）" >&2
+
 echo "=== Finalize 完了 ===" >&2
 echo "レポート: $REPORT" >&2
