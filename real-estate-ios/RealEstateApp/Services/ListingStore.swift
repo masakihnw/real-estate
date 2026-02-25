@@ -412,6 +412,13 @@ final class ListingStore {
                 existing.commuteInfoJSON = pipelineCommute
             }
         }
+        // 投資判断支援データ
+        existing.priceHistoryJSON = new.priceHistoryJSON
+        existing.firstSeenAt = new.firstSeenAt
+        existing.priceFairnessScore = new.priceFairnessScore
+        existing.resaleLiquidityScore = new.resaleLiquidityScore
+        existing.competingListingsCount = new.competingListingsCount
+        existing.listingScore = new.listingScore
         // existing.memo, existing.isLiked, existing.isNew, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
     }
 

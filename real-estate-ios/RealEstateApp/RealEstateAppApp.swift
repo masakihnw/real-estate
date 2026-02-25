@@ -20,7 +20,7 @@ struct RealEstateAppApp: App {
     // Listing モデルのストアドプロパティを追加・削除・型変更した場合はインクリメントする。
     // 旧バージョンの DB は自動削除され、サーバーからデータを再取得する。
     // VersionedSchema を使わない簡易マイグレーション方式。
-    private static let currentSchemaVersion = 10  // v10: direction, balconyAreaM2, parking, constructor, zoning, repairFundOnetime, featureTagsJSON 追加
+    private static let currentSchemaVersion = 11  // v11: priceHistoryJSON, firstSeenAt, priceFairnessScore, resaleLiquidityScore, competingListingsCount, listingScore 追加
     private static let schemaVersionKey = "realestate.schemaVersion"
 
     var sharedModelContainer: ModelContainer = {
