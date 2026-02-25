@@ -4,6 +4,7 @@
 
 使い方:
   python3 sumai_surfin_enricher.py --input results/latest.json --output results/latest.json
+  python3 sumai_surfin_enricher.py --input results/latest.json --output results/latest.json --previous results/previous.json
   python3 sumai_surfin_enricher.py --input results/latest_shinchiku.json --output results/latest_shinchiku.json
 
 環境変数:
@@ -45,6 +46,18 @@ TOKYO_PREFECTURE_ID = "13"
 CACHE_PATH = Path(__file__).parent / "data" / "sumai_surfin_cache.json"
 
 DELAY = max(REQUEST_DELAY_SEC, 1.5)  # 住まいサーフィンへは最低 1.5 秒間隔
+
+# 前回結果からコピーする住まいサーフィンフィールド（インクリメンタル処理用）
+SS_FIELDS = [
+    "ss_lookup_status", "ss_profit_pct", "ss_oki_price_70m2", "ss_m2_discount",
+    "ss_value_judgment", "ss_station_rank", "ss_ward_rank", "ss_sumai_surfin_url",
+    "ss_appreciation_rate", "ss_favorite_count", "ss_purchase_judgment",
+    "ss_radar_data", "ss_sim_best_5yr", "ss_sim_best_10yr", "ss_sim_standard_5yr",
+    "ss_sim_standard_10yr", "ss_sim_worst_5yr", "ss_sim_worst_10yr",
+    "ss_loan_balance_5yr", "ss_loan_balance_10yr", "ss_sim_base_price",
+    "ss_new_m2_price", "ss_forecast_m2_price", "ss_forecast_change_rate",
+    "ss_past_market_trends", "ss_surrounding_properties", "ss_price_judgments",
+]
 
 
 # ──────────────────────────── セッション ────────────────────────────
@@ -1716,13 +1729,38 @@ def _finalize_radar_data(listing: dict, property_type: str = "chuko") -> None:
 
 # ──────────────────────────── メイン処理 ────────────────────────────
 
+def _listing_unchanged(current: dict, previous: dict) -> bool:
+    """価格・物件名が同一なら True（変更検出用）。"""
+    return (
+        current.get("price_man") == previous.get("price_man")
+        and current.get("name") == previous.get("name")
+    )
+
+
+def _load_previous_by_url(previous_path: Optional[str]) -> dict[str, dict]:
+    """前回結果を URL をキーにした dict で返す。"""
+    if not previous_path or not Path(previous_path).exists():
+        return {}
+    try:
+        with open(previous_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"[SumaiSurfin] previous 読み込み失敗（スキップ）: {e}", file=sys.stderr)
+        return {}
+    if not isinstance(data, list):
+        return {}
+    return {r["url"]: r for r in data if r.get("url")}
+
+
 def enrich_listings(input_path: str, output_path: str, session: requests.Session,
                     property_type: str = "chuko",
-                    retry_not_found: bool = False) -> None:
+                    retry_not_found: bool = False,
+                    previous_path: Optional[str] = None) -> None:
     """
     JSON ファイルの各物件に住まいサーフィンの評価データを付加する。
     property_type: "chuko" (中古) or "shinchiku" (新築)
     retry_not_found: True の場合、キャッシュの null エントリをクリアして再検索する
+    previous_path: 前回結果 JSON。指定時は変更なし物件の SS データをコピーしてスキップ（インクリメンタル）
     """
     output_path = Path(output_path)
 
@@ -1734,6 +1772,31 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         return
 
     cache = load_cache()
+
+    # インクリメンタル: 前回結果から変更なし物件の SS データをコピー
+    previous_by_url = _load_previous_by_url(previous_path)
+    incremental_skip_count = 0
+    if previous_by_url:
+        for listing in listings:
+            url = listing.get("url")
+            if not url:
+                continue
+            prev = previous_by_url.get(url)
+            if not prev:
+                continue
+            if not _listing_unchanged(listing, prev):
+                continue
+            if not prev.get("ss_lookup_status"):
+                continue
+            for key in SS_FIELDS:
+                if key in prev:
+                    listing[key] = prev[key]
+            if prev.get("ss_address") and not listing.get("ss_address"):
+                listing["ss_address"] = prev["ss_address"]
+                listing["address"] = prev["ss_address"]
+            incremental_skip_count += 1
+        if incremental_skip_count:
+            print(f"住まいサーフィン: インクリメンタル — 前回からコピー: {incremental_skip_count}件", file=sys.stderr)
 
     # --retry-not-found: 旧 null エントリをクリアして再検索可能にする
     if retry_not_found:
@@ -1914,7 +1977,8 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(output_path)
 
-    print(f"住まいサーフィン enrichment 完了: {enriched_count}件成功, {not_found_count}件未発見, {no_data_count}件データなし, {skip_count}件スキップ(済)", file=sys.stderr)
+    print(f"住まいサーフィン enrichment 完了: スキップ: {skip_count}件, enrichment対象: {target_count}件 — "
+          f"成功: {enriched_count}, 未発見: {not_found_count}, データなし: {no_data_count}", file=sys.stderr)
 
 
 def finalize_radar_only(input_path: str, output_path: str,
@@ -1972,6 +2036,8 @@ def main() -> None:
     ap.add_argument("--retry-not-found", action="store_true",
                     help="キャッシュの未発見(null)エントリをクリアして再検索する"
                          "（名前正規化ロジック改善後に実行）")
+    ap.add_argument("--previous", "-p",
+                    help="前回の enrichment 結果 JSON。指定時は変更なし物件をスキップ（インクリメンタル）")
     args = ap.parse_args()
 
     # 物件タイプの自動判定
@@ -2010,7 +2076,8 @@ def main() -> None:
 
         enrich_listings(args.input, args.output, session,
                         property_type=prop_type,
-                        retry_not_found=args.retry_not_found)
+                        retry_not_found=args.retry_not_found,
+                        previous_path=args.previous)
 
     # ── ブラウザ自動化 enrichment ──
     if args.browser or args.browser_only:

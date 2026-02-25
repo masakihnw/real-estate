@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-25（Phase 5: 成約↔販売物件のクロスリファレンス、p6-02 Spotlight 連携、p6-03 PDF エクスポート追加）
+> **最終更新**: 2026-02-25（Phase 5: 成約↔販売物件のクロスリファレンス、p6-02 Spotlight 連携、p6-03 PDF エクスポート追加、Phase 7: パイプラインテスト対応）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -1488,7 +1488,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **取得フィールド** | name, price, address, station_line, walk_min, area_m2, layout, built_year, floor, ownership |
 | **総戸数** | `building_units.json`（詳細ページキャッシュ）から取得 |
 | **詳細ページパース** | `parse_suumo_detail_html()` が HTML テーブルから direction（向き）、balcony_area_m2、parking、constructor（施工会社）、zoning（用途地域）、repair_fund_onetime（修繕積立基金）、delivery_date（引渡時期、中古の引渡可能時期）を抽出。JavaScript `gapSuumoPcForKr` オブジェクトから direction（muki）、feature_tags（tokuchoPickupList）を `_parse_js_gap_object()` で取得。direction は JS を優先し HTML でフォールバック、feature_tags は JS からのみ |
-| **フィルタ方式** | サーバーサイドフィルタ + ローカルフィルタの2段構成。`apply_filter=True` 時は SUUMO の JJ012FC001 エンドポイント（`/jj/bukken/ichiran/JJ012FC001/?sc={ward_code}&kb={price_min}&kt={price_max}&mb={area_min}&et={walk_max}`）でサーバー側で価格帯・面積・駅徒歩を絞り込んでからローカルで `apply_conditions` を適用。`mb`/`et` は SUUMO が受け付ける固定値のみ使用可（`_snap_mb` で切り捨て、`_snap_et` で切り上げ）。`apply_filter=False` 時は従来の `/ms/chuko/tokyo/sc_XXX/` URL でフィルタなし取得。区コードは `SUUMO_23_WARD_SC_CODES`（JIS市区町村コード）で管理 |
+| **フィルタ方式** | サーバーサイドフィルタ + ローカルフィルタの2段構成。`apply_filter=True` 時は SUUMO の JJ012FC001 エンドポイント（`/jj/bukken/ichiran/JJ012FC001/?sc={ward_code}&kb={price_min}&kt={price_max}&mb={area_min}&et={walk_max}`）でサーバー側で価格帯・面積・駅徒歩を絞り込んでからローカルで `apply_conditions` を適用。`mb`/`et` は SUUMO が受け付ける固定値のみ使用可（`_snap_mb` で切り捨て、`_snap_et` で切り上げ）。`SEARCH_FILTERS`（`cn`=築年数、`lc`=間取り）で追加パラメータを設定可能（空=制限なし）。`apply_filter=False` 時は従来の `/ms/chuko/tokyo/sc_XXX/` URL でフィルタなし取得。区コードは `SUUMO_23_WARD_SC_CODES`（JIS市区町村コード）で管理 |
 | **徒歩パース** | `parse_walk_min` は「徒歩N分」「歩N分」の両形式に対応 |
 | **早期打ち切り** | 連続20ページで新規通過0件の区はスキップ（`EARLY_EXIT_PAGES=20`）。サーバーサイドフィルタ（価格・面積・徒歩）により対象外物件が事前に除外されるため、早期打ち切りによる取りこぼしは大幅に軽減 |
 | **出力** | `SuumoListing` dataclass |
@@ -1567,6 +1567,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 |------|------|
 | **認証** | `SUMAI_USER` / `SUMAI_PASS` 環境変数 |
 | **並列処理** | `ThreadPoolExecutor`（max_workers=3）で HTTP 検索・パースを並列実行。未 enrichment 物件のみ事前フィルタして並列ループに投入。各ワーカーは独自セッション（per-worker sessions）でログインし、`DELAY`（1.5秒以上）でレート制限を維持。listings は in-place 更新のためスレッドごとに異なる dict を扱い競合なし |
+| **インクリメンタル処理** | `--previous` で前回結果 JSON を指定すると、URL でマッチし価格・物件名が同一かつ `ss_lookup_status` がある物件は SS フィールドをコピーしてスキップ。新規・変更・未 enrichment 物件のみ実際に検索・パースする。ログに「スキップ: N件, enrichment対象: M件」を出力 |
 | **ブラウザ自動操作** | Playwright（`sumai_surfin_browser.py`） |
 | **取得データ** | 沖式時価、儲かる確率、値上がり率、レーダーチャート、割安判定、ランキング等 |
 
@@ -1717,9 +1718,12 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **shared_utils.py** | 共通ユーティリティ（`ward_from_address`, `calc_loan_residual_10y_yen`、ローン定数） |
 | **price_predictor.py** | `MansionPricePredictor`：CSV データに基づく価格予測 |
 | **asset_score.py** | 資産ランク S/A/B/C の算出（含み益率ベース） |
+| **investment_enricher.py** | 投資スコア・掲載日数・競合物件数・価格履歴の付与。asset_score を利用 |
 | **asset_simulation.py** | 10年シミュレーション。`simulate_10year_from_listing(listing, predictor=...)` で Predictor を再利用可能。`simulate_batch(listings)` で複数物件を一括処理（CSV 読込1回のみ） |
 | **future_estate_predictor.py** | 10年価格予測（3シナリオ） |
 | **loan_calc.py** | 50年ローン月額返済額計算 |
+| **scripts/validate_data.py** | 物件データのバリデーション。ValidationResult、validate_listings（必須フィールド・異常値・重複URL検出） |
+| **scripts/build_supply_trends.py** | 供給トレンド集計。区別・四半期別の物件件数を aggregate_trends で集計 |
 
 `price_predictor` と `future_estate_predictor` は `shared_utils` を利用。CSV/JSON 読込は try/except で囲み、ファイル欠損時は警告を出して空 DataFrame・デフォルトで続行。
 
@@ -1762,6 +1766,18 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | `results/transactions.json` | JSON | 東京23区成約実績フィード（iOS アプリ向け、スクレイピングと同一検索条件） |
 | `scripts/validate_data.py` | Python | データ品質バリデーション（Phase3） |
 | `scripts/cache_manager.py` | Python | TTL ベースキャッシュクリーンアップ（Phase3） |
+
+### 5.12 テスト（scraping-tool/tests/）
+
+pytest によるユニットテスト。`pytest tests/ -v` で実行。
+
+| テストファイル | 対象 |
+|---------------|------|
+| **test_report_utils.py** | `report_utils` の identity_key、listing_key、compare_listings、フォーマット関数 |
+| **test_suumo_scraper.py** | `suumo_scraper.parse_suumo_detail_html` の詳細ページパース |
+| **test_investment_enricher.py** | `investment_enricher` の投資スコア、掲載日数、競合物件数、価格履歴注入 |
+| **test_validate_data.py** | `scripts/validate_data` の ValidationResult、validate_listings（空リスト・必須フィールド・異常値・重複URL） |
+| **test_build_supply_trends.py** | `scripts/build_supply_trends` の aggregate_trends、空入力時の挙動 |
 
 ---
 
@@ -2185,6 +2201,17 @@ check → 変更なしなら全後続ジョブ skip
 ```
 
 > **cancel-in-progress: false の意味**: WF2 実行中に新しい WF1 が完了しても、実行中の WF2 は完了まで走り切る。新しい WF2 はキューで待機し、現在の実行が終わってから開始される。GitHub Actions は concurrency group あたりキューに1件のみ保持するため、複数の待機が溜まることはない。enrich-chuko が約2時間かかり、WF1 が2時間ごとに実行されるため、cancel-in-progress: true だと毎回キャンセルされてしまう問題を回避する。
+
+#### PR ビルド検証ワークフロー
+
+**ファイル**: `.github/workflows/ios-build.yml`, `.github/workflows/python-tests.yml`
+
+Pull Request 時に `real-estate-ios/` または `scraping-tool/` の変更を検知し、ビルド・テストを実行する。
+
+| ワークフロー | トリガー | 処理 |
+|-------------|---------|------|
+| **iOS Build Verification** | `real-estate-ios/**` の PR | XcodeGen → プロジェクト生成 → SPM 解決 → シミュレータビルド（`CODE_SIGNING_ALLOWED=NO`） |
+| **Python Tests** | `scraping-tool/**` の PR | Python 3.12 → `pip install -r requirements.txt pytest` → `pytest tests/ -v` |
 
 ### 8.2 不動産情報ライブラリ・人口動態キャッシュ更新ワークフロー
 
