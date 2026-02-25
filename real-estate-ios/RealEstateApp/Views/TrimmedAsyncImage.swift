@@ -1,6 +1,49 @@
 import SwiftUI
 import UIKit
 
+// MARK: - ディスク画像キャッシュ
+
+/// トリミング済み画像を Caches/ImageCache に保存するシングルトン。メモリキャッシュのフォールバックとして使用。
+final class DiskImageCache: @unchecked Sendable {
+    static let shared = DiskImageCache()
+    private let cacheDir: URL
+    private let queue = DispatchQueue(label: "diskImageCache", qos: .utility)
+
+    private init() {
+        let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        cacheDir = caches.appendingPathComponent("ImageCache", isDirectory: true)
+        try? FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
+    }
+
+    private func path(for key: String) -> URL {
+        let hash = key.data(using: .utf8)!.map { String(format: "%02x", $0) }.joined()
+        let shortHash = String(hash.prefix(40))
+        return cacheDir.appendingPathComponent(shortHash + ".jpg")
+    }
+
+    func image(for key: String) -> UIImage? {
+        let url = path(for: key)
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return UIImage(data: data)
+    }
+
+    func save(_ image: UIImage, for key: String) {
+        queue.async { [self] in
+            let url = path(for: key)
+            if let data = image.jpegData(compressionQuality: 0.85) {
+                try? data.write(to: url, options: .atomic)
+            }
+        }
+    }
+
+    func clearAll() {
+        queue.async { [self] in
+            try? FileManager.default.removeItem(at: cacheDir)
+            try? FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
+        }
+    }
+}
+
 // MARK: - トリミング済み画像キャッシュ
 
 /// 余白トリミング済み画像を NSCache で保持するシングルトン
@@ -81,13 +124,22 @@ struct TrimmedAsyncImage: View {
     private func loadAndTrim() async {
         let cacheKey = url.absoluteString
 
-        // キャッシュヒット
+        // 1. メモリキャッシュ
         if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
             loadedImage = cached
             loadPhase = .success
             return
         }
 
+        // 2. ディスクキャッシュ
+        if let diskCached = DiskImageCache.shared.image(for: cacheKey) {
+            TrimmedImageCache.shared.set(diskCached, for: cacheKey)
+            loadedImage = diskCached
+            loadPhase = .success
+            return
+        }
+
+        // 3. ネットワーク取得
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             guard let original = UIImage(data: data) else {
@@ -96,6 +148,7 @@ struct TrimmedAsyncImage: View {
             }
             let trimmed = original.trimmingWhitespaceBorder()
             TrimmedImageCache.shared.set(trimmed, for: cacheKey)
+            DiskImageCache.shared.save(trimmed, for: cacheKey)
             loadedImage = trimmed
             loadPhase = .success
         } catch {
