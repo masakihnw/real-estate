@@ -606,7 +606,10 @@ import json
 print(sum(1 for r in json.load(open('${OUTPUT_DIR}/latest_shinchiku.json')) if r.get('is_new')))
 " 2>/dev/null || echo "0")
     fi
-    python3 scripts/send_push.py --new-count "$NEW_CHUKO" --shinchiku-count "$NEW_SHINCHIKU" || echo "プッシュ通知送信失敗（続行）" >&2
+    python3 scripts/send_push.py --new-count "$NEW_CHUKO" --shinchiku-count "$NEW_SHINCHIKU" \
+        --latest "${OUTPUT_DIR}/latest.json" \
+        --latest-shinchiku "${OUTPUT_DIR}/latest_shinchiku.json" \
+        || echo "プッシュ通知送信失敗（続行）" >&2
 else
     echo "プッシュ通知: FIREBASE_SERVICE_ACCOUNT 未設定のためスキップ" >&2
 fi

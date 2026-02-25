@@ -65,6 +65,41 @@ final class Listing: @unchecked Sendable {
     /// サーバーサイドで判定された新着物件フラグ（前回スクレイピングとの差分比較。Newバッジ表示用）
     var isNew: Bool
 
+    /// 最終閲覧日時（物件詳細画面を開いた日時。最近見た物件一覧用）
+    var viewedAt: Date?
+
+    /// 内見チェックリスト JSON 文字列（ローカル保存）
+    var checklistJSON: String?
+
+    struct ChecklistItem: Codable, Identifiable {
+        let id: String
+        let label: String
+        var isChecked: Bool
+        var note: String?
+
+        static let defaultTemplate: [ChecklistItem] = [
+            ChecklistItem(id: "sunlight", label: "日当たり", isChecked: false),
+            ChecklistItem(id: "noise", label: "騒音", isChecked: false),
+            ChecklistItem(id: "common_area", label: "共用部の清掃・管理状態", isChecked: false),
+            ChecklistItem(id: "entrance", label: "エントランス・セキュリティ", isChecked: false),
+            ChecklistItem(id: "view", label: "眺望・窓からの景色", isChecked: false),
+            ChecklistItem(id: "water", label: "水回り（キッチン・浴室・トイレ）", isChecked: false),
+            ChecklistItem(id: "storage", label: "収納スペース", isChecked: false),
+            ChecklistItem(id: "surrounding", label: "周辺環境（買い物・公園等）", isChecked: false),
+            ChecklistItem(id: "parking_check", label: "駐車場・駐輪場", isChecked: false),
+            ChecklistItem(id: "smell", label: "におい・換気", isChecked: false),
+        ]
+    }
+
+    var parsedChecklist: [ChecklistItem] {
+        guard let json = checklistJSON, let data = json.data(using: .utf8) else { return [] }
+        return (try? JSONDecoder().decode([ChecklistItem].self, from: data)) ?? []
+    }
+
+    var hasChecklist: Bool {
+        !parsedChecklist.isEmpty
+    }
+
     /// 内見写真メタデータ JSON 文字列（ローカル保存）
     /// フォーマット: [{"id":"...","fileName":"...","createdAt":"ISO8601"}]
     var photosJSON: String?
@@ -241,6 +276,8 @@ final class Listing: @unchecked Sendable {
         isLiked: Bool = false,
         isDelisted: Bool = false,
         isNew: Bool = false,
+        viewedAt: Date? = nil,
+        checklistJSON: String? = nil,
         propertyType: String = "chuko",
         duplicateCount: Int = 1,
         priceMaxMan: Int? = nil,
@@ -315,6 +352,8 @@ final class Listing: @unchecked Sendable {
         self.isLiked = isLiked
         self.isDelisted = isDelisted
         self.isNew = isNew
+        self.viewedAt = viewedAt
+        self.checklistJSON = checklistJSON
         self.propertyType = propertyType
         self.duplicateCount = duplicateCount
         self.priceMaxMan = priceMaxMan

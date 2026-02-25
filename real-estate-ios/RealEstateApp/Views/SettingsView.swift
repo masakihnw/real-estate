@@ -156,6 +156,11 @@ struct SettingsView: View {
     @ViewBuilder
     private var dataSection: some View {
         Section {
+            NavigationLink {
+                RecentlyViewedListView()
+            } label: {
+                Label("最近見た物件", systemImage: "clock.arrow.circlepath")
+            }
             HStack {
                 Text("中古マンション")
                 Spacer()
@@ -303,6 +308,12 @@ struct SettingsView: View {
     @ViewBuilder
     private var advancedSection: some View {
         Section {
+            NavigationLink {
+                CommuteDestinationSettingsView()
+            } label: {
+                Label("通勤先設定", systemImage: "building.2")
+            }
+
             Button {
                 showScrapingConfig = true
             } label: {
