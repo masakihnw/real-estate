@@ -1059,6 +1059,11 @@ struct MapTabView: View {
             onLikeTapped: { listing in
                 SaveErrorHandler.shared.save(modelContext, source: "MapTab")
                 FirebaseSyncService.shared.pushLikeState(for: listing)
+                if listing.isLiked {
+                    SpotlightIndexer.indexListing(listing)
+                } else {
+                    SpotlightIndexer.deindexListing(url: listing.url)
+                }
             }
         )
         .ignoresSafeArea(edges: .bottom)

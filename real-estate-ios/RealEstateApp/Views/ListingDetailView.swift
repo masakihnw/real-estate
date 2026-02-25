@@ -155,6 +155,11 @@ struct ListingDetailView: View {
                             listing.isLiked.toggle()
                             saveContext()
                             FirebaseSyncService.shared.pushLikeState(for: listing)
+                            if listing.isLiked {
+                                SpotlightIndexer.indexListing(listing)
+                            } else {
+                                SpotlightIndexer.deindexListing(url: listing.url)
+                            }
                         } label: {
                             Image(systemName: listing.isLiked ? "heart.fill" : "heart")
                                 .font(.title3)

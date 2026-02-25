@@ -41,6 +41,7 @@ targets:
         product: FirebaseStorage
       - package: GoogleSignIn
         product: GoogleSignIn
+      - target: RealEstateWidget
     info:
       path: RealEstateApp/Info.plist
       properties:
@@ -69,6 +70,8 @@ targets:
       path: RealEstateApp/RealEstateApp.entitlements
       properties:
         aps-environment: $(APS_ENVIRONMENT)
+        com.apple.security.application-groups:
+          - "group.com.hanawa.realestate"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hanawa.realestate.app
@@ -80,3 +83,28 @@ targets:
           APS_ENVIRONMENT: development
         Release:
           APS_ENVIRONMENT: production
+
+  RealEstateWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: RealEstateWidget
+        excludes:
+          - "**/.DS_Store"
+    info:
+      path: RealEstateWidget/Info.plist
+      properties:
+        CFBundleDisplayName: "物件情報ウィジェット"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: RealEstateWidget/RealEstateWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - "group.com.hanawa.realestate"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hanawa.realestate.app.widget
+        DEVELOPMENT_TEAM: YRP5KV2X62
+        CODE_SIGN_STYLE: Automatic
+        SWIFT_VERSION: "5.9"
