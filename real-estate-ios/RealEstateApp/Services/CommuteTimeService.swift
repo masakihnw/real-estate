@@ -11,6 +11,44 @@ import MapKit
 import SwiftData
 import UIKit
 
+// MARK: - 通勤先設定（ユーザー設定可能）
+
+/// ユーザーが設定する通勤先。UserDefaults に保存され、通勤時間計算・Google Maps 連携で参照可能。
+struct CommuteDestinationConfig: Codable, Identifiable {
+    var id: String
+    var name: String
+    var latitude: Double
+    var longitude: Double
+
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
+    static let defaults: [CommuteDestinationConfig] = [
+        CommuteDestinationConfig(id: "playground", name: "Playground株式会社", latitude: 35.688449, longitude: 139.743415),
+        CommuteDestinationConfig(id: "m3career", name: "エムスリーキャリア", latitude: 35.666018, longitude: 139.743807),
+    ]
+
+    private static let storageKey = "commuteDestinations"
+
+    static func load() -> [CommuteDestinationConfig] {
+        guard let data = UserDefaults.standard.data(forKey: storageKey),
+              let configs = try? JSONDecoder().decode([CommuteDestinationConfig].self, from: data),
+              !configs.isEmpty else {
+            return defaults
+        }
+        return configs
+    }
+
+    static func save(_ configs: [CommuteDestinationConfig]) {
+        if let data = try? JSONEncoder().encode(configs) {
+            UserDefaults.standard.set(data, forKey: storageKey)
+        }
+    }
+}
+
+// MARK: - 経路計算用の定数
+
 /// 経路計算用の定数（MainActor に依存せずバックグラウンドで参照可能）
 private enum _RouteCoordinates {
     static let playground = CLLocationCoordinate2D(latitude: 35.688449, longitude: 139.743415)

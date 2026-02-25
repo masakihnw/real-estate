@@ -334,6 +334,10 @@ App起動
 
 Sheet として表示。一覧画面から開く場合は `ListingDetailPagerView`（スワイプページャー）でラップされ、フィルタ済み全物件を横スワイプで横断比較可能。各ページは `ListingDetailView` をそのまま表示する。ページャーは画面下部にフローティングのページインジケーター（`< 3 / 15 >`）を表示し、現在位置の把握とタップによる前後移動が可能。
 
+**セクションナビゲーション（目次）**
+
+ツールバー直下に横スクロール可能なセクションナビゲーションバー（`.ultraThinMaterial` 背景）を表示。各チップ（物件情報・ローン・通勤・評価・シミュレーション・相場・人口・ハザード）をタップすると、該当セクションへ `ScrollViewReader` でスクロールしてジャンプする。表示されるチップは物件のデータ有無に応じて動的に変化（例: `priceMan > 0` のときのみローン、`hasCommuteInfo || hasCoordinate` のときのみ通勤）。
+
 以下のセクションで構成:
 
 **共通セクション（中古・新築共通）**
@@ -345,7 +349,8 @@ Sheet として表示。一覧画面から開く場合は `ListingDetailPagerVie
 | ③ | **住所** | 住所テキスト + Google Maps リンク |
 | ③-b | **サマリーカード（Phase2）** | 6項目（価格・面積・徒歩・築年・間取り・㎡単価）を 3×2 グリッドで視覚的に表示。各項目はアイコン＋ラベル＋値の構成。`.tintedGlassBackground` で統一感のある背景 |
 | ④ | **内見メモ（コンパクトボタン）** | カメラアイコン + コメントアイコン + 件数をインライン表示。タップで内見メモオーバーレイ（シート）を開く。コメント入力・写真追加は全てオーバーレイ内で操作 |
-| ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。サムネイル・フルスクリーンともに白余白を自動トリミングして画像コンテンツを最大化。タップでフルスクリーン表示（横スワイプで前後画像に移動可能、下部ミニマップで全画像のサムネイルストリップを表示・タップで直接ジャンプ可能）。Firebase Storage 経由で掲載終了後も永続表示可能 |
+| ④-c | **内見チェックリスト** | DisclosureGroup で折りたたみ表示。日当たり・騒音・共用部・エントランス・眺望・水回り・収納・周辺環境・駐車場・においの10項目をチェック。タップでチェック ON/OFF。`checklistJSON` に JSON でローカル保存。未使用時はデフォルトテンプレートを表示 |
+| ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。サムネイル・フルスクリーンともに白余白を自動トリミングして画像コンテンツを最大化。タップでフルスクリーン表示（横スワイプで前後画像に移動可能、下部ミニマップで全画像のサムネイルストリップを表示・タップで直接ジャンプ可能、ページインジケーター・画像ラベル表示）。Firebase Storage 経由で掲載終了後も永続表示可能 |
 | ⑥ | **物件基本情報** | 下記の共通項目 + 中古/新築固有項目を表示 |
 | ⑦ | **月額支払いシミュレーション** | `priceMan > 0` の場合（中古・新築共通）。下記の計算ロジックで動的に算出。タップでフォーム展開し金利・返済期間・頭金を変更可能 |
 | ⑧ | **通勤時間** | Playground / M3Career への通勤時間（MKDirections）+ Google Maps リンク。座標ありかつ未取得の場合は計算ボタン表示 |
@@ -403,7 +408,7 @@ n = 返済回数（月）= 返済年数 × 12
 |---------|------|
 | `LoanCalculator.swift` | 計算ロジック。`monthlyPayment(principal:rate:years:)` / `totalRepayment(principal:rate:years:)`。`simulate(listing:)` は listing URL + 主要パラメータでセッション内キャッシュし、body 再評価時の再計算を回避 |
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
-| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, externalLinksSection 等）。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・下部ミニマップサムネイルストリップで全画像一覧表示＋タップジャンプ） |
+| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, similarListingsSection, externalLinksSection 等）。類似物件セクション（similarListingsSection）は同一区・同一種別・価格帯±20%で最大3件を表示し、タップでシートに詳細を表示。`ScrollViewReader` でラップし、ツールバー直下に `sectionNavBar`（横スクロールチップ）を `.safeAreaInset(edge: .top)` で表示。各セクションに `.id()` を付与し、`sectionChip` タップで該当セクションへスクロールジャンプ。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・下部ミニマップサムネイルストリップで全画像一覧表示＋タップジャンプ・ページインジケーター表示） |
 | `ListingDetailPagerView.swift` | 全物件スワイプページャー。`TabView(.page)` でフィルタ済み物件リストを横スワイプで横断比較。各ページは `ListingDetailView` をそのまま表示。画面下部にフローティングページインジケーター（`.regularMaterial` + `Capsule` で視認性確保）。一覧画面の `.sheet(item:)` から `cachedFiltered` とタップされた物件のインデックスを受け取って初期表示 |
 | `loan_calc.py` (Python) | Slack 通知・レポート用の月額計算（同一パラメータ） |
 
@@ -569,8 +574,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | セクション | 項目 |
 |-----------|------|
 | **通知** | 通知許可設定へのリンク |
-| **データ** | フルリフレッシュ、カスタム JSON URL（中古・新築） |
-| **スクレイピング** | 条件設定（ScrapingConfigView）、実行ログ（ScrapingLogView） |
+| **データ** | 最近見た物件（NavigationLink → RecentlyViewedListView）、フルリフレッシュ、カスタム JSON URL（中古・新築） |
+| **詳細設定** | 通勤先設定（NavigationLink → CommuteDestinationSettingsView）、スクレイピング条件（ScrapingConfigView）、実行ログ（ScrapingLogView）、カスタム URL |
 | **アカウント** | ユーザー情報表示、サインアウト |
 | **ウォークスルー** | オンボーディング再表示 |
 
@@ -599,7 +604,18 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 - 初回ログイン時に自動表示
 - 設定画面から再表示可能
 
-#### 3.3.10 成約実績一覧（TransactionListView）
+#### 3.3.10 通勤先設定画面（CommuteDestinationSettingsView）
+
+設定画面の「通勤先設定」から遷移。通勤時間計算・Google Maps 連携で参照する目的地を最大3箇所まで設定可能。
+
+| 要素 | 詳細 |
+|------|------|
+| **一覧表示** | 設定済み通勤先の名前・座標を表示。スワイプで削除 |
+| **追加** | 名前＋住所を入力し、CLGeocoder でジオコーディングして追加。最大3箇所まで |
+| **デフォルト復元** | Playground株式会社・エムスリーキャリアの2箇所に戻す |
+| **永続化** | UserDefaults（`commuteDestinations`）に JSON で保存。CommuteData 構造は従来のまま（playground/m3career）で、MKDirections 計算は固定2箇所を継続使用 |
+
+#### 3.3.11 成約実績一覧（TransactionListView）
 
 | 要素 | 詳細 |
 |------|------|
@@ -609,7 +625,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **取引行** | 成約価格、間取り、面積、m² 単価、取引時期。タップで TransactionDetailView をシート表示 |
 | **サマリー** | 上部に全体件数・推定建物数・フィルタリセットボタン |
 
-#### 3.3.11 成約詳細（TransactionDetailView）
+#### 3.3.12 成約詳細（TransactionDetailView）
 
 | 要素 | 詳細 |
 |------|------|
@@ -663,7 +679,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |------|------|
 | **パイプライン初期データ** | `commute_enricher.py` が `station_line` + `walk_min` から駅ベースの概算を付与（`commute_info` フィールド）。`Listing.from(dto:)` で `commuteInfoJSON` に取り込み |
 | **iOS 計算方式** | MKDirections（公共交通機関モード、`requestsAlternateRoutes = true`） |
-| **目的地** | Playground株式会社（千代田区一番町4-6）/ エムスリーキャリア（港区虎ノ門4-1-28） |
+| **目的地** | デフォルト: Playground株式会社（千代田区一番町4-6）/ エムスリーキャリア（港区虎ノ門4-1-28）。設定画面の「通勤先設定」で最大3箇所までカスタマイズ可能（CommuteDestinationConfig）。MKDirections 計算は従来の固定2箇所を継続使用（CommuteData 構造の互換性のため） |
 | **キャッシュ** | `Listing.commuteInfoJSON` に JSON 文字列で保存 |
 | **再計算条件** | 未計算 or フォールバック概算（`経路情報取得不可`）or 7日以上経過 |
 | **リトライ戦略** | 1回目: departureDate（次の平日8:00）→ 2回目: 日時指定なし → 3回目: arrivalDate（次の平日9:00）→ フォールバック概算。各リトライ間に2秒待機 |
@@ -960,6 +976,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 2 | 共有 | ツールバー ShareLink | 物件 URL を共有 |
 | 3 | いいね | ツールバーハートボタン | いいね ON/OFF → Firestore 同期 |
 | 4 | キーボード非表示 | 画面タップ | 内見メモオーバーレイ内のコメント入力中にキーボードを閉じる |
+| 4b | セクションジャンプ | セクションナビバーチップタップ | ツールバー直下の横スクロールチップ（物件情報・ローン・通勤・評価・シミュレーション・相場・人口・ハザード）をタップすると該当セクションへスクロール。データ有無に応じてチップの表示/非表示を切り替え |
 
 #### 掲載状態
 
@@ -1095,6 +1112,15 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |---|------|------|------|
 | 56 | 価格判定一覧 | セクションヘッダータップ | アコーディオンで展開/折りたたみ |
 
+#### 類似物件セクション（Phase 4）
+
+同一区・同一物件種別（中古/新築）・価格帯（±20%）の類似物件を最大3件表示。`@Query` で全物件を取得し、`Listing.extractWardFromAddress` で区名を抽出してフィルタ。掲載終了物件・自物件は除外。
+
+| # | 機能 | 操作 | 詳細 |
+|---|------|------|------|
+| 56-b | 類似物件一覧 | 閲覧 | 類似物件が存在する場合のみ表示。物件名・価格・面積・間取り・徒歩をカード形式で表示 |
+| 56-c | 類似物件詳細 | 行タップ | `.sheet(item:)` で ListingDetailView をシート表示 |
+
 #### 外部リンク
 
 | # | 機能 | 操作 | 詳細 |
@@ -1206,6 +1232,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
+| 6a | 最近見た物件 | NavigationLink | RecentlyViewedListView を表示。viewedAt でソート、最大30件。タップで物件詳細をシート表示 |
 | 7 | フルリフレッシュ | ボタン | 確認ダイアログ → ETag クリア + 全件再取得 |
 | 8 | 最終更新時刻 | 閲覧 | 前回データ取得の日時を表示 |
 
@@ -1219,6 +1246,12 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 12 | URL 保存 | 保存ボタン | 入力した URL を UserDefaults に保存 → 確認アラート |
 | 13 | デフォルト URL に戻す | ボタン | 確認ダイアログ → URL をデフォルトにリセット |
 | 14 | カスタム URL 説明 | インフォボタン | カスタム URL の使い方をアラートで表示 |
+
+#### 通勤先設定
+
+| # | 機能 | 操作 | 詳細 |
+|---|------|------|------|
+| 14a | 通勤先設定 | NavigationLink | CommuteDestinationSettingsView を表示。通勤先の追加（住所ジオコーディング）・削除・デフォルト復元。最大3箇所まで |
 
 #### スクレイピング管理
 
@@ -1312,11 +1345,11 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 物件詳細 | 67 |
 | 物件比較 | 7 |
 | 地図 | 32 |
-| 設定 | 19 |
+| 設定 | 20 |
 | スクレイピング条件 | 15 |
 | スクレイピングログ | 10 |
 | グローバル | 10 |
-| **合計** | **約239機能** |
+| **合計** | **約240機能** |
 
 ## 5. スクレイピングツール仕様
 
@@ -1377,7 +1410,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    ├── geocode.py（キャッシュクリーンアップ）
    ├── convert_risk_geojson.py（初回のみ）
    ├── generate_report.py → Markdown レポート
-   ├── send_push.py → FCM プッシュ通知（is_new フラグのカウントで新着件数を算出）
+   ├── send_push.py → FCM プッシュ通知（is_new フラグのカウントで新着件数、price_history で価格変動を検出して通知本文に含める）
    ├── slack_notify.py → Slack 通知（1日1回 6:00〜10:00 JST の回）
    └── git commit & push
 ```
@@ -1739,6 +1772,8 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `commentsJSON` | String? | コメント JSON（Firestore 同期） |
 | `isDelisted` | Bool | 掲載終了フラグ |
 | `isNew` | Bool | サーバーサイドで判定された新着フラグ（JSON の `is_new` から取得。同期ごとにリセット。304 応答時も確実にリセット） |
+| `viewedAt` | Date? | 最終閲覧日時（物件詳細画面を開いた日時。最近見た物件一覧用） |
+| `checklistJSON` | String? | 内見チェックリスト JSON 文字列（ローカル保存。ChecklistItem 配列のエンコード） |
 | `photosJSON` | String? | 内見写真メタデータ JSON |
 | `floorPlanImagesJSON` | String? | 間取り図画像 URL の JSON 文字列。`["url1", "url2"]` 形式。Firebase Storage のダウンロード URL |
 | `suumoImagesJSON` | String? | SUUMO 物件写真の JSON 文字列。`[{"url":"...","label":"リビング"}, ...]` 形式。カテゴリ別（外観/室内/水回り/その他）にグルーピングして表示 |
@@ -1949,6 +1984,26 @@ reinfolib API（不動産情報ライブラリ）の成約価格情報から、c
 
 **FilterTemplateStore**（`@Observable`）: テンプレートの CRUD と UserDefaults 永続化を担当。アプリレベルで `.environment()` 注入。保存上限は5件（`maxTemplates = 5`）。
 
+### 6.7 CommuteDestinationConfig（Codable, Identifiable）
+
+ユーザーが設定する通勤先。UserDefaults（`commuteDestinations`）に JSON で保存。CommuteTimeService 内で定義。
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `id` | String | 一意 ID |
+| `name` | String | 表示名（例: 会社名） |
+| `latitude` | Double | 緯度 |
+| `longitude` | Double | 経度 |
+
+**メソッド・静的プロパティ**
+
+| 項目 | 説明 |
+|------|------|
+| `defaults` | デフォルト2箇所（Playground株式会社、エムスリーキャリア） |
+| `load()` | UserDefaults から読み込み。空なら defaults を返す |
+| `save(_:)` | UserDefaults に保存 |
+| `coordinate` | CLLocationCoordinate2D を返す computed property |
+
 ### 6.8 CommentData
 
 | プロパティ | 型 | 説明 |
@@ -2041,7 +2096,8 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 | **トピック** | `new_listings` |
 | **送信元** | GitHub Actions（`send_push.py`）→ FCM HTTP v1 API |
 | **受信** | iOS アプリ（`PushNotificationService` / `AppDelegate`） |
-| **トリガー** | スクレイピングで新着物件検出時（`latest.json` の `is_new` フラグをカウント） |
+| **トリガー** | スクレイピングで新着物件検出時（`latest.json` の `is_new` フラグをカウント）、または価格変動検出時 |
+| **通知内容** | 新着件数（中古/新築）+ 価格変動（値下げ/値上げ件数と物件名・変動額のサマリ）。`price_history` が2件以上かつ最新エントリの日付が当日の物件を価格変動として検出。例: 「中古 2件 / 値下げ 2件（パークタワー -300万、シティタワー -150万）」 |
 
 ---
 

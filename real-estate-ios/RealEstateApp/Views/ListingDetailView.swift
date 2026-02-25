@@ -33,11 +33,20 @@ struct ListingDetailView: View {
     @State private var deletingCommentId: String?
     /// 通勤時間計算中フラグ
     @State private var isCalculatingCommute = false
+    /// セクションナビゲーション用 ScrollViewProxy
+    @State private var scrollProxy: ScrollViewProxy?
+    /// 現在アクティブなセクションID（将来のハイライト用）
+    @State private var activeSection: String = "info"
+    /// 類似物件タップ時に表示するシート用（詳細画面を開く）
+    @State private var selectedSimilarListing: Listing?
+
+    @Query private var allListings: [Listing]
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing) {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing) {
                     // 掲載終了バナー
                     delistedBanner
 
@@ -59,6 +68,9 @@ struct ListingDetailView: View {
                     // ③④ 内見メモ（コメント・写真）— アイコンタップでオーバーレイ表示
                     notesCompactButton
 
+                    Divider()
+                    inspectionChecklistSection
+
                     // ④-b 物件画像ギャラリー（間取り図＋SUUMO物件写真を統合表示）
                     if listing.hasFloorPlanImages || listing.hasSuumoImages {
                         Divider()
@@ -69,6 +81,7 @@ struct ListingDetailView: View {
 
                     // ⑤ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
                     propertyInfoSection
+                        .id("info")
 
                     // ⑤-b 投資スコア・価格変動・掲載状況
                     if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
@@ -79,6 +92,7 @@ struct ListingDetailView: View {
                     // ⑥ 月額支払いシミュレーション（中古・新築共通）
                     if let priceMan = listing.priceMan, priceMan > 0 {
                         MonthlyPaymentSimulationView(listing: listing)
+                            .id("loan")
 
                         // 財務シミュレーションボタン群
                         Divider()
@@ -89,19 +103,24 @@ struct ListingDetailView: View {
                     if listing.hasCommuteInfo {
                         Divider()
                         commuteSection
+                            .id("commute")
                     } else if listing.hasCoordinate {
                         Divider()
                         commuteCalculateSection
+                            .id("commute")
                     }
 
                     Divider()
 
                     // ⑧ 住まいサーフィン評価
-                    if listing.hasSumaiSurfinData {
-                        sumaiSurfinSection
-                    } else {
-                        sumaiSurfinUnavailableNotice
+                    Group {
+                        if listing.hasSumaiSurfinData {
+                            sumaiSurfinSection
+                        } else {
+                            sumaiSurfinUnavailableNotice
+                        }
                     }
+                    .id("sumai")
 
                     // ⑧-b 周辺相場（住まいサーフィン）
                     if listing.hasSurroundingProperties {
@@ -115,24 +134,34 @@ struct ListingDetailView: View {
                     if listing.hasSimulationData {
                         Divider()
                         SimulationSectionView(listing: listing)
+                            .id("simulation")
                     }
 
                     // ⑩ 成約相場との比較（不動産情報ライブラリ）
                     if listing.hasMarketData {
                         Divider()
                         MarketDataSectionView(listing: listing)
+                            .id("market")
                     }
 
                     // ⑪ エリア人口動態（e-Stat）
                     if listing.hasPopulationData {
                         Divider()
                         PopulationSectionView(listing: listing)
+                            .id("population")
                     }
 
                     // ⑫ ハザード情報（低ランクでもデータがあれば表示）
                     if listing.hasHazardData {
                         Divider()
                         hazardSection
+                            .id("hazard")
+                    }
+
+                    // ⑫-b 類似物件
+                    if !similarListings.isEmpty {
+                        Divider()
+                        similarListingsSection
                     }
 
                     Divider()
@@ -145,6 +174,15 @@ struct ListingDetailView: View {
                     }
                 }
                 .padding(.horizontal, 14)
+                }
+                .onAppear {
+                    scrollProxy = proxy
+                    listing.viewedAt = Date()
+                    try? modelContext.save()
+                }
+                .safeAreaInset(edge: .top) {
+                    sectionNavBar
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -191,7 +229,138 @@ struct ListingDetailView: View {
             .sheet(isPresented: $showNotesOverlay) {
                 notesOverlaySheet
             }
+            .sheet(item: $selectedSimilarListing) { listing in
+                ListingDetailView(listing: listing)
+            }
         }
+    }
+
+    // MARK: - 類似物件レコメンド
+
+    private var similarListings: [Listing] {
+        let wardName = Listing.extractWardFromAddress(listing.address ?? "")
+        guard !wardName.isEmpty, let price = listing.priceMan else { return [] }
+        let priceLow = Int(Double(price) * 0.8)
+        let priceHigh = Int(Double(price) * 1.2)
+
+        return allListings
+            .filter { other in
+                other.url != listing.url
+                && !other.isDelisted
+                && other.propertyType == listing.propertyType
+                && Listing.extractWardFromAddress(other.address ?? "") == wardName
+                && (other.priceMan ?? 0) >= priceLow
+                && (other.priceMan ?? 0) <= priceHigh
+            }
+            .prefix(3)
+            .map { $0 }
+    }
+
+    @ViewBuilder
+    private var similarListingsSection: some View {
+        let similar = similarListings
+        if !similar.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("類似物件")
+                    .font(.headline)
+
+                ForEach(similar, id: \.url) { item in
+                    Button {
+                        selectedSimilarListing = item
+                    } label: {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(item.name)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .lineLimit(1)
+                                HStack(spacing: 8) {
+                                    Text(item.priceDisplayCompact)
+                                        .font(.caption)
+                                        .foregroundStyle(.blue)
+                                    if let area = item.areaM2 {
+                                        Text(String(format: "%.1f㎡", area))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if let layout = item.layout {
+                                        Text(layout)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if let walk = item.walkMin {
+                                        Text("徒歩\(walk)分")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding(10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color(.systemGray6))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
+    // MARK: - セクションナビゲーション（目次）
+
+    private var sectionNavBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                sectionChip("物件情報", id: "info")
+                if listing.priceMan != nil && listing.priceMan! > 0 {
+                    sectionChip("ローン", id: "loan")
+                }
+                if listing.hasCommuteInfo || listing.hasCoordinate {
+                    sectionChip("通勤", id: "commute")
+                }
+                sectionChip("評価", id: "sumai")
+                if listing.hasSimulationData {
+                    sectionChip("シミュレーション", id: "simulation")
+                }
+                if listing.hasMarketData {
+                    sectionChip("相場", id: "market")
+                }
+                if listing.hasPopulationData {
+                    sectionChip("人口", id: "population")
+                }
+                if listing.hasHazardData {
+                    sectionChip("ハザード", id: "hazard")
+                }
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 6)
+        }
+        .background(.ultraThinMaterial)
+    }
+
+    private func sectionChip(_ label: String, id: String) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                scrollProxy?.scrollTo(id, anchor: .top)
+            }
+        } label: {
+            Text(label)
+                .font(.caption)
+                .fontWeight(.medium)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule()
+                        .fill(Color.accentColor.opacity(0.12))
+                )
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - 掲載終了バナー（画面上部）
@@ -588,6 +757,70 @@ struct ListingDetailView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("内見メモを表示（写真 \(photos.count)件、コメント \(comments.count)件）")
+    }
+
+    // MARK: - 内見チェックリスト
+
+    @ViewBuilder
+    private var inspectionChecklistSection: some View {
+        DisclosureGroup {
+            VStack(spacing: 0) {
+                let items = listing.parsedChecklist.isEmpty ? Listing.ChecklistItem.defaultTemplate : listing.parsedChecklist
+                ForEach(items) { item in
+                    HStack {
+                        Button {
+                            toggleChecklistItem(item.id)
+                        } label: {
+                            Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
+                                .foregroundStyle(item.isChecked ? .green : .secondary)
+                                .font(.title3)
+                        }
+                        .buttonStyle(.plain)
+
+                        Text(item.label)
+                            .font(.subheadline)
+                            .strikethrough(item.isChecked, color: .secondary)
+                            .foregroundStyle(item.isChecked ? .secondary : .primary)
+
+                        Spacer()
+                    }
+                    .padding(.vertical, 6)
+
+                    if item.id != items.last?.id {
+                        Divider()
+                    }
+                }
+            }
+            .padding(.top, 4)
+        } label: {
+            Label {
+                HStack {
+                    Text("内見チェックリスト")
+                        .font(.headline)
+                    Spacer()
+                    let items = listing.parsedChecklist
+                    if !items.isEmpty {
+                        let checked = items.filter(\.isChecked).count
+                        Text("\(checked)/\(items.count)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } icon: {
+                Image(systemName: "checklist")
+            }
+        }
+    }
+
+    private func toggleChecklistItem(_ itemId: String) {
+        var items = listing.parsedChecklist.isEmpty ? Listing.ChecklistItem.defaultTemplate : listing.parsedChecklist
+        if let index = items.firstIndex(where: { $0.id == itemId }) {
+            items[index].isChecked.toggle()
+        }
+        if let data = try? JSONEncoder().encode(items), let json = String(data: data, encoding: .utf8) {
+            listing.checklistJSON = json
+            saveContext()
+        }
     }
 
     // MARK: - ③④ 内見メモ オーバーレイシート
