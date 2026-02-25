@@ -740,6 +740,15 @@ struct ListingRowView: View {
 
     private var hasExpandableUnits: Bool { siblings.count > 1 }
 
+    private func formatYenCompact(_ yen: Int) -> String {
+        if yen >= 10000 {
+            return String(format: "%.1f万", Double(yen) / 10000)
+        }
+        let f = NumberFormatter()
+        f.numberStyle = .decimal
+        return "\(f.string(from: NSNumber(value: yen)) ?? "\(yen)")円"
+    }
+
     /// 表示用の売出戸数（グループ住戸数 or 旧 duplicateCount のいずれか大きい方）
     private var displayUnitCount: Int {
         hasExpandableUnits ? siblings.count : listing.duplicateCount
@@ -922,6 +931,25 @@ struct ListingRowView: View {
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .lineLimit(1)
+                }
+
+                // 5行目: 管理費+修繕積立金（データがある場合のみ）
+                if listing.managementFee != nil || listing.repairReserveFund != nil {
+                    HStack(spacing: 4) {
+                        if let mf = listing.managementFee {
+                            Text("管理費\(formatYenCompact(mf))")
+                        }
+                        if let rf = listing.repairReserveFund {
+                            Text("修繕\(formatYenCompact(rf))")
+                        }
+                        if let mf = listing.managementFee, let rf = listing.repairReserveFund {
+                            Text("計\(formatYenCompact(mf + rf))/月")
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
                 }
 
                 // ハザード＋通勤バッジ

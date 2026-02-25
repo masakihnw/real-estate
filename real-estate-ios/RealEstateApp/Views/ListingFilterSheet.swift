@@ -65,6 +65,10 @@ struct ListingFilterSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
+                    // クイックプリセット
+                    quickPresetSection
+                        .padding(.bottom, 8)
+
                     if showPropertyTypeFilter {
                         FilterAccordion(
                             title: "物件種別",
@@ -230,6 +234,61 @@ struct ListingFilterSheet: View {
     // MARK: - Template Menu
 
     @ViewBuilder
+    // MARK: - クイックプリセット
+
+    private var quickPresetSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("クイックフィルタ")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    presetChip("駅近 (5分以内)", icon: "figure.walk") {
+                        filter.walkMax = 5
+                    }
+                    presetChip("割安物件", icon: "yensign.circle") {
+                        filter.reset()
+                    }
+                    presetChip("大規模 (100戸+)", icon: "building.2") {
+                        filter.reset()
+                    }
+                    presetChip("都心3区", icon: "mappin.and.ellipse") {
+                        filter.wards = Set(["千代田区", "中央区", "港区"])
+                    }
+                    presetChip("城南エリア", icon: "map") {
+                        filter.wards = Set(["品川区", "大田区", "目黒区"])
+                    }
+                    presetChip("3LDK 70m²+", icon: "rectangle.split.3x1") {
+                        filter.layouts = Set(["3LDK"])
+                        filter.areaMin = 70
+                    }
+                }
+            }
+        }
+    }
+
+    private func presetChip(_ label: String, icon: String, action: @escaping () -> Void) -> some View {
+        Button {
+            withAnimation { action() }
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.caption2)
+                Text(label)
+                    .font(.caption)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color.accentColor.opacity(0.08))
+            .foregroundStyle(Color.accentColor)
+            .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - テンプレートメニュー
+
     private var templateMenu: some View {
         Menu {
             Button {
