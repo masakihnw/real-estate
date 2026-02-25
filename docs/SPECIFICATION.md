@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-25（Phase 5: 成約↔販売物件のクロスリファレンス）
+> **最終更新**: 2026-02-25（Phase 5: 成約↔販売物件のクロスリファレンス、p6-02 Spotlight 連携、p6-03 PDF エクスポート追加）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -45,6 +45,7 @@ real-estate/
 ├── storage.rules              # Firebase Storage ルール
 ├── real-estate-ios/           # iOS アプリ（SwiftUI + SwiftData）
 │   ├── RealEstateApp/         # アプリ本体ソースコード
+│   ├── RealEstateWidget/      # WidgetKit ホーム画面ウィジェット拡張
 │   ├── ci_scripts/            # Xcode Cloud スクリプト
 │   ├── docs/                  # iOS アプリ設計ドキュメント
 │   └── project.yml            # XcodeGen 設定
@@ -100,7 +101,7 @@ real-estate/
 
 | レイヤー | 技術 |
 |---------|------|
-| **iOS アプリ** | SwiftUI, SwiftData, MapKit, CoreLocation, PhotosUI, SafariServices |
+| **iOS アプリ** | SwiftUI, SwiftData, MapKit, CoreLocation, PhotosUI, SafariServices, CoreSpotlight |
 | **認証** | Firebase Auth + Google Sign-In |
 | **データ同期** | Firebase Firestore, Firebase Storage |
 | **通知** | Firebase Cloud Messaging (FCM) + ローカル通知 |
@@ -588,6 +589,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 - 2〜4件を横並びで比較
 - 横スクロールテーブル形式
 - 比較項目: 価格、間取り、面積、築年、徒歩、階数、総戸数、権利形態、住まいサーフィン評価
+- **PDF エクスポート（p6-03）**: ツールバーの「PDF出力」ボタンで A4 比較シートを生成し、UIActivityViewController で共有（ファイル保存・AirDrop・メール等）
 
 #### 3.3.8 内見写真（PhotoSectionView）— 内見メモオーバーレイ内に表示
 
@@ -652,6 +654,19 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 マッチング条件は区名（`ward`）のみ。Listing は `extractWardFromAddress` で住所から区を抽出、TransactionRecord は `ward` プロパティを直接使用。
 
+#### 3.3.13 ホーム画面ウィジェット（WidgetKit）
+
+| 項目 | 詳細 |
+|------|------|
+| **拡張機能** | RealEstateWidget（WidgetKit アプリ拡張） |
+| **Bundle ID** | com.hanawa.realestate.app.widget |
+| **表示名** | 物件情報ウィジェット |
+| **サイズ** | 小（systemSmall）・中（systemMedium） |
+| **データ共有** | App Group `group.com.hanawa.realestate` 経由で UserDefaults にサマリを保存 |
+| **更新タイミング** | ListingStore の refresh 完了時に WidgetDataProvider がデータを書き込み、`WidgetCenter.reloadAllTimelines()` で再描画を要求 |
+| **小ウィジェット** | 新着件数・全件数・価格変動件数・最終更新時刻を表示 |
+| **中ウィジェット** | 上記に加え、いいね物件の上位3件を一覧表示 |
+
 ### 3.4 サービス層
 
 #### 3.4.1 ListingStore（物件データ取得・同期）
@@ -665,6 +680,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **ETag キャッシュ** | レスポンスの ETag を保存し、`If-None-Match` で 304 判定 |
 | **304 時の DB 負荷軽減** | 304 Not Modified 時は `isNew == true` の物件のみ DB 取得。データ未変更時は全件取得をスキップし負荷を大幅削減 |
 | **304 時の Firestore スキップ** | 中古・新築の両方が 304 を返した場合、`pullAnnotations` をスキップし不要な Firestore 読み取りを回避 |
+| **WidgetKit 連携** | refresh 完了後に WidgetDataProvider が全件数・新着数・いいね数・いいね物件サマリを App Group の UserDefaults に書き込み、ウィジェットのタイムラインを再読み込み |
 | **並列取得** | 中古・新築を `async let` で並列リクエスト |
 | **JSON デコード** | `Task.detached(priority: .userInitiated)` でバックグラウンド実行 |
 | **新規検出** | サーバーサイド判定: スクレイピングパイプラインが `previous.json` との `identity_key` ベース差分比較で `is_new` フラグを `latest.json` に注入。iOS アプリは DTO の `is_new` をそのまま `isNew` に反映（クライアントサイドでの独自判定は行わない）。既存物件の `isNew` は同期ごとにリセット。304 Not Modified 時も `isNew` をリセットし、New バッジが残り続けないようにする。`identityKey` は Python 側と同一ロジック（`cleanListingName` で正規化した物件名・駅名のみ抽出・`walk_min` 除外）で、Slack 通知・地図・プッシュ通知・iOS アプリで一貫した新規判定を行う |
@@ -725,6 +741,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **ScrapingConfigService** | Firestore の `scraping_config/default` からスクレイピング条件を取得/保存。 |
 | **ScrapingLogService** | Firestore の `scraping_logs/latest` からパイプラインログを取得。 |
 | **SaveErrorHandler** | SwiftData 保存エラーのハンドリング。エラーダイアログ表示。 |
+| **WidgetDataProvider** | 物件サマリ（全件数・新着数・いいね数・いいね物件一覧）を App Group の UserDefaults に書き込み、WidgetKit ウィジェットに表示。ListingStore の refresh 完了時に呼び出される。 |
+| **SpotlightIndexer（p6-02）** | CoreSpotlight 連携。いいね済み物件を Spotlight にインデックス。いいね ON/OFF 時に indexListing / deindexListing を呼び出し、データ同期完了時に reindexAll で全件再構築。 |
+| **PDFExporter（p6-03）** | 物件比較シートを A4 PDF として生成。UIGraphicsPDFRenderer で価格・面積・間取り・住所等の比較表を描画。 |
 | **ModelContainer 初期化失敗** | ディスク・インメモリ両方失敗時は `fatalError` でクラッシュ。メッセージにエラー内容・再インストール・ストレージ確認を案内。 |
 
 ### 3.5 ローンシミュレーション
@@ -1155,12 +1174,13 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
 | 1 | 閉じる | ツールバーボタン | Sheet を閉じる |
-| 2 | 横スクロール比較 | 横スワイプ | 2〜4件の物件を横並びテーブルで比較 |
-| 3 | 基本情報比較 | 閲覧 | 価格、間取り、面積、築年、徒歩、階数、総戸数、権利形態 |
-| 4 | 住まいサーフィン評価比較 | 閲覧 | 儲かる確率、値上がり率、購入判定（データがある場合） |
-| 5 | 成約相場比較 | 閲覧 | 相場データがある物件の比較（データがある場合） |
-| 6 | 人口動態比較 | 閲覧 | 人口データがある物件の比較（データがある場合） |
-| 7 | 件数不足表示 | 自動 | 2件未満の場合に ContentUnavailableView を表示 |
+| 2 | PDF 出力 | ツールバーボタン | A4 比較シートを PDF 生成し、共有シートで保存・共有 |
+| 3 | 横スクロール比較 | 横スワイプ | 2〜4件の物件を横並びテーブルで比較 |
+| 4 | 基本情報比較 | 閲覧 | 価格、間取り、面積、築年、徒歩、階数、総戸数、権利形態 |
+| 5 | 住まいサーフィン評価比較 | 閲覧 | 儲かる確率、値上がり率、購入判定（データがある場合） |
+| 6 | 成約相場比較 | 閲覧 | 相場データがある物件の比較（データがある場合） |
+| 7 | 人口動態比較 | 閲覧 | 人口データがある物件の比較（データがある場合） |
+| 8 | 件数不足表示 | 自動 | 2件未満の場合に ContentUnavailableView を表示 |
 
 ---
 
@@ -1343,6 +1363,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 2 | タブ切替 | 全体 | 中古 / 新築 / 地図 / お気に入り / 設定 の5タブ |
 | 3 | プッシュ通知ハンドリング | 全体 | FCM 通知タップ → 中古タブに遷移 |
 | 4 | コメント通知ハンドリング | 全体 | コメント通知タップ → 該当物件の詳細画面を表示 |
+| 4b | **Spotlight ディープリンク（p6-02）** | 全体 | Spotlight 検索でいいね済み物件をタップ → アプリ起動 → 該当物件の詳細画面を Sheet 表示。`onContinueUserActivity(CSSearchableItemActionType)` で URL を受け取り、SwiftData から該当物件を取得 |
 | 5 | 自動データ更新 | 全体 | フォアグラウンド復帰時に15分経過で自動更新（物件）/ 1時間経過で自動更新（成約実績） |
 | 5-b | 成約実績自動取得 | 全体 | 初回起動時 or SwiftData が空（スキーマリセット後）の場合に自動取得。`lastFetchedAt` が UserDefaults に残っていても、SwiftData の `TransactionRecord` 件数 = 0 なら再取得を実行 |
 | 6 | バックグラウンド更新 | 全体 | BGAppRefreshTask で定期的に JSON 取得 → 新着検出 → ローカル通知 |
@@ -1364,7 +1385,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | お気に入り | 22 + 3 = 25 |
 | フィルタシート | 21 |
 | 物件詳細 | 67 |
-| 物件比較 | 7 |
+| 物件比較 | 8 |
 | 地図 | 32 |
 | 設定 | 20 |
 | スクレイピング条件 | 15 |
