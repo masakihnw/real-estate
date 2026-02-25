@@ -5,13 +5,18 @@
 - price_fairness_score: 掲載価格の妥当性スコア（0-100、50=適正、50未満=割高、50超=割安）
 - resale_liquidity_score: 再販流動性スコア（0-100、高い=売りやすい）
 - listing_score: 総合投資スコア（0-100）
+
+Phase 7 追加: テスト可能なラッパー関数
+- calculate_investment_score, calculate_days_on_market, count_competing_listings
+- inject_price_history, enrich_investment_metadata
 """
 
 import json
 import math
 import sys
+from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 try:
     from report_utils import identity_key, get_ward_from_address, normalize_listing_name
@@ -257,6 +262,112 @@ def main():
 
     scored = sum(1 for r in listings if r.get("listing_score") is not None)
     print(f"投資スコア付与完了: {scored}/{len(listings)}件", file=sys.stderr)
+
+
+# --- Phase 7: テスト可能なラッパー関数 ---
+
+def _building_group_key(listing: dict) -> str:
+    """同一マンション判定用キー。物件名（正規化）+ 区名。"""
+    name = normalize_listing_name(listing.get("name") or "")
+    ward = get_ward_from_address(listing.get("address") or "")
+    return f"{name}|{ward or ''}"
+
+
+def calculate_investment_score(listing: dict[str, Any]) -> float:
+    """
+    投資スコア（0-100）を算出する。
+    asset_score の含み益率ベーススコアを使用。データ不足時は 0。
+    """
+    try:
+        from asset_score import get_asset_score_and_rank
+        score, _ = get_asset_score_and_rank(listing)
+        return float(score)
+    except Exception:
+        return 0.0
+
+
+def calculate_days_on_market(
+    listing: dict,
+    reference_date: Optional[datetime] = None,
+) -> Optional[int]:
+    """
+    掲載日数を算出する（日数）。
+    added_at（ISO 8601）または first_seen があれば reference_date との差分を返す。
+    データなしの場合は None。
+    """
+    ref = reference_date or datetime.utcnow()
+    added = listing.get("added_at") or listing.get("first_seen")
+    if not added:
+        return None
+    if isinstance(added, str):
+        try:
+            from datetime import datetime as dt
+            if "T" in added:
+                added_dt = dt.fromisoformat(added.replace("Z", "+00:00"))
+            else:
+                added_dt = dt.strptime(added[:10], "%Y-%m-%d")
+            ref_naive = ref.replace(tzinfo=None) if ref.tzinfo else ref
+            added_naive = added_dt.replace(tzinfo=None) if added_dt.tzinfo else added_dt
+            delta = ref_naive - added_naive
+            return max(0, delta.days)
+        except (ValueError, TypeError):
+            return None
+    if hasattr(added, "days"):
+        return max(0, added.days)
+    return None
+
+
+def count_competing_listings(listing: dict, all_listings: list[dict]) -> int:
+    """
+    同一マンション内の競合物件数をカウントする（自物件を含む）。
+    building_group_key が一致する物件数を返す。
+    """
+    key = _building_group_key(listing)
+    if not key.strip("|"):
+        return 0
+    count = 0
+    for other in all_listings:
+        if _building_group_key(other) == key:
+            count += 1
+    return count
+
+
+def inject_price_history(listing: dict, history: list[dict]) -> dict:
+    """
+    価格履歴を listing に付与する。
+    history は [{"date": "YYYY-MM-DD", "price_man": int}, ...] 形式。
+    付与後は listing["price_history"] に格納される。
+    """
+    if not history:
+        return listing
+    listing = dict(listing)
+    listing["price_history"] = [
+        {"date": h.get("date"), "price_man": h.get("price_man")}
+        for h in history
+        if h.get("date") and h.get("price_man") is not None
+    ]
+    return listing
+
+
+def enrich_investment_metadata(
+    listing: dict,
+    all_listings: Optional[list[dict]] = None,
+    reference_date: Optional[datetime] = None,
+) -> dict:
+    """
+    1物件に投資メタデータを付与する。
+    - investment_score: 0-100
+    - days_on_market: 掲載日数（日）
+    - competing_listings: 競合物件数（all_listings 指定時のみ）
+    """
+    out = dict(listing)
+    out["investment_score"] = calculate_investment_score(listing)
+    dom = calculate_days_on_market(listing, reference_date)
+    if dom is not None:
+        out["days_on_market"] = dom
+    if all_listings:
+        out["competing_listings"] = count_competing_listings(listing, all_listings)
+    return out
 
 
 if __name__ == "__main__":
