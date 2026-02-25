@@ -250,6 +250,36 @@ new_s = sum(1 for r in cur_s if r.get('is_new'))
 print(f'is_new 注入完了: 中古 {new_c}/{len(cur)}件, 新築 {new_s}/{len(cur_s)}件', file=sys.stderr)
 " || echo "is_new 注入失敗（続行）" >&2
 
+# ─── 価格変動・掲載日数・競合物件数注入 ───
+echo "価格変動・掲載日数・競合物件数を注入中..." >&2
+python3 -c "
+import json, sys
+sys.path.insert(0, '.')
+from report_utils import inject_price_history, inject_first_seen_at, inject_competing_count, load_json
+from pathlib import Path
+
+out = '${OUTPUT_DIR}'
+
+cur = load_json(Path(f'{out}/latest.json'))
+prev = load_json(Path(f'{out}/previous.json'), missing_ok=True, default=[])
+inject_price_history(cur, prev or None)
+inject_first_seen_at(cur, prev or None)
+inject_competing_count(cur)
+with open(f'{out}/latest.json', 'w', encoding='utf-8') as f:
+    json.dump(cur, f, ensure_ascii=False)
+
+cur_s = load_json(Path(f'{out}/latest_shinchiku.json'), missing_ok=True, default=[])
+prev_s = load_json(Path(f'{out}/previous_shinchiku.json'), missing_ok=True, default=[])
+if cur_s:
+    inject_price_history(cur_s, prev_s or None)
+    inject_first_seen_at(cur_s, prev_s or None)
+    inject_competing_count(cur_s)
+    with open(f'{out}/latest_shinchiku.json', 'w', encoding='utf-8') as f:
+        json.dump(cur_s, f, ensure_ascii=False)
+
+print(f'価格変動・掲載日数・競合物件数 注入完了', file=sys.stderr)
+" || echo "価格変動注入失敗（続行）" >&2
+
 # ─── enrichment 前バックアップ ───
 cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/latest.json.backup"
 [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ] && cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/latest_shinchiku.json.backup" || true
@@ -580,6 +610,36 @@ if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ] && ! python3 -c "import json; js
     cp "${OUTPUT_DIR}/latest_shinchiku.json.backup" "${OUTPUT_DIR}/latest_shinchiku.json" 2>/dev/null || true
 fi
 rm -f "${OUTPUT_DIR}/latest.json.backup" "${OUTPUT_DIR}/latest_shinchiku.json.backup"
+
+# ─── 投資スコア・供給トレンド注入（enrichment 完了後） ───
+echo "投資スコア注入中..." >&2
+_t=$(date +%s)
+python3 investment_enricher.py "${OUTPUT_DIR}/latest.json" \
+    --transactions "${OUTPUT_DIR}/transactions.json" \
+    || echo "投資スコア注入（中古）失敗（続行）" >&2
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    python3 investment_enricher.py "${OUTPUT_DIR}/latest_shinchiku.json" \
+        --transactions "${OUTPUT_DIR}/transactions.json" \
+        || echo "投資スコア注入（新築）失敗（続行）" >&2
+fi
+record_timing "$TIMING_DIR/main.tsv" "investment_scoring" "$_t"
+
+echo "供給トレンド生成中..." >&2
+_t=$(date +%s)
+SHINCHIKU_TREND_ARGS=""
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    SHINCHIKU_TREND_ARGS="--current-shinchiku ${OUTPUT_DIR}/latest_shinchiku.json"
+    if [ -f "${OUTPUT_DIR}/previous_shinchiku.json" ]; then
+        SHINCHIKU_TREND_ARGS="${SHINCHIKU_TREND_ARGS} --previous-shinchiku ${OUTPUT_DIR}/previous_shinchiku.json"
+    fi
+fi
+python3 build_supply_trends.py \
+    --current "${OUTPUT_DIR}/latest.json" \
+    --previous "${OUTPUT_DIR}/previous.json" \
+    $SHINCHIKU_TREND_ARGS \
+    --output "${OUTPUT_DIR}/supply_trends.json" \
+    || echo "供給トレンド生成失敗（続行）" >&2
+record_timing "$TIMING_DIR/main.tsv" "supply_trends" "$_t"
 
 # ─── レポート生成 ───
 echo "レポートを生成中（enrichment 全反映）..." >&2

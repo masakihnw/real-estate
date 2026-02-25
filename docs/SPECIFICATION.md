@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-24  
+> **最終更新**: 2026-02-25  
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -804,6 +804,33 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 ---
 
+### 4.2b ダッシュボード画面（DashboardView）— Phase1 追加
+
+タブバーの先頭に「概況」タブとして配置。マーケット全体の状況を俯瞰する。
+
+| # | 機能 | 操作 | 詳細 |
+|---|------|------|------|
+| 1 | マーケット概況 | 自動 | 中古/新築の掲載数・平均価格・新着数・値上げ/値下げ件数をカード形式で表示 |
+| 2 | スコア分布 | 自動 | 総合投資スコアのグレード分布（S/A/B/C/D）をバーチャートで表示 |
+| 3 | 価格変動物件 | 自動 | 直近の価格変動があった物件を変動額の大きい順に最大10件表示 |
+| 4 | エリア別 m²単価ランキング | 自動 | 区別の平均 m²単価をランキング形式で表示（物件数付き） |
+
+---
+
+### 4.2c 財務シミュレーションツール群（Phase1 追加）
+
+物件詳細画面の「⑥ 月額支払いシミュレーション」セクション直後にボタン群を配置。各ボタンタップで Sheet 表示。
+
+| # | ツール名 | ビュー | 詳細 |
+|---|---------|--------|------|
+| 1 | 購入諸費用 | PurchaseCostCalculatorView | 印紙税・登録免許税・仲介手数料・ローン関連費用・火災保険料・司法書士報酬・固定資産税精算金・不動産取得税を自動計算。新築/中古で仲介手数料の有無を自動切替。借入比率スライダー付き |
+| 2 | 銀行比較 | BankComparisonView | 主要8銀行（住信SBI/auじぶん/PayPay/楽天/みずほ/三井住友/三菱UFJ/りそな）の変動金利・固定10年・全期間固定の月額返済額・総返済額を一覧比較。借入額・返済期間のスライダー付き |
+| 3 | ローン減税 | MortgageTaxBenefitView | 住宅ローン減税の年別控除額と合計控除額を算出。新築（13年）/中古（10年）の自動判定。年収・金利スライダー付き |
+| 4 | 賃貸 vs 購入 | RentVsBuyView | 賃貸と購入の総コストを任意の居住年数で比較。月額家賃・賃料上昇率・ローン金利・値上がり率を調整可能。売却時の物件価値・ローン残高を考慮した実質コストで判定 |
+| 5 | リノベ費用 | RenovationEstimateView | フル/部分リノベーション項目を選択して概算費用レンジを表示。面積に応じた m²単価ベースの計算。物件取得総額の表示付き |
+
+---
+
 ### 4.3 中古タブ / 新築タブ（ListingListView）
 
 中古タブ（`propertyTypeFilter: "chuko"`）と新築タブ（`propertyTypeFilter: "shinchiku"`）は同一の View を使用。
@@ -829,6 +856,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 8 | 価格（高い順） | ソートメニュー選択 | `priceMan` 降順 |
 | 9 | 徒歩（近い順） | ソートメニュー選択 | `walkMin` 昇順 |
 | 10 | 広さ（広い順） | ソートメニュー選択 | `areaM2` 降順 |
+| 10b | 総合スコア順 | ソートメニュー選択 | `listingScore` 降順。投資判断スコアの高い順 |
 
 #### フィルタ
 
@@ -1348,6 +1376,13 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 > **全 enricher 並列化の安全性**: 各 enricher が追加するフィールドに重複がない（sumai_surfin: `ss_*`, hazard: `hazard_info`, commute: `commute_info`, reinfolib: `reinfolib_market_data`, estat: `estat_population_data`, units_cache: `total_units`, `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`, `feature_tags` 等）。各 enricher が独自のファイルコピーで動作し、`merge_enrichments.py` がフィールドレベルで union マージするため競合なし。
 
+> **Phase1 追加の投資判断支援 enrichment**: 全 enricher 完了後の Phase 3 で以下を順次実行:
+> 1. `inject_price_history(cur, prev)` — 前回比較で価格変動があった物件に `price_history` を追記（`report_utils.py`）
+> 2. `inject_first_seen_at(cur, prev)` — 初回掲載検出日 `first_seen_at` を付与・継承（`report_utils.py`）
+> 3. `inject_competing_count(listings)` — 同一マンション内の競合売出物件数 `competing_listings_count` を付与（`report_utils.py`）
+> 4. `investment_enricher.py` — `price_fairness_score`、`resale_liquidity_score`、`listing_score` を算出・付与
+> 5. `build_supply_trends.py` — 供給トレンドの日次スナップショットを `supply_trends.json` に蓄積（最大365日分）
+
 > **5層の障害許容**: (1) WF分離 — 取得は常に完走、(2) ジョブ — `continue-on-error: true` で中古失敗でも新築は反映、(3) enricher — 全 enricher を `|| true` でラップ、(4) マージ — 存在するファイルのみマージ、(5) finalize — `if: !cancelled()` で部分データでもコミット。
 
 > **キャッシュマージ**: 中古/新築の各ジョブが独立更新した `geocode_cache.json`, `sumai_surfin_cache.json`, `floor_plan_storage_manifest.json` 等は、finalize ジョブで `merge_caches.py` により union マージされてからコミットされる。
@@ -1754,6 +1789,29 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `commuteInfoJSON` | String? | 通勤時間情報 JSON（パイプラインの `commute_info` から初期値を取り込み、MKDirections で上書き可能） |
 | `reinfolibMarketData` | String? | 不動産情報ライブラリの成約価格相場データ JSON（パイプライン側で付与） |
 | `estatPopulationData` | String? | e-Stat（総務省統計局）の人口・世帯数・高齢化率データ JSON（パイプライン側で付与）。高齢化率は国勢調査5年ごとの全国平均・23区平均・当該区の3系列推移を含む |
+
+#### 投資判断支援データ（Phase1 追加）
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `priceHistoryJSON` | String? | 価格変動履歴 JSON。`[{"date":"2025-02-20","price_man":9500},...]` 形式。パイプラインで前回比較時に自動蓄積 |
+| `firstSeenAt` | String? | 初回掲載検出日（ISO8601 日付）。パイプラインで初出時に日付を記録し、以降は継承 |
+| `priceFairnessScore` | Int? | 掲載価格の妥当性スコア（0-100）。住まいサーフィン評価・reinfolib 相場との比較で算出。50=適正、50超=割安 |
+| `resaleLiquidityScore` | Int? | 再販流動性スコア（0-100）。駅距離・総戸数・エリア需要・面積帯から算出 |
+| `competingListingsCount` | Int? | 同一マンション内の競合売出物件数。同じ正規化物件名+区名の物件をカウント |
+| `listingScore` | Int? | 総合投資スコア（0-100）。価格妥当性・流動性・騰落率・儲かる確率・ハザード・通勤時間・人口動態の重み付き平均 |
+
+#### Computed Properties（投資判断）
+
+| プロパティ | 型 | 説明 |
+|-----------|-----|------|
+| `parsedPriceHistory` | [PriceHistoryEntry] | パース済み価格変動履歴 |
+| `hasPriceChanges` | Bool | 2件以上の価格エントリがあるか |
+| `latestPriceChange` | Int? | 直近の価格変動額（万円、正=値上げ、負=値下げ） |
+| `daysOnMarket` | Int? | 掲載日数（`firstSeenAt` から計算） |
+| `daysOnMarketDisplay` | String | 掲載日数の表示用文字列（例: "15日間掲載"、"本日掲載"） |
+| `listingScoreGrade` | String | スコアグレード（"excellent"/"good"/"average"/"belowAverage"/"poor"） |
+| `wardName` | String | 住所から抽出した区名（例: "世田谷区"） |
 
 ### 6.2 TransactionRecord（SwiftData @Model）
 
