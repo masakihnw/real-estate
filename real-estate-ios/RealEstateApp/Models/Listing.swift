@@ -1756,6 +1756,118 @@ final class Listing: @unchecked Sendable {
         }
     }
 
+    // MARK: - スコア内訳
+
+    /// 総合スコアの各構成要素（Python の _calc_listing_score と同じロジック）
+    struct ScoreComponent {
+        let label: String
+        let icon: String
+        let score: Int
+        let weight: Int
+        let detail: String
+    }
+
+    var scoreBreakdown: [ScoreComponent] {
+        guard listingScore != nil else { return [] }
+        var components: [ScoreComponent] = []
+
+        if let fairness = priceFairnessScore {
+            let detail = priceFairnessDetail
+            components.append(.init(label: "価格妥当性", icon: "yensign.circle", score: fairness, weight: 3, detail: detail))
+        }
+        if let liquidity = resaleLiquidityScore {
+            let detail = resaleLiquidityDetail
+            components.append(.init(label: "再販流動性", icon: "arrow.triangle.2.circlepath", score: liquidity, weight: 2, detail: detail))
+        }
+        if let rate = ssAppreciationRate {
+            let s = 50 + min(max(Int(rate * 2), -40), 40)
+            let clamped = min(100, max(0, s))
+            components.append(.init(label: "値上がり率", icon: "chart.line.uptrend.xyaxis", score: clamped, weight: 3,
+                                    detail: "住まいサーフィン値上がり率: \(String(format: "%.1f", rate))%"))
+        }
+        if let profit = ssProfitPct {
+            let s = min(100, profit)
+            components.append(.init(label: "儲かる確率", icon: "percent", score: s, weight: 2,
+                                    detail: "住まいサーフィン儲かる確率: \(profit)%"))
+        }
+        if hasHazardData {
+            let hd = parsedHazardData
+            let riskItems = [
+                hd.flood ? "洪水" : nil,
+                hd.sediment ? "土砂災害" : nil,
+                hd.stormSurge ? "高潮" : nil,
+                hd.tsunami ? "津波" : nil,
+                hd.liquefaction ? "液状化" : nil,
+                hd.inlandWater ? "内水" : nil,
+            ].compactMap { $0 }
+            let riskCount = riskItems.count
+            let s = max(0, 100 - riskCount * 20)
+            let detail = riskItems.isEmpty ? "リスクなし" : "リスク: \(riskItems.joined(separator: "・"))"
+            components.append(.init(label: "ハザード", icon: "exclamationmark.triangle", score: s, weight: 1, detail: detail))
+        }
+        if hasCommuteInfo {
+            let ci = parsedCommuteInfo
+            var times: [Int] = []
+            if let pg = ci.playground { times.append(pg.minutes) }
+            if let m3 = ci.m3career { times.append(m3.minutes) }
+            if !times.isEmpty {
+                let avg = Double(times.reduce(0, +)) / Double(times.count)
+                let s: Int
+                switch avg {
+                case ...20: s = 90
+                case ...30: s = 75
+                case ...45: s = 55
+                default: s = 35
+                }
+                let parts = [
+                    ci.playground.map { "Playground \($0.minutes)分" },
+                    ci.m3career.map { "M3Career \($0.minutes)分" },
+                ].compactMap { $0 }
+                components.append(.init(label: "通勤利便性", icon: "tram", score: s, weight: 2,
+                                        detail: parts.joined(separator: " / ")))
+            }
+        }
+        if let popData = parsedPopulationData, let yoy = popData.popChange1yrPct {
+            let s: Int
+            switch yoy {
+            case let y where y > 1: s = 80
+            case let y where y > 0: s = 65
+            case let y where y > -1: s = 45
+            default: s = 30
+            }
+            components.append(.init(label: "人口動態", icon: "person.3", score: s, weight: 1,
+                                    detail: "\(popData.ward) 前年比\(String(format: "%+.1f", yoy))%"))
+        }
+
+        return components
+    }
+
+    private var priceFairnessDetail: String {
+        var parts: [String] = []
+        if let j = ssValueJudgment, !j.isEmpty { parts.append("判定: \(j)") }
+        if let d = ssM2Discount { parts.append("m²乖離: \(d)万") }
+        if let md = parsedMarketData, let ratio = md.priceRatio {
+            let pct = (ratio - 1.0) * 100
+            parts.append("相場比: \(String(format: "%+.0f", pct))%")
+        }
+        return parts.isEmpty ? "—" : parts.joined(separator: " / ")
+    }
+
+    private var resaleLiquidityDetail: String {
+        var parts: [String] = []
+        if let u = totalUnits { parts.append("総戸数: \(u)戸") }
+        if let w = walkMin { parts.append("徒歩: \(w)分") }
+        if let a = areaM2 { parts.append("\(String(format: "%.0f", a))m²") }
+        let ward = Self._extractWard(from: address ?? "")
+        if !ward.isEmpty { parts.append(ward) }
+        return parts.isEmpty ? "—" : parts.joined(separator: " / ")
+    }
+
+    private static func _extractWard(from address: String) -> String {
+        guard let range = address.range(of: ".+?区", options: .regularExpression) else { return "" }
+        return String(address[range])
+    }
+
     // MARK: - 通勤時間
 
     /// パース済み通勤時間データ（キャッシュ付き）
