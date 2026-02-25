@@ -671,6 +671,11 @@ struct ListingListView: View {
                             listing.isLiked.toggle()
                             SaveErrorHandler.shared.save(modelContext, source: "ListingList")
                             FirebaseSyncService.shared.pushLikeState(for: listing)
+                            if listing.isLiked {
+                                SpotlightIndexer.indexListing(listing)
+                            } else {
+                                SpotlightIndexer.deindexListing(url: listing.url)
+                            }
                         }
                     )
                 }
@@ -696,6 +701,11 @@ struct ListingListView: View {
                             listing.isLiked.toggle()
                             SaveErrorHandler.shared.save(modelContext, source: "ListingList")
                             FirebaseSyncService.shared.pushLikeState(for: listing)
+                            if listing.isLiked {
+                                SpotlightIndexer.indexListing(listing)
+                            } else {
+                                SpotlightIndexer.deindexListing(url: listing.url)
+                            }
                         } label: {
                             Label(
                                 listing.isLiked ? "いいね解除" : "いいね",

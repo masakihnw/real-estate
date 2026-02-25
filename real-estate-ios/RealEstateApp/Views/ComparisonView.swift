@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ComparisonView: View {
     let listings: [Listing]
     @Environment(\.dismiss) private var dismiss
+
+    @State private var showShareSheet = false
+    @State private var pdfFileURL: URL?
 
     // 比較行の表示フラグを事前計算（body 内で何度も contains(where:) を呼ぶのを回避）
     private var showProfitPct: Bool { listings.contains { $0.ssProfitPct != nil } }
@@ -130,8 +134,33 @@ struct ComparisonView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("閉じる") { dismiss() }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        exportPDF()
+                    } label: {
+                        Label("PDF出力", systemImage: "square.and.arrow.up")
+                    }
+                }
+            }
+            .sheet(isPresented: $showShareSheet) {
+                if let url = pdfFileURL {
+                    ShareSheet(items: [url])
+                }
             }
         }
+        }
+    }
+
+    private func exportPDF() {
+        guard let data = PDFExporter.generateComparisonPDF(listings: listings) else { return }
+        let fileName = "物件比較_\(Date().timeIntervalSince1970).pdf"
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        do {
+            try data.write(to: tempURL)
+            pdfFileURL = tempURL
+            showShareSheet = true
+        } catch {
+            // 書き込み失敗時は共有シートを表示しない
         }
     }
 
@@ -163,4 +192,16 @@ struct ComparisonView: View {
             .padding(.vertical, 6)
             .overlay(alignment: .bottom) { Divider() }
     }
+}
+
+// MARK: - ShareSheet（UIActivityViewController ラッパー）
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uvc: UIActivityViewController, context: Context) {}
 }

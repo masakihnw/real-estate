@@ -174,6 +174,24 @@ final class ListingStore {
                 syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
             }
         }
+
+        // P6: WidgetKit ウィジェット用データを App Group に書き込み
+        do {
+            let descriptor = FetchDescriptor<Listing>()
+            let listings = try modelContext.fetch(descriptor)
+            let active = listings.filter { !$0.isDelisted }
+            WidgetDataProvider.update(
+                totalListings: active.count,
+                newListings: active.filter { $0.isNew }.count,
+                likedCount: listings.filter { $0.isLiked }.count,
+                priceChanges: 0,
+                likedSummaries: listings.filter { $0.isLiked }.prefix(5).map { ($0.name, $0.priceMan, nil) }
+            )
+            // P6: Spotlight インデックスをいいね済み物件で再構築
+            SpotlightIndexer.reindexAll(listings)
+        } catch {
+            print("[ListingStore] WidgetDataProvider 更新失敗: \(error.localizedDescription)")
+        }
     }
 
     /// 保存済み ETag をクリアして次回フルフェッチを強制する

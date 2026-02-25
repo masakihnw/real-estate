@@ -25,6 +25,8 @@ struct ContentView: View {
     @SceneStorage("selectedTab") private var selectedTab = 0
     /// 通知タップで詳細表示する物件
     @State private var notificationListing: Listing?
+    /// Spotlight 検索から開く物件（URL で受け取り、該当物件を表示）
+    @State private var spotlightListing: Listing?
     /// フォアグラウンド復帰時の自動更新を抑制する最小間隔（秒）
     private let autoRefreshInterval: TimeInterval = 15 * 60  // 15分
 
