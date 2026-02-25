@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-25（Phase 5: 成約↔販売物件のクロスリファレンス、p6-02 Spotlight 連携、p6-03 PDF エクスポート追加、Phase 7: パイプラインテスト対応）
+> **最終更新**: 2026-02-25（投資スコア根拠のプルダウン表示追加、Phase 5: 成約↔販売物件のクロスリファレンス、p6-02 Spotlight 連携、p6-03 PDF エクスポート追加、Phase 7: パイプラインテスト対応）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -354,6 +354,7 @@ Sheet として表示。一覧画面から開く場合は `ListingDetailPagerVie
 | ④ | **内見メモ（コンパクトボタン）** | カメラアイコン + コメントアイコン + 件数をインライン表示。タップで内見メモオーバーレイ（シート）を開く。コメント入力・写真追加は全てオーバーレイ内で操作 |
 | ④-c | **内見チェックリスト** | DisclosureGroup で折りたたみ表示。日当たり・騒音・共用部・エントランス・眺望・水回り・収納・周辺環境・駐車場・においの10項目をチェック。タップでチェック ON/OFF。`checklistJSON` に JSON でローカル保存。未使用時はデフォルトテンプレートを表示 |
 | ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。サムネイル・フルスクリーンともに白余白を自動トリミングして画像コンテンツを最大化。タップでフルスクリーン表示（横スワイプで前後画像に移動可能、下部ミニマップで全画像のサムネイルストリップを表示・タップで直接ジャンプ可能、ページインジケーター・画像ラベル表示）。Firebase Storage 経由で掲載終了後も永続表示可能 |
+| ⑤ | **投資スコア** | `listingScore != nil \|\| hasPriceChanges \|\| firstSeenAt != nil` の場合のみ。総合スコア（大数字）+ 価格妥当性/再販流動性のバーチャート + 競合物件数 + 掲載日数 + 価格変動履歴。`DisclosureGroup`「スコアの根拠」で各構成要素（価格妥当性・再販流動性・値上がり率・儲かる確率・ハザード・通勤利便性・人口動態）のスコア・重み・根拠詳細をプルダウン表示。`scoreBreakdown` computed property で Python の `_calc_listing_score` と同じロジックを iOS 側で再現し、各要素のソースデータから根拠テキストを生成 |
 | ⑥ | **物件基本情報** | 下記の共通項目 + 中古/新築固有項目を表示 |
 | ⑦ | **月額支払いシミュレーション** | `priceMan > 0` の場合（中古・新築共通）。下記の計算ロジックで動的に算出。タップでフォーム展開し金利・返済期間・頭金を変更可能 |
 | ⑧ | **通勤時間** | Playground / M3Career への通勤時間（MKDirections）+ Google Maps リンク。座標ありかつ未取得の場合は計算ボタン表示 |
@@ -1922,6 +1923,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `daysOnMarket` | Int? | 掲載日数（`firstSeenAt` から計算） |
 | `daysOnMarketDisplay` | String | 掲載日数の表示用文字列（例: "15日間掲載"、"本日掲載"） |
 | `listingScoreGrade` | String | スコアグレード（"excellent"/"good"/"average"/"belowAverage"/"poor"） |
+| `scoreBreakdown` | [ScoreComponent] | 総合スコアの構成要素一覧。各要素は label/icon/score/weight/detail を持つ。Python の `_calc_listing_score` と同じ7指標（価格妥当性・再販流動性・値上がり率・儲かる確率・ハザード・通勤利便性・人口動態）を iOS 側で再現。データがある指標のみ含む |
 | `wardName` | String | 住所から抽出した区名（例: "世田谷区"） |
 
 ### 6.2 TransactionRecord（SwiftData @Model）

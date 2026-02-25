@@ -1195,39 +1195,87 @@ struct ListingDetailView: View {
 
             // スコアカード
             if let score = listing.listingScore {
-                HStack(spacing: 16) {
-                    // 総合スコア
-                    VStack(spacing: 4) {
-                        Text("\(score)")
-                            .font(.system(size: 36, weight: .bold, design: .rounded))
-                            .foregroundStyle(scoreColor(score))
-                        Text("総合スコア")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(width: 80)
+                VStack(spacing: 0) {
+                    HStack(spacing: 16) {
+                        VStack(spacing: 4) {
+                            Text("\(score)")
+                                .font(.system(size: 36, weight: .bold, design: .rounded))
+                                .foregroundStyle(scoreColor(score))
+                            Text("総合スコア")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(width: 80)
 
-                    // 各指標
-                    VStack(alignment: .leading, spacing: 6) {
-                        if let fairness = listing.priceFairnessScore {
-                            scoreRow(label: "価格妥当性", value: fairness, icon: "yensign.circle")
-                        }
-                        if let liquidity = listing.resaleLiquidityScore {
-                            scoreRow(label: "再販流動性", value: liquidity, icon: "arrow.triangle.2.circlepath")
-                        }
-                        if let count = listing.competingListingsCount, count > 1 {
-                            HStack {
-                                Image(systemName: "building.2")
-                                    .font(.caption)
-                                    .frame(width: 16)
-                                Text("同一マンション売出: \(count)件")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 6) {
+                            if let fairness = listing.priceFairnessScore {
+                                scoreRow(label: "価格妥当性", value: fairness, icon: "yensign.circle")
+                            }
+                            if let liquidity = listing.resaleLiquidityScore {
+                                scoreRow(label: "再販流動性", value: liquidity, icon: "arrow.triangle.2.circlepath")
+                            }
+                            if let count = listing.competingListingsCount, count > 1 {
+                                HStack {
+                                    Image(systemName: "building.2")
+                                        .font(.caption)
+                                        .frame(width: 16)
+                                    Text("同一マンション売出: \(count)件")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
                     }
+                    .padding(14)
+
+                    let breakdown = listing.scoreBreakdown
+                    if !breakdown.isEmpty {
+                        DisclosureGroup("スコアの根拠") {
+                            VStack(alignment: .leading, spacing: 10) {
+                                ForEach(Array(breakdown.enumerated()), id: \.offset) { _, component in
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        HStack(spacing: 6) {
+                                            Image(systemName: component.icon)
+                                                .font(.caption)
+                                                .frame(width: 16)
+                                                .foregroundStyle(.secondary)
+                                            Text(component.label)
+                                                .font(.caption.weight(.semibold))
+                                                .frame(width: 72, alignment: .leading)
+                                            GeometryReader { geo in
+                                                ZStack(alignment: .leading) {
+                                                    RoundedRectangle(cornerRadius: 3)
+                                                        .fill(Color.secondary.opacity(0.1))
+                                                        .frame(height: 6)
+                                                    RoundedRectangle(cornerRadius: 3)
+                                                        .fill(scoreColor(component.score))
+                                                        .frame(width: geo.size.width * CGFloat(component.score) / 100, height: 6)
+                                                }
+                                            }
+                                            .frame(height: 6)
+                                            Text("\(component.score)")
+                                                .font(.caption.weight(.bold).monospacedDigit())
+                                                .frame(width: 28, alignment: .trailing)
+                                            Text("×\(component.weight)")
+                                                .font(.caption2)
+                                                .foregroundStyle(.tertiary)
+                                                .frame(width: 20, alignment: .trailing)
+                                        }
+                                        Text(component.detail)
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                            .padding(.leading, 22)
+                                    }
+                                }
+                            }
+                            .padding(.top, 8)
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 14)
+                        .padding(.bottom, 14)
+                    }
                 }
-                .padding(14)
                 .tintedGlassBackground(tint: scoreColor(score), tintOpacity: 0.03, borderOpacity: 0.08)
             }
 
