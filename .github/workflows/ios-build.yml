@@ -1,0 +1,40 @@
+name: iOS Build Verification
+
+on:
+  pull_request:
+    paths:
+      - 'real-estate-ios/**'
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Install xcpretty
+        run: gem install xcpretty
+
+      - name: Generate Xcode Project
+        working-directory: real-estate-ios
+        run: xcodegen generate
+
+      - name: Resolve Package Dependencies
+        working-directory: real-estate-ios
+        run: xcodebuild -resolvePackageDependencies -project RealEstateApp.xcodeproj -scheme RealEstateApp
+
+      - name: Build
+        working-directory: real-estate-ios
+        run: |
+          xcodebuild build \
+            -project RealEstateApp.xcodeproj \
+            -scheme RealEstateApp \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty || true
