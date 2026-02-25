@@ -148,26 +148,29 @@ def fetch_list_page(
         time.sleep(REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
-            # 429 Too Many Requests — レートリミット対策
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
-                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
-                time.sleep(retry_after)
+                backoff = min(retry_after, 120)
+                print(f"  429 Rate Limited, waiting {backoff}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                time.sleep(backoff)
                 continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
             return r.text
         except requests.exceptions.HTTPError as e:
-            # 500/502/503 は一時的なサーバーエラーのためリトライ
             if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
                 last_error = e
-                time.sleep(2)
+                backoff = min(2 ** (attempt + 1), 30)
+                print(f"  HTTP {e.response.status_code}, retrying in {backoff}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                time.sleep(backoff)
             else:
                 raise
         except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as e:
             last_error = e
             if attempt < REQUEST_RETRIES - 1:
-                time.sleep(2)
+                backoff = min(2 ** (attempt + 1), 30)
+                print(f"  {type(e).__name__}, retrying in {backoff}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                time.sleep(backoff)
             else:
                 raise last_error
     if last_error is not None:

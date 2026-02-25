@@ -20,6 +20,7 @@ import json
 import re
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -41,6 +42,7 @@ from scraper_common import create_session
 # HTMLキャッシュ
 CACHE_DIR = ROOT / "data" / "shinchiku_html_cache"
 MANIFEST_PATH = CACHE_DIR / "manifest.json"
+ETAG_PATH = CACHE_DIR / "etags.json"
 
 # 除外パターン: サイトロゴ・バナー・spacer 等の非物件画像
 _EXCLUDE_ALT = {"SUUMO(スーモ)", "suumo", "担当者", ""}
@@ -73,6 +75,22 @@ def _save_manifest(manifest: dict[str, str]) -> None:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
 
 
+def _load_etags() -> dict[str, dict]:
+    if not ETAG_PATH.exists():
+        return {}
+    try:
+        with open(ETAG_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _save_etags(etags: dict[str, dict]) -> None:
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(ETAG_PATH, "w", encoding="utf-8") as f:
+        json.dump(etags, f, ensure_ascii=False, indent=2)
+
+
 def _read_cached_html(url: str, manifest: dict[str, str]) -> Optional[str]:
     h = manifest.get(url)
     if not h:
@@ -98,33 +116,57 @@ def _write_html_cache(url: str, html: str, manifest: dict[str, str]) -> None:
 # ──────────────────────────── HTTP取得 ────────────────────────────
 
 
-def _fetch_page(session: requests.Session, url: str) -> str:
-    """ページの HTML を取得。429/5xx 時はリトライする。"""
+def _fetch_page(
+    session: requests.Session,
+    url: str,
+    etag: Optional[str] = None,
+    last_modified: Optional[str] = None,
+) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    """ページの HTML を取得。ETag/Last-Modified による条件付きリクエストに対応。
+
+    Returns:
+        (html, etag, last_modified) — 304 の場合は (None, None, None)。
+        404 の場合は ("", None, None) を返す。
+    """
+    extra_headers: dict[str, str] = {}
+    if etag:
+        extra_headers["If-None-Match"] = etag
+    if last_modified:
+        extra_headers["If-Modified-Since"] = last_modified
+
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
         time.sleep(REQUEST_DELAY_SEC)
         try:
-            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
+            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC, headers=extra_headers)
+
+            if r.status_code == 304:
+                return (None, None, None)
+
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
+                backoff = min(retry_after, 120)
                 if attempt < REQUEST_RETRIES - 1:
-                    print(f"  429 Rate Limited, waiting {retry_after}s", file=sys.stderr)
-                    time.sleep(retry_after)
+                    print(f"  429 Rate Limited, waiting {backoff}s", file=sys.stderr)
+                    time.sleep(backoff)
                     continue
                 raise requests.exceptions.HTTPError(
                     f"429 Rate Limited after {REQUEST_RETRIES} attempts", response=r
                 )
             if r.status_code == 404:
-                return ""  # ページが存在しない（間取りタブがない物件等）
+                return ("", None, None)
             if 500 <= r.status_code < 600 and attempt < REQUEST_RETRIES - 1:
                 last_error = requests.exceptions.HTTPError(
                     f"Server error {r.status_code}", response=r
                 )
-                time.sleep(2)
+                backoff = min(2 ** (attempt + 1), 30)
+                time.sleep(backoff)
                 continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
-            return r.text
+            resp_etag = r.headers.get("ETag")
+            resp_lm = r.headers.get("Last-Modified")
+            return (r.text, resp_etag, resp_lm)
         except (
             requests.exceptions.ReadTimeout,
             requests.exceptions.ConnectTimeout,
@@ -132,7 +174,8 @@ def _fetch_page(session: requests.Session, url: str) -> str:
         ) as e:
             last_error = e
             if attempt < REQUEST_RETRIES - 1:
-                time.sleep(2)
+                backoff = min(2 ** (attempt + 1), 30)
+                time.sleep(backoff)
             else:
                 raise
         except requests.exceptions.HTTPError:
@@ -353,6 +396,7 @@ def enrich_listing(
     session: requests.Session,
     listing: dict,
     manifest: dict[str, str],
+    etags: dict[str, dict],
 ) -> dict:
     """1件の新築物件に対して詳細ページを取得し、画像データを付与する。
 
@@ -369,9 +413,23 @@ def enrich_listing(
     main_html = _read_cached_html(url, manifest)
     if main_html is None:
         try:
-            main_html = _fetch_page(session, url)
-            if main_html:
-                _write_html_cache(url, main_html, manifest)
+            etag_info = etags.get(url, {})
+            html, resp_etag, resp_lm = _fetch_page(
+                session, url,
+                etag=etag_info.get("etag"),
+                last_modified=etag_info.get("last_modified"),
+            )
+            if html is None:
+                # 304 — use cached (shouldn't reach here as cache was None)
+                main_html = None
+            elif html:
+                _write_html_cache(url, html, manifest)
+                etags[url] = {
+                    "etag": resp_etag,
+                    "last_modified": resp_lm,
+                    "cached_at": datetime.now(timezone.utc).isoformat(),
+                }
+                main_html = html
         except Exception as e:
             print(f"  メインページ取得失敗 {url[:60]}...: {e}", file=sys.stderr)
             main_html = None
@@ -386,9 +444,24 @@ def enrich_listing(
     madori_html = _read_cached_html(madori_url, manifest)
     if madori_html is None:
         try:
-            madori_html = _fetch_page(session, madori_url)
-            if madori_html:
-                _write_html_cache(madori_url, madori_html, manifest)
+            etag_info = etags.get(madori_url, {})
+            html, resp_etag, resp_lm = _fetch_page(
+                session, madori_url,
+                etag=etag_info.get("etag"),
+                last_modified=etag_info.get("last_modified"),
+            )
+            if html is None:
+                madori_html = None
+            elif html:
+                _write_html_cache(madori_url, html, manifest)
+                etags[madori_url] = {
+                    "etag": resp_etag,
+                    "last_modified": resp_lm,
+                    "cached_at": datetime.now(timezone.utc).isoformat(),
+                }
+                madori_html = html
+            else:
+                madori_html = html  # empty string for 404
         except Exception as e:
             print(f"  間取りタブ取得失敗 {madori_url[:60]}...: {e}", file=sys.stderr)
             madori_html = None
@@ -470,13 +543,14 @@ def main() -> None:
     )
 
     manifest = _load_manifest()
+    etags = _load_etags()
     session = create_session()
     enriched_images = 0
     enriched_plans = 0
 
     for idx, (list_idx, listing) in enumerate(targets):
         name = listing.get("name", "?")
-        result = enrich_listing(session, listing, manifest)
+        result = enrich_listing(session, listing, manifest, etags)
 
         if result.get("suumo_images") and not listing.get("suumo_images"):
             listings[list_idx]["suumo_images"] = result["suumo_images"]
@@ -496,6 +570,8 @@ def main() -> None:
                 f"  ...{idx + 1}/{len(targets)}件処理済",
                 file=sys.stderr,
             )
+
+    _save_etags(etags)
 
     # 原子的書き込み
     tmp_path = output_path.with_suffix(".json.tmp")
