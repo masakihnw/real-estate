@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import CryptoKit
 
 // MARK: - ディスク画像キャッシュ
 
@@ -16,9 +17,9 @@ final class DiskImageCache: @unchecked Sendable {
     }
 
     private func path(for key: String) -> URL {
-        let hash = key.data(using: .utf8)!.map { String(format: "%02x", $0) }.joined()
-        let shortHash = String(hash.prefix(40))
-        return cacheDir.appendingPathComponent(shortHash + ".jpg")
+        let digest = SHA256.hash(data: Data(key.utf8))
+        let hex = digest.map { String(format: "%02x", $0) }.joined()
+        return cacheDir.appendingPathComponent(hex + ".jpg")
     }
 
     func image(for key: String) -> UIImage? {
