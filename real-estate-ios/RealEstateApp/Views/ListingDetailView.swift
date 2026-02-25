@@ -14,6 +14,7 @@ struct ListingDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     let listing: Listing
+    @Query private var allTransactions: [TransactionRecord]
     /// 内見メモ（コメント＋写真）オーバーレイ表示フラグ
     @State private var showNotesOverlay = false
     /// コメント入力テキスト
@@ -33,6 +34,17 @@ struct ListingDetailView: View {
     @State private var deletingCommentId: String?
     /// 通勤時間計算中フラグ
     @State private var isCalculatingCommute = false
+
+    /// 同一区の近隣成約事例（最新5件）
+    private var nearbyTransactions: [TransactionRecord] {
+        let ward = Listing.extractWardFromAddress(listing.address ?? "")
+        guard !ward.isEmpty else { return [] }
+        return allTransactions
+            .filter { $0.ward == ward }
+            .sorted { $0.tradePeriod > $1.tradePeriod }
+            .prefix(5)
+            .map { $0 }
+    }
 
     var body: some View {
         NavigationStack {
@@ -121,6 +133,11 @@ struct ListingDetailView: View {
                         Divider()
                         hazardSection
                     }
+
+                    Divider()
+
+                    // 近隣の成約事例（同一区の成約実績）
+                    nearbyTransactionsSection
 
                     Divider()
 
@@ -813,6 +830,54 @@ struct ListingDetailView: View {
                 .stroke(Color.orange.opacity(0.2), lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    // MARK: - 近隣の成約事例
+
+    @ViewBuilder
+    private var nearbyTransactionsSection: some View {
+        let txns = nearbyTransactions
+        if !txns.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("近隣の成約事例")
+                    .font(.headline)
+
+                ForEach(txns, id: \.txId) { txn in
+                    NavigationLink {
+                        TransactionDetailView(record: txn)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(txn.displayBuildingName)
+                                    .font(.subheadline)
+                                    .lineLimit(1)
+                                HStack(spacing: 8) {
+                                    Text("\(txn.priceMan)万円")
+                                        .font(.caption)
+                                        .foregroundStyle(.blue)
+                                    Text(String(format: "%.1f㎡", txn.areaM2))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    Text(txn.displayPeriod)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding(10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color(.systemGray6))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
     }
 
     // MARK: - ⑤ 外部サイトボタン（SFSafariViewController）

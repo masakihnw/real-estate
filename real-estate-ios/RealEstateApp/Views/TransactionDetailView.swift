@@ -15,8 +15,19 @@ import Charts
 struct TransactionDetailView: View {
     let record: TransactionRecord
     @Query private var allRecords: [TransactionRecord]
+    @Query private var allListings: [Listing]
     @Environment(\.dismiss) private var dismiss
     @State private var isSameGroupExpanded = false
+
+    /// 同一区の販売中物件（掲載終了を除く、最大5件）
+    private var nearbyListings: [Listing] {
+        let ward = record.ward
+        guard !ward.isEmpty else { return [] }
+        return allListings
+            .filter { !$0.isDelisted && Listing.extractWardFromAddress($0.address ?? "") == ward }
+            .prefix(5)
+            .map { $0 }
+    }
 
     /// 同一建物グループの取引（自身を含む）
     private var sameGroupRecords: [TransactionRecord] {
@@ -178,6 +189,39 @@ struct TransactionDetailView: View {
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+
+                // このエリアの販売中物件
+                if !nearbyListings.isEmpty {
+                    Section("このエリアの販売中物件") {
+                        ForEach(nearbyListings, id: \.url) { listing in
+                            NavigationLink {
+                                ListingDetailView(listing: listing)
+                            } label: {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(listing.name)
+                                            .font(.subheadline)
+                                            .lineLimit(1)
+                                        HStack(spacing: 8) {
+                                            Text(listing.priceDisplay)
+                                                .font(.caption)
+                                                .foregroundStyle(.blue)
+                                            Text(listing.areaDisplay)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.tertiary)
+                                }
+                                .padding(.vertical, 4)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
