@@ -40,6 +40,10 @@ struct ListingListView: View {
     @State private var cachedFiltered: [Listing] = []
     /// 初回ロード完了フラグ（スケルトン表示の切り替え用）
     @State private var isInitialLoadComplete = false
+    /// Phase 5: お気に入りタブの一括いいね解除用
+    @State private var editMode: EditMode = .inactive
+    @State private var selectedForDeletion: Set<String> = []
+    @State private var showBulkUnlikeConfirm = false
 
     /// お気に入りタブの掲載状態フィルタ
     enum DelistFilter: String, CaseIterable {
