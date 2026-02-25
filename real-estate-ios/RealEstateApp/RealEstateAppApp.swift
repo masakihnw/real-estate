@@ -10,6 +10,7 @@ import SwiftData
 import FirebaseCore
 import FirebaseMessaging
 import GoogleSignIn
+import CoreSpotlight
 
 @main
 struct RealEstateAppApp: App {
@@ -118,6 +119,8 @@ private struct RootView: View {
 
     /// ウォークスルー表示フラグ
     @State private var showWalkthrough = false
+    /// Spotlight 検索から開く物件（アプリ起動時に受け取る）
+    @State private var spotlightListing: Listing?
 
     var body: some View {
         Group {
@@ -150,6 +153,18 @@ private struct RootView: View {
                 // 未ログイン → ログイン画面
                 LoginView()
             }
+        }
+        .onContinueUserActivity(CSSearchableItemActionType) { activity in
+            if let identifier = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+                let context = ModelContext(sharedModelContainer)
+                let descriptor = FetchDescriptor<Listing>(predicate: #Predicate<Listing> { $0.url == identifier })
+                if let results = try? context.fetch(descriptor), let listing = results.first {
+                    spotlightListing = listing
+                }
+            }
+        }
+        .sheet(item: $spotlightListing) { listing in
+            ListingDetailView(listing: listing)
         }
     }
 }
