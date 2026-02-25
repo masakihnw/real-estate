@@ -17,6 +17,7 @@ import json
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
 from typing import Optional
@@ -32,7 +33,10 @@ from suumo_scraper import parse_suumo_detail_html
 
 CACHE_DIR = ROOT / "data" / "html_cache"
 MANIFEST_PATH = CACHE_DIR / "manifest.json"
+ETAG_PATH = CACHE_DIR / "etags.json"
 BUILDING_UNITS_PATH = ROOT / "data" / "building_units.json"
+
+STALE_DAYS = 7  # この日数以上キャッシュされた HTML を再検証対象にする
 
 
 def _url_to_hash(url: str) -> str:
@@ -54,6 +58,23 @@ def _save_manifest(manifest: dict[str, str]) -> None:
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     with open(MANIFEST_PATH, "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
+
+
+def _load_etags() -> dict[str, dict]:
+    """url → {"etag": str, "last_modified": str, "cached_at": str} を読み込む。"""
+    if not ETAG_PATH.exists():
+        return {}
+    try:
+        with open(ETAG_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _save_etags(etags: dict[str, dict]) -> None:
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(ETAG_PATH, "w", encoding="utf-8") as f:
+        json.dump(etags, f, ensure_ascii=False, indent=2)
 
 
 def _read_cached_html(url: str, manifest: dict[str, str]) -> Optional[str]:
@@ -83,33 +104,54 @@ def _write_html_cache(url: str, html: str, manifest: dict[str, str], manifest_lo
         manifest[url] = h
 
 
-def fetch_detail(session: requests.Session, url: str) -> str:
-    """詳細ページの HTML を取得。429/5xx 時はリトライする。"""
+def fetch_detail(
+    session: requests.Session,
+    url: str,
+    etag: Optional[str] = None,
+    last_modified: Optional[str] = None,
+) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    """詳細ページの HTML を取得。ETag/Last-Modified による条件付きリクエストに対応。
+
+    Returns:
+        (html, etag, last_modified) — 304 の場合は (None, None, None) を返す。
+    """
     session.headers["User-Agent"] = USER_AGENT
+    headers: dict[str, str] = {}
+    if etag:
+        headers["If-None-Match"] = etag
+    if last_modified:
+        headers["If-Modified-Since"] = last_modified
+
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
         time.sleep(REQUEST_DELAY_SEC)
         try:
-            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
-            # 429 Too Many Requests — Retry-After に従って待機
+            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC, headers=headers)
+
+            if r.status_code == 304:
+                return (None, None, None)
+
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
+                backoff = min(retry_after, 120)
                 if attempt < REQUEST_RETRIES - 1:
-                    time.sleep(retry_after)
+                    time.sleep(backoff)
                     continue
                 raise requests.exceptions.HTTPError(
                     f"429 Rate Limited after {REQUEST_RETRIES} attempts", response=r
                 )
-            # 5xx は一時的なサーバーエラーのためリトライ
             if 500 <= r.status_code < 600 and attempt < REQUEST_RETRIES - 1:
                 last_error = requests.exceptions.HTTPError(
                     f"Server error {r.status_code}", response=r
                 )
-                time.sleep(2)
+                backoff = min(2 ** (attempt + 1), 30)
+                time.sleep(backoff)
                 continue
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
-            return r.text
+            resp_etag = r.headers.get("ETag")
+            resp_lm = r.headers.get("Last-Modified")
+            return (r.text, resp_etag, resp_lm)
         except (
             requests.exceptions.ReadTimeout,
             requests.exceptions.ConnectTimeout,
@@ -117,10 +159,11 @@ def fetch_detail(session: requests.Session, url: str) -> str:
         ) as e:
             last_error = e
             if attempt < REQUEST_RETRIES - 1:
-                time.sleep(2)
+                backoff = min(2 ** (attempt + 1), 30)
+                time.sleep(backoff)
             else:
                 raise
-        except requests.exceptions.HTTPError as e:
+        except requests.exceptions.HTTPError:
             raise
     if last_error is not None:
         raise last_error
@@ -156,16 +199,47 @@ def _html_content_hash(html: str) -> str:
     return hashlib.md5(html.encode("utf-8")).hexdigest()
 
 
-def _fetch_one(url: str, manifest: dict, manifest_lock: Lock) -> tuple[str, Optional[str]]:
-    """1件の詳細ページを取得してキャッシュに保存。(url, html) を返す。"""
+def _fetch_one(
+    url: str,
+    manifest: dict,
+    manifest_lock: Lock,
+    etags: dict,
+    etag_lock: Lock,
+    is_revalidation: bool = False,
+) -> tuple[str, Optional[str], bool]:
+    """1件の詳細ページを取得してキャッシュに保存。
+
+    Returns:
+        (url, html_or_None, was_304) — 304 の場合は html=None, was_304=True。
+    """
     session = requests.Session()
+    old_etag_info = etags.get(url, {})
     try:
-        html = fetch_detail(session, url)
+        html, resp_etag, resp_lm = fetch_detail(
+            session, url,
+            etag=old_etag_info.get("etag") if is_revalidation else None,
+            last_modified=old_etag_info.get("last_modified") if is_revalidation else None,
+        )
+        if html is None:
+            # 304 Not Modified — キャッシュ日時だけ更新
+            now_iso = datetime.now(timezone.utc).isoformat()
+            with etag_lock:
+                if url in etags:
+                    etags[url]["cached_at"] = now_iso
+            return (url, None, True)
+
         _write_html_cache(url, html, manifest, manifest_lock)
-        return (url, html)
+        now_iso = datetime.now(timezone.utc).isoformat()
+        with etag_lock:
+            etags[url] = {
+                "etag": resp_etag,
+                "last_modified": resp_lm,
+                "cached_at": now_iso,
+            }
+        return (url, html, False)
     except Exception as e:
         print(f"  取得失敗 {url[:50]}...: {e}", file=sys.stderr)
-        return (url, None)
+        return (url, None, False)
 
 
 def main() -> None:
@@ -204,8 +278,31 @@ def main() -> None:
 
     manifest = _load_manifest()
     manifest_lock = Lock()
+    etags = _load_etags()
+    etag_lock = Lock()
 
+    # 未キャッシュ URL（新規物件）
     to_fetch = [u for u in suumo_urls if _read_cached_html(u, manifest) is None]
+
+    # キャッシュ済みだが STALE_DAYS 以上経過した URL を再検証対象に
+    now = datetime.now(timezone.utc)
+    to_revalidate: list[str] = []
+    for u in suumo_urls:
+        if u in [x for x in to_fetch]:
+            continue
+        info = etags.get(u, {})
+        cached_at_str = info.get("cached_at")
+        if not cached_at_str:
+            # ETag 情報がない古いキャッシュ → 再検証対象
+            to_revalidate.append(u)
+            continue
+        try:
+            cached_at = datetime.fromisoformat(cached_at_str)
+            if (now - cached_at).days >= STALE_DAYS:
+                to_revalidate.append(u)
+        except (ValueError, TypeError):
+            to_revalidate.append(u)
+
     if to_fetch:
         print(
             f"フィルタ通過後のSUUMO {len(suumo_urls)}件のうち、HTML未キャッシュ {len(to_fetch)}件の詳細ページを取得します。",
@@ -214,18 +311,52 @@ def main() -> None:
         if len(to_fetch) == len(suumo_urls):
             print("（初回のため全件取得します）", file=sys.stderr)
 
-    # Phase 1: 未キャッシュ URL を並列フェッチ
+    if to_revalidate:
+        print(
+            f"  キャッシュ済み {len(suumo_urls) - len(to_fetch)}件のうち、{len(to_revalidate)}件を ETag/条件付きリクエストで再検証します。",
+            file=sys.stderr,
+        )
+
+    # Phase 1a: 未キャッシュ URL を並列フェッチ
     fetched_htmls: dict[str, str] = {}
     if to_fetch:
         with ThreadPoolExecutor(max_workers=CONCURRENT_WORKERS) as pool:
-            futures = {pool.submit(_fetch_one, url, manifest, manifest_lock): url for url in to_fetch}
+            futures = {
+                pool.submit(_fetch_one, url, manifest, manifest_lock, etags, etag_lock, False): url
+                for url in to_fetch
+            }
             for future in as_completed(futures):
-                url, html = future.result()
+                url, html, _ = future.result()
                 if html is not None:
                     fetched_htmls[url] = html
 
         _save_manifest(manifest)
         print(f"  HTML新規取得完了: {len(fetched_htmls)}/{len(to_fetch)}件成功", file=sys.stderr)
+
+    # Phase 1b: 古いキャッシュを ETag で再検証
+    revalidated_count = 0
+    not_modified_count = 0
+    if to_revalidate:
+        with ThreadPoolExecutor(max_workers=CONCURRENT_WORKERS) as pool:
+            futures = {
+                pool.submit(_fetch_one, url, manifest, manifest_lock, etags, etag_lock, True): url
+                for url in to_revalidate
+            }
+            for future in as_completed(futures):
+                url, html, was_304 = future.result()
+                if was_304:
+                    not_modified_count += 1
+                elif html is not None:
+                    fetched_htmls[url] = html
+                    revalidated_count += 1
+
+        _save_manifest(manifest)
+        print(
+            f"  再検証完了: 304 Not Modified {not_modified_count}件、更新 {revalidated_count}件",
+            file=sys.stderr,
+        )
+
+    _save_etags(etags)
 
     # Phase 2: 全 URL をパース（キャッシュ済み HTML + 新規取得 HTML）
     updated = 0

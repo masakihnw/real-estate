@@ -1399,6 +1399,10 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 > **ローカル実行**: `scripts/update_listings.sh` はローカル開発用として維持。全フェーズを直列で実行する旧来のパイプライン。
 
+> **データ品質検証（Phase3）**: `scripts/validate_data.py` がパイプラインの最終段階で `latest.json` / `latest_shinchiku.json` の品質を検証。必須フィールド欠損率（50%超でエラー、10%超で警告）、価格・面積の妥当性、URL 重複、identity_key 衝突、ジオコーディング率、住まいサーフィンマッチ率を報告。`--previous` オプションで前回データとの件数変動（25%超で警告、50%超でエラー）を検出。
+
+> **キャッシュ管理（Phase3）**: `scripts/cache_manager.py` が TTL ベースでキャッシュをクリーンアップ。`geocode_cache.json`（90日）、`sumai_surfin_cache.json`（30日）、`station_cache.json`（180日）、`reverse_geocode_cache.json`（90日）の各エントリの `cached_at` / `fetched_at` / `timestamp` フィールドで期限切れを判定・削除。`--stats` で統計表示、`--cleanup` で実行。
+
 ### 5.3 スクレイパー詳細
 
 #### 5.3.1 SUUMO 中古（suumo_scraper.py）
@@ -1526,6 +1530,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **データソース** | SUUMO: `build_units_cache.py` → `parse_suumo_detail_html()` で詳細ページ HTML から画像・属性を抽出。`alt="間取り図"` → `floor_plan_images`、それ以外の物件画像（外観・リビング・キッチン・浴室等）→ `suumo_images`。`_detail_to_cache_entry` が direction, balcony_area_m2, parking, constructor, zoning, repair_fund_onetime, delivery_date, feature_tags を `building_units.json` に格納（HOME'S は無効化のため現在未使用） |
 | **並列取得** | `ThreadPoolExecutor(max_workers=4)` で SUUMO 詳細ページの HTTP 取得を並列化 |
 | **HTML ハッシュキャッシュ** | `parse_hashes.json` で HTML コンテンツのハッシュを保持。変更なしの場合は再パースをスキップ |
+| **ETag 条件付きリクエスト** | `data/html_cache/etags.json` で URL ごとに ETag・Last-Modified・cached_at を保持。`STALE_DAYS`（7日）以上経過したキャッシュは `If-None-Match` / `If-Modified-Since` ヘッダー付きで再検証。304 Not Modified なら帯域を節約し cached_at のみ更新、200 なら HTML キャッシュを更新して再パース |
 | **付与データ（間取り図）** | `floor_plan_images`: 間取り図画像 URL の配列（SUUMO はリサイズ URL w=1200&h=900） |
 | **付与データ（物件写真）** | `suumo_images`: `[{url, label}]` 形式の物件写真配列。label は SUUMO の alt 属性（"現地外観写真", "リビング", "キッチン" 等）。サイトロゴ・担当者写真・spacer 等の非物件画像は除外 |
 | **付与データ（追加属性）** | `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`（中古の引渡可能時期）, `feature_tags`。`merge_detail_cache.py` の KEYS と `merge_enrichments.py` の ENRICHER_FIELDS["units_cache"] に含まれる |
@@ -1540,6 +1545,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **間取り図（条件フィルタ付き）** | 間取りタブから各住戸タイプの間取り図を取得し、`LAYOUT_PREFIX_OK`（= "2", "3"）に合致するタイプのみ `floor_plan_images` に格納。例: 1LDK〜4LDK の全5タイプ中、2LDK・3LDK の2タイプのみ採用 |
 | **レイアウト抽出** | 画像の `alt` 属性、および親要素のテキストから間取りパターン（例: "3LDK"）を抽出し、`LAYOUT_PREFIX_OK` でフィルタ |
 | **HTMLキャッシュ** | `data/shinchiku_html_cache/`（独立キャッシュ。再取得で復元可能なため Git 管理外） |
+| **ETag 条件付きリクエスト** | `data/shinchiku_html_cache/etags.json` で URL ごとに ETag・Last-Modified・cached_at を保持。未キャッシュ URL の新規取得時にレスポンスヘッダーから保存 |
 
 ##### 共通（upload_floor_plans.py）
 
@@ -1676,7 +1682,11 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | `data/sumai_surfin_cache.json` | JSON | 住まいサーフィン検索結果キャッシュ |
 | `data/station_passengers.json` | JSON | 駅乗降客数データ |
 | `data/shutoken_city_codes.json` | JSON | 首都圏（1都3県）市区町村コード一覧 |
+| `data/html_cache/etags.json` | JSON | 中古詳細ページの ETag・Last-Modified・cached_at キャッシュ（Phase3） |
+| `data/shinchiku_html_cache/etags.json` | JSON | 新築詳細ページの ETag・Last-Modified・cached_at キャッシュ（Phase3） |
 | `results/transactions.json` | JSON | 東京23区成約実績フィード（iOS アプリ向け、スクレイピングと同一検索条件） |
+| `scripts/validate_data.py` | Python | データ品質バリデーション（Phase3） |
+| `scripts/cache_manager.py` | Python | TTL ベースキャッシュクリーンアップ（Phase3） |
 
 ---
 
@@ -2176,6 +2186,7 @@ Xcode Cloud 導入前は以下3ファイルのビルド番号を手動で更新�
 | **路線** | JR / 東京メトロ / 都営 / 主要私鉄 | 需要の厚い路線に限定 |
 | **リクエスト間隔** | SUUMO: 2秒 | 負荷軽減 |
 | **タイムアウト** | 60秒 / リトライ3回 | 安定性確保 |
+| **リトライ戦略（Phase3強化）** | 指数バックオフ（2→4→8→…最大30秒）を HTTP 5xx・接続/読取タイムアウトに適用。429 は `Retry-After` ヘッダー尊重（最大120秒） | ネットワーク耐性 |
 | **HOME'S** | **無効**（コード残存、定期実行では未使用） | WAF によりCI/CDパイプラインがタイムアウトするため無効化 |
 
 ### 9.2 Firestore 経由の条件上書き
@@ -2224,7 +2235,7 @@ Xcode Cloud 導入前は以下3ファイルのビルド番号を手動で更新�
 
 | コンポーネント | 最適化 |
 |---------------|--------|
-| **build_units_cache.py** | `ThreadPoolExecutor(max_workers=4)` で SUUMO 詳細ページの HTTP 取得を並列化。`parse_hashes.json` で HTML ハッシュを保持し、変更なし時は再パースをスキップ |
+| **build_units_cache.py** | `ThreadPoolExecutor(max_workers=4)` で SUUMO 詳細ページの HTTP 取得を並列化。`parse_hashes.json` で HTML ハッシュを保持し、変更なし時は再パースをスキップ。ETag/Last-Modified による条件付きリクエストで古いキャッシュ（`STALE_DAYS=7` 超過）を帯域効率よく再検証（Phase3） |
 | **sumai_surfin_enricher.py** | `ThreadPoolExecutor(max_workers=3)` で並列 enrichment。各ワーカーが独自セッションでログイン |
 | **hazard_enricher.py** | `ThreadPoolExecutor(max_workers=5)` で GSI タイル並列取得。`Lock` でタイルキャッシュをスレッドセーフに |
 
