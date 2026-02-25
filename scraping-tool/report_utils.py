@@ -473,6 +473,98 @@ def get_station_group(station_line: str) -> str:
     return (station_line.strip()[:25] or "(駅情報なし)")
 
 
+def inject_price_history(
+    current: list[dict],
+    previous: Optional[list[dict]] = None,
+) -> list[dict]:
+    """各物件に price_history（価格変動履歴）を付与して返す。
+    previous の price_history を継承し、価格が変わった場合に新しいエントリを追加する。
+    新規物件は現在の価格で初期化する。"""
+    from datetime import date
+    today = date.today().isoformat()
+
+    if not previous:
+        for r in current:
+            price = r.get("price_man")
+            r["price_history"] = [{"date": today, "price_man": price}] if price else []
+        return current
+
+    prev_by_key: dict[tuple, dict] = {}
+    for r in previous:
+        k = identity_key(r)
+        if k not in prev_by_key:
+            prev_by_key[k] = r
+
+    for r in current:
+        k = identity_key(r)
+        prev = prev_by_key.get(k)
+        price = r.get("price_man")
+
+        if prev:
+            history = list(prev.get("price_history") or [])
+            prev_price = prev.get("price_man")
+            if price and price != prev_price:
+                history.append({"date": today, "price_man": price})
+            elif not history and price:
+                history.append({"date": today, "price_man": price})
+            r["price_history"] = history
+        else:
+            r["price_history"] = [{"date": today, "price_man": price}] if price else []
+
+    return current
+
+
+def inject_first_seen_at(
+    current: list[dict],
+    previous: Optional[list[dict]] = None,
+) -> list[dict]:
+    """各物件に first_seen_at（初回掲載検出日）を付与して返す。
+    previous に first_seen_at があれば継承し、新規物件は今日の日付で初期化する。"""
+    from datetime import date
+    today = date.today().isoformat()
+
+    if not previous:
+        for r in current:
+            if not r.get("first_seen_at"):
+                r["first_seen_at"] = today
+        return current
+
+    prev_by_key: dict[tuple, dict] = {}
+    for r in previous:
+        k = identity_key(r)
+        if k not in prev_by_key:
+            prev_by_key[k] = r
+
+    for r in current:
+        k = identity_key(r)
+        prev = prev_by_key.get(k)
+        if prev and prev.get("first_seen_at"):
+            r["first_seen_at"] = prev["first_seen_at"]
+        elif not r.get("first_seen_at"):
+            r["first_seen_at"] = today
+
+    return current
+
+
+def inject_competing_count(listings: list[dict]) -> list[dict]:
+    """同一マンション（正規化物件名+区名）で何件売り出されているかを competing_listings_count として付与。"""
+    from collections import Counter
+    groups: Counter = Counter()
+    for r in listings:
+        name = normalize_listing_name(r.get("name") or "")
+        ward = get_ward_from_address(r.get("address") or "")
+        if name and ward:
+            groups[(name, ward)] += 1
+
+    for r in listings:
+        name = normalize_listing_name(r.get("name") or "")
+        ward = get_ward_from_address(r.get("address") or "")
+        key = (name, ward)
+        r["competing_listings_count"] = groups.get(key, 1)
+
+    return listings
+
+
 def load_json(
     path: Path,
     *,

@@ -30,25 +30,29 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
+            DashboardView()
+                .tabItem { Label("概況", systemImage: "chart.line.uptrend.xyaxis") }
+                .tag(0)
+                .accessibilityLabel("マーケット概況")
             PropertyListingTabView()
                 .tabItem { Label("物件", systemImage: "building.2") }
-                .tag(0)
+                .tag(1)
                 .accessibilityLabel("物件一覧")
             MapTabView()
                 .tabItem { Label("地図", systemImage: "map") }
-                .tag(1)
+                .tag(2)
                 .accessibilityLabel("地図で探す")
             ListingListView(favoritesOnly: true)
                 .tabItem { Label("お気に入り", systemImage: "heart") }
-                .tag(2)
+                .tag(3)
                 .accessibilityLabel("お気に入り物件")
             TransactionTabView()
                 .tabItem { Label("成約", systemImage: "chart.bar.doc.horizontal") }
-                .tag(3)
+                .tag(4)
                 .accessibilityLabel("成約実績")
             SettingsView()
                 .tabItem { Label("設定", systemImage: "gearshape") }
-                .tag(4)
+                .tag(5)
                 .accessibilityLabel("アプリ設定")
         }
         .tint(.accentColor)

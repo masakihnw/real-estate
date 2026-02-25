@@ -205,6 +205,27 @@ final class Listing: @unchecked Sendable {
     /// フォーマット: [{"unit":"3階/14階建","price_man":5980,"m2_price":78,"layout":"2LDK","area_m2":76.24,"direction":"南","oki_price_man":6200,"difference_man":-220,"judgment":"割安"},...]
     var ssPriceJudgments: String?
 
+    // MARK: - 投資判断支援データ（Phase1）
+
+    /// 価格変動履歴 JSON 文字列
+    /// フォーマット: [{"date":"2025-02-20","price_man":9500},{"date":"2025-02-25","price_man":9200}]
+    var priceHistoryJSON: String?
+
+    /// 初回掲載検出日（ISO8601 日付文字列）
+    var firstSeenAt: String?
+
+    /// 掲載価格の妥当性スコア（0-100。50=適正、50超=割安、50未満=割高）
+    var priceFairnessScore: Int?
+
+    /// 再販流動性スコア（0-100。高い=売りやすい）
+    var resaleLiquidityScore: Int?
+
+    /// 同一マンション内の競合売出物件数
+    var competingListingsCount: Int?
+
+    /// 総合投資スコア（0-100）
+    var listingScore: Int?
+
     init(
         source: String? = nil,
         url: String,
@@ -278,7 +299,13 @@ final class Listing: @unchecked Sendable {
         ssSurroundingProperties: String? = nil,
         ssPriceJudgments: String? = nil,
         reinfolibMarketData: String? = nil,
-        estatPopulationData: String? = nil
+        estatPopulationData: String? = nil,
+        priceHistoryJSON: String? = nil,
+        firstSeenAt: String? = nil,
+        priceFairnessScore: Int? = nil,
+        resaleLiquidityScore: Int? = nil,
+        competingListingsCount: Int? = nil,
+        listingScore: Int? = nil
     ) {
         self.source = source
         self.url = url
@@ -353,6 +380,12 @@ final class Listing: @unchecked Sendable {
         self.ssPriceJudgments = ssPriceJudgments
         self.reinfolibMarketData = reinfolibMarketData
         self.estatPopulationData = estatPopulationData
+        self.priceHistoryJSON = priceHistoryJSON
+        self.firstSeenAt = firstSeenAt
+        self.priceFairnessScore = priceFairnessScore
+        self.resaleLiquidityScore = resaleLiquidityScore
+        self.competingListingsCount = competingListingsCount
+        self.listingScore = listingScore
     }
 
     // MARK: - Identity
@@ -450,6 +483,11 @@ final class Listing: @unchecked Sendable {
         "北区", "荒川区", "板橋区", "練馬区", "足立区", "葛飾区", "江戸川区",
     ]
 
+    /// 所在区名（例: "世田谷区"）
+    var wardName: String {
+        Self.extractWardFromAddress(address ?? ssAddress ?? "")
+    }
+
     /// 住所から区名を抽出する（例: "東京都世田谷区代田３" → "世田谷区"）。
     /// buildingGroupKey で使用。同一区内で同名マンションは実質存在しないため、
     /// 区レベルの精度で十分。
@@ -494,6 +532,11 @@ final class Listing: @unchecked Sendable {
         f.groupingSeparator = ","
         return f
     }()
+
+    /// 価格フォーマット（外部から利用可能）
+    static func formatPriceCompact(_ man: Int) -> String {
+        formatPriceMan(man, unit: "万円")
+    }
 
     private static func formatPriceMan(_ man: Int, unit: String = "万") -> String {
         if man >= 10000 {
@@ -1521,6 +1564,22 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - SUUMO 物件写真
 
+    /// 価格変動履歴の1エントリ
+    struct PriceHistoryEntry: Codable, Identifiable {
+        var date: String
+        var price_man: Int?
+
+        var id: String { date }
+
+        var priceMan: Int? { price_man }
+
+        var parsedDate: Date? {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            return formatter.date(from: date)
+        }
+    }
+
     /// SUUMO 物件写真1枚のデータ
     struct SuumoImage: Codable, Identifiable {
         var url: String
@@ -1604,6 +1663,58 @@ final class Listing: @unchecked Sendable {
         }
         // 外観写真がない場合は先頭画像にフォールバック
         return images.first?.resolvedURL
+    }
+
+    // MARK: - 投資判断支援
+
+    /// パース済み価格変動履歴
+    var parsedPriceHistory: [PriceHistoryEntry] {
+        guard let json = priceHistoryJSON,
+              let data = json.data(using: .utf8),
+              let entries = try? JSONDecoder().decode([PriceHistoryEntry].self, from: data) else {
+            return []
+        }
+        return entries
+    }
+
+    /// 価格変動があるかどうか（2件以上のエントリがある）
+    var hasPriceChanges: Bool { parsedPriceHistory.count > 1 }
+
+    /// 直近の価格変動額（万円、正=値上げ、負=値下げ）
+    var latestPriceChange: Int? {
+        let history = parsedPriceHistory
+        guard history.count >= 2,
+              let current = history.last?.priceMan,
+              let previous = history[history.count - 2].priceMan else { return nil }
+        return current - previous
+    }
+
+    /// 掲載日数（first_seen_at から計算）
+    var daysOnMarket: Int? {
+        guard let seen = firstSeenAt else { return nil }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let seenDate = formatter.date(from: seen) else { return nil }
+        return Calendar.current.dateComponents([.day], from: seenDate, to: Date()).day
+    }
+
+    /// 掲載日数の表示用文字列
+    var daysOnMarketDisplay: String {
+        guard let days = daysOnMarket else { return "—" }
+        if days == 0 { return "本日掲載" }
+        return "\(days)日間掲載"
+    }
+
+    /// スコアの表示用色名
+    var listingScoreGrade: String {
+        guard let score = listingScore else { return "unknown" }
+        switch score {
+        case 80...: return "excellent"
+        case 65..<80: return "good"
+        case 50..<65: return "average"
+        case 35..<50: return "belowAverage"
+        default: return "poor"
+        }
     }
 
     // MARK: - 通勤時間
@@ -2226,6 +2337,14 @@ struct ListingDTO: Codable {
     // e-Stat 人口動態データ（パイプライン側で付与）
     var estat_population_data: String?
 
+    // 投資判断支援データ
+    var price_history: [Listing.PriceHistoryEntry]?
+    var first_seen_at: String?
+    var price_fairness_score: Int?
+    var resale_liquidity_score: Int?
+    var competing_listings_count: Int?
+    var listing_score: Int?
+
     // サーバーサイドで判定された新着フラグ（前回スクレイピングとの差分比較）
     var is_new: Bool?
 }
@@ -2465,7 +2584,19 @@ extension Listing {
             ssSurroundingProperties: dto.ss_surrounding_properties,
             ssPriceJudgments: dto.ss_price_judgments,
             reinfolibMarketData: dto.reinfolib_market_data,
-            estatPopulationData: dto.estat_population_data
+            estatPopulationData: dto.estat_population_data,
+            priceHistoryJSON: {
+                if let history = dto.price_history, !history.isEmpty,
+                   let data = try? JSONEncoder().encode(history) {
+                    return String(data: data, encoding: .utf8)
+                }
+                return nil
+            }(),
+            firstSeenAt: dto.first_seen_at,
+            priceFairnessScore: dto.price_fairness_score,
+            resaleLiquidityScore: dto.resale_liquidity_score,
+            competingListingsCount: dto.competing_listings_count,
+            listingScore: dto.listing_score
         )
     }
 }
