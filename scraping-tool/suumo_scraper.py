@@ -55,6 +55,14 @@ from report_utils import clean_listing_name
 
 BASE_URL = "https://suumo.jp"
 
+# サーバーサイドフィルタの追加パラメータ（空=制限なし）
+# cn: 築年数（"9030"=30年以内, "9020"=20年以内 等）
+# lc: 間取り（"3"=2K以上, "4"=3K以上 等。※kb は価格下限で使用中のため lc を使用）
+SEARCH_FILTERS: dict[str, str] = {
+    "cn": "",  # 築年数制限
+    "lc": "",  # 間取り制限（SUUMO の実際のパラメータ名に合わせて変更可）
+}
+
 # 23区ごと一覧: /ms/chuko/tokyo/sc_XXX/ 。2ページ目以降は ?page=N
 LIST_URL_WARD_ROMAN = "https://suumo.jp/ms/chuko/tokyo/sc_{ward}/"
 # 23区ごと一覧（サーバーサイドフィルタ対応版）: JJ012FC001 エンドポイント

@@ -1,0 +1,27 @@
+name: Python Tests
+
+on:
+  pull_request:
+    paths:
+      - 'scraping-tool/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        working-directory: scraping-tool
+        run: pytest tests/ -v
