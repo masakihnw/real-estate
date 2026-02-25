@@ -67,9 +67,19 @@ struct ListingDetailView: View {
                     // ⑤ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
                     propertyInfoSection
 
+                    // ⑤-b 投資スコア・価格変動・掲載状況
+                    if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
+                        Divider()
+                        investmentScoreSection
+                    }
+
                     // ⑥ 月額支払いシミュレーション（中古・新築共通）
                     if let priceMan = listing.priceMan, priceMan > 0 {
                         MonthlyPaymentSimulationView(listing: listing)
+
+                        // 財務シミュレーションボタン群
+                        Divider()
+                        financialToolsSection
                     }
 
                     // ⑦ 通勤時間
@@ -813,6 +823,185 @@ struct ListingDetailView: View {
                 .stroke(Color.orange.opacity(0.2), lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    // MARK: - 財務ツールセクション
+
+    @State private var showPurchaseCost = false
+    @State private var showBankComparison = false
+    @State private var showTaxBenefit = false
+    @State private var showRentVsBuy = false
+    @State private var showRenovation = false
+
+    @ViewBuilder
+    private var financialToolsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("財務シミュレーション", systemImage: "yensign.circle")
+                .font(.headline)
+
+            LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 8) {
+                toolButton("購入諸費用", icon: "doc.text", color: .blue) { showPurchaseCost = true }
+                toolButton("銀行比較", icon: "building.columns", color: .green) { showBankComparison = true }
+                toolButton("ローン減税", icon: "arrow.down.circle", color: .orange) { showTaxBenefit = true }
+                toolButton("賃貸 vs 購入", icon: "arrow.left.arrow.right", color: .purple) { showRentVsBuy = true }
+                if !listing.isShinchiku {
+                    toolButton("リノベ費用", icon: "hammer", color: .teal) { showRenovation = true }
+                }
+            }
+        }
+        .sheet(isPresented: $showPurchaseCost) {
+            PurchaseCostCalculatorView(listing: listing)
+        }
+        .sheet(isPresented: $showBankComparison) {
+            BankComparisonView(listing: listing)
+        }
+        .sheet(isPresented: $showTaxBenefit) {
+            MortgageTaxBenefitView(listing: listing)
+        }
+        .sheet(isPresented: $showRentVsBuy) {
+            RentVsBuyView(listing: listing)
+        }
+        .sheet(isPresented: $showRenovation) {
+            RenovationEstimateView(listing: listing)
+        }
+    }
+
+    private func toolButton(_ label: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                    .font(.caption)
+                Text(label)
+                    .font(.caption.weight(.semibold))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .foregroundStyle(color)
+            .background(color.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - 投資スコアセクション
+
+    @ViewBuilder
+    private var investmentScoreSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // セクションヘッダー
+            Label("投資スコア", systemImage: "chart.line.uptrend.xyaxis")
+                .font(.headline)
+
+            // スコアカード
+            if let score = listing.listingScore {
+                HStack(spacing: 16) {
+                    // 総合スコア
+                    VStack(spacing: 4) {
+                        Text("\(score)")
+                            .font(.system(size: 36, weight: .bold, design: .rounded))
+                            .foregroundStyle(scoreColor(score))
+                        Text("総合スコア")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(width: 80)
+
+                    // 各指標
+                    VStack(alignment: .leading, spacing: 6) {
+                        if let fairness = listing.priceFairnessScore {
+                            scoreRow(label: "価格妥当性", value: fairness, icon: "yensign.circle")
+                        }
+                        if let liquidity = listing.resaleLiquidityScore {
+                            scoreRow(label: "再販流動性", value: liquidity, icon: "arrow.triangle.2.circlepath")
+                        }
+                        if let count = listing.competingListingsCount, count > 1 {
+                            HStack {
+                                Image(systemName: "building.2")
+                                    .font(.caption)
+                                    .frame(width: 16)
+                                Text("同一マンション売出: \(count)件")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+                .padding(14)
+                .tintedGlassBackground(tint: scoreColor(score), tintOpacity: 0.03, borderOpacity: 0.08)
+            }
+
+            // 掲載日数
+            if listing.firstSeenAt != nil {
+                HStack(spacing: 8) {
+                    Image(systemName: "clock")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(listing.daysOnMarketDisplay)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            // 価格変動履歴
+            if listing.hasPriceChanges {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("価格変動履歴")
+                        .font(.subheadline.weight(.semibold))
+
+                    ForEach(listing.parsedPriceHistory) { entry in
+                        HStack {
+                            Text(entry.date)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 90, alignment: .leading)
+                            if let price = entry.priceMan {
+                                Text(Listing.formatPriceCompact(price))
+                                    .font(.caption.weight(.semibold))
+                            }
+                        }
+                    }
+                }
+                .padding(14)
+                .tintedGlassBackground(tint: .blue, tintOpacity: 0.03, borderOpacity: 0.08)
+            }
+        }
+    }
+
+    private func scoreRow(label: String, value: Int, icon: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.caption)
+                .frame(width: 16)
+                .foregroundStyle(.secondary)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .frame(width: 80, alignment: .leading)
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Color.secondary.opacity(0.1))
+                        .frame(height: 6)
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(scoreColor(value))
+                        .frame(width: geo.size.width * CGFloat(value) / 100, height: 6)
+                }
+            }
+            .frame(height: 6)
+            Text("\(value)")
+                .font(.caption.weight(.bold).monospacedDigit())
+                .frame(width: 28, alignment: .trailing)
+        }
+    }
+
+    private func scoreColor(_ score: Int) -> Color {
+        switch score {
+        case 80...: return .green
+        case 65..<80: return .blue
+        case 50..<65: return .orange
+        case 35..<50: return .gray
+        default: return .red
+        }
     }
 
     // MARK: - ⑤ 外部サイトボタン（SFSafariViewController）

@@ -130,6 +130,77 @@ new_s = sum(1 for r in cur_s if r.get('is_new'))
 print(f'is_new 注入完了: 中古 {new_c}/{len(cur)}件, 新築 {new_s}/{len(cur_s)}件', file=sys.stderr)
 " || echo "is_new 注入失敗（続行）" >&2
 
+# ──────────────────────────── 価格変動・掲載日数・競合物件数・投資スコア注入 ────────────────────────────
+
+echo "--- 価格変動・掲載日数・競合・投資スコア注入 ---" >&2
+
+python3 -c "
+import json, sys
+sys.path.insert(0, '.')
+from report_utils import inject_price_history, inject_first_seen_at, inject_competing_count, load_json
+from investment_enricher import enrich_investment_scores
+from pathlib import Path
+
+out = '${OUTPUT_DIR}'
+
+cur = load_json(Path(f'{out}/latest.json'))
+prev = load_json(Path(f'{out}/previous.json'), missing_ok=True, default=[])
+
+inject_price_history(cur, prev or None)
+inject_first_seen_at(cur, prev or None)
+inject_competing_count(cur)
+
+tx_data = None
+tx_path = Path(f'{out}/transactions.json')
+if tx_path.exists():
+    tx_json = json.load(open(tx_path, encoding='utf-8'))
+    tx_data = {}
+    for bg in tx_json.get('building_groups', []):
+        ward = bg.get('ward', '').replace('区', '')
+        if ward not in tx_data:
+            tx_data[ward] = {'transaction_count': 0}
+        tx_data[ward]['transaction_count'] += bg.get('transaction_count', 0)
+enrich_investment_scores(cur, tx_data)
+
+with open(f'{out}/latest.json', 'w', encoding='utf-8') as f:
+    json.dump(cur, f, ensure_ascii=False)
+
+scored = sum(1 for r in cur if r.get('listing_score') is not None)
+history = sum(1 for r in cur if len(r.get('price_history', [])) > 1)
+print(f'中古: スコア {scored}/{len(cur)}件, 価格変動あり {history}件', file=sys.stderr)
+
+cur_s = load_json(Path(f'{out}/latest_shinchiku.json'), missing_ok=True, default=[])
+prev_s = load_json(Path(f'{out}/previous_shinchiku.json'), missing_ok=True, default=[])
+if cur_s:
+    inject_price_history(cur_s, prev_s or None)
+    inject_first_seen_at(cur_s, prev_s or None)
+    inject_competing_count(cur_s)
+    enrich_investment_scores(cur_s, tx_data)
+    with open(f'{out}/latest_shinchiku.json', 'w', encoding='utf-8') as f:
+        json.dump(cur_s, f, ensure_ascii=False)
+    scored_s = sum(1 for r in cur_s if r.get('listing_score') is not None)
+    print(f'新築: スコア {scored_s}/{len(cur_s)}件', file=sys.stderr)
+" || echo "投資スコア注入失敗（続行）" >&2
+
+# ──────────────────────────── 供給トレンド生成 ────────────────────────────
+
+echo "--- 供給トレンド生成 ---" >&2
+
+SHINCHIKU_TREND_ARGS=""
+if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+    SHINCHIKU_TREND_ARGS="--current-shinchiku ${OUTPUT_DIR}/latest_shinchiku.json"
+    if [ -f "${OUTPUT_DIR}/previous_shinchiku.json" ]; then
+        SHINCHIKU_TREND_ARGS="${SHINCHIKU_TREND_ARGS} --previous-shinchiku ${OUTPUT_DIR}/previous_shinchiku.json"
+    fi
+fi
+
+python3 build_supply_trends.py \
+    --current "${OUTPUT_DIR}/latest.json" \
+    --previous "${OUTPUT_DIR}/previous.json" \
+    $SHINCHIKU_TREND_ARGS \
+    --output "${OUTPUT_DIR}/supply_trends.json" \
+    || echo "供給トレンド生成失敗（続行）" >&2
+
 # ──────────────────────────── 地図生成 ────────────────────────────
 
 echo "--- 地図生成 ---" >&2

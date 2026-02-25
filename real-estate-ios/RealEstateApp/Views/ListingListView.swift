@@ -61,18 +61,18 @@ struct ListingListView: View {
         case areaDesc = "広い順"
         case deviationDesc = "偏差値の高い順"
         case profitPctDesc = "儲かる確率の高い順"
+        case scoreDesc = "総合スコアの高い順"
     }
 
     /// タブの物件種別に応じた利用可能なソート順
     private var availableSortOrders: [SortOrder] {
-        let common: [SortOrder] = [.addedDesc, .priceAsc, .priceDesc, .walkAsc, .areaDesc]
+        let common: [SortOrder] = [.addedDesc, .priceAsc, .priceDesc, .walkAsc, .areaDesc, .scoreDesc]
         switch propertyTypeFilter {
         case "chuko":
             return common + [.deviationDesc]
         case "shinchiku":
             return common + [.profitPctDesc]
         default:
-            // お気に入りタブ等：両方表示
             return common + [.deviationDesc, .profitPctDesc]
         }
     }
@@ -142,6 +142,11 @@ struct ListingListView: View {
             list.sort {
                 let p0 = $0.ssProfitPct ?? 0, p1 = $1.ssProfitPct ?? 0
                 return p0 != p1 ? p0 > p1 : $0.name < $1.name
+            }
+        case .scoreDesc:
+            list.sort {
+                let s0 = $0.listingScore ?? 0, s1 = $1.listingScore ?? 0
+                return s0 != s1 ? s0 > s1 : $0.name < $1.name
             }
         }
         return list
@@ -860,6 +865,21 @@ struct ListingRowView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
 
+                    if let change = listing.latestPriceChange, change != 0 {
+                        let isDown = change < 0
+                        Text("\(isDown ? "▼" : "▲")\(abs(change))万")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(isDown ? DesignSystem.positiveColor : DesignSystem.negativeColor)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background((isDown ? DesignSystem.positiveColor : DesignSystem.negativeColor).opacity(0.10))
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+
+                    if let score = listing.listingScore {
+                        ScoreBadge(score: score)
+                    }
+
                     if listing.isDelisted {
                         Text("掲載終了")
                             .font(.caption2.weight(.bold))
@@ -1150,6 +1170,46 @@ struct DeviationBadge: View {
     }
 }
 
+
+/// 総合投資スコアバッジ（0-100）
+private struct ScoreBadge: View {
+    let score: Int
+
+    private var color: Color {
+        switch score {
+        case 80...: return .green
+        case 65..<80: return .blue
+        case 50..<65: return .orange
+        case 35..<50: return .gray
+        default: return .red
+        }
+    }
+
+    private var label: String {
+        switch score {
+        case 80...: return "S"
+        case 65..<80: return "A"
+        case 50..<65: return "B"
+        case 35..<50: return "C"
+        default: return "D"
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Text(label)
+                .font(.caption2.weight(.black))
+            Text("\(score)")
+                .font(.caption2.weight(.bold))
+                .monospacedDigit()
+        }
+        .foregroundStyle(color)
+        .padding(.horizontal, 5)
+        .padding(.vertical, 2)
+        .background(color.opacity(0.12))
+        .clipShape(RoundedRectangle(cornerRadius: 4))
+    }
+}
 
 #Preview {
     ListingListView()
