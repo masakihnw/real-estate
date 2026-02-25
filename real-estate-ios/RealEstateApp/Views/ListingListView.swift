@@ -38,6 +38,8 @@ struct ListingListView: View {
     @FocusState private var isSearchFocused: Bool
     /// フィルタ＋ソート結果のキャッシュ（body 再評価時の重計算を避ける）
     @State private var cachedFiltered: [Listing] = []
+    /// 初回ロード完了フラグ（スケルトン表示の切り替え用）
+    @State private var isInitialLoadComplete = false
 
     /// お気に入りタブの掲載状態フィルタ
     enum DelistFilter: String, CaseIterable {
@@ -236,7 +238,9 @@ struct ListingListView: View {
         NavigationStack {
             ZStack(alignment: .bottomTrailing) {
                 Group {
-                if baseList.isEmpty && !store.isRefreshing {
+                if cachedFiltered.isEmpty && !isInitialLoadComplete {
+                    SkeletonLoadingView()
+                } else if baseList.isEmpty && !store.isRefreshing {
                     emptyState
                     } else if favoritesOnly && delistFilter != .all && filteredAndSorted.isEmpty && !baseList.isEmpty {
                         delistFilterEmptyState
@@ -319,6 +323,9 @@ struct ListingListView: View {
                                 }
                                 .accessibilityLabel("エクスポート")
                             }
+                            if favoritesOnly && !filteredAndSorted.isEmpty {
+                                EditButton()
+                            }
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
@@ -365,7 +372,33 @@ struct ListingListView: View {
             } message: {
                 Text(store.lastError ?? "不明なエラーが発生しました。")
             }
-            .onAppear { recomputeFiltered() }
+            .environment(\.editMode, favoritesOnly ? $editMode : .constant(.inactive))
+            .alert("いいね解除", isPresented: $showBulkUnlikeConfirm) {
+                Button("解除", role: .destructive) {
+                    for url in selectedForDeletion {
+                        if let listing = cachedFiltered.first(where: { $0.url == url }) {
+                            listing.isLiked = false
+                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                        }
+                    }
+                    selectedForDeletion.removeAll()
+                    editMode = .inactive
+                    SaveErrorHandler.shared.save(modelContext, source: "ListingList")
+                }
+                Button("キャンセル", role: .cancel) {}
+            } message: {
+                Text("\(selectedForDeletion.count)件の物件のいいねを解除しますか？")
+            }
+            .onAppear {
+                recomputeFiltered()
+                if baseList.count > 0 || !store.isRefreshing { isInitialLoadComplete = true }
+            }
+            .onChange(of: store.isRefreshing) { _, isRefreshing in
+                if !isRefreshing { isInitialLoadComplete = true }
+            }
+            .onChange(of: baseList.count) { _, count in
+                if count > 0 { isInitialLoadComplete = true }
+            }
             .onChange(of: searchText) { _, _ in recomputeFiltered() }
             .onChange(of: sortOrder) { _, _ in recomputeFiltered() }
             .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
@@ -543,7 +576,7 @@ struct ListingListView: View {
     }
 
     private var listContent: some View {
-        List {
+        List(selection: $selectedForDeletion) {
             if favoritesOnly {
                 Section {
                     delistChipBar
@@ -569,6 +602,33 @@ struct ListingListView: View {
                     }
                 }
             }
+            if favoritesOnly && editMode == .active {
+                ForEach(cachedFiltered, id: \.url) { listing in
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(listing.name)
+                                .font(.subheadline.weight(.medium))
+                                .lineLimit(2)
+                            Text(listing.priceDisplayCompact)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                    }
+                    .listRowInsets(EdgeInsets(
+                        top: DesignSystem.listRowVerticalPadding,
+                        leading: DesignSystem.listRowHorizontalPadding,
+                        bottom: DesignSystem.listRowVerticalPadding,
+                        trailing: DesignSystem.listRowHorizontalPadding
+                    ))
+                    .listRowBackground(
+                        ListingRowBackground()
+                            .padding(.horizontal, DesignSystem.listRowHorizontalPadding * 0.5)
+                            .padding(.vertical, 2)
+                    )
+                    .tag(listing.url)
+                }
+            } else {
             ForEach(groupedListings) { group in
                 let listing = group.representative
                 HStack(spacing: 0) {
@@ -655,6 +715,52 @@ struct ListingListView: View {
                         .tint(.accentColor)
                     }
                 }
+                .contextMenu {
+                    if !isCompareMode {
+                        Button {
+                            listing.isLiked.toggle()
+                            SaveErrorHandler.shared.save(modelContext, source: "ListingList")
+                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                        } label: {
+                            Label(listing.isLiked ? "いいね解除" : "いいね", systemImage: listing.isLiked ? "heart.slash" : "heart")
+                        }
+                        if let url = URL(string: listing.url) {
+                            ShareLink(item: url, subject: Text(listing.name))
+                        }
+                    }
+                } preview: {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(listing.name)
+                            .font(.headline)
+                            .lineLimit(2)
+                        Text(listing.priceDisplayCompact)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.blue)
+                        HStack(spacing: 12) {
+                            if let area = listing.areaM2 {
+                                Label(String(format: "%.1f㎡", area), systemImage: "ruler")
+                            }
+                            if let layout = listing.layout {
+                                Label(layout, systemImage: "square.grid.3x3")
+                            }
+                            if let walk = listing.walkMin {
+                                Label("徒歩\(walk)分", systemImage: "figure.walk")
+                            }
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        if let addr = listing.bestAddress ?? listing.address {
+                            Text(addr)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
+                    .padding()
+                    .frame(width: 300)
+                }
+            }
             }
         }
         .listStyle(.plain)
@@ -684,20 +790,34 @@ struct ListingListView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            if store.isRefreshing {
-                HStack(spacing: 8) {
-                    ProgressView()
-                    Text("更新中…")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+            VStack(spacing: 8) {
+                if favoritesOnly && editMode == .active && !selectedForDeletion.isEmpty {
+                    Button(role: .destructive) {
+                        showBulkUnlikeConfirm = true
+                    } label: {
+                        Label("\(selectedForDeletion.count)件のいいねを解除", systemImage: "heart.slash")
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(.regularMaterial, in: Capsule())
-                .padding(.bottom, 8)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .animation(.easeInOut, value: store.isRefreshing)
+                if store.isRefreshing {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                        Text("更新中…")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(.regularMaterial, in: Capsule())
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .animation(.easeInOut, value: store.isRefreshing)
+                }
             }
+            .padding(.bottom, 8)
         }
     }
 
@@ -1198,6 +1318,79 @@ struct DeviationBadge: View {
     }
 }
 
+// MARK: - スケルトンローディング
+
+private struct SkeletonLoadingView: View {
+    @State private var isAnimating = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(0..<5, id: \.self) { _ in
+                skeletonRow
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                Divider()
+            }
+        }
+        .onAppear { isAnimating = true }
+    }
+
+    private var skeletonRow: some View {
+        HStack(spacing: 12) {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(Color(.systemGray5))
+                .frame(width: 100, height: 75)
+
+            VStack(alignment: .leading, spacing: 6) {
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color(.systemGray5))
+                    .frame(height: 14)
+                    .frame(maxWidth: .infinity)
+
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color(.systemGray5))
+                    .frame(height: 12)
+                    .frame(width: 180)
+
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color(.systemGray5))
+                    .frame(height: 12)
+                    .frame(width: 140)
+            }
+        }
+        .redacted(reason: .placeholder)
+        .shimmering()
+    }
+}
+
+private struct ShimmerModifier: ViewModifier {
+    @State private var phase: CGFloat = 0
+
+    func body(content: Content) -> some View {
+        content
+            .overlay(
+                LinearGradient(
+                    colors: [.clear, .white.opacity(0.4), .clear],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .rotationEffect(.degrees(30))
+                .offset(x: phase)
+                .mask(content)
+            )
+            .onAppear {
+                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                    phase = UIScreen.main.bounds.width
+                }
+            }
+    }
+}
+
+extension View {
+    fileprivate func shimmering() -> some View {
+        modifier(ShimmerModifier())
+    }
+}
 
 /// 総合投資スコアバッジ（0-100）
 private struct ScoreBadge: View {

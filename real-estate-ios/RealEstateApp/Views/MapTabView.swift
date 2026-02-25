@@ -639,6 +639,15 @@ struct HazardMapView: UIViewRepresentable {
         }
 
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            // クラスターアノテーションの処理
+            if let cluster = annotation as? MKClusterAnnotation {
+                let clusterView = mapView.dequeueReusableAnnotationView(withIdentifier: "cluster") as? MKMarkerAnnotationView
+                    ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "cluster")
+                clusterView.markerTintColor = .systemBlue
+                clusterView.glyphText = "\(cluster.memberAnnotations.count)"
+                return clusterView
+            }
+
             guard let listingAnnotation = annotation as? ListingAnnotation else { return nil }
             let listing = listingAnnotation.listing
 
@@ -647,6 +656,8 @@ struct HazardMapView: UIViewRepresentable {
                 ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
 
             view.annotation = annotation
+            view.clusteringIdentifier = "listing"
+            // HTML準拠: いいね=赤、新築=緑、中古=青
             if listing.isLiked {
                 view.markerTintColor = UIColor.systemRed
                 view.glyphImage = UIImage(systemName: "heart.fill")
