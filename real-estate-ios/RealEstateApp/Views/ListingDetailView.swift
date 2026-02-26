@@ -536,7 +536,7 @@ struct ListingDetailView: View {
             if let constructor = listing.constructor, !constructor.isEmpty {
                 DetailRow(title: "施工", value: constructor)
             }
-            if let fund = listing.repairFundOnetime {
+            if listing.repairFundOnetime != nil {
                 DetailRow(title: "修繕積立基金", value: listing.repairFundOnetimeDisplay)
             }
             if !listing.isShinchiku, let delivery = listing.deliveryDate, !delivery.isEmpty {

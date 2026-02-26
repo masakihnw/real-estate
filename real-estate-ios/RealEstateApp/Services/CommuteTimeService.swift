@@ -106,12 +106,20 @@ final class CommuteTimeService {
 
     /// Google Maps アプリ（またはブラウザ）で物件から目的地への公共交通機関ルートを開く
     static func openGoogleMaps(from listing: Listing, to destination: Destination) {
-        guard let lat = listing.latitude, let lon = listing.longitude else { return }
-
         let dest = destination.coordinate
 
+        // 住所テキスト + 物件名で origin を指定（座標は精度誤差が大きいため使用しない）
+        let originParam: String
+        if let addr = listing.bestAddress, !addr.isEmpty {
+            let query = "\(addr) \(listing.name)"
+            guard let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
+            originParam = encoded
+        } else {
+            return
+        }
+
         // Google Maps アプリがインストールされている場合はアプリで開く
-        let appURLString = "comgooglemaps://?saddr=\(lat),\(lon)&daddr=\(dest.latitude),\(dest.longitude)&directionsmode=transit"
+        let appURLString = "comgooglemaps://?saddr=\(originParam)&daddr=\(dest.latitude),\(dest.longitude)&directionsmode=transit"
         if let appURL = URL(string: appURLString),
            UIApplication.shared.canOpenURL(appURL) {
             UIApplication.shared.open(appURL)
@@ -119,7 +127,7 @@ final class CommuteTimeService {
         }
 
         // フォールバック: ブラウザで Google Maps を開く
-        let webURLString = "https://www.google.com/maps/dir/?api=1&origin=\(lat),\(lon)&destination=\(dest.latitude),\(dest.longitude)&destination_place_id=&travelmode=transit"
+        let webURLString = "https://www.google.com/maps/dir/?api=1&origin=\(originParam)&destination=\(dest.latitude),\(dest.longitude)&travelmode=transit"
         if let webURL = URL(string: webURLString) {
             UIApplication.shared.open(webURL)
         }
