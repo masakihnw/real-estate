@@ -190,9 +190,12 @@ struct RealEstateWidgetView: View {
                                 .lineLimit(1)
                             Spacer()
                             if let change = item.priceChange, change != 0 {
-                                Text("\(change > 0 ? "+" : "")\(change)万")
+                                let isDown = change < 0
+                                Text("\(isDown ? "↓" : "↑")\(abs(change))万")
                                     .font(.caption2)
-                                    .foregroundStyle(change < 0 ? .green : .red)
+                                    .foregroundStyle(isDown
+                                        ? Color(red: 0.18, green: 0.53, blue: 0.76)
+                                        : Color(red: 0.90, green: 0.49, blue: 0.13))
                             }
                         }
                     }

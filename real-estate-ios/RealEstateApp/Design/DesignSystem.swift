@@ -31,6 +31,11 @@ enum DesignSystem {
     /// 値下がり/マイナス色
     static let negativeColor = Color.red
 
+    /// 価格変動: 値下がり色（ブルー）
+    static let priceDownColor = Color(red: 0.18, green: 0.53, blue: 0.76)
+    /// 価格変動: 値上がり色（オレンジ）
+    static let priceUpColor = Color(red: 0.90, green: 0.49, blue: 0.13)
+
     /// 通勤バッジ: Playground 社カラー
     static let commutePGColor = Color(red: 0.0, green: 0.48, blue: 1.0)
     /// 通勤バッジ: M3Career 社カラー

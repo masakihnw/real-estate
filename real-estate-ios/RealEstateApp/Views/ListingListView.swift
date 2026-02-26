@@ -35,7 +35,6 @@ struct ListingListView: View {
     @State private var showComparison = false
     @State private var isCompareMode = false
     @State private var searchText = ""
-    @FocusState private var isSearchFocused: Bool
     /// フィルタ＋ソート結果のキャッシュ（body 再評価時の重計算を避ける）
     @State private var cachedFiltered: [Listing] = []
     /// 初回ロード完了フラグ（スケルトン表示の切り替え用）
@@ -254,37 +253,9 @@ struct ListingListView: View {
                         listContent
                     }
                 }
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    // HTML準拠: 常時表示グレーピル型検索バー
-                    HStack(spacing: 6) {
-                        Image(systemName: "magnifyingglass")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        TextField("物件名で検索", text: $searchText)
-                            .font(.subheadline)
-                            .textFieldStyle(.plain)
-                            .focused($isSearchFocused)
-                            .submitLabel(.done)
-                            .onSubmit { isSearchFocused = false }
-                        if !searchText.isEmpty {
-                            Button {
-                                searchText = ""
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.tertiary)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    .padding(.horizontal, 12)
-                    .padding(.bottom, 8)
-                }
                 .navigationTitle(navTitle)
                 .navigationBarTitleDisplayMode(.inline)
+                .searchable(text: $searchText, prompt: "物件名で検索")
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         HStack(spacing: 12) {
@@ -1010,12 +981,12 @@ struct ListingRowView: View {
 
                     if let change = listing.latestPriceChange, change != 0 {
                         let isDown = change < 0
-                        Text("\(isDown ? "▼" : "▲")\(abs(change))万")
+                        Text("\(isDown ? "↓" : "↑")\(abs(change))万")
                             .font(.caption2.weight(.bold))
-                            .foregroundStyle(isDown ? DesignSystem.positiveColor : DesignSystem.negativeColor)
+                            .foregroundStyle(isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 2)
-                            .background((isDown ? DesignSystem.positiveColor : DesignSystem.negativeColor).opacity(0.10))
+                            .background((isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor).opacity(0.10))
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
 

@@ -420,11 +420,13 @@ final class ListingStore {
         // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
         if let lat = new.latitude { existing.latitude = lat }
         if let lon = new.longitude { existing.longitude = lon }
-        // 通勤時間: パイプラインのデータを初期値として取り込む
-        // 既存データがないか、フォールバック概算（経路情報取得不可）の場合のみ上書き
-        // MKDirections で取得した正確な経路データは保持する
+        // 通勤時間: Google Maps データ (source: "gmaps") は常に取り込む。
+        // 非 gmaps のパイプラインデータは既存データがない or フォールバック概算の場合のみ。
         if let pipelineCommute = new.commuteInfoJSON {
-            if existing.commuteInfoJSON == nil {
+            let pipelineInfo = Listing._parseCommuteInfo(pipelineCommute)
+            if pipelineInfo.hasAnyGmapsData {
+                existing.commuteInfoJSON = pipelineCommute
+            } else if existing.commuteInfoJSON == nil {
                 existing.commuteInfoJSON = pipelineCommute
             } else if existing.parsedCommuteInfo.hasFallbackEstimate {
                 existing.commuteInfoJSON = pipelineCommute

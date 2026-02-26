@@ -93,21 +93,18 @@ struct DashboardView: View {
                         Spacer()
                         if let change = listing.latestPriceChange {
                             let isDown = change < 0
-                            Text("\(isDown ? "▼" : "▲")\(abs(change))万")
+                            Text("\(isDown ? "↓" : "↑")\(abs(change))万")
                                 .font(.caption.weight(.bold))
-                                .foregroundStyle(isDown ? .green : .red)
+                                .foregroundStyle(isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor)
                         }
                     }
-                    .padding(.vertical, 4)
-                    if listing.url != changed.prefix(10).last?.url {
-                        Divider()
-                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(
+                        RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
+                            .fill(.regularMaterial)
+                    )
                 }
-                .padding(14)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.regularMaterial)
-                )
             }
         }
     }

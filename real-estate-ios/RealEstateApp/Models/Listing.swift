@@ -1880,7 +1880,7 @@ final class Listing: @unchecked Sendable {
         return result
     }
 
-    private static func _parseCommuteInfo(_ json: String?) -> CommuteData {
+    static func _parseCommuteInfo(_ json: String?) -> CommuteData {
         guard let json, let data = json.data(using: .utf8) else { return CommuteData() }
         return (try? CommuteData.decoder.decode(CommuteData.self, from: data)) ?? CommuteData()
     }
@@ -2380,6 +2380,16 @@ struct CommuteData: Codable {
     var hasFallbackEstimate: Bool {
         (playground?.isFallbackEstimate ?? false) || (m3career?.isFallbackEstimate ?? false)
     }
+
+    /// 両方の目的地が Google Maps データを持つか
+    var hasGmapsData: Bool {
+        (playground?.isGmaps ?? false) && (m3career?.isGmaps ?? false)
+    }
+
+    /// いずれかの目的地が Google Maps データを持つか
+    var hasAnyGmapsData: Bool {
+        (playground?.isGmaps ?? false) || (m3career?.isGmaps ?? false)
+    }
 }
 
 /// 1つの目的地への通勤時間情報
@@ -2392,10 +2402,17 @@ struct CommuteDestination: Codable {
     var transfers: Int?
     /// 計算日時
     var calculatedAt: Date
+    /// データソース（"gmaps" = Google Maps スクレイピング、nil = MKDirections / パイプライン駅テーブル）
+    var source: String?
 
     /// Apple Maps から正規の経路が取得できず、直線距離ベースの概算になっているか
     var isFallbackEstimate: Bool {
         summary.contains("経路情報取得不可")
+    }
+
+    /// Google Maps スクレイピングで取得したデータかどうか
+    var isGmaps: Bool {
+        source == "gmaps"
     }
 }
 

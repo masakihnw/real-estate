@@ -90,6 +90,10 @@ ENRICHER_FIELDS: dict[str, set[str]] = {
     "commute": {
         "commute_info",
     },
+    # Track F: commute_gmaps_enricher (Google Maps door-to-door, Track C より高精度)
+    "commute_gmaps": {
+        "commute_info",
+    },
     # Track D: reinfolib_enricher
     "reinfolib": {
         "reinfolib_market_data",
