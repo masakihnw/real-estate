@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-25（投資スコア根拠のプルダウン表示追加、Phase 5: 成約↔販売物件のクロスリファレンス、p6-02 Spotlight 連携、p6-03 PDF エクスポート追加、Phase 7: パイプラインテスト対応）
+> **最終更新**: 2026-02-26（投資スコア根拠のプルダウン表示追加、Phase 5: 成約↔販売物件のクロスリファレンス、p6-02 Spotlight 連携、p6-03 PDF エクスポート追加、Phase 7: パイプラインテスト対応、通勤時間 Google Maps ボタンの座標なし時フォールバック修正）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -721,7 +721,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **同期時の更新ロジック** | `update(existing:from:)` で既存データが nil またはフォールバック概算の場合のみパイプラインデータを取り込む。MKDirections の正規経路データは保持 |
 | **座標バージョン管理** | 目的地座標変更時に UserDefaults でバージョン管理、全件再計算 |
 | **並列 MKDirections** | `withTaskGroup` で concurrency=2 の並列計算。バッチ MainActor 更新でホップ数を削減。大量物件で約 40–50% 高速化 |
-| **Google Maps 連携** | ディープリンクで Google Maps アプリ（またはブラウザ）を起動 |
+| **Google Maps 連携** | ディープリンクで Google Maps アプリ（またはブラウザ）を起動。origin は「住所テキスト（bestAddress）+ 物件名」のテキスト検索で指定（座標は誤差が大きいため使用しない） |
 | **onError コールバック** | `calculateForAllListings(modelContext:onError:)` の `onError` で失敗時にコールバック（ListingStore の syncWarning 設定用） |
 
 #### 3.4.4 通知サービス
@@ -2285,7 +2285,7 @@ main ブランチへの push 時に iOS アプリを自動ビルドし、TestFli
 
 | 処理 | 詳細 |
 |------|------|
-| **ビルド番号自動設定** | Xcode Cloud の `$CI_BUILD_NUMBER` 環境変数を使用し、`Info.plist` の `CFBundleVersion` と `project.pbxproj` の `CURRENT_PROJECT_VERSION` を自動更新。ローカルビルドでは既存の値がそのまま使われる |
+| **ビルド番号自動設定** | Xcode Cloud の `$CI_BUILD_NUMBER` 環境変数を使用し、`RealEstateApp/Info.plist` の `CFBundleVersion` と `project.pbxproj` の `CURRENT_PROJECT_VERSION` を自動更新。ローカルビルドでは既存の値がそのまま使われる。Widget 拡張の `CFBundleVersion` は `$(CURRENT_PROJECT_VERSION)` を参照するため、`project.pbxproj` 更新と同時に自動同期される |
 
 **ビルド番号管理の変更**
 
@@ -2294,6 +2294,8 @@ Xcode Cloud 導入前は以下3ファイルのビルド番号を手動で更新�
 - `real-estate-ios/RealEstateApp/Info.plist`（`CFBundleVersion`）
 - `real-estate-ios/project.yml`（`CURRENT_PROJECT_VERSION`）
 - `real-estate-ios/RealEstateApp.xcodeproj/project.pbxproj`（`CURRENT_PROJECT_VERSION`）
+
+Widget 拡張（`RealEstateWidget/Info.plist`）の `CFBundleVersion` は `$(CURRENT_PROJECT_VERSION)` ビルド設定を参照するため、CI スクリプトによる `project.pbxproj` 更新だけで親アプリと自動的に揃う。
 
 ---
 

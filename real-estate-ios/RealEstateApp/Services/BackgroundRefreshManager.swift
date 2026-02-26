@@ -85,14 +85,10 @@ final class BackgroundRefreshManager {
             refreshTask.cancel()
         }
 
-        // 完了を通知（キャンセル時やエラー時も正しく処理）
+        // 完了を通知
         Task {
-            do {
-                _ = try await refreshTask.value
-                task.setTaskCompleted(success: true)
-            } catch {
-                task.setTaskCompleted(success: false)
-            }
+            await refreshTask.value
+            task.setTaskCompleted(success: true)
         }
     }
 }
