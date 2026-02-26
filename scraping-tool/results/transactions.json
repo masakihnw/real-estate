@@ -10318,7 +10318,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2015",
-      "estimated_building_name": "ディアナコート用賀翠景"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b8cb709d9534",
@@ -10938,7 +10938,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2015",
-      "estimated_building_name": "ディアナコート用賀翠景"
+      "estimated_building_name": null
     },
     {
       "id": "tx-938ad4b00815",
@@ -11558,7 +11558,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2015",
-      "estimated_building_name": "ディアナコート用賀翠景"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c63b752c3bfe",
@@ -11738,7 +11738,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2015",
-      "estimated_building_name": "ディアナコート用賀翠景"
+      "estimated_building_name": null
     },
     {
       "id": "tx-89475d736ee3",
@@ -12158,7 +12158,7 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2016",
-      "estimated_building_name": "ディアナコート用賀翠景"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ab9bed26d746",
@@ -15318,7 +15318,7 @@
       "latitude": 35.6935241,
       "longitude": 139.6576038,
       "building_group_id": "131150360-2015",
-      "estimated_building_name": "グローベルザ・スクエア東高円寺"
+      "estimated_building_name": null
     },
     {
       "id": "tx-bd0a503def72",
@@ -15878,7 +15878,7 @@
       "latitude": 35.7360069,
       "longitude": 139.7468276,
       "building_group_id": "131160060-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "リムテラス駒込染井"
     },
     {
       "id": "tx-013ebba265e5",
@@ -16598,7 +16598,7 @@
       "latitude": 35.7360069,
       "longitude": 139.7468276,
       "building_group_id": "131160060-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "リムテラス駒込染井"
     },
     {
       "id": "tx-011da7058fc2",
@@ -17038,7 +17038,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-ab426b0d5876",
@@ -17098,7 +17098,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-4f2edae73fe8",
@@ -17258,7 +17258,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-a2dce148d479",
@@ -17278,7 +17278,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-92cf0d551743",
@@ -17298,7 +17298,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-7bf5190c4118",
@@ -17318,7 +17318,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-d31f8b078ec6",
@@ -17338,7 +17338,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-d6cf4520859a",
@@ -23172,7 +23172,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": "ディアナコート用賀翠景"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120600-2016",
@@ -23195,7 +23195,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": "ディアナコート用賀翠景"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120600-2018",
@@ -24458,7 +24458,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": "グローベルザ・スクエア東高円寺"
+      "estimated_building_name": null
     },
     {
       "group_id": "131160020-2011",
@@ -24560,7 +24560,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "リムテラス駒込染井"
     },
     {
       "group_id": "131160100-2022",
@@ -24864,7 +24864,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ザ・ガーデンズ東京王子 エアリーコート"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "group_id": "131170080-2022",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-26T09:55:08",
+    "updated_at": "2026-02-26T20:02:15",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
