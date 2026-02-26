@@ -157,10 +157,14 @@ final class CommuteTimeService {
         let forceAll = needsRecalculation
         let targets = listings.filter { listing in
             guard listing.hasCoordinate else { return false }
-            // 座標更新時（オフィス移転など）は全件再計算
-            if forceAll { return true }
 
             let info = listing.parsedCommuteInfo
+
+            // Google Maps スクレイピングで取得済みの物件は MKDirections で再計算しない
+            if info.hasGmapsData { return false }
+
+            // 座標更新時（オフィス移転など）は全件再計算
+            if forceAll { return true }
 
             // 未計算の物件は対象
             guard let pg = info.playground, let m3 = info.m3career else { return true }

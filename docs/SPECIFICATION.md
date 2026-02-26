@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-26（投資スコア根拠のプルダウン表示追加、Phase 5: 成約↔販売物件のクロスリファレンス、p6-02 Spotlight 連携、p6-03 PDF エクスポート追加、Phase 7: パイプラインテスト対応、通勤時間 Google Maps ボタンの座標なし時フォールバック修正）
+> **最終更新**: 2026-02-26（通勤時間を Google Maps スクレイピングで door-to-door 取得する enricher 追加、通勤時間 Google Maps ボタンの住所テキストフォールバック修正）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -710,18 +710,20 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | 項目 | 詳細 |
 |------|------|
-| **パイプライン初期データ** | `commute_enricher.py` が `station_line` + `walk_min` から駅ベースの概算を付与（`commute_info` フィールド）。`Listing.from(dto:)` で `commuteInfoJSON` に取り込み |
-| **iOS 計算方式** | MKDirections（公共交通機関モード、`requestsAlternateRoutes = true`） |
+| **パイプライン初期データ（駅テーブル）** | `commute_enricher.py` が `station_line` + `walk_min` から駅ベースの概算を付与（`commute_info` フィールド）。`Listing.from(dto:)` で `commuteInfoJSON` に取り込み |
+| **パイプライン高精度データ（Google Maps）** | `commute_gmaps_enricher.py` が Playwright で Google Maps をスクレイピングし、物件住所 → 各オフィスの door-to-door 通勤時間を取得。`source: "gmaps"` フラグ付きで `commute_info` に格納。到着時刻: 平日朝 9:00 JST。初回のみ全件取得、以降は新着・未取得のみ。並列ワーカー対応 |
+| **iOS 計算方式** | `source: "gmaps"` のデータがある物件は MKDirections 再計算をスキップ。それ以外は MKDirections（公共交通機関モード、`requestsAlternateRoutes = true`）で計算 |
 | **目的地** | デフォルト: Playground株式会社（千代田区一番町4-6）/ エムスリーキャリア（港区虎ノ門4-1-28）。設定画面の「通勤先設定」で最大3箇所までカスタマイズ可能（CommuteDestinationConfig）。MKDirections 計算は従来の固定2箇所を継続使用（CommuteData 構造の互換性のため） |
 | **キャッシュ** | `Listing.commuteInfoJSON` に JSON 文字列で保存 |
-| **再計算条件** | 未計算 or フォールバック概算（`経路情報取得不可`）or 7日以上経過 |
+| **再計算条件** | `source: "gmaps"` でない物件のうち: 未計算 or フォールバック概算（`経路情報取得不可`）or 7日以上経過 |
 | **リトライ戦略** | 1回目: departureDate（次の平日8:00）→ 2回目: 日時指定なし → 3回目: arrivalDate（次の平日9:00）→ フォールバック概算。各リトライ間に2秒待機 |
 | **シミュレータ対応** | `#if targetEnvironment(simulator)` でリトライをスキップし即座にフォールバック概算を使用（MKDirections Transit はシミュレータ非対応） |
 | **ダウングレード防止** | 既存データがパイプライン/MKDirections の正規経路で、新結果がフォールバック概算の場合は上書きしない |
-| **同期時の更新ロジック** | `update(existing:from:)` で既存データが nil またはフォールバック概算の場合のみパイプラインデータを取り込む。MKDirections の正規経路データは保持 |
-| **座標バージョン管理** | 目的地座標変更時に UserDefaults でバージョン管理、全件再計算 |
+| **同期時の更新ロジック** | `update(existing:from:)` で `source: "gmaps"` のパイプラインデータは常に取り込む（既存 MKDirections データを上書き）。非 gmaps データは既存が nil or フォールバック概算の場合のみ取り込み |
+| **座標バージョン管理** | 目的地座標変更時に UserDefaults でバージョン管理、全件再計算（gmaps データは対象外） |
 | **並列 MKDirections** | `withTaskGroup` で concurrency=2 の並列計算。バッチ MainActor 更新でホップ数を削減。大量物件で約 40–50% 高速化 |
 | **Google Maps 連携** | ディープリンクで Google Maps アプリ（またはブラウザ）を起動。origin は「住所テキスト（bestAddress）+ 物件名」のテキスト検索で指定（座標は誤差が大きいため使用しない） |
+| **注釈表示** | `source: "gmaps"` の場合は「Google Maps の経路検索に基づく自動計算です（平日朝 9:00 到着）」、それ以外は「Apple Maps の公共交通機関経路に基づく参考値です（Google Maps と異なる場合があります）」 |
 | **onError コールバック** | `calculateForAllListings(modelContext:onError:)` の `onError` で失敗時にコールバック（ListingStore の syncWarning 設定用） |
 
 #### 3.4.4 通知サービス
@@ -789,7 +791,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **余白** | `listRowVerticalPadding`, `listRowHorizontalPadding` |
 | **角丸** | `cornerRadius` |
 | **フォントスタイル** | `ListingObjectStyle`（title / subtitle / caption / detailValue / detailLabel） |
-| **色** | `shinchikuPriceColor`, `positiveColor`, `negativeColor`, `commutePGColor`, `commuteM3Color`, `cardBackground` |
+| **色** | `shinchikuPriceColor`, `positiveColor`, `negativeColor`, `priceDownColor`（ブルー）, `priceUpColor`（オレンジ）, `commutePGColor`, `commuteM3Color`, `cardBackground` |
 | **ガラス背景** | `listingGlassBackground()`, `tintedGlassBackground()` |
 
 #### 3.6.2 Liquid Glass 対応
@@ -865,7 +867,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |---|------|------|------|
 | 1 | マーケット概況 | 自動 | 中古/新築の掲載数・平均価格・新着数・値上げ/値下げ件数をカード形式で表示 |
 | 2 | スコア分布 | 自動 | 総合投資スコアのグレード分布（S/A/B/C/D）をバーチャートで表示 |
-| 3 | 価格変動物件 | 自動 | 直近の価格変動があった物件を変動額の大きい順に最大10件表示 |
+| 3 | 価格変動物件 | 自動 | 直近の価格変動があった物件を変動額の大きい順に最大10件表示。各物件を個別カードで表示。値上がりは `↑` オレンジ、値下がりは `↓` ブルーで表記 |
 | 4 | エリア別 m²単価ランキング | 自動 | 区別の平均 m²単価をランキング形式で表示（物件数付き） |
 
 ---
@@ -1699,7 +1701,8 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | ファイル | 用途 | ステータス |
 |---------|------|---------|
 | **commute.py** | コアロジック: 駅名パース、通勤時間計算、表示文字列生成 | パイプラインで使用 |
-| **commute_enricher.py** | 駅名ベースのドアtoドア概算を `commute_info` として JSON に付与。`--force` で既存データを再計算して上書き | パイプラインで使用 |
+| **commute_enricher.py** | 駅名ベースのドアtoドア概算を `commute_info` として JSON に付与。`--force` で既存データを再計算して上書き | パイプラインで使用（Track C） |
+| **commute_gmaps_enricher.py** | Playwright で Google Maps をスクレイピングし、物件住所 → 各オフィスの door-to-door 通勤時間を取得。`source: "gmaps"` フラグ付き。到着 9:00 JST | パイプラインで使用（Track F） |
 | **commute_audit.py** | 手動監査用 HTML 生成（Google Maps との比較） | 監査用 |
 | **commute_auto_audit.py** | Playwright 自動監査（Google Maps に到着 8:30 で経路検索 → 所要時間を抽出） | 監査用 |
 | **data/commute_playground.json** | 駅名 → Playground までの電車時間（分）のルックアップテーブル | `commute_auto_audit.py` で更新 |
@@ -1710,6 +1713,20 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | オプション | 説明 |
 |-----------|------|
 | `--force` | 既存の `commute_info` があってもスキップせず、再計算して上書きする。指定しない場合は既存データがある物件はスキップ（デフォルト動作）。`enrich_commute()` の `force: bool = False` パラメータに対応。 |
+
+#### 5.8.2 Google Maps 通勤エンリッチャー（commute_gmaps_enricher.py）
+
+物件住所を Google Maps の出発地に入力し、公共交通機関経路の所要時間を Playwright でスクレイピングして取得する。`commute_enricher.py`（駅テーブルベース）より高精度な実測値を提供。
+
+| オプション | 説明 |
+|-----------|------|
+| `--input` / `--output` | 入出力 JSON ファイル |
+| `--workers N` | 並列ワーカー数（デフォルト: 2） |
+| `--force` | 全物件を再取得（`source: "gmaps"` 既存データも上書き） |
+| `--no-headless` | ブラウザを表示して実行（デバッグ用） |
+| `--reset` | レジューム用キャッシュ（`commute_gmaps_cache/`）をリセット |
+
+マージ順序: Track C（commute_enricher）→ Track F（commute_gmaps_enricher）で、Track F の結果が優先される。
 
 ### 5.9 分析・予測
 

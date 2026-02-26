@@ -1525,10 +1525,15 @@ struct ListingDetailView: View {
                 .disabled(isCalculatingCommute)
             }
 
-            // 注釈
+            // 注釈（データソースに応じて表示を切替）
             VStack(alignment: .leading, spacing: 2) {
-                Text("※ Apple Maps の公共交通機関経路に基づく自動計算です")
-                Text("※ 平日朝 8:00 出発での最適経路")
+                if commute.hasAnyGmapsData {
+                    Text("※ Google Maps の経路検索に基づく自動計算です")
+                    Text("※ 平日朝 9:00 到着での最適経路")
+                } else {
+                    Text("※ Apple Maps の公共交通機関経路に基づく参考値です")
+                    Text("※ Google Maps の表示と異なる場合があります")
+                }
             }
             .font(.caption2)
             .foregroundStyle(.tertiary)

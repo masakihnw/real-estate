@@ -90,6 +90,7 @@ cp "$INPUT" "$WORK_DIR/track_hz.json"  # geocode_cross + hazard
 cp "$INPUT" "$WORK_DIR/track_cm.json"  # commute
 cp "$INPUT" "$WORK_DIR/track_ri.json"  # reinfolib
 cp "$INPUT" "$WORK_DIR/track_es.json"  # estat
+cp "$INPUT" "$WORK_DIR/track_gm.json"  # commute_gmaps
 
 # Track PREP: build_units_cache → merge_detail_cache
 (
@@ -166,10 +167,25 @@ RI_PID=$!
 ) &
 ES_PID=$!
 
-echo "全 enricher 起動完了 (PID: PREP=$PREP_PID SS=$SS_PID HZ=$HZ_PID CM=$CM_PID RI=$RI_PID ES=$ES_PID)" >&2
+# Track F: commute_gmaps_enricher (Google Maps door-to-door スクレイピング)
+(
+    _t=$(date +%s)
+    if [ -n "$BROWSER_FLAG" ]; then
+        python3 commute_gmaps_enricher.py \
+            --input "$WORK_DIR/track_gm.json" \
+            --output "$WORK_DIR/track_gm.json" \
+            --workers 2 || true
+    else
+        echo "commute_gmaps: Playwright 未検出（スキップ）" >&2
+    fi
+    echo "[TIMING] commute_gmaps: $(( ($(date +%s) - _t) ))s" >&2
+) &
+GM_PID=$!
+
+echo "全 enricher 起動完了 (PID: PREP=$PREP_PID SS=$SS_PID HZ=$HZ_PID CM=$CM_PID RI=$RI_PID ES=$ES_PID GM=$GM_PID)" >&2
 
 # 全プロセス完了待ち (各プロセスの exit code は無視)
-for pid in $PREP_PID $SS_PID $HZ_PID $CM_PID $RI_PID $ES_PID; do
+for pid in $PREP_PID $SS_PID $HZ_PID $CM_PID $RI_PID $ES_PID $GM_PID; do
     wait "$pid" 2>/dev/null || true
 done
 
@@ -189,6 +205,7 @@ python3 scripts/merge_enrichments.py \
         "$WORK_DIR/track_cm.json" \
         "$WORK_DIR/track_ri.json" \
         "$WORK_DIR/track_es.json" \
+        "$WORK_DIR/track_gm.json" \
     --output "$INPUT"
 
 echo "[TIMING] merge: $(( ($(date +%s) - _t) ))s" >&2
