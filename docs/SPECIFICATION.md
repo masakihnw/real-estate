@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-26（通勤時間を Google Maps スクレイピングで door-to-door 取得する enricher 追加、通勤時間 Google Maps ボタンの住所テキストフォールバック修正）
+> **最終更新**: 2026-02-26（Xcode Cloud 廃止・ローカルデプロイ一本化、deploy.sh にビルド番号自動インクリメント追加）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -46,7 +46,7 @@ real-estate/
 ├── real-estate-ios/           # iOS アプリ（SwiftUI + SwiftData）
 │   ├── RealEstateApp/         # アプリ本体ソースコード
 │   ├── RealEstateWidget/      # WidgetKit ホーム画面ウィジェット拡張
-│   ├── ci_scripts/            # Xcode Cloud スクリプト
+│   ├── scripts/               # デプロイスクリプト（deploy.sh）
 │   ├── docs/                  # iOS アプリ設計ドキュメント
 │   └── project.yml            # XcodeGen 設定
 └── scraping-tool/             # Python スクレイピングパイプライン
@@ -2258,20 +2258,28 @@ Pull Request 時に `real-estate-ios/` または `scraping-tool/` の変更を�
 | `ESTAT_API_KEY` | e-Stat アプリケーション ID（update-reinfolib-cache.yml で使用） |
 | `GITHUB_TOKEN` | リポジトリ Read and Write 権限 |
 
-### 8.3 iOS デプロイスクリプト
+### 8.3 iOS デプロイ（ローカル実行）
 
 **ファイル**: `real-estate-ios/scripts/deploy.sh`
 
-CLI からアーカイブ → App Store Connect アップロードまでを一括実行するスクリプト。App Store Connect API Key で認証。
+ローカルマシンから CLI でアーカイブ → App Store Connect アップロードまでを一括実行する。個人開発のため Xcode Cloud は使用せず、ローカルデプロイに一本化している。
 
 #### コマンド
 
 | コマンド | 動作 |
 |---------|------|
-| `./scripts/deploy.sh` | アーカイブ + アップロード（フル実行） |
-| `./scripts/deploy.sh --archive` | アーカイブのみ |
+| `./scripts/deploy.sh` | ビルド番号インクリメント + アーカイブ + アップロード（フル実行） |
+| `./scripts/deploy.sh --archive` | ビルド番号インクリメント + アーカイブのみ |
 | `./scripts/deploy.sh --upload` | 既存アーカイブのアップロードのみ |
 | `./scripts/deploy.sh --setup` | API Key の初回セットアップ（対話式） |
+
+#### ビルド番号の自動管理
+
+`deploy.sh` のアーカイブ時に以下を自動実行する:
+
+1. `project.yml` の `CURRENT_PROJECT_VERSION` を読み取り +1 インクリメント
+2. `xcodegen generate` で `.xcodeproj` を再生成（Info.plist・project.pbxproj に反映）
+3. Widget 拡張の `CFBundleVersion` は `$(CURRENT_PROJECT_VERSION)` を参照するため自動同期
 
 #### 前提条件
 
@@ -2281,38 +2289,7 @@ CLI からアーカイブ → App Store Connect アップロードまでを一�
 | **Apple Distribution 証明書** | キーチェーンに配布用証明書が必要（Xcode → Settings → Accounts → Manage Certificates で作成） |
 | **署名スタイル** | Automatic（`-allowProvisioningUpdates` で自動取得） |
 | **チーム ID** | `YRP5KV2X62` |
-
-### 8.4 Xcode Cloud（TestFlight 自動アップロード）
-
-main ブランチへの push 時に iOS アプリを自動ビルドし、TestFlight へアップロードする。手動トリガーも常に利用可能。
-
-**ワークフロー設定**
-
-| 項目 | 値 |
-|------|------|
-| **ワークフロー名** | TestFlight Release |
-| **トリガー** | main ブランチへの push（`real-estate-ios/` 配下の変更時のみ）+ 手動実行 |
-| **アクション** | Archive → TestFlight (Internal Testing Only) |
-| **Scheme** | RealEstateApp |
-| **Platform** | iOS |
-
-**ci_scripts**
-
-`real-estate-ios/ci_scripts/ci_post_clone.sh` — Xcode Cloud がクローン後に実行するスクリプト。
-
-| 処理 | 詳細 |
-|------|------|
-| **ビルド番号自動設定** | Xcode Cloud の `$CI_BUILD_NUMBER` 環境変数を使用し、`RealEstateApp/Info.plist` の `CFBundleVersion` と `project.pbxproj` の `CURRENT_PROJECT_VERSION` を自動更新。ローカルビルドでは既存の値がそのまま使われる。Widget 拡張の `CFBundleVersion` は `$(CURRENT_PROJECT_VERSION)` を参照するため、`project.pbxproj` 更新と同時に自動同期される |
-
-**ビルド番号管理の変更**
-
-Xcode Cloud 導入前は以下3ファイルのビルド番号を手動で更新していたが、`CI_BUILD_NUMBER` による自動インクリメントにより手動更新は不要になった:
-
-- `real-estate-ios/RealEstateApp/Info.plist`（`CFBundleVersion`）
-- `real-estate-ios/project.yml`（`CURRENT_PROJECT_VERSION`）
-- `real-estate-ios/RealEstateApp.xcodeproj/project.pbxproj`（`CURRENT_PROJECT_VERSION`）
-
-Widget 拡張（`RealEstateWidget/Info.plist`）の `CFBundleVersion` は `$(CURRENT_PROJECT_VERSION)` ビルド設定を参照するため、CI スクリプトによる `project.pbxproj` 更新だけで親アプリと自動的に揃う。
+| **xcodegen** | `brew install xcodegen` でインストール |
 
 ---
 

@@ -97,8 +97,33 @@ load_config() {
     ok "API Key 読み込み完了 (Key ID: $ASC_KEY_ID)"
 }
 
+# ── ビルド番号インクリメント ──────────────────────────
+bump_build_number() {
+    local project_yml="$PROJECT_DIR/project.yml"
+    [[ -f "$project_yml" ]] || fail "project.yml が見つかりません: $project_yml"
+
+    local current
+    current=$(grep 'CURRENT_PROJECT_VERSION:' "$project_yml" | head -1 | sed 's/.*: *"\{0,1\}\([0-9]*\)"\{0,1\}/\1/')
+    [[ -n "$current" ]] || fail "project.yml から CURRENT_PROJECT_VERSION を読み取れません"
+
+    local next=$((current + 1))
+    sed -i '' "s/CURRENT_PROJECT_VERSION: \"${current}\"/CURRENT_PROJECT_VERSION: \"${next}\"/" "$project_yml"
+
+    info "ビルド番号: $current → $next"
+
+    if command -v xcodegen &>/dev/null; then
+        info "xcodegen generate 実行中…"
+        (cd "$PROJECT_DIR" && xcodegen generate --use-cache 2>&1 | tail -1)
+    else
+        fail "xcodegen が見つかりません。brew install xcodegen でインストールしてください"
+    fi
+
+    ok "ビルド番号更新完了 (build $next)"
+}
+
 # ── アーカイブ ────────────────────────────────────────
 do_archive() {
+    bump_build_number
     info "アーカイブ中… (scheme: $SCHEME, configuration: Release)"
 
     # 前回のアーカイブを削除
