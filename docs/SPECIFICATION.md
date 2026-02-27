@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-28（プッシュ通知に中古/新築内訳・新規物件vs別部屋の区別を追加）
+> **最終更新**: 2026-02-28（レポートの価格変動セクションに変動日を括弧書き表示）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -684,7 +684,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **WidgetKit 連携** | refresh 完了後に WidgetDataProvider が全件数・新着数・いいね数・いいね物件サマリを App Group の UserDefaults に書き込み、ウィジェットのタイムラインを再読み込み |
 | **並列取得** | 中古・新築を `async let` で並列リクエスト |
 | **JSON デコード** | `Task.detached(priority: .userInitiated)` でバックグラウンド実行 |
-| **新規検出** | サーバーサイド判定: スクレイピングパイプラインが `previous.json` との `identity_key` ベース差分比較で `is_new` フラグを `latest.json` に注入。iOS アプリは DTO の `is_new` をそのまま `isNew` に反映（クライアントサイドでの独自判定は行わない）。既存物件の `isNew` は同期ごとにリセット。304 Not Modified 時も `isNew` をリセットし、New バッジが残り続けないようにする。`identityKey` は Python 側と同一ロジック（`cleanListingName` で正規化した物件名・駅名のみ抽出・`walk_min` 除外）で、Slack 通知・地図・プッシュ通知・iOS アプリで一貫した新規判定を行う |
+| **新規検出** | サーバーサイド判定: スクレイピングパイプラインが `previous.json` との `identity_key` ベース差分比較で `is_new` フラグを `latest.json` に注入。さらに `building_key`（正規化物件名+区名）で前回データに同一マンション名が存在するかを判定し、`is_new_building` フラグも注入（true=新規マンション、false=既存マンションの別部屋）。iOS アプリは DTO の `is_new` / `is_new_building` をそのまま `isNew` / `isNewBuilding` に反映（クライアントサイドでの独自判定は行わない）。既存物件の `isNew` / `isNewBuilding` は同期ごとにリセット。304 Not Modified 時もリセットし、New バッジが残り続けないようにする。`identityKey` は Python 側と同一ロジック（`cleanListingName` で正規化した物件名・駅名のみ抽出・`walk_min` 除外）で、Slack 通知・地図・プッシュ通知・iOS アプリで一貫した新規判定を行う |
 | **自動更新** | フォアグラウンド復帰時に15分経過していれば自動 refresh。復帰時にローカル通知の累積カウント・バッジもリセット |
 | **lastError** | メインの JSON 取得・同期エラー（致命的）。UI に表示 |
 | **syncWarning** | 非致命的な同期警告（Firebase いいね・メモ、通勤時間計算など）。`pullAnnotations` / `calculateForAllListings` 失敗時に設定。UI で任意表示可能 |
@@ -1754,7 +1754,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | セクション | 内容 |
 |-----------|------|
 | **新着物件** | 前回から追加された物件 |
-| **価格変更** | 前回から価格が変わった物件 |
+| **価格変更** | 前回から価格が変わった物件。物件名の後ろに価格変動日を「（M/D）」形式で括弧書き表示（`price_history` の直近エントリの日付） |
 | **掲載終了** | 前回から消えた物件 |
 | **区別一覧** | 区ごとの物件リスト |
 | **駅別一覧** | 駅ごとの物件リスト |
@@ -1850,6 +1850,7 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 | `commentsJSON` | String? | コメント JSON（Firestore 同期） |
 | `isDelisted` | Bool | 掲載終了フラグ |
 | `isNew` | Bool | サーバーサイドで判定された新着フラグ（JSON の `is_new` から取得。同期ごとにリセット。304 応答時も確実にリセット） |
+| `isNewBuilding` | Bool | 新着かつ同一マンション名が前回データに存在しない＝新規マンション（false＝既存マンションの別部屋。JSON の `is_new_building` から取得。同期ごとにリセット） |
 | `viewedAt` | Date? | 最終閲覧日時（物件詳細画面を開いた日時。最近見た物件一覧用） |
 | `checklistJSON` | String? | 内見チェックリスト JSON 文字列（ローカル保存。ChecklistItem 配列のエンコード） |
 | `photosJSON` | String? | 内見写真メタデータ JSON |
@@ -2176,7 +2177,7 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 | **送信元** | GitHub Actions（`send_push.py`）→ FCM HTTP v1 API |
 | **受信** | iOS アプリ（`PushNotificationService` / `AppDelegate`） |
 | **トリガー** | スクレイピングで新着物件検出時（`latest.json` の `is_new` フラグをカウント）、または価格変動検出時 |
-| **通知内容** | 新着件数（中古/新築）+ 価格変動（値下げ/値上げ件数と物件名・変動額のサマリ）。`price_history` が2件以上かつ最新エントリの日付が当日の物件を価格変動として検出。例: 「中古 2件 / 値下げ 2件（パークタワー -300万、シティタワー -150万）」 |
+| **通知内容** | 新着件数（中古/新築）+ 中古の内訳（新規マンション/別部屋）+ 価格変動（値下げ/値上げ件数と物件名・変動額のサマリ）。中古の新着は `is_new_building` フラグで「新規」（初出マンション）と「別部屋」（既存マンションの別の部屋）に分類。`price_history` が2件以上かつ最新エントリの日付が当日の物件を価格変動として検出。例: 「中古 3件（新規2・別部屋1）/ 新築 1件 / 値下げ 2件（パークタワー -300万、シティタワー -150万）」 |
 
 ---
 
@@ -2505,7 +2506,8 @@ Pull Request 時に `real-estate-ios/` または `scraping-tool/` の変更を�
     "hazard_info": "{...}",
     "commute_info": "{...}",
     "floor_plan_images": ["https://firebasestorage.googleapis.com/v0/b/real-estate-app-5b869.firebasestorage.app/o/floor_plans%2Fabc123def456.jpg?alt=media&token=..."],
-    "is_new": false
+    "is_new": false,
+    "is_new_building": false
   }
 ]
 ```
@@ -2533,7 +2535,8 @@ Pull Request 時に `real-estate-ios/` または `scraping-tool/` の変更を�
     "property_type": "shinchiku",
     "latitude": 35.6600,
     "longitude": 139.7000,
-    "is_new": true
+    "is_new": true,
+    "is_new_building": true
   }
 ]
 ```

@@ -183,6 +183,23 @@ def _link_from_group(group: list[dict]) -> str:
     return link
 
 
+def _price_change_date_suffix(listing: dict) -> str:
+    """price_history から直近の価格変動日を「（M/D）」形式で返す。履歴が2件未満なら空文字。"""
+    history = listing.get("price_history") or []
+    if len(history) < 2:
+        return ""
+    last_entry = history[-1]
+    date_str = last_entry.get("date", "")
+    if not date_str:
+        return ""
+    try:
+        from datetime import date as _date
+        d = _date.fromisoformat(date_str)
+        return f"（{d.month}/{d.day}）"
+    except (ValueError, TypeError):
+        return ""
+
+
 def generate_markdown(
     listings: list[dict[str, Any]],
     diff: Optional[dict[str, Any]] = None,
@@ -283,8 +300,9 @@ def generate_markdown(
             curr_price = c["price"]
             diff_price = (curr.get("price_man") or 0) - (prev.get("price_man") or 0)
             diff_str = f"{'+' if diff_price >= 0 else ''}{diff_price}万円" if diff_price != 0 else "変動なし"
+            date_suffix = _price_change_date_suffix(curr)
             url = curr.get("url", "")
-            lines.append(f"| {c['name']} | {prev_price} | {curr_price} | {diff_str} | {c['layout']} | {c['area']} | {c['floor_str']} | {c['units']} | {c['rank']} | {c['breakdown']} | {c['opt_10y']} | {c['neu_10y']} | {c['pes_10y']} | {c['monthly_loan']} | {c['m3_str']} | {c['pg_str']} | {c['gmap']} | [詳細]({url}) |")
+            lines.append(f"| {c['name']}{date_suffix} | {prev_price} | {curr_price} | {diff_str} | {c['layout']} | {c['area']} | {c['floor_str']} | {c['units']} | {c['rank']} | {c['breakdown']} | {c['opt_10y']} | {c['neu_10y']} | {c['pes_10y']} | {c['monthly_loan']} | {c['m3_str']} | {c['pg_str']} | {c['gmap']} | [詳細]({url}) |")
         lines.append("")
 
     # 削除された物件
