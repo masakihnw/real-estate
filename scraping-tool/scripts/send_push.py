@@ -164,6 +164,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="FCM でプッシュ通知を送信")
     ap.add_argument("--new-count", type=int, default=0, help="新着中古件数")
     ap.add_argument("--shinchiku-count", type=int, default=0, help="新着新築件数")
+    ap.add_argument("--new-building-count", type=int, default=0, help="新着中古のうち新規物件（新しいマンション）の件数")
+    ap.add_argument("--new-room-count", type=int, default=0, help="新着中古のうち別部屋（既存マンションの別の部屋）の件数")
     ap.add_argument("--latest", type=str, default="", help="中古 latest.json のパス（価格変動検出用）")
     ap.add_argument("--latest-shinchiku", type=str, default="", help="新築 latest_shinchiku.json のパス（価格変動検出用）")
     args = ap.parse_args()
@@ -223,7 +225,15 @@ def main() -> None:
     # 通知メッセージ組み立て
     parts = []
     if args.new_count > 0:
-        parts.append(f"中古 {args.new_count}件")
+        chuko_label = f"中古 {args.new_count}件"
+        breakdown = []
+        if args.new_building_count > 0:
+            breakdown.append(f"新規{args.new_building_count}")
+        if args.new_room_count > 0:
+            breakdown.append(f"別部屋{args.new_room_count}")
+        if breakdown:
+            chuko_label += f"（{'・'.join(breakdown)}）"
+        parts.append(chuko_label)
     if args.shinchiku_count > 0:
         parts.append(f"新築 {args.shinchiku_count}件")
     if price_changes["decreases"]:
@@ -236,7 +246,7 @@ def main() -> None:
     title = "新着・価格変動" if has_price_changes else "新着物件"
     body = " / ".join(parts) if parts else "価格変動がありました。"
     if total > 0 and not has_price_changes:
-        body = f"{body} の新規物件が追加されました。"
+        body += " の新規物件が追加されました。"
 
     send_topic_push(project_id, access_token, "new_listings", title, body)
 

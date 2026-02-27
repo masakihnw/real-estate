@@ -21,7 +21,7 @@ struct RealEstateAppApp: App {
     // Listing モデルのストアドプロパティを追加・削除・型変更した場合はインクリメントする。
     // 旧バージョンの DB は自動削除され、サーバーからデータを再取得する。
     // VersionedSchema を使わない簡易マイグレーション方式。
-    private static let currentSchemaVersion = 12  // v12: ディスク画像キャッシュのハッシュ衝突修正
+    private static let currentSchemaVersion = 13  // v13: isNewBuilding 追加（新規マンション/別部屋の区別）
     private static let schemaVersionKey = "realestate.schemaVersion"
 
     var sharedModelContainer: ModelContainer = {
