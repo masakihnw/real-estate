@@ -138,7 +138,7 @@
       "latitude": 35.7065865,
       "longitude": 139.7394767,
       "building_group_id": "131040740-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド神楽坂イースト"
     },
     {
       "id": "tx-4078beabc647",
@@ -1138,7 +1138,7 @@
       "latitude": 35.7065865,
       "longitude": 139.7394767,
       "building_group_id": "131040740-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド神楽坂イースト"
     },
     {
       "id": "tx-d91e0b12d26f",
@@ -1318,7 +1318,7 @@
       "latitude": 35.7065865,
       "longitude": 139.7394767,
       "building_group_id": "131040740-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド神楽坂イースト"
     },
     {
       "id": "tx-302857734a73",
@@ -19127,7 +19127,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウド神楽坂イースト"
     },
     {
       "group_id": "131040780-2014",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-27T20:01:21",
+    "updated_at": "2026-02-27T21:39:24",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
