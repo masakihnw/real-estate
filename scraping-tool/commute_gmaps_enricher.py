@@ -368,7 +368,7 @@ async def check_no_route(page: Page) -> bool:
 
 def load_cache() -> dict[str, dict[str, Any]]:
     """レジューム用キャッシュを読み込む。キー=物件URL, 値={playground: {minutes, ...}, m3career: {...}}"""
-    cache_path = CACHE_DIR / "results.json"
+    cache_path = CACHE_DIR / "cache.json"
     if cache_path.exists():
         try:
             with open(cache_path, encoding="utf-8") as f:
@@ -380,7 +380,7 @@ def load_cache() -> dict[str, dict[str, Any]]:
 
 def save_cache(cache: dict[str, dict[str, Any]]) -> None:
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    with open(CACHE_DIR / "results.json", "w", encoding="utf-8") as f:
+    with open(CACHE_DIR / "cache.json", "w", encoding="utf-8") as f:
         json.dump(cache, f, ensure_ascii=False, indent=2)
 
 
