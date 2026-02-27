@@ -891,13 +891,13 @@ struct ListingRowView: View {
                         .lineLimit(1)
                         .foregroundStyle(listing.isDelisted ? .secondary : .primary)
 
-                    if listing.isNew {
-                        Text("New")
+                    if listing.isAddedToday {
+                        Text(listing.isNewBuilding ? "New" : "別部屋")
                             .font(.caption2.weight(.bold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 2)
-                            .background(Color.red)
+                            .background(listing.isNewBuilding ? Color.red : Color.orange)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
 

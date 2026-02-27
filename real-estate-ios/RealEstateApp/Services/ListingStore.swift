@@ -40,6 +40,13 @@ final class ListingStore {
         return URLSession(configuration: config)
     }()
 
+    private static let isoDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
     private let defaults = UserDefaults.standard
     private let chukoURLKey = "realestate.listURL"
     private let shinchikuURLKey = "realestate.shinchikuListURL"
@@ -182,7 +189,7 @@ final class ListingStore {
             let active = listings.filter { !$0.isDelisted }
             WidgetDataProvider.update(
                 totalListings: active.count,
-                newListings: active.filter { $0.isNew }.count,
+                newListings: active.filter { $0.isAddedToday }.count,
                 likedCount: listings.filter { $0.isLiked }.count,
                 priceChanges: 0,
                 likedSummaries: listings.filter { $0.isLiked }.prefix(5).map { ($0.name, $0.priceMan, nil) }
@@ -273,7 +280,10 @@ final class ListingStore {
                 let descriptor = FetchDescriptor<Listing>(predicate: predicate)
                 let newOnes = try modelContext.fetch(descriptor)
                 if !newOnes.isEmpty {
-                    for e in newOnes { e.isNew = false }
+                    for e in newOnes {
+                        e.isNew = false
+                        e.isNewBuilding = false
+                    }
                     try modelContext.save()
                 }
             } catch {
@@ -292,7 +302,10 @@ final class ListingStore {
                 let existingByKey = Dictionary(existing.map { ($0.identityKey, $0) }, uniquingKeysWith: { first, _ in first })
 
                 // 前回 isNew だった物件をリセット（今回の同期で新規でなければ消える）
-                for e in existing { e.isNew = false }
+                for e in existing {
+                    e.isNew = false
+                    e.isNewBuilding = false
+                }
 
                 var newCount = 0
                 var incomingKeys = Set<String>()
@@ -310,7 +323,14 @@ final class ListingStore {
                     } else {
                         // listing.isNew は DTO の is_new（サーバーサイド判定）を引き継いでいる
                         if listing.isNew { newCount += 1 }
-                        listing.addedAt = fetchedAt
+                        // first_seen_at（サーバーサイドの初回検出日）があれば addedAt に使う。
+                        // スキーマリセット後も正しい追加日順ソートを維持するため。
+                        if let seen = listing.firstSeenAt,
+                           let parsed = Self.isoDateFormatter.date(from: seen) {
+                            listing.addedAt = parsed
+                        } else {
+                            listing.addedAt = fetchedAt
+                        }
                         modelContext.insert(listing)
                     }
                 }
@@ -439,7 +459,7 @@ final class ListingStore {
         existing.resaleLiquidityScore = new.resaleLiquidityScore
         existing.competingListingsCount = new.competingListingsCount
         existing.listingScore = new.listingScore
-        // existing.memo, existing.isLiked, existing.isNew, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
+        // existing.memo, existing.isLiked, existing.isNew, existing.isNewBuilding, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
     }
 
     func requestNotificationPermission() {

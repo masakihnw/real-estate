@@ -255,10 +255,14 @@ echo "[TIMING] report: $(( ($(date +%s) - _t) ))s" >&2
 
 if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
     echo "プッシュ通知送信中..." >&2
-    NEW_CHUKO=$(python3 -c "
+    read NEW_CHUKO NEW_BUILDING NEW_ROOM <<< $(python3 -c "
 import json
-print(sum(1 for r in json.load(open('${OUTPUT_DIR}/latest.json')) if r.get('is_new')))
-" 2>/dev/null || echo "0")
+data = json.load(open('${OUTPUT_DIR}/latest.json'))
+new_items = [r for r in data if r.get('is_new')]
+buildings = sum(1 for r in new_items if r.get('is_new_building'))
+rooms = len(new_items) - buildings
+print(len(new_items), buildings, rooms)
+" 2>/dev/null || echo "0 0 0")
     NEW_SHINCHIKU=0
     if [ -f "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
         NEW_SHINCHIKU=$(python3 -c "
@@ -267,6 +271,8 @@ print(sum(1 for r in json.load(open('${OUTPUT_DIR}/latest_shinchiku.json')) if r
 " 2>/dev/null || echo "0")
     fi
     python3 scripts/send_push.py --new-count "$NEW_CHUKO" --shinchiku-count "$NEW_SHINCHIKU" \
+        --new-building-count "$NEW_BUILDING" --new-room-count "$NEW_ROOM" \
+        --latest "${OUTPUT_DIR}/latest.json" --latest-shinchiku "${OUTPUT_DIR}/latest_shinchiku.json" \
         || echo "プッシュ通知送信失敗（続行）" >&2
 fi
 

@@ -64,6 +64,8 @@ final class Listing: @unchecked Sendable {
     var isDelisted: Bool
     /// サーバーサイドで判定された新着物件フラグ（前回スクレイピングとの差分比較。Newバッジ表示用）
     var isNew: Bool
+    /// 新着かつ同一マンション名の物件が前回データに存在しない＝まったく新しいマンション（false なら既存マンションの別部屋）
+    var isNewBuilding: Bool
 
     /// 最終閲覧日時（物件詳細画面を開いた日時。最近見た物件一覧用）
     var viewedAt: Date?
@@ -297,6 +299,7 @@ final class Listing: @unchecked Sendable {
         isLiked: Bool = false,
         isDelisted: Bool = false,
         isNew: Bool = false,
+        isNewBuilding: Bool = false,
         viewedAt: Date? = nil,
         checklistJSON: String? = nil,
         propertyType: String = "chuko",
@@ -379,6 +382,7 @@ final class Listing: @unchecked Sendable {
         self.isLiked = isLiked
         self.isDelisted = isDelisted
         self.isNew = isNew
+        self.isNewBuilding = isNewBuilding
         self.viewedAt = viewedAt
         self.checklistJSON = checklistJSON
         self.propertyType = propertyType
@@ -985,7 +989,10 @@ final class Listing: @unchecked Sendable {
         Self.addedAtFormatter.string(from: addedAt)
     }
 
-    // isNew は stored property として定義済み（前回の同期時に存在しなかった新着物件フラグ）
+    /// addedAt が今日の日付かどうか（New バッジ表示用）
+    var isAddedToday: Bool {
+        Calendar.current.isDateInToday(addedAt)
+    }
 
     /// 住まいサーフィンの詳細住所（ss_address）があればそちらを優先、なければ元の住所
     var bestAddress: String? {
@@ -2515,6 +2522,8 @@ struct ListingDTO: Codable {
 
     // サーバーサイドで判定された新着フラグ（前回スクレイピングとの差分比較）
     var is_new: Bool?
+    // 新着かつ同一マンション名が前回データに無い＝新規マンション（false＝既存マンションの別部屋）
+    var is_new_building: Bool?
 }
 
 extension Listing {
@@ -2715,6 +2724,7 @@ extension Listing {
             suumoImagesJSON: suumoImagesJSON,
             fetchedAt: fetchedAt,
             isNew: dto.is_new ?? false,
+            isNewBuilding: dto.is_new_building ?? false,
             propertyType: dto.property_type ?? "chuko",
             duplicateCount: dto.duplicate_count ?? 1,
             priceMaxMan: dto.price_max_man,

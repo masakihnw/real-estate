@@ -161,7 +161,7 @@ struct DashboardView: View {
     }
 
     private var newListingsCount: Int {
-        activeListings.filter(\.isNew).count
+        activeListings.filter(\.isAddedToday).count
     }
 
     private var priceDecreasedCount: Int {

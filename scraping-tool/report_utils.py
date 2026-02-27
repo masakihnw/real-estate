@@ -281,21 +281,38 @@ def listing_key(r: dict) -> tuple:
     )
 
 
+def building_key(r: dict) -> tuple:
+    """同一マンション（建物）の識別用キー。
+    正規化した物件名と区名で判定する（inject_competing_count と同じ粒度）。
+    新規物件が「まったく新しいマンション」か「既存マンションの別部屋」かを区別するために使う。"""
+    return (
+        normalize_listing_name(r.get("name") or ""),
+        get_ward_from_address(r.get("address") or ""),
+    )
+
+
 def inject_is_new(
     current: list[dict],
     previous: Optional[list[dict]] = None,
 ) -> list[dict]:
-    """各リスティングに is_new フラグを付与して返す。
+    """各リスティングに is_new / is_new_building フラグを付与して返す。
+    - is_new: 前回スクレイピングに存在しなかった物件
+    - is_new_building: is_new かつ同一マンション名の物件が前回データに1件も無い
+      （False の場合は「既存マンションの別部屋」）
     previous が None/空の場合は全て is_new=False（初回実行時に全件 New になるのを防ぐ）。
     Slack 通知の差分検出と同じ identity_key ベースの比較を使う。"""
     if not previous:
         for r in current:
             r["is_new"] = False
+            r["is_new_building"] = False
         return current
     diff = compare_listings(current, previous)
     new_keys = {identity_key(r) for r in diff["new"]}
+    prev_building_keys = {building_key(r) for r in previous}
     for r in current:
-        r["is_new"] = identity_key(r) in new_keys
+        is_new = identity_key(r) in new_keys
+        r["is_new"] = is_new
+        r["is_new_building"] = is_new and building_key(r) not in prev_building_keys
     return current
 
 
