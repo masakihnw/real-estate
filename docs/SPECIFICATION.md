@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-26（Xcode Cloud 廃止・ローカルデプロイ一本化、deploy.sh にビルド番号自動インクリメント追加）
+> **最終更新**: 2026-02-28（プッシュ通知に中古/新築内訳・新規物件vs別部屋の区別を追加）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -1450,12 +1450,12 @@ Job 3: build-transaction-feed（完全独立、~15min）
 
 Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    ├── merge_caches.py（geocode, sumai_surfin, manifest を union マージ）
-   ├── inject_is_new（previous.json との identity_key 差分比較で is_new フラグを latest.json に注入）
+   ├── inject_is_new（previous.json との identity_key 差分比較で is_new / is_new_building フラグを latest.json に注入）
    ├── build_map_viewer.py（中古+新築の地図生成）
    ├── geocode.py（キャッシュクリーンアップ）
    ├── convert_risk_geojson.py（初回のみ）
    ├── generate_report.py → Markdown レポート
-   ├── send_push.py → FCM プッシュ通知（is_new フラグのカウントで新着件数、price_history で価格変動を検出して通知本文に含める）
+   ├── send_push.py → FCM プッシュ通知（is_new / is_new_building フラグのカウントで新着件数・新規物件vs別部屋の内訳、price_history で価格変動を検出して通知本文に含める）
    ├── slack_notify.py → Slack 通知（1日1回 6:00〜10:00 JST の回）
    └── git commit & push
 ```
@@ -1725,6 +1725,8 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | `--force` | 全物件を再取得（`source: "gmaps"` 既存データも上書き） |
 | `--no-headless` | ブラウザを表示して実行（デバッグ用） |
 | `--reset` | レジューム用キャッシュ（`commute_gmaps_cache/`）をリセット |
+
+キャッシュ（`commute_gmaps_cache/results.json`）は CI 間で `actions/cache/restore` / `actions/cache/save`（`if: always()`）により永続化される。タイムアウトでジョブがキャンセルされても部分キャッシュが保存され、次回実行時に未取得分のみスクレイピングする。初回ブートストラップ用にリポジトリにもキャッシュファイルをコミットしている。
 
 マージ順序: Track C（commute_enricher）→ Track F（commute_gmaps_enricher）で、Track F の結果が優先される。
 
@@ -2211,7 +2213,7 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 check → 変更なしなら全後続ジョブ skip
   ├── enrich-chuko (continue-on-error, ~40min)
   │   Phase 1: embed_geocode (<1min)
-  │   Phase 2: 全 enricher 完全並列 (6トラック)
+  │   Phase 2: 全 enricher 完全並列 (7トラック)
   │   Phase 3: merge_enrichments.py + upload_floor_plans
   ├── enrich-shinchiku (continue-on-error, ~25min)
   ├── build-transaction-feed (continue-on-error, ~15min)
@@ -2220,6 +2222,8 @@ check → 変更なしなら全後続ジョブ skip
 ```
 
 > **cancel-in-progress: false の意味**: WF2 実行中に新しい WF1 が完了しても、実行中の WF2 は完了まで走り切る。新しい WF2 はキューで待機し、現在の実行が終わってから開始される。GitHub Actions は concurrency group あたりキューに1件のみ保持するため、複数の待機が溜まることはない。enrich-chuko が約2時間かかり、WF1 が2時間ごとに実行されるため、cancel-in-progress: true だと毎回キャンセルされてしまう問題を回避する。
+>
+> **commute_gmaps_cache の永続化**: `commute_gmaps_enricher.py` のスクレイピング結果キャッシュは `actions/cache/restore` / `actions/cache/save`（`if: always()`）で CI 間で永続化される。タイムアウトでキャンセルされても `if: always()` により部分キャッシュが保存され、次回は未取得分のみ処理する。
 
 #### PR ビルド検証ワークフロー
 

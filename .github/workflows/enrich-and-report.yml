@@ -124,6 +124,15 @@ jobs:
           path: scraping-tool/data/
         continue-on-error: true
 
+      - name: Restore commute gmaps cache
+        uses: actions/cache/restore@v4
+        with:
+          path: scraping-tool/commute_gmaps_cache
+          key: commute-gmaps-chuko-${{ github.run_id }}
+          restore-keys: |
+            commute-gmaps-chuko-
+            commute-gmaps-
+
       - name: Prepare input
         working-directory: scraping-tool
         run: |
@@ -139,6 +148,13 @@ jobs:
         run: |
           chmod +x scripts/run_enrich.sh
           ./scripts/run_enrich.sh --property-type chuko
+
+      - name: Save commute gmaps cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: scraping-tool/commute_gmaps_cache
+          key: commute-gmaps-chuko-${{ github.run_id }}
 
       - name: Upload enriched results
         uses: actions/upload-artifact@v4
@@ -207,6 +223,15 @@ jobs:
           path: scraping-tool/data/
         continue-on-error: true
 
+      - name: Restore commute gmaps cache
+        uses: actions/cache/restore@v4
+        with:
+          path: scraping-tool/commute_gmaps_cache
+          key: commute-gmaps-shinchiku-${{ github.run_id }}
+          restore-keys: |
+            commute-gmaps-shinchiku-
+            commute-gmaps-
+
       - name: Prepare input
         working-directory: scraping-tool
         run: |
@@ -228,6 +253,13 @@ jobs:
             chmod +x scripts/run_enrich.sh
             ./scripts/run_enrich.sh --property-type shinchiku
           fi
+
+      - name: Save commute gmaps cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: scraping-tool/commute_gmaps_cache
+          key: commute-gmaps-shinchiku-${{ github.run_id }}
 
       - name: Upload enriched results
         if: always()
