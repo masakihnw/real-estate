@@ -4658,7 +4658,7 @@
       "latitude": 35.694575,
       "longitude": 139.809992,
       "building_group_id": "131070080-2012",
-      "estimated_building_name": "ザ・グランアルト錦糸町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a205aee6518f",
@@ -5038,7 +5038,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
+      "estimated_building_name": "クレヴィア住吉扇橋"
     },
     {
       "id": "tx-124f4e748254",
@@ -5058,7 +5058,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2022",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-aba5e60e8b5f",
@@ -5078,7 +5078,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-480e5fbd16a7",
@@ -5158,7 +5158,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2022",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d4d31bf99452",
@@ -5238,7 +5238,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b09be1843364",
@@ -5398,7 +5398,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a166777a0626",
@@ -5418,7 +5418,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4c3000f98c62",
@@ -5518,7 +5518,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
+      "estimated_building_name": "クレヴィア住吉扇橋"
     },
     {
       "id": "tx-c7de4cdfa660",
@@ -5618,7 +5618,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-44c706d0e05b",
@@ -5638,7 +5638,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-944ee30dcee8",
@@ -5658,7 +5658,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-643ff849bf4b",
@@ -5798,7 +5798,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b5b3c4991095",
@@ -5818,7 +5818,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-bc319b66c992",
@@ -5878,7 +5878,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e82f2f0093d4",
@@ -6198,7 +6198,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7aee3fcacce0",
@@ -6718,7 +6718,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0019501a95ae",
@@ -6838,7 +6838,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-835b75dc2e6c",
@@ -6858,7 +6858,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4fee745c3d10",
@@ -7218,7 +7218,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9ee6217116d8",
@@ -7598,7 +7598,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c4d8a3f3a0cb",
@@ -7618,7 +7618,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
+      "estimated_building_name": "クレヴィア住吉扇橋"
     },
     {
       "id": "tx-82e870163227",
@@ -7638,7 +7638,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-74ef268aee98",
@@ -7658,7 +7658,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3d82702d82f6",
@@ -8038,7 +8038,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2021",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5725a31463a3",
@@ -20713,7 +20713,7 @@
         "2023Q1"
       ],
       "latest_period": "2023Q1",
-      "estimated_building_name": "ザ・グランアルト錦糸町"
+      "estimated_building_name": null
     },
     {
       "group_id": "131070080-2021",
@@ -20904,7 +20904,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
+      "estimated_building_name": "クレヴィア住吉扇橋"
     },
     {
       "group_id": "131080080-2020",
@@ -21061,7 +21061,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080100-2022",
@@ -21085,7 +21085,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": "プラウドタワー亀戸クロス ブライトタワー"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080120-2017",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-02-28T19:41:47",
+    "updated_at": "2026-02-28T21:31:59",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
