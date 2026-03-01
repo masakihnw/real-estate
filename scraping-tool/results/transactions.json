@@ -138,7 +138,7 @@
       "latitude": 35.7065865,
       "longitude": 139.7394767,
       "building_group_id": "131040740-2012",
-      "estimated_building_name": "プラウド神楽坂イースト"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4078beabc647",
@@ -1138,7 +1138,7 @@
       "latitude": 35.7065865,
       "longitude": 139.7394767,
       "building_group_id": "131040740-2012",
-      "estimated_building_name": "プラウド神楽坂イースト"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d91e0b12d26f",
@@ -1318,7 +1318,7 @@
       "latitude": 35.7065865,
       "longitude": 139.7394767,
       "building_group_id": "131040740-2012",
-      "estimated_building_name": "プラウド神楽坂イースト"
+      "estimated_building_name": null
     },
     {
       "id": "tx-302857734a73",
@@ -4658,7 +4658,7 @@
       "latitude": 35.694575,
       "longitude": 139.809992,
       "building_group_id": "131070080-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランアルト錦糸町"
     },
     {
       "id": "tx-a205aee6518f",
@@ -9998,7 +9998,7 @@
       "latitude": 35.574447,
       "longitude": 139.7045511,
       "building_group_id": "131110010-2019",
-      "estimated_building_name": "プラウド池上"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fa012e62df8b",
@@ -10058,7 +10058,7 @@
       "latitude": 35.574447,
       "longitude": 139.7045511,
       "building_group_id": "131110010-2019",
-      "estimated_building_name": "プラウド池上"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6a2144934a7f",
@@ -13458,7 +13458,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
     },
     {
       "id": "tx-5655c363ef81",
@@ -13818,7 +13818,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
     },
     {
       "id": "tx-25a0f25383cc",
@@ -13938,7 +13938,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
     },
     {
       "id": "tx-6eb0ecc1725d",
@@ -14658,7 +14658,7 @@
       "latitude": 35.6908488,
       "longitude": 139.6755198,
       "building_group_id": "131140180-2024",
-      "estimated_building_name": "クレヴィア中野新橋"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ad7faca80d3c",
@@ -19127,7 +19127,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": "プラウド神楽坂イースト"
+      "estimated_building_name": null
     },
     {
       "group_id": "131040780-2014",
@@ -20713,7 +20713,7 @@
         "2023Q1"
       ],
       "latest_period": "2023Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・グランアルト錦糸町"
     },
     {
       "group_id": "131070080-2021",
@@ -22074,7 +22074,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "プラウド池上"
+      "estimated_building_name": null
     },
     {
       "group_id": "131110040-2015",
@@ -23976,7 +23976,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
     },
     {
       "group_id": "131140130-2017",
@@ -24069,7 +24069,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "クレヴィア中野新橋"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140190-2012",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-01T09:36:01",
+    "updated_at": "2026-03-01T19:47:52",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
