@@ -757,15 +757,15 @@
     },
     {
       "date": "2026-03-02",
-      "total_listings": 179,
-      "new_count": 4,
-      "removed_count": 8,
-      "updated_count": 5,
-      "price_changed_count": 1,
-      "avg_price_man": 10777,
+      "total_listings": 178,
+      "new_count": 0,
+      "removed_count": 1,
+      "updated_count": 0,
+      "price_changed_count": 0,
+      "avg_price_man": 10785,
       "median_price_man": 10980,
       "price_distribution": {
-        "under_10000": 51,
+        "under_10000": 50,
         "10000_11000": 58,
         "11000_12000": 70,
         "over_12000": 0,
@@ -797,8 +797,8 @@
           "max_price_man": 11980
         },
         "豊島区": {
-          "count": 13,
-          "avg_price_man": 10556,
+          "count": 12,
+          "avg_price_man": 10645,
           "min_price_man": 9400,
           "max_price_man": 11990
         },
