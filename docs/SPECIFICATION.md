@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-02-28（レポートの価格変動セクションに変動日を括弧書き表示）
+> **最終更新**: 2026-03-02（upload_floor_plans を並列化し finalize ジョブへ移動、enrich タイムアウト改善）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -1443,13 +1443,14 @@ Job 1: enrich-chuko / Job 2: enrich-shinchiku（同構造、並列実行）
    ├── Track D: reinfolib_enricher（~1min）
    └── Track E: estat_enricher（~1min）
        ↓
-   Phase 3: merge_enrichments.py → upload_floor_plans
+   Phase 3: merge_enrichments.py
 
 Job 3: build-transaction-feed（完全独立、~15min）
    └── build_transaction_feed.py --quarters 20
 
 Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    ├── merge_caches.py（geocode, sumai_surfin, manifest を union マージ）
+   ├── upload_floor_plans.py（8並列で画像 DL+Firebase Storage アップロード、--max-time で時間制限付き）
    ├── inject_is_new（previous.json との identity_key 差分比較で is_new / is_new_building フラグを latest.json に注入）
    ├── build_map_viewer.py（中古+新築の地図生成）
    ├── geocode.py（キャッシュクリーンアップ）
@@ -1630,7 +1631,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 | 項目 | 詳細 |
 |------|------|
-| **Firebase Storage 永続化** | `upload_floor_plans.py` が間取り図を `floor_plans/{hash}.{ext}`、物件写真を `property_images/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
+| **Firebase Storage 永続化** | `upload_floor_plans.py` が間取り図を `floor_plans/{hash}.{ext}`、物件写真を `property_images/{hash}.{ext}` にアップロードし、URL をトークン付きダウンロード URL に置き換える。マニフェスト（`data/floor_plan_storage_manifest.json`）で元 URL → Firebase URL のマッピングを保持し、重複アップロードを回避。`ThreadPoolExecutor`（8並列）でダウンロード+アップロードを並行処理し高速化。`--max-time` オプションで最大実行時間を指定可能（超過時は未処理分をスキップ）。finalize ジョブ内で実行（enrich ジョブのタイムアウトリスクを排除）。`FIREBASE_SERVICE_ACCOUNT` 未設定時はスキップ |
 | **iOS 側フィールド（間取り図）** | `Listing.floorPlanImagesJSON`（JSON 文字列 → `parsedFloorPlanImages: [URL]` で URL 配列に変換。`ListingJSONCache` でキャッシュし body 再評価時の冗長デコードを回避） |
 | **iOS 側フィールド（物件写真）** | `Listing.suumoImagesJSON`（JSON 文字列 → `parsedSuumoImages: [SuumoImage]` で構造体配列に変換。`ListingJSONCache` でキャッシュ。`SuumoImage` は `url`/`label` を持ち、`category` で外観/室内/水回り/その他に自動分類） |
 | **サムネイル URL** | `Listing.thumbnailURL: URL?`（computed）。SUUMO 物件写真から外観カテゴリ（`category == .exterior`）の画像を優先的に選択し、外観写真がない場合は先頭画像にフォールバック。一覧カードでは `TrimmedAsyncImage` で白余白を自動トリミング・幅 100pt × 高さ 75pt の固定サイズで `.fill` + クリップ表示。画像キャッシュは 2 層: メモリ（`TrimmedImageCache` / NSCache）→ ディスク（`DiskImageCache` / Caches/ImageCache）→ ネットワーク取得。取得後にメモリ・ディスク両方へ保存 |
@@ -2212,17 +2213,19 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 
 ```
 check → 変更なしなら全後続ジョブ skip
-  ├── enrich-chuko (continue-on-error, ~40min)
+  ├── enrich-chuko (continue-on-error, timeout: 90min)
   │   Phase 1: embed_geocode (<1min)
   │   Phase 2: 全 enricher 完全並列 (7トラック)
-  │   Phase 3: merge_enrichments.py + upload_floor_plans
-  ├── enrich-shinchiku (continue-on-error, ~25min)
+  │   Phase 3: merge_enrichments.py
+  ├── enrich-shinchiku (continue-on-error, timeout: 60min)
   ├── build-transaction-feed (continue-on-error, ~15min)
-  └── finalize (if: !cancelled())
-      merge_caches → build_map_viewer → generate_report → send_push → slack_notify → git commit & push
+  └── finalize (if: !cancelled(), timeout: 60min)
+      merge_caches → upload_floor_plans (8並列) → build_map_viewer → generate_report → send_push → slack_notify → git commit & push
 ```
 
-> **cancel-in-progress: false の意味**: WF2 実行中に新しい WF1 が完了しても、実行中の WF2 は完了まで走り切る。新しい WF2 はキューで待機し、現在の実行が終わってから開始される。GitHub Actions は concurrency group あたりキューに1件のみ保持するため、複数の待機が溜まることはない。enrich-chuko が約2時間かかり、WF1 が2時間ごとに実行されるため、cancel-in-progress: true だと毎回キャンセルされてしまう問題を回避する。
+> **cancel-in-progress: false の意味**: WF2 実行中に新しい WF1 が完了しても、実行中の WF2 は完了まで走り切る。新しい WF2 はキューで待機し、現在の実行が終わってから開始される。GitHub Actions は concurrency group あたりキューに1件のみ保持するため、複数の待機が溜まることはない。
+>
+> **upload_floor_plans の finalize 移動**: 画像の Firebase Storage アップロード（`upload_floor_plans.py`）は finalize ジョブで実行する。これにより enrich ジョブのタイムアウトリスクを排除し、enriched アーティファクトの保存を確実にする。ThreadPoolExecutor（8並列）で高速化し、`--max-time` で時間制限を設けて finalize 全体のタイムアウトも防止する。
 >
 > **commute_gmaps_cache の永続化**: `commute_gmaps_enricher.py` のスクレイピング結果キャッシュは `actions/cache/restore` / `actions/cache/save`（`if: always()`）で CI 間で永続化される。タイムアウトでキャンセルされても `if: always()` により部分キャッシュが保存され、次回は未取得分のみ処理する。
 

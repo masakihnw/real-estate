@@ -100,6 +100,31 @@ if [ -f "transactions/transactions.json" ]; then
     echo "成約実績: データを配置" >&2
 fi
 
+# ──────────────────────────── 画像 Storage アップロード ────────────────────────────
+
+echo "--- 画像 Storage アップロード ---" >&2
+_t=$(date +%s)
+
+if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
+    if [ -f "${OUTPUT_DIR}/latest.json" ]; then
+        python3 upload_floor_plans.py \
+            --input "${OUTPUT_DIR}/latest.json" \
+            --output "${OUTPUT_DIR}/latest.json" \
+            --max-time 20 || echo "upload_floor_plans（中古）失敗（続行）" >&2
+    fi
+
+    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+        python3 upload_floor_plans.py \
+            --input "${OUTPUT_DIR}/latest_shinchiku.json" \
+            --output "${OUTPUT_DIR}/latest_shinchiku.json" \
+            --max-time 10 || echo "upload_floor_plans（新築）失敗（続行）" >&2
+    fi
+else
+    echo "FIREBASE_SERVICE_ACCOUNT 未設定のためスキップ" >&2
+fi
+
+echo "[TIMING] upload_floor_plans: $(( ($(date +%s) - _t) ))s" >&2
+
 # ──────────────────────────── is_new フラグ注入 ────────────────────────────
 
 echo "--- is_new フラグ注入 ---" >&2

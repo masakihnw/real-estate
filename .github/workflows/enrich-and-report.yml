@@ -76,7 +76,7 @@ jobs:
     needs: check
     if: needs.check.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 90
     continue-on-error: true
 
     steps:
@@ -175,7 +175,7 @@ jobs:
     needs: check
     if: needs.check.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 60
     continue-on-error: true
 
     steps:
@@ -351,7 +351,7 @@ jobs:
     needs: [check, enrich-chuko, enrich-shinchiku, build-transaction-feed]
     if: "!cancelled() && needs.check.outputs.has_changes == 'true'"
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     permissions:
       contents: write
 
