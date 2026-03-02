@@ -5038,7 +5038,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "クレヴィア住吉扇橋"
+      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
     },
     {
       "id": "tx-124f4e748254",
@@ -5518,7 +5518,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "クレヴィア住吉扇橋"
+      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
     },
     {
       "id": "tx-c7de4cdfa660",
@@ -7618,7 +7618,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2018",
-      "estimated_building_name": "クレヴィア住吉扇橋"
+      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
     },
     {
       "id": "tx-82e870163227",
@@ -14638,7 +14638,7 @@
       "latitude": 35.6908488,
       "longitude": 139.6755198,
       "building_group_id": "131140180-2015",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野富士見町"
     },
     {
       "id": "tx-50f62bfaf3bb",
@@ -20904,7 +20904,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "クレヴィア住吉扇橋"
+      "estimated_building_name": "ジオ深川住吉 / クレヴィア住吉扇橋"
     },
     {
       "group_id": "131080080-2020",
@@ -24046,7 +24046,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野富士見町"
     },
     {
       "group_id": "131140180-2024",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-02T09:52:29",
+    "updated_at": "2026-03-02T19:56:08",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
