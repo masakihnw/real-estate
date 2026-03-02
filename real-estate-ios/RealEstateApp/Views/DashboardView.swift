@@ -1,9 +1,33 @@
 import SwiftUI
 import SwiftData
 
+enum DashboardQuickFilter: Hashable {
+    case newToday
+    case priceDecreased
+    case priceIncreased
+
+    var title: String {
+        switch self {
+        case .newToday: return "本日の新着"
+        case .priceDecreased: return "値下げ物件"
+        case .priceIncreased: return "値上げ物件"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .newToday: return "sparkles"
+        case .priceDecreased: return "arrow.down.circle.fill"
+        case .priceIncreased: return "arrow.up.circle.fill"
+        }
+    }
+}
+
 struct DashboardView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<Listing> { !$0.isDelisted }) private var activeListings: [Listing]
+    @State private var selectedListing: Listing?
+    @State private var quickFilter: DashboardQuickFilter?
 
     var body: some View {
         NavigationStack {
@@ -17,6 +41,15 @@ struct DashboardView: View {
                 .padding()
             }
             .navigationTitle("ダッシュボード")
+            .sheet(item: $selectedListing) { listing in
+                ListingDetailPagerView(listings: [listing], initialIndex: 0)
+            }
+            .navigationDestination(item: $quickFilter) { filter in
+                DashboardFilteredListView(
+                    filter: filter,
+                    listings: filteredListings(for: filter)
+                )
+            }
         }
     }
 
@@ -31,12 +64,18 @@ struct DashboardView: View {
                 StatCard(title: "掲載中", value: "\(chukoListings.count)", subtitle: "中古物件", color: .blue)
                 StatCard(title: "掲載中", value: "\(shinchikuListings.count)", subtitle: "新築物件", color: .green)
                 StatCard(title: "平均価格", value: avgPriceDisplay, subtitle: "中古", color: .orange)
-                StatCard(title: "新着", value: "\(newListingsCount)", subtitle: "本日の新着", color: .red)
+                TappableStatCard(title: "新着", value: "\(newListingsCount)", subtitle: "本日の新着", color: .red, count: newListingsCount) {
+                    quickFilter = .newToday
+                }
             }
 
             LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 12) {
-                StatCard(title: "値下げ", value: "\(priceDecreasedCount)", subtitle: "価格が下がった物件", color: .green)
-                StatCard(title: "値上げ", value: "\(priceIncreasedCount)", subtitle: "価格が上がった物件", color: .red)
+                TappableStatCard(title: "値下げ", value: "\(priceDecreasedCount)", subtitle: "価格が下がった物件", color: .green, count: priceDecreasedCount) {
+                    quickFilter = .priceDecreased
+                }
+                TappableStatCard(title: "値上げ", value: "\(priceIncreasedCount)", subtitle: "価格が上がった物件", color: .red, count: priceIncreasedCount) {
+                    quickFilter = .priceIncreased
+                }
             }
         }
     }
@@ -81,23 +120,38 @@ struct DashboardView: View {
                     .padding()
             } else {
                 ForEach(changed.prefix(10), id: \.url) { listing in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(listing.name)
-                                .font(.caption.weight(.semibold))
-                                .lineLimit(1)
-                            Text(listing.layout ?? "—")
+                    Button {
+                        selectedListing = listing
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(listing.name)
+                                    .font(.caption.weight(.semibold))
+                                    .lineLimit(1)
+                                HStack(spacing: 4) {
+                                    Text(listing.layout ?? "—")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                    if let dateStr = Self.priceChangeDateLabel(for: listing) {
+                                        Text("(\(dateStr))")
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
+                            Spacer()
+                            if let change = listing.latestPriceChange {
+                                let isDown = change < 0
+                                Text("\(isDown ? "↓" : "↑")\(abs(change))万")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor)
+                            }
+                            Image(systemName: "chevron.right")
                                 .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        if let change = listing.latestPriceChange {
-                            let isDown = change < 0
-                            Text("\(isDown ? "↓" : "↑")\(abs(change))万")
-                                .font(.caption.weight(.bold))
-                                .foregroundStyle(isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor)
+                                .foregroundStyle(.tertiary)
                         }
                     }
+                    .buttonStyle(.plain)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
                     .background(
@@ -107,6 +161,13 @@ struct DashboardView: View {
                 }
             }
         }
+    }
+
+    private static func priceChangeDateLabel(for listing: Listing) -> String? {
+        let history = listing.parsedPriceHistory
+        guard history.count >= 2, let date = history.last?.parsedDate else { return nil }
+        let cal = Calendar.current
+        return "\(cal.component(.month, from: date))/\(cal.component(.day, from: date))"
     }
 
     // MARK: - エリア別坪単価ランキング
@@ -170,6 +231,20 @@ struct DashboardView: View {
 
     private var priceIncreasedCount: Int {
         activeListings.filter { ($0.latestPriceChange ?? 0) > 0 }.count
+    }
+
+    private func filteredListings(for filter: DashboardQuickFilter) -> [Listing] {
+        switch filter {
+        case .newToday:
+            return activeListings.filter(\.isAddedToday)
+                .sorted { $0.addedAt > $1.addedAt }
+        case .priceDecreased:
+            return activeListings.filter { ($0.latestPriceChange ?? 0) < 0 }
+                .sorted { abs($0.latestPriceChange ?? 0) > abs($1.latestPriceChange ?? 0) }
+        case .priceIncreased:
+            return activeListings.filter { ($0.latestPriceChange ?? 0) > 0 }
+                .sorted { abs($0.latestPriceChange ?? 0) > abs($1.latestPriceChange ?? 0) }
+        }
     }
 
     private var priceChangedListings: [Listing] {
@@ -243,6 +318,48 @@ private struct StatCard: View {
     }
 }
 
+/// タップ可能な StatCard。該当件数が0のときはタップ不可で通常の StatCard と同じ見た目。
+private struct TappableStatCard: View {
+    let title: String
+    let value: String
+    let subtitle: String
+    let color: Color
+    let count: Int
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(value)
+                    .font(.title2.weight(.bold))
+                    .foregroundStyle(color)
+                HStack(spacing: 2) {
+                    Text(subtitle)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                    Spacer()
+                    if count > 0 {
+                        Image(systemName: "chevron.right")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.regularMaterial)
+            )
+        }
+        .buttonStyle(.plain)
+        .disabled(count == 0)
+    }
+}
+
 private struct GradeBar: View {
     let label: String
     let count: Int
@@ -266,5 +383,100 @@ private struct GradeBar: View {
                 .font(.caption2.monospacedDigit())
                 .foregroundStyle(.secondary)
         }
+    }
+}
+
+// MARK: - Dashboard Filtered List
+
+/// ダッシュボードのクイックフィルタ（新着/値下げ/値上げ）で絞り込んだ物件一覧
+struct DashboardFilteredListView: View {
+    let filter: DashboardQuickFilter
+    let listings: [Listing]
+    @State private var selectedListing: Listing?
+
+    var body: some View {
+        Group {
+            if listings.isEmpty {
+                ContentUnavailableView {
+                    Label("該当する物件がありません", systemImage: filter.systemImage)
+                }
+            } else {
+                List(listings, id: \.url) { listing in
+                    Button {
+                        selectedListing = listing
+                    } label: {
+                        DashboardFilteredRow(listing: listing, filter: filter)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .listStyle(.plain)
+            }
+        }
+        .navigationTitle(filter.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $selectedListing) { listing in
+            let index = listings.firstIndex(where: { $0.url == listing.url }) ?? 0
+            ListingDetailPagerView(listings: listings, initialIndex: index)
+        }
+    }
+}
+
+/// フィルタ一覧の行表示
+private struct DashboardFilteredRow: View {
+    let listing: Listing
+    let filter: DashboardQuickFilter
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            if let thumbURL = listing.thumbnailURL {
+                TrimmedAsyncImage(url: thumbURL, width: 80)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(listing.name)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(2)
+
+                HStack(spacing: 6) {
+                    Text(listing.priceDisplayCompact)
+                        .font(.footnote.weight(.bold))
+                        .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
+
+                    if filter != .newToday, let change = listing.latestPriceChange, change != 0 {
+                        let isDown = change < 0
+                        Text("\(isDown ? "↓" : "↑")\(abs(change))万")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background((isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor).opacity(0.10))
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+                }
+
+                HStack(spacing: 4) {
+                    Text(listing.layout ?? "—")
+                    Text(listing.areaDisplay)
+                    Text(listing.builtAgeDisplay)
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+
+                if let line = listing.displayStationLine, !line.isEmpty {
+                    Text(line)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                }
+            }
+
+            Spacer(minLength: 0)
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(.vertical, 4)
     }
 }
