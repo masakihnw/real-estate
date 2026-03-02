@@ -845,6 +845,13 @@ struct ListingRowView: View {
 
     private var hasExpandableUnits: Bool { siblings.count > 1 }
 
+    static func priceChangeDateLabel(for listing: Listing) -> String? {
+        let history = listing.parsedPriceHistory
+        guard history.count >= 2, let date = history.last?.parsedDate else { return nil }
+        let cal = Calendar.current
+        return "\(cal.component(.month, from: date))/\(cal.component(.day, from: date))"
+    }
+
     private func formatYenCompact(_ yen: Int) -> String {
         if yen >= 10000 {
             return String(format: "%.1f万", Double(yen) / 10000)
@@ -981,7 +988,8 @@ struct ListingRowView: View {
 
                     if let change = listing.latestPriceChange, change != 0 {
                         let isDown = change < 0
-                        Text("\(isDown ? "↓" : "↑")\(abs(change))万")
+                        let dateLabel = Self.priceChangeDateLabel(for: listing)
+                        Text("\(isDown ? "↓" : "↑")\(abs(change))万\(dateLabel.map { " (\($0))" } ?? "")")
                             .font(.caption2.weight(.bold))
                             .foregroundStyle(isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor)
                             .padding(.horizontal, 5)
