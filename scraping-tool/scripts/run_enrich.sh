@@ -191,9 +191,9 @@ done
 
 echo "[TIMING] phase2_parallel: $(( ($(date +%s) - _t_phase2) ))s" >&2
 
-# ──────────────────────────── Phase 3: マージ + アップロード ────────────────────────────
+# ──────────────────────────── Phase 3: マージ ────────────────────────────
 
-echo "--- Phase 3: マージ + アップロード ---" >&2
+echo "--- Phase 3: マージ ---" >&2
 _t=$(date +%s)
 
 python3 scripts/merge_enrichments.py \
@@ -210,16 +210,8 @@ python3 scripts/merge_enrichments.py \
 
 echo "[TIMING] merge: $(( ($(date +%s) - _t) ))s" >&2
 
-# upload_floor_plans
-if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
-    _t=$(date +%s)
-    python3 upload_floor_plans.py \
-        --input "$INPUT" \
-        --output "$INPUT" || echo "upload_floor_plans 失敗（続行）" >&2
-    echo "[TIMING] upload_floor_plans: $(( ($(date +%s) - _t) ))s" >&2
-else
-    echo "upload_floor_plans: FIREBASE_SERVICE_ACCOUNT 未設定のためスキップ" >&2
-fi
+# upload_floor_plans は finalize ジョブに移動済み（enrich の所要時間を短縮し、
+# アーティファクト保存の確実性を向上させるため）
 
 # JSON バリデーション
 if ! python3 -c "import json; json.load(open('$INPUT'))" 2>/dev/null; then
