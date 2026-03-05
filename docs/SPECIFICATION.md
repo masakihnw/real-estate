@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-03-02（価格変動バッジ・ダッシュボードに変動日を表示、タップで詳細遷移）
+> **最終更新**: 2026-03-05（Slack日次通知を前回通知からの差分ベースに変更）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -1457,7 +1457,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    ├── convert_risk_geojson.py（初回のみ）
    ├── generate_report.py → Markdown レポート
    ├── send_push.py → FCM プッシュ通知（is_new / is_new_building フラグのカウントで新着件数・新規物件vs別部屋の内訳、price_history で価格変動を検出して通知本文に含める）
-   ├── slack_notify.py → Slack 通知（1日1回 6:00〜10:00 JST の回）
+   ├── slack_notify.py → Slack 日次通知（1日1回 6:00〜10:00 JST。前回通知からの差分ベース。previous_slack.json でスナップショット管理）
    └── git commit & push
 ```
 
@@ -2194,7 +2194,7 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 
 | 項目 | 値 |
 |------|------|
-| **トリガー** | 2時間ごと (`0 */2 * * *`) + `workflow_dispatch`。6:00〜10:00 JST (21:00〜01:00 UTC) の回で Slack 通知 |
+| **トリガー** | 2時間ごと (`0 */2 * * *`) + `workflow_dispatch`。`is_slack_time` フラグは 6:00〜10:00 JST (21:00〜01:00 UTC) の回で `true` |
 | **Concurrency** | `scrape-listings`, `cancel-in-progress: false` |
 | **timeout-minutes** | 60 |
 | **出力** | artifact: `scrape-results`, `scrape-previous`, `scrape-metadata`, `scrape-caches` |
@@ -2212,15 +2212,16 @@ property_images/{imageId}    → 公開読み取り（認証不要）
 | **ジョブ数** | 5 (check, enrich-chuko, enrich-shinchiku, build-transaction-feed, finalize) |
 
 ```
-check → 変更なしなら全後続ジョブ skip
-  ├── enrich-chuko (continue-on-error, timeout: 90min)
+check → has_changes / is_slack_time を判定
+  ├── enrich-chuko (if: has_changes, continue-on-error, timeout: 90min)
   │   Phase 1: embed_geocode (<1min)
   │   Phase 2: 全 enricher 完全並列 (7トラック)
   │   Phase 3: merge_enrichments.py
-  ├── enrich-shinchiku (continue-on-error, timeout: 60min)
-  ├── build-transaction-feed (continue-on-error, ~15min)
-  └── finalize (if: !cancelled(), timeout: 60min)
-      merge_caches → upload_floor_plans (8並列) → build_map_viewer → generate_report → send_push → slack_notify → git commit & push
+  ├── enrich-shinchiku (if: has_changes, continue-on-error, timeout: 60min)
+  ├── build-transaction-feed (if: has_changes, continue-on-error, ~15min)
+  └── finalize (if: has_changes || is_slack_time, timeout: 60min)
+      [has_changes] merge_caches → upload_floor_plans → build_map_viewer → generate_report → send_push → git commit & push
+      [is_slack_time] slack_notify（previous_slack.json vs latest.json で前回通知からの差分を送信）→ previous_slack.json 更新
 ```
 
 > **cancel-in-progress: false の意味**: WF2 実行中に新しい WF1 が完了しても、実行中の WF2 は完了まで走り切る。新しい WF2 はキューで待機し、現在の実行が終わってから開始される。GitHub Actions は concurrency group あたりキューに1件のみ保持するため、複数の待機が溜まることはない。

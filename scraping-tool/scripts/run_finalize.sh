@@ -5,6 +5,7 @@
 #
 # 引数:
 #   --is-slack-time true|false  Slack 通知を送信するかどうか
+#   --has-changes true|false    スクレイピングで変更が検出されたか（false の場合、処理をスキップして Slack のみ実行）
 #   --date YYYYMMDD_HHMMSS      実行日時ラベル
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -13,11 +14,13 @@ cd "$SCRIPT_DIR"
 # ──────────────────────────── 引数パース ────────────────────────────
 
 IS_SLACK_TIME=false
+HAS_CHANGES=true
 DATE=$(TZ=Asia/Tokyo date +%Y%m%d_%H%M%S)
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --is-slack-time) IS_SLACK_TIME="$2"; shift 2 ;;
+        --has-changes) HAS_CHANGES="$2"; shift 2 ;;
         --date) DATE="$2"; shift 2 ;;
         *) shift ;;
     esac
@@ -31,6 +34,9 @@ REPORT="${REPORT_DIR}/report.md"
 
 echo "=== Finalize ===" >&2
 echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
+echo "has_changes: ${HAS_CHANGES}, is_slack_time: ${IS_SLACK_TIME}" >&2
+
+if [ "$HAS_CHANGES" = "true" ]; then
 
 # ──────────────────────────── キャッシュマージ ────────────────────────────
 
@@ -301,15 +307,28 @@ print(sum(1 for r in json.load(open('${OUTPUT_DIR}/latest_shinchiku.json')) if r
         || echo "プッシュ通知送信失敗（続行）" >&2
 fi
 
-# ──────────────────────────── Slack 通知 ────────────────────────────
+fi  # end HAS_CHANGES
+
+# ──────────────────────────── Slack 日次通知 ────────────────────────────
+# has_changes に依存しない。前回 Slack 通知時点のスナップショット (previous_slack.json) と比較し、
+# 蓄積された差分があれば通知する。通知後にスナップショットを更新。
 
 if [ "$IS_SLACK_TIME" = "true" ] && [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
-    echo "Slack 通知送信中..." >&2
+    SLACK_PREVIOUS="${OUTPUT_DIR}/previous_slack.json"
+    if [ ! -f "$SLACK_PREVIOUS" ]; then
+        SLACK_PREVIOUS="${OUTPUT_DIR}/previous.json"
+        echo "previous_slack.json が存在しないため previous.json をフォールバックとして使用" >&2
+    fi
+
+    echo "Slack 日次通知送信中（前回通知からの差分）..." >&2
     python3 slack_notify.py \
         "${OUTPUT_DIR}/latest.json" \
-        "${OUTPUT_DIR}/previous.json" \
+        "$SLACK_PREVIOUS" \
         "$REPORT" \
         || echo "Slack 通知失敗（続行）" >&2
+
+    cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous_slack.json"
+    echo "previous_slack.json を更新しました" >&2
 fi
 
 # ──────────────────────────── ログアップロード ────────────────────────────
