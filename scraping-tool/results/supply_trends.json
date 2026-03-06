@@ -1361,15 +1361,15 @@
     },
     {
       "date": "2026-03-06",
-      "total_listings": 192,
-      "new_count": 0,
-      "removed_count": 1,
-      "updated_count": 0,
-      "price_changed_count": 0,
-      "avg_price_man": 10743,
+      "total_listings": 194,
+      "new_count": 1,
+      "removed_count": 0,
+      "updated_count": 6,
+      "price_changed_count": 1,
+      "avg_price_man": 10729,
       "median_price_man": 10980,
       "price_distribution": {
-        "under_10000": 55,
+        "under_10000": 57,
         "10000_11000": 63,
         "11000_12000": 74,
         "over_12000": 0,
@@ -1377,8 +1377,8 @@
       },
       "ward_stats": {
         "江東区": {
-          "count": 27,
-          "avg_price_man": 10939,
+          "count": 28,
+          "avg_price_man": 10880,
           "min_price_man": 9250,
           "max_price_man": 11980
         },
@@ -1436,16 +1436,16 @@
           "min_price_man": 9000,
           "max_price_man": 11280
         },
+        "中野区": {
+          "count": 8,
+          "avg_price_man": 10805,
+          "min_price_man": 9280,
+          "max_price_man": 11980
+        },
         "葛飾区": {
           "count": 7,
           "avg_price_man": 10115,
           "min_price_man": 9180,
-          "max_price_man": 11980
-        },
-        "中野区": {
-          "count": 7,
-          "avg_price_man": 10980,
-          "min_price_man": 9280,
           "max_price_man": 11980
         },
         "北区": {
