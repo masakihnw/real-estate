@@ -1512,17 +1512,17 @@
     },
     {
       "date": "2026-03-07",
-      "total_listings": 197,
-      "new_count": 1,
-      "removed_count": 0,
-      "updated_count": 2,
+      "total_listings": 196,
+      "new_count": 3,
+      "removed_count": 3,
+      "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10741,
+      "avg_price_man": 10734,
       "median_price_man": 10980,
       "price_distribution": {
-        "under_10000": 57,
-        "10000_11000": 64,
-        "11000_12000": 76,
+        "under_10000": 56,
+        "10000_11000": 65,
+        "11000_12000": 75,
         "over_12000": 0,
         "undecided": 0
       },
@@ -1535,13 +1535,13 @@
         },
         "世田谷区": {
           "count": 26,
-          "avg_price_man": 10928,
+          "avg_price_man": 10851,
           "min_price_man": 9190,
           "max_price_man": 11980
         },
         "杉並区": {
-          "count": 15,
-          "avg_price_man": 10780,
+          "count": 14,
+          "avg_price_man": 10765,
           "min_price_man": 9280,
           "max_price_man": 11980
         },
@@ -1607,7 +1607,7 @@
         },
         "北区": {
           "count": 7,
-          "avg_price_man": 10197,
+          "avg_price_man": 10325,
           "min_price_man": 9180,
           "max_price_man": 11800
         },

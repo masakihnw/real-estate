@@ -10598,7 +10598,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2014",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a95635128e8f",
@@ -10698,7 +10698,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2015",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-8eaa83b7f7a0",
@@ -10798,7 +10798,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2015",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-671859301d1b",
@@ -10818,7 +10818,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2014",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-1331e2a1b1a8",
@@ -11078,7 +11078,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2015",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-33ba1cb163a8",
@@ -11698,7 +11698,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2015",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4c4b7a40cb2e",
@@ -12338,7 +12338,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2014",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-feff78115b1f",
@@ -12358,7 +12358,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2014",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e5681e77a871",
@@ -12538,7 +12538,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2014",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e73eb2d6f697",
@@ -12798,7 +12798,7 @@
       "latitude": 35.631292,
       "longitude": 139.6559363,
       "building_group_id": "131120250-2013",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "id": "tx-456716e5e14a",
@@ -17038,7 +17038,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ウィルローズ王子"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-ab426b0d5876",
@@ -17098,7 +17098,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ウィルローズ王子"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-4f2edae73fe8",
@@ -17258,7 +17258,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ウィルローズ王子"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-a2dce148d479",
@@ -17278,7 +17278,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ウィルローズ王子"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-92cf0d551743",
@@ -17298,7 +17298,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ウィルローズ王子"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-7bf5190c4118",
@@ -17318,7 +17318,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ウィルローズ王子"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-d31f8b078ec6",
@@ -17338,7 +17338,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018",
-      "estimated_building_name": "ウィルローズ王子"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "id": "tx-d6cf4520859a",
@@ -22416,7 +22416,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120250-2014",
@@ -22442,7 +22442,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120250-2015",
@@ -22468,7 +22468,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "プレシス駒沢"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120250-2018",
@@ -24864,7 +24864,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ウィルローズ王子"
+      "estimated_building_name": "ウィルローズ王子 / ザ・ガーデンズ東京王子 エアリーコート"
     },
     {
       "group_id": "131170080-2022",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-07T09:36:58",
+    "updated_at": "2026-03-07T19:41:39",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
