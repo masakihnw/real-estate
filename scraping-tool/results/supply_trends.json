@@ -1512,24 +1512,24 @@
     },
     {
       "date": "2026-03-07",
-      "total_listings": 196,
-      "new_count": 3,
-      "removed_count": 3,
-      "updated_count": 0,
-      "price_changed_count": 0,
-      "avg_price_man": 10734,
+      "total_listings": 198,
+      "new_count": 2,
+      "removed_count": 1,
+      "updated_count": 5,
+      "price_changed_count": 2,
+      "avg_price_man": 10735,
       "median_price_man": 10980,
       "price_distribution": {
         "under_10000": 56,
-        "10000_11000": 65,
-        "11000_12000": 75,
+        "10000_11000": 66,
+        "11000_12000": 76,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 27,
-          "avg_price_man": 10854,
+          "count": 28,
+          "avg_price_man": 10894,
           "min_price_man": 9250,
           "max_price_man": 11980
         },
@@ -1539,16 +1539,16 @@
           "min_price_man": 9190,
           "max_price_man": 11980
         },
+        "台東区": {
+          "count": 14,
+          "avg_price_man": 11121,
+          "min_price_man": 9180,
+          "max_price_man": 11980
+        },
         "杉並区": {
           "count": 14,
           "avg_price_man": 10765,
           "min_price_man": 9280,
-          "max_price_man": 11980
-        },
-        "台東区": {
-          "count": 13,
-          "avg_price_man": 11163,
-          "min_price_man": 9180,
           "max_price_man": 11980
         },
         "豊島区": {
@@ -1559,15 +1559,15 @@
         },
         "品川区": {
           "count": 12,
-          "avg_price_man": 11093,
-          "min_price_man": 9980,
+          "avg_price_man": 11051,
+          "min_price_man": 9480,
           "max_price_man": 11999
         },
-        "江戸川区": {
+        "大田区": {
           "count": 9,
-          "avg_price_man": 10360,
-          "min_price_man": 9480,
-          "max_price_man": 11180
+          "avg_price_man": 10064,
+          "min_price_man": 9000,
+          "max_price_man": 11280
         },
         "中野区": {
           "count": 9,
@@ -1587,11 +1587,11 @@
           "min_price_man": 9280,
           "max_price_man": 11500
         },
-        "大田区": {
+        "江戸川区": {
           "count": 8,
-          "avg_price_man": 10010,
-          "min_price_man": 9000,
-          "max_price_man": 11280
+          "avg_price_man": 10282,
+          "min_price_man": 9480,
+          "max_price_man": 11180
         },
         "中央区": {
           "count": 7,
