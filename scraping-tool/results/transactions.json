@@ -18078,7 +18078,7 @@
       "latitude": 35.7436117,
       "longitude": 139.6043049,
       "building_group_id": "131200150-2022",
-      "estimated_building_name": "ザ・パークハウス石神井公園テラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6bc4b64c878b",
@@ -18138,7 +18138,7 @@
       "latitude": 35.7436117,
       "longitude": 139.6043049,
       "building_group_id": "131200150-2022",
-      "estimated_building_name": "ザ・パークハウス石神井公園テラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9be5443d6d32",
@@ -18318,7 +18318,7 @@
       "latitude": 35.7530805,
       "longitude": 139.8033447,
       "building_group_id": "131210380-2019",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ北千住アドーア"
     },
     {
       "id": "tx-ce5ede5f19ed",
@@ -25320,7 +25320,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": "ザ・パークハウス石神井公園テラス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131200290-2016",
@@ -25415,7 +25415,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ北千住アドーア"
     },
     {
       "group_id": "131210380-2021",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-08T17:39:22",
+    "updated_at": "2026-03-08T19:46:15",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
