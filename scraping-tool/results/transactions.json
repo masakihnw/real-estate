@@ -38,7 +38,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2018",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6f5a730d68fd",
@@ -118,7 +118,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2018",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-df0998aeceb7",
@@ -218,7 +218,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2018",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-81ae92c60f81",
@@ -238,7 +238,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2018",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3eed5ad37765",
@@ -538,7 +538,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2017",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-abee16b28082",
@@ -918,7 +918,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2018",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2cef9374359f",
@@ -1098,7 +1098,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2018",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2f79e80617ae",
@@ -1618,7 +1618,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2018",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c919167f5c29",
@@ -1718,7 +1718,7 @@
       "latitude": 35.7001758,
       "longitude": 139.7176301,
       "building_group_id": "131040900-2018",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5fba034f09b5",
@@ -19251,7 +19251,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "group_id": "131040900-2018",
@@ -19280,7 +19280,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "ジオ新宿若松町"
+      "estimated_building_name": null
     },
     {
       "group_id": "131040900-2021",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-09T06:16:29",
+    "updated_at": "2026-03-09T08:10:53",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
