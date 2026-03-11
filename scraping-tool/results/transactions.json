@@ -13458,7 +13458,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5655c363ef81",
@@ -13818,7 +13818,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-25a0f25383cc",
@@ -13938,7 +13938,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6eb0ecc1725d",
@@ -23976,7 +23976,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140130-2017",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-11T15:52:18",
+    "updated_at": "2026-03-11T20:03:53",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
