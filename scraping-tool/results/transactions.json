@@ -10578,7 +10578,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "Brillia駒沢大学"
     },
     {
       "id": "tx-a59d9aa4822e",
@@ -11058,7 +11058,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "Brillia駒沢大学"
     },
     {
       "id": "tx-8242550f5b52",
@@ -12138,7 +12138,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "Brillia駒沢大学"
     },
     {
       "id": "tx-858fb5f47ded",
@@ -12298,7 +12298,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "Brillia駒沢大学"
     },
     {
       "id": "tx-87cf3d18518e",
@@ -12498,7 +12498,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2012",
-      "estimated_building_name": null
+      "estimated_building_name": "Brillia駒沢大学"
     },
     {
       "id": "tx-bded6d39ce4e",
@@ -17598,7 +17598,7 @@
       "latitude": 35.7505106,
       "longitude": 139.7152582,
       "building_group_id": "131190060-2014",
-      "estimated_building_name": null
+      "estimated_building_name": "パークタワー板橋"
     },
     {
       "id": "tx-463aa611fb6c",
@@ -22246,7 +22246,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "Brillia駒沢大学"
     },
     {
       "group_id": "131120120-2018",
@@ -25147,7 +25147,7 @@
         "2023Q3"
       ],
       "latest_period": "2023Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "パークタワー板橋"
     },
     {
       "group_id": "131190130-2023",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-13T09:47:47",
+    "updated_at": "2026-03-13T19:54:14",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
