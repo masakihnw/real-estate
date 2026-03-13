@@ -258,7 +258,7 @@
       "latitude": 35.6966944,
       "longitude": 139.7297181,
       "building_group_id": "131040060-2012",
-      "estimated_building_name": "ヴィークコート市谷加賀町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-cf48ca7c9a25",
@@ -938,7 +938,7 @@
       "latitude": 35.6966944,
       "longitude": 139.7297181,
       "building_group_id": "131040060-2012",
-      "estimated_building_name": "ヴィークコート市谷加賀町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-936ffe6da86a",
@@ -18590,7 +18590,7 @@
         "2023Q4"
       ],
       "latest_period": "2023Q4",
-      "estimated_building_name": "ヴィークコート市谷加賀町"
+      "estimated_building_name": null
     },
     {
       "group_id": "131040060-2014",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-13T19:54:14",
+    "updated_at": "2026-03-13T21:47:37",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
