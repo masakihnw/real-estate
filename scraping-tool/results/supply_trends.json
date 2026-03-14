@@ -2569,16 +2569,16 @@
     },
     {
       "date": "2026-03-14",
-      "total_listings": 210,
-      "new_count": 1,
-      "removed_count": 2,
-      "updated_count": 2,
-      "price_changed_count": 2,
-      "avg_price_man": 10731,
+      "total_listings": 208,
+      "new_count": 0,
+      "removed_count": 1,
+      "updated_count": 1,
+      "price_changed_count": 1,
+      "avg_price_man": 10729,
       "median_price_man": 10980,
       "price_distribution": {
         "under_10000": 59,
-        "10000_11000": 72,
+        "10000_11000": 70,
         "11000_12000": 79,
         "over_12000": 0,
         "undecided": 0
@@ -2626,29 +2626,29 @@
           "min_price_man": 9000,
           "max_price_man": 11280
         },
-        "北区": {
-          "count": 10,
-          "avg_price_man": 10706,
-          "min_price_man": 9180,
-          "max_price_man": 11980
-        },
         "江戸川区": {
           "count": 9,
           "avg_price_man": 10193,
           "min_price_man": 9480,
           "max_price_man": 11180
         },
-        "板橋区": {
+        "北区": {
           "count": 9,
-          "avg_price_man": 10308,
-          "min_price_man": 9580,
-          "max_price_man": 11000
+          "avg_price_man": 10675,
+          "min_price_man": 9180,
+          "max_price_man": 11980
         },
         "中野区": {
           "count": 8,
           "avg_price_man": 10617,
           "min_price_man": 9280,
           "max_price_man": 11980
+        },
+        "板橋区": {
+          "count": 8,
+          "avg_price_man": 10225,
+          "min_price_man": 9580,
+          "max_price_man": 11000
         },
         "新宿区": {
           "count": 7,
@@ -5200,10 +5200,10 @@
     {
       "date": "2026-03-14",
       "total_listings": 72,
-      "new_count": 1,
-      "removed_count": 2,
-      "updated_count": 1,
-      "price_changed_count": 1,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 9543,
       "median_price_man": 9440,
       "price_distribution": {
