@@ -13458,7 +13458,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
     },
     {
       "id": "tx-5655c363ef81",
@@ -13638,7 +13638,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fab280f42266",
@@ -13678,7 +13678,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3d6197cd0516",
@@ -13818,7 +13818,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
     },
     {
       "id": "tx-25a0f25383cc",
@@ -13938,7 +13938,7 @@
       "latitude": 35.6959247,
       "longitude": 139.6742379,
       "building_group_id": "131140130-2013",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
     },
     {
       "id": "tx-6eb0ecc1725d",
@@ -13958,7 +13958,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-659ebc5f8b80",
@@ -14138,7 +14138,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2020",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b4067fa8e51e",
@@ -16718,7 +16718,7 @@
       "latitude": 35.7360069,
       "longitude": 139.7468276,
       "building_group_id": "131160060-2011",
-      "estimated_building_name": null
+      "estimated_building_name": "レーベンリヴァーレシュアレジデンス駒込"
     },
     {
       "id": "tx-c3b37fef821d",
@@ -23677,7 +23677,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": "グランツオーベル中野"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140120-2011",
@@ -23976,7 +23976,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "ザ・パークハウス中野坂上レジデンス"
     },
     {
       "group_id": "131140130-2017",
@@ -24513,7 +24513,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "レーベンリヴァーレシュアレジデンス駒込"
     },
     {
       "group_id": "131160060-2015",
@@ -25632,7 +25632,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-14T09:40:48",
+    "updated_at": "2026-03-14T19:53:52",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
