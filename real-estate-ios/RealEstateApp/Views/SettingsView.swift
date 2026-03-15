@@ -315,7 +315,10 @@ struct SettingsView: View {
             }
 
             Button {
-                showScrapingConfig = true
+                Task {
+                    await ScrapingConfigService.shared.fetch(force: true)
+                    showScrapingConfig = true
+                }
             } label: {
                 HStack {
                     Label("スクレイピング条件", systemImage: "slider.horizontal.3")
@@ -328,6 +331,7 @@ struct SettingsView: View {
                         .foregroundStyle(.tertiary)
                 }
             }
+            .disabled(ScrapingConfigService.shared.isLoading)
 
             Button {
                 showScrapingLog = true

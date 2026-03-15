@@ -14,8 +14,21 @@ struct ScrapingConfigView: View {
     @State private var isSaving = false
     @State private var showSaveSuccess = false
     @State private var saveError: String?
+    @State private var saveCorrectionNotice: String?
 
     private let scrapingService = ScrapingConfigService.shared
+    private var metadata: ScrapingConfigMetadata { scrapingService.metadata }
+    private var walkRange: ClosedRange<Int> {
+        let c = metadata.constraints.walkMinMax
+        return c.min...c.max
+    }
+    private var totalUnitsRange: ClosedRange<Int> {
+        let c = metadata.constraints.totalUnitsMin
+        return c.min...c.max
+    }
+    private var priceUnit: String { metadata.units["price"] ?? "万円" }
+    private var areaUnit: String { metadata.units["area"] ?? "㎡" }
+    private var totalUnitsUnit: String { metadata.units["totalUnits"] ?? "戸" }
 
     init(initialConfig: ScrapingConfig) {
         _config = State(initialValue: initialConfig)
@@ -26,7 +39,7 @@ struct ScrapingConfigView: View {
             Form {
                 if !scrapingService.isAuthenticated {
                     Section {
-                        Label("ログインするとスクレイピング条件を編集できます", systemImage: "person.crop.circle.badge.exclamationmark")
+                        Label(t("authRequiredMessage", "ログインするとスクレイピング条件を編集できます"), systemImage: "person.crop.circle.badge.exclamationmark")
                             .foregroundStyle(.secondary)
                     }
                 } else {
@@ -36,14 +49,15 @@ struct ScrapingConfigView: View {
                     builtYearSection
                     totalUnitsSection
                     layoutSection
+                    stationsSection
                     lineKeywordsSection
                 }
             }
-            .navigationTitle("スクレイピング条件")
+            .navigationTitle(t("navigationTitle", "スクレイピング条件"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("閉じる") { dismiss() }
+                    Button(t("closeButton", "閉じる")) { dismiss() }
                 }
                 if scrapingService.isAuthenticated {
                     ToolbarItem(placement: .primaryAction) {
@@ -53,7 +67,7 @@ struct ScrapingConfigView: View {
                             if isSaving {
                                 ProgressView()
                             } else {
-                                Text("保存")
+                                Text(t("saveButton", "保存"))
                             }
                         }
                         .disabled(isSaving)
@@ -61,24 +75,24 @@ struct ScrapingConfigView: View {
                 }
             }
             .task {
-                // Firestore からの fetch 完了を待ってから反映
-                if scrapingService.isLoading {
-                    // 読み込み中なら完了を待つ
-                    try? await Task.sleep(for: .milliseconds(100))
-                    // fetch が完了するまでポーリング（最大3秒）
-                    for _ in 0..<30 {
-                        if !scrapingService.isLoading { break }
-                        try? await Task.sleep(for: .milliseconds(100))
-                    }
-                }
                 config = scrapingService.config
             }
-            .alert("保存しました", isPresented: $showSaveSuccess) {
+            .onChange(of: config) { _, newValue in
+                let normalized = newValue.normalized(using: metadata)
+                if normalized != newValue {
+                    config = normalized
+                }
+            }
+            .alert(t("saveSuccessTitle", "保存しました"), isPresented: $showSaveSuccess) {
                 Button("OK", role: .cancel) { dismiss() }
             } message: {
-                Text("次回のスクレイピングから反映されます。")
+                if let saveCorrectionNotice, !saveCorrectionNotice.isEmpty {
+                    Text("\(t("saveSuccessMessage", "次回のスクレイピングから反映されます。"))\n\(saveCorrectionNotice)")
+                } else {
+                    Text(t("saveSuccessMessage", "次回のスクレイピングから反映されます。"))
+                }
             }
-            .alert("保存に失敗しました", isPresented: .init(
+            .alert(t("saveErrorTitle", "保存に失敗しました"), isPresented: .init(
                 get: { saveError != nil },
                 set: { if !$0 { saveError = nil } }
             )) {
@@ -127,65 +141,66 @@ struct ScrapingConfigView: View {
     private var priceSection: some View {
         Section {
             HStack {
-                Text("価格（下限）")
+                Text(t("priceMinLabel", "価格（下限）"))
                 Spacer()
-                numericField("万円", value: $config.priceMinMan)
+                numericField(priceUnit, value: $config.priceMinMan)
             }
             HStack {
-                Text("価格（上限）")
+                Text(t("priceMaxLabel", "価格（上限）"))
                 Spacer()
-                numericField("万円", value: $config.priceMaxMan)
+                numericField(priceUnit, value: $config.priceMaxMan)
             }
         } header: {
-            Text("価格帯")
+            Text(t("priceSectionTitle", "価格帯"))
         } footer: {
-            Text("例: 7,500万〜1億円")
+            Text(t("priceSectionFooter", "例: 7,500万〜1億円"))
         }
     }
 
     private var areaSection: some View {
         Section {
             HStack {
-                Text("専有面積（最小）")
+                Text(t("areaMinLabel", "専有面積（最小）"))
                 Spacer()
-                numericField("㎡", value: $config.areaMinM2)
+                numericField(areaUnit, value: $config.areaMinM2)
             }
             HStack {
-                Text("専有面積（上限）")
+                Text(t("areaMaxLabel", "専有面積（上限）"))
                 Spacer()
                 numericFieldOptional("未指定", value: $config.areaMaxM2)
             }
         } header: {
             VStack(alignment: .leading, spacing: 2) {
-                Text("専有面積")
-                Text("💡 住宅ローン控除: 登記簿面積50㎡以上が対象（所得1,000万以下なら40㎡以上）")
+                Text(t("areaSectionTitle", "専有面積"))
+                Text(t("areaSectionInfo", "💡 住宅ローン控除: 登記簿面積50㎡以上が対象（所得1,000万以下なら40㎡以上）"))
                     .font(.caption2)
                     .fontWeight(.regular)
                     .textCase(nil)
             }
         } footer: {
-            Text("上限を0にすると未指定（最小のみ適用）")
+            Text(t("areaSectionFooter", "上限を0にすると未指定（最小のみ適用）"))
         }
     }
 
     private var walkSection: some View {
         Section {
-            Stepper(value: $config.walkMinMax, in: 1...20) {
+            Stepper(value: $config.walkMinMax, in: walkRange) {
                 HStack {
-                    Text("駅徒歩")
+                    Text(t("walkLabel", "駅徒歩"))
                     Spacer()
                     Text("\(config.walkMinMax)分以内")
                 }
             }
         } header: {
-            Text("駅徒歩")
+            Text(t("walkSectionTitle", "駅徒歩"))
         }
     }
 
     /// 築年（竣工年）ピッカーの選択肢範囲
     private var builtYearRange: [Int] {
         let currentYear = Calendar.current.component(.year, from: Date())
-        return Array((currentYear - 50)...currentYear).reversed()
+        let minYear = metadata.constraints.builtYearMin.min
+        return Array(minYear...currentYear).reversed()
     }
 
     private var builtYearSection: some View {
@@ -199,8 +214,8 @@ struct ScrapingConfigView: View {
             }
         } header: {
             VStack(alignment: .leading, spacing: 2) {
-                Text("築年")
-                Text("🏗️ 新耐震基準: 1981年6月以降に建築確認を受けた建物が対象（概ね1983年以降竣工）")
+                Text(t("builtYearSectionTitle", "築年"))
+                Text(t("builtYearSectionInfo", "🏗️ 新耐震基準: 1981年6月以降に建築確認を受けた建物が対象（概ね1983年以降竣工）"))
                     .font(.caption2)
                     .fontWeight(.regular)
                     .textCase(nil)
@@ -210,31 +225,24 @@ struct ScrapingConfigView: View {
 
     private var totalUnitsSection: some View {
         Section {
-            HStack {
-                Text("総戸数（最小）")
-                Spacer()
-                numericField("戸", value: $config.totalUnitsMin)
+            Stepper(value: $config.totalUnitsMin, in: totalUnitsRange) {
+                HStack {
+                    Text(t("totalUnitsMinLabel", "総戸数（最小）"))
+                    Spacer()
+                    Text("\(config.totalUnitsMin)\(totalUnitsUnit)")
+                }
             }
         } header: {
-            Text("総戸数")
+            Text(t("totalUnitsSectionTitle", "総戸数"))
         } footer: {
-            Text("この戸数以上のマンションを対象。例: 50")
+            Text(t("totalUnitsFooter", "この戸数以上のマンションを対象。例: 50"))
         }
     }
-
-    /// 間取りプレフィックスの選択肢
-    private static let layoutPrefixes: [(prefix: String, label: String)] = [
-        ("1", "1LDK系"),
-        ("2", "2LDK系"),
-        ("3", "3LDK系"),
-        ("4", "4LDK系"),
-        ("5+", "5LDK以上"),
-    ]
 
     private var layoutSection: some View {
         Section {
             FlowLayout(spacing: 8) {
-                ForEach(Self.layoutPrefixes, id: \.prefix) { item in
+                ForEach(metadata.layoutOptions, id: \.prefix) { item in
                     Button {
                         toggleLayout(item.prefix)
                     } label: {
@@ -258,24 +266,80 @@ struct ScrapingConfigView: View {
                 }
             }
         } header: {
-            Text("間取り")
+            Text(t("layoutSectionTitle", "間取り"))
         } footer: {
-            Text("1LDK系: 1LDK, 1DK 等。5LDK以上: 5LDK, 6LDK 等。タップで切替")
+            Text(t("layoutFooter", "1LDK系: 1LDK, 1DK 等。5LDK以上: 5LDK, 6LDK 等。タップで切替"))
         }
     }
 
-    /// チップ選択用の路線キーワード一覧（SUUMO の station_line に含まれる文字列でマッチ）
-    private static let allLineKeywords = [
-        "ＪＲ", "東京メトロ", "都営",
-        "東急", "京急", "京成", "東武", "西武", "小田急", "京王", "相鉄",
-        "つくばエクスプレス", "モノレール", "舎人ライナー",
-        "ゆりかもめ", "りんかい",
-    ]
+    @State private var newStationText = ""
+
+    private var stationsSection: some View {
+        Section {
+            ForEach(metadata.stationGroups, id: \.line) { group in
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(group.line)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    FlowLayout(spacing: 6) {
+                        ForEach(group.stations, id: \.self) { station in
+                            Button {
+                                toggleStation(station)
+                            } label: {
+                                Text(station)
+                                    .font(.caption)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(
+                                        config.allowedStations.contains(station)
+                                            ? Color.accentColor
+                                            : Color(.systemGray5)
+                                    )
+                                    .foregroundStyle(
+                                        config.allowedStations.contains(station)
+                                            ? .white
+                                            : .secondary
+                                    )
+                                    .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+            HStack {
+                TextField(t("stationAddPlaceholder", "駅名を追加"), text: $newStationText)
+                    .textFieldStyle(.roundedBorder)
+                Button(t("stationAddButton", "追加")) {
+                    let name = newStationText.trimmingCharacters(in: .whitespaces)
+                    if !name.isEmpty && !config.allowedStations.contains(name) {
+                        config.allowedStations.append(name)
+                    }
+                    newStationText = ""
+                }
+                .disabled(newStationText.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+        } header: {
+            Text(t("stationsSectionTitle", "対象駅"))
+        } footer: {
+            Text(config.allowedStations.isEmpty
+                 ? t("stationsFooterEmpty", "未選択: 駅名フィルタなし（路線フィルタのみ適用）")
+                 : selectedStationsFooter)
+        }
+    }
+
+    private func toggleStation(_ station: String) {
+        if config.allowedStations.contains(station) {
+            config.allowedStations.removeAll { $0 == station }
+        } else {
+            config.allowedStations.append(station)
+        }
+    }
 
     private var lineKeywordsSection: some View {
         Section {
             FlowLayout(spacing: 6) {
-                ForEach(Self.allLineKeywords, id: \.self) { keyword in
+                ForEach(metadata.lineKeywords, id: \.self) { keyword in
                     Button {
                         toggleLineKeyword(keyword)
                     } label: {
@@ -299,11 +363,11 @@ struct ScrapingConfigView: View {
                 }
             }
         } header: {
-            Text("路線")
+            Text(t("lineSectionTitle", "路線"))
         } footer: {
             Text(config.allowedLineKeywords.isEmpty
-                 ? "未選択: 全路線が対象になります"
-                 : "選択した路線のみ対象。タップで切替")
+                 ? t("lineFooterEmpty", "未選択: 全路線が対象になります")
+                 : t("lineFooterSelected", "選択した路線のみ対象。タップで切替"))
         }
     }
 
@@ -333,18 +397,32 @@ struct ScrapingConfigView: View {
     private func save() async {
         guard scrapingService.isAuthenticated else { return }
 
-        let toSave = config
-        // allowedLineKeywords が空 → 全路線対象（フィルタなし）
+        let normalizedToSave = config.normalized(using: metadata)
+        saveCorrectionNotice = normalizedToSave == config
+            ? nil
+            : t("saveCorrectedMessage", "入力値を制約に合わせて補正して保存しました。")
 
         isSaving = true
         defer { isSaving = false }
 
         do {
-            try await scrapingService.save(toSave)
+            try await scrapingService.save(normalizedToSave)
             showSaveSuccess = true
         } catch {
             saveError = error.localizedDescription
         }
+    }
+
+    private var selectedStationsFooter: String {
+        let template = t("stationsFooterSelectedTemplate", "選択した駅の最寄り物件のみ対象（%d駅）。タップで切替")
+        if template.contains("%d") {
+            return template.replacingOccurrences(of: "%d", with: "\(config.allowedStations.count)")
+        }
+        return template
+    }
+
+    private func t(_ key: String, _ fallback: String) -> String {
+        metadata.uiText[key] ?? fallback
     }
 }
 

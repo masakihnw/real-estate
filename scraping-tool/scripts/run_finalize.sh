@@ -44,7 +44,7 @@ echo "--- キャッシュマージ ---" >&2
 
 # 各ジョブが更新した可能性のあるキャッシュをマージ
 # enriched-chuko/, enriched-shinchiku/ ディレクトリから取得
-for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_manifest.json station_cache.json reverse_geocode_cache.json; do
+for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_manifest.json station_cache.json reverse_geocode_cache.json building_units.json; do
     UPDATES=""
     for job_dir in enriched-chuko enriched-shinchiku; do
         if [ -f "${job_dir}/data/${cache_file}" ]; then
@@ -135,83 +135,15 @@ echo "[TIMING] upload_floor_plans: $(( ($(date +%s) - _t) ))s" >&2
 
 echo "--- is_new フラグ注入 ---" >&2
 
-python3 -c "
-import json, sys
-sys.path.insert(0, '.')
-from report_utils import inject_is_new, load_json
-from pathlib import Path
-
-out = '${OUTPUT_DIR}'
-
-cur = load_json(Path(f'{out}/latest.json'))
-prev = load_json(Path(f'{out}/previous.json'), missing_ok=True, default=[])
-inject_is_new(cur, prev or None)
-with open(f'{out}/latest.json', 'w', encoding='utf-8') as f:
-    json.dump(cur, f, ensure_ascii=False)
-
-cur_s = load_json(Path(f'{out}/latest_shinchiku.json'), missing_ok=True, default=[])
-prev_s = load_json(Path(f'{out}/previous_shinchiku.json'), missing_ok=True, default=[])
-if cur_s:
-    inject_is_new(cur_s, prev_s or None)
-    with open(f'{out}/latest_shinchiku.json', 'w', encoding='utf-8') as f:
-        json.dump(cur_s, f, ensure_ascii=False)
-
-new_c = sum(1 for r in cur if r.get('is_new'))
-new_s = sum(1 for r in cur_s if r.get('is_new'))
-print(f'is_new 注入完了: 中古 {new_c}/{len(cur)}件, 新築 {new_s}/{len(cur_s)}件', file=sys.stderr)
-" || echo "is_new 注入失敗（続行）" >&2
+python3 scripts/finalize_helpers.py inject-new --output-dir "${OUTPUT_DIR}" \
+    || echo "is_new 注入失敗（続行）" >&2
 
 # ──────────────────────────── 価格変動・掲載日数・競合物件数・投資スコア注入 ────────────────────────────
 
 echo "--- 価格変動・掲載日数・競合・投資スコア注入 ---" >&2
 
-python3 -c "
-import json, sys
-sys.path.insert(0, '.')
-from report_utils import inject_price_history, inject_first_seen_at, inject_competing_count, load_json
-from investment_enricher import enrich_investment_scores
-from pathlib import Path
-
-out = '${OUTPUT_DIR}'
-
-cur = load_json(Path(f'{out}/latest.json'))
-prev = load_json(Path(f'{out}/previous.json'), missing_ok=True, default=[])
-
-inject_price_history(cur, prev or None)
-inject_first_seen_at(cur, prev or None)
-inject_competing_count(cur)
-
-tx_data = None
-tx_path = Path(f'{out}/transactions.json')
-if tx_path.exists():
-    tx_json = json.load(open(tx_path, encoding='utf-8'))
-    tx_data = {}
-    for bg in tx_json.get('building_groups', []):
-        ward = bg.get('ward', '').replace('区', '')
-        if ward not in tx_data:
-            tx_data[ward] = {'transaction_count': 0}
-        tx_data[ward]['transaction_count'] += bg.get('transaction_count', 0)
-enrich_investment_scores(cur, tx_data)
-
-with open(f'{out}/latest.json', 'w', encoding='utf-8') as f:
-    json.dump(cur, f, ensure_ascii=False)
-
-scored = sum(1 for r in cur if r.get('listing_score') is not None)
-history = sum(1 for r in cur if len(r.get('price_history', [])) > 1)
-print(f'中古: スコア {scored}/{len(cur)}件, 価格変動あり {history}件', file=sys.stderr)
-
-cur_s = load_json(Path(f'{out}/latest_shinchiku.json'), missing_ok=True, default=[])
-prev_s = load_json(Path(f'{out}/previous_shinchiku.json'), missing_ok=True, default=[])
-if cur_s:
-    inject_price_history(cur_s, prev_s or None)
-    inject_first_seen_at(cur_s, prev_s or None)
-    inject_competing_count(cur_s)
-    enrich_investment_scores(cur_s, tx_data)
-    with open(f'{out}/latest_shinchiku.json', 'w', encoding='utf-8') as f:
-        json.dump(cur_s, f, ensure_ascii=False)
-    scored_s = sum(1 for r in cur_s if r.get('listing_score') is not None)
-    print(f'新築: スコア {scored_s}/{len(cur_s)}件', file=sys.stderr)
-" || echo "投資スコア注入失敗（続行）" >&2
+python3 scripts/finalize_helpers.py inject-investment --output-dir "${OUTPUT_DIR}" \
+    || echo "投資スコア注入失敗（続行）" >&2
 
 # ──────────────────────────── 供給トレンド生成 ────────────────────────────
 
@@ -286,21 +218,7 @@ echo "[TIMING] report: $(( ($(date +%s) - _t) ))s" >&2
 
 if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
     echo "プッシュ通知送信中..." >&2
-    read NEW_CHUKO NEW_BUILDING NEW_ROOM <<< $(python3 -c "
-import json
-data = json.load(open('${OUTPUT_DIR}/latest.json'))
-new_items = [r for r in data if r.get('is_new')]
-buildings = sum(1 for r in new_items if r.get('is_new_building'))
-rooms = len(new_items) - buildings
-print(len(new_items), buildings, rooms)
-" 2>/dev/null || echo "0 0 0")
-    NEW_SHINCHIKU=0
-    if [ -f "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-        NEW_SHINCHIKU=$(python3 -c "
-import json
-print(sum(1 for r in json.load(open('${OUTPUT_DIR}/latest_shinchiku.json')) if r.get('is_new')))
-" 2>/dev/null || echo "0")
-    fi
+    read NEW_CHUKO NEW_BUILDING NEW_ROOM NEW_SHINCHIKU <<< $(python3 scripts/finalize_helpers.py count-new --output-dir "${OUTPUT_DIR}" 2>/dev/null || echo "0 0 0 0")
     python3 scripts/send_push.py --new-count "$NEW_CHUKO" --shinchiku-count "$NEW_SHINCHIKU" \
         --new-building-count "$NEW_BUILDING" --new-room-count "$NEW_ROOM" \
         --latest "${OUTPUT_DIR}/latest.json" --latest-shinchiku "${OUTPUT_DIR}/latest_shinchiku.json" \

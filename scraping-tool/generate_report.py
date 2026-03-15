@@ -41,9 +41,11 @@ from report_utils import (
 # config を import する前に呼ぶこと（from config import X は呼び出し時点の値をコピーするため）
 try:
     from firestore_config_loader import load_config_from_firestore
-    load_config_from_firestore()
-except Exception:
-    pass  # Firestore 未設定時は config.py のデフォルトを使用
+    loaded = load_config_from_firestore()
+    if not loaded:
+        print("# Firestore 設定は未適用（config.py のデフォルトを使用）", file=sys.stderr)
+except Exception as e:
+    print(f"# Firestore 設定の読み込みに失敗（config.py のデフォルトを使用）: {e}", file=sys.stderr)
 
 try:
     from config import (
@@ -58,6 +60,7 @@ try:
         AREA_LABEL,
         TOKYO_23_WARDS,
         ALLOWED_LINE_KEYWORDS,
+        ALLOWED_STATIONS,
         LAYOUT_PREFIX_OK,
     )
 except ImportError:
@@ -69,6 +72,7 @@ except ImportError:
     STATION_PASSENGERS_MIN = 0
     AREA_LABEL = "東京23区"
     ALLOWED_LINE_KEYWORDS = ()
+    ALLOWED_STATIONS = ()
     LAYOUT_PREFIX_OK = ("2", "3")
     TOKYO_23_WARDS = (
         "千代田区", "中央区", "港区", "新宿区", "文京区", "台東区", "墨田区", "江東区",
@@ -121,6 +125,9 @@ def get_search_conditions_md() -> str:
         "| ローン試算 | 50年変動金利・頭金なし。諸経費（修繕積立等）月3.5万円を加算した月額支払。 |",
         "| 通勤時間 | エムスリーキャリア（虎ノ門）・playground（千代田区一番町）まで。ドアtoドア（物件→最寄駅の徒歩＋最寄駅→オフィス）。登録済み駅はその合計、未登録は(概算)で徒歩＋駅→会社最寄り駅＋会社最寄り駅→会社の徒歩を表示。 |",
     ]
+    if ALLOWED_STATIONS:
+        station_label = "・".join(ALLOWED_STATIONS[:8]) + (" など" if len(ALLOWED_STATIONS) > 8 else "")
+        rows.append(f"| 対象駅 | {station_label}（{len(ALLOWED_STATIONS)}駅） |")
     if ALLOWED_LINE_KEYWORDS:
         line_label = "・".join(ALLOWED_LINE_KEYWORDS[:5]) + (" など" if len(ALLOWED_LINE_KEYWORDS) > 5 else "")
         rows.append(f"| 路線 | {line_label} に限定 |")

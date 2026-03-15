@@ -28,6 +28,10 @@ class ValidationResult:
     def ok(self) -> bool:
         return len(self.errors) == 0
 
+    @property
+    def has_errors(self) -> bool:
+        return len(self.errors) > 0
+
     def add_error(self, msg: str):
         self.errors.append(msg)
 
@@ -55,7 +59,7 @@ def validate_listings(listings: list[dict], label: str = "中古") -> Validation
     result = ValidationResult()
 
     if not listings:
-        result.add_error(f"{label}: 物件が0件です")
+        result.add_error(f"{label}: 物件が空（0件）です")
         return result
 
     result.stats["total"] = len(listings)
@@ -73,6 +77,13 @@ def validate_listings(listings: list[dict], label: str = "中古") -> Validation
 
     # 価格の妥当性
     prices = [r["price_man"] for r in listings if r.get("price_man")]
+    invalid_price_count = sum(
+        1
+        for r in listings
+        if r.get("price_man") is not None and isinstance(r.get("price_man"), (int, float)) and r.get("price_man") <= 0
+    )
+    if invalid_price_count > 0:
+        result.add_warning(f"{label}: 価格が0以下のレコードを {invalid_price_count}件 検出")
     if prices:
         avg_price = sum(prices) / len(prices)
         result.stats[f"avg_price_man"] = int(avg_price)
