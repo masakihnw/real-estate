@@ -288,7 +288,8 @@ final class ScrapingConfigService {
             return
         }
         let task = Task { [weak self] in
-            await self?.performFetch()
+            guard let self else { return }
+            await self.performFetch()
         }
         inFlightFetchTask = task
         await task.value
