@@ -18,6 +18,7 @@ from config import (
     USER_AGENT,
     STATION_PASSENGERS_MIN,
     ALLOWED_LINE_KEYWORDS,
+    ALLOWED_STATIONS,
     TOKYO_23_WARDS,
 )
 
@@ -87,22 +88,29 @@ def station_passengers_ok(station_line: str, passengers_map: dict[str, int]) -> 
     return passengers >= STATION_PASSENGERS_MIN
 
 
-# ──────────────────────────── 路線フィルタ ────────────────────────────
+# ──────────────────────────── 路線・駅フィルタ ────────────────────────────
 
 
 def line_ok(station_line: str, *, empty_passes: bool = True) -> bool:
-    """路線限定時、最寄り路線がALLOWED_LINE_KEYWORDSのいずれかを含むか。
+    """路線・駅フィルタ。ALLOWED_STATIONS（駅名リスト）と ALLOWED_LINE_KEYWORDS の
+    両方が設定されている場合はいずれかを満たせば通過。どちらも空なら常に通過。
 
     empty_passes: station_line が空のとき True を返すか。
       - True: SUUMO系・HOME'S新築（パース失敗時の取りこぼし防止）
       - False: HOME'S中古（空＝路線不明は除外）
     """
-    if not ALLOWED_LINE_KEYWORDS:
+    has_station_filter = bool(ALLOWED_STATIONS)
+    has_line_filter = bool(ALLOWED_LINE_KEYWORDS)
+    if not has_station_filter and not has_line_filter:
         return True
     line = (station_line or "").strip()
     if not line:
         return empty_passes
-    return any(kw in line for kw in ALLOWED_LINE_KEYWORDS)
+    if has_station_filter and any(st in line for st in ALLOWED_STATIONS):
+        return True
+    if has_line_filter and any(kw in line for kw in ALLOWED_LINE_KEYWORDS):
+        return True
+    return False
 
 
 # ──────────────────────────── 地域フィルタ ────────────────────────────

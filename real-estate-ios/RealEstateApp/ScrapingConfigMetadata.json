@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "priceMinMan": 9000,
+    "priceMaxMan": 12000,
+    "areaMinM2": 55,
+    "areaMaxM2": null,
+    "walkMinMax": 15,
+    "builtYearMinOffsetYears": 20,
+    "totalUnitsMin": 30,
+    "layoutPrefixOk": ["2", "3"],
+    "allowedLineKeywords": [],
+    "allowedStations": [
+      "東京", "大手町", "神田", "秋葉原", "御茶ノ水", "新御茶ノ水",
+      "淡路町", "小川町", "竹橋", "九段下", "神保町", "半蔵門",
+      "永田町", "麹町", "市ケ谷", "飯田橋", "四ツ谷",
+      "日比谷", "有楽町", "二重橋前", "霞ケ関", "桜田門",
+      "国会議事堂前", "溜池山王", "内幸町", "岩本町", "末広町",
+      "銀座", "銀座一丁目", "東銀座", "日本橋", "新日本橋",
+      "三越前", "京橋", "宝町", "八丁堀", "茅場町",
+      "人形町", "水天宮前", "小伝馬町", "馬喰横山", "馬喰町",
+      "東日本橋", "浜町", "新富町", "築地", "築地市場",
+      "月島", "勝どき",
+      "新橋", "品川", "田町", "浜松町", "高輪ゲートウェイ",
+      "表参道", "青山一丁目", "外苑前", "赤坂見附", "赤坂",
+      "六本木", "六本木一丁目", "乃木坂", "神谷町",
+      "虎ノ門", "虎ノ門ヒルズ", "麻布十番",
+      "白金高輪", "白金台", "泉岳寺", "高輪台",
+      "三田", "大門", "御成門", "芝公園", "赤羽橋",
+      "汐留", "竹芝", "日の出", "芝浦ふ頭",
+      "お台場海浜公園", "台場",
+      "渋谷", "清澄白河", "住吉", "錦糸町",
+      "豊洲"
+    ]
+  },
+  "constraints": {
+    "priceMinMan": { "min": 0, "max": 30000 },
+    "priceMaxMan": { "min": 0, "max": 30000 },
+    "areaMinM2": { "min": 1, "max": 300 },
+    "areaMaxM2": { "min": 1, "max": 300 },
+    "walkMinMax": { "min": 1, "max": 20 },
+    "totalUnitsMin": { "min": 1, "max": 10000 },
+    "builtYearMinOffsetYears": { "min": 1, "max": 50 },
+    "builtYearMin": { "min": 1970, "maxOffsetFromCurrentYear": 0 }
+  },
+  "units": {
+    "price": "万円",
+    "area": "㎡",
+    "totalUnits": "戸"
+  },
+  "uiText": {
+    "navigationTitle": "スクレイピング条件",
+    "closeButton": "閉じる",
+    "saveButton": "保存",
+    "saveSuccessTitle": "保存しました",
+    "saveSuccessMessage": "次回のスクレイピングから反映されます。",
+    "saveCorrectedMessage": "入力値を制約に合わせて補正して保存しました。",
+    "saveErrorTitle": "保存に失敗しました",
+    "authRequiredMessage": "ログインするとスクレイピング条件を編集できます",
+    "priceSectionTitle": "価格帯",
+    "priceMinLabel": "価格（下限）",
+    "priceMaxLabel": "価格（上限）",
+    "priceSectionFooter": "例: 7,500万〜1億円",
+    "areaSectionTitle": "専有面積",
+    "areaMinLabel": "専有面積（最小）",
+    "areaMaxLabel": "専有面積（上限）",
+    "areaSectionInfo": "💡 住宅ローン控除: 登記簿面積50㎡以上が対象（所得1,000万以下なら40㎡以上）",
+    "areaSectionFooter": "上限を0にすると未指定（最小のみ適用）",
+    "walkSectionTitle": "駅徒歩",
+    "walkLabel": "駅徒歩",
+    "builtYearSectionTitle": "築年",
+    "builtYearSectionInfo": "🏗️ 新耐震基準: 1981年6月以降に建築確認を受けた建物が対象（概ね1983年以降竣工）",
+    "totalUnitsSectionTitle": "総戸数",
+    "totalUnitsMinLabel": "総戸数（最小）",
+    "totalUnitsFooter": "この戸数以上のマンションを対象。例: 50",
+    "layoutSectionTitle": "間取り",
+    "layoutFooter": "1LDK系: 1LDK, 1DK 等。5LDK以上: 5LDK, 6LDK 等。タップで切替",
+    "stationsSectionTitle": "対象駅",
+    "stationAddPlaceholder": "駅名を追加",
+    "stationAddButton": "追加",
+    "stationsFooterEmpty": "未選択: 駅名フィルタなし（路線フィルタのみ適用）",
+    "stationsFooterSelectedTemplate": "選択した駅の最寄り物件のみ対象（%d駅）。タップで切替",
+    "lineSectionTitle": "路線",
+    "lineFooterEmpty": "未選択: 全路線が対象になります",
+    "lineFooterSelected": "選択した路線のみ対象。タップで切替"
+  },
+  "layoutOptions": [
+    { "prefix": "1", "label": "1LDK系" },
+    { "prefix": "2", "label": "2LDK系" },
+    { "prefix": "3", "label": "3LDK系" },
+    { "prefix": "4", "label": "4LDK系" },
+    { "prefix": "5+", "label": "5LDK以上" }
+  ],
+  "lineKeywords": [
+    "ＪＲ", "東京メトロ", "都営",
+    "東急", "京急", "京成", "東武", "西武", "小田急", "京王", "相鉄",
+    "つくばエクスプレス", "モノレール", "舎人ライナー",
+    "ゆりかもめ", "りんかい"
+  ],
+  "stationGroups": [
+    {
+      "line": "千代田区（全駅）",
+      "stations": [
+        "東京", "大手町", "神田", "秋葉原", "御茶ノ水", "新御茶ノ水",
+        "淡路町", "小川町", "竹橋", "九段下", "神保町", "半蔵門",
+        "永田町", "麹町", "市ケ谷", "飯田橋", "四ツ谷",
+        "日比谷", "有楽町", "二重橋前", "霞ケ関", "桜田門",
+        "国会議事堂前", "溜池山王", "内幸町", "岩本町", "末広町"
+      ]
+    },
+    {
+      "line": "中央区（全駅）",
+      "stations": [
+        "銀座", "銀座一丁目", "東銀座", "日本橋", "新日本橋",
+        "三越前", "京橋", "宝町", "八丁堀", "茅場町",
+        "人形町", "水天宮前", "小伝馬町", "馬喰横山", "馬喰町",
+        "東日本橋", "浜町", "新富町", "築地", "築地市場",
+        "月島", "勝どき"
+      ]
+    },
+    {
+      "line": "港区（全駅）",
+      "stations": [
+        "新橋", "品川", "田町", "浜松町", "高輪ゲートウェイ",
+        "表参道", "青山一丁目", "外苑前", "赤坂見附", "赤坂",
+        "六本木", "六本木一丁目", "乃木坂", "神谷町",
+        "虎ノ門", "虎ノ門ヒルズ", "麻布十番",
+        "白金高輪", "白金台", "泉岳寺", "高輪台",
+        "三田", "大門", "御成門", "芝公園", "赤羽橋",
+        "汐留", "竹芝", "日の出", "芝浦ふ頭",
+        "お台場海浜公園", "台場"
+      ]
+    },
+    {
+      "line": "半蔵門線（渋谷・清澄白河・住吉・錦糸町）",
+      "stations": ["渋谷", "清澄白河", "住吉", "錦糸町"]
+    },
+    {
+      "line": "有楽町線（豊洲）",
+      "stations": ["豊洲"]
+    }
+  ]
+}

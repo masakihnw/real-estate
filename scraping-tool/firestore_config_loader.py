@@ -73,39 +73,7 @@ def load_config_from_firestore() -> bool:
 
     # config モジュールを import してパッチ
     import config as config_mod
-
-    applied = False
-
-    if "priceMinMan" in data and data["priceMinMan"] is not None:
-        config_mod.PRICE_MIN_MAN = int(data["priceMinMan"])
-        applied = True
-    if "priceMaxMan" in data and data["priceMaxMan"] is not None:
-        config_mod.PRICE_MAX_MAN = int(data["priceMaxMan"])
-        applied = True
-    if "areaMinM2" in data and data["areaMinM2"] is not None:
-        config_mod.AREA_MIN_M2 = int(data["areaMinM2"])
-        applied = True
-    if "areaMaxM2" in data:
-        config_mod.AREA_MAX_M2 = int(data["areaMaxM2"]) if data["areaMaxM2"] is not None else None
-        applied = True
-    if "walkMinMax" in data and data["walkMinMax"] is not None:
-        config_mod.WALK_MIN_MAX = int(data["walkMinMax"])
-        applied = True
-    if "builtYearMin" in data and data["builtYearMin"] is not None:
-        try:
-            config_mod.BUILT_YEAR_MIN = int(data["builtYearMin"])
-            applied = True
-        except (ValueError, TypeError):
-            pass  # fall back to default
-    if "totalUnitsMin" in data and data["totalUnitsMin"] is not None:
-        config_mod.TOTAL_UNITS_MIN = int(data["totalUnitsMin"])
-        applied = True
-    if "layoutPrefixOk" in data and isinstance(data["layoutPrefixOk"], list):
-        config_mod.LAYOUT_PREFIX_OK = tuple(str(x) for x in data["layoutPrefixOk"])
-        applied = True
-    if "allowedLineKeywords" in data and isinstance(data["allowedLineKeywords"], list):
-        config_mod.ALLOWED_LINE_KEYWORDS = tuple(str(x) for x in data["allowedLineKeywords"])
-        applied = True
+    applied = config_mod.apply_runtime_overrides(data)
 
     if applied:
         print(f"# Firestore からスクレイピング条件を読み込みました（{CONFIG_DOC_ID}）", file=sys.stderr)
