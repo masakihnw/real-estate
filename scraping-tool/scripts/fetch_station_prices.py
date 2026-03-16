@@ -22,6 +22,7 @@ import os
 import re
 import statistics
 import sys
+import threading
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -53,6 +54,26 @@ MCP_TOOL_NAME = "reinfolib-real-estate-price"
 
 DIRECT_API_BASE = "https://www.reinfolib.mlit.go.jp/ex-api/external"
 DIRECT_API_ENDPOINT = f"{DIRECT_API_BASE}/XIT001"
+
+# ---------------------------------------------------------------------------
+# レートリミッター（直接API用）
+# 不動産情報ライブラリの目安: 60req/分。余裕を持って50req/分 = 1.2秒間隔に設定。
+# ---------------------------------------------------------------------------
+_RATE_LIMIT_INTERVAL = 60.0 / 50  # 1.2秒/リクエスト
+_rate_lock = threading.Lock()
+_last_api_call_time: float = 0.0
+
+
+def _direct_api_get(url: str, headers: dict, params: dict, timeout: int) -> "requests.Response":
+    """全ワーカー共通のレートリミッターを通してGETリクエストを送信する。"""
+    global _last_api_call_time
+    with _rate_lock:
+        elapsed = time.time() - _last_api_call_time
+        wait = _RATE_LIMIT_INTERVAL - elapsed
+        if wait > 0:
+            time.sleep(wait)
+        _last_api_call_time = time.time()
+    return requests.get(url, headers=headers, params=params, timeout=timeout)
 
 WARD_CODE_TO_NAME = {
     "13101": "千代田区", "13102": "中央区", "13103": "港区",
@@ -163,7 +184,7 @@ def fetch_via_direct_api(
     }
     headers = {"Ocp-Apim-Subscription-Key": api_key}
     try:
-        resp = requests.get(
+        resp = _direct_api_get(
             DIRECT_API_ENDPOINT, headers=headers, params=params, timeout=60
         )
         if resp.status_code == 200:
