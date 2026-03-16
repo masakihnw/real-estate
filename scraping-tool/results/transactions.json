@@ -12198,7 +12198,7 @@
       "latitude": 35.7255471,
       "longitude": 139.7632712,
       "building_group_id": "131050100-2011",
-      "estimated_building_name": null
+      "estimated_building_name": "アージョ文京千駄木"
     },
     {
       "id": "tx-06955736c22a",
@@ -12398,7 +12398,7 @@
       "latitude": 35.7255471,
       "longitude": 139.7632712,
       "building_group_id": "131050100-2011",
-      "estimated_building_name": null
+      "estimated_building_name": "アージョ文京千駄木"
     },
     {
       "id": "tx-349fc9c47400",
@@ -30138,7 +30138,7 @@
       "latitude": 35.6615806,
       "longitude": 139.8317778,
       "building_group_id": "131080220-2007",
-      "estimated_building_name": "オーベル東陽町サウシア / ニューライズシティ東京ベイハイライズ"
+      "estimated_building_name": "ニューライズシティ東京ベイハイライズ"
     },
     {
       "id": "tx-587a79946880",
@@ -32638,7 +32638,7 @@
       "latitude": 35.6615806,
       "longitude": 139.8317778,
       "building_group_id": "131080220-2007",
-      "estimated_building_name": "オーベル東陽町サウシア / ニューライズシティ東京ベイハイライズ"
+      "estimated_building_name": "ニューライズシティ東京ベイハイライズ"
     },
     {
       "id": "tx-bb03ed374575",
@@ -35738,7 +35738,7 @@
       "latitude": 35.6347912,
       "longitude": 139.7234751,
       "building_group_id": "131090050-2011",
-      "estimated_building_name": "オープンレジデンス白金台B棟"
+      "estimated_building_name": "オープンレジデンス白金台"
     },
     {
       "id": "tx-545eb3e610c2",
@@ -67467,7 +67467,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "アージョ文京千駄木"
     },
     {
       "group_id": "131050100-2017",
@@ -71130,7 +71130,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "オーベル東陽町サウシア / ニューライズシティ東京ベイハイライズ"
+      "estimated_building_name": "ニューライズシティ東京ベイハイライズ"
     },
     {
       "group_id": "131080230-2019",
@@ -72055,7 +72055,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "オープンレジデンス白金台B棟"
+      "estimated_building_name": "オープンレジデンス白金台"
     },
     {
       "group_id": "131090050-2017",
@@ -82808,7 +82808,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-16T08:26:07",
+    "updated_at": "2026-03-16T20:19:34",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
