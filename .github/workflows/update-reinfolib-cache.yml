@@ -31,7 +31,7 @@ concurrency:
 jobs:
   update-cache:
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # API レート制限による長時間実行のセーフガード
+    timeout-minutes: 90  # 初回フル取得時: 809駅×5年÷50req/分 ≈ 81分。resume 運用で通常は数分で完了。
     permissions:
       contents: write
 
