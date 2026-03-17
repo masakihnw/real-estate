@@ -16,6 +16,7 @@
 		12B65D4123AAFFE21EAF8D07 /* RadarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94333B46786557992552519 /* RadarChartView.swift */; };
 		139E0B39961D38C474315622 /* SpotlightIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A7F9C6F1B590BF3BCF62B3 /* SpotlightIndexer.swift */; };
 		13F2D3B8066ED1C37940E12B /* NotificationScheduleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */; };
+		18E73F7241D94046F79E1E59 /* AIConsultationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE00075D9849BE8F24290CA8 /* AIConsultationSectionView.swift */; };
 		1D30A4CF74D6451DE51B23CE /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */; };
 		1F72CE93F21F2E14D524D3D9 /* TransactionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5DAB8EDCE8C47645261F77 /* TransactionFilter.swift */; };
 		1F831EA70E43C0800109C454 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D04A0A3D3357841F2D446A36 /* FirebaseFirestore */; };
@@ -160,6 +161,7 @@
 		BB2B439F060EE0745A8D2196 /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
 		BC682E85B3EDC44519956DB8 /* RealEstateWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RealEstateWidget.entitlements; sourceTree = "<group>"; };
 		BCDE998C1AE443D8DBEC7DB2 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
+		BE00075D9849BE8F24290CA8 /* AIConsultationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConsultationSectionView.swift; sourceTree = "<group>"; };
 		C320640BB97A0C9698B93CCE /* ScrapingConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingConfigView.swift; sourceTree = "<group>"; };
 		CD7391AC642FF221BD72EBEB /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilter.swift; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 		F73FF62B4B31ECEE5E10E9CD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BE00075D9849BE8F24290CA8 /* AIConsultationSectionView.swift */,
 				580EA895EE4AEC8F233E3680 /* BankComparisonView.swift */,
 				26C6D0D2EC190261EE2AC889 /* CommuteDestinationSettingsView.swift */,
 				4DC4ACF084AE947A9DBA4E12 /* ComparisonView.swift */,
@@ -431,6 +434,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18E73F7241D94046F79E1E59 /* AIConsultationSectionView.swift in Sources */,
 				F105169E54EE4FDD30D61D04 /* AuthService.swift in Sources */,
 				66EF22D9734F413C7E26F3B2 /* BackgroundRefreshManager.swift in Sources */,
 				545A5B35F60F922A0D525D03 /* BankComparisonView.swift in Sources */,
@@ -566,7 +570,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 68;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -693,7 +697,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 68;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
