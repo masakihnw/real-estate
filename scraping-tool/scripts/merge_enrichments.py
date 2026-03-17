@@ -154,8 +154,7 @@ def merge(base: list[dict], enriched_files: list[Path]) -> list[dict]:
 
             enriched_item = enriched_index[key]
             for field in ALL_ENRICHER_FIELDS:
-                if field in enriched_item:
-                    # base にないフィールド or enriched で値が変わったフィールドを取り込み
+                if field in enriched_item and enriched_item[field] is not None:
                     if field not in item or item[field] != enriched_item[field]:
                         item[field] = enriched_item[field]
                         merged_count += 1

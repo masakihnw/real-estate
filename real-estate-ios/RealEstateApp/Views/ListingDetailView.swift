@@ -14,7 +14,6 @@ struct ListingDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     let listing: Listing
-    @Query private var allTransactions: [TransactionRecord]
     /// 内見メモ（コメント＋写真）オーバーレイ表示フラグ
     @State private var showNotesOverlay = false
     /// コメント入力テキスト
@@ -41,18 +40,10 @@ struct ListingDetailView: View {
     /// 類似物件タップ時に表示するシート用（詳細画面を開く）
     @State private var selectedSimilarListing: Listing?
 
-    @Query private var allListings: [Listing]
-
-    /// 同一区の近隣成約事例（最新5件）
-    private var nearbyTransactions: [TransactionRecord] {
-        let ward = Listing.extractWardFromAddress(listing.address ?? "")
-        guard !ward.isEmpty else { return [] }
-        return allTransactions
-            .filter { $0.ward == ward }
-            .sorted { $0.tradePeriod > $1.tradePeriod }
-            .prefix(5)
-            .map { $0 }
-    }
+    /// 遅延フェッチ: 類似物件（.task で非同期ロード）
+    @State private var similarListings: [Listing] = []
+    /// 遅延フェッチ: 近隣成約事例（.task で非同期ロード）
+    @State private var nearbyTransactions: [TransactionRecord] = []
 
     var body: some View {
         NavigationStack {
@@ -183,6 +174,12 @@ struct ListingDetailView: View {
 
                     Divider()
 
+                    // ⑭ AI 相談セクション
+                    AIConsultationSectionView(listing: listing)
+                        .id("ai")
+
+                    Divider()
+
                     // ⑬ 外部サイトボタン or 掲載終了メッセージ
                     if listing.isDelisted {
                         delistedNotice
@@ -196,6 +193,10 @@ struct ListingDetailView: View {
                     scrollProxy = proxy
                     listing.viewedAt = Date()
                     try? modelContext.save()
+                }
+                .task {
+                    similarListings = fetchSimilarListings()
+                    nearbyTransactions = fetchNearbyTransactions()
                 }
                 .safeAreaInset(edge: .top) {
                     sectionNavBar
@@ -257,25 +258,41 @@ struct ListingDetailView: View {
         }
     }
 
-    // MARK: - 類似物件レコメンド
+    // MARK: - 類似物件レコメンド（遅延フェッチ）
 
-    private var similarListings: [Listing] {
+    private func fetchSimilarListings() -> [Listing] {
         let wardName = Listing.extractWardFromAddress(listing.address ?? "")
         guard !wardName.isEmpty, let price = listing.priceMan else { return [] }
         let priceLow = Int(Double(price) * 0.8)
         let priceHigh = Int(Double(price) * 1.2)
-
-        return allListings
-            .filter { other in
-                other.url != listing.url
-                && !other.isDelisted
-                && other.propertyType == listing.propertyType
-                && Listing.extractWardFromAddress(other.address ?? "") == wardName
-                && (other.priceMan ?? 0) >= priceLow
-                && (other.priceMan ?? 0) <= priceHigh
+        let pt = listing.propertyType
+        let currentURL = listing.url
+        var descriptor = FetchDescriptor<Listing>(
+            predicate: #Predicate {
+                $0.url != currentURL
+                && !$0.isDelisted
+                && $0.propertyType == pt
+                && ($0.priceMan ?? 0) >= priceLow
+                && ($0.priceMan ?? 0) <= priceHigh
             }
+        )
+        descriptor.fetchLimit = 20
+        guard let candidates = try? modelContext.fetch(descriptor) else { return [] }
+        return candidates
+            .filter { Listing.extractWardFromAddress($0.address ?? "") == wardName }
             .prefix(3)
             .map { $0 }
+    }
+
+    private func fetchNearbyTransactions() -> [TransactionRecord] {
+        let ward = Listing.extractWardFromAddress(listing.address ?? "")
+        guard !ward.isEmpty else { return [] }
+        var descriptor = FetchDescriptor<TransactionRecord>(
+            predicate: #Predicate { $0.ward == ward },
+            sortBy: [SortDescriptor(\TransactionRecord.tradePeriod, order: .reverse)]
+        )
+        descriptor.fetchLimit = 5
+        return (try? modelContext.fetch(descriptor)) ?? []
     }
 
     @ViewBuilder
@@ -359,6 +376,7 @@ struct ListingDetailView: View {
                 if listing.hasHazardData {
                     sectionChip("ハザード", id: "hazard")
                 }
+                sectionChip("AI相談", id: "ai")
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 6)
