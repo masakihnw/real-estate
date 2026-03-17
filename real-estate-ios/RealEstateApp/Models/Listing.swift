@@ -3084,7 +3084,9 @@ extension Listing {
         let floorPlans = parsedFloorPlanImages
         if !floorPlans.isEmpty {
             prompt += "### 間取り図の確認\n"
-            prompt += "以下の間取り図 URL にアクセスし、画像を確認したうえで間取りの特徴・動線・改善点をコメントしてください。\n\n"
+            prompt += "このメッセージに間取り図の画像が添付されている場合は、その画像を直接分析してください。\n"
+            prompt += "添付がない場合は、以下の URL にアクセスして画像を確認してください。\n"
+            prompt += "間取りの特徴・生活動線・収納・採光・改善点をコメントしてください。\n\n"
             for (i, imgURL) in floorPlans.enumerated() {
                 prompt += "- [間取り図\(floorPlans.count > 1 ? "\(i + 1)" : "")](\(imgURL.absoluteString))\n"
             }

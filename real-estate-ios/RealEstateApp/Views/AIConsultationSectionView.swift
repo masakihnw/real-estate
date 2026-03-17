@@ -8,11 +8,14 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 struct AIConsultationSectionView: View {
     let listing: Listing
     @Query(filter: #Predicate<Listing> { $0.isLiked == true }) private var likedListings: [Listing]
     @State private var copiedType: CopiedType?
+    @State private var floorPlanCopied = false
+    @State private var floorPlanImage: UIImage?
 
     private enum CopiedType: Equatable {
         case markdown
@@ -77,6 +80,8 @@ struct AIConsultationSectionView: View {
             .map { $0 }
     }
 
+    private var hasFloorPlan: Bool { listing.hasFloorPlanImages }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("AI に相談", systemImage: "brain")
@@ -90,12 +95,26 @@ struct AIConsultationSectionView: View {
 
             markdownCopyButton
 
+            if hasFloorPlan {
+                floorPlanCopyButton
+            }
+
             Divider()
 
             Text("AI サービスで相談")
                 .font(.caption)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
+
+            if hasFloorPlan && floorPlanImage != nil {
+                HStack(spacing: 4) {
+                    Image(systemName: "photo.badge.checkmark")
+                    Text("間取り図も一緒にコピーされます")
+                }
+                .font(.caption2)
+                .foregroundStyle(.green)
+                .padding(.vertical, 2)
+            }
 
             ForEach(AIService.allCases, id: \.rawValue) { service in
                 aiServiceButton(service)
@@ -112,6 +131,51 @@ struct AIConsultationSectionView: View {
         }
         .padding(14)
         .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+        .task { await loadFloorPlanImage() }
+    }
+
+    // MARK: - 間取り図コピーボタン
+
+    @ViewBuilder
+    private var floorPlanCopyButton: some View {
+        Button {
+            if let img = floorPlanImage {
+                UIPasteboard.general.image = img
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                withAnimation(.easeInOut(duration: 0.3)) { floorPlanCopied = true }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation(.easeInOut(duration: 0.3)) { floorPlanCopied = false }
+                }
+            }
+        } label: {
+            HStack {
+                Image(systemName: floorPlanCopied ? "checkmark" : "photo.on.rectangle")
+                Text(floorPlanCopied ? "間取り図をコピーしました" : "間取り図をコピー")
+            }
+            .font(.subheadline)
+            .fontWeight(.medium)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+        }
+        .buttonStyle(.bordered)
+        .tint(floorPlanCopied ? .green : .orange)
+        .disabled(floorPlanImage == nil)
+    }
+
+    private func loadFloorPlanImage() async {
+        guard let url = listing.parsedFloorPlanImages.first else { return }
+        let cacheKey = url.absoluteString
+        if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
+            floorPlanImage = cached
+            return
+        }
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            guard let original = UIImage(data: data) else { return }
+            let trimmed = original.trimmingWhitespaceBorder()
+            TrimmedImageCache.shared.set(trimmed, for: cacheKey)
+            floorPlanImage = trimmed
+        } catch {}
     }
 
     // MARK: - Markdown コピーボタン
@@ -158,21 +222,29 @@ struct AIConsultationSectionView: View {
                         .fontWeight(.medium)
                     if copiedType == .ai(service) {
                         if service.supportsURLPrefill {
-                            Text("プロンプト入力済みで開きました")
+                            Text(floorPlanImage != nil
+                                ? "プロンプト入力済み＋間取り図コピー済み → 貼り付けてください"
+                                : "プロンプト入力済みで開きました")
                                 .font(.caption2)
                                 .foregroundStyle(.green)
                         } else {
-                            Text("プロンプトをコピーしました → 貼り付けてください")
+                            Text(floorPlanImage != nil
+                                ? "プロンプト＋間取り図をコピーしました → 貼り付けてください"
+                                : "プロンプトをコピーしました → 貼り付けてください")
                                 .font(.caption2)
                                 .foregroundStyle(.green)
                         }
                     } else {
                         if service.supportsURLPrefill {
-                            Text("プロンプト入力済みで\(service.rawValue)を開きます")
+                            Text(floorPlanImage != nil
+                                ? "プロンプト入力済み＋間取り図コピーで\(service.rawValue)を開きます"
+                                : "プロンプト入力済みで\(service.rawValue)を開きます")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         } else {
-                            Text("プロンプトをコピーして\(service.rawValue)を開きます")
+                            Text(floorPlanImage != nil
+                                ? "プロンプト＋間取り図をコピーして\(service.rawValue)を開きます"
+                                : "プロンプトをコピーして\(service.rawValue)を開きます")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
@@ -212,21 +284,43 @@ struct AIConsultationSectionView: View {
 
     // MARK: - AI サービス起動
 
+    /// プロンプトと間取り図画像をまとめてクリップボードにセットする。
+    /// ChatGPT はテキストを URL プリフィルするため、クリップボードには画像のみ。
+    /// Gemini / Claude はテキスト＋画像を1つのペーストボードアイテムとしてセット。
+    private func copyPromptAndImage(_ prompt: String, service: AIService) {
+        let pasteboard = UIPasteboard.general
+
+        if service.supportsURLPrefill {
+            if let img = floorPlanImage, let pngData = img.pngData() {
+                pasteboard.setData(pngData, forPasteboardType: UTType.png.identifier)
+            } else {
+                pasteboard.string = prompt
+            }
+        } else {
+            if let img = floorPlanImage, let pngData = img.pngData() {
+                pasteboard.items = [[
+                    UTType.utf8PlainText.identifier: prompt,
+                    UTType.png.identifier: pngData
+                ]]
+            } else {
+                pasteboard.string = prompt
+            }
+        }
+    }
+
     private func openAIService(_ service: AIService) {
         let prompt = listing.toAIConsultationPrompt(otherCandidates: otherCandidates)
 
-        UIPasteboard.general.string = prompt
+        copyPromptAndImage(prompt, service: service)
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
 
         withAnimation(.easeInOut(duration: 0.3)) { copiedType = .ai(service) }
 
         if service.supportsURLPrefill, let prefillURL = service.prefillURL(prompt: prompt) {
-            // ChatGPT: プロンプト入力済みの URL で開く（アプリがあればアプリが開く）
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 UIApplication.shared.open(prefillURL)
             }
         } else {
-            // Gemini / Claude: クリップボードにコピー済み → アプリ or Web を開く
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 UIApplication.shared.open(service.webURL)
             }

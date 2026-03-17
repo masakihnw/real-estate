@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-03-17（AI 相談プロンプトに自律リサーチ指示・口コミ調査・間取り図 URL を追加）
+> **最終更新**: 2026-03-18（画像長押しコピー追加、AI ボタンでプロンプト＋間取り図を同時コピー）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -353,7 +353,7 @@ Sheet として表示。一覧画面から開く場合は `ListingDetailPagerVie
 | ③-b | **サマリーカード（Phase2）** | 6項目（価格・面積・徒歩・築年・間取り・㎡単価）を 3×2 グリッドで視覚的に表示。各項目はアイコン＋ラベル＋値の構成。`.tintedGlassBackground` で統一感のある背景 |
 | ④ | **内見メモ（コンパクトボタン）** | カメラアイコン + コメントアイコン + 件数をインライン表示。タップで内見メモオーバーレイ（シート）を開く。コメント入力・写真追加は全てオーバーレイ内で操作 |
 | ④-c | **内見チェックリスト** | DisclosureGroup で折りたたみ表示。日当たり・騒音・共用部・エントランス・眺望・水回り・収納・周辺環境・駐車場・においの10項目をチェック。タップでチェック ON/OFF。`checklistJSON` に JSON でローカル保存。未使用時はデフォルトテンプレートを表示 |
-| ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。サムネイル・フルスクリーンともに白余白を自動トリミングして画像コンテンツを最大化。タップでフルスクリーン表示（横スワイプで前後画像に移動可能、下部ミニマップで全画像のサムネイルストリップを表示・タップで直接ジャンプ可能、ページインジケーター・画像ラベル表示）。Firebase Storage 経由で掲載終了後も永続表示可能 |
+| ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。サムネイル・フルスクリーンともに白余白を自動トリミングして画像コンテンツを最大化。長押し（`.contextMenu`）で「画像をコピー」「共有…」メニューを表示（コピーは `UIPasteboard.general.image`）。タップでフルスクリーン表示（横スワイプで前後画像に移動可能、下部ミニマップで全画像のサムネイルストリップを表示・タップで直接ジャンプ可能、ページインジケーター・画像ラベル表示、ツールバー右上にコピーボタン常設）。コピー完了時にオーバーレイフィードバック表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
 | ⑤ | **投資スコア** | `listingScore != nil \|\| hasPriceChanges \|\| firstSeenAt != nil` の場合のみ。総合スコア（大数字）+ 価格妥当性/再販流動性のバーチャート + 競合物件数 + 掲載日数 + 価格変動履歴。`DisclosureGroup`「スコアの根拠」で各構成要素（価格妥当性・再販流動性・値上がり率・儲かる確率・ハザード・通勤利便性・人口動態）のスコア・重み・根拠詳細をプルダウン表示。`scoreBreakdown` computed property で Python の `_calc_listing_score` と同じロジックを iOS 側で再現し、各要素のソースデータから根拠テキストを生成 |
 | ⑥ | **物件基本情報** | 下記の共通項目 + 中古/新築固有項目を表示 |
 | ⑦ | **月額支払いシミュレーション** | `priceMan > 0` の場合（中古・新築共通）。下記の計算ロジックで動的に算出。タップでフォーム展開し金利・返済期間・頭金を変更可能 |
@@ -414,8 +414,8 @@ n = 返済回数（月）= 返済年数 × 12
 |---------|------|
 | `LoanCalculator.swift` | 計算ロジック。`monthlyPayment(principal:rate:years:)` / `totalRepayment(principal:rate:years:)`。`simulate(listing:)` は listing URL + 主要パラメータでセッション内キャッシュし、body 再評価時の再計算を回避 |
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
-| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, similarListingsSection, externalLinksSection 等）。AI 相談セクション（`AIConsultationSectionView`）を外部リンクの直前に配置。類似物件（similarListings）と近隣成約事例（nearbyTransactions）は `@State` + `.task` で遅延フェッチ（`FetchDescriptor` + `fetchLimit` で必要最小限のデータのみ取得。全件ロードの `@Query` を廃止しメモリ・CPU を大幅削減）。`ScrollViewReader` でラップし、ツールバー直下に `sectionNavBar`（横スクロールチップ）を `.safeAreaInset(edge: .top)` で表示。各セクションに `.id()` を付与し、`sectionChip` タップで該当セクションへスクロールジャンプ。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・下部ミニマップサムネイルストリップで全画像一覧表示＋タップジャンプ・ページインジケーター表示） |
-| `AIConsultationSectionView.swift` | AI 相談セクション。物件情報の Markdown コピーおよび ChatGPT / Gemini / Claude への相談機能を提供。`Listing.toMarkdown()` は事実情報と参考情報（第三者分析データ）を明確に分離し、分析データにはデータソース・算出根拠を併記。`toAIConsultationPrompt(otherCandidates:)` は参考情報を鵜呑みにせず独自分析を優先するよう AI に指示。ChatGPT は `?q=` パラメータでプリフィル起動、Gemini/Claude はクリップボード経由。各サービスボタンにロゴアセット（`logo-chatgpt` / `logo-gemini` / `logo-claude`）を表示。お気に入り物件を `@Query` で取得し、最新閲覧順で最大5件を他候補として含める |
+| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, similarListingsSection, externalLinksSection 等）。AI 相談セクション（`AIConsultationSectionView`）を外部リンクの直前に配置。類似物件（similarListings）と近隣成約事例（nearbyTransactions）は `@State` + `.task` で遅延フェッチ（`FetchDescriptor` + `fetchLimit` で必要最小限のデータのみ取得。全件ロードの `@Query` を廃止しメモリ・CPU を大幅削減）。`ScrollViewReader` でラップし、ツールバー直下に `sectionNavBar`（横スクロールチップ）を `.safeAreaInset(edge: .top)` で表示。各セクションに `.id()` を付与し、`sectionChip` タップで該当セクションへスクロールジャンプ。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・下部ミニマップサムネイルストリップで全画像一覧表示＋タップジャンプ・ページインジケーター表示・ツールバー右上にコピーボタン常設）。`GalleryThumbnailView` / `GalleryFullScreenView` ともに長押し `.contextMenu` で「画像をコピー」「共有…」操作が可能。コピー完了時にオーバーレイフィードバック表示。`UIActivityViewController.share(image:)` 拡張で共有シートを起動 |
+| `AIConsultationSectionView.swift` | AI 相談セクション。物件情報の Markdown コピーおよび ChatGPT / Gemini / Claude への相談機能を提供。`Listing.toMarkdown()` は事実情報と参考情報（第三者分析データ）を明確に分離し、分析データにはデータソース・算出根拠を併記。`toAIConsultationPrompt(otherCandidates:)` は参考情報を鵜呑みにせず独自分析を優先するよう AI に指示し、間取り図が添付されている場合は画像を直接分析するよう指示。AI サービスボタンタップ時にプロンプトと間取り図画像を `UIPasteboard.general.items` で同時コピー（ChatGPT は URL プリフィル＋画像のみクリップボード、Gemini/Claude は `UTType.utf8PlainText` + `UTType.png` を1アイテムとしてセット）。「間取り図をコピー」単体ボタンも表示。各サービスボタンにロゴアセット（`logo-chatgpt` / `logo-gemini` / `logo-claude`）を表示。お気に入り物件を `@Query` で取得し、最新閲覧順で最大5件を他候補として含める |
 | `ListingDetailPagerView.swift` | 全物件スワイプページャー。`TabView(.page)` でフィルタ済み物件リストを横スワイプで横断比較。スライディングウィンドウ方式で現在ページ ±1 のみ `ListingDetailView` を生成（最大3ビュー。大量の `@Query` オブザーバー登録を防止）。画面下部にフローティングページインジケーター（`.regularMaterial` + `Capsule` で視認性確保）。一覧画面の `.sheet(item:)` から `cachedFiltered` とタップされた物件のインデックスを受け取って初期表示 |
 | `loan_calc.py` (Python) | Slack 通知・レポート用の月額計算（同一パラメータ） |
 
@@ -1059,6 +1059,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |---|------|------|------|
 | 17-b | 物件画像ギャラリー | 閲覧 | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO 物件写真（外観・リビング・キッチン・浴室等）を後続に配置した統合横スクロール。各画像にラベル表示。サムネイルは白余白を自動トリミングして画像コンテンツを最大化。Firebase Storage 経由で掲載終了後も永続表示可能 |
 | 17-c | フルスクリーン表示 | 画像タップ | 画像をフルスクリーンで表示。横スワイプで前後の画像に移動可能（TabView ページング）。ページインジケーター・画像ラベル・枚数カウンター表示。白余白は自動トリミング済み。隣接画像を先読みしてスムーズなスワイプ体験を提供 |
+| 17-d | 画像コピー | 長押し / ボタン | サムネイル・フルスクリーンともに長押し（`.contextMenu`）で「画像をコピー」「共有…」メニューを表示。コピーは `UIPasteboard.general.image` に設定。フルスクリーンではツールバー右上にもコピーボタンを常設。コピー完了時にオーバーレイフィードバックを表示（1.5秒後に自動非表示） |
 
 #### 物件基本情報
 
@@ -1170,9 +1171,10 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
 | 57 | Markdown コピー | ボタンタップ | `Listing.toMarkdown()` で物件情報を構造化 Markdown に変換し、クリップボードにコピー。Markdown は「事実情報」（基本情報・ランニングコスト・掲載状況・ハザード・成約相場等）と「参考情報」（住まいサーフィン評価・アプリ内投資スコア）を `---` で分離。参考情報にはデータソース・算出根拠を併記。間取り図 URL も含む。コピー完了時にチェックマークとフィードバック表示（2秒後に自動リセット） |
-| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt()` で生成したプロンプト（自律リサーチ指示 + 口コミ調査指示 + 間取り図 URL + 物件情報 + 他候補 + 相談テンプレート）をクリップボードにコピーし、`https://chatgpt.com/?q=<prompt>` で ChatGPT アプリ/Web をプロンプト入力済みで起動。プロンプトには物件名・住所でのWeb検索、マンションコミュニティ等の掲示板口コミ調査、管理会社の評判調査、周辺再開発調査、間取り図画像の確認を自律的に行うよう指示。ロゴ: `logo-chatgpt` |
-| 59 | Gemini で相談 | ボタンタップ | 同プロンプトをクリップボードにコピーし、`gemini.google.com/app` を起動。Gemini は URL プリフィル非対応のためクリップボード経由。ロゴ: `logo-gemini` |
-| 60 | Claude で相談 | ボタンタップ | 同プロンプトをクリップボードにコピーし、`claude.ai/new` を起動。Claude は URL プリフィル非対応のためクリップボード経由。ロゴ: `logo-claude` |
+| 57-b | 間取り図コピー | ボタンタップ | `hasFloorPlanImages` の場合のみ表示。先頭の間取り図画像を `TrimmedImageCache` から取得（未キャッシュ時は非同期ロード＋トリミング）し、`UIPasteboard.general.image` にコピー。コピー完了時にチェックマークとフィードバック表示（2秒後に自動リセット）。AI チャットに画像を貼り付けて間取り分析に利用可能 |
+| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt()` で生成したプロンプトを `?q=` URL でプリフィル起動。間取り図がある場合はクリップボードに画像のみセット（`UTType.png`）し、ChatGPT 内で貼り付けて画像も送信可能。プロンプトには物件名・住所でのWeb検索、マンションコミュニティ等の掲示板口コミ調査、管理会社の評判調査、周辺再開発調査、間取り図画像の確認を自律的に行うよう指示。ロゴ: `logo-chatgpt` |
+| 59 | Gemini で相談 | ボタンタップ | プロンプトと間取り図画像を1つのペーストボードアイテムとしてクリップボードにセット（`UTType.utf8PlainText` + `UTType.png`）。`gemini.google.com/app` を起動し、貼り付けでテキスト＋画像を同時に送信可能。ロゴ: `logo-gemini` |
+| 60 | Claude で相談 | ボタンタップ | 同様にプロンプトと間取り図画像をクリップボードに同時セット。`claude.ai/new` を起動し、貼り付けでテキスト＋画像を同時に送信可能。ロゴ: `logo-claude` |
 
 #### 外部リンク
 
