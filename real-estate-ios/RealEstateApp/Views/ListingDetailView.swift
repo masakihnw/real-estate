@@ -2652,6 +2652,8 @@ private struct GalleryThumbnailView: View {
         }
     }
 
+    @State private var showCopiedFeedback = false
+
     @ViewBuilder
     private var thumbnailContent: some View {
         switch loadPhase {
@@ -2663,6 +2665,36 @@ private struct GalleryThumbnailView: View {
                     .frame(width: 200, height: 150)
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay {
+                        if showCopiedFeedback {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(.ultraThinMaterial)
+                                .overlay {
+                                    Label("コピーしました", systemImage: "checkmark.circle.fill")
+                                        .font(.caption)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.green)
+                                }
+                                .transition(.opacity)
+                        }
+                    }
+                    .contextMenu {
+                        Button {
+                            UIPasteboard.general.image = loadedImage
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                            withAnimation { showCopiedFeedback = true }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                withAnimation { showCopiedFeedback = false }
+                            }
+                        } label: {
+                            Label("画像をコピー", systemImage: "doc.on.doc")
+                        }
+                        Button {
+                            UIActivityViewController.share(image: loadedImage)
+                        } label: {
+                            Label("共有…", systemImage: "square.and.arrow.up")
+                        }
+                    }
             }
         case .failure:
             ZStack {
@@ -2720,6 +2752,7 @@ private struct GalleryFullScreenView: View {
     @State private var currentIndex: Int
     @State private var loadedImages: [Int: UIImage] = [:]
     @State private var failedIndices: Set<Int> = []
+    @State private var showCopiedOverlay = false
 
     init(items: [(url: URL, label: String)], initialIndex: Int) {
         self.items = items
@@ -2738,6 +2771,18 @@ private struct GalleryFullScreenView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .padding(.horizontal, 4)
+                                .contextMenu {
+                                    Button {
+                                        copyCurrentImage()
+                                    } label: {
+                                        Label("画像をコピー", systemImage: "doc.on.doc")
+                                    }
+                                    Button {
+                                        UIActivityViewController.share(image: image)
+                                    } label: {
+                                        Label("共有…", systemImage: "square.and.arrow.up")
+                                    }
+                                }
                         } else if failedIndices.contains(index) {
                             VStack(spacing: 8) {
                                 Image(systemName: "photo.badge.exclamationmark")
@@ -2759,6 +2804,17 @@ private struct GalleryFullScreenView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .background(Color.black.ignoresSafeArea())
+            .overlay(alignment: .center) {
+                if showCopiedOverlay {
+                    Label("コピーしました", systemImage: "checkmark.circle.fill")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(.ultraThinMaterial, in: Capsule())
+                        .transition(.scale.combined(with: .opacity))
+                }
+            }
             .overlay(alignment: .bottom) {
                 if items.count > 1 {
                     galleryMiniMap
@@ -2790,6 +2846,18 @@ private struct GalleryFullScreenView: View {
                             .foregroundStyle(.white.opacity(0.8), .white.opacity(0.2))
                     }
                     .buttonStyle(.plain)
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    if loadedImages[currentIndex] != nil {
+                        Button {
+                            copyCurrentImage()
+                        } label: {
+                            Image(systemName: "doc.on.doc")
+                                .font(.body)
+                                .foregroundStyle(.white.opacity(0.8))
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -2850,6 +2918,16 @@ private struct GalleryFullScreenView: View {
         }
     }
 
+    private func copyCurrentImage() {
+        guard let image = loadedImages[currentIndex] else { return }
+        UIPasteboard.general.image = image
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        withAnimation(.easeInOut(duration: 0.25)) { showCopiedOverlay = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            withAnimation(.easeInOut(duration: 0.25)) { showCopiedOverlay = false }
+        }
+    }
+
     private func loadImage(at index: Int) async {
         guard index >= 0, index < items.count else { return }
         guard loadedImages[index] == nil, !failedIndices.contains(index) else { return }
@@ -2873,6 +2951,22 @@ private struct GalleryFullScreenView: View {
         } catch {
             failedIndices.insert(index)
         }
+    }
+}
+
+// MARK: - UIActivityViewController 共有ヘルパー
+
+extension UIActivityViewController {
+    static func share(image: UIImage) {
+        let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = windowScene.keyWindow?.rootViewController else { return }
+        if let popover = activityVC.popoverPresentationController {
+            popover.sourceView = root.view
+            popover.sourceRect = CGRect(x: root.view.bounds.midX, y: root.view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+        root.present(activityVC, animated: true)
     }
 }
 
