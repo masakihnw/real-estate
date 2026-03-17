@@ -94,8 +94,13 @@ final class Listing: @unchecked Sendable {
     }
 
     var parsedChecklist: [ChecklistItem] {
+        if let cached = _cache.checklist, cached.source == checklistJSON {
+            return cached.result
+        }
         guard let json = checklistJSON, let data = json.data(using: .utf8) else { return [] }
-        return (try? JSONDecoder().decode([ChecklistItem].self, from: data)) ?? []
+        let result = (try? JSONDecoder().decode([ChecklistItem].self, from: data)) ?? []
+        _cache.checklist = (checklistJSON, result)
+        return result
     }
 
     var hasChecklist: Bool {
@@ -962,13 +967,17 @@ final class Listing: @unchecked Sendable {
         return "\(val.formatted())円"
     }
 
-    /// featureTagsJSON をパースして文字列配列で返す
+    /// featureTagsJSON をパースして文字列配列で返す（キャッシュ付き）
     var parsedFeatureTags: [String] {
+        if let cached = _cache.featureTags, cached.source == featureTagsJSON {
+            return cached.result
+        }
         guard let json = featureTagsJSON,
               let data = json.data(using: .utf8),
               let arr = try? JSONSerialization.jsonObject(with: data) as? [String] else {
             return []
         }
+        _cache.featureTags = (featureTagsJSON, arr)
         return arr
     }
 
@@ -1034,6 +1043,9 @@ final class Listing: @unchecked Sendable {
         var marketTrends: (source: String?, result: [MarketTrendEntry])?
         var suumoImages: (source: String?, result: [SuumoImage])?
         var floorPlanImages: (source: String?, result: [URL])?
+        var priceHistory: (source: String?, result: [PriceHistoryEntry])?
+        var checklist: (source: String?, result: [ChecklistItem])?
+        var featureTags: (source: String?, result: [String])?
     }
 
     // MARK: - 周辺物件データ
@@ -1713,13 +1725,17 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - 投資判断支援
 
-    /// パース済み価格変動履歴
+    /// パース済み価格変動履歴（キャッシュ付き）
     var parsedPriceHistory: [PriceHistoryEntry] {
+        if let cached = _cache.priceHistory, cached.source == priceHistoryJSON {
+            return cached.result
+        }
         guard let json = priceHistoryJSON,
               let data = json.data(using: .utf8),
               let entries = try? JSONDecoder().decode([PriceHistoryEntry].self, from: data) else {
             return []
         }
+        _cache.priceHistory = (priceHistoryJSON, entries)
         return entries
     }
 
@@ -2776,6 +2792,358 @@ extension Listing {
             competingListingsCount: dto.competing_listings_count,
             listingScore: dto.listing_score
         )
+    }
+}
+
+// MARK: - Markdown エクスポート / AI 相談
+
+extension Listing {
+
+    /// 物件情報を構造化された Markdown 文字列に変換する。
+    /// 「事実情報」と「参考情報」を明確に分離し、分析データにはデータソースと算出根拠を併記する。
+    func toMarkdown() -> String {
+        var md = "# \(name)\n\n"
+
+        // ── 事実情報 ──
+
+        md += "## 基本情報\n\n"
+        md += "| 項目 | 内容 |\n|---|---|\n"
+        md += "| 種別 | \(isShinchiku ? "新築マンション" : "中古マンション") |\n"
+        md += "| 価格 | \(priceDisplay) |\n"
+        if let area = areaM2 {
+            if let hi = areaMaxM2, hi != area {
+                md += "| 専有面積 | \(String(format: "%.1f〜%.1f㎡", area, hi)) |\n"
+            } else {
+                md += "| 専有面積 | \(String(format: "%.1f㎡", area)) |\n"
+            }
+        }
+        md += "| 平米単価 | \(m2UnitPriceDisplay) |\n"
+        md += "| 坪単価 | \(tsuboUnitPriceDisplay) |\n"
+        if let layout { md += "| 間取り | \(layout) |\n" }
+        if let addr = ssAddress ?? address { md += "| 住所 | \(addr) |\n" }
+
+        let stations = parsedStations
+        if !stations.isEmpty {
+            for (i, st) in stations.enumerated() {
+                let label = i == 0 ? "最寄駅" : "他最寄駅\(i)"
+                var val = st.fullText
+                if let w = st.walkMin { val += "（徒歩\(w)分）" }
+                md += "| \(label) | \(val) |\n"
+            }
+        }
+
+        if isShinchiku {
+            if let total = floorTotal { md += "| 階建 | \(total)階建 |\n" }
+            if let delivery = deliveryDate { md += "| 入居時期 | \(delivery) |\n" }
+        } else {
+            md += "| 築年 | \(builtDisplay) |\n"
+            let floor = floorDisplay
+            if !floor.isEmpty { md += "| 所在階/階建 | \(floor) |\n" }
+        }
+        if let units = totalUnits { md += "| 総戸数 | \(units)戸 |\n" }
+        if let dir = direction, !dir.isEmpty { md += "| 向き | \(dir) |\n" }
+        if let b = balconyAreaM2 { md += "| バルコニー | \(String(format: "%.2f㎡", b)) |\n" }
+        if let own = ownership, !own.isEmpty { md += "| 権利形態 | \(own) |\n" }
+        if let z = zoning, !z.isEmpty { md += "| 用途地域 | \(z) |\n" }
+        if let p = parking, !p.isEmpty { md += "| 駐車場 | \(p) |\n" }
+        if let c = constructor, !c.isEmpty { md += "| 施工 | \(c) |\n" }
+
+        if managementFee != nil || repairReserveFund != nil || repairFundOnetime != nil {
+            md += "\n## ランニングコスト\n\n"
+            md += "| 項目 | 金額 |\n|---|---|\n"
+            if let fee = managementFee { md += "| 管理費 | \(fee.formatted())円/月 |\n" }
+            if let fund = repairReserveFund { md += "| 修繕積立金 | \(fund.formatted())円/月 |\n" }
+            if let total = monthlyTotal { md += "| 合計（管理費+修繕積立金） | \(total.formatted())円/月 |\n" }
+            if repairFundOnetime != nil { md += "| 修繕積立基金（一時金） | \(repairFundOnetimeDisplay) |\n" }
+        }
+
+        // 掲載状況（事実）
+        let history = parsedPriceHistory
+        if history.count > 1 || firstSeenAt != nil || competingListingsCount != nil {
+            md += "\n## 掲載状況\n\n"
+            if let days = daysOnMarket { md += "- **掲載日数**: \(days)日\n" }
+            if let comp = competingListingsCount { md += "- **同一マンション内の売出数**: \(comp)件\n" }
+            if history.count > 1 {
+                md += "- **価格変動履歴**:\n"
+                for entry in history {
+                    if let p = entry.priceMan {
+                        md += "  - \(entry.date): \(Self.formatPriceCompact(p))\n"
+                    }
+                }
+            }
+        }
+
+        if hasCommuteInfo {
+            let ci = parsedCommuteInfo
+            md += "\n## 通勤時間\n\n"
+            if let pg = ci.playground {
+                md += "- **Playground株式会社**: \(pg.minutes)分（\(pg.summary)）\n"
+            }
+            if let m3 = ci.m3career {
+                md += "- **エムスリーキャリア株式会社**: \(m3.minutes)分（\(m3.summary)）\n"
+            }
+        }
+
+        if hasHazardData {
+            let hd = parsedHazardData
+            md += "\n## ハザード情報\n\n"
+            md += "> 出典: 国土地理院ハザードマップ、東京都建物倒壊危険度調査\n\n"
+            md += "| リスク | 該当 |\n|---|---|\n"
+            md += "| 洪水浸水 | \(hd.flood ? "⚠️ あり" : "✅ なし") |\n"
+            md += "| 土砂災害 | \(hd.sediment ? "⚠️ あり" : "✅ なし") |\n"
+            md += "| 高潮浸水 | \(hd.stormSurge ? "⚠️ あり" : "✅ なし") |\n"
+            md += "| 津波浸水 | \(hd.tsunami ? "⚠️ あり" : "✅ なし") |\n"
+            md += "| 液状化 | \(hd.liquefaction ? "⚠️ あり" : "✅ なし") |\n"
+            md += "| 内水浸水 | \(hd.inlandWater ? "⚠️ あり" : "✅ なし") |\n"
+            if hd.buildingCollapse > 0 || hd.fire > 0 || hd.combined > 0 {
+                md += "| 建物倒壊危険度 | ランク\(hd.buildingCollapse) |\n"
+                md += "| 火災危険度 | ランク\(hd.fire) |\n"
+                md += "| 総合危険度 | ランク\(hd.combined) |\n"
+            }
+        }
+
+        if let pop = parsedPopulationData {
+            md += "\n## エリア人口動態（\(pop.ward)）\n\n"
+            md += "> 出典: e-Stat（総務省統計局）\n\n"
+            md += "- **人口**: \(pop.populationDisplay)\n"
+            md += "- **世帯数**: \(pop.householdsDisplay)\n"
+            if let yoy = pop.popChange1yrPct { md += "- **前年比**: \(String(format: "%+.1f%%", yoy))\n" }
+            if let y5 = pop.popChange5yrPct { md += "- **5年変動率**: \(String(format: "%+.1f%%", y5))\n" }
+        }
+
+        if let market = parsedMarketData {
+            md += "\n## 成約相場（\(market.ward)）\n\n"
+            md += "> 出典: 不動産情報ライブラリ（国土交通省）。成約価格ベース。\n\n"
+            let manPrice = Double(market.wardMedianM2Price) / 10000.0
+            md += "- **区中央値 m²単価**: \(String(format: "%.1f万/m²", manPrice))（サンプル数: \(market.sampleCount)件）\n"
+            if let yoy = market.yoyChangePct { md += "- **前年比**: \(String(format: "%+.1f%%", yoy))\n" }
+            md += "- **トレンド**: \(market.trendDisplay)\n"
+        }
+
+        // 内見メモ・チェックリスト
+        let comments = parsedComments
+        if !comments.isEmpty {
+            md += "\n## 内見メモ・コメント\n\n"
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+            for c in comments {
+                md += "- **\(c.authorName)**（\(formatter.string(from: c.createdAt))）: \(c.text)\n"
+            }
+        }
+
+        let checklist = parsedChecklist
+        if !checklist.isEmpty {
+            md += "\n## 内見チェックリスト\n\n"
+            for item in checklist {
+                let mark = item.isChecked ? "✅" : "⬜"
+                md += "- \(mark) \(item.label)"
+                if let note = item.note, !note.isEmpty { md += "（\(note)）" }
+                md += "\n"
+            }
+        }
+
+        // ── 参考情報（第三者サービスの分析データ） ──
+
+        let hasReferenceData = hasSumaiSurfinData || listingScore != nil
+        if hasReferenceData {
+            md += "\n---\n\n"
+            md += "## 参考情報（第三者による分析データ）\n\n"
+            md += "> ⚠️ 以下は外部サービスの独自モデルやアプリ内スコアリングによる分析値です。\n"
+            md += "> 正確性は保証されません。事実情報に基づくあなた自身の分析を優先してください。\n\n"
+
+            if hasSumaiSurfinData {
+                md += "### 住まいサーフィン（sumai-surfin.com）\n\n"
+                md += "住まいサーフィンは沖有人氏が代表を務める不動産情報サイトで、"
+                md += "独自モデルに基づくマンション評価を提供しています。\n\n"
+
+                if let profit = ssProfitPct {
+                    md += "- **沖式儲かる確率**: \(profit)%\n"
+                    md += "  - 算出根拠: 過去の売出価格と成約価格の乖離率等に基づく独自モデル\n"
+                }
+                if let judgment = computedPriceJudgment {
+                    md += "- **割安判定**: \(judgment)\n"
+                    if !isShinchiku {
+                        if let oki = ssOkiPrice70m2 {
+                            md += "  - 算出根拠: 沖式中古時価（70㎡換算 \(oki)万円）と販売価格の比較"
+                            if let okiArea = ssOkiPriceForArea {
+                                md += "。実面積換算では\(okiArea)万円"
+                            }
+                            md += "\n"
+                        }
+                    } else {
+                        if let disc = ssM2Discount {
+                            md += "  - 算出根拠: m²単価の乖離額 \(disc)万円/㎡（負値=割安、正値=割高）\n"
+                        }
+                    }
+                }
+                if let rate = ssAppreciationRate {
+                    md += "- **中古値上がり率**: \(String(format: "%.1f", rate))%\n"
+                    md += "  - 算出根拠: 新築分譲時の価格と現在の中古時価の比較による変動率\n"
+                }
+                if let stRank = ssStationRank { md += "- **駅ランキング**: \(stRank)\n" }
+                if let wdRank = ssWardRank { md += "- **区ランキング**: \(wdRank)\n" }
+                if let fav = ssFavoriteCount { md += "- **サイト内お気に入り数**: \(fav)\n" }
+                if let pj = ssPurchaseJudgment {
+                    md += "- **購入判定**: \(pj)\n"
+                    md += "  - 算出根拠: 儲かる確率・値上がり率・立地等を総合した住まいサーフィン独自の判定\n"
+                }
+            }
+
+            if listingScore != nil {
+                md += "\n### アプリ内投資スコア\n\n"
+                md += "当アプリが独自に算出した総合スコアです。以下の要素を重み付けして合算しています。\n\n"
+
+                if let score = listingScore { md += "- **総合スコア**: \(score)/100\n\n" }
+
+                let breakdown = scoreBreakdown
+                if !breakdown.isEmpty {
+                    md += "| 評価軸 | スコア | 重み | 根拠 |\n|---|---|---|---|\n"
+                    for comp in breakdown {
+                        md += "| \(comp.label) | \(comp.score)/100 | ×\(comp.weight) | \(comp.detail) |\n"
+                    }
+                    md += "\n"
+                }
+                md += "> スコアは価格妥当性（住まいサーフィン+成約相場）、再販流動性（総戸数・徒歩・面積・エリア）、"
+                md += "値上がり率、儲かる確率、ハザードリスク数、通勤時間、人口動態を入力とした重み付き平均です。\n"
+            }
+        }
+
+        // 間取り図・物件写真 URL
+        let floorPlans = parsedFloorPlanImages
+        if !floorPlans.isEmpty {
+            md += "\n## 間取り図\n\n"
+            for (i, imgURL) in floorPlans.enumerated() {
+                md += "- [間取り図\(floorPlans.count > 1 ? "\(i + 1)" : "")](\(imgURL.absoluteString))\n"
+            }
+        }
+
+        md += "\n## リンク\n\n"
+        md += "- [掲載元](\(url))\n"
+        if let ssURL = ssSumaiSurfinURL { md += "- [住まいサーフィン](\(ssURL))\n" }
+
+        return md
+    }
+
+    /// 管理費＋修繕積立金の月額合計
+    private var monthlyTotal: Int? {
+        guard managementFee != nil || repairReserveFund != nil else { return nil }
+        return (managementFee ?? 0) + (repairReserveFund ?? 0)
+    }
+
+    /// 他の候補物件の概要を含めた AI 相談用プロンプトを生成する
+    func toAIConsultationPrompt(otherCandidates: [Listing]) -> String {
+        let buildingName = name
+        let addr = ssAddress ?? address ?? ""
+
+        var prompt = """
+        あなたは不動産エージェントであり不動産コンサルタントです。以下の役割で相談に乗ってください。
+
+        ## あなたの役割
+        - 10年住み替え前提での中古・新築マンション購入のプロフェッショナルアドバイザー
+        - 市場動向、価格妥当性、将来の資産価値、リスク要因を多角的に分析
+        - 見落としがちな観点（管理組合の健全性、大規模修繕の時期、周辺再開発計画、金利動向など）を指摘
+        - 定量データに基づく客観的な評価と、定性的な生活面の評価の両方を提供
+
+        ## 自律リサーチ指示（重要）
+
+        以下の物件情報を読んだうえで、**必ず Web 検索を行い**、最新かつ正確な情報を自分で取得してください。
+        提供データだけで判断せず、以下を自律的にリサーチしてから回答してください。
+
+        ### 必須リサーチ項目
+        1. **マンション名「\(buildingName)」で検索**
+           - 分譲時の情報（デベロッパー、分譲価格帯、竣工年月）
+           - 管理会社の名前と評判
+           - 大規模修繕の実施履歴・予定
+           - 建物の構造・耐震等級
+        2. **住所・エリア「\(addr)」周辺の情報**
+           - 周辺の再開発計画・都市計画
+           - 地域の治安、学区、生活利便施設
+           - 最寄駅の乗降客数推移・将来の鉄道計画
+           - 近隣の新築マンション供給予定（競合リスク）
+        3. **マンション口コミ・住民の声**
+           - 「マンションコミュニティ」「マンションノート」「スマイティ」等の掲示板で「\(buildingName)」の口コミを検索
+           - 住民の満足点・不満点を要約
+           - 管理組合の運営状況に関する情報
+        4. **管理会社の評判**
+           - 管理会社名で検索し、口コミサイトでの評判を確認
+           - 管理の質に関する情報（清掃、修繕対応、理事会運営など）
+        5. **市場動向**
+           - 同一エリア・同一駅の直近の成約事例（価格推移）
+           - 金利動向と住宅ローン市場の見通し
+           - 東京都区部（該当エリア）のマンション市況
+
+        ### データの読み方に関する注意
+        - 「参考情報」セクションは第三者サービスの独自モデルやアプリ内スコアリングによる分析値です
+        - これらは正確性が保証されないため、あなた自身のリサーチ結果を優先してください
+        - 参考情報と事実情報の間に矛盾がある場合は指摘してください
+        - 事実情報（基本情報・ランニングコスト・掲載状況・ハザード情報・成約相場等）は信頼できるデータです
+
+        """
+
+        // 間取り図がある場合は画像閲覧を指示
+        let floorPlans = parsedFloorPlanImages
+        if !floorPlans.isEmpty {
+            prompt += "### 間取り図の確認\n"
+            prompt += "以下の間取り図 URL にアクセスし、画像を確認したうえで間取りの特徴・動線・改善点をコメントしてください。\n\n"
+            for (i, imgURL) in floorPlans.enumerated() {
+                prompt += "- [間取り図\(floorPlans.count > 1 ? "\(i + 1)" : "")](\(imgURL.absoluteString))\n"
+            }
+            prompt += "\n"
+        }
+
+        prompt += "## 相談対象の物件\n\n"
+        prompt += toMarkdown()
+
+        if !otherCandidates.isEmpty {
+            prompt += "\n\n---\n\n## 他の候補物件（比較参考用）\n\n"
+            prompt += "以下の物件も並行して検討しています。比較の観点があればコメントしてください。\n\n"
+            for (i, other) in otherCandidates.enumerated() {
+                prompt += "### 候補\(i + 1): \(other.name)\n\n"
+                prompt += "| 項目 | 内容 |\n|---|---|\n"
+                prompt += "| 価格 | \(other.priceDisplay) |\n"
+                if let area = other.areaM2 { prompt += "| 面積 | \(String(format: "%.1f㎡", area)) |\n" }
+                if let layout = other.layout { prompt += "| 間取り | \(layout) |\n" }
+                if let addr = other.ssAddress ?? other.address { prompt += "| 住所 | \(addr) |\n" }
+                prompt += "| 最寄駅 | \(other.primaryStationDisplay) |\n"
+                if let walk = other.walkMin { prompt += "| 徒歩 | \(walk)分 |\n" }
+                prompt += "| 築年 | \(other.builtAgeDisplay) |\n"
+                if other.hasComments {
+                    prompt += "\n**メモ**: "
+                    for c in other.parsedComments.suffix(3) {
+                        prompt += "\(c.authorName): \(c.text) / "
+                    }
+                    prompt += "\n"
+                }
+                prompt += "\n"
+            }
+        }
+
+        prompt += """
+
+        ---
+
+        ## 相談したいこと
+
+        この物件の購入を検討しています。
+        **上記の自律リサーチを必ず実施したうえで**、以下の観点で分析・アドバイスをお願いします。
+
+        1. **価格妥当性**: この価格は適正か？直近の同エリア成約事例と比較してどうか？
+        2. **資産価値**: 10年後の資産価値の見通しは？周辺再開発や人口動態を踏まえて
+        3. **リスク要因**: 購入にあたって注意すべきリスクは？（大規模修繕時期、管理組合、競合供給など）
+        4. **口コミ・評判**: マンション掲示板や管理会社の口コミからわかる実際の住み心地は？
+        5. **見落とし**: 他に確認・検討すべき観点はあるか？
+        6. **総合判断**: 購入すべきか、見送るべきか？根拠とともに
+        """
+
+        if !otherCandidates.isEmpty {
+            prompt += "\n7. **比較**: 他の候補物件と比較した場合の優位点・劣位点は？"
+        }
+
+        if !floorPlans.isEmpty {
+            prompt += "\n8. **間取り分析**: 間取り図を確認し、生活動線・収納・採光の観点でコメント"
+        }
+
+        return prompt
     }
 }
 

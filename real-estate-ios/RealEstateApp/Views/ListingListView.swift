@@ -25,7 +25,7 @@ struct ListingGroup: Identifiable {
 struct ListingListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ListingStore.self) private var store
-    @Query(sort: \Listing.priceMan, order: .forward) private var listings: [Listing]
+    @Query private var listings: [Listing]
     @State private var sortOrder: SortOrder = .addedDesc
     @State private var selectedListing: Listing?
     /// OOUI: タブごとに独立したフィルタ状態を持つ（中古/新築/お気に入りで干渉しない）
@@ -37,6 +37,8 @@ struct ListingListView: View {
     @State private var searchText = ""
     /// フィルタ＋ソート結果のキャッシュ（body 再評価時の重計算を避ける）
     @State private var cachedFiltered: [Listing] = []
+    /// フィルタ再計算タスク（連続変更時のキャンセル用）
+    @State private var filterTask: Task<Void, Never>?
     /// 初回ロード完了フラグ（スケルトン表示の切り替え用）
     @State private var isInitialLoadComplete = false
     /// Phase 5: お気に入りタブの一括いいね解除用
@@ -53,10 +55,37 @@ struct ListingListView: View {
     @State private var delistFilter: DelistFilter = .all
 
     /// true のとき、いいね済みの物件だけ表示する（お気に入りタブ用）
-    var favoritesOnly: Bool = false
+    let favoritesOnly: Bool
 
     /// 物件種別フィルタ: nil = 全て、"chuko" = 中古のみ、"shinchiku" = 新築のみ
-    var propertyTypeFilter: String? = nil
+    let propertyTypeFilter: String?
+
+    init(favoritesOnly: Bool = false, propertyTypeFilter: String? = nil) {
+        self.favoritesOnly = favoritesOnly
+        self.propertyTypeFilter = propertyTypeFilter
+
+        if favoritesOnly {
+            _listings = Query(
+                filter: #Predicate<Listing> { $0.isLiked == true },
+                sort: \Listing.priceMan, order: .forward
+            )
+        } else if propertyTypeFilter == "chuko" {
+            _listings = Query(
+                filter: #Predicate<Listing> { $0.propertyType == "chuko" && $0.isDelisted == false },
+                sort: \Listing.priceMan, order: .forward
+            )
+        } else if propertyTypeFilter == "shinchiku" {
+            _listings = Query(
+                filter: #Predicate<Listing> { $0.propertyType == "shinchiku" && $0.isDelisted == false },
+                sort: \Listing.priceMan, order: .forward
+            )
+        } else {
+            _listings = Query(
+                filter: #Predicate<Listing> { $0.isDelisted == false },
+                sort: \Listing.priceMan, order: .forward
+            )
+        }
+    }
 
     enum SortOrder: String, CaseIterable {
         case addedDesc = "追加日（新しい順）"
@@ -82,24 +111,16 @@ struct ListingListView: View {
         }
     }
 
+    /// @Query で DB レベルフィルタ済み。お気に入りタブの掲載状態チップのみ追加フィルタ。
     private var baseList: [Listing] {
-        var list: [Listing]
         if favoritesOnly {
-            // お気に入りタブ: いいね済み全て（掲載終了含む）
-            list = listings.filter(\.isLiked)
-            // 掲載状態チップフィルタ
             switch delistFilter {
-            case .all: break
-            case .active: list = list.filter { !$0.isDelisted }
-            case .delisted: list = list.filter(\.isDelisted)
+            case .all: return Array(listings)
+            case .active: return listings.filter { !$0.isDelisted }
+            case .delisted: return listings.filter(\.isDelisted)
             }
-        } else if let pt = propertyTypeFilter {
-            // 中古/新築タブ: 掲載終了を除外
-            list = listings.filter { $0.propertyType == pt && !$0.isDelisted }
-        } else {
-            list = listings.filter { !$0.isDelisted }
         }
-        return list
+        return Array(listings)
     }
 
     /// フィルタ＋ソートを適用した結果（ロジックの実体）
@@ -157,9 +178,14 @@ struct ListingListView: View {
         return list
     }
 
-    /// キャッシュを再計算（onChange / onAppear から呼ぶ）
+    /// キャッシュを非同期再計算（onChange / onAppear から呼ぶ）。
+    /// 連続する変更（検索入力など）では前回のタスクをキャンセルして最新のみ実行。
     private func recomputeFiltered() {
-        cachedFiltered = computeFilteredAndSorted()
+        filterTask?.cancel()
+        filterTask = Task { @MainActor in
+            guard !Task.isCancelled else { return }
+            cachedFiltered = computeFilteredAndSorted()
+        }
     }
 
     /// 表示用フィルタ＋ソート結果（キャッシュ。検索・ソート・フィルタ変更時のみ再計算）

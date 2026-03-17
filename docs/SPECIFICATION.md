@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-03-16（fetch_station_prices.py に不動産情報ライブラリ API レートリミッター追加、ワークフロータイムアウトを 90 分に変更）
+> **最終更新**: 2026-03-17（AI 相談プロンプトに自律リサーチ指示・口コミ調査・間取り図 URL を追加）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -335,11 +335,11 @@ App起動
 
 #### 3.3.4 物件詳細画面（ListingDetailView / ListingDetailPagerView）
 
-Sheet として表示。一覧画面から開く場合は `ListingDetailPagerView`（スワイプページャー）でラップされ、フィルタ済み全物件を横スワイプで横断比較可能。各ページは `ListingDetailView` をそのまま表示する。ページャーは画面下部にフローティングのページインジケーター（`< 3 / 15 >`）を表示し、現在位置の把握とタップによる前後移動が可能。
+Sheet として表示。一覧画面から開く場合は `ListingDetailPagerView`（スワイプページャー）でラップされ、フィルタ済み物件リストを横スワイプで横断比較可能。パフォーマンス最適化としてスライディングウィンドウ方式を採用し、現在ページ ±1 のみ `ListingDetailView` を生成する（最大3ビュー）。ページャーは画面下部にフローティングのページインジケーター（`< 3 / 15 >`）を表示し、現在位置の把握とタップによる前後移動が可能。
 
 **セクションナビゲーション（目次）**
 
-ツールバー直下に横スクロール可能なセクションナビゲーションバー（`.ultraThinMaterial` 背景）を表示。各チップ（物件情報・ローン・通勤・評価・シミュレーション・相場・人口・ハザード）をタップすると、該当セクションへ `ScrollViewReader` でスクロールしてジャンプする。表示されるチップは物件のデータ有無に応じて動的に変化（例: `priceMan > 0` のときのみローン、`hasCommuteInfo || hasCoordinate` のときのみ通勤）。
+ツールバー直下に横スクロール可能なセクションナビゲーションバー（`.ultraThinMaterial` 背景）を表示。各チップ（物件情報・ローン・通勤・評価・シミュレーション・相場・人口・ハザード・AI相談）をタップすると、該当セクションへ `ScrollViewReader` でスクロールしてジャンプする。表示されるチップは物件のデータ有無に応じて動的に変化（例: `priceMan > 0` のときのみローン、`hasCommuteInfo || hasCoordinate` のときのみ通勤）。「AI相談」チップは常に表示。
 
 以下のセクションで構成:
 
@@ -364,8 +364,9 @@ Sheet として表示。一覧画面から開く場合は `ListingDetailPagerVie
 | ⑪ | **成約相場との比較** | `hasMarketData` の場合のみ。MarketDataSectionView で成約データと比較表示 |
 | ⑫ | **エリア人口動態** | `hasPopulationData` の場合のみ。PopulationSectionView で人口推移・高齢化率推移を表示 |
 | ⑬ | **ハザード情報** | `hasHazardData` の場合のみ。洪水、内水、土砂、高潮、津波、液状化 の各リスクレベル |
-| ⑬-b | **近隣の成約事例** | 同一区（`Listing.extractWardFromAddress`）の成約実績を最大5件表示。`TransactionRecord` を `@Query` で取得し、区名でフィルタ・取引時期でソート。各件は `TransactionDetailView` への NavigationLink |
-| ⑭ | **外部リンク** | SUUMO / HOME'S 詳細ページ、住まいサーフィンページ。掲載終了時は掲載終了メッセージに置換 |
+| ⑬-b | **近隣の成約事例** | 同一区（`Listing.extractWardFromAddress`）の成約実績を最大5件表示。`.task` で `FetchDescriptor`（`fetchLimit: 5`、区名プレディケート＋取引時期ソート）による遅延フェッチ。各件は `TransactionDetailView` への NavigationLink |
+| ⑭ | **AI 相談** | `AIConsultationSectionView` で物件情報を生成 AI に渡して購入判断の壁打ちが可能。Markdown は「事実情報」と「参考情報（第三者分析データ）」を明確に分離。投資スコア・住まいサーフィン評価はデータソース・算出根拠を併記し、AI が独自に判断できるよう参考値として提供。ChatGPT は `?q=` パラメータでプロンプトプリフィル＋アプリ/Web 自動起動。Gemini / Claude はクリップボードコピー＋アプリ/Web 起動。各ボタンにサービスロゴアイコンを表示（`logo-chatgpt` / `logo-gemini` / `logo-claude` アセット。未登録時は SF Symbol フォールバック） |
+| ⑮ | **外部リンク** | SUUMO / HOME'S 詳細ページ、住まいサーフィンページ。掲載終了時は掲載終了メッセージに置換 |
 
 ##### 月額支払いシミュレーション 計算ロジック
 
@@ -413,8 +414,9 @@ n = 返済回数（月）= 返済年数 × 12
 |---------|------|
 | `LoanCalculator.swift` | 計算ロジック。`monthlyPayment(principal:rate:years:)` / `totalRepayment(principal:rate:years:)`。`simulate(listing:)` は listing URL + 主要パラメータでセッション内キャッシュし、body 再評価時の再計算を回避 |
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
-| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, similarListingsSection, externalLinksSection 等）。類似物件セクション（similarListingsSection）は同一区・同一種別・価格帯±20%で最大3件を表示し、タップでシートに詳細を表示。`ScrollViewReader` でラップし、ツールバー直下に `sectionNavBar`（横スクロールチップ）を `.safeAreaInset(edge: .top)` で表示。各セクションに `.id()` を付与し、`sectionChip` タップで該当セクションへスクロールジャンプ。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・下部ミニマップサムネイルストリップで全画像一覧表示＋タップジャンプ・ページインジケーター表示） |
-| `ListingDetailPagerView.swift` | 全物件スワイプページャー。`TabView(.page)` でフィルタ済み物件リストを横スワイプで横断比較。各ページは `ListingDetailView` をそのまま表示。画面下部にフローティングページインジケーター（`.regularMaterial` + `Capsule` で視認性確保）。一覧画面の `.sheet(item:)` から `cachedFiltered` とタップされた物件のインデックスを受け取って初期表示 |
+| `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, similarListingsSection, externalLinksSection 等）。AI 相談セクション（`AIConsultationSectionView`）を外部リンクの直前に配置。類似物件（similarListings）と近隣成約事例（nearbyTransactions）は `@State` + `.task` で遅延フェッチ（`FetchDescriptor` + `fetchLimit` で必要最小限のデータのみ取得。全件ロードの `@Query` を廃止しメモリ・CPU を大幅削減）。`ScrollViewReader` でラップし、ツールバー直下に `sectionNavBar`（横スクロールチップ）を `.safeAreaInset(edge: .top)` で表示。各セクションに `.id()` を付与し、`sectionChip` タップで該当セクションへスクロールジャンプ。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・下部ミニマップサムネイルストリップで全画像一覧表示＋タップジャンプ・ページインジケーター表示） |
+| `AIConsultationSectionView.swift` | AI 相談セクション。物件情報の Markdown コピーおよび ChatGPT / Gemini / Claude への相談機能を提供。`Listing.toMarkdown()` は事実情報と参考情報（第三者分析データ）を明確に分離し、分析データにはデータソース・算出根拠を併記。`toAIConsultationPrompt(otherCandidates:)` は参考情報を鵜呑みにせず独自分析を優先するよう AI に指示。ChatGPT は `?q=` パラメータでプリフィル起動、Gemini/Claude はクリップボード経由。各サービスボタンにロゴアセット（`logo-chatgpt` / `logo-gemini` / `logo-claude`）を表示。お気に入り物件を `@Query` で取得し、最新閲覧順で最大5件を他候補として含める |
+| `ListingDetailPagerView.swift` | 全物件スワイプページャー。`TabView(.page)` でフィルタ済み物件リストを横スワイプで横断比較。スライディングウィンドウ方式で現在ページ ±1 のみ `ListingDetailView` を生成（最大3ビュー。大量の `@Query` オブザーバー登録を防止）。画面下部にフローティングページインジケーター（`.regularMaterial` + `Capsule` で視認性確保）。一覧画面の `.sheet(item:)` から `cachedFiltered` とタップされた物件のインデックスを受け取って初期表示 |
 | `loan_calc.py` (Python) | Slack 通知・レポート用の月額計算（同一パラメータ） |
 
 **物件基本情報の表示項目**
@@ -892,7 +894,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 #### 検索・表示
 
-> **パフォーマンス**: フィルタ＋ソート結果は `onChange(of:)` で検知した場合のみ再計算し、`@State cachedFiltered` にキャッシュ。検索・ソート・フィルタ・listings 変更時に更新。MapTabView も同様に `filteredListings` をキャッシュ。
+> **パフォーマンス**: `@Query` に `#Predicate` を設定し DB レベルで物件種別・掲載状態をフィルタ（中古/新築/お気に入り各タブで必要な物件のみロード）。フィルタ＋ソート結果は `onChange(of:)` で検知した場合のみ非同期再計算（`Task` でスケジュールし連続変更時は前回をキャンセル）し、`@State cachedFiltered` にキャッシュ。MapTabView も同様に `filteredListings` をキャッシュ。
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
@@ -932,7 +934,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 13 | 物件詳細表示 | 行タップ | Sheet でスワイプページャー（ListingDetailPagerView）を表示。フィルタ済み全物件を横スワイプで比較可能 |
+| 13 | 物件詳細表示 | 行タップ | Sheet でスワイプページャー（ListingDetailPagerView）を表示。スライディングウィンドウ方式で ±1 ページのみ生成し横スワイプで比較可能 |
 | 14 | いいね | 右スワイプ | いいね ON/OFF 切替 → Firestore 同期 |
 | 14b | コンテキストメニュー | 長押し | クイックプレビュー（物件名・価格・面積・間取り・徒歩・住所）+ いいね/共有 |
 | 15 | 詳細を開く | 左スワイプ | 詳細画面を Sheet で表示 |
@@ -1006,7 +1008,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 0a | 物件切替 | 左右スワイプ | フィルタ済み全物件を横スワイプで移動。各ページは ListingDetailView をそのまま表示 |
+| 0a | 物件切替 | 左右スワイプ | フィルタ済み物件を横スワイプで移動。スライディングウィンドウ方式で現在ページ ±1 のみ ListingDetailView を生成（最大3ビュー） |
 | 0b | ページ移動 | インジケーターの矢印タップ | 前後の物件に移動（先頭/末尾では無効化） |
 | 0c | 位置確認 | 自動 | 画面下部フローティングカプセルに「3 / 15」形式で現在位置を表示 |
 
@@ -1156,19 +1158,28 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 #### 類似物件セクション（Phase 4）
 
-同一区・同一物件種別（中古/新築）・価格帯（±20%）の類似物件を最大3件表示。`@Query` で全物件を取得し、`Listing.extractWardFromAddress` で区名を抽出してフィルタ。掲載終了物件・自物件は除外。
+同一区・同一物件種別（中古/新築）・価格帯（±20%）の類似物件を最大3件表示。`.task` で `FetchDescriptor`（`fetchLimit: 20`、価格帯・種別プレディケート）による遅延フェッチで必要データのみ取得し、`Listing.extractWardFromAddress` で区名フィルタ。掲載終了物件・自物件は除外。
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
 | 56-b | 類似物件一覧 | 閲覧 | 類似物件が存在する場合のみ表示。物件名・価格・面積・間取り・徒歩をカード形式で表示 |
 | 56-c | 類似物件詳細 | 行タップ | `.sheet(item:)` で ListingDetailView をシート表示 |
 
+#### AI 相談セクション
+
+| # | 機能 | 操作 | 詳細 |
+|---|------|------|------|
+| 57 | Markdown コピー | ボタンタップ | `Listing.toMarkdown()` で物件情報を構造化 Markdown に変換し、クリップボードにコピー。Markdown は「事実情報」（基本情報・ランニングコスト・掲載状況・ハザード・成約相場等）と「参考情報」（住まいサーフィン評価・アプリ内投資スコア）を `---` で分離。参考情報にはデータソース・算出根拠を併記。間取り図 URL も含む。コピー完了時にチェックマークとフィードバック表示（2秒後に自動リセット） |
+| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt()` で生成したプロンプト（自律リサーチ指示 + 口コミ調査指示 + 間取り図 URL + 物件情報 + 他候補 + 相談テンプレート）をクリップボードにコピーし、`https://chatgpt.com/?q=<prompt>` で ChatGPT アプリ/Web をプロンプト入力済みで起動。プロンプトには物件名・住所でのWeb検索、マンションコミュニティ等の掲示板口コミ調査、管理会社の評判調査、周辺再開発調査、間取り図画像の確認を自律的に行うよう指示。ロゴ: `logo-chatgpt` |
+| 59 | Gemini で相談 | ボタンタップ | 同プロンプトをクリップボードにコピーし、`gemini.google.com/app` を起動。Gemini は URL プリフィル非対応のためクリップボード経由。ロゴ: `logo-gemini` |
+| 60 | Claude で相談 | ボタンタップ | 同プロンプトをクリップボードにコピーし、`claude.ai/new` を起動。Claude は URL プリフィル非対応のためクリップボード経由。ロゴ: `logo-claude` |
+
 #### 外部リンク
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 57 | SUUMO/HOME'S ページ | リンクタップ | アプリ内 Safari で物件詳細ページを表示 |
-| 58 | 住まいサーフィンページ | リンクタップ | アプリ内 Safari で住まいサーフィンページを表示 |
+| 61 | SUUMO/HOME'S ページ | リンクタップ | アプリ内 Safari で物件詳細ページを表示 |
+| 62 | 住まいサーフィンページ | リンクタップ | アプリ内 Safari で住まいサーフィンページを表示 |
 
 ---
 
@@ -1389,7 +1400,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 中古/新築一覧 | 22 |
 | お気に入り | 22 + 3 = 25 |
 | フィルタシート | 21 |
-| 物件詳細 | 67 |
+| 物件詳細 | 71 |
 | 物件比較 | 8 |
 | 地図 | 32 |
 | 設定 | 20 |
@@ -1465,7 +1476,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    └── git commit & push
 ```
 
-> **全 enricher 並列化の安全性**: 各 enricher が追加するフィールドに重複がない（sumai_surfin: `ss_*`, hazard: `hazard_info`, commute: `commute_info`, reinfolib: `reinfolib_market_data`, estat: `estat_population_data`, units_cache: `total_units`, `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`, `feature_tags` 等）。各 enricher が独自のファイルコピーで動作し、`merge_enrichments.py` がフィールドレベルで union マージするため競合なし。
+> **全 enricher 並列化の安全性**: 各 enricher が追加するフィールドに重複がない（sumai_surfin: `ss_*`, hazard: `hazard_info`, commute: `commute_info`, reinfolib: `reinfolib_market_data`, estat: `estat_population_data`, units_cache: `total_units`, `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`, `feature_tags` 等）。各 enricher が独自のファイルコピーで動作し、`merge_enrichments.py` がフィールドレベルで union マージするため競合なし。マージ時に `None` 値は無視する（後続 track ファイルの未設定フィールドで先行 track の値を上書きしない）。
 
 > **Phase1 追加の投資判断支援 enrichment**: 全 enricher 完了後の Phase 3 で以下を順次実行:
 > 1. `inject_price_history(cur, prev)` — 前回比較で価格変動があった物件に `price_history` を追記（`report_utils.py`）

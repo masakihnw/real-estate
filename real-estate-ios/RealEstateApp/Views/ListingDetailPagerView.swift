@@ -5,6 +5,9 @@
 //  全物件スワイプページャー。フィルタ済み物件リストを横スワイプで横断比較可能にする。
 //  各ページは既存の ListingDetailView をそのまま表示する。
 //
+//  パフォーマンス: スライディングウィンドウ方式で現在ページ ±1 のみ生成し、
+//  大量の @Query オブザーバー登録を防止する。
+//
 
 import SwiftUI
 
@@ -17,10 +20,18 @@ struct ListingDetailPagerView: View {
         self._currentIndex = State(initialValue: min(initialIndex, max(listings.count - 1, 0)))
     }
 
+    /// 現在ページ ±1 のインデックスのみ生成（最大3ビュー）
+    private var windowIndices: [Int] {
+        guard !listings.isEmpty else { return [] }
+        let lo = max(0, currentIndex - 1)
+        let hi = min(listings.count - 1, currentIndex + 1)
+        return Array(lo...hi)
+    }
+
     var body: some View {
         TabView(selection: $currentIndex) {
-            ForEach(Array(listings.enumerated()), id: \.element.url) { index, listing in
-                ListingDetailView(listing: listing)
+            ForEach(windowIndices, id: \.self) { index in
+                ListingDetailView(listing: listings[index])
                     .tag(index)
             }
         }
