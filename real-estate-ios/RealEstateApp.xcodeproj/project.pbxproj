@@ -43,6 +43,7 @@
 		7040BD509BB73F81C2B3CD3D /* LoanCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853FEEF66F713933C5CC415D /* LoanCalculator.swift */; };
 		713D6244BCC833B25493C5BB /* TransactionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF29EF90FA22A62705C9CB6 /* TransactionDetailView.swift */; };
 		72188035EBF232524AD778B9 /* SimulationChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8462396154DCAD49363D09 /* SimulationChartView.swift */; };
+		7538BC831D6816AEF731DD12 /* BuyerProfileSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EC9F60CCFA3A6629C3754CE /* BuyerProfileSheet.swift */; };
 		761BBD45852C176F31555C67 /* RealEstateWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 01FED85B686F284CE634CDC5 /* RealEstateWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7750311AA01B0C8728029D8C /* RecentlyViewedListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623D7A7882FFF98A5AEFA57 /* RecentlyViewedListView.swift */; };
 		7C2DC3F1723DF5B611734921 /* TransactionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */; };
@@ -58,6 +59,7 @@
 		9ADBC2C61259A3B927778797 /* RealEstateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291B37863ADE9217F18FD55 /* RealEstateAppApp.swift */; };
 		9DE130586344E133A76B3BBB /* PurchaseCostCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDC02769358655CE9A3590 /* PurchaseCostCalculatorView.swift */; };
 		A0B33EC2E6F5533C53E1F616 /* TransactionFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB2D6D1A77B7BA38487E021 /* TransactionFilterSheet.swift */; };
+		A47DE9D1278F17FC747A523A /* BuyerProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09905D8E7A686AD2E4076276 /* BuyerProfile.swift */; };
 		A4CBD4C7F34B166222CCED63 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */; };
 		A525C4CBAA6599D35B521432 /* MonthlyPaymentSimulationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4844FC75E2D807C80E501B /* MonthlyPaymentSimulationView.swift */; };
 		AF2FFB77E10B601CC9B0C452 /* PhotoSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0177284EAD44FBAB79F578AE /* PhotoSyncService.swift */; };
@@ -111,6 +113,7 @@
 		03BF7C431D158CB3C8FED573 /* TransactionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionStore.swift; sourceTree = "<group>"; };
 		03E93033C63E637E6276CAC6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		09905D8E7A686AD2E4076276 /* BuyerProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyerProfile.swift; sourceTree = "<group>"; };
 		0E59A9E4A8BFE0ABFF87EBAE /* RealEstateApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RealEstateApp.entitlements; sourceTree = "<group>"; };
 		18B9F19E6E3E1CFCE1CCEFC8 /* ScrapingLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogView.swift; sourceTree = "<group>"; };
 		18F421EAE268593C2F547849 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
@@ -151,6 +154,7 @@
 		9248D45A75DF9E59DA0339C2 /* RealEstateWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealEstateWidgetBundle.swift; sourceTree = "<group>"; };
 		97732299FBD4E61C33F84F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97A7F9C6F1B590BF3BCF62B3 /* SpotlightIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexer.swift; sourceTree = "<group>"; };
+		9EC9F60CCFA3A6629C3754CE /* BuyerProfileSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyerProfileSheet.swift; sourceTree = "<group>"; };
 		9EE01C15EC3F109E628A5EF7 /* RealEstateWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealEstateWidget.swift; sourceTree = "<group>"; };
 		A050CCBF6353433066A86B6E /* PopulationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopulationSectionView.swift; sourceTree = "<group>"; };
 		A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduleService.swift; sourceTree = "<group>"; };
@@ -221,6 +225,7 @@
 		1769CCFA8E82FCCDD7C60F40 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				09905D8E7A686AD2E4076276 /* BuyerProfile.swift */,
 				5170FEF60A5876BE1C839DA3 /* FilterStore.swift */,
 				7BC96D67CAA5AB454825D2D8 /* Listing.swift */,
 				D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */,
@@ -292,6 +297,7 @@
 			children = (
 				BE00075D9849BE8F24290CA8 /* AIConsultationSectionView.swift */,
 				580EA895EE4AEC8F233E3680 /* BankComparisonView.swift */,
+				9EC9F60CCFA3A6629C3754CE /* BuyerProfileSheet.swift */,
 				26C6D0D2EC190261EE2AC889 /* CommuteDestinationSettingsView.swift */,
 				4DC4ACF084AE947A9DBA4E12 /* ComparisonView.swift */,
 				90A60F143943F3CB7DDAC336 /* DashboardView.swift */,
@@ -438,6 +444,8 @@
 				F105169E54EE4FDD30D61D04 /* AuthService.swift in Sources */,
 				66EF22D9734F413C7E26F3B2 /* BackgroundRefreshManager.swift in Sources */,
 				545A5B35F60F922A0D525D03 /* BankComparisonView.swift in Sources */,
+				A47DE9D1278F17FC747A523A /* BuyerProfile.swift in Sources */,
+				7538BC831D6816AEF731DD12 /* BuyerProfileSheet.swift in Sources */,
 				6AC9E38350EA1E689D272877 /* CommuteDestinationSettingsView.swift in Sources */,
 				633BEE675B6087DCCAB9F343 /* CommuteTimeService.swift in Sources */,
 				242A17AE57A5070DD5A8680F /* ComparisonView.swift in Sources */,
@@ -570,7 +578,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 185;
+				CURRENT_PROJECT_VERSION = 186;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -697,7 +705,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 185;
+				CURRENT_PROJECT_VERSION = 186;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

@@ -15,6 +15,8 @@ struct AIConsultationSectionView: View {
     @State private var copiedType: CopiedType?
     @State private var floorPlanCopied = false
     @State private var floorPlanImage: UIImage?
+    @State private var showBuyerProfileSheet = false
+    @State private var buyerProfile: BuyerProfile = .empty
 
     private enum CopiedType: Equatable {
         case markdown
@@ -106,6 +108,8 @@ struct AIConsultationSectionView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
+            buyerProfileButton
+
             markdownCopyButton
 
             if hasFloorPlan {
@@ -145,6 +149,44 @@ struct AIConsultationSectionView: View {
         .padding(14)
         .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
         .task { await loadFloorPlanImage() }
+        .onAppear { buyerProfile = BuyerProfile.load() }
+        .sheet(isPresented: $showBuyerProfileSheet, onDismiss: { buyerProfile = BuyerProfile.load() }) {
+            BuyerProfileSheet()
+        }
+    }
+
+    // MARK: - 買い手条件ボタン
+
+    @ViewBuilder
+    private var buyerProfileButton: some View {
+        Button {
+            showBuyerProfileSheet = true
+        } label: {
+            HStack {
+                Image(systemName: buyerProfile.isEmpty ? "person.badge.plus" : "person.fill.checkmark")
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(buyerProfile.isEmpty ? "買い手条件を設定" : "買い手条件を編集")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Text(buyerProfile.isEmpty
+                         ? "設定するとAIが一般論ではなくあなたの状況に即した判断を返します"
+                         : "設定済み — プロンプトに自動反映されます")
+                        .font(.caption2)
+                        .foregroundStyle(buyerProfile.isEmpty ? .orange : .green)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(buyerProfile.isEmpty ? Color.orange.opacity(0.06) : Color.green.opacity(0.06))
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - 間取り図コピーボタン
@@ -302,7 +344,7 @@ struct AIConsultationSectionView: View {
     // MARK: - AI サービス起動
 
     private func openAIService(_ service: AIService) {
-        let prompt = listing.toAIConsultationPrompt(otherCandidates: otherCandidates)
+        let prompt = listing.toAIConsultationPrompt(otherCandidates: otherCandidates, buyerProfile: buyerProfile)
 
         // ChatGPT: テキストは URL プリフィル → クリップボードに画像のみ
         // Gemini/Claude: テキストをクリップボード（画像は別途コピーボタンで対応）
