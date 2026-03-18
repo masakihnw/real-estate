@@ -3008,15 +3008,6 @@ extension Listing {
             }
         }
 
-        // 間取り図・物件写真 URL
-        let floorPlans = parsedFloorPlanImages
-        if !floorPlans.isEmpty {
-            md += "\n## 間取り図\n\n"
-            for (i, imgURL) in floorPlans.enumerated() {
-                md += "- [間取り図\(floorPlans.count > 1 ? "\(i + 1)" : "")](\(imgURL.absoluteString))\n"
-            }
-        }
-
         md += "\n## リンク\n\n"
         md += "- [掲載元](\(url))\n"
         if let ssURL = ssSumaiSurfinURL { md += "- [住まいサーフィン](\(ssURL))\n" }
@@ -3054,17 +3045,11 @@ extension Listing {
             prompt += profileSection + "\n"
         }
 
-        // 間取り図がある場合は画像閲覧を指示
         let floorPlans = parsedFloorPlanImages
         if !floorPlans.isEmpty {
             prompt += "## 間取り図の確認\n"
-            prompt += "このメッセージに間取り図の画像が添付されている場合は、その画像を直接分析してください。\n"
-            prompt += "添付がない場合は、以下の URL にアクセスして画像を確認してください。\n"
+            prompt += "間取り図の画像を別途添付します。添付画像を分析し、"
             prompt += "間取りの特徴・生活動線・収納・採光・改善点をコメントしてください。\n\n"
-            for (i, imgURL) in floorPlans.enumerated() {
-                prompt += "- [間取り図\(floorPlans.count > 1 ? "\(i + 1)" : "")](\(imgURL.absoluteString))\n"
-            }
-            prompt += "\n"
         }
 
         prompt += "## 相談対象の物件\n\n"
