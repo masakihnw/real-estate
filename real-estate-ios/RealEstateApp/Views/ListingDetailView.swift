@@ -49,7 +49,7 @@ struct ListingDetailView: View {
         NavigationStack {
             ScrollViewReader { proxy in
                 ScrollView {
-                    VStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing) {
+                    LazyVStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing) {
                     // 掲載終了バナー
                     delistedBanner
 

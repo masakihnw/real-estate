@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-03-18（画像長押しコピー追加、AI ボタンでプロンプト＋間取り図を同時コピー）
+> **最終更新**: 2026-03-18（画像長押しコピー追加、AI サービスアプリ直接起動対応、間取り図クリップボード修正）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -335,7 +335,7 @@ App起動
 
 #### 3.3.4 物件詳細画面（ListingDetailView / ListingDetailPagerView）
 
-Sheet として表示。一覧画面から開く場合は `ListingDetailPagerView`（スワイプページャー）でラップされ、フィルタ済み物件リストを横スワイプで横断比較可能。パフォーマンス最適化としてスライディングウィンドウ方式を採用し、現在ページ ±1 のみ `ListingDetailView` を生成する（最大3ビュー）。ページャーは画面下部にフローティングのページインジケーター（`< 3 / 15 >`）を表示し、現在位置の把握とタップによる前後移動が可能。
+Sheet として表示。一覧画面から開く場合は `ListingDetailPagerView`（スワイプページャー）でラップされ、横スワイプで前後の物件に遷移可能。現在の1物件のみ `ListingDetailView` を生成し、`.id()` で物件切替時にビューを再生成する方式で、メモリ使用量を最小化。`DragGesture` の方向判定で縦スクロールと競合回避。ページャーは画面下部にフローティングのページインジケーター（`< 3 / 15 >`）を表示し、現在位置の把握とタップによる前後移動が可能。
 
 **セクションナビゲーション（目次）**
 
@@ -416,7 +416,7 @@ n = 返済回数（月）= 返済年数 × 12
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
 | `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, similarListingsSection, externalLinksSection 等）。AI 相談セクション（`AIConsultationSectionView`）を外部リンクの直前に配置。類似物件（similarListings）と近隣成約事例（nearbyTransactions）は `@State` + `.task` で遅延フェッチ（`FetchDescriptor` + `fetchLimit` で必要最小限のデータのみ取得。全件ロードの `@Query` を廃止しメモリ・CPU を大幅削減）。`ScrollViewReader` でラップし、ツールバー直下に `sectionNavBar`（横スクロールチップ）を `.safeAreaInset(edge: .top)` で表示。各セクションに `.id()` を付与し、`sectionChip` タップで該当セクションへスクロールジャンプ。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・下部ミニマップサムネイルストリップで全画像一覧表示＋タップジャンプ・ページインジケーター表示・ツールバー右上にコピーボタン常設）。`GalleryThumbnailView` / `GalleryFullScreenView` ともに長押し `.contextMenu` で「画像をコピー」「共有…」操作が可能。コピー完了時にオーバーレイフィードバック表示。`UIActivityViewController.share(image:)` 拡張で共有シートを起動 |
 | `AIConsultationSectionView.swift` | AI 相談セクション。物件情報の Markdown コピーおよび ChatGPT / Gemini / Claude への相談機能を提供。`Listing.toMarkdown()` は事実情報と参考情報（第三者分析データ）を明確に分離し、分析データにはデータソース・算出根拠を併記。`toAIConsultationPrompt(otherCandidates:)` は参考情報を鵜呑みにせず独自分析を優先するよう AI に指示し、間取り図が添付されている場合は画像を直接分析するよう指示。AI サービスボタンタップ時にプロンプトと間取り図画像を `UIPasteboard.general.items` で同時コピー（ChatGPT は URL プリフィル＋画像のみクリップボード、Gemini/Claude は `UTType.utf8PlainText` + `UTType.png` を1アイテムとしてセット）。「間取り図をコピー」単体ボタンも表示。各サービスボタンにロゴアセット（`logo-chatgpt` / `logo-gemini` / `logo-claude`）を表示。お気に入り物件を `@Query` で取得し、最新閲覧順で最大5件を他候補として含める |
-| `ListingDetailPagerView.swift` | 全物件スワイプページャー。`TabView(.page)` でフィルタ済み物件リストを横スワイプで横断比較。スライディングウィンドウ方式で現在ページ ±1 のみ `ListingDetailView` を生成（最大3ビュー。大量の `@Query` オブザーバー登録を防止）。画面下部にフローティングページインジケーター（`.regularMaterial` + `Capsule` で視認性確保）。一覧画面の `.sheet(item:)` から `cachedFiltered` とタップされた物件のインデックスを受け取って初期表示 |
+| `ListingDetailPagerView.swift` | 全物件スワイプページャー。現在の1物件のみ `ListingDetailView` を生成し、横スワイプ（`DragGesture` + 方向判定で ScrollView と競合回避）で前後の物件に切り替え。`.id()` で物件切替時にビューを再生成。TabView の全件 ForEach を廃止しメモリ使用量を最小化。画面下部にフローティングページインジケーター（`.regularMaterial` + `Capsule` で視認性確保）。一覧画面の `.sheet(item:)` から `cachedFiltered` とタップされた物件のインデックスを受け取って初期表示 |
 | `loan_calc.py` (Python) | Slack 通知・レポート用の月額計算（同一パラメータ） |
 
 **物件基本情報の表示項目**
@@ -934,7 +934,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 13 | 物件詳細表示 | 行タップ | Sheet でスワイプページャー（ListingDetailPagerView）を表示。スライディングウィンドウ方式で ±1 ページのみ生成し横スワイプで比較可能 |
+| 13 | 物件詳細表示 | 行タップ | Sheet でスワイプページャー（ListingDetailPagerView）を表示。1物件のみ生成し横スワイプで前後の物件に遷移 |
 | 14 | いいね | 右スワイプ | いいね ON/OFF 切替 → Firestore 同期 |
 | 14b | コンテキストメニュー | 長押し | クイックプレビュー（物件名・価格・面積・間取り・徒歩・住所）+ いいね/共有 |
 | 15 | 詳細を開く | 左スワイプ | 詳細画面を Sheet で表示 |
@@ -1008,7 +1008,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
-| 0a | 物件切替 | 左右スワイプ | フィルタ済み物件を横スワイプで移動。スライディングウィンドウ方式で現在ページ ±1 のみ ListingDetailView を生成（最大3ビュー） |
+| 0a | 物件切替 | 左右スワイプ | 横スワイプで前後の物件に遷移。現在の1物件のみ ListingDetailView を生成し `.id()` で切替。DragGesture の方向判定で縦スクロールと競合回避 |
 | 0b | ページ移動 | インジケーターの矢印タップ | 前後の物件に移動（先頭/末尾では無効化） |
 | 0c | 位置確認 | 自動 | 画面下部フローティングカプセルに「3 / 15」形式で現在位置を表示 |
 
@@ -1172,9 +1172,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |---|------|------|------|
 | 57 | Markdown コピー | ボタンタップ | `Listing.toMarkdown()` で物件情報を構造化 Markdown に変換し、クリップボードにコピー。Markdown は「事実情報」（基本情報・ランニングコスト・掲載状況・ハザード・成約相場等）と「参考情報」（住まいサーフィン評価・アプリ内投資スコア）を `---` で分離。参考情報にはデータソース・算出根拠を併記。間取り図 URL も含む。コピー完了時にチェックマークとフィードバック表示（2秒後に自動リセット） |
 | 57-b | 間取り図コピー | ボタンタップ | `hasFloorPlanImages` の場合のみ表示。先頭の間取り図画像を `TrimmedImageCache` から取得（未キャッシュ時は非同期ロード＋トリミング）し、`UIPasteboard.general.image` にコピー。コピー完了時にチェックマークとフィードバック表示（2秒後に自動リセット）。AI チャットに画像を貼り付けて間取り分析に利用可能 |
-| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt()` で生成したプロンプトを `?q=` URL でプリフィル起動。間取り図がある場合はクリップボードに画像のみセット（`UTType.png`）し、ChatGPT 内で貼り付けて画像も送信可能。プロンプトには物件名・住所でのWeb検索、マンションコミュニティ等の掲示板口コミ調査、管理会社の評判調査、周辺再開発調査、間取り図画像の確認を自律的に行うよう指示。ロゴ: `logo-chatgpt` |
-| 59 | Gemini で相談 | ボタンタップ | プロンプトと間取り図画像を1つのペーストボードアイテムとしてクリップボードにセット（`UTType.utf8PlainText` + `UTType.png`）。`gemini.google.com/app` を起動し、貼り付けでテキスト＋画像を同時に送信可能。ロゴ: `logo-gemini` |
-| 60 | Claude で相談 | ボタンタップ | 同様にプロンプトと間取り図画像をクリップボードに同時セット。`claude.ai/new` を起動し、貼り付けでテキスト＋画像を同時に送信可能。ロゴ: `logo-claude` |
+| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt()` で生成したプロンプトを `?q=` URL でプリフィル起動。間取り図がある場合は `UIPasteboard.general.image` に画像をセットし、ChatGPT 内で貼り付けて画像を添付可能。プロンプトには物件名・住所でのWeb検索、マンションコミュニティ等の掲示板口コミ調査、管理会社の評判調査、周辺再開発調査、間取り図画像の確認を自律的に行うよう指示。ロゴ: `logo-chatgpt` |
+| 59 | Gemini で相談 | ボタンタップ | プロンプトをクリップボードにコピー。`googleapp://robin` でアプリを直接起動（未インストール時は `gemini.google.com/app` にフォールバック）。間取り図は別途「間取り図をコピー」ボタンで手動コピーし添付。`LSApplicationQueriesSchemes` に `googleapp` を登録。ロゴ: `logo-gemini` |
+| 60 | Claude で相談 | ボタンタップ | プロンプトをクリップボードにコピー。`claude://` でアプリを直接起動（未インストール時は `claude.ai/new` にフォールバック）。間取り図は別途「間取り図をコピー」ボタンで手動コピーし添付。`LSApplicationQueriesSchemes` に `claude` を登録。ロゴ: `logo-claude` |
 
 #### 外部リンク
 

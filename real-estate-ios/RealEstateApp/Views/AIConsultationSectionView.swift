@@ -8,7 +8,6 @@
 
 import SwiftUI
 import SwiftData
-import UniformTypeIdentifiers
 
 struct AIConsultationSectionView: View {
     let listing: Listing
@@ -55,6 +54,15 @@ struct AIConsultationSectionView: View {
         /// Gemini / Claude は URL プリフィル非対応のためクリップボード経由。
         var supportsURLPrefill: Bool {
             self == .chatgpt
+        }
+
+        /// アプリ固有の URL スキーム（インストール済みならアプリを直接起動）
+        var appSchemeURL: URL? {
+            switch self {
+            case .chatgpt: return nil
+            case .gemini: return URL(string: "googleapp://robin")
+            case .claude: return URL(string: "claude://")
+            }
         }
 
         var webURL: URL {
@@ -108,11 +116,11 @@ struct AIConsultationSectionView: View {
 
             if hasFloorPlan && floorPlanImage != nil {
                 HStack(spacing: 4) {
-                    Image(systemName: "photo.badge.checkmark")
-                    Text("間取り図も一緒にコピーされます")
+                    Image(systemName: "lightbulb.min")
+                    Text("ChatGPT: 間取り図を自動コピー → 貼り付けで添付\nGemini/Claude: プロンプト貼り付け後、戻って間取り図をコピー")
                 }
                 .font(.caption2)
-                .foregroundStyle(.green)
+                .foregroundStyle(.orange)
                 .padding(.vertical, 2)
             }
 
@@ -221,33 +229,13 @@ struct AIConsultationSectionView: View {
                         .font(.subheadline)
                         .fontWeight(.medium)
                     if copiedType == .ai(service) {
-                        if service.supportsURLPrefill {
-                            Text(floorPlanImage != nil
-                                ? "プロンプト入力済み＋間取り図コピー済み → 貼り付けてください"
-                                : "プロンプト入力済みで開きました")
-                                .font(.caption2)
-                                .foregroundStyle(.green)
-                        } else {
-                            Text(floorPlanImage != nil
-                                ? "プロンプト＋間取り図をコピーしました → 貼り付けてください"
-                                : "プロンプトをコピーしました → 貼り付けてください")
-                                .font(.caption2)
-                                .foregroundStyle(.green)
-                        }
+                        Text(feedbackText(for: service))
+                            .font(.caption2)
+                            .foregroundStyle(.green)
                     } else {
-                        if service.supportsURLPrefill {
-                            Text(floorPlanImage != nil
-                                ? "プロンプト入力済み＋間取り図コピーで\(service.rawValue)を開きます"
-                                : "プロンプト入力済みで\(service.rawValue)を開きます")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        } else {
-                            Text(floorPlanImage != nil
-                                ? "プロンプト＋間取り図をコピーして\(service.rawValue)を開きます"
-                                : "プロンプトをコピーして\(service.rawValue)を開きます")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
+                        Text(descriptionText(for: service))
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                     }
                 }
 
@@ -282,54 +270,71 @@ struct AIConsultationSectionView: View {
         }
     }
 
-    // MARK: - AI サービス起動
+    // MARK: - ボタン説明テキスト
 
-    /// プロンプトと間取り図画像をまとめてクリップボードにセットする。
-    /// ChatGPT はテキストを URL プリフィルするため、クリップボードには画像のみ。
-    /// Gemini / Claude はテキスト＋画像を1つのペーストボードアイテムとしてセット。
-    private func copyPromptAndImage(_ prompt: String, service: AIService) {
-        let pasteboard = UIPasteboard.general
-
-        if service.supportsURLPrefill {
-            if let img = floorPlanImage, let pngData = img.pngData() {
-                pasteboard.setData(pngData, forPasteboardType: UTType.png.identifier)
-            } else {
-                pasteboard.string = prompt
-            }
-        } else {
-            if let img = floorPlanImage, let pngData = img.pngData() {
-                pasteboard.items = [[
-                    UTType.utf8PlainText.identifier: prompt,
-                    UTType.png.identifier: pngData
-                ]]
-            } else {
-                pasteboard.string = prompt
-            }
+    private func descriptionText(for service: AIService) -> String {
+        switch service {
+        case .chatgpt:
+            return floorPlanImage != nil
+                ? "プロンプト入力済み＋間取り図コピーで開きます"
+                : "プロンプト入力済みで開きます"
+        case .gemini, .claude:
+            return "プロンプトをコピーして\(service.rawValue)を開きます"
         }
     }
+
+    private func feedbackText(for service: AIService) -> String {
+        switch service {
+        case .chatgpt:
+            return floorPlanImage != nil
+                ? "プロンプト入力済み → 間取り図を貼り付けてください"
+                : "プロンプト入力済みで開きました"
+        case .gemini, .claude:
+            return "プロンプトをコピーしました → 貼り付けてください"
+        }
+    }
+
+    // MARK: - AI サービス起動
 
     private func openAIService(_ service: AIService) {
         let prompt = listing.toAIConsultationPrompt(otherCandidates: otherCandidates)
 
-        copyPromptAndImage(prompt, service: service)
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-
-        withAnimation(.easeInOut(duration: 0.3)) { copiedType = .ai(service) }
-
-        if service.supportsURLPrefill, let prefillURL = service.prefillURL(prompt: prompt) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                UIApplication.shared.open(prefillURL)
+        // ChatGPT: テキストは URL プリフィル → クリップボードに画像のみ
+        // Gemini/Claude: テキストをクリップボード（画像は別途コピーボタンで対応）
+        if service.supportsURLPrefill {
+            if let img = floorPlanImage {
+                UIPasteboard.general.image = img
             }
         } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                UIApplication.shared.open(service.webURL)
-            }
+            UIPasteboard.general.string = prompt
+        }
+
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        withAnimation(.easeInOut(duration: 0.3)) { copiedType = .ai(service) }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            openServiceApp(service, prompt: prompt)
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             withAnimation(.easeInOut(duration: 0.3)) {
                 if copiedType == .ai(service) { copiedType = nil }
             }
+        }
+    }
+
+    /// アプリ URL スキーム → ユニバーサルリンク → Web URL の順に試行
+    private func openServiceApp(_ service: AIService, prompt: String) {
+        if service.supportsURLPrefill, let prefillURL = service.prefillURL(prompt: prompt) {
+            UIApplication.shared.open(prefillURL)
+            return
+        }
+
+        if let appURL = service.appSchemeURL,
+           UIApplication.shared.canOpenURL(appURL) {
+            UIApplication.shared.open(appURL)
+        } else {
+            UIApplication.shared.open(service.webURL)
         }
     }
 }

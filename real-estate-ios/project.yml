@@ -19,7 +19,7 @@ settings:
   base:
     SWIFT_VERSION: "5.9"
     TARGETED_DEVICE_FAMILY: "1"          # iPhone only
-    CURRENT_PROJECT_VERSION: "183"
+    CURRENT_PROJECT_VERSION: "184"
     MARKETING_VERSION: "1.0.0"
 
 targets:
@@ -63,6 +63,9 @@ targets:
         NSLocationWhenInUseUsageDescription: "地図上で現在地を表示するために使用します"
         LSApplicationQueriesSchemes:
           - comgooglemaps
+          - chatgpt
+          - googleapp
+          - claude
         CFBundleURLTypes:
           - CFBundleURLSchemes:
               - "com.googleusercontent.apps.481688023840-pd1prakenbuqgl1phfpdgkf2cghurak6"
