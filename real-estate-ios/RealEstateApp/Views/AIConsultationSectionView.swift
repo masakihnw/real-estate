@@ -56,12 +56,17 @@ struct AIConsultationSectionView: View {
             self == .chatgpt
         }
 
-        /// アプリ固有の URL スキーム（インストール済みならアプリを直接起動）
-        var appSchemeURL: URL? {
+        /// アプリ固有の URL スキーム候補（優先度順に試行）
+        var appSchemeURLs: [URL] {
             switch self {
-            case .chatgpt: return nil
-            case .gemini: return URL(string: "googleapp://robin")
-            case .claude: return URL(string: "claude://")
+            case .chatgpt: return []
+            case .gemini: return [
+                URL(string: "googlegemini://")!,
+                URL(string: "googleapp://robin")!,
+            ]
+            case .claude: return [
+                URL(string: "claude://")!,
+            ]
             }
         }
 
@@ -323,18 +328,27 @@ struct AIConsultationSectionView: View {
         }
     }
 
-    /// アプリ URL スキーム → ユニバーサルリンク → Web URL の順に試行
+    /// アプリ URL スキーム候補を順に試行し、全て失敗なら Web URL を開く
     private func openServiceApp(_ service: AIService, prompt: String) {
         if service.supportsURLPrefill, let prefillURL = service.prefillURL(prompt: prompt) {
             UIApplication.shared.open(prefillURL)
             return
         }
 
-        if let appURL = service.appSchemeURL,
-           UIApplication.shared.canOpenURL(appURL) {
-            UIApplication.shared.open(appURL)
-        } else {
-            UIApplication.shared.open(service.webURL)
+        let candidates = service.appSchemeURLs
+        tryOpenURL(candidates: candidates, index: 0, fallback: service.webURL)
+    }
+
+    private func tryOpenURL(candidates: [URL], index: Int, fallback: URL) {
+        guard index < candidates.count else {
+            UIApplication.shared.open(fallback)
+            return
+        }
+        let url = candidates[index]
+        UIApplication.shared.open(url, options: [:]) { success in
+            if !success {
+                tryOpenURL(candidates: candidates, index: index + 1, fallback: fallback)
+            }
         }
     }
 }
