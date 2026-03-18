@@ -39,6 +39,7 @@
 	<array>
 		<string>comgooglemaps</string>
 		<string>chatgpt</string>
+		<string>googlegemini</string>
 		<string>googleapp</string>
 		<string>claude</string>
 	</array>
