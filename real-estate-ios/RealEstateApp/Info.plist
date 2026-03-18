@@ -38,6 +38,9 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>comgooglemaps</string>
+		<string>chatgpt</string>
+		<string>googleapp</string>
+		<string>claude</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>内見時の物件写真撮影に使用します</string>
