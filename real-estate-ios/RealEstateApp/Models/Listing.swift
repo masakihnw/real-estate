@@ -3030,60 +3030,34 @@ extension Listing {
         return (managementFee ?? 0) + (repairReserveFund ?? 0)
     }
 
-    /// 他の候補物件の概要を含めた AI 相談用プロンプトを生成する
-    func toAIConsultationPrompt(otherCandidates: [Listing]) -> String {
+    /// 他の候補物件の概要を含めた AI 相談用プロンプトを生成する（意思決定型）
+    func toAIConsultationPrompt(otherCandidates: [Listing], buyerProfile: BuyerProfile = .empty) -> String {
         let buildingName = name
         let addr = ssAddress ?? address ?? ""
 
         var prompt = """
-        あなたは不動産エージェントであり不動産コンサルタントです。以下の役割で相談に乗ってください。
+        以下の\(isShinchiku ? "新築" : "中古")マンションについて、**10年後住み替え前提**で「買い / 指値前提で検討 / 見送り」を判断してください。
+        単なる物件紹介や調査メモではなく、**購入判断メモ**として分析してください。
 
         ## あなたの役割
-        - 10年住み替え前提での中古・新築マンション購入のプロフェッショナルアドバイザー
-        - 市場動向、価格妥当性、将来の資産価値、リスク要因を多角的に分析
+        - 10年住み替え前提での\(isShinchiku ? "新築" : "中古")マンション購入のプロフェッショナルアドバイザー
+        - 市場動向・価格妥当性・将来の資産価値・リスク要因を多角的に分析
         - 見落としがちな観点（管理組合の健全性、大規模修繕の時期、周辺再開発計画、金利動向など）を指摘
-        - 定量データに基づく客観的な評価と、定性的な生活面の評価の両方を提供
-
-        ## 自律リサーチ指示（重要）
-
-        以下の物件情報を読んだうえで、**必ず Web 検索を行い**、最新かつ正確な情報を自分で取得してください。
-        提供データだけで判断せず、以下を自律的にリサーチしてから回答してください。
-
-        ### 必須リサーチ項目
-        1. **マンション名「\(buildingName)」で検索**
-           - 分譲時の情報（デベロッパー、分譲価格帯、竣工年月）
-           - 管理会社の名前と評判
-           - 大規模修繕の実施履歴・予定
-           - 建物の構造・耐震等級
-        2. **住所・エリア「\(addr)」周辺の情報**
-           - 周辺の再開発計画・都市計画
-           - 地域の治安、学区、生活利便施設
-           - 最寄駅の乗降客数推移・将来の鉄道計画
-           - 近隣の新築マンション供給予定（競合リスク）
-        3. **マンション口コミ・住民の声**
-           - 「マンションコミュニティ」「マンションノート」「スマイティ」等の掲示板で「\(buildingName)」の口コミを検索
-           - 住民の満足点・不満点を要約
-           - 管理組合の運営状況に関する情報
-        4. **管理会社の評判**
-           - 管理会社名で検索し、口コミサイトでの評判を確認
-           - 管理の質に関する情報（清掃、修繕対応、理事会運営など）
-        5. **市場動向**
-           - 同一エリア・同一駅の直近の成約事例（価格推移）
-           - 金利動向と住宅ローン市場の見通し
-           - 東京都区部（該当エリア）のマンション市況
-
-        ### データの読み方に関する注意
-        - 「参考情報」セクションは第三者サービスの独自モデルやアプリ内スコアリングによる分析値です
-        - これらは正確性が保証されないため、あなた自身のリサーチ結果を優先してください
-        - 参考情報と事実情報の間に矛盾がある場合は指摘してください
-        - 事実情報（基本情報・ランニングコスト・掲載状況・ハザード情報・成約相場等）は信頼できるデータです
+        - **実需と資産性の両立**を重視し、10年後に売却する前提で出口価格と残債のバランスを重視
+        - 必ず**妥当価格レンジ**と**買付上限価格**を提示すること
 
         """
+
+        // 買い手条件
+        let profileSection = buyerProfile.toMarkdownSection()
+        if !profileSection.isEmpty {
+            prompt += profileSection + "\n"
+        }
 
         // 間取り図がある場合は画像閲覧を指示
         let floorPlans = parsedFloorPlanImages
         if !floorPlans.isEmpty {
-            prompt += "### 間取り図の確認\n"
+            prompt += "## 間取り図の確認\n"
             prompt += "このメッセージに間取り図の画像が添付されている場合は、その画像を直接分析してください。\n"
             prompt += "添付がない場合は、以下の URL にアクセスして画像を確認してください。\n"
             prompt += "間取りの特徴・生活動線・収納・採光・改善点をコメントしてください。\n\n"
@@ -3096,54 +3070,113 @@ extension Listing {
         prompt += "## 相談対象の物件\n\n"
         prompt += toMarkdown()
 
+        // 住まいサーフィンのシミュレーションデータがあれば追記
+        if ssSimStandard10yr != nil || ssLoanBalance10yr != nil {
+            prompt += "\n### 10年後シミュレーション（住まいサーフィン参考値）\n\n"
+            prompt += "> ⚠️ 住まいサーフィンの独自モデルによる予測値です。あなた自身の分析と照合してください。\n\n"
+            if let base = ssSimBasePrice { prompt += "- シミュレーション基準価格: \(base)万円\n" }
+            if let best10 = ssSimBest10yr { prompt += "- 10年後（楽観）: \(best10)万円\n" }
+            if let std10 = ssSimStandard10yr { prompt += "- 10年後（標準）: \(std10)万円\n" }
+            if let worst10 = ssSimWorst10yr { prompt += "- 10年後（悲観）: \(worst10)万円\n" }
+            if let loan10 = ssLoanBalance10yr { prompt += "- 10年後ローン残高: \(loan10)万円\n" }
+            prompt += "\n"
+        }
+
         if !otherCandidates.isEmpty {
-            prompt += "\n\n---\n\n## 他の候補物件（比較参考用）\n\n"
+            prompt += "\n---\n\n## 比較検討中の物件\n\n"
             prompt += "以下の物件も並行して検討しています。比較の観点があればコメントしてください。\n\n"
-            for (i, other) in otherCandidates.enumerated() {
-                prompt += "### 候補\(i + 1): \(other.name)\n\n"
-                prompt += "| 項目 | 内容 |\n|---|---|\n"
-                prompt += "| 価格 | \(other.priceDisplay) |\n"
-                if let area = other.areaM2 { prompt += "| 面積 | \(String(format: "%.1f㎡", area)) |\n" }
-                if let layout = other.layout { prompt += "| 間取り | \(layout) |\n" }
-                if let addr = other.ssAddress ?? other.address { prompt += "| 住所 | \(addr) |\n" }
-                prompt += "| 最寄駅 | \(other.primaryStationDisplay) |\n"
-                if let walk = other.walkMin { prompt += "| 徒歩 | \(walk)分 |\n" }
-                prompt += "| 築年 | \(other.builtAgeDisplay) |\n"
-                if other.hasComments {
-                    prompt += "\n**メモ**: "
-                    for c in other.parsedComments.suffix(3) {
-                        prompt += "\(c.authorName): \(c.text) / "
-                    }
-                    prompt += "\n"
-                }
-                prompt += "\n"
+            prompt += "| 項目 |"
+            for (i, _) in otherCandidates.enumerated() { prompt += " 候補\(i + 1) |" }
+            prompt += "\n|---|"
+            for _ in otherCandidates { prompt += "---|" }
+            prompt += "\n| 物件名 |"
+            for c in otherCandidates { prompt += " \(c.name) |" }
+            prompt += "\n| 価格 |"
+            for c in otherCandidates { prompt += " \(c.priceDisplay) |" }
+            prompt += "\n| 面積 |"
+            for c in otherCandidates {
+                prompt += " \(c.areaM2.map { String(format: "%.1f㎡", $0) } ?? "—") |"
             }
+            prompt += "\n| 間取り |"
+            for c in otherCandidates { prompt += " \(c.layout ?? "—") |" }
+            prompt += "\n| 住所 |"
+            for c in otherCandidates { prompt += " \(c.ssAddress ?? c.address ?? "—") |" }
+            prompt += "\n| 最寄駅 |"
+            for c in otherCandidates { prompt += " \(c.primaryStationDisplay) |" }
+            prompt += "\n| 築年 |"
+            for c in otherCandidates { prompt += " \(c.builtAgeDisplay) |" }
+            prompt += "\n"
         }
 
         prompt += """
 
         ---
 
-        ## 相談したいこと
+        ## 自律リサーチ指示（重要）
 
-        この物件の購入を検討しています。
-        **上記の自律リサーチを必ず実施したうえで**、以下の観点で分析・アドバイスをお願いします。
+        以下の物件情報を読んだうえで、**必ず Web 検索を行い**、最新かつ正確な情報を自分で取得してください。
+        提供データだけで判断せず、以下を自律的にリサーチしてから回答してください。
 
-        1. **価格妥当性**: この価格は適正か？直近の同エリア成約事例と比較してどうか？
-        2. **資産価値**: 10年後の資産価値の見通しは？周辺再開発や人口動態を踏まえて
-        3. **リスク要因**: 購入にあたって注意すべきリスクは？（大規模修繕時期、管理組合、競合供給など）
-        4. **口コミ・評判**: マンション掲示板や管理会社の口コミからわかる実際の住み心地は？
-        5. **見落とし**: 他に確認・検討すべき観点はあるか？
-        6. **総合判断**: 購入すべきか、見送るべきか？根拠とともに
+        ### 【必須】回答前に必ず実施
+        1. **マンション名「\(buildingName)」で検索** — 分譲時情報・管理会社・大規模修繕履歴・構造
+        2. **住所「\(addr)」周辺** — 再開発計画・治安・学区・新築供給予定（競合リスク）
+        3. **成約相場** — 同一駅・同一エリアの直近成約事例（価格推移・坪単価）
+        4. **ハザード** — 洪水浸水想定区域・液状化・地震危険度（定量値で）
+
+        ### 【推奨】余裕があれば実施
+        5. **マンション口コミ** — 「マンションコミュニティ」「マンションノート」等で「\(buildingName)」を検索
+        6. **管理会社の評判** — 管理会社名で口コミサイト検索（行政処分・問題事案も）
+        7. **金利動向** — 現在の住宅ローン金利と今後の見通し
+
+        ## 重要ルール
+
+        ### 情報源の重みづけ（厳守）
+        情報源は以下の優先順位で扱ってください：
+        1. **一次情報**（公的機関・公式資料・売主/管理会社/仲介の公式情報） — 最優先
+        2. **二次情報**（不動産ポータル・仲介掲載情報） — 信頼度高
+        3. **口コミ情報**（掲示板・レビューサイト） — 補助情報として扱い、一次情報と矛盾する場合は一次情報を優先
+
+        ### 未確認情報の扱い（厳守）
+        **公開 Web で確認できない事項は推測せず、「未確認」と明示してください。**
+        そのうえで、確認に必要な資料名を列挙してください（例: 重要事項調査報告書、長期修繕計画、総会議事録、管理規約、修繕履歴 等）。
+
+        ### 「参考情報」セクションの扱い
+        - 「参考情報」セクションは第三者サービスの独自モデルやアプリ内スコアリングによる分析値です
+        - 正確性が保証されないため、あなた自身のリサーチ結果を優先してください
+        - 参考情報と事実情報の間に矛盾がある場合は明示してください
+
         """
 
-        if !otherCandidates.isEmpty {
-            prompt += "\n7. **比較**: 他の候補物件と比較した場合の優位点・劣位点は？"
+        prompt += "## 必須出力フォーマット\n\n"
+        prompt += "まず冒頭に **3行の結論サマリー** を示したうえで、以下を順番に回答してください。\n\n"
+        prompt += "1. **結論**（買い / 指値前提で検討 / 見送り）— 根拠を箇条書きで\n"
+        prompt += "2. **妥当価格レンジ** — 〇〇万円〜〇〇万円\n"
+        prompt += "3. **買付上限価格** — 〇〇万円（これ以上なら見送り）\n"
+        prompt += "4. **10年後の出口試算**\n"
+        prompt += "   - 楽観・中立・悲観の3シナリオで想定売却価格を提示\n"
+
+        if !buyerProfile.isEmpty {
+            prompt += "   - 10年後の残債試算\n"
+            prompt += "   - 売却諸費用を加味した手取り試算\n"
+            prompt += "   - 損益分岐売却価格\n"
         }
 
+        prompt += "5. **価格妥当性** — 直近成約相場との比較（数値で明示）\n"
+        prompt += "6. **資産価値** — 周辺再開発・人口動態を踏まえた評価\n"
+        prompt += "7. **リスク要因** — 管理・修繕・ハザード・法的リスク・競合供給\n"
+        prompt += "8. **口コミ・住み心地** — 掲示板・管理会社評判の要約（情報源を明記）\n"
+        prompt += "9. **生活面の評価** — 通勤・買い物・子育て・医療・治安\n"
+
         if !floorPlans.isEmpty {
-            prompt += "\n8. **間取り分析**: 間取り図を確認し、生活動線・収納・採光の観点でコメント"
+            prompt += "10. **間取り分析** — 生活動線・収納・採光の評価、改善点\n"
         }
+
+        if !otherCandidates.isEmpty {
+            prompt += "11. **比較** — 価格・資産性・利便性・リスクの4軸で比較表を作成し推奨順位\n"
+        }
+
+        prompt += "12. **仲介に確認すべき質問** — 内覧・交渉時に聞くべき具体的な質問リスト\n"
+        prompt += "13. **未確認事項** — 確認できなかった情報と、その確認に必要な資料名\n"
 
         return prompt
     }
