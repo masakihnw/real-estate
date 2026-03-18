@@ -52,16 +52,16 @@ struct AIConsultationSectionView: View {
             }
         }
 
-        /// ChatGPT は `?q=` パラメータでプロンプトをプリフィル可能。
-        /// Gemini / Claude は URL プリフィル非対応のためクリップボード経由。
-        var supportsURLPrefill: Bool {
-            self == .chatgpt
-        }
+        /// プロンプトが短い場合のみ ChatGPT の `?q=` パラメータでプリフィル可能。
+        /// 通常のプロンプトは長文のため、全サービスでクリップボード経由を使用。
+        var supportsURLPrefill: Bool { false }
 
         /// アプリ固有の URL スキーム候補（優先度順に試行）
         var appSchemeURLs: [URL] {
             switch self {
-            case .chatgpt: return []
+            case .chatgpt: return [
+                URL(string: "chatgpt://")!,
+            ]
             case .gemini: return [
                 URL(string: "googlegemini://")!,
                 URL(string: "googleapp://robin")!,
@@ -123,15 +123,17 @@ struct AIConsultationSectionView: View {
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
 
-            if hasFloorPlan && floorPlanImage != nil {
-                HStack(spacing: 4) {
-                    Image(systemName: "lightbulb.min")
-                    Text("ChatGPT: 間取り図を自動コピー → 貼り付けで添付\nGemini/Claude: プロンプト貼り付け後、戻って間取り図をコピー")
+            HStack(spacing: 4) {
+                Image(systemName: "lightbulb.min")
+                if hasFloorPlan && floorPlanImage != nil {
+                    Text("プロンプトを貼り付け後、戻って間取り図をコピー → 貼り付けで添付")
+                } else {
+                    Text("プロンプトをコピーしてAIアプリを開きます → 貼り付けてください")
                 }
-                .font(.caption2)
-                .foregroundStyle(.orange)
-                .padding(.vertical, 2)
             }
+            .font(.caption2)
+            .foregroundStyle(.orange)
+            .padding(.vertical, 2)
 
             ForEach(AIService.allCases, id: \.rawValue) { service in
                 aiServiceButton(service)
@@ -320,25 +322,11 @@ struct AIConsultationSectionView: View {
     // MARK: - ボタン説明テキスト
 
     private func descriptionText(for service: AIService) -> String {
-        switch service {
-        case .chatgpt:
-            return floorPlanImage != nil
-                ? "プロンプト入力済み＋間取り図コピーで開きます"
-                : "プロンプト入力済みで開きます"
-        case .gemini, .claude:
-            return "プロンプトをコピーして\(service.rawValue)を開きます"
-        }
+        "プロンプトをコピーして\(service.rawValue)を開きます"
     }
 
     private func feedbackText(for service: AIService) -> String {
-        switch service {
-        case .chatgpt:
-            return floorPlanImage != nil
-                ? "プロンプト入力済み → 間取り図を貼り付けてください"
-                : "プロンプト入力済みで開きました"
-        case .gemini, .claude:
-            return "プロンプトをコピーしました → 貼り付けてください"
-        }
+        "プロンプトをコピーしました → 貼り付けてください"
     }
 
     // MARK: - AI サービス起動
@@ -346,15 +334,7 @@ struct AIConsultationSectionView: View {
     private func openAIService(_ service: AIService) {
         let prompt = listing.toAIConsultationPrompt(otherCandidates: otherCandidates, buyerProfile: buyerProfile)
 
-        // ChatGPT: テキストは URL プリフィル → クリップボードに画像のみ
-        // Gemini/Claude: テキストをクリップボード（画像は別途コピーボタンで対応）
-        if service.supportsURLPrefill {
-            if let img = floorPlanImage {
-                UIPasteboard.general.image = img
-            }
-        } else {
-            UIPasteboard.general.string = prompt
-        }
+        UIPasteboard.general.string = prompt
 
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         withAnimation(.easeInOut(duration: 0.3)) { copiedType = .ai(service) }
