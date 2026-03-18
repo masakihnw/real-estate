@@ -46,6 +46,7 @@ targets:
       path: RealEstateApp/Info.plist
       properties:
         CFBundleDisplayName: "物件情報"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSApplicationCategoryType: "public.app-category.lifestyle"
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:

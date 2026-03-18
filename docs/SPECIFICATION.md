@@ -1175,7 +1175,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 56-d | 買い手条件設定 | ボタンタップ | `BuyerProfileSheet` をシート表示。家族構成・世帯年収・自己資金・借入条件・金利タイプ・月額上限・働き方・子ども予定・住み替え理由・売却/賃貸方針・重視ポイントを入力。UserDefaults に永続化。未設定時はオレンジ色で警告表示、設定済みは緑色で反映済みを表示 |
 | 57 | Markdown コピー | ボタンタップ | `Listing.toMarkdown()` で物件情報を構造化 Markdown に変換し、クリップボードにコピー。Markdown は「事実情報」と「参考情報」を `---` で分離。参考情報にはデータソース・算出根拠を併記。間取り図 URL も含む |
 | 57-b | 間取り図コピー | ボタンタップ | `hasFloorPlanImages` の場合のみ表示。先頭の間取り図画像を `TrimmedImageCache` から取得し `UIPasteboard.general.image` にコピー |
-| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt(otherCandidates:buyerProfile:)` で意思決定型プロンプトを生成。`?q=` URL でプリフィル起動。間取り図がある場合は画像をクリップボードにセット。プロンプトは以下を含む: 買い手条件テーブル、10年後出口試算要求（3シナリオ）、情報源重みづけルール、未確認情報明示ルール、必須出力フォーマット13項目。ロゴ: `logo-chatgpt` |
+| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt(otherCandidates:buyerProfile:)` で意思決定型プロンプトを生成しクリップボードにコピー。`chatgpt://` でアプリ直接起動（未インストール時は `chatgpt.com` にフォールバック）。プロンプトは以下を含む: 買い手条件テーブル、10年後出口試算要求（3シナリオ）、情報源重みづけルール、未確認情報明示ルール、必須出力フォーマット13項目、AIフィードバック要求。ロゴ: `logo-chatgpt` |
 | 59 | Gemini で相談 | ボタンタップ | プロンプトをクリップボードにコピー。`googlegemini://` → `googleapp://robin` → `gemini.google.com/app` の順に `UIApplication.open` の completion handler で成否判定し自動フォールバック。`LSApplicationQueriesSchemes` に `googlegemini` / `googleapp` を登録。ロゴ: `logo-gemini` |
 | 60 | Claude で相談 | ボタンタップ | プロンプトをクリップボードにコピー。`claude://` でアプリを直接起動（未インストール時は `claude.ai/new` にフォールバック）。`LSApplicationQueriesSchemes` に `claude` を登録。ロゴ: `logo-claude` |
 
