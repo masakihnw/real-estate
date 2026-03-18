@@ -31,9 +31,13 @@ struct BuyerProfileSheet: View {
                     profileField("重視する点", text: $profile.priorities, placeholder: "例：1.資産価値 2.通勤利便 3.子育て環境")
                 }
 
+                Section("住まい") {
+                    profileField("現在の住居", text: $profile.currentHousing, placeholder: "例：賃貸 / 持ち家（売却予定）")
+                }
+
                 Section("資金計画") {
-                    profileField("世帯年収", text: $profile.householdIncome, placeholder: "例：1,600万円")
-                    profileField("自己資金", text: $profile.selfFunds, placeholder: "例：2,000万円")
+                    profileField("世帯年収", text: $profile.householdIncome, placeholder: "例：1,200万円")
+                    profileField("自己資金", text: $profile.selfFunds, placeholder: "例：なし（フルローン）")
                     profileField("借入予定額", text: $profile.plannedBorrowing, placeholder: "例：5,000万円")
                     Picker("金利タイプ", selection: $profile.interestType) {
                         ForEach(BuyerProfile.InterestType.allCases, id: \.self) { type in
