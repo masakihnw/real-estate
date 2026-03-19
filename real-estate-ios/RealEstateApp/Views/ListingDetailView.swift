@@ -252,7 +252,7 @@ struct ListingDetailView: View {
             .sheet(isPresented: $showNotesOverlay) {
                 notesOverlaySheet
             }
-            .sheet(item: $selectedSimilarListing) { listing in
+            .fullScreenCover(item: $selectedSimilarListing) { listing in
                 ListingDetailView(listing: listing)
             }
         }

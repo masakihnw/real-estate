@@ -161,7 +161,7 @@ struct ContentView: View {
                 notificationListing = listing
             }
         }
-        .sheet(item: $notificationListing) { listing in
+        .fullScreenCover(item: $notificationListing) { listing in
             ListingDetailView(listing: listing)
         }
         .alert("保存エラー", isPresented: Binding(

@@ -355,7 +355,7 @@ struct ListingListView: View {
                 }
             }
             // 手動更新は無効化。データ更新はフォアグラウンド復帰時の自動更新（15分間隔）のみ。
-            .sheet(item: $selectedListing) { listing in
+            .fullScreenCover(item: $selectedListing) { listing in
                 let index = cachedFiltered.firstIndex(where: { $0.url == listing.url }) ?? 0
                 ListingDetailPagerView(listings: cachedFiltered, initialIndex: index)
             }

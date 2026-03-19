@@ -164,7 +164,7 @@ private struct RootView: View {
                 }
             }
         }
-        .sheet(item: $spotlightListing) { listing in
+        .fullScreenCover(item: $spotlightListing) { listing in
             ListingDetailView(listing: listing)
         }
     }

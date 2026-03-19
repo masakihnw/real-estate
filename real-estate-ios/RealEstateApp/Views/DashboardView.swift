@@ -41,7 +41,7 @@ struct DashboardView: View {
                 .padding()
             }
             .navigationTitle("ダッシュボード")
-            .sheet(item: $selectedListing) { listing in
+            .fullScreenCover(item: $selectedListing) { listing in
                 ListingDetailPagerView(listings: [listing], initialIndex: 0)
             }
             .navigationDestination(item: $quickFilter) { filter in
@@ -414,7 +414,7 @@ struct DashboardFilteredListView: View {
         }
         .navigationTitle(filter.title)
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $selectedListing) { listing in
+        .fullScreenCover(item: $selectedListing) { listing in
             let index = listings.firstIndex(where: { $0.url == listing.url }) ?? 0
             ListingDetailPagerView(listings: listings, initialIndex: index)
         }

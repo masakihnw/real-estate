@@ -1057,7 +1057,7 @@ struct MapTabView: View {
             .sheet(isPresented: $showHazardSheet) {
                 hazardLayerSheet
             }
-            .sheet(item: $selectedListing) { listing in
+            .fullScreenCover(item: $selectedListing) { listing in
                 ListingDetailView(listing: listing)
             }
             .task {
