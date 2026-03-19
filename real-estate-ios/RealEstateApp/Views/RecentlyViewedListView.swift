@@ -64,7 +64,7 @@ struct RecentlyViewedListView: View {
             }
         }
         .navigationTitle("最近見た物件")
-        .sheet(item: $selectedListing) { listing in
+        .fullScreenCover(item: $selectedListing) { listing in
             ListingDetailView(listing: listing)
         }
     }
