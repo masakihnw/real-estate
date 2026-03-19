@@ -24,6 +24,7 @@
 		27560686B331DE043F6A5E92 /* MapTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6454CFFAE2040D4976E28754 /* MapTabView.swift */; };
 		28F22887EDD883FDBE3CF7E7 /* ListingFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9C33FED1E45B0380B14506 /* ListingFilterSheet.swift */; };
 		2D11AB529933918CE0764F4C /* ScrapingConfigMetadata.json in Resources */ = {isa = PBXBuildFile; fileRef = A3C3E97C42AD293A2F0155CC /* ScrapingConfigMetadata.json */; };
+		31843EADB34F3CC8AB02711E /* AIComparisonSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD993B6BC2E415AB3A0ECAE /* AIComparisonSheet.swift */; };
 		333D1519876CF22164A8D178 /* RenovationEstimateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256866F0A410C0ED41438357 /* RenovationEstimateView.swift */; };
 		3BA70468F6A6846C2F7F725B /* ListingFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */; };
 		3C0C85E8D02626AAF025D23C /* RealEstateWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9248D45A75DF9E59DA0339C2 /* RealEstateWidgetBundle.swift */; };
@@ -145,6 +146,7 @@
 		7AB2D6D1A77B7BA38487E021 /* TransactionFilterSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFilterSheet.swift; sourceTree = "<group>"; };
 		7BC96D67CAA5AB454825D2D8 /* Listing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Listing.swift; sourceTree = "<group>"; };
 		7BEA489E06E9E2D64C98F3B0 /* PushNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
+		7DD993B6BC2E415AB3A0ECAE /* AIComparisonSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIComparisonSheet.swift; sourceTree = "<group>"; };
 		8447D247A0B8090F08AAF59D /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		853FEEF66F713933C5CC415D /* LoanCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoanCalculator.swift; sourceTree = "<group>"; };
 		8D4844FC75E2D807C80E501B /* MonthlyPaymentSimulationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyPaymentSimulationView.swift; sourceTree = "<group>"; };
@@ -295,6 +297,7 @@
 		F73FF62B4B31ECEE5E10E9CD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				7DD993B6BC2E415AB3A0ECAE /* AIComparisonSheet.swift */,
 				BE00075D9849BE8F24290CA8 /* AIConsultationSectionView.swift */,
 				580EA895EE4AEC8F233E3680 /* BankComparisonView.swift */,
 				9EC9F60CCFA3A6629C3754CE /* BuyerProfileSheet.swift */,
@@ -440,6 +443,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31843EADB34F3CC8AB02711E /* AIComparisonSheet.swift in Sources */,
 				18E73F7241D94046F79E1E59 /* AIConsultationSectionView.swift in Sources */,
 				F105169E54EE4FDD30D61D04 /* AuthService.swift in Sources */,
 				66EF22D9734F413C7E26F3B2 /* BackgroundRefreshManager.swift in Sources */,
@@ -578,7 +582,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 189;
+				CURRENT_PROJECT_VERSION = 190;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -705,7 +709,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 189;
+				CURRENT_PROJECT_VERSION = 190;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

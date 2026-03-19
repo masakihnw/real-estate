@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-03-18（AI プロンプトを意思決定型に全面改修、買い手条件入力機能追加、Gemini URL スキーム修正）
+> **最終更新**: 2026-03-19（AI 複数物件比較機能追加: ComparisonView に AI 比較ボタン追加、AIComparisonSheet で複数物件の対等比較プロンプト生成、AIService enum を共有化、比較表を Grid に置換して行高統一）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -365,7 +365,7 @@ Sheet として表示。一覧画面から開く場合は `ListingDetailPagerVie
 | ⑫ | **エリア人口動態** | `hasPopulationData` の場合のみ。PopulationSectionView で人口推移・高齢化率推移を表示 |
 | ⑬ | **ハザード情報** | `hasHazardData` の場合のみ。洪水、内水、土砂、高潮、津波、液状化 の各リスクレベル |
 | ⑬-b | **近隣の成約事例** | 同一区（`Listing.extractWardFromAddress`）の成約実績を最大5件表示。`.task` で `FetchDescriptor`（`fetchLimit: 5`、区名プレディケート＋取引時期ソート）による遅延フェッチ。各件は `TransactionDetailView` への NavigationLink |
-| ⑭ | **AI 相談** | `AIConsultationSectionView` で物件情報を生成 AI に渡して購入判断の壁打ちが可能。**買い手条件**（`BuyerProfile`）を UserDefaults に保存し、プロンプトに自動反映。プロンプトは「調査メモ型」から「意思決定型」に全面改修: 10年後出口試算（楽観/中立/悲観3シナリオ）、妥当価格レンジ・買付上限価格の提示、情報源の重みづけ（一次>二次>口コミ）、未確認情報の明示化を必須化。必須出力フォーマット13項目を定義。ChatGPT は `?q=` パラメータでプロンプトプリフィル＋アプリ/Web 自動起動。Gemini は `googlegemini://` → `googleapp://robin` → Web URL の順に試行。Claude は `claude://` → Web URL。各ボタンにサービスロゴアイコンを表示 |
+| ⑭ | **AI 相談** | `AIConsultationSectionView` で物件情報を生成 AI に渡して購入判断の壁打ちが可能。**買い手条件**（`BuyerProfile`）を UserDefaults に保存し、プロンプトに自動反映。プロンプトは「調査メモ型」から「意思決定型」に全面改修: **7〜13年（中心10年）保有前提**で出口試算は**7年・10年・13年の3時点**×楽観/中立/悲観3シナリオ（前提条件明示: 売却費率5.5%・金利上昇シナリオ・初期コスト込み）、妥当価格レンジ・買付上限価格の提示、**価格妥当性は区中央値比較と同駅同条件比較（築年±8年・面積±10㎡）の2軸**で評価、情報源の重みづけ（一次>二次>口コミ）、未確認情報の明示化を必須化、**家族計画と保有年数の整合チェック**を必須化、**ハザードは自治体公式ハザードマップでの上書き確認を厳格化**、**比較物件も相談対象と同等のフルリサーチ**を実施。必須出力フォーマット13項目を定義。ChatGPT は `?q=` パラメータでプロンプトプリフィル＋アプリ/Web 自動起動。Gemini は `googlegemini://` → `googleapp://robin` → Web URL の順に試行。Claude は `claude://` → Web URL。各ボタンにサービスロゴアイコンを表示 |
 | ⑮ | **外部リンク** | SUUMO / HOME'S 詳細ページ、住まいサーフィンページ。掲載終了時は掲載終了メッセージに置換 |
 
 ##### 月額支払いシミュレーション 計算ロジック
@@ -415,7 +415,8 @@ n = 返済回数（月）= 返済年数 × 12
 | `LoanCalculator.swift` | 計算ロジック。`monthlyPayment(principal:rate:years:)` / `totalRepayment(principal:rate:years:)`。`simulate(listing:)` は listing URL + 主要パラメータでセッション内キャッシュし、body 再評価時の再計算を回避 |
 | `MonthlyPaymentSimulationView.swift` | 動的フォーム付き UI |
 | `ListingDetailView.swift` | 物件詳細のメイン画面。body を軽量化するため、各セクションを @ViewBuilder の private var に切り出している（delistedBanner, addressSection, notesCompactButton, notesOverlaySheet, commentSection, propertyImagesGallery, propertyInfoSection, commuteSection, hazardSection, sumaiSurfinSection, surroundingPropertiesSection, priceJudgmentsSection, similarListingsSection, externalLinksSection 等）。AI 相談セクション（`AIConsultationSectionView`）を外部リンクの直前に配置。類似物件（similarListings）と近隣成約事例（nearbyTransactions）は `@State` + `.task` で遅延フェッチ（`FetchDescriptor` + `fetchLimit` で必要最小限のデータのみ取得。全件ロードの `@Query` を廃止しメモリ・CPU を大幅削減）。`ScrollViewReader` でラップし、ツールバー直下に `sectionNavBar`（横スクロールチップ）を `.safeAreaInset(edge: .top)` で表示。各セクションに `.id()` を付与し、`sectionChip` タップで該当セクションへスクロールジャンプ。内見メモ（コメント＋写真）は `notesCompactButton`（アイコン表示）をタップすると `.sheet` で `notesOverlaySheet`（コメントセクション＋ PhotoSectionView）をオーバーレイ表示。`propertyImagesGallery` は間取り図＋SUUMO物件写真を統合した横スクロールギャラリー（`GalleryThumbnailView` で白余白トリミング済みサムネイル表示）。`GalleryFullScreenView` は横スワイプ対応フルスクリーン表示（`TabView(.page)` によるページング・前後画像先読み・白余白トリミング・下部ミニマップサムネイルストリップで全画像一覧表示＋タップジャンプ・ページインジケーター表示・ツールバー右上にコピーボタン常設）。`GalleryThumbnailView` / `GalleryFullScreenView` ともに長押し `.contextMenu` で「画像をコピー」「共有…」操作が可能。コピー完了時にオーバーレイフィードバック表示。`UIActivityViewController.share(image:)` 拡張で共有シートを起動 |
-| `AIConsultationSectionView.swift` | AI 相談セクション。物件情報の Markdown コピーおよび ChatGPT / Gemini / Claude への相談機能を提供。`BuyerProfile` の設定ボタンを表示（未設定時はオレンジ警告、設定済みは緑チェック）。`toAIConsultationPrompt(otherCandidates:buyerProfile:)` で意思決定型プロンプトを生成。必須出力フォーマット13項目（結論・妥当価格・買付上限・10年後出口試算・比較・仲介への質問・未確認事項等）を定義。情報源の重みづけ（一次>二次>口コミ）と未確認情報の明示ルールを含む。住まいサーフィンのシミュレーションデータ（10年後3シナリオ・ローン残高）がある場合はプロンプトに自動追記。Gemini アプリ起動は `googlegemini://` → `googleapp://robin` → Web の順に `UIApplication.open` の completion handler で成否判定し自動フォールバック |
+| `AIConsultationSectionView.swift` | AI 相談セクション + `AIService` enum（トップレベルで定義、`AIComparisonSheet` と共有）。物件情報の Markdown コピーおよび ChatGPT / Gemini / Claude への相談機能を提供。`BuyerProfile` の設定ボタンを表示（未設定時はオレンジ警告、設定済みは緑チェック）。`toAIConsultationPrompt(otherCandidates:buyerProfile:)` で意思決定型プロンプトを生成。`AIService` enum に `openApp(prompt:)` メソッドを定義し、URL スキーム試行＋Web フォールバックのロジックを共通化。Gemini は `googlegemini://` → `googleapp://robin` → Web の順にフォールバック |
+| `AIComparisonSheet.swift` | 複数物件の AI 比較シート。ComparisonView のツールバーから表示。選択された全物件の一覧を表示し、`Listing.toAIComparisonPrompt(listings:buyerProfile:)` で対等比較プロンプトを生成。買い手条件設定・Markdown コピー・AIサービス選択（ChatGPT/Gemini/Claude）の UI を提供 |
 | `BuyerProfile.swift` | AI 相談プロンプトに含める「買い手条件」モデル。家族構成・世帯年収・自己資金・借入条件・金利タイプ・月額上限・働き方・子ども予定・住み替え理由・売却/賃貸方針・重視ポイント。UserDefaults に JSON で永続化。`toMarkdownSection()` でプロンプト用 Markdown テーブルを生成 |
 | `BuyerProfileSheet.swift` | 買い手条件の入力・編集シート。Form ベースの UI。「家族・ライフスタイル」「資金計画」「10年後の計画」の3セクション構成。NavigationStack + キャンセル/保存ボタン |
 | `ListingDetailPagerView.swift` | 全物件スワイプページャー。現在の1物件のみ `ListingDetailView` を生成し、横スワイプ（`DragGesture` + 方向判定で ScrollView と競合回避）で前後の物件に切り替え。`.id()` で物件切替時にビューを再生成。TabView の全件 ForEach を廃止しメモリ使用量を最小化。画面下部にフローティングページインジケーター（`.regularMaterial` + `Capsule` で視認性確保）。一覧画面の `.sheet(item:)` から `cachedFiltered` とタップされた物件のインデックスを受け取って初期表示 |
@@ -592,8 +593,9 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 #### 3.3.7 物件比較画面（ComparisonView）
 
 - 2〜4件を横並びで比較
-- 横スクロールテーブル形式
+- 横スクロール `Grid` レイアウト（行高が全列で自動同期）
 - 比較項目: 価格、間取り、面積、築年、徒歩、階数、総戸数、権利形態、住まいサーフィン評価
+- **AI で比較**: ツールバーの「AI で比較」ボタンで `AIComparisonSheet` を表示。選択した全物件の詳細情報を含む比較プロンプトを生成し、ChatGPT / Gemini / Claude で対等比較・ランキングを依頼
 - **PDF エクスポート（p6-03）**: ツールバーの「PDF出力」ボタンで A4 比較シートを生成し、UIActivityViewController で共有（ファイル保存・AirDrop・メール等）
 
 #### 3.3.8 内見写真（PhotoSectionView）— 内見メモオーバーレイ内に表示
@@ -1175,7 +1177,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 56-d | 買い手条件設定 | ボタンタップ | `BuyerProfileSheet` をシート表示。家族構成・世帯年収・自己資金・借入条件・金利タイプ・月額上限・働き方・子ども予定・住み替え理由・売却/賃貸方針・重視ポイントを入力。UserDefaults に永続化。未設定時はオレンジ色で警告表示、設定済みは緑色で反映済みを表示 |
 | 57 | Markdown コピー | ボタンタップ | `Listing.toMarkdown()` で物件情報を構造化 Markdown に変換し、クリップボードにコピー。Markdown は「事実情報」と「参考情報」を `---` で分離。参考情報にはデータソース・算出根拠を併記。間取り図 URL も含む |
 | 57-b | 間取り図コピー | ボタンタップ | `hasFloorPlanImages` の場合のみ表示。先頭の間取り図画像を `TrimmedImageCache` から取得し `UIPasteboard.general.image` にコピー |
-| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt(otherCandidates:buyerProfile:)` で意思決定型プロンプトを生成しクリップボードにコピー。`chatgpt://` でアプリ直接起動（未インストール時は `chatgpt.com` にフォールバック）。プロンプトは以下を含む: 買い手条件テーブル、10年後出口試算要求（3シナリオ）、情報源重みづけルール、未確認情報明示ルール、必須出力フォーマット13項目、AIフィードバック要求。ロゴ: `logo-chatgpt` |
+| 58 | ChatGPT で相談 | ボタンタップ | `toAIConsultationPrompt(otherCandidates:buyerProfile:)` で意思決定型プロンプトを生成しクリップボードにコピー。`chatgpt://` でアプリ直接起動（未インストール時は `chatgpt.com` にフォールバック）。プロンプトは以下を含む: 買い手条件テーブル、出口試算要求（7年・10年・13年×3シナリオ＋前提条件明示）、価格妥当性2軸評価（区中央値・同駅同条件±8年±10㎡）、家族計画整合チェック、ハザード自治体上書き確認、比較物件フルリサーチ、情報源重みづけルール、未確認情報明示ルール、必須出力フォーマット13項目、AIフィードバック要求。ロゴ: `logo-chatgpt` |
 | 59 | Gemini で相談 | ボタンタップ | プロンプトをクリップボードにコピー。`googlegemini://` → `googleapp://robin` → `gemini.google.com/app` の順に `UIApplication.open` の completion handler で成否判定し自動フォールバック。`LSApplicationQueriesSchemes` に `googlegemini` / `googleapp` を登録。ロゴ: `logo-gemini` |
 | 60 | Claude で相談 | ボタンタップ | プロンプトをクリップボードにコピー。`claude://` でアプリを直接起動（未インストール時は `claude.ai/new` にフォールバック）。`LSApplicationQueriesSchemes` に `claude` を登録。ロゴ: `logo-claude` |
 
@@ -1193,13 +1195,30 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
 | 1 | 閉じる | ツールバーボタン | Sheet を閉じる |
-| 2 | PDF 出力 | ツールバーボタン | A4 比較シートを PDF 生成し、共有シートで保存・共有 |
-| 3 | 横スクロール比較 | 横スワイプ | 2〜4件の物件を横並びテーブルで比較 |
-| 4 | 基本情報比較 | 閲覧 | 価格、間取り、面積、築年、徒歩、階数、総戸数、権利形態 |
-| 5 | 住まいサーフィン評価比較 | 閲覧 | 儲かる確率、値上がり率、購入判定（データがある場合） |
-| 6 | 成約相場比較 | 閲覧 | 相場データがある物件の比較（データがある場合） |
-| 7 | 人口動態比較 | 閲覧 | 人口データがある物件の比較（データがある場合） |
-| 8 | 件数不足表示 | 自動 | 2件未満の場合に ContentUnavailableView を表示 |
+| 2 | AI で比較 | ツールバーボタン | AIComparisonSheet を表示。選択した全物件の詳細情報を含む比較プロンプトを生成し、ChatGPT / Gemini / Claude で比較評価を依頼できる |
+| 3 | PDF 出力 | ツールバーボタン | A4 比較シートを PDF 生成し、共有シートで保存・共有 |
+| 4 | 横スクロール比較 | 横スワイプ | 2〜4件の物件を横並びテーブルで比較。Grid レイアウトにより行高が全列で自動同期 |
+| 5 | 基本情報比較 | 閲覧 | 価格、間取り、面積、築年、徒歩、階数、総戸数、権利形態 |
+| 6 | 住まいサーフィン評価比較 | 閲覧 | 儲かる確率、値上がり率、購入判定（データがある場合） |
+| 7 | 成約相場比較 | 閲覧 | 相場データがある物件の比較（データがある場合） |
+| 8 | 人口動態比較 | 閲覧 | 人口データがある物件の比較（データがある場合） |
+| 9 | 件数不足表示 | 自動 | 2件未満の場合に ContentUnavailableView を表示 |
+
+#### 4.7.1 AI 比較シート（AIComparisonSheet）
+
+ComparisonView のツールバー「AI で比較」ボタンから表示されるシート。選択した複数物件を対等に比較する AI プロンプトを生成し、生成 AI サービスに渡す。
+
+| # | 機能 | 操作 | 詳細 |
+|---|------|------|------|
+| 1 | 比較対象一覧 | 閲覧 | 選択された物件の名前・価格・面積・最寄駅を番号付きリストで表示 |
+| 2 | 買い手条件設定 | ボタンタップ | BuyerProfileSheet を表示。設定済みの場合はプロンプトに自動反映 |
+| 3 | Markdown コピー | ボタンタップ | 全物件の物件情報 Markdown をクリップボードにコピー（プロンプト指示なし） |
+| 4 | 間取り図まとめコピー | ボタンタップ | 間取り図がある物件の間取り図画像をまとめて `UIPasteboard.general.images` にコピー。シート表示時に非同期で各物件の先頭間取り図を `TrimmedImageCache` 経由で取得。読み込み中は ProgressView を表示。プロンプト貼り付け後にAIアプリに戻って画像を貼り付ける運用。間取り図がある物件がない場合はボタン非表示 |
+| 5 | ChatGPT で比較 | ボタンタップ | `Listing.toAIComparisonPrompt(listings:buyerProfile:)` で全物件対等比較プロンプトを生成しクリップボードにコピー、ChatGPT を起動 |
+| 6 | Gemini で比較 | ボタンタップ | 同上、Gemini を起動 |
+| 7 | Claude で比較 | ボタンタップ | 同上、Claude を起動 |
+
+**AI 比較プロンプトの構成**: 全物件を対等に扱い、各物件の `toMarkdown()` フル情報 + 住まいサーフィンシミュレーションデータを含む。出力フォーマットは総合ランキング・横断比較表（価格妥当性・資産性・生活利便性・リスク・総合評価）・各物件個別分析（妥当価格レンジ・買付上限・出口試算3シナリオ）・物件間の決定的差異・仲介確認質問・未確認事項。自律リサーチ指示（各物件のマンション名・住所・成約相場・ハザード検索）を含む。
 
 ---
 
@@ -1406,7 +1425,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | お気に入り | 22 + 3 = 25 |
 | フィルタシート | 21 |
 | 物件詳細 | 71 |
-| 物件比較 | 8 |
+| 物件比較 | 15 |
 | 地図 | 32 |
 | 設定 | 20 |
 | スクレイピング条件 | 15 |

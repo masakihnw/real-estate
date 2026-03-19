@@ -9,6 +9,85 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - AIService（複数画面で共有）
+
+enum AIService: String, CaseIterable {
+    case chatgpt = "ChatGPT"
+    case gemini = "Gemini"
+    case claude = "Claude"
+
+    var logoAsset: String {
+        switch self {
+        case .chatgpt: return "logo-chatgpt"
+        case .gemini: return "logo-gemini"
+        case .claude: return "logo-claude"
+        }
+    }
+
+    var fallbackIcon: String {
+        switch self {
+        case .chatgpt: return "bubble.left.and.text.bubble.right"
+        case .gemini: return "sparkles"
+        case .claude: return "brain.head.profile"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .chatgpt: return Color(red: 0.07, green: 0.66, blue: 0.56)
+        case .gemini: return Color(red: 0.26, green: 0.52, blue: 0.96)
+        case .claude: return Color(red: 0.85, green: 0.55, blue: 0.35)
+        }
+    }
+
+    var supportsURLPrefill: Bool { false }
+
+    var appSchemeURLs: [URL] {
+        switch self {
+        case .chatgpt: return [URL(string: "chatgpt://")!]
+        case .gemini: return [URL(string: "googlegemini://")!, URL(string: "googleapp://robin")!]
+        case .claude: return [URL(string: "claude://")!]
+        }
+    }
+
+    var webURL: URL {
+        switch self {
+        case .chatgpt: return URL(string: "https://chatgpt.com/")!
+        case .gemini: return URL(string: "https://gemini.google.com/app")!
+        case .claude: return URL(string: "https://claude.ai/new")!
+        }
+    }
+
+    func prefillURL(prompt: String) -> URL? {
+        guard supportsURLPrefill else { return nil }
+        guard let encoded = prompt.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return nil }
+        return URL(string: "https://chatgpt.com/?q=\(encoded)")
+    }
+
+    /// アプリ URL スキーム候補を順に試行し、全て失敗なら Web URL を開く
+    func openApp(prompt: String) {
+        if supportsURLPrefill, let url = prefillURL(prompt: prompt) {
+            UIApplication.shared.open(url)
+            return
+        }
+        Self.tryOpenURL(candidates: appSchemeURLs, index: 0, fallback: webURL)
+    }
+
+    private static func tryOpenURL(candidates: [URL], index: Int, fallback: URL) {
+        guard index < candidates.count else {
+            UIApplication.shared.open(fallback)
+            return
+        }
+        UIApplication.shared.open(candidates[index], options: [:]) { success in
+            if !success {
+                tryOpenURL(candidates: candidates, index: index + 1, fallback: fallback)
+            }
+        }
+    }
+}
+
+// MARK: - AIConsultationSectionView
+
 struct AIConsultationSectionView: View {
     let listing: Listing
     @Query(filter: #Predicate<Listing> { $0.isLiked == true }) private var likedListings: [Listing]
@@ -21,70 +100,6 @@ struct AIConsultationSectionView: View {
     private enum CopiedType: Equatable {
         case markdown
         case ai(AIService)
-    }
-
-    enum AIService: String, CaseIterable {
-        case chatgpt = "ChatGPT"
-        case gemini = "Gemini"
-        case claude = "Claude"
-
-        var logoAsset: String {
-            switch self {
-            case .chatgpt: return "logo-chatgpt"
-            case .gemini: return "logo-gemini"
-            case .claude: return "logo-claude"
-            }
-        }
-
-        var fallbackIcon: String {
-            switch self {
-            case .chatgpt: return "bubble.left.and.text.bubble.right"
-            case .gemini: return "sparkles"
-            case .claude: return "brain.head.profile"
-            }
-        }
-
-        var color: Color {
-            switch self {
-            case .chatgpt: return Color(red: 0.07, green: 0.66, blue: 0.56)
-            case .gemini: return Color(red: 0.26, green: 0.52, blue: 0.96)
-            case .claude: return Color(red: 0.85, green: 0.55, blue: 0.35)
-            }
-        }
-
-        /// プロンプトが短い場合のみ ChatGPT の `?q=` パラメータでプリフィル可能。
-        /// 通常のプロンプトは長文のため、全サービスでクリップボード経由を使用。
-        var supportsURLPrefill: Bool { false }
-
-        /// アプリ固有の URL スキーム候補（優先度順に試行）
-        var appSchemeURLs: [URL] {
-            switch self {
-            case .chatgpt: return [
-                URL(string: "chatgpt://")!,
-            ]
-            case .gemini: return [
-                URL(string: "googlegemini://")!,
-                URL(string: "googleapp://robin")!,
-            ]
-            case .claude: return [
-                URL(string: "claude://")!,
-            ]
-            }
-        }
-
-        var webURL: URL {
-            switch self {
-            case .chatgpt: return URL(string: "https://chatgpt.com/")!
-            case .gemini: return URL(string: "https://gemini.google.com/app")!
-            case .claude: return URL(string: "https://claude.ai/new")!
-            }
-        }
-
-        func prefillURL(prompt: String) -> URL? {
-            guard supportsURLPrefill else { return nil }
-            guard let encoded = prompt.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return nil }
-            return URL(string: "https://chatgpt.com/?q=\(encoded)")
-        }
     }
 
     private var otherCandidates: [Listing] {
@@ -340,36 +355,12 @@ struct AIConsultationSectionView: View {
         withAnimation(.easeInOut(duration: 0.3)) { copiedType = .ai(service) }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            openServiceApp(service, prompt: prompt)
+            service.openApp(prompt: prompt)
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             withAnimation(.easeInOut(duration: 0.3)) {
                 if copiedType == .ai(service) { copiedType = nil }
-            }
-        }
-    }
-
-    /// アプリ URL スキーム候補を順に試行し、全て失敗なら Web URL を開く
-    private func openServiceApp(_ service: AIService, prompt: String) {
-        if service.supportsURLPrefill, let prefillURL = service.prefillURL(prompt: prompt) {
-            UIApplication.shared.open(prefillURL)
-            return
-        }
-
-        let candidates = service.appSchemeURLs
-        tryOpenURL(candidates: candidates, index: 0, fallback: service.webURL)
-    }
-
-    private func tryOpenURL(candidates: [URL], index: Int, fallback: URL) {
-        guard index < candidates.count else {
-            UIApplication.shared.open(fallback)
-            return
-        }
-        let url = candidates[index]
-        UIApplication.shared.open(url, options: [:]) { success in
-            if !success {
-                tryOpenURL(candidates: candidates, index: index + 1, fallback: fallback)
             }
         }
     }
