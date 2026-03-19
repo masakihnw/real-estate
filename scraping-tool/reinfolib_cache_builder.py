@@ -7,7 +7,7 @@
 出力:
   data/reinfolib_prices.json          — 区別・駅別の直近m²単価中央値
   data/reinfolib_trends.json          — 区別の四半期別m²単価推移（過去5年）
-  data/reinfolib_raw_transactions.json — 直近4四半期の個別取引レコード
+  data/reinfolib_raw_transactions.json — 直近8四半期の個別取引レコード
                                          （段階的マッチング・同一マンション事例用）
 
 使い方:
@@ -220,6 +220,28 @@ def normalize_text(text: str) -> str:
     return text.translate(_FULLWIDTH_TO_HALFWIDTH).strip()
 
 
+def parse_total_floor_area(item: dict) -> Optional[float]:
+    """延床面積（TotalFloorArea）を数値に変換。"""
+    try:
+        val = item.get("TotalFloorArea")
+        if val:
+            return float(str(val).replace(",", ""))
+    except (ValueError, TypeError):
+        pass
+    return None
+
+
+def parse_ratio(item: dict, key: str) -> Optional[float]:
+    """建蔽率 / 容積率 などの比率文字列を数値に変換。"""
+    try:
+        val = item.get(key)
+        if val:
+            return float(str(val).replace(",", ""))
+    except (ValueError, TypeError):
+        pass
+    return None
+
+
 def parse_raw_transaction(
     item: dict,
     ward_name: str,
@@ -240,7 +262,11 @@ def parse_raw_transaction(
     structure_raw = item.get("Structure", "")
     structure = normalize_text(structure_raw) if structure_raw else ""
 
-    return {
+    total_floor_area = parse_total_floor_area(item)
+    coverage_ratio = parse_ratio(item, "CoverageRatio")
+    floor_area_ratio = parse_ratio(item, "FloorAreaRatio")
+
+    rec: dict = {
         "ward": ward_name,
         "ward_code": ward_code,
         "district_name": item.get("DistrictName", ""),
@@ -253,6 +279,14 @@ def parse_raw_transaction(
         "structure": structure,
         "period": period_label,
     }
+    if total_floor_area is not None:
+        rec["total_floor_area"] = total_floor_area
+    if coverage_ratio is not None:
+        rec["coverage_ratio"] = coverage_ratio
+    if floor_area_ratio is not None:
+        rec["floor_area_ratio"] = floor_area_ratio
+
+    return rec
 
 
 # ---------------------------------------------------------------------------
@@ -265,7 +299,7 @@ def build_prices_and_trends(api_key: str) -> Tuple[dict, dict, dict]:
 
     prices:           区別の直近相場（enricher 用）
     trends:           区別の四半期推移（iOS チャート用）
-    raw_transactions: 直近4四半期の個別取引レコード（段階的マッチング・同一棟事例用）
+    raw_transactions: 直近8四半期の個別取引レコード（段階的マッチング・同一棟事例用）
     """
     periods = get_target_periods()
     print(f"対象期間: {len(periods)} 四半期", file=sys.stderr)
@@ -274,11 +308,12 @@ def build_prices_and_trends(api_key: str) -> Tuple[dict, dict, dict]:
     all_data: Dict[str, Dict[str, List[float]]] = {}
     # ward_code → quarter_label → sample_count
     sample_counts: Dict[str, Dict[str, int]] = {}
-    # ward_code → quarter_label → [raw API items] (直近4四半期のみ)
+    # ward_code → quarter_label → [raw API items] (直近8四半期)
     all_raw_items: Dict[str, Dict[str, List[dict]]] = {}
 
-    # 直近4四半期のラベルを先に計算（生データ保存対象の判定用）
-    recent_periods = periods[-4:] if len(periods) >= 4 else periods
+    # 直近8四半期のラベルを先に計算（生データ保存対象の判定用）
+    RAW_TX_QUARTERS = 8
+    recent_periods = periods[-RAW_TX_QUARTERS:] if len(periods) >= RAW_TX_QUARTERS else periods
     recent_qlabels_set = set(quarter_label(y, q) for y, q in recent_periods)
 
     for ward_code in TOKYO_23_WARD_CODES:

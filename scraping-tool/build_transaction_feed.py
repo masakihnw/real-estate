@@ -46,6 +46,7 @@ from reinfolib_cache_builder import (
     normalize_text,
     parse_area,
     parse_building_year,
+    parse_total_floor_area,
     parse_trade_price,
     PRICE_ENDPOINT,
 )
@@ -389,6 +390,14 @@ def estimate_building_name(
 # 7. レコード変換・グルーピング
 # ---------------------------------------------------------------------------
 
+def total_floor_area_bucket(tfa: Optional[float]) -> Optional[str]:
+    """延床面積を 1000m² 単位のバケットに分類。同一建物グルーピング用。"""
+    if tfa is None or tfa <= 0:
+        return None
+    bucket = int(tfa / 1000) * 1000
+    return f"{bucket}-{bucket + 1000}"
+
+
 def make_transaction_id(item: dict, city_code: str, period: str) -> str:
     """取引レコードのユニーク ID を生成。"""
     raw = f"{city_code}-{item.get('DistrictCode','')}-{item.get('BuildingYear','')}-{period}-{item.get('TradePrice','')}-{item.get('Area','')}-{item.get('FloorPlan','')}"
@@ -438,8 +447,18 @@ def build_transaction_record(
         if result:
             nearest_station, estimated_walk_min = result
 
-    # 推定建物グループ ID
-    building_group_id = f"{district_code}-{built_year}" if district_code and built_year else None
+    # 推定建物グループ ID（district_code + 築年 + 構造 + 延床面積バケット）
+    tfa = parse_total_floor_area(item)
+    tfa_bkt = total_floor_area_bucket(tfa)
+    if district_code and built_year:
+        parts = [district_code, str(built_year)]
+        if structure:
+            parts.append(structure)
+        if tfa_bkt:
+            parts.append(tfa_bkt)
+        building_group_id = "-".join(parts)
+    else:
+        building_group_id = None
 
     # 物件名推定
     estimated_name = None

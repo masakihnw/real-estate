@@ -5,7 +5,7 @@
 reinfolib_cache_builder.py / fetch_station_prices.py で事前に構築した
   data/reinfolib_prices.json          — 区別m²単価中央値
   data/reinfolib_trends.json          — 区別四半期推移
-  data/reinfolib_raw_transactions.json — 直近4四半期の個別取引レコード
+  data/reinfolib_raw_transactions.json — 直近8四半期の個別取引レコード
   data/station_price_history.json     — 駅別 年次/四半期 m²単価推移
 を参照し、各物件に以下のフィールドを追加する:
 
@@ -313,10 +313,15 @@ def find_same_building_transactions(
     district_name: Optional[str],
     built_year: Optional[int],
     structure: Optional[str],
+    total_floor_area: Optional[float] = None,
 ) -> List[dict]:
     """
-    同一マンション候補の成約事例を抽出。
-    条件: 同区 + 同町名 + 築年±1年 + 同構造（構造不明時はスキップ）
+    同一マンション候補の成約事例を抽出し、信頼度スコアを付与。
+
+    マッチ条件と信頼度:
+      high:   同区 + 同町名 + 築年±1年 + 同構造 + 延床面積±20%
+      medium: 同区 + 同町名 + 築年±1年 + 同構造（延床面積不明 or 片方欠損）
+      low:    同区 + 同町名 + 築年±1年（構造不明）
     """
     if not district_name or not built_year:
         return []
@@ -330,13 +335,41 @@ def find_same_building_transactions(
         tx_by = tx.get("building_year")
         if tx_by is None or abs(tx_by - built_year) > 1:
             continue
-        # 構造が判明している場合のみ照合（片方不明なら通す）
+
+        confidence = "low"
+
+        structure_matched = False
         if structure and tx.get("structure"):
             if normalize_text(structure).upper() != normalize_text(tx["structure"]).upper():
                 continue
-        results.append(tx)
+            structure_matched = True
+        elif structure or tx.get("structure"):
+            structure_matched = False
+        else:
+            structure_matched = False
 
-    # 新しい取引を先に表示
+        if structure_matched:
+            confidence = "medium"
+
+            tx_tfa = tx.get("total_floor_area")
+            if total_floor_area and tx_tfa:
+                if abs(tx_tfa - total_floor_area) / total_floor_area <= 0.20:
+                    confidence = "high"
+                else:
+                    continue
+            elif structure_matched:
+                confidence = "medium"
+
+        tx_with_confidence = dict(tx)
+        tx_with_confidence["confidence"] = confidence
+        results.append(tx_with_confidence)
+
+    results.sort(
+        key=lambda x: (
+            {"high": 0, "medium": 1, "low": 2}.get(x.get("confidence", "low"), 3),
+            x.get("period", ""),
+        ),
+    )
     results.sort(key=lambda x: x.get("period", ""), reverse=True)
     return results
 
@@ -344,13 +377,15 @@ def find_same_building_transactions(
 def format_same_building_tx(tx: dict) -> dict:
     """同一マンション事例を iOS 表示用に整形。"""
     trade_price = tx.get("trade_price", 0)
-    return {
+    result = {
         "period": tx.get("period", ""),
         "floor_plan": tx.get("floor_plan", ""),
         "area": tx.get("area", 0),
         "trade_price_man": round(trade_price / 10000) if trade_price else 0,
         "m2_price": tx.get("m2_price", 0),
+        "confidence": tx.get("confidence", "low"),
     }
+    return result
 
 
 # ---------------------------------------------------------------------------

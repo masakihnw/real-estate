@@ -91,6 +91,7 @@ cp "$INPUT" "$WORK_DIR/track_cm.json"  # commute
 cp "$INPUT" "$WORK_DIR/track_ri.json"  # reinfolib
 cp "$INPUT" "$WORK_DIR/track_es.json"  # estat
 cp "$INPUT" "$WORK_DIR/track_gm.json"  # commute_gmaps
+cp "$INPUT" "$WORK_DIR/track_mr.json"  # mansion_review
 
 # Track PREP: build_units_cache → merge_detail_cache
 (
@@ -182,10 +183,24 @@ ES_PID=$!
 ) &
 GM_PID=$!
 
-echo "全 enricher 起動完了 (PID: PREP=$PREP_PID SS=$SS_PID HZ=$HZ_PID CM=$CM_PID RI=$RI_PID ES=$ES_PID GM=$GM_PID)" >&2
+# Track G: mansion_review_scraper
+(
+    _t=$(date +%s)
+    if [ "$PROPERTY_TYPE" = "chuko" ]; then
+        python3 mansion_review_scraper.py \
+            --input "$WORK_DIR/track_mr.json" \
+            --output "$WORK_DIR/track_mr.json" || true
+    else
+        echo "mansion_review: 新築はスキップ" >&2
+    fi
+    echo "[TIMING] mansion_review: $(( ($(date +%s) - _t) ))s" >&2
+) &
+MR_PID=$!
+
+echo "全 enricher 起動完了 (PID: PREP=$PREP_PID SS=$SS_PID HZ=$HZ_PID CM=$CM_PID RI=$RI_PID ES=$ES_PID GM=$GM_PID MR=$MR_PID)" >&2
 
 # 全プロセス完了待ち (各プロセスの exit code は無視)
-for pid in $PREP_PID $SS_PID $HZ_PID $CM_PID $RI_PID $ES_PID $GM_PID; do
+for pid in $PREP_PID $SS_PID $HZ_PID $CM_PID $RI_PID $ES_PID $GM_PID $MR_PID; do
     wait "$pid" 2>/dev/null || true
 done
 
@@ -206,6 +221,7 @@ python3 scripts/merge_enrichments.py \
         "$WORK_DIR/track_ri.json" \
         "$WORK_DIR/track_es.json" \
         "$WORK_DIR/track_gm.json" \
+        "$WORK_DIR/track_mr.json" \
     --output "$INPUT"
 
 echo "[TIMING] merge: $(( ($(date +%s) - _t) ))s" >&2

@@ -363,6 +363,9 @@ struct MarketDataSectionView: View {
         _ tx: Listing.MarketData.SameBuildingTransaction
     ) -> some View {
         HStack(spacing: 8) {
+            // 信頼度バッジ
+            confidenceBadge(tx.confidence)
+
             // 時期
             Text(tx.periodDisplay)
                 .font(.caption2)
@@ -394,6 +397,22 @@ struct MarketDataSectionView: View {
             RoundedRectangle(cornerRadius: 4, style: .continuous)
                 .fill(Color.orange.opacity(0.03))
         )
+    }
+
+    @ViewBuilder
+    private func confidenceBadge(_ confidence: String) -> some View {
+        let (label, color): (String, Color) = switch confidence {
+        case "high": ("高", .green)
+        case "medium": ("中", .orange)
+        default: ("低", .gray)
+        }
+        Text(label)
+            .font(.system(size: 8, weight: .bold))
+            .foregroundStyle(color)
+            .padding(.horizontal, 4)
+            .padding(.vertical, 1)
+            .background(color.opacity(0.12))
+            .clipShape(RoundedRectangle(cornerRadius: 3))
     }
 
     // MARK: - 駅レベル比較
