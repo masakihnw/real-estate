@@ -31,13 +31,24 @@ jobs:
         working-directory: real-estate-ios
         run: xcodebuild -resolvePackageDependencies -project RealEstateApp.xcodeproj -scheme RealEstateApp
 
-      - name: Build
+      - name: Build (iOS)
         working-directory: real-estate-ios
         run: |
           xcodebuild build \
             -project RealEstateApp.xcodeproj \
             -scheme RealEstateApp \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty || true
+
+      - name: Build (Mac Catalyst)
+        working-directory: real-estate-ios
+        run: |
+          xcodebuild build \
+            -project RealEstateApp.xcodeproj \
+            -scheme RealEstateApp \
+            -destination 'platform=macOS,variant=Mac Catalyst' \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             | xcpretty || true

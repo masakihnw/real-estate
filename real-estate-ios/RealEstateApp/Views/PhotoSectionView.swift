@@ -57,15 +57,17 @@ struct PhotoSectionView: View {
                     }
                     .accessibilityLabel("カメラロールから写真を追加")
 
-                    // カメラ起動
-                    Button {
-                        showCamera = true
-                    } label: {
-                        Image(systemName: "camera")
-                            .font(.body)
-                            .foregroundStyle(Color.accentColor)
+                    // カメラ起動（Mac Catalyst ではカメラ非対応のため非表示）
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                        Button {
+                            showCamera = true
+                        } label: {
+                            Image(systemName: "camera")
+                                .font(.body)
+                                .foregroundStyle(Color.accentColor)
+                        }
+                        .accessibilityLabel("カメラで撮影")
                     }
-                    .accessibilityLabel("カメラで撮影")
                 }
             }
 

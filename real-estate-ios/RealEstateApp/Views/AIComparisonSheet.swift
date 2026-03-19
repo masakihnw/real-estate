@@ -14,7 +14,7 @@ struct AIComparisonSheet: View {
     @State private var copiedType: CopiedType?
     @State private var showBuyerProfileSheet = false
     @State private var buyerProfile: BuyerProfile = .empty
-    @State private var floorPlanImages: [UIImage] = []
+    @State private var floorPlanEntries: [(name: String, image: UIImage)] = []
     @State private var floorPlanCopied = false
     @State private var isLoadingFloorPlans = false
 
@@ -47,7 +47,7 @@ struct AIComparisonSheet: View {
 
                     HStack(spacing: 4) {
                         Image(systemName: "lightbulb.min")
-                        if hasAnyFloorPlan && !floorPlanImages.isEmpty {
+                        if hasAnyFloorPlan && !floorPlanEntries.isEmpty {
                             Text("プロンプトを貼り付け後、戻って間取り図をコピー → 貼り付けで添付")
                         } else {
                             Text("プロンプトをコピーしてAIアプリを開きます → 貼り付けてください")
@@ -164,8 +164,10 @@ struct AIComparisonSheet: View {
     @ViewBuilder
     private var floorPlanCopyButton: some View {
         Button {
-            guard !floorPlanImages.isEmpty else { return }
-            UIPasteboard.general.images = floorPlanImages
+            guard !floorPlanEntries.isEmpty else { return }
+            if let composite = compositeFloorPlanImage() {
+                UIPasteboard.general.image = composite
+            }
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             withAnimation(.easeInOut(duration: 0.3)) { floorPlanCopied = true }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -180,8 +182,8 @@ struct AIComparisonSheet: View {
                 } else {
                     Image(systemName: floorPlanCopied ? "checkmark" : "photo.on.rectangle")
                     Text(floorPlanCopied
-                         ? "間取り図 \(floorPlanImages.count)枚をコピーしました"
-                         : "間取り図をまとめてコピー（\(floorPlanImages.count)枚）")
+                         ? "間取り図をコピーしました（\(floorPlanEntries.count)件分）"
+                         : "間取り図をまとめてコピー（\(floorPlanEntries.count)件分・1枚に合成）")
                 }
             }
             .font(.subheadline)
@@ -191,18 +193,64 @@ struct AIComparisonSheet: View {
         }
         .buttonStyle(.bordered)
         .tint(floorPlanCopied ? .green : .orange)
-        .disabled(floorPlanImages.isEmpty || isLoadingFloorPlans)
+        .disabled(floorPlanEntries.isEmpty || isLoadingFloorPlans)
+    }
+
+    /// 各間取り図を物件名ラベル付きで横並びに合成した1枚の画像を生成
+    private func compositeFloorPlanImage() -> UIImage? {
+        guard !floorPlanEntries.isEmpty else { return nil }
+
+        let labelHeight: CGFloat = 40
+        let padding: CGFloat = 16
+        let spacing: CGFloat = 12
+        let maxCellWidth: CGFloat = 600
+
+        let cellWidth = min(maxCellWidth, floorPlanEntries.map { $0.image.size.width }.max() ?? maxCellWidth)
+        let scaledHeights: [CGFloat] = floorPlanEntries.map { entry in
+            let scale = cellWidth / entry.image.size.width
+            return entry.image.size.height * scale
+        }
+        let maxImageHeight = scaledHeights.max() ?? 400
+
+        let cellHeight = labelHeight + maxImageHeight
+        let totalWidth = padding + CGFloat(floorPlanEntries.count) * cellWidth + CGFloat(floorPlanEntries.count - 1) * spacing + padding
+        let totalHeight = padding + cellHeight + padding
+
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: totalWidth, height: totalHeight))
+        return renderer.image { ctx in
+            UIColor.white.setFill()
+            ctx.fill(CGRect(x: 0, y: 0, width: totalWidth, height: totalHeight))
+
+            let labelAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 20, weight: .semibold),
+                .foregroundColor: UIColor.darkGray
+            ]
+
+            for (i, entry) in floorPlanEntries.enumerated() {
+                let x = padding + CGFloat(i) * (cellWidth + spacing)
+
+                let label = "[\(i + 1)] \(entry.name)" as NSString
+                let labelRect = CGRect(x: x, y: padding, width: cellWidth, height: labelHeight)
+                label.draw(in: labelRect, withAttributes: labelAttrs)
+
+                let scale = cellWidth / entry.image.size.width
+                let imgW = cellWidth
+                let imgH = entry.image.size.height * scale
+                let imgY = padding + labelHeight + (maxImageHeight - imgH) / 2
+                entry.image.draw(in: CGRect(x: x, y: imgY, width: imgW, height: imgH))
+            }
+        }
     }
 
     private func loadFloorPlanImages() async {
         guard hasAnyFloorPlan else { return }
         isLoadingFloorPlans = true
-        var images: [UIImage] = []
+        var entries: [(name: String, image: UIImage)] = []
         for listing in listings {
             guard let url = listing.parsedFloorPlanImages.first else { continue }
             let cacheKey = url.absoluteString
             if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
-                images.append(cached)
+                entries.append((name: listing.name, image: cached))
                 continue
             }
             do {
@@ -210,12 +258,12 @@ struct AIComparisonSheet: View {
                 guard let original = UIImage(data: data) else { continue }
                 let trimmed = original.trimmingWhitespaceBorder()
                 TrimmedImageCache.shared.set(trimmed, for: cacheKey)
-                images.append(trimmed)
+                entries.append((name: listing.name, image: trimmed))
             } catch {
                 continue
             }
         }
-        floorPlanImages = images
+        floorPlanEntries = entries
         isLoadingFloorPlans = false
     }
 

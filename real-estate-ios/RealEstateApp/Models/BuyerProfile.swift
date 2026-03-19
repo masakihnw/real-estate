@@ -69,7 +69,7 @@ struct BuyerProfile: Codable, Equatable {
         interestType: .variable,
         estimatedRate: "0.8〜0.9%",
         repaymentYears: "50年",
-        monthlyPaymentLimit: "25万円（管理費・修繕積立金込み）",
+        monthlyPaymentLimit: "26.7万円（管理費・修繕積立金込み）",
         workStyle: "夫：基本出社（随時リモート可）、妻：週1リモート・関西/東海に隔週出張あり",
         childPlan: "今年1人目予定、2〜3年後に2人目、さらに2〜3年後に3人目（3人目は状況次第）",
         relocationReason: "子どもの増加・成長に伴い手狭になるため。5〜10年単位で住み替え続ける予定",

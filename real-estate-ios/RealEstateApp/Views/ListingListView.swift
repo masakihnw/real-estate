@@ -1386,22 +1386,24 @@ private struct ShimmerModifier: ViewModifier {
     @State private var phase: CGFloat = 0
 
     func body(content: Content) -> some View {
-        content
-            .overlay(
-                LinearGradient(
-                    colors: [.clear, .white.opacity(0.4), .clear],
-                    startPoint: .leading,
-                    endPoint: .trailing
+        GeometryReader { geometry in
+            content
+                .overlay(
+                    LinearGradient(
+                        colors: [.clear, .white.opacity(0.4), .clear],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .rotationEffect(.degrees(30))
+                    .offset(x: phase)
+                    .mask(content)
                 )
-                .rotationEffect(.degrees(30))
-                .offset(x: phase)
-                .mask(content)
-            )
-            .onAppear {
-                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
-                    phase = UIScreen.main.bounds.width
+                .onAppear {
+                    withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                        phase = geometry.size.width
+                    }
                 }
-            }
+        }
     }
 }
 
