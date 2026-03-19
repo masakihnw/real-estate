@@ -102,6 +102,10 @@ ENRICHER_FIELDS: dict[str, set[str]] = {
     "estat": {
         "estat_population_data",
     },
+    # Track G: mansion_review_scraper
+    "mansion_review": {
+        "mansion_review_data",
+    },
 }
 
 # 全 enricher フィールドの union

@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-03-19（deploy.sh のデフォルトを iOS+Mac 両方に変更、ビルド番号統一）
+> **最終更新**: 2026-03-19（成約価格予測精度向上・マンションレビュー連携・価格変動チャート追加）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
@@ -376,7 +376,7 @@ App起動
 | ④ | **内見メモ（コンパクトボタン）** | カメラアイコン + コメントアイコン + 件数をインライン表示。タップで内見メモオーバーレイ（シート）を開く。コメント入力・写真追加は全てオーバーレイ内で操作 |
 | ④-c | **内見チェックリスト** | DisclosureGroup で折りたたみ表示。日当たり・騒音・共用部・エントランス・眺望・水回り・収納・周辺環境・駐車場・においの10項目をチェック。タップでチェック ON/OFF。`checklistJSON` に JSON でローカル保存。未使用時はデフォルトテンプレートを表示 |
 | ④-b | **物件画像ギャラリー** | `hasFloorPlanImages \|\| hasSuumoImages` の場合のみ。間取り図を先頭に、SUUMO の物件写真（外観・室内・水回り等）を後続に配置した統合横スクロールギャラリー。各画像にラベル表示。サムネイル・フルスクリーンともに白余白を自動トリミングして画像コンテンツを最大化。長押し（`.contextMenu`）で「画像をコピー」「共有…」メニューを表示（コピーは `UIPasteboard.general.image`）。タップでフルスクリーン表示（横スワイプで前後画像に移動可能、下部ミニマップで全画像のサムネイルストリップを表示・タップで直接ジャンプ可能、ページインジケーター・画像ラベル表示、ツールバー右上にコピーボタン常設）。コピー完了時にオーバーレイフィードバック表示。Firebase Storage 経由で掲載終了後も永続表示可能 |
-| ⑤ | **投資スコア** | `listingScore != nil \|\| hasPriceChanges \|\| firstSeenAt != nil` の場合のみ。総合スコア（大数字）+ 価格妥当性/再販流動性のバーチャート + 競合物件数 + 掲載日数 + 価格変動履歴。`DisclosureGroup`「スコアの根拠」で各構成要素（価格妥当性・再販流動性・値上がり率・儲かる確率・ハザード・通勤利便性・人口動態）のスコア・重み・根拠詳細をプルダウン表示。`scoreBreakdown` computed property で Python の `_calc_listing_score` と同じロジックを iOS 側で再現し、各要素のソースデータから根拠テキストを生成 |
+| ⑤ | **投資スコア** | `listingScore != nil \|\| hasPriceChanges \|\| firstSeenAt != nil` の場合のみ。総合スコア（大数字）+ 価格妥当性/再販流動性のバーチャート + 競合物件数 + 掲載日数 + 価格変動チャート・サマリー。`DisclosureGroup`「スコアの根拠」で各構成要素（価格妥当性・再販流動性・値上がり率・儲かる確率・ハザード・通勤利便性・人口動態）のスコア・重み・根拠詳細をプルダウン表示。`scoreBreakdown` computed property で Python の `_calc_listing_score` と同じロジックを iOS 側で再現し、各要素のソースデータから根拠テキストを生成。**価格変動チャート**: 2件以上の `price_history` エントリがある場合に Swift Charts ラインチャートで表示（X軸: 日付、Y軸: 価格万円）。**価格変動サマリーカード**: 掲載日数・累計変動額/率・直近変動額を3カラムで表示（値下がり=緑、値上げ=赤）。テキストリストも併記 |
 | ⑥ | **物件基本情報** | 下記の共通項目 + 中古/新築固有項目を表示 |
 | ⑦ | **月額支払いシミュレーション** | `priceMan > 0` の場合（中古・新築共通）。下記の計算ロジックで動的に算出。タップでフォーム展開し金利・返済期間・頭金を変更可能 |
 | ⑧ | **通勤時間** | Playground / M3Career への通勤時間（MKDirections）+ Google Maps リンク。座標ありかつ未取得の場合は計算ボタン表示 |
@@ -1152,7 +1152,8 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | 45 | マッチ精度バッジ | 閲覧 | 比較データのマッチ精度（高/中/低）をバッジ表示 |
 | 46 | エリア相場グリッド | 閲覧 | 類似物件相場、区トレンド、前年比を3カラムで表示 |
 | 47 | 駅レベル比較 | 閲覧 | 駅圏相場・物件との乖離率・トレンド・前年比を表示。乖離率はバックエンド算出値を優先し、未算出の場合は iOS 側で `priceMan × 10000 / areaM2 ÷ 駅圏中央値` をフォールバック計算 |
-| 48 | 同一マンション成約事例 | 閲覧 | 同一マンション候補の成約事例を間取り別サマリーで表示。各間取り（2LDK, 3LDK等）ごとに平均成約価格・平均m²単価・件数を集約表示し、閲覧中物件と同じ間取りは「同間取り」バッジ付きで先頭にハイライト表示。DisclosureGroup で展開すると個別成約明細（時期・面積・価格・m²単価）を確認可能 |
+| 48 | 同一マンション成約事例 | 閲覧 | 同一マンション候補の成約事例を間取り別サマリーで表示。各間取り（2LDK, 3LDK等）ごとに平均成約価格・平均m²単価・件数を集約表示し、閲覧中物件と同じ間取りは「同間取り」バッジ付きで先頭にハイライト表示。DisclosureGroup で展開すると個別成約明細（時期・面積・価格・m²単価・信頼度バッジ）を確認可能。信頼度は high（高）/medium（中）/low（低）の3段階で色分けバッジ表示 |
+| 48b | マンションレビュー | 閲覧 | `parsedMansionReviewData` がある場合に表示。マンション偏差値（大数字・色分け）・推定適正価格・騰落率のサマリーカード、推定m²単価・坪単価、中古販売履歴件数、マンションレビューへのリンクを表示 |
 | 49 | 四半期推移チャート | 閲覧 | 区（5年分）・駅の m²単価の四半期推移を折れ線チャートで表示。X軸は年ラベルのみ（Q1位置）、四半期ごとのデータポイントで推移を描画 |
 
 #### エリア人口動態セクション（PopulationSectionView）
@@ -1500,7 +1501,8 @@ Job 1: enrich-chuko / Job 2: enrich-shinchiku（同構造、並列実行）
    ├── Track B: geocode_cross_validator → hazard_enricher（~4min）
    ├── Track C: commute_enricher（~1min）
    ├── Track D: reinfolib_enricher（~1min）
-   └── Track E: estat_enricher（~1min）
+   ├── Track E: estat_enricher（~1min）
+   └── Track G: mansion_review_scraper（~5min、中古のみ）
        ↓
    Phase 3: merge_enrichments.py
 
@@ -1522,7 +1524,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    └── git commit & push
 ```
 
-> **全 enricher 並列化の安全性**: 各 enricher が追加するフィールドに重複がない（sumai_surfin: `ss_*`, hazard: `hazard_info`, commute: `commute_info`, reinfolib: `reinfolib_market_data`, estat: `estat_population_data`, units_cache: `total_units`, `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`, `feature_tags` 等）。各 enricher が独自のファイルコピーで動作し、`merge_enrichments.py` がフィールドレベルで union マージするため競合なし。マージ時に `None` 値は無視する（後続 track ファイルの未設定フィールドで先行 track の値を上書きしない）。
+> **全 enricher 並列化の安全性**: 各 enricher が追加するフィールドに重複がない（sumai_surfin: `ss_*`, hazard: `hazard_info`, commute: `commute_info`, reinfolib: `reinfolib_market_data`, estat: `estat_population_data`, mansion_review: `mansion_review_data`, units_cache: `total_units`, `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`, `feature_tags` 等）。各 enricher が独自のファイルコピーで動作し、`merge_enrichments.py` がフィールドレベルで union マージするため競合なし。マージ時に `None` 値は無視する（後続 track ファイルの未設定フィールドで先行 track の値を上書きしない）。
 
 > **Phase1 追加の投資判断支援 enrichment**: 全 enricher 完了後の Phase 3 で以下を順次実行:
 > 1. `inject_price_history(cur, prev)` — 前回比較で価格変動があった物件に `price_history` を追記（`report_utils.py`）
@@ -1648,10 +1650,11 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 | 項目 | 詳細 |
 |------|------|
-| **データソース** | `data/reinfolib_prices.json`, `data/reinfolib_trends.json`（事前構築キャッシュ） |
-| **付与データ** | 区・駅レベルの成約 m² 単価、相場乖離率、前年比、四半期推移（区: 過去5年分）、同一マンション成約事例 |
-| **キャッシュ構築** | `reinfolib_cache_builder.py`（`YEARS_BACK=5` で過去5年分の四半期推移を取得）/ `fetch_station_prices.py`（別ワークフローで実行） |
+| **データソース** | `data/reinfolib_prices.json`, `data/reinfolib_trends.json`, `data/reinfolib_raw_transactions.json`（事前構築キャッシュ） |
+| **付与データ** | 区・駅レベルの成約 m² 単価、相場乖離率、前年比、四半期推移（区: 過去5年分）、同一マンション成約事例（信頼度スコア付き） |
+| **キャッシュ構築** | `reinfolib_cache_builder.py`（`YEARS_BACK=5` で過去5年分の四半期推移を取得、`RAW_TX_QUARTERS=8` で直近8四半期の生取引データを保存）/ `fetch_station_prices.py`（別ワークフローで実行） |
 | **区名抽出** | `parse_utils.extract_ward` に委譲（重複実装を排除） |
+| **同一マンション推定** | 同区 + 同町名 + 築年±1年 + 同構造 + 延床面積±20%（あれば）でマッチング。信頼度を high / medium / low で付与。`TotalFloorArea`・`CoverageRatio`・`FloorAreaRatio` を API レスポンスから保存し照合に活用 |
 
 #### 5.6.4 e-Stat 人口動態エンリッチャー（estat_enricher.py）
 
@@ -1663,7 +1666,18 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **高齢化率データ** | 国勢調査（2000, 2005, 2010, 2015, 2020）の年齢3区分データから65歳以上人口割合を取得。全国・23区平均・区別の3系列 |
 | **区名抽出** | `parse_utils.extract_ward` に委譲（重複実装を排除） |
 
-#### 5.6.5 間取り図・物件写真エンリッチャー
+#### 5.6.5 マンションレビューエンリッチャー（mansion_review_scraper.py）
+
+| 項目 | 詳細 |
+|------|------|
+| **データソース** | mansion-review.jp（HTTP スクレイピング） |
+| **付与データ** | マンション偏差値、推定適正価格（万円）、推定坪単価、推定m²単価、騰落率、中古販売履歴件数、公開販売履歴テーブル |
+| **キャッシュ** | `data/mansion_review_cache.json`（物件名正規化 → 建物データ。TTL: 14日） |
+| **実装方式** | HTTP（requests + BeautifulSoup）。rate limit 3秒間隔 |
+| **対象** | 中古のみ（新築はスキップ） |
+| **パイプライン統合** | `run_enrich.sh` の Track G として並列実行。`merge_enrichments.py` で `mansion_review_data` フィールドをマージ |
+
+#### 5.6.6 間取り図・物件写真エンリッチャー
 
 ##### 中古（build_units_cache.py → merge_detail_cache.py / floor_plan_enricher.py）
 
@@ -1711,7 +1725,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | **駅徒歩フィルタ** | ジオコーディング・最寄駅推定後に `estimated_walk_min <= WALK_MIN_MAX`（15分以内）でフィルタ。座標が取得できず徒歩推定できなかったレコードも除外 |
 | **ジオコーディング** | 町丁目アドレス → 緯度経度（geocode_cache.json 優先、不足分は Nominatim API） |
 | **最寄駅推定** | ジオコーディング座標 + station_cache.json → Haversine 距離で最近傍駅を算出、直線距離 80m/分で徒歩推定 |
-| **建物グルーピング** | `(districtCode, builtYear)` の組で推定建物グループを構成。グループ別に取引件数、価格帯、平均 m² 単価を集計 |
+| **建物グルーピング** | `districtCode-builtYear-structure-totalFloorAreaBucket` の組で推定建物グループを構成（延床面積は1000m²単位のバケット。構造・延床面積がない場合は省略）。グループ別に取引件数、価格帯、平均 m² 単価を集計 |
 | **物件名推定** | `latest.json` / `latest_shinchiku.json` の既存スクレイピングデータとクロスリファレンス。市区町村+町丁目+築年（±1年）でマッチした物件名を `estimated_building_name` として付与。複数候補は " / " 区切り |
 | **取得期間** | 直近20四半期（約5年分）。成約価格情報は四半期終了後 約3ヶ月遅れで公開されるため、直近1四半期はデータなしになることが多い |
 | **実行間隔** | WF2 の `build-transaction-feed` ジョブで毎回実行（`REINFOLIB_API_KEY` 設定時のみ）。ローカルでは `update_listings.sh` から呼び出し |
@@ -1798,6 +1812,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | ファイル | 機能 |
 |---------|------|
 | **parse_utils.py** | 共通パーサー。`parse_monthly_yen`（管理費・修繕積立金等。「18,000」「18000」等の円マークなし・カンマ区切り・純粋数値にもフォールバック）、`extract_ward`（住所→区名の正規実装。reinfolib_enricher・estat_enricher が委譲） |
+| **mansion_review_scraper.py** | マンションレビュースクレイパー。物件名→建物ページ検索→偏差値・推定価格・騰落率・販売履歴をパース。HTTP ベース（requests + BeautifulSoup）。TTL 14日キャッシュ |
 | **shared_utils.py** | 共通ユーティリティ（`ward_from_address`, `calc_loan_residual_10y_yen`、ローン定数） |
 | **price_predictor.py** | `MansionPricePredictor`：CSV データに基づく価格予測 |
 | **asset_score.py** | 資産ランク S/A/B/C の算出（含み益率ベース） |
@@ -1838,10 +1853,11 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | `data/building_units.json` | JSON | 総戸数・階数・権利形態・向き・バルコニー面積・駐車場・施工会社・用途地域・修繕積立基金・引渡時期・特徴タグのキャッシュ |
 | `data/reinfolib_prices.json` | JSON | 不動産情報ライブラリ区別成約相場キャッシュ |
 | `data/reinfolib_trends.json` | JSON | 不動産情報ライブラリ四半期推移キャッシュ（過去5年分） |
-| `data/reinfolib_raw_transactions.json` | JSON | 不動産情報ライブラリ生取引データ |
+| `data/reinfolib_raw_transactions.json` | JSON | 不動産情報ライブラリ生取引データ（直近8四半期分。`TotalFloorArea`・`CoverageRatio`・`FloorAreaRatio` を含む） |
 | `data/station_price_history.json` | JSON | 駅別成約価格推移キャッシュ |
 | `data/estat_population.json` | JSON | e-Stat 区別人口・世帯数キャッシュ |
 | `data/sumai_surfin_cache.json` | JSON | 住まいサーフィン検索結果キャッシュ |
+| `data/mansion_review_cache.json` | JSON | マンションレビュー建物データキャッシュ（物件名正規化→{data, cached_at}。TTL: 14日） |
 | `data/station_passengers.json` | JSON | 駅乗降客数データ |
 | `data/shutoken_city_codes.json` | JSON | 首都圏（1都3県）市区町村コード一覧 |
 | `data/html_cache/etags.json` | JSON | 中古詳細ページの ETag・Last-Modified・cached_at キャッシュ（Phase3） |
@@ -1982,7 +1998,8 @@ iOS アプリのメインデータモデル。`scraping-tool/results/latest.json
 |-----------|-----|------|
 | `hazardInfo` | String? | ハザード情報 JSON |
 | `commuteInfoJSON` | String? | 通勤時間情報 JSON（パイプラインの `commute_info` から初期値を取り込み、MKDirections で上書き可能） |
-| `reinfolibMarketData` | String? | 不動産情報ライブラリの成約価格相場データ JSON（パイプライン側で付与） |
+| `reinfolibMarketData` | String? | 不動産情報ライブラリの成約価格相場データ JSON（パイプライン側で付与）。同一マンション成約事例に `confidence`（high/medium/low）フィールドを含む |
+| `mansionReviewData` | String? | マンションレビュー（mansion-review.jp）の建物データ JSON（パイプライン側で付与）。偏差値・推定適正価格・騰落率・販売履歴件数を含む |
 | `estatPopulationData` | String? | e-Stat（総務省統計局）の人口・世帯数・高齢化率データ JSON（パイプライン側で付与）。高齢化率は国勢調査5年ごとの全国平均・23区平均・当該区の3系列推移を含む |
 
 #### 投資判断支援データ（Phase1 追加）

@@ -197,6 +197,10 @@ final class Listing: @unchecked Sendable {
     ///              "data_source":"不動産情報ライブラリ（国土交通省）"}
     var reinfolibMarketData: String?
 
+    // MARK: - マンションレビュー
+    /// マンションレビュー（mansion-review.jp）の建物データ JSON 文字列
+    var mansionReviewData: String?
+
     // MARK: - e-Stat 人口動態データ
     /// e-Stat（総務省統計局）の人口・世帯数データ JSON 文字列
     /// フォーマット: {"ward":"江東区","latest_population":528950,"latest_households":287840,
@@ -344,6 +348,7 @@ final class Listing: @unchecked Sendable {
         ssSurroundingProperties: String? = nil,
         ssPriceJudgments: String? = nil,
         reinfolibMarketData: String? = nil,
+        mansionReviewData: String? = nil,
         estatPopulationData: String? = nil,
         priceHistoryJSON: String? = nil,
         firstSeenAt: String? = nil,
@@ -427,6 +432,7 @@ final class Listing: @unchecked Sendable {
         self.ssSurroundingProperties = ssSurroundingProperties
         self.ssPriceJudgments = ssPriceJudgments
         self.reinfolibMarketData = reinfolibMarketData
+        self.mansionReviewData = mansionReviewData
         self.estatPopulationData = estatPopulationData
         self.priceHistoryJSON = priceHistoryJSON
         self.firstSeenAt = firstSeenAt
@@ -1039,6 +1045,7 @@ final class Listing: @unchecked Sendable {
         var priceJudgments: (source: String?, result: [PriceJudgmentUnit])?
         var hazard: (source: String?, result: HazardData)?
         var marketData: (source: String?, result: MarketData?)?
+        var mansionReview: (source: String?, result: MansionReviewData?)?
         var populationData: (source: String?, result: PopulationData?)?
         var marketTrends: (source: String?, result: [MarketTrendEntry])?
         var suumoImages: (source: String?, result: [SuumoImage])?
@@ -1964,6 +1971,7 @@ final class Listing: @unchecked Sendable {
             var area: Double               // 72.0
             var tradePriceMan: Int          // 9500 (万円)
             var m2Price: Int               // 1319444 (円/m²)
+            var confidence: String         // "high" / "medium" / "low"
 
             /// m²単価の万円表示
             var m2PriceManDisplay: String {
@@ -2121,6 +2129,70 @@ final class Listing: @unchecked Sendable {
         }
     }
 
+    // MARK: - MansionReviewData
+
+    struct MansionReviewData {
+        var buildingUrl: String?
+        var deviationScore: Int?
+        var estimatedPriceMan: Int?
+        var estimatedTsuboPriceMan: Int?
+        var estimatedM2PriceMan: Int?
+        var tourakuRate: Double?
+        var chukoHistoryCount: Int?
+        var salesHistory: [SalesHistoryEntry]
+
+        struct SalesHistoryEntry {
+            var startDate: String?
+            var endDate: String?
+            var floor: Int?
+            var layout: String?
+            var areaM2: Double?
+            var priceMan: Int?
+            var tsuboPriceMan: Double?
+        }
+    }
+
+    var parsedMansionReviewData: MansionReviewData? {
+        if let cached = _cache.mansionReview, cached.source == mansionReviewData {
+            return cached.result
+        }
+        let result = _parseMansionReviewImpl()
+        _cache.mansionReview = (mansionReviewData, result)
+        return result
+    }
+
+    private func _parseMansionReviewImpl() -> MansionReviewData? {
+        guard let json = mansionReviewData, !json.isEmpty,
+              let data = json.data(using: .utf8),
+              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return nil
+        }
+
+        let historyRaw = dict["sales_history"] as? [[String: Any]] ?? []
+        let history = historyRaw.compactMap { h -> MansionReviewData.SalesHistoryEntry? in
+            return MansionReviewData.SalesHistoryEntry(
+                startDate: h["start_date"] as? String,
+                endDate: h["end_date"] as? String,
+                floor: h["floor"] as? Int,
+                layout: h["layout"] as? String,
+                areaM2: h["area_m2"] as? Double,
+                priceMan: h["price_man"] as? Int,
+                tsuboPriceMan: h["tsubo_price_man"] as? Double
+            )
+        }
+
+        return MansionReviewData(
+            buildingUrl: dict["building_url"] as? String,
+            deviationScore: dict["deviation_score"] as? Int,
+            estimatedPriceMan: dict["estimated_price_man"] as? Int,
+            estimatedTsuboPriceMan: dict["estimated_tsubo_price_man"] as? Int,
+            estimatedM2PriceMan: dict["estimated_m2_price_man"] as? Int,
+            tourakuRate: dict["touraku_rate"] as? Double,
+            chukoHistoryCount: dict["chuko_history_count"] as? Int,
+            salesHistory: history
+        )
+    }
+
     /// reinfolibMarketData JSON を解析（キャッシュ付き）
     var parsedMarketData: MarketData? {
         if let cached = _cache.marketData, cached.source == reinfolibMarketData {
@@ -2171,7 +2243,8 @@ final class Listing: @unchecked Sendable {
                 floorPlan: tx["floor_plan"] as? String ?? "",
                 area: tx["area"] as? Double ?? 0,
                 tradePriceMan: tx["trade_price_man"] as? Int ?? 0,
-                m2Price: tx["m2_price"] as? Int ?? 0
+                m2Price: tx["m2_price"] as? Int ?? 0,
+                confidence: tx["confidence"] as? String ?? "low"
             )
         }
 
@@ -2525,6 +2598,9 @@ struct ListingDTO: Codable {
     // 不動産情報ライブラリ相場データ（パイプライン側で付与）
     var reinfolib_market_data: String?
 
+    // マンションレビューデータ（パイプライン側で付与）
+    var mansion_review_data: String?
+
     // e-Stat 人口動態データ（パイプライン側で付与）
     var estat_population_data: String?
 
@@ -2778,6 +2854,7 @@ extension Listing {
             ssSurroundingProperties: dto.ss_surrounding_properties,
             ssPriceJudgments: dto.ss_price_judgments,
             reinfolibMarketData: dto.reinfolib_market_data,
+            mansionReviewData: dto.mansion_review_data,
             estatPopulationData: dto.estat_population_data,
             priceHistoryJSON: {
                 if let history = dto.price_history, !history.isEmpty,

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import Charts
 import SafariServices
 import UIKit
 
@@ -145,6 +146,13 @@ struct ListingDetailView: View {
                         Divider()
                         MarketDataSectionView(listing: listing)
                             .id("market")
+                    }
+
+                    // ⑩-b マンションレビュー
+                    if listing.parsedMansionReviewData != nil {
+                        Divider()
+                        mansionReviewSection
+                            .id("mansion-review")
                     }
 
                     // ⑪ エリア人口動態（e-Stat）
@@ -1309,27 +1317,9 @@ struct ListingDetailView: View {
                 }
             }
 
-            // 価格変動履歴
+            // 価格変動チャート + サマリー
             if listing.hasPriceChanges {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("価格変動履歴")
-                        .font(.subheadline.weight(.semibold))
-
-                    ForEach(listing.parsedPriceHistory) { entry in
-                        HStack {
-                            Text(entry.date)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .frame(width: 90, alignment: .leading)
-                            if let price = entry.priceMan {
-                                Text(Listing.formatPriceCompact(price))
-                                    .font(.caption.weight(.semibold))
-                            }
-                        }
-                    }
-                }
-                .padding(14)
-                .tintedGlassBackground(tint: .blue, tintOpacity: 0.03, borderOpacity: 0.08)
+                priceHistoryChartSection(listing)
             }
         }
     }
@@ -1368,6 +1358,271 @@ struct ListingDetailView: View {
         case 50..<65: return .orange
         case 35..<50: return .gray
         default: return .red
+        }
+    }
+
+    // MARK: - 価格変動チャート
+
+    @ViewBuilder
+    private func priceHistoryChartSection(_ listing: Listing) -> some View {
+        let history = listing.parsedPriceHistory
+        let validEntries = history.filter { $0.priceMan != nil && $0.parsedDate != nil }
+
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 6) {
+                Image(systemName: "chart.line.uptrend.xyaxis")
+                    .font(.subheadline)
+                    .foregroundStyle(.blue)
+                Text("価格変動履歴")
+                    .font(.subheadline.weight(.semibold))
+            }
+
+            // サマリーカード
+            priceChangeSummary(listing)
+
+            // ラインチャート
+            if validEntries.count >= 2 {
+                let prices = validEntries.compactMap { $0.priceMan }
+                let minPrice = (prices.min() ?? 0)
+                let maxPrice = (prices.max() ?? 0)
+                let padding = max(Int(Double(maxPrice - minPrice) * 0.15), 100)
+
+                Chart {
+                    ForEach(validEntries, id: \.date) { entry in
+                        if let price = entry.priceMan, let date = entry.parsedDate {
+                            LineMark(
+                                x: .value("日付", date),
+                                y: .value("価格", price)
+                            )
+                            .foregroundStyle(.blue)
+
+                            PointMark(
+                                x: .value("日付", date),
+                                y: .value("価格", price)
+                            )
+                            .foregroundStyle(.blue)
+                            .symbolSize(30)
+                        }
+                    }
+                }
+                .chartYScale(domain: (minPrice - padding)...(maxPrice + padding))
+                .chartYAxis {
+                    AxisMarks { value in
+                        AxisValueLabel {
+                            if let man = value.as(Int.self) {
+                                Text(Listing.formatPriceCompact(man))
+                                    .font(.caption2)
+                            }
+                        }
+                        AxisGridLine()
+                    }
+                }
+                .chartXAxis {
+                    AxisMarks(values: .automatic(desiredCount: 4)) { value in
+                        AxisValueLabel {
+                            if let date = value.as(Date.self) {
+                                Text(date, format: .dateTime.month(.defaultDigits).day())
+                                    .font(.caption2)
+                            }
+                        }
+                    }
+                }
+                .frame(height: 160)
+            }
+
+            // テキストリスト
+            ForEach(history) { entry in
+                HStack {
+                    Text(entry.date)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 90, alignment: .leading)
+                    if let price = entry.priceMan {
+                        Text(Listing.formatPriceCompact(price))
+                            .font(.caption.weight(.semibold))
+                    }
+                    Spacer()
+                    if let change = priceChangeForEntry(entry, in: history) {
+                        Text(change > 0 ? "+\(change)万" : "\(change)万")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(change < 0 ? .green : change > 0 ? .red : .secondary)
+                    }
+                }
+            }
+        }
+        .padding(14)
+        .tintedGlassBackground(tint: .blue, tintOpacity: 0.03, borderOpacity: 0.08)
+    }
+
+    @ViewBuilder
+    private func priceChangeSummary(_ listing: Listing) -> some View {
+        let history = listing.parsedPriceHistory
+        let prices = history.compactMap { $0.priceMan }
+
+        HStack(spacing: 12) {
+            // 掲載日数
+            if let days = listing.daysOnMarket {
+                VStack(spacing: 2) {
+                    Text("\(days)")
+                        .font(.title3.weight(.bold).monospacedDigit())
+                    Text("掲載日数")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+            }
+
+            // 累計変動
+            if prices.count >= 2, let first = prices.first, let last = prices.last, first > 0 {
+                let diff = last - first
+                let pct = Double(diff) / Double(first) * 100
+                VStack(spacing: 2) {
+                    Text(diff > 0 ? "+\(diff)万" : "\(diff)万")
+                        .font(.callout.weight(.bold).monospacedDigit())
+                        .foregroundStyle(diff < 0 ? .green : diff > 0 ? .red : .primary)
+                    Text(String(format: "累計 %+.1f%%", pct))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+            }
+
+            // 直近変動
+            if let change = listing.latestPriceChange {
+                VStack(spacing: 2) {
+                    Text(change > 0 ? "+\(change)万" : "\(change)万")
+                        .font(.callout.weight(.bold).monospacedDigit())
+                        .foregroundStyle(change < 0 ? .green : change > 0 ? .red : .primary)
+                    Text("直近変動")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(10)
+        .background(Color(.systemGray6).opacity(0.5))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    private func priceChangeForEntry(
+        _ entry: Listing.PriceHistoryEntry,
+        in history: [Listing.PriceHistoryEntry]
+    ) -> Int? {
+        guard let idx = history.firstIndex(where: { $0.id == entry.id }),
+              idx > 0,
+              let current = entry.priceMan,
+              let previous = history[idx - 1].priceMan else { return nil }
+        return current - previous
+    }
+
+    // MARK: - マンションレビュー
+
+    @ViewBuilder
+    private var mansionReviewSection: some View {
+        if let mr = listing.parsedMansionReviewData {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 6) {
+                    Image(systemName: "chart.bar.doc.horizontal")
+                        .font(.subheadline)
+                        .foregroundStyle(.purple)
+                    Text("マンションレビュー")
+                        .font(.headline)
+                }
+
+                // 偏差値・推定価格・騰落率
+                HStack(spacing: 12) {
+                    if let score = mr.deviationScore {
+                        VStack(spacing: 2) {
+                            Text("\(score)")
+                                .font(.title2.weight(.bold).monospacedDigit())
+                                .foregroundStyle(score >= 60 ? .green : score >= 50 ? .blue : .orange)
+                            Text("偏差値")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+
+                    if let price = mr.estimatedPriceMan {
+                        VStack(spacing: 2) {
+                            Text(Listing.formatPriceCompact(price))
+                                .font(.callout.weight(.bold).monospacedDigit())
+                            Text("推定適正価格")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+
+                    if let rate = mr.tourakuRate {
+                        VStack(spacing: 2) {
+                            Text(String(format: "%+.1f%%", rate))
+                                .font(.callout.weight(.bold).monospacedDigit())
+                                .foregroundStyle(rate >= 0 ? .green : .red)
+                            Text("騰落率")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding(10)
+                .background(Color(.systemGray6).opacity(0.5))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                // m²単価・坪単価
+                if mr.estimatedM2PriceMan != nil || mr.estimatedTsuboPriceMan != nil {
+                    HStack(spacing: 16) {
+                        if let m2 = mr.estimatedM2PriceMan {
+                            HStack(spacing: 4) {
+                                Text("推定m²単価")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text("\(m2)万/m²")
+                                    .font(.caption.weight(.semibold))
+                            }
+                        }
+                        if let tsubo = mr.estimatedTsuboPriceMan {
+                            HStack(spacing: 4) {
+                                Text("推定坪単価")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text("\(tsubo)万/坪")
+                                    .font(.caption.weight(.semibold))
+                            }
+                        }
+                    }
+                }
+
+                // 販売履歴件数
+                if let count = mr.chukoHistoryCount, count > 0 {
+                    HStack(spacing: 4) {
+                        Image(systemName: "doc.text")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text("中古販売履歴: \(count)件")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                // リンク
+                if let urlStr = mr.buildingUrl, let url = URL(string: urlStr) {
+                    Link(destination: url) {
+                        HStack(spacing: 4) {
+                            Text("マンションレビューで詳細を見る")
+                                .font(.caption)
+                            Image(systemName: "arrow.up.right.square")
+                                .font(.caption)
+                        }
+                    }
+                }
+
+                Text("出典: マンションレビュー（mansion-review.jp）")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.quaternary)
+            }
         }
     }
 
