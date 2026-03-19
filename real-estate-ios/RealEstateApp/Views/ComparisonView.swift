@@ -13,6 +13,7 @@ struct ComparisonView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var showShareSheet = false
+    @State private var showAIComparison = false
     @State private var pdfFileURL: URL?
 
     // 比較行の表示フラグを事前計算（body 内で何度も contains(where:) を呼ぶのを回避）
@@ -30,124 +31,130 @@ struct ComparisonView: View {
                 Text("物件一覧で比較モードをオンにし、2件以上選択してから比較を実行してください。")
             }
         } else {
-        NavigationStack {
-            ScrollView(.horizontal) {
-                HStack(alignment: .top, spacing: 0) {
-                    // ラベル列
-                    VStack(alignment: .leading, spacing: 0) {
-                        headerCell("")
-                            .accessibilityLabel("比較表ヘッダー")
-                        labelCell("価格").accessibilityLabel("項目、価格")
-                        labelCell("面積").accessibilityLabel("項目、面積")
-                        labelCell("間取り").accessibilityLabel("項目、間取り")
-                        labelCell("最寄駅").accessibilityLabel("項目、最寄駅")
-                        labelCell("徒歩").accessibilityLabel("項目、徒歩")
-                        labelCell("築年").accessibilityLabel("項目、築年")
-                        labelCell("階数").accessibilityLabel("項目、階数")
-                        labelCell("総戸数").accessibilityLabel("項目、総戸数")
-                        labelCell("権利形態").accessibilityLabel("項目、権利形態")
-                        if showProfitPct {
-                            labelCell("儲かる確率").accessibilityLabel("項目、儲かる確率")
+            NavigationStack {
+                comparisonGrid
+                    .accessibilityLabel("物件比較表")
+                    .accessibilityHint("横にスワイプして全物件を比較できます")
+                    .navigationTitle("物件比較")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("閉じる") { dismiss() }
                         }
-                        if showAppreciationRate {
-                            labelCell("値上がり率").accessibilityLabel("項目、値上がり率")
-                        }
-                        if showPriceJudgment {
-                            labelCell("割安判定").accessibilityLabel("項目、割安判定")
-                        }
-                        if showMarketData {
-                            labelCell("成約相場比").accessibilityLabel("項目、成約相場比")
-                            labelCell("相場差額").accessibilityLabel("項目、相場差額")
-                            labelCell("エリア傾向").accessibilityLabel("項目、エリア傾向")
-                        }
-                        if showPopulationData {
-                            labelCell("エリア人口").accessibilityLabel("項目、エリア人口")
-                            labelCell("人口増減").accessibilityLabel("項目、人口増減")
-                        }
-                    }
-                    .frame(width: 90)
-
-                    // 物件列
-                    ForEach(listings, id: \.url) { listing in
-                        VStack(alignment: .leading, spacing: 0) {
-                            // ヘッダー: 物件名
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(listing.name)
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
-                                    .lineLimit(2)
-                                if listing.isShinchiku {
-                                    Text("新築")
-                                        .font(.caption2)
-                                        .foregroundStyle(.white)
-                                        .padding(.horizontal, 4)
-                                        .padding(.vertical, 1)
-                                        .background(DesignSystem.shinchikuPriceColor)
-                                        .clipShape(RoundedRectangle(cornerRadius: 3))
+                        ToolbarItem(placement: .topBarTrailing) {
+                            HStack(spacing: 12) {
+                                Button {
+                                    showAIComparison = true
+                                } label: {
+                                    Label("AIで比較", systemImage: "brain")
+                                }
+                                Button {
+                                    exportPDF()
+                                } label: {
+                                    Label("PDF出力", systemImage: "square.and.arrow.up")
                                 }
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(8)
-                            .background(Color(.secondarySystemGroupedBackground))
-
-                            valueCell(listing.priceDisplay)
-                            valueCell(listing.areaDisplay)
-                            valueCell(listing.layout ?? "—")
-                            valueCell(listing.stationName ?? "—")
-                            valueCell(listing.walkDisplay)
-                            valueCell(listing.isShinchiku ? listing.deliveryDateDisplay : listing.builtAgeDisplay)
-                            valueCell(listing.floorDisplay.isEmpty ? "—" : listing.floorDisplay)
-                            valueCell(listing.totalUnitsDisplay)
-                            valueCell(listing.ownershipShort)
-                            if showProfitPct {
-                                valueCell(listing.ssProfitDisplay)
-                            }
-                            if showAppreciationRate {
-                                valueCell(listing.ssAppreciationRate.map { String(format: "%.1f%%", $0) } ?? "—")
-                            }
-                            if showPriceJudgment {
-                                valueCell(listing.computedPriceJudgment ?? "—")
-                            }
-                            if showMarketData {
-                                valueCell(listing.parsedMarketData?.priceRatioDisplay ?? "—")
-                                valueCell(listing.parsedMarketData?.priceDiffDisplay ?? "—")
-                                valueCell(listing.parsedMarketData?.trendDisplay ?? "—")
-                            }
-                            if showPopulationData {
-                                valueCell(listing.parsedPopulationData?.populationDisplay ?? "—")
-                                valueCell(listing.parsedPopulationData?.popChange1yrDisplay ?? "—")
-                            }
-                        }
-                        .frame(width: 140)
-
-                        if listing.url != listings.last?.url {
-                            Divider()
                         }
                     }
-                }
-            }
-            .accessibilityLabel("物件比較表")
-            .accessibilityHint("横にスワイプして全物件を比較できます")
-            .navigationTitle("物件比較")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("閉じる") { dismiss() }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        exportPDF()
-                    } label: {
-                        Label("PDF出力", systemImage: "square.and.arrow.up")
+                    .sheet(isPresented: $showAIComparison) {
+                        AIComparisonSheet(listings: listings)
                     }
-                }
-            }
-            .sheet(isPresented: $showShareSheet) {
-                if let url = pdfFileURL {
-                    ShareSheet(items: [url])
-                }
+                    .sheet(isPresented: $showShareSheet) {
+                        if let url = pdfFileURL {
+                            ShareSheet(items: [url])
+                        }
+                    }
             }
         }
+    }
+
+    // MARK: - 比較テーブル
+
+    private var comparisonGrid: some View {
+        ScrollView(.horizontal) {
+            Grid(alignment: .leading, horizontalSpacing: 0, verticalSpacing: 0) {
+                headerRow
+                basicRows
+                optionalRows
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var headerRow: some View {
+        GridRow {
+            Text("")
+                .frame(width: 90, alignment: .leading)
+                .padding(8)
+                .background(Color(.secondarySystemGroupedBackground))
+                .accessibilityLabel("比較表ヘッダー")
+            ForEach(listings, id: \.url) { listing in
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(listing.name)
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .lineLimit(2)
+                    if listing.isShinchiku {
+                        Text("新築")
+                            .font(.caption2)
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 1)
+                            .background(DesignSystem.shinchikuPriceColor)
+                            .clipShape(RoundedRectangle(cornerRadius: 3))
+                    }
+                }
+                .frame(width: 140, alignment: .leading)
+                .padding(8)
+                .background(Color(.secondarySystemGroupedBackground))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var basicRows: some View {
+        comparisonRow("価格", values: listings.map(\.priceDisplay))
+        comparisonRow("面積", values: listings.map(\.areaDisplay))
+        comparisonRow("間取り", values: listings.map { $0.layout ?? "—" })
+        comparisonRow("最寄駅", values: listings.map { $0.stationName ?? "—" })
+        comparisonRow("徒歩", values: listings.map(\.walkDisplay))
+        comparisonRow("築年", values: listings.map { $0.isShinchiku ? $0.deliveryDateDisplay : $0.builtAgeDisplay })
+        comparisonRow("階数", values: listings.map { $0.floorDisplay.isEmpty ? "—" : $0.floorDisplay })
+        comparisonRow("総戸数", values: listings.map(\.totalUnitsDisplay))
+        comparisonRow("権利形態", values: listings.map(\.ownershipShort))
+    }
+
+    @ViewBuilder
+    private var optionalRows: some View {
+        if showProfitPct {
+            comparisonRow("儲かる確率", values: listings.map(\.ssProfitDisplay))
+        }
+        if showAppreciationRate {
+            comparisonRow("値上がり率", values: listings.map { $0.ssAppreciationRate.map { String(format: "%.1f%%", $0) } ?? "—" })
+        }
+        if showPriceJudgment {
+            comparisonRow("割安判定", values: listings.map { $0.computedPriceJudgment ?? "—" })
+        }
+        if showMarketData {
+            comparisonRow("成約相場比", values: listings.map { $0.parsedMarketData?.priceRatioDisplay ?? "—" })
+            comparisonRow("相場差額", values: listings.map { $0.parsedMarketData?.priceDiffDisplay ?? "—" })
+            comparisonRow("エリア傾向", values: listings.map { $0.parsedMarketData?.trendDisplay ?? "—" })
+        }
+        if showPopulationData {
+            comparisonRow("エリア人口", values: listings.map { $0.parsedPopulationData?.populationDisplay ?? "—" })
+            comparisonRow("人口増減", values: listings.map { $0.parsedPopulationData?.popChange1yrDisplay ?? "—" })
+        }
+    }
+
+    /// Grid の1行。ラベル列 + 各物件の値列で構成。行高は Grid が自動同期。
+    private func comparisonRow(_ label: String, values: [String]) -> some View {
+        GridRow {
+            labelCell(label)
+                .frame(width: 90)
+            ForEach(Array(values.enumerated()), id: \.offset) { _, val in
+                valueCell(val)
+                    .frame(width: 140)
+            }
         }
     }
 
