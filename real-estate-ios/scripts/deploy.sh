@@ -4,10 +4,11 @@
 # ============================================================================
 #
 # 使い方:
-#   ./scripts/deploy.sh              # iOS アーカイブ + アップロード
+#   ./scripts/deploy.sh              # iOS + Mac 両方をアーカイブ + アップロード
 #   ./scripts/deploy.sh --archive    # iOS アーカイブのみ（アップロードしない）
 #   ./scripts/deploy.sh --upload     # 既存 iOS アーカイブのアップロードのみ
-#   ./scripts/deploy.sh --mac        # Mac Catalyst アーカイブ + アップロード
+#   ./scripts/deploy.sh --ios        # iOS のみアーカイブ + アップロード
+#   ./scripts/deploy.sh --mac        # Mac Catalyst のみアーカイブ + アップロード
 #   ./scripts/deploy.sh --all        # iOS + Mac 両方をアーカイブ + アップロード
 #
 # 初回セットアップ:
@@ -127,7 +128,10 @@ bump_build_number() {
 
 # ── アーカイブ ────────────────────────────────────────
 do_archive() {
-    bump_build_number
+    if [[ "${BUILD_BUMPED:-}" != "1" ]]; then
+        bump_build_number
+        BUILD_BUMPED=1
+    fi
     info "アーカイブ中… (scheme: $SCHEME, configuration: Release)"
 
     # 前回のアーカイブを削除
@@ -162,7 +166,10 @@ do_upload() {
 
 # ── Mac Catalyst アーカイブ ───────────────────────────
 do_archive_mac() {
-    bump_build_number
+    if [[ "${BUILD_BUMPED:-}" != "1" ]]; then
+        bump_build_number
+        BUILD_BUMPED=1
+    fi
     info "Mac Catalyst アーカイブ中… (scheme: $SCHEME, configuration: Release)"
 
     rm -rf "$ARCHIVE_PATH_MAC"
@@ -281,13 +288,19 @@ main() {
             echo ""
             do_upload_mac
             ;;
-        --help|-h)
-            echo "Usage: $0 [--setup|--archive|--upload|--mac|--all|--help]"
+        --ios)
+            do_archive
             echo ""
-            echo "  (引数なし)   iOS アーカイブ + アップロード"
+            do_upload
+            ;;
+        --help|-h)
+            echo "Usage: $0 [--setup|--archive|--upload|--ios|--mac|--all|--help]"
+            echo ""
+            echo "  (引数なし)   iOS + Mac 両方をアーカイブ + アップロード"
             echo "  --setup      API Key の初回セットアップ"
             echo "  --archive    iOS アーカイブのみ"
             echo "  --upload     既存 iOS アーカイブのアップロードのみ"
+            echo "  --ios        iOS アーカイブ + アップロード"
             echo "  --mac        Mac Catalyst アーカイブ + アップロード"
             echo "  --all        iOS + Mac 両方をアーカイブ + アップロード"
             echo ""
@@ -296,6 +309,12 @@ main() {
             do_archive
             echo ""
             do_upload
+            echo ""
+            info "── Mac Catalyst ──"
+            echo ""
+            do_archive_mac
+            echo ""
+            do_upload_mac
             ;;
         *)
             fail "不明なオプション: $mode\n  $0 --help で使い方を確認してください"
