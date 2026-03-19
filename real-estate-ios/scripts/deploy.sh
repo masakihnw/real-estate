@@ -4,9 +4,11 @@
 # ============================================================================
 #
 # 使い方:
-#   ./scripts/deploy.sh              # アーカイブ + アップロード
-#   ./scripts/deploy.sh --archive    # アーカイブのみ（アップロードしない）
-#   ./scripts/deploy.sh --upload     # 既存アーカイブのアップロードのみ
+#   ./scripts/deploy.sh              # iOS アーカイブ + アップロード
+#   ./scripts/deploy.sh --archive    # iOS アーカイブのみ（アップロードしない）
+#   ./scripts/deploy.sh --upload     # 既存 iOS アーカイブのアップロードのみ
+#   ./scripts/deploy.sh --mac        # Mac Catalyst アーカイブ + アップロード
+#   ./scripts/deploy.sh --all        # iOS + Mac 両方をアーカイブ + アップロード
 #
 # 初回セットアップ:
 #   1. App Store Connect → ユーザとアクセス → 統合 → App Store Connect API
@@ -29,7 +31,9 @@ CONFIG_DIR="$HOME/.config/real-estate-deploy"
 CONFIG_FILE="$CONFIG_DIR/config"
 
 ARCHIVE_PATH="/tmp/RealEstateApp.xcarchive"
+ARCHIVE_PATH_MAC="/tmp/RealEstateApp-Mac.xcarchive"
 EXPORT_PATH="/tmp/RealEstateExport"
+EXPORT_PATH_MAC="/tmp/RealEstateExport-Mac"
 EXPORT_OPTIONS="/tmp/RealEstateExportOptions.plist"
 DERIVED_DATA="/tmp/RealEstateAppDerivedData"
 
@@ -136,6 +140,7 @@ do_archive() {
         -archivePath "$ARCHIVE_PATH" \
         -derivedDataPath "$DERIVED_DATA" \
         -destination 'generic/platform=iOS' \
+        -allowProvisioningUpdates \
         archive \
         2>&1 | tail -5
 
@@ -152,11 +157,53 @@ do_archive() {
 
 # ── エクスポート＋アップロード ─────────────────────────
 do_upload() {
+    _upload_archive "$ARCHIVE_PATH" "$EXPORT_PATH" "iOS"
+}
+
+# ── Mac Catalyst アーカイブ ───────────────────────────
+do_archive_mac() {
+    bump_build_number
+    info "Mac Catalyst アーカイブ中… (scheme: $SCHEME, configuration: Release)"
+
+    rm -rf "$ARCHIVE_PATH_MAC"
+
+    xcodebuild \
+        -project "$PROJECT" \
+        -scheme "$SCHEME" \
+        -configuration Release \
+        -archivePath "$ARCHIVE_PATH_MAC" \
+        -derivedDataPath "$DERIVED_DATA" \
+        -destination 'platform=macOS,variant=Mac Catalyst' \
+        -allowProvisioningUpdates \
+        archive \
+        2>&1 | tail -15
+
+    [[ -d "$ARCHIVE_PATH_MAC" ]] || fail "Mac Catalyst アーカイブに失敗しました"
+
+    local build_num
+    build_num=$(/usr/libexec/PlistBuddy -c "Print :ApplicationProperties:CFBundleVersion" "$ARCHIVE_PATH_MAC/Info.plist" 2>/dev/null || echo "?")
+    local version
+    version=$(/usr/libexec/PlistBuddy -c "Print :ApplicationProperties:CFBundleShortVersionString" "$ARCHIVE_PATH_MAC/Info.plist" 2>/dev/null || echo "?")
+
+    ok "Mac Catalyst アーカイブ成功 (v${version} build ${build_num})"
+}
+
+# ── Mac Catalyst エクスポート＋アップロード ────────────
+do_upload_mac() {
+    _upload_archive "$ARCHIVE_PATH_MAC" "$EXPORT_PATH_MAC" "Mac Catalyst"
+}
+
+# ── 共通アップロード処理 ─────────────────────────────
+_upload_archive() {
+    local archive_path="$1"
+    local export_path="$2"
+    local platform_label="$3"
+
     load_config
 
-    info "エクスポート＋アップロード中…"
+    info "${platform_label} エクスポート＋アップロード中…"
 
-    [[ -d "$ARCHIVE_PATH" ]] || fail "アーカイブが見つかりません: $ARCHIVE_PATH\n   先に --archive を実行してください"
+    [[ -d "$archive_path" ]] || fail "アーカイブが見つかりません: $archive_path\n   先にアーカイブを実行してください"
 
     # ExportOptions.plist を生成
     cat > "$EXPORT_OPTIONS" <<PLIST
@@ -176,28 +223,26 @@ do_upload() {
 </plist>
 PLIST
 
-    # 前回のエクスポートを削除
-    rm -rf "$EXPORT_PATH"
+    rm -rf "$export_path"
 
     xcodebuild \
         -exportArchive \
-        -archivePath "$ARCHIVE_PATH" \
+        -archivePath "$archive_path" \
         -exportOptionsPlist "$EXPORT_OPTIONS" \
-        -exportPath "$EXPORT_PATH" \
+        -exportPath "$export_path" \
         -allowProvisioningUpdates \
         -authenticationKeyPath "$ASC_KEY_PATH" \
         -authenticationKeyID "$ASC_KEY_ID" \
         -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
         2>&1 | tail -10
 
-    if [[ $? -eq 0 ]] || grep -q "EXPORT SUCCEEDED\|Upload Succeeded" /tmp/RealEstateExport/*.plist 2>/dev/null; then
-        ok "App Store Connect へのアップロード完了"
+    if [[ $? -eq 0 ]] || grep -q "EXPORT SUCCEEDED\|Upload Succeeded" "${export_path}"/*.plist 2>/dev/null; then
+        ok "${platform_label}: App Store Connect へのアップロード完了"
     else
-        # エクスポートだけ成功してアップロードが失敗した場合のフォールバック
-        if ls "$EXPORT_PATH"/*.ipa 1>/dev/null 2>&1; then
-            warn "エクスポート成功・アップロード未確認。IPA: $(ls "$EXPORT_PATH"/*.ipa)"
+        if ls "$export_path"/*.ipa 1>/dev/null 2>&1 || ls "$export_path"/*.pkg 1>/dev/null 2>&1; then
+            warn "${platform_label}: エクスポート成功・アップロード未確認"
         else
-            fail "エクスポート / アップロードに失敗しました"
+            fail "${platform_label}: エクスポート / アップロードに失敗しました"
         fi
     fi
 }
@@ -220,13 +265,31 @@ main() {
         --upload)
             do_upload
             ;;
-        --help|-h)
-            echo "Usage: $0 [--setup|--archive|--upload|--help]"
+        --mac)
+            do_archive_mac
             echo ""
-            echo "  (引数なし)   アーカイブ + アップロード"
+            do_upload_mac
+            ;;
+        --all)
+            do_archive
+            echo ""
+            do_upload
+            echo ""
+            info "── Mac Catalyst ──"
+            echo ""
+            do_archive_mac
+            echo ""
+            do_upload_mac
+            ;;
+        --help|-h)
+            echo "Usage: $0 [--setup|--archive|--upload|--mac|--all|--help]"
+            echo ""
+            echo "  (引数なし)   iOS アーカイブ + アップロード"
             echo "  --setup      API Key の初回セットアップ"
-            echo "  --archive    アーカイブのみ"
-            echo "  --upload     既存アーカイブのアップロードのみ"
+            echo "  --archive    iOS アーカイブのみ"
+            echo "  --upload     既存 iOS アーカイブのアップロードのみ"
+            echo "  --mac        Mac Catalyst アーカイブ + アップロード"
+            echo "  --all        iOS + Mac 両方をアーカイブ + アップロード"
             echo ""
             ;;
         all|"")

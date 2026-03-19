@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.hanawa.realestate
   deploymentTarget:
     iOS: "17.0"
+    macCatalyst: "17.0"
   xcodeVersion: "16.0"
   createIntermediateGroups: true
   defaultConfig: Debug
@@ -18,8 +19,10 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    TARGETED_DEVICE_FAMILY: "1"          # iPhone only
-    CURRENT_PROJECT_VERSION: "190"
+    TARGETED_DEVICE_FAMILY: "1,2"        # iPhone + iPad
+    SUPPORTS_MACCATALYST: "YES"
+    DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER: "NO"
+    CURRENT_PROJECT_VERSION: "194"
     MARKETING_VERSION: "1.0.0"
 
 targets:
@@ -74,6 +77,8 @@ targets:
     entitlements:
       path: RealEstateApp/RealEstateApp.entitlements
       properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
         aps-environment: $(APS_ENVIRONMENT)
         com.apple.security.application-groups:
           - "group.com.hanawa.realestate"
@@ -106,6 +111,8 @@ targets:
     entitlements:
       path: RealEstateWidget/RealEstateWidget.entitlements
       properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
         com.apple.security.application-groups:
           - "group.com.hanawa.realestate"
     settings:
@@ -114,3 +121,4 @@ targets:
         DEVELOPMENT_TEAM: YRP5KV2X62
         CODE_SIGN_STYLE: Automatic
         SWIFT_VERSION: "5.9"
+        SUPPORTS_MACCATALYST: "YES"
