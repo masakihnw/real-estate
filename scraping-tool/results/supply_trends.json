@@ -3301,24 +3301,24 @@
     },
     {
       "date": "2026-03-20",
-      "total_listings": 149,
-      "new_count": 0,
-      "removed_count": 0,
+      "total_listings": 147,
+      "new_count": 1,
+      "removed_count": 3,
       "updated_count": 4,
-      "price_changed_count": 0,
-      "avg_price_man": 10900,
+      "price_changed_count": 1,
+      "avg_price_man": 10912,
       "median_price_man": 10980,
       "price_distribution": {
-        "under_10000": 37,
-        "10000_11000": 41,
-        "11000_12000": 71,
+        "under_10000": 35,
+        "10000_11000": 42,
+        "11000_12000": 70,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
           "count": 45,
-          "avg_price_man": 11066,
+          "avg_price_man": 11037,
           "min_price_man": 9250,
           "max_price_man": 11990
         },
@@ -3347,16 +3347,10 @@
           "max_price_man": 11200
         },
         "中野区": {
-          "count": 8,
-          "avg_price_man": 10496,
+          "count": 7,
+          "avg_price_man": 10670,
           "min_price_man": 9280,
           "max_price_man": 11990
-        },
-        "杉並区": {
-          "count": 7,
-          "avg_price_man": 10788,
-          "min_price_man": 9490,
-          "max_price_man": 11980
         },
         "板橋区": {
           "count": 7,
@@ -3381,6 +3375,12 @@
           "avg_price_man": 10198,
           "min_price_man": 9980,
           "max_price_man": 10990
+        },
+        "杉並区": {
+          "count": 6,
+          "avg_price_man": 11005,
+          "min_price_man": 10280,
+          "max_price_man": 11980
         },
         "台東区": {
           "count": 4,
