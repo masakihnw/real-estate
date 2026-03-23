@@ -35738,7 +35738,7 @@
       "latitude": 35.6347912,
       "longitude": 139.7234751,
       "building_group_id": "131090050-2011-RC",
-      "estimated_building_name": "オープンレジデンス白金台"
+      "estimated_building_name": "オープンレジデンス白金台B棟"
     },
     {
       "id": "tx-545eb3e610c2",
@@ -72842,7 +72842,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "オープンレジデンス白金台"
+      "estimated_building_name": "オープンレジデンス白金台B棟"
     },
     {
       "group_id": "131090050-2017-RC",
@@ -84221,7 +84221,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-23T03:43:33",
+    "updated_at": "2026-03-23T06:38:25",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
