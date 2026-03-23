@@ -11,10 +11,13 @@ from pathlib import Path
 
 from report_utils import identity_key, listing_has_property_changes, load_json
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 
 def main() -> None:
     if len(sys.argv) != 3:
-        print("使い方: python check_changes.py <current.json> <previous.json>", file=sys.stderr)
+        logger.info("使い方: python check_changes.py <current.json> <previous.json>")
         sys.exit(2)
 
     current_path = Path(sys.argv[1])
@@ -28,14 +31,14 @@ def main() -> None:
     try:
         current = load_json(current_path)
     except (json.JSONDecodeError, OSError) as e:
-        print(f"エラー: current JSON の読み込みに失敗: {e}", file=sys.stderr)
+        logger.error(f"エラー: current JSON の読み込みに失敗: {e}")
         sys.exit(2)
 
     try:
         previous = load_json(previous_path)
     except (json.JSONDecodeError, OSError) as e:
         # previous が壊れている場合は「変更あり」として続行
-        print(f"警告: previous JSON の読み込みに失敗（変更ありとして続行）: {e}", file=sys.stderr)
+        logger.error(f"警告: previous JSON の読み込みに失敗（変更ありとして続行）: {e}")
         sys.exit(0)
 
     curr_by_key = {identity_key(r): r for r in current}

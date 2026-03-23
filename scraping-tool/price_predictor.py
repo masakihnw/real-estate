@@ -18,6 +18,10 @@ import pandas as pd
 
 from shared_utils import ward_from_address
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 CALIBRATION_PATH = DATA_DIR / "calibration.json"
@@ -161,7 +165,7 @@ class MansionPricePredictor:
             with open(self._calibration_path, encoding="utf-8") as f:
                 self._calibration = json.load(f)
         except Exception as e:
-            print(f"警告: calibration.json の読み込みに失敗しました（デフォルトで続行）: {e}", file=sys.stderr)
+            logger.error(f"警告: calibration.json の読み込みに失敗しました（デフォルトで続行）: {e}")
             self._calibration = {}
 
     def _cal(self, key: str, default: Any) -> Any:
@@ -188,7 +192,7 @@ class MansionPricePredictor:
                             self._ward_coefficients[col], errors="coerce"
                         ).fillna(0).astype(int)
             except Exception as e:
-                print(f"警告: ward_coefficients.csv の読み込みに失敗しました（空で続行）: {e}", file=sys.stderr)
+                logger.error(f"警告: ward_coefficients.csv の読み込みに失敗しました（空で続行）: {e}")
                 self._ward_coefficients = None
         else:
             self._ward_coefficients = None
@@ -200,7 +204,7 @@ class MansionPricePredictor:
                 dtype={"age_min": "int64", "age_max": "int64", "guideline_yen_per_sqm": "float64"},
             )
         except Exception as e:
-            print(f"警告: management_guidelines.csv の読み込みに失敗しました（空で続行）: {e}", file=sys.stderr)
+            logger.error(f"警告: management_guidelines.csv の読み込みに失敗しました（空で続行）: {e}")
             self._management_guidelines = pd.DataFrame()
 
         macro_path = self.data_dir / "macro_economic_scenarios.csv"
@@ -210,7 +214,7 @@ class MansionPricePredictor:
                 dtype={"scenario_id": str, "scenario_name": str, "price_multiplier": "float64"},
             )
         except Exception as e:
-            print(f"警告: macro_economic_scenarios.csv の読み込みに失敗しました（空で続行）: {e}", file=sys.stderr)
+            logger.error(f"警告: macro_economic_scenarios.csv の読み込みに失敗しました（空で続行）: {e}")
             self._macro_scenarios = pd.DataFrame()
 
         self._loaded = True

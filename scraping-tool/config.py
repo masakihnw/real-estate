@@ -13,8 +13,12 @@ from __future__ import annotations
 
 import datetime
 import json
+import threading
 from pathlib import Path
 from typing import Any, TypedDict, cast
+
+# グローバル設定の変更を保護するロック（複数スレッドが同時に apply_runtime_overrides を呼ぶ場合）
+_config_lock = threading.Lock()
 
 # 検索地域: 東京23区以内
 AREA_LABEL = "東京23区"
@@ -305,7 +309,14 @@ def apply_runtime_overrides(data: dict[str, Any]) -> bool:
     """
     Firestore など外部設定を runtime 反映する。
     1つでも適用されたら True を返す。
+    スレッドセーフ: 同時呼び出しは _config_lock で排他制御する。
     """
+    with _config_lock:
+        return _apply_runtime_overrides_locked(data)
+
+
+def _apply_runtime_overrides_locked(data: dict[str, Any]) -> bool:
+    """ロック取得済みの状態で呼ぶ内部実装。"""
     global PRICE_MIN_MAN, PRICE_MAX_MAN, AREA_MIN_M2, AREA_MAX_M2, WALK_MIN_MAX, BUILT_YEAR_MIN, TOTAL_UNITS_MIN
     global LAYOUT_PREFIX_OK, ALLOWED_LINE_KEYWORDS, ALLOWED_STATIONS
 
@@ -347,6 +358,37 @@ def apply_runtime_overrides(data: dict[str, Any]) -> bool:
 
     _normalize_runtime_config()
     return applied
+
+
+def get_config() -> dict[str, Any]:
+    """
+    現在のスクレイピング設定をスナップショットとして返す。
+
+    グローバル変数を直接参照する代わりにこの関数を使うことで、
+    将来的に設定をデータクラスに移行しても呼び出し側を変えずに済む。
+
+    Returns:
+        設定値を持つ dict（読み取り専用として扱うこと）
+    """
+    with _config_lock:
+        return {
+            "price_min_man": PRICE_MIN_MAN,
+            "price_max_man": PRICE_MAX_MAN,
+            "area_min_m2": AREA_MIN_M2,
+            "area_max_m2": AREA_MAX_M2,
+            "layout_prefix_ok": LAYOUT_PREFIX_OK,
+            "built_year_min": BUILT_YEAR_MIN,
+            "walk_min_max": WALK_MIN_MAX,
+            "total_units_min": TOTAL_UNITS_MIN,
+            "allowed_line_keywords": ALLOWED_LINE_KEYWORDS,
+            "allowed_stations": ALLOWED_STATIONS,
+            "station_passengers_min": STATION_PASSENGERS_MIN,
+            "request_delay_sec": REQUEST_DELAY_SEC,
+            "homes_request_delay_sec": HOMES_REQUEST_DELAY_SEC,
+            "request_timeout_sec": REQUEST_TIMEOUT_SEC,
+            "request_retries": REQUEST_RETRIES,
+            "user_agent": USER_AGENT,
+        }
 
 
 _normalize_runtime_config()

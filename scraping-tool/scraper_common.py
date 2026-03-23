@@ -22,6 +22,10 @@ from config import (
     TOKYO_23_WARDS,
 )
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 
 # ──────────────────────────── セッション ────────────────────────────
 

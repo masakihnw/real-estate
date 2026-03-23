@@ -24,6 +24,10 @@ from pathlib import Path
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 # FCM v1 API エンドポイント
 FCM_SEND_URL = "https://fcm.googleapis.com/v1/projects/{project_id}/messages:send"
 
@@ -106,23 +110,23 @@ def send_topic_push(
             )
 
             if resp.status_code == 200:
-                print(f"プッシュ通知送信成功: {title}", file=sys.stderr)
+                logger.info(f"プッシュ通知送信成功: {title}")
                 return True
             elif resp.status_code in (500, 502, 503) and attempt < max_retries - 1:
                 wait = 2 ** (attempt + 1)
-                print(f"プッシュ通知送信失敗 ({resp.status_code})、{wait}秒後にリトライ ({attempt + 1}/{max_retries})", file=sys.stderr)
+                logger.error(f"プッシュ通知送信失敗 ({resp.status_code})、{wait}秒後にリトライ ({attempt + 1}/{max_retries})")
                 time.sleep(wait)
                 continue
             else:
-                print(f"プッシュ通知送信失敗: {resp.status_code} {resp.text}", file=sys.stderr)
+                logger.error(f"プッシュ通知送信失敗: {resp.status_code} {resp.text}")
                 return False
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
             if attempt < max_retries - 1:
                 wait = 2 ** (attempt + 1)
-                print(f"プッシュ通知送信エラー: {e}、{wait}秒後にリトライ ({attempt + 1}/{max_retries})", file=sys.stderr)
+                logger.error(f"プッシュ通知送信エラー: {e}、{wait}秒後にリトライ ({attempt + 1}/{max_retries})")
                 time.sleep(wait)
             else:
-                print(f"プッシュ通知送信失敗（リトライ上限）: {e}", file=sys.stderr)
+                logger.error(f"プッシュ通知送信失敗（リトライ上限）: {e}")
                 return False
 
     return False
@@ -184,7 +188,7 @@ def main() -> None:
                     with open(path, "r", encoding="utf-8") as f:
                         all_listings.extend(json.load(f))
                 except (json.JSONDecodeError, OSError) as e:
-                    print(f"警告: {path} の読み込みに失敗: {e}", file=sys.stderr)
+                    logger.error(f"警告: {path} の読み込みに失敗: {e}")
         if all_listings:
             detected = _detect_price_changes(all_listings, today)
             price_changes["decreases"] = detected["decreases"]
@@ -193,33 +197,33 @@ def main() -> None:
     total = args.new_count + args.shinchiku_count
     has_price_changes = bool(price_changes["decreases"] or price_changes["increases"])
     if total <= 0 and not has_price_changes:
-        print("新着・価格変動なし、通知をスキップ", file=sys.stderr)
+        logger.warning("新着・価格変動なし、通知をスキップ")
         return
 
     # サービスアカウント JSON
     sa_json = os.environ.get("FIREBASE_SERVICE_ACCOUNT", "")
     if not sa_json:
-        print("FIREBASE_SERVICE_ACCOUNT が未設定のためスキップ", file=sys.stderr)
+        logger.warning("FIREBASE_SERVICE_ACCOUNT が未設定のためスキップ")
         return
 
     try:
         service_account = json.loads(sa_json)
     except json.JSONDecodeError:
-        print("FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗", file=sys.stderr)
+        logger.error("FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗")
         return
 
     project_id = service_account.get("project_id", "")
     if not project_id:
         project_id = os.environ.get("FIREBASE_PROJECT_ID", "")
     if not project_id:
-        print("Firebase Project ID が見つかりません", file=sys.stderr)
+        logger.info("Firebase Project ID が見つかりません")
         return
 
     # アクセストークン取得
     try:
         access_token = get_access_token(service_account)
     except Exception as e:
-        print(f"アクセストークン取得失敗: {e}", file=sys.stderr)
+        logger.error(f"アクセストークン取得失敗: {e}")
         return
 
     # 通知メッセージ組み立て

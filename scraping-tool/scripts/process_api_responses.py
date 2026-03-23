@@ -19,6 +19,9 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(SCRIPT_DIR)
 OUTPUT_FILE = os.path.join(BASE_DIR, "data", "ward_price_history.json")
@@ -146,11 +149,11 @@ def collect_files(paths: List[str]) -> List[str]:
 
 def main():
     if len(sys.argv) < 2:
-        print("usage: python3 process_api_responses.py <file_or_dir> [...]", file=sys.stderr)
+        logger.info("usage: python3 process_api_responses.py <file_or_dir> [...]")
         sys.exit(1)
 
     files = collect_files(sys.argv[1:])
-    print(f"処理対象: {len(files)} ファイル", file=sys.stderr)
+    logger.info(f"処理対象: {len(files)} ファイル")
 
     accumulated: Dict[str, Dict[str, List[float]]] = {}
     total_records = 0
@@ -163,7 +166,7 @@ def main():
                     total_records += len(prices)
             merge_results(accumulated, result)
             ward_count = sum(len(qs) for qs in result.values())
-            print(f"  {os.path.basename(fpath)}: {ward_count} ward-quarter(s)", file=sys.stderr)
+            logger.info(f"  {os.path.basename(fpath)}: {ward_count} ward-quarter(s)")
 
     output = build_output(accumulated)
 
@@ -176,12 +179,12 @@ def main():
     for wd in output["by_ward"].values():
         quarter_set.update(wd["quarters"].keys())
 
-    print(f"\n=== 結果 ===", file=sys.stderr)
-    print(f"区数: {ward_count}", file=sys.stderr)
-    print(f"四半期数: {len(quarter_set)}", file=sys.stderr)
-    print(f"総レコード: {total_records}", file=sys.stderr)
-    print(f"期間: {min(quarter_set)} 〜 {max(quarter_set)}", file=sys.stderr)
-    print(f"出力: {OUTPUT_FILE}", file=sys.stderr)
+    logger.info(f"\n=== 結果 ===")
+    logger.info(f"区数: {ward_count}")
+    logger.info(f"四半期数: {len(quarter_set)}")
+    logger.info(f"総レコード: {total_records}")
+    logger.info(f"期間: {min(quarter_set)} 〜 {max(quarter_set)}")
+    logger.info(f"出力: {OUTPUT_FILE}")
 
 
 if __name__ == "__main__":

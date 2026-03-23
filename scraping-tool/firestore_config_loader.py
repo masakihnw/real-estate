@@ -17,6 +17,9 @@ import os
 import sys
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # スクリプト配置が scraping-tool/ である前提
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -37,13 +40,13 @@ def load_config_from_firestore() -> bool:
         import firebase_admin
         from firebase_admin import credentials, firestore
     except ImportError:
-        print("# firebase-admin がインストールされていません。config.py のデフォルトを使用します。", file=sys.stderr)
+        logger.warning("firebase-admin がインストールされていません。config.py のデフォルトを使用します。")
         return False
 
     try:
         cred_dict = json.loads(json_str)
     except json.JSONDecodeError as e:
-        print(f"# FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗: {e}", file=sys.stderr)
+        logger.error("FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗: %s", e)
         return False
 
     try:
@@ -54,14 +57,14 @@ def load_config_from_firestore() -> bool:
             firebase_admin.initialize_app(cred)
         db = firestore.client()
     except Exception as e:
-        print(f"# Firebase 初期化失敗: {e}", file=sys.stderr)
+        logger.error("Firebase 初期化失敗: %s", e)
         return False
 
     try:
         doc_ref = db.collection(COLLECTION_NAME).document(CONFIG_DOC_ID)
         doc = doc_ref.get()
     except Exception as e:
-        print(f"# Firestore 取得失敗: {e}", file=sys.stderr)
+        logger.error("Firestore 取得失敗: %s", e)
         return False
 
     if not doc.exists:
@@ -76,6 +79,6 @@ def load_config_from_firestore() -> bool:
     applied = config_mod.apply_runtime_overrides(data)
 
     if applied:
-        print(f"# Firestore からスクレイピング条件を読み込みました（{CONFIG_DOC_ID}）", file=sys.stderr)
+        logger.info("Firestore からスクレイピング条件を読み込みました（%s）", CONFIG_DOC_ID)
 
     return applied

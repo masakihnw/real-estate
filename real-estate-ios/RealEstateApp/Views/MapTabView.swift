@@ -872,6 +872,7 @@ struct MapTabView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ListingStore.self) private var store
     @Query private var listings: [Listing]
+    private let networkMonitor = NetworkMonitor.shared
 
     @State private var selectedListing: Listing?
     /// OOUI: 地図タブ独自のフィルタ状態（一覧タブと干渉しない）
@@ -990,7 +991,7 @@ struct MapTabView: View {
                         } label: {
                             Image(systemName: "arrow.clockwise")
                         }
-                        .disabled(store.isRefreshing)
+                        .disabled(store.isRefreshing || !networkMonitor.isConnected)
                         .accessibilityLabel("更新")
 
                         Button {
@@ -1047,8 +1048,10 @@ struct MapTabView: View {
                 .padding(.top, 4)
             }
             .alert("データ取得エラー", isPresented: $showErrorAlert) {
-                Button("再取得") {
-                    Task { await store.refresh(modelContext: modelContext) }
+                if networkMonitor.isConnected {
+                    Button("再取得") {
+                        Task { await store.refresh(modelContext: modelContext) }
+                    }
                 }
                 Button("閉じる", role: .cancel) { }
             } message: {

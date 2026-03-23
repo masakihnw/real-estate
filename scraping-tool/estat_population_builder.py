@@ -27,6 +27,9 @@ from typing import Any, Dict, List, Optional
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ---------------------------------------------------------------------------
 # 設定
 # ---------------------------------------------------------------------------
@@ -64,8 +67,8 @@ OUTPUT_FILE = os.path.join(OUTPUT_DIR, "estat_population.json")
 def get_api_key() -> str:
     key = os.environ.get("ESTAT_API_KEY", "")
     if not key:
-        print("エラー: ESTAT_API_KEY 環境変数を設定してください", file=sys.stderr)
-        print("  https://www.e-stat.go.jp/api/ からアプリケーションIDを取得してください", file=sys.stderr)
+        logger.error("エラー: ESTAT_API_KEY 環境変数を設定してください")
+        logger.info("  https://www.e-stat.go.jp/api/ からアプリケーションIDを取得してください")
         sys.exit(1)
     return key
 
@@ -77,10 +80,10 @@ def estat_request(endpoint: str, params: dict) -> Optional[dict]:
         if resp.status_code == 200:
             return resp.json()
         else:
-            print(f"  e-Stat API エラー: {resp.status_code}", file=sys.stderr)
+            logger.error(f"  e-Stat API エラー: {resp.status_code}")
             return None
     except Exception as e:
-        print(f"  リクエスト例外: {e}", file=sys.stderr)
+        logger.info(f"  リクエスト例外: {e}")
         return None
 
 
@@ -119,7 +122,7 @@ def search_population_stats(api_key: str) -> List[dict]:
                 "cycle": cycle,
             })
     except Exception as e:
-        print(f"  統計表解析エラー: {e}", file=sys.stderr)
+        logger.error(f"  統計表解析エラー: {e}")
 
     return tables
 
@@ -136,9 +139,9 @@ def fetch_population_data(api_key: str) -> dict:
     result_by_ward: Dict[str, Any] = {}
 
     # まず統計表一覧を検索
-    print("  統計表を検索中...", file=sys.stderr)
+    logger.info("  統計表を検索中...")
     tables = search_population_stats(api_key)
-    print(f"  {len(tables)} 件の統計表が見つかりました", file=sys.stderr)
+    logger.info(f"  {len(tables)} 件の統計表が見つかりました")
 
     # 東京都の区別人口に関する統計表を探す
     target_tables = []
@@ -148,14 +151,14 @@ def fetch_population_data(api_key: str) -> dict:
             target_tables.append(table)
 
     if not target_tables:
-        print("  適切な統計表が見つかりませんでした。手動でデータを入力する必要があります。", file=sys.stderr)
+        logger.info("  適切な統計表が見つかりませんでした。手動でデータを入力する必要があります。")
         # フォールバック: 推計データを使用
         return build_estimated_population()
 
     # 最初の適切な統計表からデータを取得
     for table in target_tables[:3]:  # 最大3テーブルを試行
         table_id = table["id"]
-        print(f"  統計表 {table_id}: {table['title']} を取得中...", file=sys.stderr)
+        logger.info(f"  統計表 {table_id}: {table['title']} を取得中...")
 
         params = {
             "appId": api_key,
@@ -250,15 +253,15 @@ def fetch_population_data(api_key: str) -> dict:
                     result_by_ward[ward_name]["households"][year_str] = num_value
 
             if result_by_ward:
-                print(f"  {len(result_by_ward)} 区のデータを取得しました", file=sys.stderr)
+                logger.info(f"  {len(result_by_ward)} 区のデータを取得しました")
                 break
 
         except Exception as e:
-            print(f"  データ解析エラー: {e}", file=sys.stderr)
+            logger.error(f"  データ解析エラー: {e}")
             continue
 
     if not result_by_ward:
-        print("  API からデータを取得できませんでした。推計データを使用します。", file=sys.stderr)
+        logger.info("  API からデータを取得できませんでした。推計データを使用します。")
         return build_estimated_population()
 
     # 変動率を算出
@@ -349,7 +352,7 @@ def main() -> None:
     os.makedirs(args.output_dir, exist_ok=True)
 
     api_key = get_api_key()
-    print("=== e-Stat 人口動態キャッシュ構築開始 ===", file=sys.stderr)
+    logger.info("=== e-Stat 人口動態キャッシュ構築開始 ===")
 
     result = fetch_population_data(api_key)
 
@@ -361,8 +364,8 @@ def main() -> None:
         w for w in result.get("by_ward", {}).values()
         if w.get("latest_population") is not None
     ])
-    print(f"=== 完了: {ward_count}区の人口データを保存 ===", file=sys.stderr)
-    print(f"出力: {output_path}", file=sys.stderr)
+    logger.info(f"=== 完了: {ward_count}区の人口データを保存 ===")
+    logger.info(f"出力: {output_path}")
 
 
 if __name__ == "__main__":

@@ -29,6 +29,10 @@ from typing import Any, Optional
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 # ────────────────────────────────────────────────────────
 # GSI ハザードマップタイル設定
 # ────────────────────────────────────────────────────────
@@ -195,16 +199,16 @@ def _load_risk_geojson() -> None:
         if not path.exists():
             path = RISK_GEOJSON_DIR_ALT / filename
         if not path.exists():
-            print(f"  地域危険度 GeoJSON が見つかりません: {filename}", file=sys.stderr)
+            logger.info(f"  地域危険度 GeoJSON が見つかりません: {filename}")
             continue
 
         try:
             with open(path, encoding="utf-8") as f:
                 geojson = json.load(f)
             _risk_features[risk_key] = geojson.get("features", [])
-            print(f"  地域危険度 {risk_key}: {len(_risk_features[risk_key])} features ロード", file=sys.stderr)
+            logger.info(f"  地域危険度 {risk_key}: {len(_risk_features[risk_key])} features ロード")
         except (json.JSONDecodeError, OSError) as e:
-            print(f"  地域危険度 GeoJSON 読み込みエラー ({filename}): {e}", file=sys.stderr)
+            logger.error(f"  地域危険度 GeoJSON 読み込みエラー ({filename}): {e}")
 
 
 def _point_in_polygon(px: float, py: float, polygon: list[list[float]]) -> bool:
@@ -275,7 +279,7 @@ def enrich_hazard(listings: list[dict]) -> list[dict]:
     enriched_count = 0
     hazard_count = 0
 
-    print(f"ハザード enrichment 開始: {total} 件", file=sys.stderr)
+    logger.info(f"ハザード enrichment 開始: {total} 件")
 
     for i, listing in enumerate(listings):
         lat = listing.get("latitude")
@@ -334,9 +338,9 @@ def enrich_hazard(listings: list[dict]) -> list[dict]:
             hazard_count += 1
 
         if (i + 1) % 10 == 0 or i + 1 == total:
-            print(f"  進捗: {i + 1}/{total} (ハザード該当: {hazard_count}件)", file=sys.stderr)
+            logger.info(f"  進捗: {i + 1}/{total} (ハザード該当: {hazard_count}件)")
 
-    print(f"ハザード enrichment 完了: {enriched_count}/{total} 件処理, {hazard_count} 件ハザード該当", file=sys.stderr)
+    logger.info(f"ハザード enrichment 完了: {enriched_count}/{total} 件処理, {hazard_count} 件ハザード該当")
     return listings
 
 
@@ -361,7 +365,7 @@ def main() -> None:
 
     input_path = Path(args.input)
     if not input_path.exists():
-        print(f"エラー: {input_path} が見つかりません", file=sys.stderr)
+        logger.error(f"エラー: {input_path} が見つかりません")
         sys.exit(1)
 
     with open(input_path, encoding="utf-8") as f:
@@ -377,7 +381,7 @@ def main() -> None:
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(output_path)
 
-    print(f"保存: {output_path}", file=sys.stderr)
+    logger.info(f"保存: {output_path}")
 
 
 if __name__ == "__main__":

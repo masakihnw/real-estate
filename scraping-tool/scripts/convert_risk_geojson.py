@@ -25,6 +25,10 @@ from pathlib import Path
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 # SHP ダウンロード URL（東京都都市整備局 地域危険度測定調査 第9回）
 SHP_URL = "https://www.toshiseibi.metro.tokyo.lg.jp/bosai/chousa_6/download/all2.zip"
 
@@ -53,7 +57,7 @@ def download_shp(url: str) -> Path:
     """SHP ZIP をダウンロードし、一時ディレクトリに展開して SHP ファイルパスを返す。"""
     import tempfile
 
-    print(f"ダウンロード中: {url}", file=sys.stderr)
+    logger.info(f"ダウンロード中: {url}")
     resp = requests.get(url, timeout=120)
     resp.raise_for_status()
 
@@ -66,7 +70,7 @@ def download_shp(url: str) -> Path:
     if not shp_files:
         raise FileNotFoundError(f"SHP ファイルが見つかりません: {tmpdir}")
 
-    print(f"SHP: {shp_files[0]}", file=sys.stderr)
+    logger.info(f"SHP: {shp_files[0]}")
     return shp_files[0]
 
 
@@ -89,25 +93,25 @@ def convert_to_geojson(shp_path: Path) -> None:
     try:
         import geopandas as gpd
     except ImportError:
-        print("geopandas が必要です: pip install geopandas shapely fiona", file=sys.stderr)
+        logger.info("geopandas が必要です: pip install geopandas shapely fiona")
         sys.exit(1)
 
     gdf = gpd.read_file(shp_path)
 
     # Shapefile の属性名を確認
-    print(f"属性列: {list(gdf.columns)}", file=sys.stderr)
-    print(f"レコード数: {len(gdf)}", file=sys.stderr)
+    logger.info(f"属性列: {list(gdf.columns)}")
+    logger.info(f"レコード数: {len(gdf)}")
 
     # CRS を WGS84 (EPSG:4326) に変換
     if gdf.crs and gdf.crs.to_epsg() != 4326:
-        print(f"CRS 変換: {gdf.crs} -> EPSG:4326", file=sys.stderr)
+        logger.info(f"CRS 変換: {gdf.crs} -> EPSG:4326")
         gdf = gdf.to_crs(epsg=4326)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # 全属性から数値列を探してランク候補を推測
     numeric_cols = [c for c in gdf.columns if gdf[c].dtype in ("int64", "float64", "int32", "float32")]
-    print(f"数値列: {numeric_cols}", file=sys.stderr)
+    logger.info(f"数値列: {numeric_cols}")
 
     # 町丁目名の列を探す
     name_col = None
@@ -124,21 +128,21 @@ def convert_to_geojson(shp_path: Path) -> None:
 
         if rank_col is None:
             # フォールバック: 数値列から順番に割り当て
-            print(f"警告: {config['label']} の列が見つかりません。数値列から推測します。", file=sys.stderr)
+            logger.warning(f"警告: {config['label']} の列が見つかりません。数値列から推測します。")
             # RANK1, RANK2, RANK3 のようなパターンを探す
             idx = list(RANK_COLUMNS.keys()).index(output_name)
             rank_like = [c for c in numeric_cols if "rank" in c.lower() or "危険" in c.lower()]
             if idx < len(rank_like):
                 rank_col = rank_like[idx]
-                print(f"  -> {rank_col} を使用", file=sys.stderr)
+                logger.info(f"  -> {rank_col} を使用")
             elif idx < len(numeric_cols):
                 rank_col = numeric_cols[idx]
-                print(f"  -> {rank_col} を使用（推測）", file=sys.stderr)
+                logger.info(f"  -> {rank_col} を使用（推測）")
             else:
-                print(f"  -> スキップ（適切な列が見つかりません）", file=sys.stderr)
+                logger.warning(f"  -> スキップ（適切な列が見つかりません）")
                 continue
 
-        print(f"{config['label']}: 列={rank_col}, 値範囲={gdf[rank_col].min()}-{gdf[rank_col].max()}", file=sys.stderr)
+        logger.info(f"{config['label']}: 列={rank_col}, 値範囲={gdf[rank_col].min()}-{gdf[rank_col].max()}")
 
         # GeoJSON 用のデータフレームを作成
         features = []
@@ -179,7 +183,7 @@ def convert_to_geojson(shp_path: Path) -> None:
             json.dump(geojson, f, ensure_ascii=False)
 
         file_size_mb = output_path.stat().st_size / (1024 * 1024)
-        print(f"保存: {output_path} ({len(features)} features, {file_size_mb:.1f} MB)", file=sys.stderr)
+        logger.info(f"保存: {output_path} ({len(features)} features, {file_size_mb:.1f} MB)")
 
 
 def _round_coordinates(geojson_geom: dict, precision: int = 5) -> dict:
@@ -200,7 +204,7 @@ def _round_coordinates(geojson_geom: dict, precision: int = 5) -> dict:
 def main() -> None:
     shp_path = download_shp(SHP_URL)
     convert_to_geojson(shp_path)
-    print("変換完了", file=sys.stderr)
+    logger.info("変換完了")
 
 
 if __name__ == "__main__":

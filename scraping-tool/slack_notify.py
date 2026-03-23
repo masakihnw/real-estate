@@ -23,6 +23,10 @@ from report_utils import (
     load_json,
 )
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 
 def format_diff_message(
     diff: dict[str, Any],
@@ -113,7 +117,7 @@ def send_slack_message(webhook_url: str, message: str) -> bool:
         with urllib.request.urlopen(req, timeout=10) as response:
             return response.status == 200
     except Exception as e:
-        print(f"Slack送信エラー: {e}", file=sys.stderr)
+        logger.error(f"Slack送信エラー: {e}")
         return False
 
 
@@ -142,13 +146,13 @@ def send_slack_message_chunked_with_retry(webhook_url: str, message: str) -> boo
         for attempt in range(SLACK_SEND_RETRIES):
             if send_slack_message(webhook_url, chunk):
                 if len(chunks) > 1:
-                    print(f"Slack: チャンク {i + 1}/{len(chunks)} 送信完了", file=sys.stderr)
+                    logger.info(f"Slack: チャンク {i + 1}/{len(chunks)} 送信完了")
                 break
             if attempt < SLACK_SEND_RETRIES - 1:
                 time.sleep(SLACK_RETRY_DELAY_SEC)
-                print(f"Slack: チャンク {i + 1} リトライ ({attempt + 2}/{SLACK_SEND_RETRIES})", file=sys.stderr)
+                logger.info(f"Slack: チャンク {i + 1} リトライ ({attempt + 2}/{SLACK_SEND_RETRIES})")
         else:
-            print(f"Slack: チャンク {i + 1}/{len(chunks)} が送信できませんでした（リトライ上限）", file=sys.stderr)
+            logger.info(f"Slack: チャンク {i + 1}/{len(chunks)} が送信できませんでした（リトライ上限）")
             return False
     return True
 
@@ -319,7 +323,7 @@ def build_message_from_report(report_path: Path, report_url: Optional[str] = Non
 def main() -> None:
     """メイン処理。"""
     if len(sys.argv) < 2:
-        print("使い方: python slack_notify.py <current.json> [previous.json] [report.md]", file=sys.stderr)
+        logger.info("使い方: python slack_notify.py <current.json> [previous.json] [report.md]")
         sys.exit(1)
 
     current_path = Path(sys.argv[1])
@@ -328,7 +332,7 @@ def main() -> None:
 
     webhook_url = os.environ.get("SLACK_WEBHOOK_URL")
     if not webhook_url:
-        print("警告: SLACK_WEBHOOK_URL 環境変数が設定されていません（通知をスキップ）", file=sys.stderr)
+        logger.warning("警告: SLACK_WEBHOOK_URL 環境変数が設定されていません（通知をスキップ）")
         sys.exit(0)  # エラーではなく警告として扱い、ワークフローは続行
 
     current = load_json(current_path, missing_ok=True, default=[])
@@ -340,7 +344,7 @@ def main() -> None:
         diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
         diff_removed_a = [r for r in diff.get("removed", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
         if not diff_new_a and not diff_removed_a:
-            print("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします", file=sys.stderr)
+            logger.warning("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします")
             sys.exit(0)
 
     # CI（GitHub Actions）では GITHUB_REPOSITORY / GITHUB_REF_NAME から正しい URL を組み立てる
@@ -358,9 +362,9 @@ def main() -> None:
     message = build_slack_message_from_listings(current, previous, report_url, map_url=map_url)
 
     if send_slack_message_chunked_with_retry(webhook_url, message):
-        print("Slack通知を送信しました", file=sys.stderr)
+        logger.info("Slack通知を送信しました")
     else:
-        print("Slack通知の送信に失敗しました（リトライ後も送信できませんでした）", file=sys.stderr)
+        logger.error("Slack通知の送信に失敗しました（リトライ後も送信できませんでした）")
         sys.exit(1)
 
 

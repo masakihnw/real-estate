@@ -28,6 +28,9 @@ sys.path.insert(0, str(ROOT))
 from scripts.geocode import geocode
 from report_utils import compare_listings, identity_key
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 
 def build_map_data(
     listings: list,
@@ -249,12 +252,12 @@ def main() -> None:
     limit = args.limit
     output_html = args.output
     if not json_path.exists():
-        print(f"Error: {json_path} not found", file=sys.stderr)
+        logger.error(f"Error: {json_path} not found")
         sys.exit(1)
     with open(json_path, encoding="utf-8") as f:
         listings = json.load(f)
     if not isinstance(listings, list):
-        print("Error: JSON must be an array of listings", file=sys.stderr)
+        logger.error("Error: JSON must be an array of listings")
         sys.exit(1)
 
     # 新築 JSON を読み込んで結合
@@ -268,11 +271,11 @@ def main() -> None:
                 if isinstance(shinchiku_data, list):
                     shinchiku_count = len(shinchiku_data)
                     listings = listings + shinchiku_data
-                    print(f"Loaded {shinchiku_count} shinchiku listings from {shinchiku_path}")
+                    logger.error(f"Loaded {shinchiku_count} shinchiku listings from {shinchiku_path}")
             except Exception as e:
-                print(f"Warning: failed to load shinchiku JSON: {e}", file=sys.stderr)
+                print(f"Warning: failed to load shinchiku JSON: {e}")
         else:
-            print(f"Warning: shinchiku file not found: {shinchiku_path}", file=sys.stderr)
+            logger.warning(f"Warning: shinchiku file not found: {shinchiku_path}")
 
     if limit is not None:
         listings = listings[:limit]

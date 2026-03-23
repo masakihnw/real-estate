@@ -16,6 +16,9 @@ import pandas as pd
 
 from shared_utils import calc_loan_residual_10y_yen, ward_from_address
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 WARD_POTENTIAL_PATH = DATA_DIR / "ward_potential.csv"
@@ -119,7 +122,7 @@ class FutureEstatePredictor:
                     self._ward_potential["supply_constraint"], errors="coerce"
                 ).fillna(1.0)
         except Exception as e:
-            print(f"警告: ward_potential.csv の読み込みに失敗しました（空で続行）: {e}", file=sys.stderr)
+            logger.error(f"警告: ward_potential.csv の読み込みに失敗しました（空で続行）: {e}")
             self._ward_potential = None
         self._loaded = True
 

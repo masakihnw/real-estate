@@ -14,6 +14,9 @@ from typing import Optional, Tuple
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 CACHE_PATH = Path(__file__).resolve().parent.parent / "data" / "geocode_cache.json"
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 USER_AGENT = "real-estate-map-viewer/1.0 (personal project; low request rate)"
@@ -128,7 +131,7 @@ def validate_tokyo_coordinate(address: str, lat: float, lon: float) -> bool:
     # 東京23区の大枠チェック
     if not (TOKYO_23KU_LAT_MIN <= lat <= TOKYO_23KU_LAT_MAX and
             TOKYO_23KU_LON_MIN <= lon <= TOKYO_23KU_LON_MAX):
-        print(f"⚠ バリデーション失敗（東京範囲外）: {address} → [{lat}, {lon}]", file=sys.stderr)
+        logger.error(f"⚠ バリデーション失敗（東京範囲外）: {address} → [{lat}, {lon}]")
         return False
 
     # 区の中心からの距離チェック
@@ -137,7 +140,7 @@ def validate_tokyo_coordinate(address: str, lat: float, lon: float) -> bool:
         center_lat, center_lon = _WARD_CENTERS[ward]
         dist = _haversine_km(lat, lon, center_lat, center_lon)
         if dist > _MAX_WARD_RADIUS_KM:
-            print(f"⚠ バリデーション失敗（{ward}中心から{dist:.1f}km）: {address} → [{lat}, {lon}]", file=sys.stderr)
+            logger.error(f"⚠ バリデーション失敗（{ward}中心から{dist:.1f}km）: {address} → [{lat}, {lon}]")
             return False
 
     return True

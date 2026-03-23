@@ -12,6 +12,9 @@ import json
 import sys
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = ROOT / "data" / "building_units.json"
 KEYS = (
@@ -25,22 +28,22 @@ KEYS = (
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("usage: merge_detail_cache.py <listings.json>", file=sys.stderr)
+        logger.info("usage: merge_detail_cache.py <listings.json>")
         sys.exit(1)
     json_path = Path(sys.argv[1])
     if not json_path.exists():
-        print(f"ファイルがありません: {json_path}", file=sys.stderr)
+        logger.info(f"ファイルがありません: {json_path}")
         sys.exit(1)
 
     with open(json_path, "r", encoding="utf-8") as f:
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print("JSON は配列である必要があります", file=sys.stderr)
+        logger.info("JSON は配列である必要があります")
         sys.exit(1)
 
     if not CACHE_PATH.exists():
-        print(f"キャッシュがありません: {CACHE_PATH}", file=sys.stderr)
+        logger.info(f"キャッシュがありません: {CACHE_PATH}")
         sys.exit(0)
 
     with open(CACHE_PATH, "r", encoding="utf-8") as f:
@@ -68,7 +71,7 @@ def main() -> None:
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(json_path)
-    print(f"詳細キャッシュをマージしました: {json_path}（{merged}件のフィールドを補完）", file=sys.stderr)
+    logger.info(f"詳細キャッシュをマージしました: {json_path}（{merged}件のフィールドを補完）")
 
 
 if __name__ == "__main__":

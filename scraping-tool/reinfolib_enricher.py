@@ -64,6 +64,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from parse_utils import extract_ward as _extract_ward_shared
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ---------------------------------------------------------------------------
 # キャッシュ読み込み
 # ---------------------------------------------------------------------------
@@ -541,8 +544,8 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
     station_price_data = load_json_file(STATION_PRICE_CACHE)
 
     if not prices:
-        print("警告: reinfolib_prices.json が見つかりません。スキップします。", file=sys.stderr)
-        print(f"  期待パス: {PRICES_CACHE}", file=sys.stderr)
+        logger.warning("警告: reinfolib_prices.json が見つかりません。スキップします。")
+        logger.info(f"  期待パス: {PRICES_CACHE}")
         return 0
 
     prices_by_ward = prices.get("by_ward", {})

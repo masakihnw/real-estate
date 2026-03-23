@@ -39,6 +39,9 @@ from config import (
 )
 from scraper_common import create_session
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # HTMLキャッシュ
 CACHE_DIR = ROOT / "data" / "shinchiku_html_cache"
 MANIFEST_PATH = CACHE_DIR / "manifest.json"
@@ -147,7 +150,7 @@ def _fetch_page(
                 retry_after = int(r.headers.get("Retry-After", 60))
                 backoff = min(retry_after, 120)
                 if attempt < REQUEST_RETRIES - 1:
-                    print(f"  429 Rate Limited, waiting {backoff}s", file=sys.stderr)
+                    logger.warning(f"  429 Rate Limited, waiting {backoff}s")
                     time.sleep(backoff)
                     continue
                 raise requests.exceptions.HTTPError(
@@ -431,7 +434,7 @@ def enrich_listing(
                 }
                 main_html = html
         except Exception as e:
-            print(f"  メインページ取得失敗 {url[:60]}...: {e}", file=sys.stderr)
+            logger.error(f"  メインページ取得失敗 {url[:60]}...: {e}")
             main_html = None
 
     if main_html:
@@ -463,7 +466,7 @@ def enrich_listing(
             else:
                 madori_html = html  # empty string for 404
         except Exception as e:
-            print(f"  間取りタブ取得失敗 {madori_url[:60]}...: {e}", file=sys.stderr)
+            logger.error(f"  間取りタブ取得失敗 {madori_url[:60]}...: {e}")
             madori_html = None
 
     # 間取り図画像の取得とフィルタリング
@@ -481,8 +484,7 @@ def enrich_listing(
             matched = len(floor_plan_images)
             total = len(madori_plans)
             if matched < total:
-                print(
-                    f"    間取りタブ: {total}タイプ中{matched}タイプが条件合致",
+                logger.info(f"    間取りタブ: {total}タイプ中{matched}タイプが条件合致",
                     file=sys.stderr,
                 )
 
@@ -514,14 +516,14 @@ def main() -> None:
     output_path = Path(args.output)
 
     if not input_path.exists():
-        print(f"入力ファイルがありません: {input_path}", file=sys.stderr)
+        print(f"入力ファイルがありません: {input_path}")
         sys.exit(1)
 
     with open(input_path, "r", encoding="utf-8") as f:
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print("JSON は配列である必要があります", file=sys.stderr)
+        logger.info("JSON は配列である必要があります")
         sys.exit(1)
 
     # SUUMO 新築物件で画像未取得のものを対象にする
@@ -534,11 +536,10 @@ def main() -> None:
     ]
 
     if not targets:
-        print("画像未取得の SUUMO 新築物件はありません", file=sys.stderr)
+        logger.info("画像未取得の SUUMO 新築物件はありません")
         sys.exit(0)
 
-    print(
-        f"SUUMO 新築詳細取得: {len(targets)}件の詳細・間取りページを取得します",
+    logger.warning(f"SUUMO 新築詳細取得: {len(targets)}件の詳細・間取りページを取得します",
         file=sys.stderr,
     )
 
@@ -556,13 +557,13 @@ def main() -> None:
             listings[list_idx]["suumo_images"] = result["suumo_images"]
             enriched_images += 1
             img_count = len(result["suumo_images"])
-            print(f"  ✓ {name}: 物件写真{img_count}枚", file=sys.stderr)
+            print(f"  ✓ {name}: 物件写真{img_count}枚")
 
         if result.get("floor_plan_images") and not listing.get("floor_plan_images"):
             listings[list_idx]["floor_plan_images"] = result["floor_plan_images"]
             enriched_plans += 1
             plan_count = len(result["floor_plan_images"])
-            print(f"  ✓ {name}: 間取り図{plan_count}枚", file=sys.stderr)
+            logger.debug(f"  ✓ {name}: 間取り図{plan_count}枚")
 
         # 進捗表示
         if (idx + 1) % 10 == 0:

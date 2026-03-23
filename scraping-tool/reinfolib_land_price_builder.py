@@ -25,6 +25,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ---------------------------------------------------------------------------
 # 設定
 # ---------------------------------------------------------------------------
@@ -63,7 +66,7 @@ OUTPUT_FILE = os.path.join(OUTPUT_DIR, "reinfolib_land_prices.json")
 def get_api_key() -> str:
     key = os.environ.get("REINFOLIB_API_KEY", "")
     if not key:
-        print("エラー: REINFOLIB_API_KEY 環境変数を設定してください", file=sys.stderr)
+        logger.error("エラー: REINFOLIB_API_KEY 環境変数を設定してください")
         sys.exit(1)
     return key
 
@@ -75,10 +78,10 @@ def api_request(endpoint: str, params: dict, api_key: str) -> Optional[dict]:
         if resp.status_code == 200:
             return resp.json()
         else:
-            print(f"  API エラー: {resp.status_code} params={params}", file=sys.stderr)
+            logger.error(f"  API エラー: {resp.status_code} params={params}")
             return None
     except Exception as e:
-        print(f"  リクエスト例外: {e}", file=sys.stderr)
+        logger.info(f"  リクエスト例外: {e}")
         return None
 
 
@@ -102,7 +105,7 @@ def fetch_land_prices(api_key: str) -> dict:
 
     for div_name, div_code in divisions.items():
         for year in years:
-            print(f"  地価公示取得: {year}年 {div_name}...", file=sys.stderr)
+            logger.info(f"  地価公示取得: {year}年 {div_name}...")
             data = api_request(
                 APPRAISAL_ENDPOINT,
                 {"year": year, "area": TOKYO_AREA_CODE, "division": div_code},
@@ -238,7 +241,7 @@ def main() -> None:
     os.makedirs(args.output_dir, exist_ok=True)
 
     api_key = get_api_key()
-    print("=== 地価公示キャッシュ構築開始 ===", file=sys.stderr)
+    logger.info("=== 地価公示キャッシュ構築開始 ===")
 
     result = fetch_land_prices(api_key)
 
@@ -247,8 +250,8 @@ def main() -> None:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
     ward_count = len(result.get("by_ward", {}))
-    print(f"=== 完了: {ward_count}区の地価データを保存 ===", file=sys.stderr)
-    print(f"出力: {output_path}", file=sys.stderr)
+    logger.info(f"=== 完了: {ward_count}区の地価データを保存 ===")
+    logger.info(f"出力: {output_path}")
 
 
 if __name__ == "__main__":

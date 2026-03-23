@@ -62,6 +62,10 @@ from config import (
     TOKYO_23_WARDS,
 )
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 # ---------------------------------------------------------------------------
 # 設定
 # ---------------------------------------------------------------------------
@@ -105,7 +109,7 @@ def load_city_codes() -> List[Dict[str, str]]:
     # 東京都（pref_code=13）の23区のみ
     tokyo = data["prefectures"].get("13")
     if not tokyo:
-        print("警告: shutoken_city_codes.json に東京都データがありません", file=sys.stderr)
+        logger.warning("警告: shutoken_city_codes.json に東京都データがありません")
         return cities
 
     pref_name = tokyo["name"]
@@ -231,7 +235,7 @@ def geocode_nominatim(address: str) -> Optional[Tuple[float, float]]:
                 lon = float(results[0]["lon"])
                 return (lat, lon)
     except Exception as e:
-        print(f"  Nominatim エラー: {address} — {e}", file=sys.stderr)
+        logger.error(f"  Nominatim エラー: {address} — {e}")
     return None
 
 
@@ -253,7 +257,7 @@ def geocode_districts(
             uncached.append(addr)
 
     if uncached:
-        print(f"  ジオコーディング: {len(uncached)} 件 (キャッシュ: {len(addresses) - len(uncached)} 件)", file=sys.stderr)
+        logger.info(f"  ジオコーディング: {len(uncached)} 件 (キャッシュ: {len(addresses) - len(uncached)} 件)")
         for i, addr in enumerate(uncached):
             coord = geocode_nominatim(addr)
             if coord:
@@ -561,9 +565,9 @@ def main() -> None:
     periods = get_recent_periods(args.quarters)
     period_labels = [f"{y}Q{q}" for y, q in periods]
 
-    print("=== 東京23区 成約実績フィード構築開始 ===", file=sys.stderr)
-    print(f"  対象区: {len(cities)} 区（東京23区）", file=sys.stderr)
-    print(f"  対象期間: {period_labels}", file=sys.stderr)
+    logger.info("=== 東京23区 成約実績フィード構築開始 ===")
+    logger.info(f"  対象区: {len(cities)} 区（東京23区）")
+    logger.info(f"  対象期間: {period_labels}")
     print(f"  フィルタ: {PRICE_MIN_MAN}〜{PRICE_MAX_MAN}万, {AREA_MIN_M2}㎡+, "
           f"間取り{LAYOUT_PREFIX_OK}, 築{BUILT_YEAR_MIN}年以降, "
           f"徒歩{WALK_MIN_MAX}分以内", file=sys.stderr)
@@ -592,12 +596,12 @@ def main() -> None:
             print(f"  [{ci+1}/{len(cities)}] {city['pref_name']}{city['name']}: "
                   f"{city_matched} 件マッチ", file=sys.stderr)
         elif (ci + 1) % 50 == 0:
-            print(f"  [{ci+1}/{len(cities)}] 進捗...", file=sys.stderr)
+            logger.info(f"  [{ci+1}/{len(cities)}] 進捗...")
 
-    print(f"\n  取得合計: {total_fetched} 件 → フィルタ後: {total_matched} 件", file=sys.stderr)
+    logger.info(f"\n  取得合計: {total_fetched} 件 → フィルタ後: {total_matched} 件")
 
     # --- Phase 2: ジオコーディング ---
-    print("\n--- ジオコーディング ---", file=sys.stderr)
+    logger.info("\n--- ジオコーディング ---")
     geocode_cache = load_geocode_cache()
 
     # ユニークなアドレスを収集
@@ -613,20 +617,20 @@ def main() -> None:
     save_geocode_cache(geocode_cache)
 
     geocoded_count = sum(1 for v in geocode_results.values() if v is not None)
-    print(f"  ジオコーディング完了: {geocoded_count}/{len(unique_addresses)} 成功", file=sys.stderr)
+    logger.info(f"  ジオコーディング完了: {geocoded_count}/{len(unique_addresses)} 成功")
 
     # --- Phase 3: 最寄駅推定 ---
-    print("\n--- 最寄駅推定 ---", file=sys.stderr)
+    logger.info("\n--- 最寄駅推定 ---")
     stations = load_station_cache()
-    print(f"  駅データ: {len(stations)} 駅", file=sys.stderr)
+    logger.info(f"  駅データ: {len(stations)} 駅")
 
     # --- Phase 3.5: 物件名推定用リファレンス構築 ---
-    print("\n--- 物件名推定リファレンス構築 ---", file=sys.stderr)
+    logger.info("\n--- 物件名推定リファレンス構築 ---")
     name_reference = build_building_name_reference()
-    print(f"  リファレンスキー: {len(name_reference)} 件", file=sys.stderr)
+    logger.info(f"  リファレンスキー: {len(name_reference)} 件")
 
     # --- Phase 4: レコード変換 ---
-    print("\n--- レコード変換・グルーピング ---", file=sys.stderr)
+    logger.info("\n--- レコード変換・グルーピング ---")
     transactions: List[dict] = []
     for item, city_info, period in all_matched:
         rec = build_transaction_record(
@@ -661,8 +665,8 @@ def main() -> None:
     building_groups = build_building_groups(transactions)
 
     named_count = sum(1 for bg in building_groups if bg.get("estimated_building_name"))
-    print(f"  取引レコード: {len(transactions)} 件", file=sys.stderr)
-    print(f"  推定建物グループ: {len(building_groups)} 件（物件名推定: {named_count} 件）", file=sys.stderr)
+    logger.info(f"  取引レコード: {len(transactions)} 件")
+    logger.info(f"  推定建物グループ: {len(building_groups)} 件（物件名推定: {named_count} 件）")
 
     # --- Phase 5: 出力 ---
     output = {
@@ -688,14 +692,14 @@ def main() -> None:
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
-    print(f"\n=== 完了: {args.output} ({len(transactions)} 件) ===", file=sys.stderr)
+    logger.info(f"\n=== 完了: {args.output} ({len(transactions)} 件) ===")
 
     # サマリー（区別）
     by_ward: Dict[str, int] = {}
     for tx in transactions:
         by_ward[tx["ward"]] = by_ward.get(tx["ward"], 0) + 1
     for ward, count in sorted(by_ward.items()):
-        print(f"  {ward}: {count} 件", file=sys.stderr)
+        logger.info(f"  {ward}: {count} 件")
 
 
 if __name__ == "__main__":

@@ -133,6 +133,8 @@ struct ContentView: View {
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
                 NotificationScheduleService.shared.resetAccumulatedCount()
+                // オフライン時はキャッシュ済みデータがある場合は自動更新をスキップ
+                guard networkMonitor.isConnected else { return }
                 let elapsed = -(store.lastFetchedAt ?? .distantPast).timeIntervalSinceNow
                 if elapsed >= autoRefreshInterval {
                     Task {

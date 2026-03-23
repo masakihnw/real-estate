@@ -24,6 +24,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ---------------------------------------------------------------------------
 # MCP サーバー設定
 # ---------------------------------------------------------------------------
@@ -133,7 +136,7 @@ class MCPClient:
             },
         }
         result = self._post(payload)
-        print(f"MCP初期化完了: {json.dumps(result, ensure_ascii=False)[:200]}", file=sys.stderr)
+        logger.info(f"MCP初期化完了: {json.dumps(result, ensure_ascii=False)[:200]}")
 
         # Send initialized notification
         notif = {
@@ -167,7 +170,7 @@ class MCPClient:
         try:
             result = self._post(payload)
             if "error" in result:
-                print(f"  ツールエラー: {result['error']}", file=sys.stderr)
+                logger.error(f"  ツールエラー: {result['error']}")
                 return None
             # Result content is in result.result.content[0].text
             content = result.get("result", {}).get("content", [])
@@ -176,7 +179,7 @@ class MCPClient:
                 return json.loads(text)
             return result.get("result")
         except Exception as e:
-            print(f"  リクエスト例外: {e}", file=sys.stderr)
+            logger.info(f"  リクエスト例外: {e}")
             return None
 
 
@@ -205,7 +208,7 @@ def fetch_all_ward_data(
         for year_str, quarter_str in quarters:
             qlabel = f"{year_str}Q{quarter_str}"
             done += 1
-            print(f"  [{done}/{total_calls}] {ward_name} {qlabel} ...", file=sys.stderr, end="")
+            logger.info(f"  [{done}/{total_calls}] {ward_name} {qlabel} ...", file=sys.stderr, end="")
 
             result = client.call_tool(TOOL_NAME, {
                 "city": ward_code,
@@ -224,10 +227,10 @@ def fetch_all_ward_data(
                     if "中古マンション" in item.get("Type", "")
                 ]
                 all_data[ward_name][qlabel] = mansion_items
-                print(f" {len(mansion_items)}件", file=sys.stderr)
+                print(f" {len(mansion_items)}件")
             else:
                 all_data[ward_name][qlabel] = []
-                print(f" 0件", file=sys.stderr)
+                logger.info(f" 0件")
 
             # レート制限を考慮して少し待つ
             time.sleep(0.5)
@@ -342,12 +345,12 @@ def build_cache(
 # ---------------------------------------------------------------------------
 
 def main():
-    print("=== MCP経由 不動産情報ライブラリ キャッシュ構築 ===", file=sys.stderr)
+    logger.info("=== MCP経由 不動産情報ライブラリ キャッシュ構築 ===")
 
     client = MCPClient(MCP_URL, MCP_PARAMS)
 
     # 1. MCP初期化
-    print("MCPサーバーに接続中...", file=sys.stderr)
+    logger.info("MCPサーバーに接続中...")
     client.initialize()
 
     # 2. 取得対象の四半期を決定
@@ -360,14 +363,14 @@ def main():
                 continue
             quarters.append((str(year), str(q)))
 
-    print(f"対象四半期: {[f'{y}Q{q}' for y, q in quarters]}", file=sys.stderr)
+    logger.info(f"対象四半期: {[f'{y}Q{q}' for y, q in quarters]}")
 
     # 3. 成約価格データ取得
-    print("\n成約価格データを取得中...", file=sys.stderr)
+    logger.info("\n成約価格データを取得中...")
     all_data = fetch_all_ward_data(client, quarters, price_classification="02")
 
     # 4. キャッシュ構築
-    print("\nキャッシュを構築中...", file=sys.stderr)
+    logger.info("\nキャッシュを構築中...")
     prices, trends = build_cache(all_data)
 
     # 5. 保存
@@ -378,26 +381,26 @@ def main():
 
     with open(prices_path, "w", encoding="utf-8") as f:
         json.dump(prices, f, ensure_ascii=False, indent=2)
-    print(f"\n✓ prices キャッシュ保存: {prices_path}", file=sys.stderr)
+    logger.debug(f"\n✓ prices キャッシュ保存: {prices_path}")
 
     with open(trends_path, "w", encoding="utf-8") as f:
         json.dump(trends, f, ensure_ascii=False, indent=2)
-    print(f"✓ trends キャッシュ保存: {trends_path}", file=sys.stderr)
+    logger.debug(f"✓ trends キャッシュ保存: {trends_path}")
 
     # サマリー
     ward_count = len(prices["by_ward"])
     total_samples = sum(w.get("sample_count", 0) for w in prices["by_ward"].values())
-    print(f"\n=== 完了: {ward_count}区, 合計 {total_samples} サンプル ===", file=sys.stderr)
+    logger.info(f"\n=== 完了: {ward_count}区, 合計 {total_samples} サンプル ===")
 
     # 各区のサマリーを表示
-    print("\n区別m²単価中央値:", file=sys.stderr)
+    logger.info("\n区別m²単価中央値:")
     for ward_name, data in sorted(prices["by_ward"].items(), key=lambda x: x[1].get("median_m2_price") or 0, reverse=True):
         median = data.get("median_m2_price")
         count = data.get("sample_count", 0)
         if median:
-            print(f"  {ward_name}: {median:,.0f}円/m² ({count}件)", file=sys.stderr)
+            logger.info(f"  {ward_name}: {median:,.0f}円/m² ({count}件)")
         else:
-            print(f"  {ward_name}: データなし", file=sys.stderr)
+            logger.info(f"  {ward_name}: データなし")
 
 
 if __name__ == "__main__":

@@ -26,6 +26,9 @@ import json
 import sys
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 
 def load_json_dict(path: Path) -> dict:
     """JSON dict を安全に読み込む。失敗時は空 dict。"""
@@ -36,10 +39,10 @@ def load_json_dict(path: Path) -> dict:
             data = json.load(f)
         if isinstance(data, dict):
             return data
-        print(f"[merge_caches] 警告: {path} が dict ではありません（スキップ）", file=sys.stderr)
+        logger.warning(f"[merge_caches] 警告: {path} が dict ではありません（スキップ）")
         return {}
     except (json.JSONDecodeError, OSError) as e:
-        print(f"[merge_caches] 警告: {path} の読み込みに失敗: {e}", file=sys.stderr)
+        logger.error(f"[merge_caches] 警告: {path} の読み込みに失敗: {e}")
         return {}
 
 

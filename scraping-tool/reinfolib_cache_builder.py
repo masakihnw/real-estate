@@ -29,6 +29,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ---------------------------------------------------------------------------
 # 設定
 # ---------------------------------------------------------------------------
@@ -76,7 +79,7 @@ def get_api_key() -> str:
     """環境変数から API キーを取得。"""
     key = os.environ.get("REINFOLIB_API_KEY", "")
     if not key:
-        print("エラー: REINFOLIB_API_KEY 環境変数を設定してください", file=sys.stderr)
+        logger.error("エラー: REINFOLIB_API_KEY 環境変数を設定してください")
         sys.exit(1)
     return key
 
@@ -89,10 +92,10 @@ def api_request(endpoint: str, params: dict, api_key: str) -> Optional[dict]:
         if resp.status_code == 200:
             return resp.json()
         else:
-            print(f"  API エラー: {resp.status_code} params={params}", file=sys.stderr)
+            logger.error(f"  API エラー: {resp.status_code} params={params}")
             return None
     except Exception as e:
-        print(f"  リクエスト例外: {e}", file=sys.stderr)
+        logger.info(f"  リクエスト例外: {e}")
         return None
 
 
@@ -302,7 +305,7 @@ def build_prices_and_trends(api_key: str) -> Tuple[dict, dict, dict]:
     raw_transactions: 直近8四半期の個別取引レコード（段階的マッチング・同一棟事例用）
     """
     periods = get_target_periods()
-    print(f"対象期間: {len(periods)} 四半期", file=sys.stderr)
+    logger.info(f"対象期間: {len(periods)} 四半期")
 
     # ward_code → quarter_label → [m2_prices]
     all_data: Dict[str, Dict[str, List[float]]] = {}
@@ -350,7 +353,7 @@ def build_prices_and_trends(api_key: str) -> Tuple[dict, dict, dict]:
 
             time.sleep(REQUEST_DELAY_SEC)
 
-        print(f"  {ward_name}: {sum(len(v) for v in all_data[ward_code].values())} 件取得", file=sys.stderr)
+        logger.info(f"  {ward_name}: {sum(len(v) for v in all_data[ward_code].values())} 件取得")
 
     # --- prices.json 構築 ---
     # 直近4四半期の中央値を算出
@@ -485,8 +488,8 @@ def main() -> None:
     os.makedirs(args.output_dir, exist_ok=True)
 
     api_key = get_api_key()
-    print("=== 不動産情報ライブラリ キャッシュ構築開始 ===", file=sys.stderr)
-    print(f"出力先: {args.output_dir}", file=sys.stderr)
+    logger.info("=== 不動産情報ライブラリ キャッシュ構築開始 ===")
+    logger.info(f"出力先: {args.output_dir}")
 
     prices, trends, raw_transactions = build_prices_and_trends(api_key)
 
@@ -496,11 +499,11 @@ def main() -> None:
 
     with open(prices_path, "w", encoding="utf-8") as f:
         json.dump(prices, f, ensure_ascii=False, indent=2)
-    print(f"prices キャッシュ保存: {prices_path}", file=sys.stderr)
+    logger.info(f"prices キャッシュ保存: {prices_path}")
 
     with open(trends_path, "w", encoding="utf-8") as f:
         json.dump(trends, f, ensure_ascii=False, indent=2)
-    print(f"trends キャッシュ保存: {trends_path}", file=sys.stderr)
+    logger.info(f"trends キャッシュ保存: {trends_path}")
 
     with open(raw_tx_path, "w", encoding="utf-8") as f:
         json.dump(raw_transactions, f, ensure_ascii=False, indent=2)

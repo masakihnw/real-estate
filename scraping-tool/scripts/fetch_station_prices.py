@@ -29,10 +29,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 try:
     import requests
 except ImportError:
-    print("requests が必要です: pip install requests", file=sys.stderr)
+    logger.info("requests が必要です: pip install requests")
     sys.exit(1)
 
 # ---------------------------------------------------------------------------
@@ -357,7 +361,7 @@ def main():
     if use_direct:
         api_key = os.environ.get("REINFOLIB_API_KEY", "")
         if not api_key:
-            print("エラー: REINFOLIB_API_KEY を設定してください", file=sys.stderr)
+            logger.error("エラー: REINFOLIB_API_KEY を設定してください")
             sys.exit(1)
 
     current_year = datetime.now().year
@@ -373,18 +377,18 @@ def main():
     if args.limit_stations > 0:
         stations = stations[:args.limit_stations]
 
-    print(f"=== 駅別 m² 単価データ取得 ===", file=sys.stderr)
-    print(f"モード: {'直接API' if use_direct else 'MCP経由'}", file=sys.stderr)
-    print(f"対象駅: {len(stations)}", file=sys.stderr)
-    print(f"対象年: {years[0]}〜{years[-1]} ({len(years)}年)", file=sys.stderr)
-    print(f"並列数: {args.workers}", file=sys.stderr)
+    logger.info(f"=== 駅別 m² 単価データ取得 ===")
+    logger.info(f"モード: {'直接API' if use_direct else 'MCP経由'}")
+    logger.info(f"対象駅: {len(stations)}")
+    logger.info(f"対象年: {years[0]}〜{years[-1]} ({len(years)}年)")
+    logger.info(f"並列数: {args.workers}")
 
     # 既存データ
     existing: Dict[str, Any] = {}
     if args.resume and os.path.exists(OUTPUT_FILE):
         with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
             existing = json.load(f).get("by_station", {})
-        print(f"既存データ: {len(existing)}駅", file=sys.stderr)
+        logger.info(f"既存データ: {len(existing)}駅")
 
     # タスク
     tasks = []
@@ -400,7 +404,7 @@ def main():
           file=sys.stderr)
 
     if not tasks:
-        print("全て取得済みです。", file=sys.stderr)
+        logger.info("全て取得済みです。")
         return
 
     # 結果
@@ -466,10 +470,10 @@ def main():
 
     elapsed = time.time() - start_time
     n_stations = sum(1 for r in results.values() if r.get("years"))
-    print(f"\n=== 完了 ===", file=sys.stderr)
-    print(f"データあり: {n_stations}駅", file=sys.stderr)
-    print(f"所要時間: {elapsed:.1f}秒 ({elapsed / 60:.1f}分)", file=sys.stderr)
-    print(f"出力: {OUTPUT_FILE}", file=sys.stderr)
+    logger.info(f"\n=== 完了 ===")
+    logger.info(f"データあり: {n_stations}駅")
+    logger.info(f"所要時間: {elapsed:.1f}秒 ({elapsed / 60:.1f}分)")
+    logger.info(f"出力: {OUTPUT_FILE}")
 
 
 if __name__ == "__main__":

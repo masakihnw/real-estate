@@ -25,6 +25,7 @@ struct ListingGroup: Identifiable {
 struct ListingListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ListingStore.self) private var store
+    private let networkMonitor = NetworkMonitor.shared
     @Query private var listings: [Listing]
     @State private var sortOrder: SortOrder = .addedDesc
     @State private var selectedListing: Listing?
@@ -455,19 +456,22 @@ struct ListingListView: View {
     }
 
     private var emptyState: some View {
-        ContentUnavailableView {
+        let isOffline = !networkMonitor.isConnected
+        return ContentUnavailableView {
             Label(
                 favoritesOnly ? "お気に入りがありません" : "物件がありません",
-                systemImage: favoritesOnly ? "heart.slash" : "building.2"
+                systemImage: favoritesOnly ? "heart.slash" : (isOffline ? "wifi.slash" : "building.2")
             )
         } description: {
             Text(
                 favoritesOnly
                     ? "物件一覧でハートをタップするとここに表示されます。"
-                    : "データは自動的に更新されます。\nうまく表示されない場合は下のボタンをお試しください。"
+                    : (isOffline
+                        ? "インターネットに接続されていません。\nWi-Fi またはモバイルデータをご確認ください。"
+                        : "データは自動的に更新されます。\nうまく表示されない場合は下のボタンをお試しください。")
             )
         } actions: {
-            if !favoritesOnly {
+            if !favoritesOnly && !isOffline {
                 Button {
                     Task {
                         store.clearETags()

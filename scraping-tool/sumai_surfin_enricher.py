@@ -30,6 +30,10 @@ from bs4 import BeautifulSoup, Comment
 
 from config import REQUEST_DELAY_SEC, REQUEST_RETRIES, USER_AGENT
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 # ──────────────────────────── 定数 ────────────────────────────
 
 HTTP_BACKOFF_SEC = 2
@@ -146,7 +150,7 @@ def login(session: requests.Session, user: str, password: str) -> bool:
         form_data[username_field] = user
         form_data[password_field] = password
 
-        print(f"住まいサーフィン: ログイン試行 (user_field={username_field}, pass_field={password_field})", file=sys.stderr)
+        logger.info(f"住まいサーフィン: ログイン試行 (user_field={username_field}, pass_field={password_field})")
 
         # POST 先
         action = LOGIN_URL
@@ -177,7 +181,7 @@ def login(session: requests.Session, user: str, password: str) -> bool:
         )
 
         if not ssan_present and resp2.status_code not in (200, 301, 302, 303, 307):
-            print(f"住まいサーフィン: ログイン失敗（HTTP {resp2.status_code}、ssan Cookie なし）", file=sys.stderr)
+            logger.error(f"住まいサーフィン: ログイン失敗（HTTP {resp2.status_code}、ssan Cookie なし）")
             return False
 
         # ── Step 3: OAuth SSO フローで www 側セッションを確立 ──
@@ -187,26 +191,26 @@ def login(session: requests.Session, user: str, password: str) -> bool:
             session, "GET", f"{BASE_URL}/member/", allow_redirects=True,
         )
         if sso_resp is None:
-            print("住まいサーフィン: SSO フロー失敗（/member/ にアクセスできません）", file=sys.stderr)
+            logger.error("住まいサーフィン: SSO フロー失敗（/member/ にアクセスできません）")
             return False
 
         if "ログアウト" in sso_resp.text or "mypage" in sso_resp.url:
-            print("住まいサーフィン: ログイン成功", file=sys.stderr)
+            logger.info("住まいサーフィン: ログイン成功")
             return True
 
         # フォールバック: 検索ページでログイン状態を確認
         check_resp = _request_with_retry(session, "GET", f"{BASE_URL}/search/", allow_redirects=True)
         if check_resp and "ログアウト" in check_resp.text:
-            print("住まいサーフィン: ログイン成功（検索ページで確認）", file=sys.stderr)
+            logger.info("住まいサーフィン: ログイン成功（検索ページで確認）")
             return True
 
-        print("住まいサーフィン: ログイン失敗（SSO 後にログアウトリンクが見つかりません）", file=sys.stderr)
-        print(f"  → ssan Cookie: {ssan_present}, total cookies: {len(session.cookies)}", file=sys.stderr)
-        print(f"  → SSO URL: {sso_resp.url}", file=sys.stderr)
+        logger.error("住まいサーフィン: ログイン失敗（SSO 後にログアウトリンクが見つかりません）")
+        logger.info(f"  → ssan Cookie: {ssan_present}, total cookies: {len(session.cookies)}")
+        logger.info(f"  → SSO URL: {sso_resp.url}")
         return False
 
     except Exception as e:
-        print(f"住まいサーフィン: ログインエラー: {e}", file=sys.stderr)
+        logger.error(f"住まいサーフィン: ログインエラー: {e}")
         import traceback
         traceback.print_exc(file=sys.stderr)
         return False
@@ -219,7 +223,7 @@ def load_cache() -> dict:
         try:
             return json.loads(CACHE_PATH.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError) as e:
-            print(f"[SumaiSurfin] キャッシュ読み込み失敗（空キャッシュで続行）: {e}", file=sys.stderr)
+            logger.error(f"[SumaiSurfin] キャッシュ読み込み失敗（空キャッシュで続行）: {e}")
     return {}
 
 
@@ -317,7 +321,7 @@ def search_property(session: requests.Session, name: str, cache: dict) -> Option
         return None
 
     except Exception as e:
-        print(f"住まいサーフィン: 検索エラー ({name}): {e}", file=sys.stderr)
+        logger.error(f"住まいサーフィン: 検索エラー ({name}): {e}")
         return None
 
 
@@ -554,7 +558,7 @@ def _fetch_property_page(
         soup = BeautifulSoup(html, "lxml")
         return soup, html
     except Exception as e:
-        print(f"住まいサーフィン: ページ取得エラー ({url}): {e}", file=sys.stderr)
+        logger.error(f"住まいサーフィン: ページ取得エラー ({url}): {e}")
         return None
 
 
@@ -1499,7 +1503,7 @@ def _extract_simulation_data(soup: BeautifulSoup, html: str) -> dict:
     for k, v in result.items():
         if isinstance(v, int) and v < 100:
             # 100万円未満のシミュレーション値は不正データとして除外
-            print(f"  [SumaiSurfin] シミュレーション値バリデーション失敗: {k}={v} (100万円未満のため除外)", file=sys.stderr)
+            logger.error(f"  [SumaiSurfin] シミュレーション値バリデーション失敗: {k}={v} (100万円未満のため除外)")
             continue
         validated[k] = v
 
@@ -1745,7 +1749,7 @@ def _load_previous_by_url(previous_path: Optional[str]) -> dict[str, dict]:
         with open(previous_path, "r", encoding="utf-8") as f:
             data = json.load(f)
     except (json.JSONDecodeError, OSError) as e:
-        print(f"[SumaiSurfin] previous 読み込み失敗（スキップ）: {e}", file=sys.stderr)
+        logger.error(f"[SumaiSurfin] previous 読み込み失敗（スキップ）: {e}")
         return {}
     if not isinstance(data, list):
         return {}
@@ -1768,7 +1772,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print("住まいサーフィン: 入力が配列ではありません", file=sys.stderr)
+        logger.info("住まいサーフィン: 入力が配列ではありません")
         return
 
     cache = load_cache()
@@ -1796,7 +1800,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                 listing["address"] = prev["ss_address"]
             incremental_skip_count += 1
         if incremental_skip_count:
-            print(f"住まいサーフィン: インクリメンタル — 前回からコピー: {incremental_skip_count}件", file=sys.stderr)
+            logger.warning(f"住まいサーフィン: インクリメンタル — 前回からコピー: {incremental_skip_count}件")
 
     # --retry-not-found: 旧 null エントリをクリアして再検索可能にする
     if retry_not_found:
@@ -1806,7 +1810,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             # 関連する __inline エントリも削除
             cache.pop(k + "__inline", None)
         if null_keys:
-            print(f"キャッシュから {len(null_keys)} 件の未発見エントリをクリア（再検索対象）", file=sys.stderr)
+            logger.info(f"キャッシュから {len(null_keys)} 件の未発見エントリをクリア（再検索対象）")
             save_cache(cache)
     enriched_count = 0
     skip_count = 0
@@ -1929,15 +1933,15 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                             parts.append("ローン残高✓")
                         if data.get("ss_forecast_change_rate") is not None:
                             parts.append(f"変動率: {data['ss_forecast_change_rate']:+.1f}%")
-                        print(f"  ✓ {listing.get('name', '')} — {', '.join(parts) or 'URL取得'}", file=sys.stderr)
+                        logger.debug(f"  ✓ {listing.get('name', '')} — {', '.join(parts) or 'URL取得'}")
                     else:
                         listing["ss_lookup_status"] = "no_data"
                         no_data_count += 1
                 processed += 1
                 if processed > 0 and processed % 20 == 0:
-                    print(f"  住まいサーフィン進捗: {processed}/{target_count}件処理済 (成功: {enriched_count})", file=sys.stderr)
+                    logger.info(f"  住まいサーフィン進捗: {processed}/{target_count}件処理済 (成功: {enriched_count})")
             except Exception as e:
-                print(f"  住まいサーフィン: エラー ({listing.get('name', '?')}): {e}", file=sys.stderr)
+                logger.error(f"  住まいサーフィン: エラー ({listing.get('name', '?')}): {e}")
 
     # キャッシュ保存
     save_cache(cache)
@@ -1950,7 +1954,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             listing["address"] = ss_addr
             addr_updated += 1
     if addr_updated:
-        print(f"住所更新: {addr_updated}件（住まいサーフィンの所在地を正として反映）", file=sys.stderr)
+        logger.info(f"住所更新: {addr_updated}件（住まいサーフィンの所在地を正として反映）")
 
     # 全物件のレーダーデータを iOS 互換形式に正規化・不足軸を補完（新築は偏差値不要のためスキップ）
     radar_count = 0
@@ -1961,7 +1965,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             if not had_radar and listing.get("ss_radar_data") is not None:
                 radar_count += 1
         if radar_count:
-            print(f"レーダーデータ補完: {radar_count}件（既存 ss_*/walk_min から生成）", file=sys.stderr)
+            logger.info(f"レーダーデータ補完: {radar_count}件（既存 ss_*/walk_min から生成）")
     else:
         # 新築: 既存の ss_radar_data があれば除去
         removed = 0
@@ -1969,7 +1973,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
             if listing.pop("ss_radar_data", None) is not None:
                 removed += 1
         if removed:
-            print(f"レーダーデータ除去: {removed}件（新築では偏差値不要）", file=sys.stderr)
+            logger.info(f"レーダーデータ除去: {removed}件（新築では偏差値不要）")
 
     # 出力（原子的書き込み）
     tmp_path = output_path.with_suffix(".json.tmp")
@@ -1993,7 +1997,7 @@ def finalize_radar_only(input_path: str, output_path: str,
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print("住まいサーフィン: 入力が配列ではありません", file=sys.stderr)
+        logger.info("住まいサーフィン: 入力が配列ではありません")
         return
 
     # 新築は偏差値不要のためレーダーデータを補完しない
@@ -2003,7 +2007,7 @@ def finalize_radar_only(input_path: str, output_path: str,
             if listing.pop("ss_radar_data", None) is not None:
                 removed += 1
         if removed:
-            print(f"レーダーデータ除去: {removed}件（新築では偏差値不要）", file=sys.stderr)
+            logger.info(f"レーダーデータ除去: {removed}件（新築では偏差値不要）")
     else:
         radar_count = 0
         for listing in listings:
@@ -2018,7 +2022,7 @@ def finalize_radar_only(input_path: str, output_path: str,
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(output_path_p)
 
-    print(f"レーダーデータ補完: {radar_count}件生成（既存フィールドから）", file=sys.stderr)
+    logger.info(f"レーダーデータ補完: {radar_count}件生成（既存フィールドから）")
 
 
 def main() -> None:
@@ -2048,7 +2052,7 @@ def main() -> None:
     else:
         prop_type = "chuko"
 
-    print(f"住まいサーフィン: 物件タイプ = {prop_type}", file=sys.stderr)
+    logger.info(f"住まいサーフィン: 物件タイプ = {prop_type}")
 
     if args.finalize_radar_only:
         finalize_radar_only(args.input, args.output, property_type=prop_type)
@@ -2058,7 +2062,7 @@ def main() -> None:
     password = os.environ.get("SUMAI_PASS", "")
 
     if not user or not password:
-        print("住まいサーフィン: SUMAI_USER / SUMAI_PASS が未設定のためスキップ", file=sys.stderr)
+        logger.warning("住まいサーフィン: SUMAI_USER / SUMAI_PASS が未設定のためスキップ")
         # 認証不要のレーダーデータ補完だけ実行
         finalize_radar_only(args.input, args.output, property_type=prop_type)
         return
@@ -2068,7 +2072,7 @@ def main() -> None:
         session = _create_session()
 
         if not login(session, user, password):
-            print("住まいサーフィン: ログインに失敗したためスキップ", file=sys.stderr)
+            logger.error("住まいサーフィン: ログインに失敗したためスキップ")
             # ログイン失敗でもレーダーデータ補完は実行
             finalize_radar_only(args.input, args.output, property_type=prop_type)
             # ブラウザ enrichment はログイン失敗でもスキップ
@@ -2083,7 +2087,7 @@ def main() -> None:
     if args.browser or args.browser_only:
         try:
             from sumai_surfin_browser import browser_enrich_listings
-            print("ブラウザ自動化 enrichment を実行中...", file=sys.stderr)
+            logger.info("ブラウザ自動化 enrichment を実行中...")
             browser_enrich_listings(
                 input_path=args.input if args.browser_only else args.output,
                 output_path=args.output,

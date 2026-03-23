@@ -139,3 +139,14 @@ jobs:
             scraping-tool/data/shutoken_city_codes.json
           retention-days: 1
           if-no-files-found: warn
+
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-type: application/json' \
+              -d "{\"text\": \":rotating_light: *Scrape Listings 失敗*\nワークフロー: ${{ github.workflow }}\n実行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+          fi

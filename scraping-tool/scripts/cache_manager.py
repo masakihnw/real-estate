@@ -11,6 +11,10 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 SCRIPT_DIR = Path(__file__).parent.parent
 DATA_DIR = SCRIPT_DIR / "data"
 
@@ -117,7 +121,7 @@ def cleanup_json_cache(filepath: Path, ttl_days: int) -> int:
 
 def print_stats():
     """全キャッシュの統計を表示。"""
-    print("=== キャッシュ統計 ===", file=sys.stderr)
+    logger.info("=== キャッシュ統計 ===")
     total_size = 0
 
     for filename, config in CACHE_CONFIGS.items():
@@ -125,16 +129,16 @@ def print_stats():
         stats = get_cache_stats(path)
         total_size += stats.get("size_kb", 0)
         status = f"{stats['entries']}件, {stats['size_kb']}KB" if stats["exists"] else "なし"
-        print(f"  {config['description']} ({filename}): {status}", file=sys.stderr)
+        logger.info(f"  {config['description']} ({filename}): {status}")
 
     html_dir = DATA_DIR / "html_cache"
     if html_dir.exists():
         html_files = list(html_dir.glob("*.html"))
         html_size = sum(f.stat().st_size for f in html_files) / 1024
         total_size += html_size
-        print(f"  HTML キャッシュ: {len(html_files)}件, {html_size:.0f}KB", file=sys.stderr)
+        logger.info(f"  HTML キャッシュ: {len(html_files)}件, {html_size:.0f}KB")
 
-    print(f"  合計: {total_size:.0f}KB", file=sys.stderr)
+    logger.info(f"  合計: {total_size:.0f}KB")
 
 
 def main():
@@ -149,18 +153,18 @@ def main():
         print_stats()
 
     if args.cleanup:
-        print("--- キャッシュクリーンアップ ---", file=sys.stderr)
+        logger.info("--- キャッシュクリーンアップ ---")
 
         html_removed = cleanup_html_cache(args.html_max_age)
-        print(f"  HTML キャッシュ: {html_removed}件削除", file=sys.stderr)
+        logger.info(f"  HTML キャッシュ: {html_removed}件削除")
 
         for filename, config in CACHE_CONFIGS.items():
             path = DATA_DIR / filename
             removed = cleanup_json_cache(path, config["ttl_days"])
             if removed > 0:
-                print(f"  {config['description']}: {removed}件削除 (TTL: {config['ttl_days']}日)", file=sys.stderr)
+                logger.info(f"  {config['description']}: {removed}件削除 (TTL: {config['ttl_days']}日)")
 
-        print("クリーンアップ完了", file=sys.stderr)
+        logger.info("クリーンアップ完了")
 
     if not args.stats and not args.cleanup:
         print_stats()

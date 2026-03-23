@@ -11,8 +11,11 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 import UserNotifications
+
+private let logger = Logger(subsystem: "com.realestate", category: "ListingStore")
 
 @Observable
 final class ListingStore {
@@ -109,11 +112,11 @@ final class ListingStore {
             chukoCount = try modelContext.fetchCount(chukoDescriptor)
             shinchikuCount = try modelContext.fetchCount(shinchikuDescriptor)
         } catch {
-            print("[ListingStore] fetchCount 失敗: \(error.localizedDescription)")
+            logger.error("fetchCount 失敗: \(error.localizedDescription, privacy: .public)")
         }
         if chukoCount == 0 || shinchikuCount == 0 {
             clearETags()
-            print("[ListingStore] SwiftData が空のため ETag をクリアしてフルフェッチを実行します")
+            logger.info("SwiftData が空のため ETag をクリアしてフルフェッチを実行します")
         }
 
         // P2: 中古・新築を並列取得（ネットワーク待ちを半減）
@@ -197,7 +200,7 @@ final class ListingStore {
             // P6: Spotlight インデックスをいいね済み物件で再構築
             SpotlightIndexer.reindexAll(listings)
         } catch {
-            print("[ListingStore] WidgetDataProvider 更新失敗: \(error.localizedDescription)")
+            logger.error("WidgetDataProvider 更新失敗: \(error.localizedDescription, privacy: .public)")
         }
     }
 
@@ -287,7 +290,7 @@ final class ListingStore {
                     try modelContext.save()
                 }
             } catch {
-                print("[ListingStore] isNew リセット失敗 (\(propertyType)): \(error)")
+                logger.error("isNew リセット失敗 (\(propertyType, privacy: .public)): \(error.localizedDescription, privacy: .public)")
             }
             return SyncResult(hadChanges: false)
         case .error(let msg):
@@ -310,6 +313,8 @@ final class ListingStore {
                 var newCount = 0
                 var incomingKeys = Set<String>()
 
+                let hasAnnotationBackup = UserAnnotationStore.hasBackup
+
                 for dto in dtos {
                     guard let listing = Listing.from(dto: dto, fetchedAt: fetchedAt) else { continue }
                     listing.propertyType = propertyType
@@ -331,8 +336,17 @@ final class ListingStore {
                         } else {
                             listing.addedAt = fetchedAt
                         }
+                        // スキーマリセット後のユーザーデータ復元（いいね・コメント・メモ等）
+                        if hasAnnotationBackup {
+                            UserAnnotationStore.restore(to: listing)
+                        }
                         modelContext.insert(listing)
                     }
+                }
+
+                // 全物件の復元が完了したらバックアップを削除
+                if hasAnnotationBackup && propertyType == "shinchiku" {
+                    UserAnnotationStore.clearBackup()
                 }
 
                 // JSON から消えた物件の処理
@@ -351,7 +365,7 @@ final class ListingStore {
                     try modelContext.save()
                 } catch {
                     let msg = "\(propertyType): データ保存に失敗しました"
-                    print("[ListingStore] SwiftData save 失敗 (\(propertyType)): \(error)")
+                    logger.error("SwiftData save 失敗 (\(propertyType, privacy: .public)): \(error.localizedDescription, privacy: .public)")
                     Task { @MainActor in
                         SaveErrorHandler.shared.lastSaveError = msg
                         SaveErrorHandler.shared.showSaveError = true
@@ -466,9 +480,9 @@ final class ListingStore {
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {
-                print("[ListingStore] 通知許可エラー: \(error.localizedDescription)")
+                logger.error("通知許可エラー: \(error.localizedDescription, privacy: .public)")
             } else {
-                print("[ListingStore] 通知許可: \(granted ? "許可" : "拒否")")
+                logger.info("通知許可: \(granted ? "許可" : "拒否", privacy: .public)")
             }
         }
     }

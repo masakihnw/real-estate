@@ -170,6 +170,17 @@ jobs:
             scraping-tool/data/building_units.json
           retention-days: 1
 
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-type: application/json' \
+              -d "{\"text\": \":warning: *Enrich Chuko 失敗*\nワークフロー: ${{ github.workflow }}\n実行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+          fi
+
   # ──────────────────────────── Job 2: enrich-shinchiku ────────────────────────────
   enrich-shinchiku:
     needs: check

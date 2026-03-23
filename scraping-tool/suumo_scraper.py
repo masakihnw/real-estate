@@ -8,6 +8,7 @@ import json
 import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Iterator, Optional
@@ -15,6 +16,9 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
+
+from logger import get_logger
+logger = get_logger(__name__)
 
 from config import (
     PRICE_MIN_MAN,
@@ -159,7 +163,7 @@ def fetch_list_page(
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
                 backoff = min(retry_after, 120)
-                print(f"  429 Rate Limited, waiting {backoff}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                logger.warning("429 Rate Limited, waiting %ds (attempt %d/%d)", backoff, attempt + 1, REQUEST_RETRIES)
                 time.sleep(backoff)
                 continue
             r.raise_for_status()
@@ -169,7 +173,7 @@ def fetch_list_page(
             if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
                 last_error = e
                 backoff = min(2 ** (attempt + 1), 30)
-                print(f"  HTTP {e.response.status_code}, retrying in {backoff}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                logger.warning("HTTP %d, retrying in %ds (attempt %d/%d)", e.response.status_code, backoff, attempt + 1, REQUEST_RETRIES)
                 time.sleep(backoff)
             else:
                 raise
@@ -177,7 +181,7 @@ def fetch_list_page(
             last_error = e
             if attempt < REQUEST_RETRIES - 1:
                 backoff = min(2 ** (attempt + 1), 30)
-                print(f"  {type(e).__name__}, retrying in {backoff}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                logger.warning("%s, retrying in %ds (attempt %d/%d)", type(e).__name__, backoff, attempt + 1, REQUEST_RETRIES)
                 time.sleep(backoff)
             else:
                 raise last_error
@@ -187,25 +191,48 @@ def fetch_list_page(
 
 
 def parse_list_html(html: str, base_url: str = BASE_URL) -> list[SuumoListing]:
-    """一覧HTMLから物件リストをパース。"""
+    """一覧HTMLから物件リストをパース。
+
+    セレクタが1件も取れなかった場合は警告を出力する（セレクタ変更の早期検知）。
+    """
     soup = BeautifulSoup(html, "lxml")
     items: list[SuumoListing] = []
+    used_selector = "none"
 
     # 中古マンション一覧: div.property_unit-content が1物件ずつ
-    for bloc in soup.select("div.property_unit-content"):
+    primary_blocks = soup.select("div.property_unit-content")
+    for bloc in primary_blocks:
         row = _parse_suumo_unit(bloc, base_url)
         if row and row.price_man is not None:
             items.append(row)
+    if primary_blocks:
+        used_selector = "property_unit-content"
 
     # フォールバック: cassetteitem 系
     if not items:
-        for cassette in soup.find_all("div", class_=re.compile(r"cassetteitem")):
+        cassette_blocks = soup.find_all("div", class_=re.compile(r"cassetteitem"))
+        for cassette in cassette_blocks:
             row = _parse_cassette(cassette, base_url)
             if row:
                 items.append(row)
+        if cassette_blocks:
+            used_selector = "cassetteitem"
 
     if not items:
         items = _parse_fallback(soup, base_url)
+        if items:
+            used_selector = "fallback"
+
+    if not items:
+        # セレクタが全て失敗: HTML 構造の変更を疑う
+        title = soup.find("title")
+        title_text = title.get_text(strip=True) if title else "(no title)"
+        body_snippet = (soup.get_text()[:200] or "").replace("\n", " ")
+        logger.warning(
+            "SUUMO: セレクタが0件 — HTML構造が変わった可能性があります。"
+            " title=%r, body_snippet=%r",
+            title_text, body_snippet,
+        )
 
     return items
 
@@ -726,81 +753,132 @@ SUUMO_MAX_PAGES_SAFETY = 100
 # URL プリフィルタ適用後でも通過しない物件が多い区での無駄なリクエストを削減
 EARLY_EXIT_PAGES = 20
 
+# 区ごと並列取得のワーカー数。
+# 各ワーカーは REQUEST_DELAY_SEC ぶんのウェイトを置くため、
+# PARALLEL_WARD_WORKERS=4 でも実質リクエスト間隔は約 0.5 秒/回になる。
+# SUUMO の負荷を抑えつつスループットを向上させるバランス値。
+PARALLEL_WARD_WORKERS = 4
+
+
+def _scrape_ward(
+    ward_roman: str,
+    apply_filter: bool,
+    limit: int,
+    mb: Optional[int],
+    et: Optional[int],
+) -> list[SuumoListing]:
+    """指定区の全ページをスクレイピングして SuumoListing リストを返す。
+
+    ThreadPoolExecutor から呼ばれるため、独立した session を生成する。
+    結果の URL 重複排除は呼び出し元（scrape_suumo）で行う。
+    """
+    session = create_session()
+    results: list[SuumoListing] = []
+    seen_urls_ward: set[str] = set()
+
+    filtered_base_url: Optional[str] = None
+    if apply_filter:
+        sc_code = SUUMO_23_WARD_SC_CODES.get(ward_roman)
+        if sc_code:
+            filtered_base_url = LIST_URL_WARD_FILTERED.format(sc=sc_code)
+            filtered_base_url += f"&kb={PRICE_MIN_MAN}&kt={PRICE_MAX_MAN}"
+            if mb is not None:
+                filtered_base_url += f"&mb={mb}"
+            if et is not None:
+                filtered_base_url += f"&et={et}"
+
+    p = 1
+    ward_total_parsed = 0
+    ward_total_passed = 0
+    pages_since_last_pass = 0
+
+    while p <= limit:
+        try:
+            html = fetch_list_page(session, p, ward_roman=ward_roman, filtered_base_url=filtered_base_url)
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and 500 <= e.response.status_code < 600:
+                logger.warning("SUUMO: sc_%s ページ%d で %d エラーのためスキップします: %s", ward_roman, p, e.response.status_code, e.response.url)
+                p += 1
+                continue
+            raise
+        except Exception as e:
+            logger.error("SUUMO: sc_%s ページ%d 取得失敗: %s", ward_roman, p, e)
+            break
+
+        rows = parse_list_html(html)
+        if not rows:
+            break
+        ward_total_parsed += len(rows)
+        passed = 0
+        for row in rows:
+            row.list_ward_roman = ward_roman
+            if row.url and row.url not in seen_urls_ward:
+                seen_urls_ward.add(row.url)
+                if apply_filter:
+                    filtered = apply_conditions([row])
+                    if filtered:
+                        results.append(filtered[0])
+                        passed += 1
+                        logger.debug("✓ %s (%s万)", filtered[0].name, filtered[0].price_man)
+                else:
+                    results.append(row)
+                    passed += 1
+        ward_total_passed += passed
+        if passed > 0:
+            pages_since_last_pass = 0
+        else:
+            pages_since_last_pass += 1
+        if pages_since_last_pass >= EARLY_EXIT_PAGES:
+            logger.info("SUUMO: sc_%s 早期打ち切り（%dページ連続で通過0件, 累計通過: %d件）", ward_roman, pages_since_last_pass, ward_total_passed)
+            break
+        if p % 10 == 0:
+            logger.info("SUUMO: sc_%s ...%dページ処理済 (通過: %d件)", ward_roman, p, ward_total_passed)
+        p += 1
+
+    if ward_total_parsed > 0:
+        logger.info("SUUMO: sc_%s 完了 — %d件パース, %d件通過", ward_roman, ward_total_parsed, ward_total_passed)
+
+    return results
+
 
 def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Iterator[SuumoListing]:
-    """SUUMO 東京23区の中古マンションを取得。全23区を sc_区のローマ字（sc_koto, sc_kita 等）で同様に区ごとに取得。max_pages=0 のときは結果がなくなるまで全ページ取得。"""
-    session = create_session()
-    seen_urls: set[str] = set()
+    """SUUMO 東京23区の中古マンションを取得。
+
+    全23区を ThreadPoolExecutor で並列取得する（PARALLEL_WARD_WORKERS 区を同時処理）。
+    max_pages=0 のときは結果がなくなるまで全ページ取得。
+    """
     limit = max_pages if max_pages and max_pages > 0 else SUUMO_MAX_PAGES_SAFETY
 
     mb = _snap_mb(AREA_MIN_M2) if apply_filter else None
     et = _snap_et(WALK_MIN_MAX) if apply_filter else None
 
     if apply_filter:
-        print(f"SUUMO: サーバーサイドフィルタ（価格{PRICE_MIN_MAN}〜{PRICE_MAX_MAN}万"
-              f"{f', 面積{mb}㎡以上' if mb else ''}"
-              f"{f', 徒歩{et}分以内' if et else ''}"
-              f"） + ローカルフィルタ（面積{AREA_MIN_M2}m²以上, 築{BUILT_YEAR_MIN}年以降, 徒歩{WALK_MIN_MAX}分以内）",
-              file=sys.stderr)
+        area_msg = f", 面積{mb}㎡以上" if mb else ""
+        walk_msg = f", 徒歩{et}分以内" if et else ""
+        logger.info(
+            "SUUMO: サーバーサイドフィルタ（価格%d〜%d万%s%s） + ローカルフィルタ（面積%gm²以上, 築%d年以降, 徒歩%d分以内）"
+            " / 並列ワーカー数: %d",
+            PRICE_MIN_MAN, PRICE_MAX_MAN, area_msg, walk_msg, AREA_MIN_M2, BUILT_YEAR_MIN, WALK_MIN_MAX,
+            PARALLEL_WARD_WORKERS,
+        )
 
-    for ward_roman in SUUMO_23_WARD_ROMAN:  # 全23区を同じ方式で取得
-        # サーバーサイドフィルタ: JJ012FC001 URL で kb/kt/mb/et を指定し、
-        # 対象外の物件をサーバー側で除外（早期打ち切りによる取りこぼし防止）
-        filtered_base_url: Optional[str] = None
-        if apply_filter:
-            sc_code = SUUMO_23_WARD_SC_CODES.get(ward_roman)
-            if sc_code:
-                filtered_base_url = LIST_URL_WARD_FILTERED.format(sc=sc_code)
-                filtered_base_url += f"&kb={PRICE_MIN_MAN}&kt={PRICE_MAX_MAN}"
-                if mb is not None:
-                    filtered_base_url += f"&mb={mb}"
-                if et is not None:
-                    filtered_base_url += f"&et={et}"
+    seen_urls: set[str] = set()
+    futures = {}
 
-        p = 1
-        ward_total_parsed = 0
-        ward_total_passed = 0
-        pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
-        while p <= limit:
+    with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
+        for ward_roman in SUUMO_23_WARD_ROMAN:
+            future = executor.submit(_scrape_ward, ward_roman, apply_filter, limit, mb, et)
+            futures[future] = ward_roman
+
+        for future in as_completed(futures):
+            ward_roman = futures[future]
             try:
-                html = fetch_list_page(session, p, ward_roman=ward_roman, filtered_base_url=filtered_base_url)
-            except requests.exceptions.HTTPError as e:
-                # リトライ後も 5xx の場合はそのページをスキップして続行（ジョブ全体は落とさない）
-                if e.response is not None and 500 <= e.response.status_code < 600:
-                    print(f"SUUMO: sc_{ward_roman} ページ{p} で {e.response.status_code} エラーのためスキップします: {e.response.url}", file=sys.stderr)
-                    p += 1
-                    continue
-                raise
-            rows = parse_list_html(html)
-            if not rows:
-                break
-            ward_total_parsed += len(rows)
-            passed = 0
-            for row in rows:
-                row.list_ward_roman = ward_roman  # 区ごと一覧のため、住所に区名が無くても23区判定に利用
+                ward_results = future.result()
+            except Exception as e:
+                logger.error("SUUMO: sc_%s 並列取得エラー: %s", ward_roman, e)
+                continue
+
+            for row in ward_results:
                 if row.url and row.url not in seen_urls:
                     seen_urls.add(row.url)
-                    if apply_filter:
-                        filtered = apply_conditions([row])
-                        if filtered:
-                            yield filtered[0]
-                            passed += 1
-                            print(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)", file=sys.stderr)
-                    else:
-                        yield row
-                        passed += 1
-            ward_total_passed += passed
-            # 早期打ち切り判定: 連続 N ページで新規通過0件ならスキップ
-            if passed > 0:
-                pages_since_last_pass = 0
-            else:
-                pages_since_last_pass += 1
-            if pages_since_last_pass >= EARLY_EXIT_PAGES:
-                print(f"SUUMO: sc_{ward_roman} 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {ward_total_passed}件）", file=sys.stderr)
-                break
-            # 進捗: 10ページごとにサマリー
-            if p % 10 == 0:
-                print(f"SUUMO: sc_{ward_roman} ...{p}ページ処理済 (通過: {ward_total_passed}件)", file=sys.stderr)
-            p += 1
-        if ward_total_parsed > 0:
-            print(f"SUUMO: sc_{ward_roman} 完了 — {ward_total_parsed}件パース, {ward_total_passed}件通過", file=sys.stderr)
+                    yield row

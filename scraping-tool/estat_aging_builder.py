@@ -25,6 +25,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ---------------------------------------------------------------------------
 # 設定
 # ---------------------------------------------------------------------------
@@ -108,8 +111,8 @@ CENSUS_YEARS = ["2000", "2005", "2010", "2015", "2020"]
 def get_api_key() -> str:
     key = os.environ.get("ESTAT_API_KEY", "")
     if not key:
-        print("エラー: ESTAT_API_KEY 環境変数を設定してください", file=sys.stderr)
-        print("  https://www.e-stat.go.jp/api/ からアプリケーションIDを取得してください", file=sys.stderr)
+        logger.error("エラー: ESTAT_API_KEY 環境変数を設定してください")
+        logger.info("  https://www.e-stat.go.jp/api/ からアプリケーションIDを取得してください")
         sys.exit(1)
     return key
 
@@ -120,10 +123,10 @@ def estat_request(endpoint: str, params: dict) -> Optional[dict]:
         if resp.status_code == 200:
             return resp.json()
         else:
-            print(f"  e-Stat API エラー: {resp.status_code}", file=sys.stderr)
+            logger.error(f"  e-Stat API エラー: {resp.status_code}")
             return None
     except Exception as e:
-        print(f"  リクエスト例外: {e}", file=sys.stderr)
+        logger.info(f"  リクエスト例外: {e}")
         return None
 
 
@@ -287,7 +290,7 @@ def fetch_aging_from_api(
         return national_rate, ward_rates
 
     except Exception as e:
-        print(f"  データ解析エラー: {e}", file=sys.stderr)
+        logger.error(f"  データ解析エラー: {e}")
         return None, {}
 
 
@@ -300,29 +303,29 @@ def fetch_all_years(api_key: str) -> Tuple[Dict[str, float], Dict[str, Dict[str,
     ward_by_year: Dict[str, Dict[str, float]] = {w: {} for w in TOKYO_23_WARDS}
 
     for year in CENSUS_YEARS:
-        print(f"\n--- {year}年 国勢調査 ---", file=sys.stderr)
+        logger.info(f"\n--- {year}年 国勢調査 ---")
 
         table_id = search_aging_table(api_key, year)
         api_national = None
         api_wards: Dict[str, float] = {}
 
         if table_id:
-            print(f"  テーブル {table_id} からデータ取得中...", file=sys.stderr)
+            logger.info(f"  テーブル {table_id} からデータ取得中...")
             api_national, api_wards = fetch_aging_from_api(api_key, table_id)
             time.sleep(REQUEST_DELAY_SEC)
 
             if api_national is not None:
-                print(f"  全国: {api_national}%", file=sys.stderr)
+                logger.info(f"  全国: {api_national}%")
                 national_by_year[year] = round(api_national, 1)
             if api_wards:
-                print(f"  {len(api_wards)}区のデータを取得", file=sys.stderr)
+                logger.info(f"  {len(api_wards)}区のデータを取得")
                 for ward, rate in api_wards.items():
                     ward_by_year[ward][year] = round(rate, 1)
 
         if year not in national_by_year:
             fallback = NATIONAL_AGING_RATES.get(year)
             if fallback is not None:
-                print(f"  全国: フォールバックデータ使用 ({fallback}%)", file=sys.stderr)
+                logger.info(f"  全国: フォールバックデータ使用 ({fallback}%)")
                 national_by_year[year] = fallback
 
         for ward in TOKYO_23_WARDS:
@@ -404,10 +407,10 @@ def main() -> None:
 
     os.makedirs(args.output_dir, exist_ok=True)
 
-    print("=== e-Stat 高齢化率キャッシュ構築開始 ===", file=sys.stderr)
+    logger.info("=== e-Stat 高齢化率キャッシュ構築開始 ===")
 
     if args.fallback_only:
-        print("フォールバックモード: API をスキップ", file=sys.stderr)
+        logger.warning("フォールバックモード: API をスキップ")
         national_by_year = dict(NATIONAL_AGING_RATES)
         ward_by_year = {
             ward: dict(rates) for ward, rates in WARD_AGING_RATES.items()
@@ -426,8 +429,8 @@ def main() -> None:
         w for w in result.get("by_ward", {}).values()
         if w.get("latest_aging_rate") is not None
     ])
-    print(f"\n=== 完了: 全国 + {ward_count}区の高齢化率データを保存 ===", file=sys.stderr)
-    print(f"出力: {output_path}", file=sys.stderr)
+    logger.info(f"\n=== 完了: 全国 + {ward_count}区の高齢化率データを保存 ===")
+    logger.info(f"出力: {output_path}")
 
 
 if __name__ == "__main__":
