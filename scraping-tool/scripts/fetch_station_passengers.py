@@ -21,6 +21,9 @@ import sys
 import zipfile
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # スクリプト配置が scraping-tool/ である前提
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -69,8 +72,7 @@ def _parse_gml_for_stations(gml_text: str) -> dict[str, int]:
 def main() -> None:
     zip_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_ZIP
     if not zip_path.exists():
-        print(
-            f"ZIP がありません: {zip_path}\n"
+        logger.error(f"ZIP がありません: {zip_path}\n"
             "国土数値情報から S12-22_GML.zip をダウンロードし、data/ に置いてください。\n"
             "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-v3_1.html",
             file=sys.stderr,
@@ -99,7 +101,7 @@ def main() -> None:
 
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(all_stations, f, ensure_ascii=False, indent=2)
-    print(f"保存しました: {OUT_PATH} ({len(all_stations)}駅)", file=sys.stderr)
+    print(f"保存しました: {OUT_PATH} ({len(all_stations)}駅)")
 
 
 if __name__ == "__main__":

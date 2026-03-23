@@ -32,6 +32,10 @@ from commute import (
     WALK_CORRECTION_FACTOR,
 )
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 
 # ---------------------------------------------------------------------------
 # 目的地定義

@@ -26,6 +26,10 @@ import sys
 import time
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 # scraping-tool/ をインポートパスに追加
 SCRAPING_TOOL_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SCRAPING_TOOL_DIR))
@@ -83,12 +87,12 @@ def main() -> None:
     user = os.environ.get("SUMAI_USER", "")
     password = os.environ.get("SUMAI_PASS", "")
     if not user or not password:
-        print("エラー: SUMAI_USER / SUMAI_PASS を設定してください", file=sys.stderr)
+        logger.error("エラー: SUMAI_USER / SUMAI_PASS を設定してください")
         sys.exit(1)
 
     session = _create_session()
     if not login(session, user, password):
-        print("エラー: ログイン失敗", file=sys.stderr)
+        logger.error("エラー: ログイン失敗")
         sys.exit(1)
 
     # データ読み込み
@@ -134,7 +138,7 @@ def main() -> None:
             }
             resp = _request_with_retry(session, "GET", SEARCH_RESULT_URL, params=params)
             if resp is None:
-                print(f"  ! [{i+1}/{total}] {name} — HTTP エラー", file=sys.stderr)
+                logger.error(f"  ! [{i+1}/{total}] {name} — HTTP エラー")
                 errors += 1
                 continue
 
@@ -143,13 +147,13 @@ def main() -> None:
             # カード要素を特定して沖式中古時価を抽出
             card_text = _find_property_card_text(soup, re_id)
             if not card_text:
-                print(f"  × [{i+1}/{total}] {name} — カード未検出", file=sys.stderr)
+                logger.info(f"  × [{i+1}/{total}] {name} — カード未検出")
                 not_found += 1
                 continue
 
             val = _extract_oki_price_from_card(card_text)
             if val is None:
-                print(f"  × [{i+1}/{total}] {name} — 沖式中古時価未検出", file=sys.stderr)
+                logger.info(f"  × [{i+1}/{total}] {name} — 沖式中古時価未検出")
                 not_found += 1
                 continue
 
@@ -171,14 +175,14 @@ def main() -> None:
 
             if old_val != val:
                 diff = f"{old_val} → {val}" if old_val else f"新規 {val}"
-                print(f"  ✓ [{i+1}/{total}] {name} — {diff} 万円", file=sys.stderr)
+                logger.debug(f"  ✓ [{i+1}/{total}] {name} — {diff} 万円")
                 updated += 1
             else:
-                print(f"  = [{i+1}/{total}] {name} — {val} 万円（変更なし）", file=sys.stderr)
+                logger.info(f"  = [{i+1}/{total}] {name} — {val} 万円（変更なし）")
                 unchanged += 1
 
         except Exception as e:
-            print(f"  ! [{i+1}/{total}] {name} — エラー: {e}", file=sys.stderr)
+            logger.error(f"  ! [{i+1}/{total}] {name} — エラー: {e}")
             errors += 1
 
         # 進捗: 20件ごとにサマリー

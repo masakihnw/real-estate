@@ -30,6 +30,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 try:
     from playwright.async_api import async_playwright, Page, Browser
 except ImportError:

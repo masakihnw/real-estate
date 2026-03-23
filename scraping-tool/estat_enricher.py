@@ -36,6 +36,9 @@ from typing import Optional
 
 from parse_utils import extract_ward as _extract_ward_shared
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ---------------------------------------------------------------------------
 # キャッシュ読み込み
 # ---------------------------------------------------------------------------
@@ -75,8 +78,8 @@ def enrich_estat_population(listings: list) -> int:
     aging = load_json_file(AGING_CACHE)
 
     if not population:
-        print("警告: estat_population.json が見つかりません。スキップします。", file=sys.stderr)
-        print(f"  期待パス: {POPULATION_CACHE}", file=sys.stderr)
+        logger.warning("警告: estat_population.json が見つかりません。スキップします。")
+        logger.info(f"  期待パス: {POPULATION_CACHE}")
         return 0
 
     pop_by_ward = population.get("by_ward", {})

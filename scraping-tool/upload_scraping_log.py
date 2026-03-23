@@ -19,6 +19,10 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 
 # Firestore のドキュメントサイズ上限は 1MB。ログが長すぎる場合は末尾を優先して切り詰める。
 MAX_LOG_BYTES = 900_000  # 900KB（余裕を持たせる）
@@ -30,20 +34,20 @@ def upload_log(log_path: str, status: str = "unknown") -> bool:
     """ログファイルを Firestore scraping_logs/latest にアップロードする。"""
     json_str = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
     if not json_str or not json_str.strip():
-        print("FIREBASE_SERVICE_ACCOUNT が未設定のためログアップロードをスキップ", file=sys.stderr)
+        logger.warning("FIREBASE_SERVICE_ACCOUNT が未設定のためログアップロードをスキップ")
         return False
 
     try:
         import firebase_admin
         from firebase_admin import credentials, firestore
     except ImportError:
-        print("firebase-admin がインストールされていません", file=sys.stderr)
+        logger.info("firebase-admin がインストールされていません")
         return False
 
     try:
         cred_dict = json.loads(json_str)
     except json.JSONDecodeError as e:
-        print(f"FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗: {e}", file=sys.stderr)
+        logger.error(f"FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗: {e}")
         return False
 
     try:
@@ -54,13 +58,13 @@ def upload_log(log_path: str, status: str = "unknown") -> bool:
             firebase_admin.initialize_app(cred)
         db = firestore.client()
     except Exception as e:
-        print(f"Firebase 初期化失敗: {e}", file=sys.stderr)
+        logger.error(f"Firebase 初期化失敗: {e}")
         return False
 
     # ログファイル読み込み
     log_file = Path(log_path)
     if not log_file.exists():
-        print(f"ログファイルが見つかりません: {log_path}", file=sys.stderr)
+        logger.info(f"ログファイルが見つかりません: {log_path}")
         return False
 
     log_content = log_file.read_text(encoding="utf-8", errors="replace")
@@ -87,10 +91,10 @@ def upload_log(log_path: str, status: str = "unknown") -> bool:
 
     try:
         db.collection("scraping_logs").document("latest").set(data)
-        print(f"ログを Firestore にアップロードしました（{len(log_content)} 文字, status={status}）", file=sys.stderr)
+        logger.info(f"ログを Firestore にアップロードしました（{len(log_content)} 文字, status={status}）")
         return True
     except Exception as e:
-        print(f"Firestore アップロード失敗: {e}", file=sys.stderr)
+        logger.error(f"Firestore アップロード失敗: {e}")
         return False
 
 

@@ -53,6 +53,10 @@ from scraper_common import (
     is_tokyo_23_by_address,
 )
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 BASE_URL = "https://suumo.jp"
 
 # 東京都 新築分譲マンション一覧（bs=010: 新築分譲マンション, ta=13: 東京都）
@@ -116,7 +120,7 @@ def fetch_list_page(session: requests.Session, page: int = 1) -> str:
             # 429 Too Many Requests — レートリミット対策
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
-                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1}/{REQUEST_RETRIES})", file=sys.stderr)
+                logger.warning(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1}/{REQUEST_RETRIES})")
                 time.sleep(retry_after)
                 continue
             r.raise_for_status()
@@ -388,7 +392,7 @@ def scrape_suumo_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
             html = fetch_list_page(session, page)
         except requests.exceptions.HTTPError as e:
             if e.response is not None and 500 <= e.response.status_code < 600:
-                print(f"SUUMO 新築: ページ{page} で {e.response.status_code} エラーのためスキップ", file=sys.stderr)
+                logger.error(f"SUUMO 新築: ページ{page} で {e.response.status_code} エラーのためスキップ")
                 page += 1
                 continue
             raise
@@ -406,14 +410,14 @@ def scrape_suumo_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
                         yield filtered[0]
                         passed += 1
                         _price = f"{filtered[0].price_man}万" if filtered[0].price_man else "価格未定"
-                        print(f"  ✓ {filtered[0].name} ({_price})", file=sys.stderr)
+                        logger.debug(f"  ✓ {filtered[0].name} ({_price})")
                 else:
                     yield row
                     passed += 1
         total_passed += passed
         # 進捗: 10ページごとにサマリー
         if page % 10 == 0:
-            print(f"SUUMO 新築: ...{page}ページ処理済 (通過: {total_passed}件)", file=sys.stderr)
+            logger.info(f"SUUMO 新築: ...{page}ページ処理済 (通過: {total_passed}件)")
         page += 1
     if total_parsed > 0:
-        print(f"SUUMO 新築: 完了 — {total_parsed}件パース, {total_passed}件通過", file=sys.stderr)
+        logger.info(f"SUUMO 新築: 完了 — {total_parsed}件パース, {total_passed}件通過")

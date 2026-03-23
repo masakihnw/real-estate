@@ -31,6 +31,9 @@ sys.path.insert(0, str(ROOT))
 from config import REQUEST_DELAY_SEC, REQUEST_TIMEOUT_SEC, REQUEST_RETRIES, USER_AGENT
 from suumo_scraper import parse_suumo_detail_html
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 CACHE_DIR = ROOT / "data" / "html_cache"
 MANIFEST_PATH = CACHE_DIR / "manifest.json"
 ETAG_PATH = CACHE_DIR / "etags.json"
@@ -238,14 +241,14 @@ def _fetch_one(
             }
         return (url, html, False)
     except Exception as e:
-        print(f"  取得失敗 {url[:50]}...: {e}", file=sys.stderr)
+        logger.error(f"  取得失敗 {url[:50]}...: {e}")
         return (url, None, False)
 
 
 def main() -> None:
     json_path = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "results" / "latest.json"
     if not json_path.exists():
-        print(f"対象ファイルがありません: {json_path}", file=sys.stderr)
+        logger.info(f"対象ファイルがありません: {json_path}")
         sys.exit(1)
 
     with open(json_path, "r", encoding="utf-8") as f:
@@ -253,7 +256,7 @@ def main() -> None:
 
     suumo_urls = [r["url"] for r in rows if isinstance(r, dict) and r.get("source") == "suumo" and r.get("url")]
     if not suumo_urls:
-        print("SUUMO の URL がありません。", file=sys.stderr)
+        logger.info("SUUMO の URL がありません。")
         sys.exit(0)
 
     BUILDING_UNITS_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -264,7 +267,7 @@ def main() -> None:
                 raw = json.load(f)
             existing = raw
         except (json.JSONDecodeError, OSError) as e:
-            print(f"警告: building_units.json の読み込みに失敗（空キャッシュで続行）: {e}", file=sys.stderr)
+            logger.error(f"警告: building_units.json の読み込みに失敗（空キャッシュで続行）: {e}")
 
     # パース済み HTML のコンテンツハッシュ → 前回パース結果が同一 HTML なら再パース不要
     parse_hash_path = ROOT / "data" / "parse_hashes.json"
@@ -304,16 +307,14 @@ def main() -> None:
             to_revalidate.append(u)
 
     if to_fetch:
-        print(
-            f"フィルタ通過後のSUUMO {len(suumo_urls)}件のうち、HTML未キャッシュ {len(to_fetch)}件の詳細ページを取得します。",
+        logger.info(f"フィルタ通過後のSUUMO {len(suumo_urls)}件のうち、HTML未キャッシュ {len(to_fetch)}件の詳細ページを取得します。",
             file=sys.stderr,
         )
         if len(to_fetch) == len(suumo_urls):
-            print("（初回のため全件取得します）", file=sys.stderr)
+            print("（初回のため全件取得します）")
 
     if to_revalidate:
-        print(
-            f"  キャッシュ済み {len(suumo_urls) - len(to_fetch)}件のうち、{len(to_revalidate)}件を ETag/条件付きリクエストで再検証します。",
+        logger.info(f"  キャッシュ済み {len(suumo_urls) - len(to_fetch)}件のうち、{len(to_revalidate)}件を ETag/条件付きリクエストで再検証します。",
             file=sys.stderr,
         )
 
@@ -331,7 +332,7 @@ def main() -> None:
                     fetched_htmls[url] = html
 
         _save_manifest(manifest)
-        print(f"  HTML新規取得完了: {len(fetched_htmls)}/{len(to_fetch)}件成功", file=sys.stderr)
+        print(f"  HTML新規取得完了: {len(fetched_htmls)}/{len(to_fetch)}件成功")
 
     # Phase 1b: 古いキャッシュを ETag で再検証
     revalidated_count = 0
@@ -351,8 +352,7 @@ def main() -> None:
                     revalidated_count += 1
 
         _save_manifest(manifest)
-        print(
-            f"  再検証完了: 304 Not Modified {not_modified_count}件、更新 {revalidated_count}件",
+        logger.warning(f"  再検証完了: 304 Not Modified {not_modified_count}件、更新 {revalidated_count}件",
             file=sys.stderr,
         )
 
@@ -381,7 +381,7 @@ def main() -> None:
             updated += 1
             units = parsed.get("total_units")
             if units is not None:
-                print(f"  {url[:60]}... → {units}戸", file=sys.stderr)
+                print(f"  {url[:60]}... → {units}戸")
 
     # 原子的書き込み
     tmp_path = BUILDING_UNITS_PATH.with_suffix(".json.tmp")

@@ -24,12 +24,15 @@ from pathlib import Path
 # スクリプト配置が scraping-tool/ である前提
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # Firestore からスクレイピング条件を取得（config を使用する全モジュールの import より前に実行）
 try:
     from firestore_config_loader import load_config_from_firestore
     load_config_from_firestore()
 except Exception as e:
-    print(f"[Config] Firestore 設定の読み込みに失敗（デフォルトを使用）: {e}", file=sys.stderr)
+    logger.warning("Firestore 設定の読み込みに失敗（デフォルトを使用）: %s", e)
 
 from report_utils import listing_key, clean_listing_name
 
@@ -130,7 +133,7 @@ def main() -> None:
             try:
                 all_rows.extend(future.result())
             except Exception as e:
-                print(f"# {name} {type_label}取得エラー: {e}", file=sys.stderr)
+                logger.error("%s %s取得エラー: %s", name, type_label, e)
 
     # 物件名のノイズ除去（「新築マンション」prefix、「閲覧済」suffix、「掲載物件X件」、
     # 「ペット可」等の条件タグ）
@@ -152,11 +155,11 @@ def main() -> None:
                 w.writeheader()
                 if all_rows:
                     w.writerows(all_rows)
-            print(f"Wrote {len(all_rows)} rows to {outpath}", file=sys.stderr)
+            logger.info("Wrote %d rows to %s", len(all_rows), outpath)
         else:
             with open(outpath, "w", encoding="utf-8") as f:
                 json.dump(all_rows, f, ensure_ascii=False, indent=2)
-            print(f"Wrote {len(all_rows)} rows to {outpath}", file=sys.stderr)
+            logger.info("Wrote %d rows to %s", len(all_rows), outpath)
     else:
         print(json.dumps(all_rows, ensure_ascii=False, indent=2))
 

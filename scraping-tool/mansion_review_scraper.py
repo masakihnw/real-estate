@@ -32,6 +32,9 @@ from bs4 import BeautifulSoup
 
 from config import REQUEST_DELAY_SEC
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 CACHE_PATH = SCRIPT_DIR / "data" / "mansion_review_cache.json"
 CACHE_TTL_DAYS = 14
@@ -103,8 +106,7 @@ def search_building(
             SEARCH_URL, params=params, timeout=30, allow_redirects=True
         )
         if resp.status_code != 200:
-            print(
-                f"  検索エラー: {resp.status_code} ({name})",
+            logger.error(f"  検索エラー: {resp.status_code} ({name})",
                 file=sys.stderr,
             )
             return None
@@ -126,7 +128,7 @@ def search_building(
                 return href
 
     except Exception as e:
-        print(f"  検索例外: {name} — {e}", file=sys.stderr)
+        print(f"  検索例外: {name} — {e}")
 
     return None
 
@@ -142,7 +144,7 @@ def parse_building_page(
         if resp.status_code != 200:
             return None
     except Exception as e:
-        print(f"  ページ取得エラー: {url} — {e}", file=sys.stderr)
+        logger.error(f"  ページ取得エラー: {url} — {e}")
         return None
 
     soup = BeautifulSoup(resp.text, "html.parser")

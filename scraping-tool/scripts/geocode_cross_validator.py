@@ -34,6 +34,9 @@ from typing import Optional, Tuple
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ─── パス ───────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent.parent
 GEOCODE_CACHE_PATH = ROOT / "data" / "geocode_cache.json"
@@ -746,8 +749,7 @@ def attempt_fix(listing: dict, station_check: dict) -> Optional[Tuple[float, flo
     if not candidates:
         # 全クエリ失敗 → 駅座標をフォールバックとして使用
         if station_coords and walk_min:
-            print(f"  → 再ジオコーディング失敗。駅座標をフォールバック使用: {station_coords}",
-                  file=sys.stderr)
+            logger.error(f"  → 再ジオコーディング失敗。駅座標をフォールバック使用: {station_coords}")
             return tuple(station_coords)
         return None
 
@@ -777,15 +779,14 @@ def attempt_fix(listing: dict, station_check: dict) -> Optional[Tuple[float, flo
                 # 範囲内候補がなくても、最も近い候補を採用（元よりはマシなはず）
                 best = min(valid, key=lambda x: x[3])
 
-            print(f"  → 修正候補: [{best[0]:.6f}, {best[1]:.6f}] "
-                  f"(駅距離{best[3]:.0f}m, クエリ={best[2]})", file=sys.stderr)
+            logger.info(f"  → 修正候補: [{best[0]:.6f}, {best[1]:.6f}] "
+                  f"(駅距離{best[3]:.0f}m, クエリ={best[2]})")
             return (best[0], best[1])
 
     # 駅の制約がない場合は最初の候補
     if candidates:
         lat, lon, label = candidates[0]
-        print(f"  → 修正候補（駅制約なし）: [{lat:.6f}, {lon:.6f}] (クエリ={label})",
-              file=sys.stderr)
+        logger.info(f"  → 修正候補（駅制約なし）: [{lat:.6f}, {lon:.6f}] (クエリ={label})")
         return (lat, lon)
 
     return None
@@ -885,14 +886,14 @@ def validate_and_fix(listings: list[dict], fix: bool = False,
         # 問題がある場合はログ出力
         if confidence in ("low", "mismatch"):
             station_check = result["checks"].get("station_distance", {})
-            print(f"\n{'='*60}", file=sys.stderr)
-            print(f"⚠ {confidence.upper()}: {name}", file=sys.stderr)
-            print(f"  住所: {address}", file=sys.stderr)
+            logger.info(f"\n{'='*60}")
+            logger.info(f"⚠ {confidence.upper()}: {name}")
+            logger.info(f"  住所: {address}")
             if ss_address and ss_address != address:
-                print(f"  住まいサーフィン住所: {ss_address}", file=sys.stderr)
-            print(f"  座標: [{lat}, {lon}]", file=sys.stderr)
+                logger.info(f"  住まいサーフィン住所: {ss_address}")
+            logger.info(f"  座標: [{lat}, {lon}]")
             for issue in result["issues"]:
-                print(f"  {issue}", file=sys.stderr)
+                logger.info(f"  {issue}")
 
             summary["issues"].append({
                 "index": i,
@@ -934,55 +935,54 @@ def validate_and_fix(listings: list[dict], fix: bool = False,
                             geocode_cache[ss_address] = [new_lat, new_lon]
                         geocode_cache_updated = True
 
-                        print(f"  ✅ 修正成功: [{old_lat}, {old_lon}] → [{new_lat}, {new_lon}] "
-                              f"(信頼度: {confidence} → {new_confidence})", file=sys.stderr)
+                        logger.info(f"  ✅ 修正成功: [{old_lat}, {old_lon}] → [{new_lat}, {new_lon}] "
+                              f"(信頼度: {confidence} → {new_confidence})")
                     else:
-                        print(f"  ❌ 修正候補も検証に失敗（{new_confidence}）。元座標を維持。",
-                              file=sys.stderr)
+                        logger.error(f"  ❌ 修正候補も検証に失敗（{new_confidence}）。元座標を維持。")
                 else:
-                    print(f"  ❌ 修正候補なし。元座標を維持。", file=sys.stderr)
+                    logger.info(f"  ❌ 修正候補なし。元座標を維持。")
 
         elif confidence == "medium":
             # medium は warn レベルの詳細をログ
             if result["issues"]:
-                print(f"\n⚡ MEDIUM: {name} ({address})", file=sys.stderr)
+                logger.info(f"\n⚡ MEDIUM: {name} ({address})")
                 for issue in result["issues"]:
-                    print(f"  {issue}", file=sys.stderr)
+                    logger.info(f"  {issue}")
 
     # geocode_cache の保存
     if geocode_cache_updated:
         _save_json_cache(GEOCODE_CACHE_PATH, geocode_cache)
-        print(f"\n📦 geocode_cache.json を更新しました", file=sys.stderr)
+        logger.info(f"\n📦 geocode_cache.json を更新しました")
 
     return listings, summary
 
 
 def print_summary(summary: dict) -> None:
     """検証結果のサマリーを出力する。"""
-    print(f"\n{'='*60}", file=sys.stderr)
-    print(f"📊 ジオコーディング相互検証 サマリー", file=sys.stderr)
-    print(f"{'='*60}", file=sys.stderr)
-    print(f"  総物件数:     {summary['total']}", file=sys.stderr)
-    print(f"  座標あり:     {summary['with_coords']}", file=sys.stderr)
-    print(f"  座標なし:     {summary['no_coords']}", file=sys.stderr)
-    print(f"  ─────────────────────", file=sys.stderr)
-    print(f"  🟢 HIGH:      {summary['high']}", file=sys.stderr)
-    print(f"  🟡 MEDIUM:    {summary['medium']}", file=sys.stderr)
-    print(f"  🟠 LOW:       {summary['low']}", file=sys.stderr)
-    print(f"  🔴 MISMATCH:  {summary['mismatch']}", file=sys.stderr)
+    logger.info(f"\n{'='*60}")
+    logger.info(f"📊 ジオコーディング相互検証 サマリー")
+    logger.info(f"{'='*60}")
+    logger.info(f"  総物件数:     {summary['total']}")
+    logger.info(f"  座標あり:     {summary['with_coords']}")
+    logger.info(f"  座標なし:     {summary['no_coords']}")
+    logger.info(f"  ─────────────────────")
+    logger.info(f"  🟢 HIGH:      {summary['high']}")
+    logger.info(f"  🟡 MEDIUM:    {summary['medium']}")
+    logger.info(f"  🟠 LOW:       {summary['low']}")
+    logger.info(f"  🔴 MISMATCH:  {summary['mismatch']}")
     if summary.get("fixed"):
-        print(f"  ✅ 修正済み:   {summary['fixed']}", file=sys.stderr)
-    print(f"{'='*60}", file=sys.stderr)
+        logger.info(f"  ✅ 修正済み:   {summary['fixed']}")
+    logger.info(f"{'='*60}")
 
     if summary["issues"]:
-        print(f"\n⚠ 問題のある物件 ({len(summary['issues'])}件):", file=sys.stderr)
+        logger.info(f"\n⚠ 問題のある物件 ({len(summary['issues'])}件):")
         for item in summary["issues"]:
             fixed = " [修正済み]" if item.get("fixed") else ""
-            print(f"  [{item['confidence'].upper()}]{fixed} {item['name']}", file=sys.stderr)
-            print(f"    住所: {item['address']}", file=sys.stderr)
-            print(f"    座標: {item['coords']}", file=sys.stderr)
+            logger.info(f"  [{item['confidence'].upper()}]{fixed} {item['name']}")
+            logger.info(f"    住所: {item['address']}")
+            logger.info(f"    座標: {item['coords']}")
             for issue in item["issues"]:
-                print(f"    {issue}", file=sys.stderr)
+                logger.info(f"    {issue}")
 
 
 # ─── CLI ────────────────────────────────────────────
@@ -1002,17 +1002,17 @@ def main():
     args = parser.parse_args()
 
     if not args.json_path.exists():
-        print(f"Error: {args.json_path} not found", file=sys.stderr)
+        logger.error(f"Error: {args.json_path} not found")
         sys.exit(1)
 
     with open(args.json_path, encoding="utf-8") as f:
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print(f"Error: {args.json_path} is not a JSON array", file=sys.stderr)
+        logger.error(f"Error: {args.json_path} is not a JSON array")
         sys.exit(1)
 
-    print(f"📍 相互検証開始: {len(listings)}件", file=sys.stderr)
+    logger.info(f"📍 相互検証開始: {len(listings)}件")
 
     listings, summary = validate_and_fix(
         listings,
@@ -1027,8 +1027,7 @@ def main():
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp.replace(args.json_path)
-    print(f"\n✅ {args.json_path} を更新しました（geocode_confidence フィールド付与）",
-          file=sys.stderr)
+    logger.info(f"\n✅ {args.json_path} を更新しました（geocode_confidence フィールド付与）")
 
     # レポート出力
     if args.report:
@@ -1038,7 +1037,7 @@ def main():
         }
         with open(args.report, "w", encoding="utf-8") as f:
             json.dump(report, f, ensure_ascii=False, indent=2)
-        print(f"📄 レポート: {args.report}", file=sys.stderr)
+        logger.info(f"📄 レポート: {args.report}")
 
     # mismatch が1件以上あれば exit code 1
     if summary["mismatch"] > 0 or summary["low"] > 0:

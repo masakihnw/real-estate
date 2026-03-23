@@ -34,6 +34,10 @@ from urllib.parse import quote, urlparse
 
 import requests
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 STORAGE_BUCKET = "real-estate-app-5b869.firebasestorage.app"
 
 ROOT = Path(__file__).resolve().parent
@@ -114,13 +118,13 @@ def _init_firebase():
         import firebase_admin
         from firebase_admin import credentials, storage
     except ImportError:
-        print("firebase-admin がインストールされていません", file=sys.stderr)
+        logger.info("firebase-admin がインストールされていません")
         return None
 
     try:
         cred_dict = json.loads(json_str)
     except json.JSONDecodeError as e:
-        print(f"FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗: {e}", file=sys.stderr)
+        logger.error(f"FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗: {e}")
         return None
 
     try:
@@ -131,7 +135,7 @@ def _init_firebase():
             app = firebase_admin.initialize_app(cred, {"storageBucket": STORAGE_BUCKET})
         return storage.bucket(name=STORAGE_BUCKET, app=app)
     except Exception as e:
-        print(f"Firebase Storage 初期化失敗: {e}", file=sys.stderr)
+        logger.error(f"Firebase Storage 初期化失敗: {e}")
         return None
 
 
@@ -253,7 +257,7 @@ def _parallel_upload(
             firebase_url = upload_to_storage(bucket, blob_path, data, content_type)
             return url, firebase_url, "uploaded"
         except Exception as e:
-            print(f"  アップロード失敗: {e}", file=sys.stderr)
+            logger.error(f"  アップロード失敗: {e}")
             return url, None, "failed"
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
@@ -336,14 +340,14 @@ def main() -> None:
     output_path = Path(args.output)
 
     if not input_path.exists():
-        print(f"入力ファイルがありません: {input_path}", file=sys.stderr)
+        logger.info(f"入力ファイルがありません: {input_path}")
         sys.exit(1)
 
     with open(input_path, "r", encoding="utf-8") as f:
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print("JSON は配列である必要があります", file=sys.stderr)
+        logger.info("JSON は配列である必要があります")
         sys.exit(1)
 
     max_time_sec = args.max_time * 60 if args.max_time > 0 else None

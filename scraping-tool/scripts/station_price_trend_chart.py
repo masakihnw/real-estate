@@ -20,6 +20,9 @@ import os
 import sys
 from typing import Any, Dict, List, Optional, Tuple
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(SCRIPT_DIR)
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -651,28 +654,28 @@ def generate_html(
 
 
 def main():
-    print("=== 東京都 駅別 m²単価推移チャート生成 ===", file=sys.stderr)
+    logger.info("=== 東京都 駅別 m²単価推移チャート生成 ===")
 
     tiers = load_station_tiers()
     raw = load_station_history()
     _ = load_trends_data()  # 将来の比較用に読み込み可能
 
     if not raw.get("by_station"):
-        print("エラー: station_price_history.json が見つからないか、by_station が空です", file=sys.stderr)
-        print("データファイル: " + STATION_HISTORY_FILE, file=sys.stderr)
+        logger.error("エラー: station_price_history.json が見つからないか、by_station が空です")
+        logger.info("データファイル: " + STATION_HISTORY_FILE)
         sys.exit(1)
 
     data, years, meta = normalize_station_data(raw, tiers)
 
-    print(f"駅数: {len(data)}", file=sys.stderr)
-    print(f"期間: {years[0]} 〜 {years[-1]} ({len(years)} 年)", file=sys.stderr)
+    logger.info(f"駅数: {len(data)}")
+    logger.info(f"期間: {years[0]} 〜 {years[-1]} ({len(years)} 年)")
 
     html = generate_html(data, years, meta, tiers)
 
     os.makedirs(RESULTS_DIR, exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"出力: {OUTPUT_FILE}", file=sys.stderr)
+    logger.info(f"出力: {OUTPUT_FILE}")
 
 
 if __name__ == "__main__":

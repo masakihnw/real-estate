@@ -14,6 +14,10 @@ import json
 import sys
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
@@ -53,7 +57,7 @@ def inject_new_flags(output_dir: Path) -> None:
 
     new_c = sum(1 for r in cur if r.get("is_new"))
     new_s = sum(1 for r in cur_s if r.get("is_new"))
-    print(f"is_new 注入完了: 中古 {new_c}/{len(cur)}件, 新築 {new_s}/{len(cur_s)}件", file=sys.stderr)
+    logger.info(f"is_new 注入完了: 中古 {new_c}/{len(cur)}件, 新築 {new_s}/{len(cur_s)}件")
 
 
 def _build_tx_ward_counts(path: Path) -> dict[str, dict[str, int]] | None:
@@ -84,7 +88,7 @@ def inject_investment_fields(output_dir: Path) -> None:
 
     scored = sum(1 for r in cur if r.get("listing_score") is not None)
     history = sum(1 for r in cur if len(r.get("price_history", [])) > 1)
-    print(f"中古: スコア {scored}/{len(cur)}件, 価格変動あり {history}件", file=sys.stderr)
+    logger.info(f"中古: スコア {scored}/{len(cur)}件, 価格変動あり {history}件")
 
     cur_s = load_json(p["latest_shinchiku"], missing_ok=True, default=[])
     prev_s = load_json(p["previous_shinchiku"], missing_ok=True, default=[])
@@ -95,7 +99,7 @@ def inject_investment_fields(output_dir: Path) -> None:
         enrich_investment_scores(cur_s, tx_data)
         p["latest_shinchiku"].write_text(json.dumps(cur_s, ensure_ascii=False), encoding="utf-8")
         scored_s = sum(1 for r in cur_s if r.get("listing_score") is not None)
-        print(f"新築: スコア {scored_s}/{len(cur_s)}件", file=sys.stderr)
+        logger.info(f"新築: スコア {scored_s}/{len(cur_s)}件")
 
 
 def count_new(output_dir: Path) -> None:

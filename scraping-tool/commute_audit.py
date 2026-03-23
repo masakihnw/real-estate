@@ -17,6 +17,9 @@ import urllib.parse
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 
@@ -688,7 +691,7 @@ def apply_corrections(corrections_path: str) -> None:
     """エクスポートされた修正 JSON を data/ に適用する。"""
     path = Path(corrections_path)
     if not path.exists():
-        print(f"❌ ファイルが見つかりません: {path}", file=sys.stderr)
+        logger.info(f"❌ ファイルが見つかりません: {path}")
         sys.exit(1)
 
     with open(path, "r", encoding="utf-8") as f:
@@ -702,8 +705,8 @@ def apply_corrections(corrections_path: str) -> None:
             break
 
     if key is None:
-        print(f"❌ ファイル名から通勤先を特定できません: {path.name}", file=sys.stderr)
-        print("   ファイル名に 'playground' または 'm3career' を含めてください。", file=sys.stderr)
+        logger.info(f"❌ ファイル名から通勤先を特定できません: {path.name}")
+        logger.info("   ファイル名に 'playground' または 'm3career' を含めてください。")
         sys.exit(1)
 
     target = DATA_DIR / f"commute_{key}.json"

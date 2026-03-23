@@ -16,6 +16,9 @@ import re
 import sys
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = ROOT / "data" / "geocode_cache.json"
 
@@ -33,7 +36,7 @@ def load_cache() -> dict:
                 result[k] = (float(v[0]), float(v[1]))
         return result
     except (json.JSONDecodeError, TypeError, OSError) as e:
-        print(f"警告: geocode キャッシュ読み込み失敗: {e}", file=sys.stderr)
+        logger.error(f"警告: geocode キャッシュ読み込み失敗: {e}")
         return {}
 
 
@@ -115,14 +118,14 @@ def embed(json_path: Path) -> int:
     """
     cache = load_cache()
     if not cache:
-        print("geocode_cache.json が空またはなし。スキップ。", file=sys.stderr)
+        logger.warning("geocode_cache.json が空またはなし。スキップ。")
         return 0
 
     with open(json_path, encoding="utf-8") as f:
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print(f"Error: {json_path} is not a JSON array", file=sys.stderr)
+        logger.error(f"Error: {json_path} is not a JSON array")
         return 0
 
     embedded_count = 0
@@ -164,19 +167,19 @@ def embed(json_path: Path) -> int:
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print(f"Usage: {sys.argv[0]} <json_path>", file=sys.stderr)
+        logger.info(f"Usage: {sys.argv[0]} <json_path>")
         sys.exit(1)
 
     json_path = Path(sys.argv[1])
     if not json_path.exists():
-        print(f"Error: {json_path} not found", file=sys.stderr)
+        logger.error(f"Error: {json_path} not found")
         sys.exit(1)
 
     count = embed(json_path)
     total = 0
     with open(json_path, encoding="utf-8") as f:
         total = len(json.load(f))
-    print(f"座標埋め込み: {count}/{total}件（キャッシュから）", file=sys.stderr)
+    logger.info(f"座標埋め込み: {count}/{total}件（キャッシュから）")
 
 
 if __name__ == "__main__":

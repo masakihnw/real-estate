@@ -26,6 +26,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 try:
     from playwright.async_api import async_playwright, Page, Browser
 except ImportError:
@@ -607,22 +611,22 @@ async def run_enrichment(
     total = len(work_items)
 
     if total == 0:
-        print("[commute_gmaps] 全物件取得済み（スキップ）", file=sys.stderr)
+        logger.warning("[commute_gmaps] 全物件取得済み（スキップ）")
         updated = _apply_cache_to_listings(listings, cache)
         return updated
 
     actual_workers = max(1, min(num_workers, total))
     est_sec = int(total * 10.0 / actual_workers)
 
-    print("=" * 60, file=sys.stderr)
-    print("  Google Maps 通勤時間スクレイピング", file=sys.stderr)
-    print("=" * 60, file=sys.stderr)
-    print(f"  到着時刻:     {arrival_str} JST", file=sys.stderr)
-    print(f"  対象:         {len(targets)} 物件 × 2 オフィス", file=sys.stderr)
-    print(f"  未取得:       {total} 件", file=sys.stderr)
-    print(f"  ワーカー数:   {actual_workers}", file=sys.stderr)
-    print(f"  推定所要時間: 約{est_sec // 60}分{est_sec % 60}秒", file=sys.stderr)
-    print("=" * 60, file=sys.stderr)
+    logger.info("=" * 60)
+    logger.info("  Google Maps 通勤時間スクレイピング")
+    logger.info("=" * 60)
+    logger.info(f"  到着時刻:     {arrival_str} JST")
+    logger.info(f"  対象:         {len(targets)} 物件 × 2 オフィス")
+    logger.info(f"  未取得:       {total} 件")
+    logger.info(f"  ワーカー数:   {actual_workers}")
+    logger.info(f"  推定所要時間: 約{est_sec // 60}分{est_sec % 60}秒")
+    logger.info("=" * 60)
     print(file=sys.stderr)
 
     async with async_playwright() as p:
@@ -652,13 +656,13 @@ async def run_enrichment(
 
     # サマリー
     success_count = total - len(failed)
-    print(f"\n[commute_gmaps] 完了: {success_count}/{total} 件成功", file=sys.stderr)
+    logger.info(f"\n[commute_gmaps] 完了: {success_count}/{total} 件成功")
     if failed:
-        print(f"[commute_gmaps] 失敗: {len(failed)} 件", file=sys.stderr)
+        logger.error(f"[commute_gmaps] 失敗: {len(failed)} 件")
 
     # キャッシュを物件に適用
     updated = _apply_cache_to_listings(listings, cache)
-    print(f"[commute_gmaps] {updated} 件の commute_info を更新", file=sys.stderr)
+    logger.info(f"[commute_gmaps] {updated} 件の commute_info を更新")
     return updated
 
 
@@ -687,7 +691,7 @@ def main() -> None:
     if args.reset and CACHE_DIR.exists():
         import shutil
         shutil.rmtree(CACHE_DIR)
-        print("キャッシュをリセットしました。", file=sys.stderr)
+        logger.info("キャッシュをリセットしました。")
 
     with open(args.input, encoding="utf-8") as f:
         listings = json.load(f)

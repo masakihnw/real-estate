@@ -34,6 +34,16 @@ struct RealEstateAppApp: App {
         // 明示的にバージョンを管理してクリーンスタートを保証する。
         let savedVersion = UserDefaults.standard.integer(forKey: Self.schemaVersionKey)
         if savedVersion < Self.currentSchemaVersion {
+            // ユーザーデータ（いいね・コメント・メモ・チェックリスト）をバックアップしてから削除
+            // バックアップは旧スキーマの ModelContainer から取得する
+            if savedVersion > 0 {
+                // 旧スキーマ用の一時コンテナを作成してユーザーデータを救出
+                let diskConfig = ModelConfiguration(isStoredInMemoryOnly: false)
+                if let oldContainer = try? ModelContainer(for: schema, configurations: [diskConfig]) {
+                    let ctx = ModelContext(oldContainer)
+                    UserAnnotationStore.backup(from: ctx)
+                }
+            }
             Self.deleteSwiftDataStore()
             DiskImageCache.shared.clearAll()
             UserDefaults.standard.set(Self.currentSchemaVersion, forKey: Self.schemaVersionKey)

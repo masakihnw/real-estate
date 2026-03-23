@@ -39,6 +39,9 @@ except ImportError:
 
 from bs4 import BeautifulSoup
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # ──────────────────────────── 定数 ────────────────────────────
 
 BASE_URL = "https://www.sumai-surfin.com"
@@ -82,7 +85,7 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
             password_input = page.locator('input[name="login_password"]').first
 
         if username_input.count() == 0 or password_input.count() == 0:
-            print("ブラウザログイン: 入力フィールドが見つかりません", file=sys.stderr)
+            logger.info("ブラウザログイン: 入力フィールドが見つかりません")
             return False
 
         # type() でキー入力をシミュレート（fill() だとイベント発火しない場合がある）
@@ -113,7 +116,7 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
         # ── 成功判定 ──
         content = page.content()
         if "ログアウト" in content or "mypage" in page.url:
-            print("ブラウザログイン: 成功", file=sys.stderr)
+            logger.info("ブラウザログイン: 成功")
             return True
 
         # フォールバック: account ドメインのマイページで確認
@@ -121,17 +124,17 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
         time.sleep(1)
         content = page.content()
         if "ログアウト" in content or "マイページ" in content:
-            print("ブラウザログイン: 成功（account ドメインで確認）", file=sys.stderr)
+            logger.info("ブラウザログイン: 成功（account ドメインで確認）")
             # www ドメインに戻してセッションを確立
             page.goto(f"{BASE_URL}/member/", wait_until="networkidle", timeout=NAV_TIMEOUT)
             time.sleep(1)
             return True
 
-        print("ブラウザログイン: 失敗（ログアウトリンクが見つかりません）", file=sys.stderr)
+        logger.error("ブラウザログイン: 失敗（ログアウトリンクが見つかりません）")
         return False
 
     except Exception as e:
-        print(f"ブラウザログイン: エラー: {e}", file=sys.stderr)
+        logger.error(f"ブラウザログイン: エラー: {e}")
         return False
 
 
@@ -170,7 +173,7 @@ def extract_chuko_price_judgments(page: "Page", url: str) -> Optional[list[dict]
                 'a:has-text("販売価格が割安か判定")',
             ])
             if not judge_btn:
-                print(f"  [Browser] 割安判定ボタンが見つかりません: {url}", file=sys.stderr)
+                logger.info(f"  [Browser] 割安判定ボタンが見つかりません: {url}")
                 return None
             judge_btn.click(force=True)
         else:
@@ -196,7 +199,7 @@ def extract_chuko_price_judgments(page: "Page", url: str) -> Optional[list[dict]
             result_text = _try_direct_api_judgment(page)
 
         if not result_text:
-            print(f"  [Browser] 判定結果が表示されません: {url}", file=sys.stderr)
+            logger.info(f"  [Browser] 判定結果が表示されません: {url}")
             return None
 
         # ── 全住戸の情報を収集（スワイパーのナビゲーション） ──
@@ -237,7 +240,7 @@ def extract_chuko_price_judgments(page: "Page", url: str) -> Optional[list[dict]
         return results if results else None
 
     except Exception as e:
-        print(f"  [Browser] 中古割安判定エラー ({url}): {e}", file=sys.stderr)
+        logger.error(f"  [Browser] 中古割安判定エラー ({url}): {e}")
         return None
 
 
@@ -567,7 +570,7 @@ def extract_shinchiku_custom_simulation(
         ])
 
         if not forecast_btn:
-            print(f"  [Browser] 10年後予測ボタンが見つかりません: {url}", file=sys.stderr)
+            logger.info(f"  [Browser] 10年後予測ボタンが見つかりません: {url}")
             return None
 
         forecast_btn.click()
@@ -626,7 +629,7 @@ def extract_shinchiku_custom_simulation(
         return result if result else None
 
     except Exception as e:
-        print(f"  [Browser] 新築シミュレーションエラー ({url}): {e}", file=sys.stderr)
+        logger.error(f"  [Browser] 新築シミュレーションエラー ({url}): {e}")
         return None
 
 
@@ -712,7 +715,7 @@ def _parse_simulation_tables(soup: BeautifulSoup, html: str) -> Optional[dict]:
     validated: dict = {}
     for k, v in result.items():
         if isinstance(v, int) and v < 100 and "rate" not in k:
-            print(f"  [Browser] シミュレーション値バリデーション失敗: {k}={v}", file=sys.stderr)
+            logger.error(f"  [Browser] シミュレーション値バリデーション失敗: {k}={v}")
             continue
         validated[k] = v
 
@@ -924,8 +927,8 @@ def browser_enrich_listings(
     新築: カスタムパラメータでシミュレーション再計算（ss_sim_* を上書き）
     """
     if not PLAYWRIGHT_AVAILABLE:
-        print("ブラウザ enrichment: playwright が未インストールです", file=sys.stderr)
-        print("  pip install playwright && playwright install chromium", file=sys.stderr)
+        logger.info("ブラウザ enrichment: playwright が未インストールです")
+        logger.info("  pip install playwright && playwright install chromium")
         return
 
     output_path_p = Path(output_path)
@@ -934,7 +937,7 @@ def browser_enrich_listings(
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print("ブラウザ enrichment: 入力が配列ではありません", file=sys.stderr)
+        logger.info("ブラウザ enrichment: 入力が配列ではありません")
         return
 
     # ブラウザ enrichment の対象を絞る: ss_sumai_surfin_url がある物件のみ
@@ -944,7 +947,7 @@ def browser_enrich_listings(
     ]
 
     if not targets:
-        print("ブラウザ enrichment: 対象物件なし（ss_sumai_surfin_url が未設定）", file=sys.stderr)
+        logger.info("ブラウザ enrichment: 対象物件なし（ss_sumai_surfin_url が未設定）")
         return
 
     # さらにフィルタ: まだブラウザ enrichment が済んでいない物件のみ
@@ -956,10 +959,10 @@ def browser_enrich_listings(
     # 新築は常に再計算（カスタムパラメータの変更を想定）
 
     if not targets:
-        print("ブラウザ enrichment: 全物件処理済み", file=sys.stderr)
+        logger.info("ブラウザ enrichment: 全物件処理済み")
         return
 
-    print(f"ブラウザ enrichment 開始: {len(targets)}件 ({property_type})", file=sys.stderr)
+    logger.info(f"ブラウザ enrichment 開始: {len(targets)}件 ({property_type})")
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -975,7 +978,7 @@ def browser_enrich_listings(
 
         # ── ログイン ──
         if not browser_login(page, user, password):
-            print("ブラウザ enrichment: ログイン失敗のためスキップ", file=sys.stderr)
+            logger.error("ブラウザ enrichment: ログイン失敗のためスキップ")
             browser.close()
             return
 
@@ -1006,14 +1009,13 @@ def browser_enrich_listings(
                         enriched_count += 1
                         unit_count = len(judgments)
                         cheap = sum(1 for j in judgments if j.get("judgment") in ("割安", "やや割安"))
-                        print(
-                            f"  ✓ {name} — 割安判定: {unit_count}戸中{cheap}戸割安"
+                        logger.error(f"  ✓ {name} — 割安判定: {unit_count}戸中{cheap}戸割安"
                             f" → ss_value_judgment={best_judgment or '?'}",
                             file=sys.stderr,
                         )
                     else:
                         error_count += 1
-                        print(f"  ✗ {name} — 割安判定データ取得失敗", file=sys.stderr)
+                        print(f"  ✗ {name} — 割安判定データ取得失敗")
 
                 else:
                     # ── 新築: カスタムシミュレーション ──
@@ -1031,22 +1033,20 @@ def browser_enrich_listings(
                             parts.append(f"標準10年: {sim_data['ss_sim_standard_10yr']}万")
                         if sim_data.get("ss_gain_standard_10yr"):
                             parts.append(f"含み益: {sim_data['ss_gain_standard_10yr']}万")
-                        print(
-                            f"  ✓ {name} — シミュレーション({sim_price}万): {', '.join(parts)}",
+                        logger.error(f"  ✓ {name} — シミュレーション({sim_price}万): {', '.join(parts)}",
                             file=sys.stderr,
                         )
                     else:
                         error_count += 1
-                        print(f"  ✗ {name} — シミュレーションデータ取得失敗", file=sys.stderr)
+                        print(f"  ✗ {name} — シミュレーションデータ取得失敗")
 
             except Exception as e:
                 error_count += 1
-                print(f"  ✗ {name} — エラー: {e}", file=sys.stderr)
+                logger.error(f"  ✗ {name} — エラー: {e}")
 
             # 進捗表示 & 中間セーブ（10件ごと）
             if (idx + 1) % 10 == 0:
-                print(
-                    f"  ブラウザ進捗: {idx + 1}/{len(targets)}件 "
+                logger.error(f"  ブラウザ進捗: {idx + 1}/{len(targets)}件 "
                     f"(成功: {enriched_count}, 失敗: {error_count})",
                     file=sys.stderr,
                 )
@@ -1072,8 +1072,8 @@ def browser_enrich_listings(
 
 def main() -> None:
     if not PLAYWRIGHT_AVAILABLE:
-        print("エラー: playwright が必要です", file=sys.stderr)
-        print("  pip install playwright && playwright install chromium", file=sys.stderr)
+        print("エラー: playwright が必要です")
+        logger.info("  pip install playwright && playwright install chromium")
         sys.exit(1)
 
     ap = argparse.ArgumentParser(
@@ -1107,7 +1107,7 @@ def main() -> None:
     password = os.environ.get("SUMAI_PASS", "")
 
     if not user or not password:
-        print("エラー: SUMAI_USER / SUMAI_PASS が未設定です", file=sys.stderr)
+        logger.error("エラー: SUMAI_USER / SUMAI_PASS が未設定です")
         sys.exit(1)
 
     browser_enrich_listings(

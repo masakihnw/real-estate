@@ -35,6 +35,9 @@ from parse_utils import parse_price_range, parse_area_range, parse_walk_min_best
 from report_utils import clean_listing_name
 from scraper_common import create_session, is_waf_challenge, load_station_passengers, station_passengers_ok, line_ok, is_tokyo_23_by_address
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 BASE_URL = "https://www.homes.co.jp"
 
 # 新築マンション一覧URL
@@ -94,7 +97,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
             # 429 Too Many Requests — レートリミット対策
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
-                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})", file=sys.stderr)
+                logger.warning(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})")
                 time.sleep(retry_after)
                 continue
             r.raise_for_status()
@@ -103,7 +106,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
             # AWS WAF チャレンジページの検出
             if is_waf_challenge(html):
                 wait = min(30 * (attempt + 1), 120)
-                print(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})", file=sys.stderr)
+                logger.info(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})")
                 time.sleep(wait)
                 continue
             return html
@@ -484,17 +487,17 @@ def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
         # タイムリミットチェック（WAF 遅延でパイプライン全体がタイムアウトするのを防止）
         elapsed = time.monotonic() - start_time
         if elapsed > HOMES_SHINCHIKU_SCRAPE_TIMEOUT_SEC:
-            print(f"HOME'S 新築: タイムリミット到達（{int(elapsed)}秒, {page - 1}ページ処理済, 通過: {total_passed}件）", file=sys.stderr)
+            logger.info(f"HOME'S 新築: タイムリミット到達（{int(elapsed)}秒, {page - 1}ページ処理済, 通過: {total_passed}件）")
             break
         url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
         try:
             html = fetch_list_page(session, url)
         except Exception as e:
-            print(f"HOME'S 新築: ページ{page}でエラー: {e}", file=sys.stderr)
+            logger.error(f"HOME'S 新築: ページ{page}でエラー: {e}")
             break
         rows = parse_list_html(html)
         if not rows:
-            print(f"HOME'S 新築: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。", file=sys.stderr)
+            logger.info(f"HOME'S 新築: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。")
             break
         total_parsed += len(rows)
         passed = 0
@@ -505,7 +508,7 @@ def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
                     yield filtered[0]
                     passed += 1
                     _price = f"{filtered[0].price_man}万" if filtered[0].price_man else "価格未定"
-                    print(f"  ✓ {filtered[0].name} ({_price})", file=sys.stderr)
+                    logger.debug(f"  ✓ {filtered[0].name} ({_price})")
             else:
                 yield row
                 passed += 1
@@ -516,11 +519,11 @@ def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
         else:
             pages_since_last_pass += 1
         if pages_since_last_pass >= HOMES_SHINCHIKU_EARLY_EXIT_PAGES:
-            print(f"HOME'S 新築: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）", file=sys.stderr)
+            logger.warning(f"HOME'S 新築: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
             break
         # 進捗: 10ページごとにサマリー
         if page % 10 == 0:
-            print(f"HOME'S 新築: ...{page}ページ処理済 (通過: {total_passed}件)", file=sys.stderr)
+            logger.info(f"HOME'S 新築: ...{page}ページ処理済 (通過: {total_passed}件)")
         page += 1
     if total_parsed > 0:
-        print(f"HOME'S 新築: 完了 — {total_parsed}件パース, {total_passed}件通過", file=sys.stderr)
+        logger.info(f"HOME'S 新築: 完了 — {total_parsed}件パース, {total_passed}件通過")

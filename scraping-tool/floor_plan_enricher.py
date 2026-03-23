@@ -29,6 +29,9 @@ from config import (
 )
 from scraper_common import create_session, is_waf_challenge
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 ROOT = Path(__file__).resolve().parent
 CACHE_DIR = ROOT / "data" / "homes_html_cache"
 MANIFEST_PATH = CACHE_DIR / "manifest.json"
@@ -85,7 +88,7 @@ def fetch_homes_detail(session: requests.Session, url: str) -> str:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
-                print(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})", file=sys.stderr)
+                logger.warning(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})")
                 time.sleep(retry_after)
                 continue
             r.raise_for_status()
@@ -93,7 +96,7 @@ def fetch_homes_detail(session: requests.Session, url: str) -> str:
             html = r.text
             if is_waf_challenge(html):
                 wait = min(30 * (attempt + 1), 120)
-                print(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})", file=sys.stderr)
+                logger.info(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})")
                 time.sleep(wait)
                 continue
             return html
@@ -200,14 +203,14 @@ def main() -> None:
     output_path = Path(args.output)
 
     if not input_path.exists():
-        print(f"入力ファイルがありません: {input_path}", file=sys.stderr)
+        logger.info(f"入力ファイルがありません: {input_path}")
         sys.exit(1)
 
     with open(input_path, "r", encoding="utf-8") as f:
         listings = json.load(f)
 
     if not isinstance(listings, list):
-        print("JSON は配列である必要があります", file=sys.stderr)
+        logger.info("JSON は配列である必要があります")
         sys.exit(1)
 
     # HOME'S の物件で floor_plan_images が未取得のものを対象にする
@@ -220,10 +223,10 @@ def main() -> None:
     ]
 
     if not homes_listings:
-        print("HOME'S で間取り図未取得の物件はありません", file=sys.stderr)
+        logger.info("HOME'S で間取り図未取得の物件はありません")
         sys.exit(0)
 
-    print(f"HOME'S 間取り図取得: {len(homes_listings)}件の詳細ページを取得します", file=sys.stderr)
+    logger.info(f"HOME'S 間取り図取得: {len(homes_listings)}件の詳細ページを取得します")
 
     manifest = _load_manifest()
     session = create_session()
@@ -240,18 +243,18 @@ def main() -> None:
                 _write_html_cache(url, html, manifest)
                 fetched += 1
             except Exception as e:
-                print(f"  取得失敗 {url[:60]}...: {e}", file=sys.stderr)
+                logger.error(f"  取得失敗 {url[:60]}...: {e}")
                 continue
 
         images = parse_homes_floor_plan_images(html)
         if images:
             listings[list_idx]["floor_plan_images"] = images
             enriched += 1
-            print(f"  ✓ {listing.get('name', '?')}: {len(images)}枚", file=sys.stderr)
+            logger.debug(f"  ✓ {listing.get('name', '?')}: {len(images)}枚")
 
         # 進捗表示
         if (idx + 1) % 20 == 0:
-            print(f"  ...{idx + 1}/{len(homes_listings)}件処理済", file=sys.stderr)
+            logger.info(f"  ...{idx + 1}/{len(homes_listings)}件処理済")
 
     # 原子的書き込み
     tmp_path = output_path.with_suffix(".json.tmp")

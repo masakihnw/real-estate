@@ -15,6 +15,10 @@ from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 JST = timezone(timedelta(hours=9))
 from typing import Any, Optional
 
@@ -43,9 +47,9 @@ try:
     from firestore_config_loader import load_config_from_firestore
     loaded = load_config_from_firestore()
     if not loaded:
-        print("# Firestore 設定は未適用（config.py のデフォルトを使用）", file=sys.stderr)
+        logger.info("# Firestore 設定は未適用（config.py のデフォルトを使用）")
 except Exception as e:
-    print(f"# Firestore 設定の読み込みに失敗（config.py のデフォルトを使用）: {e}", file=sys.stderr)
+    logger.error(f"# Firestore 設定の読み込みに失敗（config.py のデフォルトを使用）: {e}")
 
 try:
     from config import (
@@ -401,7 +405,7 @@ def generate_markdown(
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(content)
-        print(f"レポートを生成しました: {output_path}", file=sys.stderr)
+        logger.info(f"レポートを生成しました: {output_path}")
     return content
 
 

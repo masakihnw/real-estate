@@ -18,6 +18,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 try:
     from report_utils import identity_key, get_ward_from_address, normalize_listing_name
 except ImportError:
@@ -261,7 +265,7 @@ def main():
         json.dump(listings, f, ensure_ascii=False)
 
     scored = sum(1 for r in listings if r.get("listing_score") is not None)
-    print(f"投資スコア付与完了: {scored}/{len(listings)}件", file=sys.stderr)
+    logger.info(f"投資スコア付与完了: {scored}/{len(listings)}件")
 
 
 # --- Phase 7: テスト可能なラッパー関数 ---

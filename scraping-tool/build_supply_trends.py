@@ -12,6 +12,10 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+from logger import get_logger
+logger = get_logger(__name__)
+
+
 try:
     from report_utils import (
         compare_listings,
@@ -146,7 +150,7 @@ def main():
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-    print(f"供給トレンド更新完了: 中古 {len(chuko_history)}日分, 新築 {len(shinchiku_history)}日分", file=sys.stderr)
+    logger.info(f"供給トレンド更新完了: 中古 {len(chuko_history)}日分, 新築 {len(shinchiku_history)}日分")
 
 
 if __name__ == "__main__":

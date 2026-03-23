@@ -19,6 +19,9 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 WARD_CODE_TO_NAME = {
     "13101": "千代田区", "13102": "中央区", "13103": "港区",
     "13104": "新宿区", "13105": "文京区", "13106": "台東区",
@@ -81,7 +84,7 @@ def build_history_from_data(
 def main():
     """ディレクトリ内のJSONファイルを処理して ward_price_history.json を生成。"""
     if len(sys.argv) < 2:
-        print("usage: python3 collect_historical_prices.py <responses_dir>", file=sys.stderr)
+        logger.info("usage: python3 collect_historical_prices.py <responses_dir>")
         sys.exit(1)
 
     responses_dir = sys.argv[1]
@@ -106,7 +109,7 @@ def main():
 
         m2_prices = compute_m2_prices_from_response(data)
         if not m2_prices:
-            print(f"  {ward_name} {qlabel}: データなし", file=sys.stderr)
+            logger.info(f"  {ward_name} {qlabel}: データなし")
             continue
 
         if ward_name not in ward_data:
@@ -117,7 +120,7 @@ def main():
             "mean_m2_price": round(statistics.mean(m2_prices)),
             "count": len(m2_prices),
         }
-        print(f"  {ward_name} {qlabel}: 中央値 ¥{round(statistics.median(m2_prices)):,}/m² ({len(m2_prices)}件)", file=sys.stderr)
+        logger.info(f"  {ward_name} {qlabel}: 中央値 ¥{round(statistics.median(m2_prices)):,}/m² ({len(m2_prices)}件)")
 
     result = build_history_from_data(ward_data)
     print(json.dumps(result, ensure_ascii=False, indent=2))

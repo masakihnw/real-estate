@@ -22,6 +22,9 @@ import json
 import sys
 from pathlib import Path
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 # 各 enricher が追加するフィールドのホワイトリスト
 # これ以外のフィールドは base の値を維持（誤上書き防止）
 ENRICHER_FIELDS: dict[str, set[str]] = {
@@ -117,17 +120,17 @@ for fields in ENRICHER_FIELDS.values():
 def load_json_safe(path: Path) -> list[dict] | None:
     """JSON ファイルを安全に読み込む。失敗時は None を返す。"""
     if not path.exists():
-        print(f"[merge] スキップ: {path} が存在しません", file=sys.stderr)
+        logger.warning(f"[merge] スキップ: {path} が存在しません")
         return None
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
         if not isinstance(data, list):
-            print(f"[merge] スキップ: {path} がリスト形式ではありません", file=sys.stderr)
+            logger.warning(f"[merge] スキップ: {path} がリスト形式ではありません")
             return None
         return data
     except (json.JSONDecodeError, OSError) as e:
-        print(f"[merge] スキップ: {path} の読み込みに失敗: {e}", file=sys.stderr)
+        logger.error(f"[merge] スキップ: {path} の読み込みに失敗: {e}")
         return None
 
 
@@ -163,8 +166,7 @@ def merge(base: list[dict], enriched_files: list[Path]) -> list[dict]:
                         item[field] = enriched_item[field]
                         merged_count += 1
 
-        print(
-            f"[merge] {enriched_path.name}: {merged_count} フィールドをマージ",
+        logger.error(f"[merge] {enriched_path.name}: {merged_count} フィールドをマージ",
             file=sys.stderr,
         )
 
@@ -185,7 +187,7 @@ def main() -> None:
 
     base_data = load_json_safe(Path(args.base))
     if base_data is None:
-        print("[merge] エラー: base ファイルが読み込めません", file=sys.stderr)
+        print("[merge] エラー: base ファイルが読み込めません")
         sys.exit(1)
 
     enriched_paths = [Path(p) for p in args.enriched]
@@ -194,7 +196,7 @@ def main() -> None:
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-    print(f"[merge] 完了: {len(result)} 件を {args.output} に出力", file=sys.stderr)
+    logger.info(f"[merge] 完了: {len(result)} 件を {args.output} に出力")
 
 
 if __name__ == "__main__":

@@ -22,6 +22,9 @@ if str(ROOT) not in sys.path:
 
 from price_predictor import MansionPricePredictor
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 
 # 実績成約価格のカラム名候補
 ACTUAL_PRICE_COLUMNS = ("actual_contract_price", "contract_price", "成約価格", "actual_price")

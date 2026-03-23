@@ -19,6 +19,9 @@ import statistics
 import sys
 from typing import Any, Dict, List, Optional
 
+from logger import get_logger
+logger = get_logger(__name__)
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(SCRIPT_DIR)
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -598,22 +601,22 @@ def generate_html(data: Dict[str, Dict[str, Optional[int]]], quarters: List[str]
 
 
 def main():
-    print("=== 東京23区 m²単価推移チャート生成 ===", file=sys.stderr)
+    logger.info("=== 東京23区 m²単価推移チャート生成 ===")
 
     # データ読み込み
     trends = load_trends_data()
     history = load_history_data()
 
     if not trends and not history:
-        print("エラー: データファイルが見つかりません", file=sys.stderr)
+        logger.error("エラー: データファイルが見つかりません")
         sys.exit(1)
 
     # データ統合
     merged = merge_data(trends, history)
     quarters = get_all_quarters(merged)
 
-    print(f"区数: {len(merged)}", file=sys.stderr)
-    print(f"期間: {quarters[0]} 〜 {quarters[-1]} ({len(quarters)} 四半期)", file=sys.stderr)
+    logger.info(f"区数: {len(merged)}")
+    logger.info(f"期間: {quarters[0]} 〜 {quarters[-1]} ({len(quarters)} 四半期)")
 
     # HTML生成
     html = generate_html(merged, quarters)
@@ -621,7 +624,7 @@ def main():
     os.makedirs(RESULTS_DIR, exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"出力: {OUTPUT_FILE}", file=sys.stderr)
+    logger.info(f"出力: {OUTPUT_FILE}")
 
 
 if __name__ == "__main__":
