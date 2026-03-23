@@ -3649,14 +3649,14 @@
       "total_listings": 144,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 115,
-      "price_changed_count": 0,
-      "avg_price_man": 10911,
+      "updated_count": 3,
+      "price_changed_count": 3,
+      "avg_price_man": 10906,
       "median_price_man": 10980,
       "price_distribution": {
         "under_10000": 34,
-        "10000_11000": 40,
-        "11000_12000": 70,
+        "10000_11000": 42,
+        "11000_12000": 68,
         "over_12000": 0,
         "undecided": 0
       },
@@ -3687,19 +3687,19 @@
         },
         "豊島区": {
           "count": 9,
-          "avg_price_man": 10403,
-          "min_price_man": 9480,
+          "avg_price_man": 10392,
+          "min_price_man": 9380,
           "max_price_man": 11200
         },
         "中野区": {
           "count": 7,
-          "avg_price_man": 10670,
+          "avg_price_man": 10611,
           "min_price_man": 9280,
           "max_price_man": 11990
         },
         "板橋区": {
           "count": 7,
-          "avg_price_man": 10220,
+          "avg_price_man": 10191,
           "min_price_man": 9480,
           "max_price_man": 11000
         },
