@@ -19258,7 +19258,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2019-RC",
-      "estimated_building_name": "ザ・パークハウス東陽町翠賓閣 / プラウド東陽町サウス"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "id": "tx-4765088e6256",
@@ -20258,7 +20258,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018-RC",
-      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "id": "tx-32aceeccfd2f",
@@ -30178,7 +30178,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018-RC",
-      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "id": "tx-8547beff4778",
@@ -30198,7 +30198,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018-RC",
-      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "id": "tx-259a2ffb8d2c",
@@ -30218,7 +30218,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018-RC",
-      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "id": "tx-422023e2c712",
@@ -30238,7 +30238,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2019-RC",
-      "estimated_building_name": "ザ・パークハウス東陽町翠賓閣 / プラウド東陽町サウス"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "id": "tx-e2b30bbf56ba",
@@ -32678,7 +32678,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2018-RC",
-      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "id": "tx-1d123b4563a5",
@@ -35738,7 +35738,7 @@
       "latitude": 35.6347912,
       "longitude": 139.7234751,
       "building_group_id": "131090050-2011-RC",
-      "estimated_building_name": "オープンレジデンス白金台B棟"
+      "estimated_building_name": "オープンレジデンス白金台"
     },
     {
       "id": "tx-545eb3e610c2",
@@ -71856,7 +71856,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プラウド東陽町サウス / ザ・パークハウス東陽町翠賓閣"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "group_id": "131080300-2019-RC",
@@ -71880,7 +71880,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "ザ・パークハウス東陽町翠賓閣 / プラウド東陽町サウス"
+      "estimated_building_name": "プラウド東陽町サウス"
     },
     {
       "group_id": "131080300-2024-RC",
@@ -72842,7 +72842,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "オープンレジデンス白金台B棟"
+      "estimated_building_name": "オープンレジデンス白金台"
     },
     {
       "group_id": "131090050-2017-RC",
@@ -84221,7 +84221,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-23T23:09:49",
+    "updated_at": "2026-03-24T07:44:06",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
