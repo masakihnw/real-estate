@@ -214,9 +214,9 @@
       "structure": "RC",
       "trade_period": "2022Q3",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 14,
-      "latitude": 35.6981288,
-      "longitude": 139.7452456,
+      "estimated_walk_min": 15,
+      "latitude": 35.6977956,
+      "longitude": 139.7452462,
       "building_group_id": "131010540-2013-RC",
       "estimated_building_name": null
     },
@@ -35738,7 +35738,7 @@
       "latitude": 35.6347912,
       "longitude": 139.7234751,
       "building_group_id": "131090050-2011-RC",
-      "estimated_building_name": "オープンレジデンス白金台"
+      "estimated_building_name": "オープンレジデンス白金台B棟"
     },
     {
       "id": "tx-545eb3e610c2",
@@ -59558,7 +59558,7 @@
       "latitude": 35.7478346,
       "longitude": 139.7268411,
       "building_group_id": "131170200-2013-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "パークタワー滝野川"
     },
     {
       "id": "tx-d024d7762f98",
@@ -59678,7 +59678,7 @@
       "latitude": 35.7478346,
       "longitude": 139.7268411,
       "building_group_id": "131170200-2013-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "パークタワー滝野川"
     },
     {
       "id": "tx-b78c047e67d4",
@@ -62839,9 +62839,9 @@
       "built_year": 2013,
       "structure": "RC",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 14,
-      "latitude": 35.6981288,
-      "longitude": 139.7452456,
+      "estimated_walk_min": 15,
+      "latitude": 35.6977956,
+      "longitude": 139.7452462,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -72842,7 +72842,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "オープンレジデンス白金台"
+      "estimated_building_name": "オープンレジデンス白金台B棟"
     },
     {
       "group_id": "131090050-2017-RC",
@@ -82775,7 +82775,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "パークタワー滝野川"
     },
     {
       "group_id": "131170200-2019-RC",
@@ -84221,7 +84221,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-24T07:44:06",
+    "updated_at": "2026-03-24T19:46:03",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
