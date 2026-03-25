@@ -307,16 +307,12 @@ def main() -> None:
             to_revalidate.append(u)
 
     if to_fetch:
-        logger.info(f"フィルタ通過後のSUUMO {len(suumo_urls)}件のうち、HTML未キャッシュ {len(to_fetch)}件の詳細ページを取得します。",
-            file=sys.stderr,
-        )
+        logger.info(f"フィルタ通過後のSUUMO {len(suumo_urls)}件のうち、HTML未キャッシュ {len(to_fetch)}件の詳細ページを取得します。")
         if len(to_fetch) == len(suumo_urls):
             print("（初回のため全件取得します）")
 
     if to_revalidate:
-        logger.info(f"  キャッシュ済み {len(suumo_urls) - len(to_fetch)}件のうち、{len(to_revalidate)}件を ETag/条件付きリクエストで再検証します。",
-            file=sys.stderr,
-        )
+        logger.info(f"  キャッシュ済み {len(suumo_urls) - len(to_fetch)}件のうち、{len(to_revalidate)}件を ETag/条件付きリクエストで再検証します。")
 
     # Phase 1a: 未キャッシュ URL を並列フェッチ
     fetched_htmls: dict[str, str] = {}
@@ -352,9 +348,7 @@ def main() -> None:
                     revalidated_count += 1
 
         _save_manifest(manifest)
-        logger.warning(f"  再検証完了: 304 Not Modified {not_modified_count}件、更新 {revalidated_count}件",
-            file=sys.stderr,
-        )
+        logger.info(f"  再検証完了: 304 Not Modified {not_modified_count}件、更新 {revalidated_count}件")
 
     _save_etags(etags)
 

@@ -21,6 +21,8 @@ import sys
 import zipfile
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from logger import get_logger
 logger = get_logger(__name__)
 
@@ -74,9 +76,7 @@ def main() -> None:
     if not zip_path.exists():
         logger.error(f"ZIP がありません: {zip_path}\n"
             "国土数値情報から S12-22_GML.zip をダウンロードし、data/ に置いてください。\n"
-            "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-v3_1.html",
-            file=sys.stderr,
-        )
+            "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-v3_1.html")
         sys.exit(1)
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)

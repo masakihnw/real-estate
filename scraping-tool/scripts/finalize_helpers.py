@@ -14,12 +14,11 @@ import json
 import sys
 from pathlib import Path
 
-from logger import get_logger
-logger = get_logger(__name__)
-
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+
+from logger import get_logger
+logger = get_logger(__name__)
 
 from investment_enricher import enrich_investment_scores
 from report_utils import (

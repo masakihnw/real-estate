@@ -26,13 +26,11 @@ import sys
 import time
 from pathlib import Path
 
-from logger import get_logger
-logger = get_logger(__name__)
-
-
-# scraping-tool/ をインポートパスに追加
 SCRAPING_TOOL_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SCRAPING_TOOL_DIR))
+
+from logger import get_logger
+logger = get_logger(__name__)
 
 import requests
 from bs4 import BeautifulSoup

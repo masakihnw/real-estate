@@ -1009,10 +1009,8 @@ def browser_enrich_listings(
                         enriched_count += 1
                         unit_count = len(judgments)
                         cheap = sum(1 for j in judgments if j.get("judgment") in ("割安", "やや割安"))
-                        logger.error(f"  ✓ {name} — 割安判定: {unit_count}戸中{cheap}戸割安"
-                            f" → ss_value_judgment={best_judgment or '?'}",
-                            file=sys.stderr,
-                        )
+                        logger.info(f"  ✓ {name} — 割安判定: {unit_count}戸中{cheap}戸割安"
+                            f" → ss_value_judgment={best_judgment or '?'}")
                     else:
                         error_count += 1
                         print(f"  ✗ {name} — 割安判定データ取得失敗")

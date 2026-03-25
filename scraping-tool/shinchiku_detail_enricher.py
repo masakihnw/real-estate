@@ -484,9 +484,7 @@ def enrich_listing(
             matched = len(floor_plan_images)
             total = len(madori_plans)
             if matched < total:
-                logger.info(f"    間取りタブ: {total}タイプ中{matched}タイプが条件合致",
-                    file=sys.stderr,
-                )
+                logger.info(f"    間取りタブ: {total}タイプ中{matched}タイプが条件合致")
 
     # メインページの間取り図も追加（重複除去）
     if main_html:

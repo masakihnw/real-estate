@@ -11,6 +11,8 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from logger import get_logger
 logger = get_logger(__name__)
 

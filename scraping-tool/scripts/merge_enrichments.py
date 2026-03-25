@@ -22,6 +22,8 @@ import json
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from logger import get_logger
 logger = get_logger(__name__)
 
@@ -166,9 +168,7 @@ def merge(base: list[dict], enriched_files: list[Path]) -> list[dict]:
                         item[field] = enriched_item[field]
                         merged_count += 1
 
-        logger.error(f"[merge] {enriched_path.name}: {merged_count} フィールドをマージ",
-            file=sys.stderr,
-        )
+        logger.info(f"[merge] {enriched_path.name}: {merged_count} フィールドをマージ")
 
     return base
 

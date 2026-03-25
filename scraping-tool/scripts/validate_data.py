@@ -11,12 +11,12 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from logger import get_logger
 logger = get_logger(__name__)
 
-
 try:
-    sys.path.insert(0, str(Path(__file__).parent.parent))
     from report_utils import identity_key, normalize_listing_name
 except ImportError:
     pass
