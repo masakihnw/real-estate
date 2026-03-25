@@ -3879,7 +3879,7 @@
       "total_listings": 144,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 1,
+      "updated_count": 2,
       "price_changed_count": 0,
       "avg_price_man": 10915,
       "median_price_man": 10980,
@@ -7708,9 +7708,9 @@
       "total_listings": 45,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 0,
-      "price_changed_count": 0,
-      "avg_price_man": 10434,
+      "updated_count": 1,
+      "price_changed_count": 1,
+      "avg_price_man": 10451,
       "median_price_man": 11030,
       "price_distribution": {
         "under_10000": 4,
@@ -7722,9 +7722,9 @@
       "ward_stats": {
         "港区": {
           "count": 16,
-          "avg_price_man": 10253,
+          "avg_price_man": 10320,
           "min_price_man": 9470,
-          "max_price_man": 11800
+          "max_price_man": 12000
         },
         "中央区": {
           "count": 5,
