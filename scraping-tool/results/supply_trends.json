@@ -3933,17 +3933,17 @@
           "min_price_man": 9480,
           "max_price_man": 11000
         },
-        "港区": {
-          "count": 6,
-          "avg_price_man": 11130,
-          "min_price_man": 9500,
-          "max_price_man": 11980
-        },
         "新宿区": {
           "count": 6,
           "avg_price_man": 11206,
           "min_price_man": 9500,
           "max_price_man": 11999
+        },
+        "港区": {
+          "count": 6,
+          "avg_price_man": 11130,
+          "min_price_man": 9500,
+          "max_price_man": 11980
         },
         "杉並区": {
           "count": 5,
