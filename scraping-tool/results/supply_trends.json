@@ -3877,9 +3877,9 @@
     {
       "date": "2026-03-25",
       "total_listings": 144,
-      "new_count": 144,
+      "new_count": 0,
       "removed_count": 0,
-      "updated_count": 0,
+      "updated_count": 114,
       "price_changed_count": 0,
       "avg_price_man": 10915,
       "median_price_man": 10980,
@@ -7705,9 +7705,9 @@
     },
     {
       "date": "2026-03-25",
-      "total_listings": 46,
+      "total_listings": 45,
       "new_count": 0,
-      "removed_count": 0,
+      "removed_count": 1,
       "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 10434,
@@ -7717,7 +7717,7 @@
         "10000_11000": 2,
         "11000_12000": 6,
         "over_12000": 0,
-        "undecided": 34
+        "undecided": 33
       },
       "ward_stats": {
         "港区": {
@@ -7727,7 +7727,7 @@
           "max_price_man": 11800
         },
         "中央区": {
-          "count": 6,
+          "count": 5,
           "avg_price_man": 11925,
           "min_price_man": 11900,
           "max_price_man": 11950
