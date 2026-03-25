@@ -208,7 +208,7 @@ def fetch_all_ward_data(
         for year_str, quarter_str in quarters:
             qlabel = f"{year_str}Q{quarter_str}"
             done += 1
-            logger.info(f"  [{done}/{total_calls}] {ward_name} {qlabel} ...", file=sys.stderr, end="")
+            logger.info(f"  [{done}/{total_calls}] {ward_name} {qlabel} ...")
 
             result = client.call_tool(TOOL_NAME, {
                 "city": ward_code,

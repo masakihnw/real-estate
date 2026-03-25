@@ -34,11 +34,11 @@ from typing import Optional, Tuple
 
 import requests
 
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
 from logger import get_logger
 logger = get_logger(__name__)
-
-# ─── パス ───────────────────────────────────────────
-ROOT = Path(__file__).resolve().parent.parent
 GEOCODE_CACHE_PATH = ROOT / "data" / "geocode_cache.json"
 STATION_CACHE_PATH = ROOT / "data" / "station_cache.json"
 REVERSE_CACHE_PATH = ROOT / "data" / "reverse_geocode_cache.json"

@@ -19,6 +19,8 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from logger import get_logger
 logger = get_logger(__name__)
 

@@ -12,10 +12,11 @@ import json
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
 from logger import get_logger
 logger = get_logger(__name__)
-
-ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = ROOT / "data" / "building_units.json"
 KEYS = (
     "total_units", "floor_position", "floor_total", "floor_structure",
