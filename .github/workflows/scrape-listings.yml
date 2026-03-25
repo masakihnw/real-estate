@@ -86,8 +86,8 @@ jobs:
           fi
 
       # スクレイピング結果を artifact としてアップロード
+      # force enrich でも利用できるよう常にアップロードする
       - name: Upload scrape results
-        if: steps.metadata.outputs.has_changes == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: scrape-results
@@ -99,7 +99,6 @@ jobs:
 
       # 前回データ (レポート差分用)
       - name: Upload previous data
-        if: steps.metadata.outputs.has_changes == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: scrape-previous
@@ -119,7 +118,6 @@ jobs:
 
       # キャッシュファイル群 (enrichment で必要)
       - name: Upload cache files
-        if: steps.metadata.outputs.has_changes == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: scrape-caches
