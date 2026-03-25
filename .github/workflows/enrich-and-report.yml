@@ -16,6 +16,14 @@ on:
         description: '使用する Scrape Listings の run ID (空欄で最新)'
         required: false
         type: string
+      force:
+        description: 'has_changes を無視して強制実行'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 concurrency:
   group: enrich-and-report
@@ -58,10 +66,15 @@ jobs:
       - name: Read metadata
         id: read
         run: |
+          FORCE="${{ github.event.inputs.force }}"
           if [ -f metadata.json ]; then
             HAS_CHANGES=$(python3 -c "import json; print(str(json.load(open('metadata.json'))['has_changes']).lower())")
             IS_SLACK_TIME=$(python3 -c "import json; print(str(json.load(open('metadata.json'))['is_slack_time']).lower())")
             DATE=$(python3 -c "import json; print(json.load(open('metadata.json'))['date'])")
+            if [ "$FORCE" = "true" ]; then
+              HAS_CHANGES=true
+              echo "強制実行: has_changes を true に上書き" >&2
+            fi
             echo "has_changes=${HAS_CHANGES}" >> $GITHUB_OUTPUT
             echo "is_slack_time=${IS_SLACK_TIME}" >> $GITHUB_OUTPUT
             echo "date=${DATE}" >> $GITHUB_OUTPUT
