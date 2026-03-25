@@ -74,11 +74,12 @@ def _build_tx_ward_counts(path: Path) -> dict[str, dict[str, int]] | None:
 
 def inject_investment_fields(output_dir: Path) -> None:
     p = _paths(output_dir)
+    history_path = str(ROOT / "data" / "first_seen_at.json")
 
     cur = load_json(p["latest"])
     prev = load_json(p["previous"], missing_ok=True, default=[])
     inject_price_history(cur, prev or None)
-    inject_first_seen_at(cur, prev or None)
+    inject_first_seen_at(cur, prev or None, history_path=history_path)
     inject_competing_count(cur)
 
     tx_data = _build_tx_ward_counts(p["transactions"])
@@ -93,7 +94,7 @@ def inject_investment_fields(output_dir: Path) -> None:
     prev_s = load_json(p["previous_shinchiku"], missing_ok=True, default=[])
     if cur_s:
         inject_price_history(cur_s, prev_s or None)
-        inject_first_seen_at(cur_s, prev_s or None)
+        inject_first_seen_at(cur_s, prev_s or None, history_path=history_path)
         inject_competing_count(cur_s)
         enrich_investment_scores(cur_s, tx_data)
         p["latest_shinchiku"].write_text(json.dumps(cur_s, ensure_ascii=False), encoding="utf-8")

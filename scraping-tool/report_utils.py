@@ -531,34 +531,54 @@ def inject_price_history(
     return current
 
 
+def _key_str(r: dict) -> str:
+    """identity_key のタプルを JSON キー用文字列に変換する。"""
+    return "|".join(str(x) for x in identity_key(r))
+
+
 def inject_first_seen_at(
     current: list[dict],
     previous: Optional[list[dict]] = None,
+    *,
+    history_path: Optional[str] = None,
 ) -> list[dict]:
     """各物件に first_seen_at（初回掲載検出日）を付与して返す。
-    previous に first_seen_at があれば継承し、新規物件は今日の日付で初期化する。"""
+
+    history_path が指定された場合、永続ファイル (data/first_seen_at.json) を
+    信頼源として使用し、previous.json のデータ破損に依存しない。
+    新規物件は今日の日付で追加し、ファイルを更新する。"""
+    import json as _json
     from datetime import date
+    from pathlib import Path
+
     today = date.today().isoformat()
 
-    if not previous:
-        for r in current:
-            if not r.get("first_seen_at"):
-                r["first_seen_at"] = today
-        return current
+    history: dict[str, str] = {}
+    history_file = Path(history_path) if history_path else None
+    if history_file and history_file.exists():
+        history = _json.loads(history_file.read_text(encoding="utf-8"))
 
-    prev_by_key: dict[tuple, dict] = {}
-    for r in previous:
-        k = identity_key(r)
-        if k not in prev_by_key:
-            prev_by_key[k] = r
+    if previous:
+        for r in previous:
+            ks = _key_str(r)
+            fsa = r.get("first_seen_at")
+            if fsa and (ks not in history or fsa < history[ks]):
+                history[ks] = fsa
 
     for r in current:
-        k = identity_key(r)
-        prev = prev_by_key.get(k)
-        if prev and prev.get("first_seen_at"):
-            r["first_seen_at"] = prev["first_seen_at"]
+        ks = _key_str(r)
+        if ks in history:
+            r["first_seen_at"] = history[ks]
         elif not r.get("first_seen_at"):
             r["first_seen_at"] = today
+            history[ks] = today
+
+    if history_file:
+        history_file.parent.mkdir(parents=True, exist_ok=True)
+        history_file.write_text(
+            _json.dumps(history, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
 
     return current
 

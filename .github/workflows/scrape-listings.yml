@@ -135,6 +135,7 @@ jobs:
             scraping-tool/data/station_cache.json
             scraping-tool/data/reverse_geocode_cache.json
             scraping-tool/data/shutoken_city_codes.json
+            scraping-tool/data/first_seen_at.json
           retention-days: 1
           if-no-files-found: warn
 
