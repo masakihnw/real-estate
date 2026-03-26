@@ -54,9 +54,9 @@
       "structure": "RC",
       "trade_period": "2021Q3",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -94,9 +94,9 @@
       "structure": "RC",
       "trade_period": "2021Q4",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -134,9 +134,9 @@
       "structure": "RC",
       "trade_period": "2022Q1",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -174,9 +174,9 @@
       "structure": "RC",
       "trade_period": "2022Q2",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -234,9 +234,9 @@
       "structure": "RC",
       "trade_period": "2022Q3",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -594,9 +594,9 @@
       "structure": "RC",
       "trade_period": "2024Q4",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -11038,7 +11038,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-5664c026cdf4",
@@ -11578,7 +11578,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-493c92f107a4",
@@ -11798,7 +11798,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-29593a6552f9",
@@ -11978,7 +11978,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2020-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-ba88ca794b03",
@@ -12278,7 +12278,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-8842c3d81401",
@@ -12458,7 +12458,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2019-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-cfdc2e8d8fca",
@@ -12758,7 +12758,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-e2b9185388c7",
@@ -12778,7 +12778,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-87888ce671aa",
@@ -13138,7 +13138,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-d9702a930c6a",
@@ -13158,7 +13158,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-20cbf61e1824",
@@ -13178,7 +13178,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-141fd669bc76",
@@ -13198,7 +13198,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-8f4df08f2476",
@@ -13458,7 +13458,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2019-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-e3b5725dc102",
@@ -13478,7 +13478,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-26747bba559e",
@@ -13878,7 +13878,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-167e6c3aadff",
@@ -13978,7 +13978,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-e8dc6f39d4ac",
@@ -14938,7 +14938,7 @@
       "latitude": 35.7073938,
       "longitude": 139.7678135,
       "building_group_id": "131050190-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "id": "tx-d43af7fde2ef",
@@ -32778,7 +32778,7 @@
       "latitude": 35.6485139,
       "longitude": 139.8119175,
       "building_group_id": "131080290-2012-RC",
-      "estimated_building_name": "クレヴィア辰巳"
+      "estimated_building_name": "ブリリア辰巳キャナルテラス（角部屋）/8階/3LDK… / クレヴィア辰巳"
     },
     {
       "id": "tx-db9dd72c4812",
@@ -62570,9 +62570,9 @@
       "built_year": 2007,
       "structure": "RC",
       "nearest_station": "後楽園",
-      "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
       "transaction_count": 6,
       "price_range_man": [
         9800,
@@ -68718,7 +68718,7 @@
         "2023Q4"
       ],
       "latest_period": "2023Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "group_id": "131050190-2018-RC",
@@ -68749,7 +68749,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "group_id": "131050190-2019-RC",
@@ -68773,7 +68773,7 @@
         "2023Q4"
       ],
       "latest_period": "2023Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "group_id": "131050190-2020-RC",
@@ -68796,7 +68796,7 @@
         "2022Q2"
       ],
       "latest_period": "2022Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "シャリエ御茶ノ水"
     },
     {
       "group_id": "131050190-2021-RC",
@@ -71804,7 +71804,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "クレヴィア辰巳"
+      "estimated_building_name": "ブリリア辰巳キャナルテラス（角部屋）/8階/3LDK… / クレヴィア辰巳"
     },
     {
       "group_id": "131080300-2016-RC",
@@ -84221,7 +84221,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-26T17:44:49",
+    "updated_at": "2026-03-26T19:47:00",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
