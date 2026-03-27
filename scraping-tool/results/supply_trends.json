@@ -4113,10 +4113,10 @@
     {
       "date": "2026-03-27",
       "total_listings": 144,
-      "new_count": 1,
+      "new_count": 0,
       "removed_count": 0,
-      "updated_count": 4,
-      "price_changed_count": 1,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10907,
       "median_price_man": 10990,
       "price_distribution": {
@@ -8168,7 +8168,7 @@
       "total_listings": 45,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 1,
+      "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 10526,
       "median_price_man": 11030,
