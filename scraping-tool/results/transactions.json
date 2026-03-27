@@ -55,8 +55,8 @@
       "trade_period": "2021Q3",
       "nearest_station": "後楽園",
       "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "latitude": 35.7015617,
+      "longitude": 139.7436174,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -95,8 +95,8 @@
       "trade_period": "2021Q4",
       "nearest_station": "後楽園",
       "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "latitude": 35.7015617,
+      "longitude": 139.7436174,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -135,8 +135,8 @@
       "trade_period": "2022Q1",
       "nearest_station": "後楽園",
       "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "latitude": 35.7015617,
+      "longitude": 139.7436174,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -175,8 +175,8 @@
       "trade_period": "2022Q2",
       "nearest_station": "後楽園",
       "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "latitude": 35.7015617,
+      "longitude": 139.7436174,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -235,8 +235,8 @@
       "trade_period": "2022Q3",
       "nearest_station": "後楽園",
       "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "latitude": 35.7015617,
+      "longitude": 139.7436174,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -595,8 +595,8 @@
       "trade_period": "2024Q4",
       "nearest_station": "後楽園",
       "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "latitude": 35.7015617,
+      "longitude": 139.7436174,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -62571,8 +62571,8 @@
       "structure": "RC",
       "nearest_station": "後楽園",
       "estimated_walk_min": 12,
-      "latitude": 35.7015405,
-      "longitude": 139.7436346,
+      "latitude": 35.7015617,
+      "longitude": 139.7436174,
       "transaction_count": 6,
       "price_range_man": [
         9800,
@@ -84221,7 +84221,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-26T23:07:33",
+    "updated_at": "2026-03-27T03:24:36",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
