@@ -4236,7 +4236,7 @@
       "total_listings": 143,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 0,
+      "updated_count": 1,
       "price_changed_count": 0,
       "avg_price_man": 10904,
       "median_price_man": 10990,
@@ -4332,17 +4332,17 @@
           "min_price_man": 9280,
           "max_price_man": 10700
         },
-        "足立区": {
-          "count": 1,
-          "avg_price_man": 9800,
-          "min_price_man": 9800,
-          "max_price_man": 9800
-        },
         "荒川区": {
           "count": 1,
           "avg_price_man": 9999,
           "min_price_man": 9999,
           "max_price_man": 9999
+        },
+        "足立区": {
+          "count": 1,
+          "avg_price_man": 9800,
+          "min_price_man": 9800,
+          "max_price_man": 9800
         },
         "練馬区": {
           "count": 1,
