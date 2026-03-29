@@ -5,8 +5,8 @@
 - 詳細・厳格化の考え方: ../docs/10year-index-mansion-conditions-draft.md
 - 初回ヒアリングの希望条件: ../docs/initial-consultation.md
 
-【対象エリア】千代田区・中央区・港区の全駅 + 半蔵門線（渋谷〜錦糸町）・有楽町線（有楽町〜豊洲）沿線。
-駅徒歩15分以内。築20年以内・専有55㎡以上（上限なし）・総戸数30戸以上。価格9,000万〜1.2億。
+【対象エリア】東京23区（路線・駅の指定なし）。
+駅徒歩10分以内。築20年以内・専有55㎡以上（上限なし）・総戸数30戸以上。価格9,000万〜1億1,500万円。
 """
 
 from __future__ import annotations
@@ -92,10 +92,10 @@ def _fallback_metadata() -> _MetadataDoc:
         "schemaVersion": 1,
         "defaults": {
             "priceMinMan": 9000,
-            "priceMaxMan": 12000,
+            "priceMaxMan": 11500,
             "areaMinM2": 55,
             "areaMaxM2": None,
-            "walkMinMax": 15,
+            "walkMinMax": 10,
             "builtYearMinOffsetYears": 20,
             "totalUnitsMin": 30,
             "layoutPrefixOk": ["2", "3"],
@@ -187,7 +187,7 @@ _BUILT_OFFSET = min(max(_BUILT_OFFSET_MIN, _to_int(_DEFAULTS.get("builtYearMinOf
 
 # 価格帯（万円）
 PRICE_MIN_MAN = _to_int(_DEFAULTS.get("priceMinMan"), 9000)
-PRICE_MAX_MAN = _to_int(_DEFAULTS.get("priceMaxMan"), 12000)
+PRICE_MAX_MAN = _to_int(_DEFAULTS.get("priceMaxMan"), 11500)
 
 # 専有面積（㎡）
 AREA_MIN_M2 = _to_int(_DEFAULTS.get("areaMinM2"), 55)
@@ -200,7 +200,7 @@ LAYOUT_PREFIX_OK = tuple(_to_str_list(_DEFAULTS.get("layoutPrefixOk")) or ["2", 
 BUILT_YEAR_MIN = _THIS_YEAR - _BUILT_OFFSET
 
 # 駅徒歩
-WALK_MIN_MAX = _to_int(_DEFAULTS.get("walkMinMax"), 15)
+WALK_MIN_MAX = _to_int(_DEFAULTS.get("walkMinMax"), 10)
 
 # 総戸数
 TOTAL_UNITS_MIN = _to_int(_DEFAULTS.get("totalUnitsMin"), 30)
