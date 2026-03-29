@@ -1,6 +1,86 @@
 {
   "transactions": [
     {
+      "id": "tx-7a79cf145809",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cc97c6bab835",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c340de84d863",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfab263a1aa0",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -1158,7 +1238,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2015-RC",
-      "estimated_building_name": "プレシス新宿柏木"
+      "estimated_building_name": null
     },
     {
       "id": "tx-cf48ca7c9a25",
@@ -1338,7 +1418,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
     },
     {
       "id": "tx-866625585fa0",
@@ -1598,7 +1678,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2015-RC",
-      "estimated_building_name": "プレシス新宿柏木"
+      "estimated_building_name": null
     },
     {
       "id": "tx-73b72785a123",
@@ -2398,7 +2478,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2015-RC",
-      "estimated_building_name": "プレシス新宿柏木"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3a1ada3e8598",
@@ -2418,7 +2498,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2015-RC",
-      "estimated_building_name": "プレシス新宿柏木"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2584d881ece7",
@@ -2458,7 +2538,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
     },
     {
       "id": "tx-e4a8675c485e",
@@ -3158,7 +3238,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2015-RC",
-      "estimated_building_name": "プレシス新宿柏木"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6d07ca517b40",
@@ -3178,7 +3258,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2015-RC",
-      "estimated_building_name": "プレシス新宿柏木"
+      "estimated_building_name": null
     },
     {
       "id": "tx-121425276e27",
@@ -3538,7 +3618,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2015-RC",
-      "estimated_building_name": "プレシス新宿柏木"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6055cdff48ff",
@@ -8158,7 +8238,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-312829145f2b",
@@ -8198,7 +8278,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-f8593182e49c",
@@ -8238,7 +8318,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-b0d344ff05b5",
@@ -8258,7 +8338,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-ca6321548a5f",
@@ -8458,7 +8538,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-28f38a4b7a2a",
@@ -8478,7 +8558,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-23bc4a614351",
@@ -8498,7 +8578,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-41ba0be53479",
@@ -8538,7 +8618,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-bf9451ec931e",
@@ -8558,7 +8638,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-6ea958b39b01",
@@ -8578,7 +8658,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-c2fad680f473",
@@ -8598,7 +8678,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-9814912a6d50",
@@ -8818,7 +8898,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-ca9a53e11ba8",
@@ -8838,7 +8918,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-6b11380f2b34",
@@ -8858,7 +8938,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-2de738970709",
@@ -8918,7 +8998,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-7f78c362ee97",
@@ -8938,7 +9018,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-93ab838613f9",
@@ -8958,7 +9038,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-9c8173642696",
@@ -8998,7 +9078,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-371538c3f024",
@@ -9038,7 +9118,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-fde39368a4ef",
@@ -9218,7 +9298,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-249bfd22fd07",
@@ -9238,7 +9318,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-e1787adaf980",
@@ -9318,7 +9398,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-fc8c8560c463",
@@ -9338,7 +9418,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-245c973c91f4",
@@ -9538,7 +9618,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-1b69a689a7c9",
@@ -9558,7 +9638,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-8e6ee9d10af6",
@@ -9578,7 +9658,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-426ed1b6c0c0",
@@ -9638,7 +9718,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-a9c8cf465b02",
@@ -9698,7 +9778,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-67c91aec4eea",
@@ -9738,7 +9818,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-db83334349ac",
@@ -9758,7 +9838,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-9cca0f7ab467",
@@ -9818,7 +9898,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-e7a370d06bd5",
@@ -9838,7 +9918,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-b57859d487f2",
@@ -9858,7 +9938,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-c5e3c6c6ea3e",
@@ -9898,7 +9978,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-49be56058289",
@@ -9998,7 +10078,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-c69e78462866",
@@ -10018,7 +10098,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-5dd4a31dab65",
@@ -10058,7 +10138,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-ade3b2643c9d",
@@ -10078,7 +10158,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-3bf268593a73",
@@ -10138,7 +10218,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-35371927a976",
@@ -10158,7 +10238,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-3b0ad766cb4d",
@@ -10178,7 +10258,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-27c76e19ea66",
@@ -10198,7 +10278,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-37016119fa4a",
@@ -10218,7 +10298,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-4d969875f4e7",
@@ -10238,7 +10318,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-137f8a91f29c",
@@ -10278,7 +10358,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-b6fc0001d142",
@@ -10378,7 +10458,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-07875ab2de21",
@@ -10418,7 +10498,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-6a1afc31ab5e",
@@ -10458,7 +10538,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-8224ce06b88d",
@@ -10518,7 +10598,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-5fb06b877e01",
@@ -10538,7 +10618,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-152eb5a2e390",
@@ -10558,7 +10638,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-d831d0607c97",
@@ -10578,7 +10658,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-c3932e537d42",
@@ -10598,7 +10678,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-74363aba651a",
@@ -10618,7 +10698,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-3ca7dc1ad028",
@@ -10678,7 +10758,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-edb8ffabc093",
@@ -10698,7 +10778,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-4b1b7ebbdb44",
@@ -11078,7 +11158,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-adb05de839be",
@@ -11118,7 +11198,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-3a9d204ff1fb",
@@ -11138,7 +11218,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-68247a509acc",
@@ -11218,7 +11298,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-4222385f324e",
@@ -11238,7 +11318,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-d8345937593f",
@@ -11278,7 +11358,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-d2396109b6ab",
@@ -11298,7 +11378,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-635737811b3e",
@@ -11318,7 +11398,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-9a7fb1d5e0a4",
@@ -11398,7 +11478,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-d5285fd9d715",
@@ -11418,7 +11498,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-2517e31acc68",
@@ -11738,7 +11818,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-3a7249d016d2",
@@ -11918,7 +11998,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-2693d83a33ca",
@@ -11938,7 +12018,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-70ae86de8bbd",
@@ -11998,7 +12078,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-c5d4d4adaebc",
@@ -12038,7 +12118,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-b16f1c33ad03",
@@ -12058,7 +12138,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-042963a8380a",
@@ -12078,7 +12158,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-8a20b625b016",
@@ -12098,7 +12178,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-abbe5af98e49",
@@ -12138,7 +12218,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-958a4d4f0c1a",
@@ -12158,7 +12238,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-508594ba33d8",
@@ -12478,7 +12558,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-8e92127aeb9c",
@@ -12538,7 +12618,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-088f6d161fce",
@@ -12558,7 +12638,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-a2edd1a3c480",
@@ -12598,7 +12678,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-40cc2387b74a",
@@ -12638,7 +12718,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-0718e350d7c2",
@@ -12658,7 +12738,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-9249280fc9ca",
@@ -12718,7 +12798,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-a5d84ee4beeb",
@@ -12738,7 +12818,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-c67b54f39f04",
@@ -12758,7 +12838,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-e5ebcfdc6f4d",
@@ -12798,7 +12878,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-0c18f8743851",
@@ -12878,7 +12958,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-139d0874ea37",
@@ -12898,7 +12978,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-b6862a470622",
@@ -12918,7 +12998,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-09ce9a069cc5",
@@ -12958,7 +13038,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-eb079deaaf39",
@@ -13078,7 +13158,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-630894891bd6",
@@ -13098,7 +13178,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-c2825904da3e",
@@ -13158,7 +13238,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-7baf55823996",
@@ -13178,7 +13258,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-bab2c533b715",
@@ -13198,7 +13278,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-a5fcfe87ecd6",
@@ -13238,7 +13318,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-6caddfb73184",
@@ -13258,7 +13338,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-2c3c49e064be",
@@ -13278,7 +13358,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-634b75ee1fc9",
@@ -13318,7 +13398,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-967c018dc21d",
@@ -13398,7 +13478,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-634ff9e64568",
@@ -14038,7 +14118,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-55d3cce8ef02",
@@ -14118,7 +14198,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-7fcb93c5e98a",
@@ -14138,7 +14218,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-a824bd43ec07",
@@ -14178,7 +14258,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-e82c460412f8",
@@ -14198,7 +14278,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-74bc2a0002e5",
@@ -14258,7 +14338,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-0b0da29235d7",
@@ -14358,7 +14438,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-4330b49b1bb1",
@@ -14438,7 +14518,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-9a6ef91c8ab0",
@@ -14958,7 +15038,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-SRC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-fdba9ddccfbe",
@@ -14978,7 +15058,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-17f5cbe33bce",
@@ -15038,7 +15118,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-13a995ccd674",
@@ -15078,7 +15158,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-d5ef8d07c731",
@@ -15158,7 +15238,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-0b2dffefe6bb",
@@ -15178,7 +15258,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-SRC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-eaf8a9c87bfd",
@@ -16078,7 +16158,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-890c5e093d64",
@@ -16098,7 +16178,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-SRC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-122de1458a48",
@@ -16118,7 +16198,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-a9d58a551aab",
@@ -16138,7 +16218,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-71d8b7b9835f",
@@ -16158,7 +16238,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-a0002f7698f6",
@@ -16178,7 +16258,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-1a575f98f086",
@@ -16198,7 +16278,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-c94eafe25cbb",
@@ -16218,7 +16298,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-ad0a3cf2218d",
@@ -16318,7 +16398,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-SRC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-c75d7e3d8a01",
@@ -16358,7 +16438,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-518e6795a0cf",
@@ -16598,7 +16678,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-26c9eb454472",
@@ -16618,7 +16698,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-d5971a3d8e7c",
@@ -16658,7 +16738,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-6c2ba80bb18f",
@@ -16918,7 +16998,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-900d4b998b69",
@@ -16958,7 +17038,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-SRC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-4fee745c3d10",
@@ -17658,7 +17738,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-21caef577537",
@@ -17718,7 +17798,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-7df248fd5e3e",
@@ -17738,7 +17818,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-SRC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-4c22f80f9eec",
@@ -17778,7 +17858,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-SRC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-9ee6217116d8",
@@ -18438,7 +18518,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-632608fefc1e",
@@ -18458,7 +18538,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-ec37049c8947",
@@ -18578,7 +18658,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-RC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-59d1c43d0efd",
@@ -18598,7 +18678,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-087a21927524",
@@ -18678,7 +18758,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-42cf2d3f7657",
@@ -19318,7 +19398,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-bbc07dd794ac",
@@ -19338,7 +19418,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-SRC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-76d06aab3d4c",
@@ -19358,7 +19438,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2007-SRC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "id": "tx-9234b6016286",
@@ -19398,7 +19478,7 @@
       "latitude": 35.6501423,
       "longitude": 139.7931179,
       "building_group_id": "131080330-2008-SRC",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "id": "tx-1320196b1584",
@@ -33203,6 +33283,32 @@
   ],
   "building_groups": [
     {
+      "group_id": "131010010-2007-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 4,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1646154,
+      "periods": [
+        "2021Q3",
+        "2021Q4",
+        "2022Q1",
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -33878,7 +33984,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プレシス新宿柏木"
+      "estimated_building_name": null
     },
     {
       "group_id": "131040350-2019-RC",
@@ -34138,7 +34244,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
     },
     {
       "group_id": "131040540-2007-RC",
@@ -39028,7 +39134,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "group_id": "131080330-2007-RC",
@@ -39059,7 +39165,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "group_id": "131080330-2007-SRC",
@@ -39085,7 +39191,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "スターコート豊洲 / ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "group_id": "131080330-2008-RC",
@@ -39124,7 +39230,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "group_id": "131080330-2008-SRC",
@@ -39147,7 +39253,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "スターコート豊洲"
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ / スターコート豊洲"
     },
     {
       "group_id": "131080330-2009-RC",
@@ -39188,7 +39294,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "group_id": "131080330-2009-SRC",
@@ -39211,7 +39317,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "ＴＨＥ ＴＯＹＯＳＵ ＴＯＷＥＲ"
     },
     {
       "group_id": "131080330-2010-RC",
@@ -46018,7 +46124,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-29T17:12:12",
+    "updated_at": "2026-03-29T19:25:21",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
@@ -46055,8 +46161,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1660,
-    "building_group_count": 525,
+    "transaction_count": 1664,
+    "building_group_count": 526,
     "scope": "東京23区"
   }
 }
