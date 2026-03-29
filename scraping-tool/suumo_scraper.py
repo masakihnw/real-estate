@@ -81,6 +81,23 @@ LIST_URL_WARD_FILTERED = (
 _SUUMO_MB_VALUES = (20, 30, 40, 50, 60, 70, 80, 90, 100)
 # SUUMO JJ012FC001 が受け付ける et（駅徒歩上限）の固定値
 _SUUMO_ET_VALUES = (1, 3, 5, 7, 10, 15, 20)
+# SUUMO JJ012FC001 の kt（価格上限・万円）は任意の整数を受け付けない。
+# 11500 や 11000 を渡すと「必要な情報が不足」エラーページとなり一覧0件になる（2026-03 実測）。
+# サーバー側はこのティアに切り上げ、ローカル apply_conditions で PRICE_MAX_MAN を厳密に適用する。
+_SUUMO_KT_TIERS: tuple[int, ...] = (
+    3000, 4000, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 9000, 10000, 12000,
+)
+
+
+def _snap_kt_server(price_min_man: int, price_max_man: int) -> int:
+    """価格上限を JJ012FC001 が受け付ける kt に切り上げる。kb より大きい必要あり。"""
+    for v in _SUUMO_KT_TIERS:
+        if v < price_max_man:
+            continue
+        if v <= price_min_man:
+            continue
+        return v
+    return _SUUMO_KT_TIERS[-1]
 
 
 def _snap_mb(area_min: float) -> Optional[int]:
@@ -781,7 +798,8 @@ def _scrape_ward(
         sc_code = SUUMO_23_WARD_SC_CODES.get(ward_roman)
         if sc_code:
             filtered_base_url = LIST_URL_WARD_FILTERED.format(sc=sc_code)
-            filtered_base_url += f"&kb={PRICE_MIN_MAN}&kt={PRICE_MAX_MAN}"
+            kt_srv = _snap_kt_server(PRICE_MIN_MAN, PRICE_MAX_MAN)
+            filtered_base_url += f"&kb={PRICE_MIN_MAN}&kt={kt_srv}"
             if mb is not None:
                 filtered_base_url += f"&mb={mb}"
             if et is not None:
@@ -855,10 +873,12 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
     if apply_filter:
         area_msg = f", 面積{mb}㎡以上" if mb else ""
         walk_msg = f", 徒歩{et}分以内" if et else ""
+        kt_srv = _snap_kt_server(PRICE_MIN_MAN, PRICE_MAX_MAN)
+        kt_note = f"（SUUMO kt={kt_srv}）" if kt_srv != PRICE_MAX_MAN else ""
         logger.info(
-            "SUUMO: サーバーサイドフィルタ（価格%d〜%d万%s%s） + ローカルフィルタ（面積%gm²以上, 築%d年以降, 徒歩%d分以内）"
+            "SUUMO: サーバーサイドフィルタ（価格%d〜%d万%s%s%s） + ローカルフィルタ（面積%gm²以上, 築%d年以降, 徒歩%d分以内）"
             " / 並列ワーカー数: %d",
-            PRICE_MIN_MAN, PRICE_MAX_MAN, area_msg, walk_msg, AREA_MIN_M2, BUILT_YEAR_MIN, WALK_MIN_MAX,
+            PRICE_MIN_MAN, PRICE_MAX_MAN, kt_note, area_msg, walk_msg, AREA_MIN_M2, BUILT_YEAR_MIN, WALK_MIN_MAX,
             PARALLEL_WARD_WORKERS,
         )
 
