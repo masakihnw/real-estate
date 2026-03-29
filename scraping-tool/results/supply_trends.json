@@ -4355,8 +4355,8 @@
     {
       "date": "2026-03-29",
       "total_listings": 271,
-      "new_count": 171,
-      "removed_count": 52,
+      "new_count": 0,
+      "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 10398,
@@ -8656,8 +8656,8 @@
     {
       "date": "2026-03-29",
       "total_listings": 93,
-      "new_count": 55,
-      "removed_count": 5,
+      "new_count": 0,
+      "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 8991,
