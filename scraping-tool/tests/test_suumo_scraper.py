@@ -1,5 +1,20 @@
 """suumo_scraper の parse_suumo_detail_html のテスト。"""
-from suumo_scraper import parse_suumo_detail_html
+from suumo_scraper import _snap_kt_server, parse_suumo_detail_html
+
+
+def test_snap_kt_server_11500_to_12000():
+    """SUUMO は kt=11500 を拒否するため 12000 に切り上げる。"""
+    assert _snap_kt_server(9000, 11500) == 12000
+
+
+def test_snap_kt_server_exact_tier():
+    assert _snap_kt_server(9000, 10000) == 10000
+    assert _snap_kt_server(9000, 12000) == 12000
+
+
+def test_snap_kt_server_kb_narrow_gap():
+    """kb に対し kt は大きい必要がある。"""
+    assert _snap_kt_server(8990, 10000) == 10000
 
 
 def test_parse_suumo_detail_html_total_units_and_floor():
