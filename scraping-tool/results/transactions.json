@@ -1338,7 +1338,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
     },
     {
       "id": "tx-866625585fa0",
@@ -2458,7 +2458,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
     },
     {
       "id": "tx-e4a8675c485e",
@@ -19298,7 +19298,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2012-RC",
-      "estimated_building_name": "パークホームズ押上"
+      "estimated_building_name": "パークホームズ押上 / ガーデングラス亀戸"
     },
     {
       "id": "tx-f5f9915b60a7",
@@ -22998,7 +22998,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2016-RC",
-      "estimated_building_name": "ザ・パークハウス千歳烏山グローリオ"
+      "estimated_building_name": "ザ・パークハウス千歳烏山グローリオ エアリーコート / ザ・パークハウス千歳烏山グローリオ"
     },
     {
       "id": "tx-f7f66a178474",
@@ -24458,7 +24458,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2016-RC",
-      "estimated_building_name": "ザ・パークハウス千歳烏山グローリオ"
+      "estimated_building_name": "ザ・パークハウス千歳烏山グローリオ エアリーコート / ザ・パークハウス千歳烏山グローリオ"
     },
     {
       "id": "tx-eef947270959",
@@ -34138,7 +34138,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
     },
     {
       "group_id": "131040540-2007-RC",
@@ -38187,7 +38187,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "パークホームズ押上"
+      "estimated_building_name": "パークホームズ押上 / ガーデングラス亀戸"
     },
     {
       "group_id": "131080100-2021-RC",
@@ -42332,7 +42332,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "ザ・パークハウス千歳烏山グローリオ"
+      "estimated_building_name": "ザ・パークハウス千歳烏山グローリオ エアリーコート / ザ・パークハウス千歳烏山グローリオ"
     },
     {
       "group_id": "131120580-2025-RC",
@@ -46018,7 +46018,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-30T03:51:36",
+    "updated_at": "2026-03-30T06:31:28",
     "periods_covered": [
       "2021Q1",
       "2021Q2",
