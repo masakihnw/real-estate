@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-03-19（成約価格予測精度向上・マンションレビュー連携・価格変動チャート追加）
+> **最終更新**: 2026-03-31（iOS `CURRENT_PROJECT_VERSION` 201・TestFlight 向けアップロード運用）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
