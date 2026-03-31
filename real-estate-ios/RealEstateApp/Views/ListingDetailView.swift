@@ -515,11 +515,8 @@ struct ListingDetailView: View {
             if let dupText = listing.duplicateCountDisplay {
                 DetailRow(title: "売出戸数", value: dupText)
             }
-            DetailRow(title: "間取り / 面積", value: {
-                let layout = listing.layout ?? "—"
-                let area = listing.areaDisplay
-                return "\(layout) / \(area)（\(listing.tsuboDisplay)）"
-            }())
+            DetailRow(title: "間取り", value: listing.layout ?? "—")
+            DetailRow(title: "面積 / 坪数", value: "\(listing.areaDisplay) / \(listing.tsuboDisplay)")
             if listing.isShinchiku {
                 DetailRow(title: "入居時期", value: listing.deliveryDateDisplay)
             } else {
