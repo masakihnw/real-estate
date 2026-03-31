@@ -180,7 +180,7 @@ struct BuildingGroupDetailView: View {
                 Section("成約実績サマリー（\(annotation.transactionCount)件）") {
                     row("価格帯", annotation.priceRangeText)
                     let avgM2 = annotation.records.map(\.m2Price).reduce(0, +) / max(annotation.records.count, 1)
-                    row("平均m²単価", String(format: "%.1f万円/㎡", Double(avgM2) / 10000))
+                    row("平均坪単価", String(format: "%.1f万円/坪", Double(avgM2) / 10000 * 3.30578))
                     let layouts = Set(annotation.records.map(\.layout)).sorted()
                     row("間取り", layouts.joined(separator: ", "))
                 }
@@ -195,7 +195,7 @@ struct BuildingGroupDetailView: View {
                                 HStack(spacing: 6) {
                                     Text(tx.layout)
                                     Text("\(String(format: "%.0f", tx.areaM2))㎡")
-                                    Text(tx.formattedM2Price)
+                                    Text(tx.formattedTsuboPrice)
                                         .foregroundStyle(.secondary)
                                 }
                                 .font(.caption)

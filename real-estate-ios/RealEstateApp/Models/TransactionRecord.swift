@@ -161,6 +161,12 @@ final class TransactionRecord: @unchecked Sendable {
         let man = Double(m2Price) / 10000.0
         return String(format: "%.1f万円/㎡", man)
     }
+
+    /// 坪単価の万円表記（例: "368.2万円/坪"）
+    var formattedTsuboPrice: String {
+        let man = Double(m2Price) / 10000.0 * 3.30578
+        return String(format: "%.1f万円/坪", man)
+    }
 }
 
 // MARK: - DTO（JSON デコード用）

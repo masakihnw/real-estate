@@ -163,7 +163,7 @@ struct TransactionListView: View {
                             .font(.caption)
                     }
                 }
-                Text("平均 \(String(format: "%.1f", Double(avgM2) / 10000))万円/㎡")
+                Text("平均 \(String(format: "%.1f", Double(avgM2) / 10000 * 3.30578))万円/坪")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -179,7 +179,7 @@ struct TransactionListView: View {
                 HStack(spacing: 8) {
                     Text(record.layout)
                     Text("\(String(format: "%.0f", record.areaM2))㎡")
-                    Text(record.formattedM2Price)
+                    Text(record.formattedTsuboPrice)
                         .foregroundStyle(.secondary)
                 }
                 .font(.caption)

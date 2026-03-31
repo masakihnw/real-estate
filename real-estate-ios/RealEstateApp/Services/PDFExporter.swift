@@ -51,9 +51,9 @@ enum PDFExporter {
                 ("階数", { $0.floorPosition.map { "\($0)階" } ?? "-" }),
                 ("管理費", { $0.managementFee.map { "¥\($0)" } ?? "-" }),
                 ("修繕積立金", { $0.repairReserveFund.map { "¥\($0)" } ?? "-" }),
-                ("m²単価", {
+                ("坪単価", {
                     guard let p = $0.priceMan, let a = $0.areaM2, a > 0 else { return "-" }
-                    return String(format: "%.0f万/㎡", Double(p) / a)
+                    return String(format: "%.0f万/坪", Double(p) / a * 3.30578)
                 }),
             ]
 

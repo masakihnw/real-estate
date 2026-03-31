@@ -731,8 +731,6 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
             continue
         if not layout_ok(r.layout):
             continue
-        if r.built_year is not None and r.built_year < BUILT_YEAR_MIN:
-            continue
         if r.walk_min is not None and r.walk_min > WALK_MIN_MAX:
             continue
         cache_val = units_cache.get(r.url)
@@ -757,6 +755,10 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
         elif total_units is None and isinstance(cache_val, int):
             total_units = cache_val
             r.total_units = cache_val
+        # タワーマンション（20階建て以上）は築年数フィルタを免除
+        is_tower = (r.floor_total is not None and r.floor_total >= 20)
+        if r.built_year is not None and r.built_year < BUILT_YEAR_MIN and not is_tower:
+            continue
         if total_units is not None and total_units < TOTAL_UNITS_MIN:
             continue
         out.append(r)

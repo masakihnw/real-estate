@@ -41,7 +41,7 @@ struct MarketDataSectionView: View {
                     sameBuildingSection(market)
                 }
 
-                // ── m²単価推移チャート ──
+                // ── 坪単価推移チャート ──
                 if market.yearlyM2Prices.count >= 2
                     || (market.station?.yearlyM2Prices.count ?? 0) >= 2
                     || market.quarterlyM2Prices.count >= 3
@@ -136,7 +136,7 @@ struct MarketDataSectionView: View {
         ) {
             areaInfoCell(
                 title: "類似物件相場",
-                value: market.wardMedianM2PriceManDisplay,
+                value: market.wardMedianTsuboPriceManDisplay,
                 icon: "yensign.circle",
                 subtitle: market.matchDescription
             )
@@ -216,8 +216,8 @@ struct MarketDataSectionView: View {
             return "\(avgPriceMan)万円"
         }
 
-        var avgM2PriceManDisplay: String {
-            String(format: "%.1f万/m²", Double(avgM2Price) / 10000.0)
+        var avgTsuboPriceManDisplay: String {
+            String(format: "%.1f万/坪", Double(avgM2Price) / 10000.0 * 3.30578)
         }
     }
 
@@ -335,7 +335,7 @@ struct MarketDataSectionView: View {
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundStyle(.primary)
-                    Text(summary.avgM2PriceManDisplay)
+                    Text(summary.avgTsuboPriceManDisplay)
                         .font(.system(size: 9))
                         .foregroundStyle(.secondary)
                 }
@@ -385,8 +385,8 @@ struct MarketDataSectionView: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(.primary)
 
-            // m²単価
-            Text(tx.m2PriceManDisplay)
+            // 坪単価
+            Text(tx.tsuboPriceManDisplay)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .frame(width: 64, alignment: .trailing)
@@ -447,7 +447,7 @@ struct MarketDataSectionView: View {
                     Text("駅圏相場")
                         .font(.system(size: 10))
                         .foregroundStyle(.secondary)
-                    Text(station.medianM2PriceManDisplay)
+                    Text(station.medianTsuboPriceManDisplay)
                         .font(.callout)
                         .fontWeight(.bold)
                         .foregroundStyle(.indigo)
@@ -507,7 +507,7 @@ struct MarketDataSectionView: View {
         }
     }
 
-    // MARK: - m²単価推移チャート
+    // MARK: - 坪単価推移チャート
 
     @ViewBuilder
     private func trendChartSection(_ market: Listing.MarketData) -> some View {
@@ -518,12 +518,12 @@ struct MarketDataSectionView: View {
 
         VStack(alignment: .leading, spacing: 8) {
             if market.station != nil {
-                Text("m²単価推移（\(market.ward) / \(market.station?.name ?? "")駅）")
+                Text("坪単価推移（\(market.ward) / \(market.station?.name ?? "")駅）")
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)
             } else {
-                Text("\(market.ward) 中古マンション m²単価推移")
+                Text("\(market.ward) 中古マンション 坪単価推移")
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)
@@ -632,7 +632,7 @@ struct MarketDataSectionView: View {
     }
 }
 
-// MARK: - m²単価推移チャート
+// MARK: - 坪単価推移チャート
 
 struct MarketTrendChart: View {
     /// 表示モード
@@ -713,7 +713,7 @@ struct MarketTrendChart: View {
                 let manPrice = Double(yp.medianM2Price) / 10000.0
                 LineMark(
                     x: .value("年", yp.year),
-                    y: .value("m²単価(万)", manPrice),
+                    y: .value("坪単価(万)", manPrice * 3.30578),
                     series: .value("系列", "区")
                 )
                 .foregroundStyle(Color.accentColor)
@@ -722,7 +722,7 @@ struct MarketTrendChart: View {
 
                 PointMark(
                     x: .value("年", yp.year),
-                    y: .value("m²単価(万)", manPrice)
+                    y: .value("坪単価(万)", manPrice * 3.30578)
                 )
                 .foregroundStyle(Color.accentColor)
                 .symbolSize(pointSize)
@@ -733,7 +733,7 @@ struct MarketTrendChart: View {
                 let manPrice = Double(yp.medianM2Price) / 10000.0
                 LineMark(
                     x: .value("年", yp.year),
-                    y: .value("m²単価(万)", manPrice),
+                    y: .value("坪単価(万)", manPrice * 3.30578),
                     series: .value("系列", "駅")
                 )
                 .foregroundStyle(Color.indigo)
@@ -742,7 +742,7 @@ struct MarketTrendChart: View {
 
                 PointMark(
                     x: .value("年", yp.year),
-                    y: .value("m²単価(万)", manPrice)
+                    y: .value("坪単価(万)", manPrice * 3.30578)
                 )
                 .foregroundStyle(Color.indigo)
                 .symbolSize(pointSize)
@@ -781,7 +781,7 @@ struct MarketTrendChart: View {
                 let manPrice = Double(qp.medianM2Price) / 10000.0
                 LineMark(
                     x: .value("四半期", qp.quarter),
-                    y: .value("m²単価(万)", manPrice),
+                    y: .value("坪単価(万)", manPrice * 3.30578),
                     series: .value("系列", "区")
                 )
                 .foregroundStyle(Color.accentColor)
@@ -790,7 +790,7 @@ struct MarketTrendChart: View {
 
                 PointMark(
                     x: .value("四半期", qp.quarter),
-                    y: .value("m²単価(万)", manPrice)
+                    y: .value("坪単価(万)", manPrice * 3.30578)
                 )
                 .foregroundStyle(Color.accentColor)
                 .symbolSize(pointSize)
@@ -800,7 +800,7 @@ struct MarketTrendChart: View {
                 let manPrice = Double(qp.medianM2Price) / 10000.0
                 LineMark(
                     x: .value("四半期", qp.quarter),
-                    y: .value("m²単価(万)", manPrice),
+                    y: .value("坪単価(万)", manPrice * 3.30578),
                     series: .value("系列", "駅")
                 )
                 .foregroundStyle(Color.indigo)
@@ -809,7 +809,7 @@ struct MarketTrendChart: View {
 
                 PointMark(
                     x: .value("四半期", qp.quarter),
-                    y: .value("m²単価(万)", manPrice)
+                    y: .value("坪単価(万)", manPrice * 3.30578)
                 )
                 .foregroundStyle(Color.indigo)
                 .symbolSize(pointSize)
@@ -844,8 +844,8 @@ struct MarketTrendChart: View {
     @ChartContentBuilder
     private var listingRuleMark: some ChartContent {
         if let listingPrice = listingM2Price {
-            let manPrice = listingPrice / 10000.0
-            RuleMark(y: .value("物件m²単価", manPrice))
+            let manPrice = listingPrice / 10000.0 * 3.30578
+            RuleMark(y: .value("物件坪単価", manPrice))
                 .foregroundStyle(.red.opacity(0.6))
                 .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
                 .annotation(position: .top, alignment: .trailing) {

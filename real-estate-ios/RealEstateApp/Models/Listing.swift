@@ -1875,7 +1875,7 @@ final class Listing: @unchecked Sendable {
     private var priceFairnessDetail: String {
         var parts: [String] = []
         if let j = ssValueJudgment, !j.isEmpty { parts.append("判定: \(j)") }
-        if let d = ssM2Discount { parts.append("m²乖離: \(d)万") }
+        if let d = ssM2Discount { parts.append("坪乖離: \(String(format: "%.0f", Double(d) * 3.30578))万") }
         if let md = parsedMarketData, let ratio = md.priceRatio {
             let pct = (ratio - 1.0) * 100
             parts.append("相場比: \(String(format: "%+.0f", pct))%")
@@ -1979,6 +1979,12 @@ final class Listing: @unchecked Sendable {
                 return String(format: "%.1f万/m²", man)
             }
 
+            /// 坪単価の万円表示
+            var tsuboPriceManDisplay: String {
+                let man = Double(m2Price) / 10000.0 * 3.30578
+                return String(format: "%.1f万/坪", man)
+            }
+
             /// 成約価格の表示
             var tradePriceDisplay: String {
                 if tradePriceMan >= 10000 {
@@ -2020,10 +2026,10 @@ final class Listing: @unchecked Sendable {
             var yearlyM2Prices: [YearlyPrice]
             var lines: [String]                 // 路線名リスト
 
-            /// m²単価の万円表示
-            var medianM2PriceManDisplay: String {
-                let man = Double(medianM2Price) / 10000.0
-                return String(format: "%.1f万/m²", man)
+            /// 坪単価の万円表示
+            var medianTsuboPriceManDisplay: String {
+                let man = Double(medianM2Price) / 10000.0 * 3.30578
+                return String(format: "%.1f万/坪", man)
             }
 
             /// 乖離率テキスト
@@ -2106,10 +2112,10 @@ final class Listing: @unchecked Sendable {
             }
         }
 
-        /// m² 単価の万円表示
-        var wardMedianM2PriceManDisplay: String {
-            let man = Double(wardMedianM2Price) / 10000.0
-            return String(format: "%.1f万/m²", man)
+        /// 坪単価の万円表示
+        var wardMedianTsuboPriceManDisplay: String {
+            let man = Double(wardMedianM2Price) / 10000.0 * 3.30578
+            return String(format: "%.1f万/坪", man)
         }
 
         /// YoY 表示テキスト

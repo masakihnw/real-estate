@@ -31,7 +31,6 @@ extension Listing {
                 md += "| 専有面積 | \(String(format: "%.1f㎡", area)) |\n"
             }
         }
-        md += "| 平米単価 | \(m2UnitPriceDisplay) |\n"
         md += "| 坪単価 | \(tsuboUnitPriceDisplay) |\n"
         if let layout { md += "| 間取り | \(layout) |\n" }
         if let addr = ssAddress ?? address { md += "| 住所 | \(addr) |\n" }
@@ -128,8 +127,8 @@ extension Listing {
         if let market = parsedMarketData {
             md += "\n## 成約相場（\(market.ward)）\n\n"
             md += "> 出典: 不動産情報ライブラリ（国土交通省）。成約価格ベース。\n\n"
-            let manPrice = Double(market.wardMedianM2Price) / 10000.0
-            md += "- **区中央値 m²単価**: \(String(format: "%.1f万/m²", manPrice))（サンプル数: \(market.sampleCount)件）\n"
+            let tsuboPrice = Double(market.wardMedianM2Price) / 10000.0 * 3.30578
+            md += "- **区中央値 坪単価**: \(String(format: "%.1f万/坪", tsuboPrice))（サンプル数: \(market.sampleCount)件）\n"
             if let yoy = market.yoyChangePct { md += "- **前年比**: \(String(format: "%+.1f%%", yoy))\n" }
             md += "- **トレンド**: \(market.trendDisplay)\n"
         }
@@ -186,7 +185,8 @@ extension Listing {
                         }
                     } else {
                         if let disc = ssM2Discount {
-                            md += "  - 算出根拠: m²単価の乖離額 \(disc)万円/㎡（負値=割安、正値=割高）\n"
+                            let tsuboDisc = String(format: "%.1f", Double(disc) * 3.30578)
+                            md += "  - 算出根拠: 坪単価の乖離額 \(tsuboDisc)万円/坪（負値=割安、正値=割高）\n"
                         }
                     }
                 }

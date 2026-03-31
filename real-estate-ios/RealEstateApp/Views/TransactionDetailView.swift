@@ -51,7 +51,7 @@ struct TransactionDetailView: View {
         let id = UUID()
         let period: String
         let layoutCategory: String
-        let avgM2PriceMan: Double
+        let avgTsuboPriceMan: Double
         let count: Int
     }
 
@@ -75,11 +75,11 @@ struct TransactionDetailView: View {
         return buckets.compactMap { key, prices in
             let parts = key.split(separator: "|")
             guard parts.count == 2 else { return nil }
-            let avg = Double(prices.reduce(0, +)) / Double(prices.count) / 10000.0
+            let avgM2 = Double(prices.reduce(0, +)) / Double(prices.count) / 10000.0
             return TrendPoint(
                 period: String(parts[0]),
                 layoutCategory: String(parts[1]),
-                avgM2PriceMan: avg,
+                avgTsuboPriceMan: avgM2 * 3.30578,
                 count: prices.count
             )
         }
@@ -108,7 +108,7 @@ struct TransactionDetailView: View {
                 // 基本情報
                 Section("取引情報") {
                     row("成約価格", record.formattedPrice)
-                    row("m²単価", record.formattedM2Price)
+                    row("坪単価", record.formattedTsuboPrice)
                     row("面積", "\(String(format: "%.1f", record.areaM2))㎡")
                     row("間取り", record.layout)
                     row("取引時期", record.displayPeriod)
@@ -130,12 +130,12 @@ struct TransactionDetailView: View {
                     }
                 }
 
-                // m²単価推移チャート
+                // 坪単価推移チャート
                 if trendData.count >= 2 {
                     Section {
-                        m2PriceTrendChart
+                        tsuboPriceTrendChart
                     } header: {
-                        Text("類似条件の m²単価推移")
+                        Text("類似条件の坪単価推移")
                     } footer: {
                         Text("面積 \(String(format: "%.0f", record.areaM2))㎡ ± 15㎡ の成約実績を間取り別に集計")
                     }
@@ -173,7 +173,7 @@ struct TransactionDetailView: View {
                                         HStack(spacing: 6) {
                                             Text(tx.layout)
                                             Text("\(String(format: "%.0f", tx.areaM2))㎡")
-                                            Text(tx.formattedM2Price)
+                                            Text(tx.formattedTsuboPrice)
                                                 .foregroundStyle(.secondary)
                                         }
                                         .font(.caption)
@@ -243,9 +243,9 @@ struct TransactionDetailView: View {
         }
     }
 
-    // MARK: - m²単価推移チャート
+    // MARK: - 坪単価推移チャート
 
-    private var m2PriceTrendChart: some View {
+    private var tsuboPriceTrendChart: some View {
         let currentCategory = Self.layoutCategory(record.layout)
 
         return VStack(alignment: .leading, spacing: 8) {
@@ -253,14 +253,14 @@ struct TransactionDetailView: View {
                 ForEach(trendData) { point in
                     LineMark(
                         x: .value("四半期", point.period),
-                        y: .value("m²単価", point.avgM2PriceMan)
+                        y: .value("坪単価", point.avgTsuboPriceMan)
                     )
                     .foregroundStyle(by: .value("間取り", point.layoutCategory))
                     .interpolationMethod(.catmullRom)
 
                     PointMark(
                         x: .value("四半期", point.period),
-                        y: .value("m²単価", point.avgM2PriceMan)
+                        y: .value("坪単価", point.avgTsuboPriceMan)
                     )
                     .foregroundStyle(by: .value("間取り", point.layoutCategory))
                     .symbolSize(point.period == record.tradePeriod && point.layoutCategory == currentCategory ? 60 : 20)
@@ -281,7 +281,7 @@ struct TransactionDetailView: View {
                 "3LDK": Color.green,
             ])
             .chartLegend(position: .top, alignment: .leading)
-            .chartYAxisLabel("万円/㎡")
+            .chartYAxisLabel("万円/坪")
             .chartXAxis {
                 AxisMarks(values: .automatic(desiredCount: 5)) { value in
                     AxisGridLine()
