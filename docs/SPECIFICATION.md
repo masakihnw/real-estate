@@ -1,6 +1,6 @@
 # 物件情報アプリ 総合仕様書
 
-> **最終更新**: 2026-03-31（iOS `CURRENT_PROJECT_VERSION` 201・TestFlight 向けアップロード運用）
+> **最終更新**: 2026-03-31（iOS / Mac Catalyst `CURRENT_PROJECT_VERSION` 202・App Store Connect アップロード）
 > **ステータス**: 運用中  
 > **リポジトリ**: https://github.com/masakihnw/real-estate
 
