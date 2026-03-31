@@ -284,9 +284,9 @@ struct DashboardView: View {
             let existing = wardData[ward] ?? (0, 0, 0)
             wardData[ward] = (existing.totalPrice + price, existing.totalArea + area, existing.count + 1)
         }
-        return wardData.map { ward, data in
+        return wardData.map { (ward, data) -> WardRanking in
             let m2Price = Double(data.totalPrice) / data.totalArea
-            WardRanking(ward: ward, avgTsuboPriceMan: Int(m2Price * 3.30578), count: data.count)
+            return WardRanking(ward: ward, avgTsuboPriceMan: Int(m2Price * 3.30578), count: data.count)
         }
         .sorted { $0.avgTsuboPriceMan > $1.avgTsuboPriceMan }
     }
