@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-東京23区 中古マンション 平米単価の推移チャート生成ツール。
+東京23区 中古マンション 坪単価の推移チャート生成ツール。
 
 usage:
   python3 scripts/ward_price_trend_chart.py
@@ -183,7 +183,8 @@ def generate_html(data: Dict[str, Dict[str, Optional[int]]], quarters: List[str]
         values = []
         for q in quarters:
             val = ward_data.get(q)
-            values.append(val if val else "null")
+            # m²単価→坪単価に変換（1坪=3.30578㎡）
+            values.append(round(val * 3.30578) if val is not None else "null")
 
         dataset = {
             "label": ward_name,
@@ -282,7 +283,7 @@ def generate_html(data: Dict[str, Dict[str, Optional[int]]], quarters: List[str]
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>東京23区 中古マンション m²単価推移</title>
+  <title>東京23区 中古マンション 坪単価推移</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -438,7 +439,7 @@ def generate_html(data: Dict[str, Dict[str, Optional[int]]], quarters: List[str]
   </style>
 </head>
 <body>
-  <h1>東京23区 中古マンション m&sup2;単価推移</h1>
+  <h1>東京23区 中古マンション 坪単価推移</h1>
   <p class="subtitle">成約価格ベース &middot; 国土交通省 不動産情報ライブラリ &middot; {first_q}〜{latest_q}</p>
 
   <div class="stats-row" id="statsRow"></div>
@@ -549,7 +550,7 @@ def generate_html(data: Dict[str, Dict[str, Optional[int]]], quarters: List[str]
             callbacks: {{
               label: function(ctx) {{
                 const val = ctx.parsed.y;
-                return val ? `${{ctx.dataset.label}}: ¥${{val.toLocaleString()}}/m²` : '';
+                return val ? `${{ctx.dataset.label}}: ¥${{val.toLocaleString()}}/坪` : '';
               }}
             }}
           }}
@@ -562,7 +563,7 @@ def generate_html(data: Dict[str, Dict[str, Optional[int]]], quarters: List[str]
           y: {{
             title: {{
               display: true,
-              text: 'm² 単価（円）',
+              text: '坪単価（円）',
               font: {{ size: 12 }}
             }},
             ticks: {{
@@ -603,7 +604,7 @@ def generate_html(data: Dict[str, Dict[str, Optional[int]]], quarters: List[str]
 
 
 def main():
-    logger.info("=== 東京23区 m²単価推移チャート生成 ===")
+    logger.info("=== 東京23区 坪単価推移チャート生成 ===")
 
     # データ読み込み
     trends = load_trends_data()

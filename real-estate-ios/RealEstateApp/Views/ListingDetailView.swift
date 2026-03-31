@@ -441,7 +441,7 @@ struct ListingDetailView: View {
             summaryItem(icon: "figure.walk", label: "徒歩", value: listing.walkMin != nil ? "\(listing.walkMin!)分" : "—", color: .orange)
             summaryItem(icon: "building.2.fill", label: "築年", value: builtYearShortDisplay, color: .purple)
             summaryItem(icon: "square.grid.3x3.fill", label: "間取り", value: listing.layout ?? "—", color: .teal)
-            summaryItem(icon: "chart.bar.fill", label: "㎡単価", value: listing.m2UnitPriceDisplay, color: .indigo)
+            summaryItem(icon: "chart.bar.fill", label: "坪単価", value: listing.tsuboUnitPriceDisplay, color: .indigo)
         }
         .padding(12)
         .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
@@ -511,7 +511,6 @@ struct ListingDetailView: View {
 
         VStack(spacing: 0) {
             DetailRow(title: "価格", value: listing.priceDisplay, accentValue: true)
-            DetailRow(title: "平米単価", value: listing.m2UnitPriceDisplay)
             DetailRow(title: "坪単価", value: listing.tsuboUnitPriceDisplay)
             if let dupText = listing.duplicateCountDisplay {
                 DetailRow(title: "売出戸数", value: dupText)
@@ -1571,24 +1570,23 @@ struct ListingDetailView: View {
                 .background(Color(.systemGray6).opacity(0.5))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-                // m²単価・坪単価
-                if mr.estimatedM2PriceMan != nil || mr.estimatedTsuboPriceMan != nil {
+                // 推定坪単価
+                if mr.estimatedTsuboPriceMan != nil || mr.estimatedM2PriceMan != nil {
                     HStack(spacing: 16) {
-                        if let m2 = mr.estimatedM2PriceMan {
-                            HStack(spacing: 4) {
-                                Text("推定m²単価")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text("\(m2)万/m²")
-                                    .font(.caption.weight(.semibold))
-                            }
-                        }
                         if let tsubo = mr.estimatedTsuboPriceMan {
                             HStack(spacing: 4) {
                                 Text("推定坪単価")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                                 Text("\(tsubo)万/坪")
+                                    .font(.caption.weight(.semibold))
+                            }
+                        } else if let m2 = mr.estimatedM2PriceMan {
+                            HStack(spacing: 4) {
+                                Text("推定坪単価")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(String(format: "%.0f万/坪", Double(m2) * 3.30578))
                                     .font(.caption.weight(.semibold))
                             }
                         }
@@ -2491,10 +2489,10 @@ struct ListingDetailView: View {
                     forecastRow(label: "沖式新築時価", value: "\(price.formatted())万円", subLabel: "(70㎡)")
                 }
                 if let m2Price = listing.ssNewM2Price {
-                    forecastRow(label: "新築時m²単価", value: "\(m2Price)万円/㎡")
+                    forecastRow(label: "新築時坪単価", value: String(format: "%.1f万円/坪", Double(m2Price) * 3.30578))
                 }
                 if let forecastM2 = listing.ssForecastM2Price {
-                    forecastRow(label: "10年後予測m²", value: "\(forecastM2)万円/㎡")
+                    forecastRow(label: "10年後予測坪", value: String(format: "%.1f万円/坪", Double(forecastM2) * 3.30578))
                 }
                 if let changeRate = listing.ssForecastChangeRate {
                     let formatted = changeRate.truncatingRemainder(dividingBy: 1) == 0

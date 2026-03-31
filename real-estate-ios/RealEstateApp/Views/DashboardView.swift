@@ -174,10 +174,10 @@ struct DashboardView: View {
 
     private var wardRankingSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("エリア別 m²単価ランキング", systemImage: "chart.bar.xaxis")
+            Label("エリア別 坪単価ランキング", systemImage: "chart.bar.xaxis")
                 .font(.headline)
 
-            let rankings = wardM2Rankings
+            let rankings = wardTsuboRankings
             ForEach(Array(rankings.enumerated()), id: \.element.ward) { index, ranking in
                 HStack {
                     Text("\(index + 1)")
@@ -187,7 +187,7 @@ struct DashboardView: View {
                     Text(ranking.ward)
                         .font(.caption.weight(.semibold))
                     Spacer()
-                    Text("\(ranking.avgM2PriceMan)万/m²")
+                    Text("\(ranking.avgTsuboPriceMan)万/坪")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     Text("(\(ranking.count)件)")
@@ -271,11 +271,11 @@ struct DashboardView: View {
 
     struct WardRanking: Hashable {
         let ward: String
-        let avgM2PriceMan: Int
+        let avgTsuboPriceMan: Int
         let count: Int
     }
 
-    private var wardM2Rankings: [WardRanking] {
+    private var wardTsuboRankings: [WardRanking] {
         var wardData: [String: (totalPrice: Int, totalArea: Double, count: Int)] = [:]
         for listing in chukoListings {
             guard let price = listing.priceMan, let area = listing.areaM2, area > 0 else { continue }
@@ -285,9 +285,10 @@ struct DashboardView: View {
             wardData[ward] = (existing.totalPrice + price, existing.totalArea + area, existing.count + 1)
         }
         return wardData.map { ward, data in
-            WardRanking(ward: ward, avgM2PriceMan: Int(Double(data.totalPrice) / data.totalArea), count: data.count)
+            let m2Price = Double(data.totalPrice) / data.totalArea
+            WardRanking(ward: ward, avgTsuboPriceMan: Int(m2Price * 3.30578), count: data.count)
         }
-        .sorted { $0.avgM2PriceMan > $1.avgM2PriceMan }
+        .sorted { $0.avgTsuboPriceMan > $1.avgTsuboPriceMan }
     }
 }
 
