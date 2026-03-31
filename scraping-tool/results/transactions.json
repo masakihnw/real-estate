@@ -798,7 +798,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-30ce35347a86",
@@ -918,7 +918,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-259e692a9a05",
@@ -1698,7 +1698,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-7a269e0435ea",
@@ -1798,7 +1798,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-beed0c0b17ba",
@@ -1818,7 +1818,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-2f7b8219f251",
@@ -2218,7 +2218,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-9b747f4af684",
@@ -2438,7 +2438,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-0b40c23a9112",
@@ -2458,7 +2458,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-84539e81539f",
@@ -2838,7 +2838,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-ca52c7520049",
@@ -3058,7 +3058,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-50abd2664105",
@@ -3438,7 +3438,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "id": "tx-c919167f5c29",
@@ -26938,7 +26938,7 @@
       "latitude": 35.7133664,
       "longitude": 139.66418,
       "building_group_id": "131140010-2014-RC",
-      "estimated_building_name": "ミッドアベニュー中野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ed64e9782e5d",
@@ -33957,7 +33957,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
     },
     {
       "group_id": "131040330-2015-RC",
@@ -42850,7 +42850,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": "ミッドアベニュー中野"
+      "estimated_building_name": null
     },
     {
       "group_id": "131140010-2019-RC",
@@ -46124,7 +46124,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-03-31T03:23:49",
+    "updated_at": "2026-03-31T06:18:40",
     "periods_covered": [
       "2021Q1",
       "2021Q2",

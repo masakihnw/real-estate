@@ -4656,16 +4656,16 @@
     },
     {
       "date": "2026-03-31",
-      "total_listings": 275,
+      "total_listings": 273,
       "new_count": 0,
-      "removed_count": 0,
-      "updated_count": 0,
-      "price_changed_count": 0,
-      "avg_price_man": 10414,
-      "median_price_man": 10490,
+      "removed_count": 2,
+      "updated_count": 4,
+      "price_changed_count": 1,
+      "avg_price_man": 10412,
+      "median_price_man": 10480,
       "price_distribution": {
         "under_10000": 109,
-        "10000_11000": 99,
+        "10000_11000": 97,
         "11000_12000": 67,
         "over_12000": 0,
         "undecided": 0
@@ -4709,7 +4709,7 @@
         },
         "杉並区": {
           "count": 12,
-          "avg_price_man": 10447,
+          "avg_price_man": 10439,
           "min_price_man": 9280,
           "max_price_man": 11490
         },
@@ -4732,8 +4732,8 @@
           "max_price_man": 11480
         },
         "中野区": {
-          "count": 11,
-          "avg_price_man": 10418,
+          "count": 10,
+          "avg_price_man": 10410,
           "min_price_man": 9199,
           "max_price_man": 11500
         },
@@ -4761,17 +4761,17 @@
           "min_price_man": 9280,
           "max_price_man": 11000
         },
-        "港区": {
-          "count": 6,
-          "avg_price_man": 10916,
-          "min_price_man": 9500,
-          "max_price_man": 11500
-        },
         "墨田区": {
           "count": 6,
           "avg_price_man": 10319,
           "min_price_man": 9498,
           "max_price_man": 10980
+        },
+        "港区": {
+          "count": 5,
+          "avg_price_man": 10940,
+          "min_price_man": 9500,
+          "max_price_man": 11500
         },
         "荒川区": {
           "count": 5,
@@ -9271,9 +9271,9 @@
     },
     {
       "date": "2026-03-31",
-      "total_listings": 92,
+      "total_listings": 91,
       "new_count": 0,
-      "removed_count": 0,
+      "removed_count": 1,
       "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 9088,
@@ -9283,11 +9283,11 @@
         "10000_11000": 3,
         "11000_12000": 3,
         "over_12000": 0,
-        "undecided": 61
+        "undecided": 60
       },
       "ward_stats": {
         "港区": {
-          "count": 12,
+          "count": 11,
           "avg_price_man": null,
           "min_price_man": null,
           "max_price_man": null
