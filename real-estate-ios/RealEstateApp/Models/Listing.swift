@@ -639,6 +639,12 @@ final class Listing: @unchecked Sendable {
         return "—"
     }
 
+    /// 表示用: 坪数
+    var tsuboDisplay: String {
+        guard let area = areaM2, area > 0 else { return "—" }
+        return String(format: "%.1f坪", area / 3.30578)
+    }
+
     /// 平米単価（万円/㎡）。価格と面積の両方が必要
     var m2UnitPrice: Double? {
         guard let price = priceMan, let area = areaM2, area > 0 else { return nil }

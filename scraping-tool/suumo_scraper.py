@@ -712,10 +712,103 @@ def _load_building_units_cache() -> dict:
         return {}
 
 
+_TOWER_NAME_PATTERN = re.compile(
+    r"タワー|TOWER|Tower|ﾀﾜｰ", re.IGNORECASE
+)
+
+
+def _is_tower_name(name: str) -> bool:
+    """マンション名にタワー系キーワードが含まれるか判定。
+    floor_total が不明な場合のフォールバック判定に使用。"""
+    return bool(_TOWER_NAME_PATTERN.search(name))
+
+
+def _fetch_detail_page(session: requests.Session, url: str) -> str:
+    """SUUMO 詳細ページの HTML を取得する。"""
+    last_error: Optional[Exception] = None
+    for attempt in range(REQUEST_RETRIES):
+        time.sleep(REQUEST_DELAY_SEC)
+        try:
+            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
+            if r.status_code == 429:
+                retry_after = int(r.headers.get("Retry-After", 60))
+                backoff = min(retry_after, 120)
+                logger.warning("SUUMO detail: 429 Rate Limited, waiting %ds (attempt %d/%d)", backoff, attempt + 1, REQUEST_RETRIES)
+                time.sleep(backoff)
+                continue
+            r.raise_for_status()
+            r.encoding = r.apparent_encoding or "utf-8"
+            return r.text
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
+                last_error = e
+                backoff = min(2 ** (attempt + 1), 30)
+                logger.warning("SUUMO detail: HTTP %d, retrying in %ds (attempt %d/%d)", e.response.status_code, backoff, attempt + 1, REQUEST_RETRIES)
+                time.sleep(backoff)
+            else:
+                raise
+        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as e:
+            last_error = e
+            if attempt < REQUEST_RETRIES - 1:
+                backoff = min(2 ** (attempt + 1), 30)
+                logger.warning("SUUMO detail: %s, retrying in %ds (attempt %d/%d)", type(e).__name__, backoff, attempt + 1, REQUEST_RETRIES)
+                time.sleep(backoff)
+            else:
+                raise last_error
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError(f"全 {REQUEST_RETRIES} 回のリトライが失敗しました: {url}")
+
+
+def _merge_detail_cache_into_listing(r: SuumoListing, detail: dict) -> None:
+    """詳細ページ由来の値で listing の不足フィールドを補完する。"""
+    if r.total_units is None and detail.get("total_units") is not None:
+        r.total_units = detail["total_units"]
+    if r.floor_position is None and detail.get("floor_position") is not None:
+        r.floor_position = detail["floor_position"]
+    if r.floor_total is None and detail.get("floor_total") is not None:
+        r.floor_total = detail["floor_total"]
+    if getattr(r, "floor_structure", None) is None and detail.get("floor_structure") is not None:
+        r.floor_structure = detail["floor_structure"]
+    if r.ownership is None and detail.get("ownership") is not None:
+        r.ownership = detail["ownership"]
+    if r.management_fee is None and detail.get("management_fee") is not None:
+        r.management_fee = detail["management_fee"]
+    if r.repair_reserve_fund is None and detail.get("repair_reserve_fund") is not None:
+        r.repair_reserve_fund = detail["repair_reserve_fund"]
+
+
+def _load_detail_for_tower_judgement(
+    r: SuumoListing,
+    session: requests.Session,
+    detail_cache: dict[str, dict],
+) -> dict:
+    """築古かつ floor_total 不明の候補だけ詳細ページを見て階建てを補完する。"""
+    cached = detail_cache.get(r.url)
+    if cached is not None:
+        _merge_detail_cache_into_listing(r, cached)
+        return cached
+
+    try:
+        html = _fetch_detail_page(session, r.url)
+        detail = parse_suumo_detail_html(html)
+    except Exception as e:
+        logger.warning("SUUMO detail: タワマン判定用詳細取得に失敗: %s (%s)", r.url, e)
+        detail = {}
+
+    if not isinstance(detail, dict):
+        detail = {}
+    detail_cache[r.url] = detail
+    _merge_detail_cache_into_listing(r, detail)
+    return detail
+
+
 def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
     """価格・専有・間取り・築年・徒歩・地域（東京23区）・総戸数・駅乗降客数で条件ドキュメントに合わせてフィルタ。"""
     units_cache = _load_building_units_cache()
     passengers_map = load_station_passengers()
+    detail_cache: dict[str, dict] = {}
+    detail_session: Optional[requests.Session] = None
     out = []
     for r in listings:
         list_ward = getattr(r, "list_ward_roman", None)
@@ -736,27 +829,21 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
         cache_val = units_cache.get(r.url)
         total_units = r.total_units
         if isinstance(cache_val, dict):
+            _merge_detail_cache_into_listing(r, cache_val)
             if total_units is None:
                 total_units = cache_val.get("total_units")
-            if r.total_units is None and cache_val.get("total_units") is not None:
-                r.total_units = cache_val["total_units"]
-            if r.floor_position is None and cache_val.get("floor_position") is not None:
-                r.floor_position = cache_val["floor_position"]
-            if r.floor_total is None and cache_val.get("floor_total") is not None:
-                r.floor_total = cache_val["floor_total"]
-            if getattr(r, "floor_structure", None) is None and cache_val.get("floor_structure") is not None:
-                r.floor_structure = cache_val["floor_structure"]
-            if r.ownership is None and cache_val.get("ownership") is not None:
-                r.ownership = cache_val["ownership"]
-            if r.management_fee is None and cache_val.get("management_fee") is not None:
-                r.management_fee = cache_val["management_fee"]
-            if r.repair_reserve_fund is None and cache_val.get("repair_reserve_fund") is not None:
-                r.repair_reserve_fund = cache_val["repair_reserve_fund"]
         elif total_units is None and isinstance(cache_val, int):
             total_units = cache_val
             r.total_units = cache_val
-        # タワーマンション（20階建て以上）は築年数フィルタを免除
-        is_tower = (r.floor_total is not None and r.floor_total >= 20)
+        # タワーマンション（20階建て以上、または名称にタワー系キーワード）は築年数フィルタを免除
+        is_tower = (r.floor_total is not None and r.floor_total >= 20) or _is_tower_name(r.name)
+        if r.built_year is not None and r.built_year < BUILT_YEAR_MIN and not is_tower and r.floor_total is None:
+            if detail_session is None:
+                detail_session = create_session()
+            detail = _load_detail_for_tower_judgement(r, detail_session, detail_cache)
+            if total_units is None:
+                total_units = detail.get("total_units")
+            is_tower = (r.floor_total is not None and r.floor_total >= 20) or _is_tower_name(r.name)
         if r.built_year is not None and r.built_year < BUILT_YEAR_MIN and not is_tower:
             continue
         if total_units is not None and total_units < TOTAL_UNITS_MIN:
