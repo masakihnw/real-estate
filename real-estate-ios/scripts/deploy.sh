@@ -232,6 +232,10 @@ PLIST
 
     rm -rf "$export_path"
 
+    local export_log
+    export_log="$(mktemp -t realestate-export.XXXXXX)"
+    # パイプの $? は tail になるため PIPESTATUS で xcodebuild の終了を見る（set -e 干渉回避のため一時的に +e）
+    set +e
     xcodebuild \
         -exportArchive \
         -archivePath "$archive_path" \
@@ -241,9 +245,17 @@ PLIST
         -authenticationKeyPath "$ASC_KEY_PATH" \
         -authenticationKeyID "$ASC_KEY_ID" \
         -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
-        2>&1 | tail -10
+        2>&1 | tee "$export_log" | tail -25
+    local xc_export_status="${PIPESTATUS[0]}"
+    set -e
 
-    if [[ $? -eq 0 ]] || grep -q "EXPORT SUCCEEDED\|Upload Succeeded" "${export_path}"/*.plist 2>/dev/null; then
+    local log_ok=0
+    if grep -qiE 'EXPORT SUCCEEDED|Upload succeeded' "$export_log" 2>/dev/null; then
+        log_ok=1
+    fi
+    rm -f "$export_log"
+
+    if [[ "$xc_export_status" -eq 0 ]] || [[ "$log_ok" -eq 1 ]]; then
         ok "${platform_label}: App Store Connect へのアップロード完了"
     else
         if ls "$export_path"/*.ipa 1>/dev/null 2>&1 || ls "$export_path"/*.pkg 1>/dev/null 2>&1; then
