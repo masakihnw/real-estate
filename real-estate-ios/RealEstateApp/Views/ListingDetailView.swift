@@ -518,7 +518,7 @@ struct ListingDetailView: View {
             DetailRow(title: "間取り / 面積", value: {
                 let layout = listing.layout ?? "—"
                 let area = listing.areaDisplay
-                return "\(layout) / \(area)"
+                return "\(layout) / \(area)（\(listing.tsuboDisplay)）"
             }())
             if listing.isShinchiku {
                 DetailRow(title: "入居時期", value: listing.deliveryDateDisplay)
