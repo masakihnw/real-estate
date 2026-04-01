@@ -4808,9 +4808,9 @@
     {
       "date": "2026-04-01",
       "total_listings": 318,
-      "new_count": 2,
-      "removed_count": 2,
-      "updated_count": 6,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 10389,
       "median_price_man": 10480,
