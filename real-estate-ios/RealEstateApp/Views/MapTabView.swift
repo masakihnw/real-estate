@@ -930,6 +930,14 @@ struct MapTabView: View {
         ListingFilter.availableRouteStations(from: listings)
     }
 
+    private var availableDirections: [String] {
+        ListingFilter.availableDirections(from: listings)
+    }
+
+    private var availableNumericFields: [ListingNumericField] {
+        ListingFilter.availableNumericFields(from: listings)
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -1015,7 +1023,7 @@ struct MapTabView: View {
                 }
             }
             .sheet(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, filteredCount: filteredListings.count, showPriceUndecidedToggle: true, showPropertyTypeFilter: true)
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, availableDirections: availableDirections, availableNumericFields: availableNumericFields, filteredCount: filteredListings.count, showPriceUndecidedToggle: true, showPropertyTypeFilter: true)
                     .presentationDetents([.medium, .large])
             }
             .overlay(alignment: .top) {
