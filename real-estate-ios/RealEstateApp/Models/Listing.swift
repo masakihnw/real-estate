@@ -901,6 +901,13 @@ final class Listing: @unchecked Sendable {
         return "築\(age)年"
     }
 
+    /// 築年数（年数の生値）。新築は 0 として扱う。
+    var builtAgeYears: Int? {
+        if isShinchiku { return 0 }
+        guard let y = builtYear else { return nil }
+        return max(Calendar.current.component(.year, from: .now) - y, 0)
+    }
+
     /// 表示用: 引渡時期（新築のみ）
     var deliveryDateDisplay: String {
         deliveryDate ?? "—"
@@ -970,6 +977,12 @@ final class Listing: @unchecked Sendable {
     var balconyAreaDisplay: String {
         guard let area = balconyAreaM2 else { return "—" }
         return String(format: "%.2f㎡", area)
+    }
+
+    /// 管理費 + 修繕積立金（月額合計）。どちらか片方だけでもあれば合計する。
+    var monthlyRunningCost: Int? {
+        guard managementFee != nil || repairReserveFund != nil else { return nil }
+        return (managementFee ?? 0) + (repairReserveFund ?? 0)
     }
 
     /// 表示用: 修繕積立基金（一時金）

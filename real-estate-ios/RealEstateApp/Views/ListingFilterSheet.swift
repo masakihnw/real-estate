@@ -35,6 +35,8 @@ struct ListingFilterSheet: View {
     let availableLayouts: [String]
     let availableWards: Set<String>
     let availableRouteStations: [RouteStations]
+    let availableDirections: [String]
+    let availableNumericFields: [ListingNumericField]
     let filteredCount: Int
     var showPriceUndecidedToggle: Bool = false
     var showPropertyTypeFilter: Bool = false
@@ -58,6 +60,8 @@ struct ListingFilterSheet: View {
         if filter.areaMin != nil { count += 1 }
         if !filter.ownershipTypes.isEmpty { count += 1 }
         if !filter.wards.isEmpty { count += 1 }
+        if !filter.directions.isEmpty { count += 1 }
+        count += filter.numericFilters.values.filter(\.isActive).count
         return count
     }
 
@@ -147,6 +151,17 @@ struct ListingFilterSheet: View {
                         ownershipChipsContent
                     }
 
+                    if !availableDirections.isEmpty {
+                        FilterAccordion(
+                            title: "向き",
+                            summary: directionSummary,
+                            isActiveSection: !filter.directions.isEmpty,
+                            onClear: { filter.directions.removeAll() }
+                        ) {
+                            directionChipsContent
+                        }
+                    }
+
                     FilterAccordion(
                         title: "エリア（区）",
                         summary: wardSummary,
@@ -154,6 +169,17 @@ struct ListingFilterSheet: View {
                         onClear: { filter.wards.removeAll() }
                     ) {
                         wardGridContent
+                    }
+
+                    ForEach(availableNumericFields) { field in
+                        FilterAccordion(
+                            title: field.rawValue,
+                            summary: numericSummary(for: field),
+                            isActiveSection: numericRange(for: field).isActive,
+                            onClear: { clearNumericFilter(field) }
+                        ) {
+                            numericRangeContent(for: field)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -245,23 +271,35 @@ struct ListingFilterSheet: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     presetChip("駅近 (5分以内)", icon: "figure.walk") {
-                        filter.walkMax = 5
+                        applyQuickPreset {
+                            filter.walkMax = 5
+                        }
                     }
                     presetChip("割安物件", icon: "yensign.circle") {
-                        filter.reset()
+                        applyQuickPreset {
+                            setNumericRange(.priceFairnessScore, min: 60, max: nil)
+                        }
                     }
                     presetChip("大規模 (100戸+)", icon: "building.2") {
-                        filter.reset()
+                        applyQuickPreset {
+                            setNumericRange(.totalUnits, min: 100, max: nil)
+                        }
                     }
                     presetChip("都心3区", icon: "mappin.and.ellipse") {
-                        filter.wards = Set(["千代田区", "中央区", "港区"])
+                        applyQuickPreset {
+                            filter.wards = Set(["千代田区", "中央区", "港区"])
+                        }
                     }
                     presetChip("城南エリア", icon: "map") {
-                        filter.wards = Set(["品川区", "大田区", "目黒区"])
+                        applyQuickPreset {
+                            filter.wards = Set(["品川区", "大田区", "目黒区"])
+                        }
                     }
                     presetChip("3LDK 70m²+", icon: "rectangle.split.3x1") {
-                        filter.layouts = Set(["3LDK"])
-                        filter.areaMin = 70
+                        applyQuickPreset {
+                            filter.layouts = Set(["3LDK"])
+                            filter.areaMin = 70
+                        }
                     }
                 }
             }
@@ -392,6 +430,11 @@ struct ListingFilterSheet: View {
         return filter.ownershipTypes.map(\.rawValue).sorted().joined(separator: ", ")
     }
 
+    private var directionSummary: String {
+        if filter.directions.isEmpty { return "指定なし" }
+        return filter.directions.sorted().joined(separator: ", ")
+    }
+
     private var stationSummary: String {
         if filter.stations.isEmpty { return "指定なし" }
         let sorted = filter.stations.sorted()
@@ -404,6 +447,18 @@ struct ListingFilterSheet: View {
         let sorted = filter.wards.sorted()
         if sorted.count <= 3 { return sorted.joined(separator: ", ") }
         return "\(sorted.prefix(2).joined(separator: ", ")) 他\(sorted.count - 2)区"
+    }
+
+    private func numericSummary(for field: ListingNumericField) -> String {
+        let range = numericRange(for: field)
+        if let min = range.min, let max = range.max {
+            return "\(field.format(min))〜\(field.format(max))"
+        } else if let min = range.min {
+            return "\(field.format(min))〜"
+        } else if let max = range.max {
+            return "〜\(field.format(max))"
+        }
+        return "指定なし"
     }
 
     // MARK: - Price Chips
@@ -536,6 +591,22 @@ struct ListingFilterSheet: View {
                 }
             }
             Spacer()
+        }
+    }
+
+    // MARK: - Direction Chips
+
+    @ViewBuilder
+    private var directionChipsContent: some View {
+        FlowLayout(spacing: 8) {
+            ForEach(availableDirections, id: \.self) { direction in
+                FilterChip(
+                    label: direction,
+                    isSelected: filter.directions.contains(direction)
+                ) {
+                    toggleSet(&filter.directions, value: direction)
+                }
+            }
         }
     }
 
@@ -713,6 +784,35 @@ struct ListingFilterSheet: View {
         }
     }
 
+    // MARK: - Numeric Range
+
+    @ViewBuilder
+    private func numericRangeContent(for field: ListingNumericField) -> some View {
+        let range = numericRange(for: field)
+        VStack(alignment: .leading, spacing: 10) {
+            PresetChipSection(label: "下限") {
+                PresetChip(label: "指定なし", isSelected: range.min == nil) {
+                    setNumericRange(field, min: nil, max: range.max)
+                }
+                ForEach(field.presets.filter { $0 < (range.max ?? .infinity) }, id: \.self) { value in
+                    PresetChip(label: field.format(value), isSelected: range.min == value) {
+                        setNumericRange(field, min: value, max: range.max)
+                    }
+                }
+            }
+            PresetChipSection(label: "上限") {
+                ForEach(field.presets.filter { $0 > (range.min ?? -.infinity) }, id: \.self) { value in
+                    PresetChip(label: field.format(value), isSelected: range.max == value) {
+                        setNumericRange(field, min: range.min, max: value)
+                    }
+                }
+                PresetChip(label: "指定なし", isSelected: range.max == nil) {
+                    setNumericRange(field, min: range.min, max: nil)
+                }
+            }
+        }
+    }
+
     // MARK: - Helpers
 
     private func toggleSet(_ set: inout Set<String>, value: String) {
@@ -721,6 +821,28 @@ struct ListingFilterSheet: View {
         } else {
             set.insert(value)
         }
+    }
+
+    private func applyQuickPreset(_ action: () -> Void) {
+        filter.reset()
+        action()
+    }
+
+    private func numericRange(for field: ListingNumericField) -> ListingNumericRange {
+        filter.numericFilters[field] ?? ListingNumericRange()
+    }
+
+    private func setNumericRange(_ field: ListingNumericField, min: Double?, max: Double?) {
+        let range = ListingNumericRange(min: min, max: max)
+        if range.isActive {
+            filter.numericFilters[field] = range
+        } else {
+            filter.numericFilters.removeValue(forKey: field)
+        }
+    }
+
+    private func clearNumericFilter(_ field: ListingNumericField) {
+        filter.numericFilters.removeValue(forKey: field)
     }
 
     private func formatPrice(_ man: Int) -> String {
@@ -898,6 +1020,8 @@ private struct FilterChip: View {
             RouteStations(routeName: "ＪＲ山手線", stationNames: ["品川", "目黒", "恵比寿"]),
             RouteStations(routeName: "東京メトロ有楽町線", stationNames: ["豊洲", "月島"]),
         ],
+        availableDirections: ["南", "東", "南西"],
+        availableNumericFields: [.builtAge, .totalUnits, .priceFairnessScore],
         filteredCount: 12,
         showPriceUndecidedToggle: true
     )

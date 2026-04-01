@@ -88,27 +88,155 @@ struct ListingListView: View {
         }
     }
 
-    enum SortOrder: String, CaseIterable {
-        case addedDesc = "追加日（新しい順）"
-        case priceAsc = "価格の安い順"
-        case priceDesc = "価格の高い順"
-        case walkAsc = "徒歩の近い順"
-        case areaDesc = "広い順"
-        case deviationDesc = "偏差値の高い順"
-        case profitPctDesc = "儲かる確率の高い順"
-        case scoreDesc = "総合スコアの高い順"
+    enum SortOrder: CaseIterable, Hashable {
+        case addedDesc
+        case addedAsc
+        case priceAsc
+        case priceDesc
+        case walkAsc
+        case walkDesc
+        case areaAsc
+        case areaDesc
+        case builtAgeAsc
+        case builtAgeDesc
+        case m2UnitPriceAsc
+        case m2UnitPriceDesc
+        case tsuboUnitPriceAsc
+        case tsuboUnitPriceDesc
+        case managementFeeAsc
+        case managementFeeDesc
+        case repairReserveFundAsc
+        case repairReserveFundDesc
+        case monthlyRunningCostAsc
+        case monthlyRunningCostDesc
+        case floorPositionAsc
+        case floorPositionDesc
+        case floorTotalAsc
+        case floorTotalDesc
+        case totalUnitsAsc
+        case totalUnitsDesc
+        case balconyAreaAsc
+        case balconyAreaDesc
+        case deviationAsc
+        case deviationDesc
+        case appreciationRateAsc
+        case appreciationRateDesc
+        case profitPctAsc
+        case profitPctDesc
+        case favoriteCountAsc
+        case favoriteCountDesc
+        case scoreAsc
+        case scoreDesc
+        case priceFairnessAsc
+        case priceFairnessDesc
+        case resaleLiquidityAsc
+        case resaleLiquidityDesc
+        case competingListingsAsc
+        case competingListingsDesc
+        case forecastChangeRateAsc
+        case forecastChangeRateDesc
+
+        var label: String {
+            switch self {
+            case .addedDesc: return "追加日（新しい順）"
+            case .addedAsc: return "追加日（古い順）"
+            case .priceAsc: return "価格（安い順）"
+            case .priceDesc: return "価格（高い順）"
+            case .walkAsc: return "徒歩（近い順）"
+            case .walkDesc: return "徒歩（遠い順）"
+            case .areaAsc: return "面積（狭い順）"
+            case .areaDesc: return "面積（広い順）"
+            case .builtAgeAsc: return "築年数（浅い順）"
+            case .builtAgeDesc: return "築年数（古い順）"
+            case .m2UnitPriceAsc: return "㎡単価（安い順）"
+            case .m2UnitPriceDesc: return "㎡単価（高い順）"
+            case .tsuboUnitPriceAsc: return "坪単価（安い順）"
+            case .tsuboUnitPriceDesc: return "坪単価（高い順）"
+            case .managementFeeAsc: return "管理費（安い順）"
+            case .managementFeeDesc: return "管理費（高い順）"
+            case .repairReserveFundAsc: return "修繕積立金（安い順）"
+            case .repairReserveFundDesc: return "修繕積立金（高い順）"
+            case .monthlyRunningCostAsc: return "月額維持費（安い順）"
+            case .monthlyRunningCostDesc: return "月額維持費（高い順）"
+            case .floorPositionAsc: return "所在階（低い順）"
+            case .floorPositionDesc: return "所在階（高い順）"
+            case .floorTotalAsc: return "総階数（低い順）"
+            case .floorTotalDesc: return "総階数（高い順）"
+            case .totalUnitsAsc: return "総戸数（少ない順）"
+            case .totalUnitsDesc: return "総戸数（多い順）"
+            case .balconyAreaAsc: return "バルコニー（狭い順）"
+            case .balconyAreaDesc: return "バルコニー（広い順）"
+            case .deviationAsc: return "偏差値（低い順）"
+            case .deviationDesc: return "偏差値（高い順）"
+            case .appreciationRateAsc: return "値上がり率（低い順）"
+            case .appreciationRateDesc: return "値上がり率（高い順）"
+            case .profitPctAsc: return "儲かる確率（低い順）"
+            case .profitPctDesc: return "儲かる確率（高い順）"
+            case .favoriteCountAsc: return "お気に入り数（少ない順）"
+            case .favoriteCountDesc: return "お気に入り数（多い順）"
+            case .scoreAsc: return "総合スコア（低い順）"
+            case .scoreDesc: return "総合スコア（高い順）"
+            case .priceFairnessAsc: return "価格妥当性（低い順）"
+            case .priceFairnessDesc: return "価格妥当性（高い順）"
+            case .resaleLiquidityAsc: return "流動性（低い順）"
+            case .resaleLiquidityDesc: return "流動性（高い順）"
+            case .competingListingsAsc: return "競合売出数（少ない順）"
+            case .competingListingsDesc: return "競合売出数（多い順）"
+            case .forecastChangeRateAsc: return "予測変動率（低い順）"
+            case .forecastChangeRateDesc: return "予測変動率（高い順）"
+            }
+        }
+
+        var availabilityCheck: (Listing) -> Bool {
+            switch self {
+            case .addedDesc, .addedAsc, .priceAsc, .priceDesc, .walkAsc, .walkDesc, .areaAsc, .areaDesc:
+                return { _ in true }
+            case .builtAgeAsc, .builtAgeDesc:
+                return { $0.builtAgeYears != nil }
+            case .m2UnitPriceAsc, .m2UnitPriceDesc:
+                return { $0.m2UnitPrice != nil }
+            case .tsuboUnitPriceAsc, .tsuboUnitPriceDesc:
+                return { $0.tsuboUnitPrice != nil }
+            case .managementFeeAsc, .managementFeeDesc:
+                return { $0.managementFee != nil }
+            case .repairReserveFundAsc, .repairReserveFundDesc:
+                return { $0.repairReserveFund != nil }
+            case .monthlyRunningCostAsc, .monthlyRunningCostDesc:
+                return { $0.monthlyRunningCost != nil }
+            case .floorPositionAsc, .floorPositionDesc:
+                return { $0.floorPosition != nil }
+            case .floorTotalAsc, .floorTotalDesc:
+                return { $0.floorTotal != nil }
+            case .totalUnitsAsc, .totalUnitsDesc:
+                return { $0.totalUnits != nil }
+            case .balconyAreaAsc, .balconyAreaDesc:
+                return { $0.balconyAreaM2 != nil }
+            case .deviationAsc, .deviationDesc:
+                return { $0.averageDeviation != nil }
+            case .appreciationRateAsc, .appreciationRateDesc:
+                return { $0.ssAppreciationRate != nil }
+            case .profitPctAsc, .profitPctDesc:
+                return { $0.ssProfitPct != nil }
+            case .favoriteCountAsc, .favoriteCountDesc:
+                return { $0.ssFavoriteCount != nil }
+            case .scoreAsc, .scoreDesc:
+                return { $0.listingScore != nil }
+            case .priceFairnessAsc, .priceFairnessDesc:
+                return { $0.priceFairnessScore != nil }
+            case .resaleLiquidityAsc, .resaleLiquidityDesc:
+                return { $0.resaleLiquidityScore != nil }
+            case .competingListingsAsc, .competingListingsDesc:
+                return { $0.competingListingsCount != nil }
+            case .forecastChangeRateAsc, .forecastChangeRateDesc:
+                return { $0.ssForecastChangeRate != nil }
+            }
+        }
     }
 
     /// タブの物件種別に応じた利用可能なソート順
     private var availableSortOrders: [SortOrder] {
-        let common: [SortOrder] = [.addedDesc, .priceAsc, .priceDesc, .walkAsc, .areaDesc, .scoreDesc]
-        switch propertyTypeFilter {
-        case "chuko":
-            return common + [.deviationDesc]
-        case "shinchiku":
-            return common + [.profitPctDesc]
-        default:
-            return common + [.deviationDesc, .profitPctDesc]
+        SortOrder.allCases.filter { order in
+            baseList.contains(where: order.availabilityCheck)
         }
     }
 
@@ -140,43 +268,122 @@ struct ListingListView: View {
         switch sortOrder {
         case .addedDesc:
             list.sort { $0.addedAt != $1.addedAt ? $0.addedAt > $1.addedAt : $0.name < $1.name }
+        case .addedAsc:
+            list.sort { $0.addedAt != $1.addedAt ? $0.addedAt < $1.addedAt : $0.name < $1.name }
         case .priceAsc:
-            list.sort {
-                let p0 = $0.priceMan ?? 0, p1 = $1.priceMan ?? 0
-                return p0 != p1 ? p0 < p1 : $0.name < $1.name
-            }
+            sortByNumericValue(&list, ascending: true) { Double($0.priceMan ?? 0) }
         case .priceDesc:
-            list.sort {
-                let p0 = $0.priceMan ?? 0, p1 = $1.priceMan ?? 0
-                return p0 != p1 ? p0 > p1 : $0.name < $1.name
-            }
+            sortByNumericValue(&list, ascending: false) { Double($0.priceMan ?? 0) }
         case .walkAsc:
-            list.sort {
-                let w0 = $0.walkMin ?? 99, w1 = $1.walkMin ?? 99
-                return w0 != w1 ? w0 < w1 : $0.name < $1.name
-            }
+            sortByNumericValue(&list, ascending: true) { Double($0.walkMin ?? 99) }
+        case .walkDesc:
+            sortByNumericValue(&list, ascending: false) { Double($0.walkMin ?? 99) }
+        case .areaAsc:
+            sortByNumericValue(&list, ascending: true) { $0.areaM2 ?? 0 }
         case .areaDesc:
-            list.sort {
-                let a0 = $0.areaM2 ?? 0, a1 = $1.areaM2 ?? 0
-                return a0 != a1 ? a0 > a1 : $0.name < $1.name
-            }
+            sortByNumericValue(&list, ascending: false) { $0.areaM2 ?? 0 }
+        case .builtAgeAsc:
+            sortByNumericValue(&list, ascending: true) { $0.builtAgeYears.map(Double.init) }
+        case .builtAgeDesc:
+            sortByNumericValue(&list, ascending: false) { $0.builtAgeYears.map(Double.init) }
+        case .m2UnitPriceAsc:
+            sortByNumericValue(&list, ascending: true) { $0.m2UnitPrice }
+        case .m2UnitPriceDesc:
+            sortByNumericValue(&list, ascending: false) { $0.m2UnitPrice }
+        case .tsuboUnitPriceAsc:
+            sortByNumericValue(&list, ascending: true) { $0.tsuboUnitPrice }
+        case .tsuboUnitPriceDesc:
+            sortByNumericValue(&list, ascending: false) { $0.tsuboUnitPrice }
+        case .managementFeeAsc:
+            sortByNumericValue(&list, ascending: true) { $0.managementFee.map(Double.init) }
+        case .managementFeeDesc:
+            sortByNumericValue(&list, ascending: false) { $0.managementFee.map(Double.init) }
+        case .repairReserveFundAsc:
+            sortByNumericValue(&list, ascending: true) { $0.repairReserveFund.map(Double.init) }
+        case .repairReserveFundDesc:
+            sortByNumericValue(&list, ascending: false) { $0.repairReserveFund.map(Double.init) }
+        case .monthlyRunningCostAsc:
+            sortByNumericValue(&list, ascending: true) { $0.monthlyRunningCost.map(Double.init) }
+        case .monthlyRunningCostDesc:
+            sortByNumericValue(&list, ascending: false) { $0.monthlyRunningCost.map(Double.init) }
+        case .floorPositionAsc:
+            sortByNumericValue(&list, ascending: true) { $0.floorPosition.map(Double.init) }
+        case .floorPositionDesc:
+            sortByNumericValue(&list, ascending: false) { $0.floorPosition.map(Double.init) }
+        case .floorTotalAsc:
+            sortByNumericValue(&list, ascending: true) { $0.floorTotal.map(Double.init) }
+        case .floorTotalDesc:
+            sortByNumericValue(&list, ascending: false) { $0.floorTotal.map(Double.init) }
+        case .totalUnitsAsc:
+            sortByNumericValue(&list, ascending: true) { $0.totalUnits.map(Double.init) }
+        case .totalUnitsDesc:
+            sortByNumericValue(&list, ascending: false) { $0.totalUnits.map(Double.init) }
+        case .balconyAreaAsc:
+            sortByNumericValue(&list, ascending: true) { $0.balconyAreaM2 }
+        case .balconyAreaDesc:
+            sortByNumericValue(&list, ascending: false) { $0.balconyAreaM2 }
+        case .deviationAsc:
+            sortByNumericValue(&list, ascending: true) { $0.averageDeviation }
         case .deviationDesc:
-            list.sort {
-                let d0 = $0.averageDeviation ?? 0, d1 = $1.averageDeviation ?? 0
-                return d0 != d1 ? d0 > d1 : $0.name < $1.name
-            }
+            sortByNumericValue(&list, ascending: false) { $0.averageDeviation }
+        case .appreciationRateAsc:
+            sortByNumericValue(&list, ascending: true) { $0.ssAppreciationRate }
+        case .appreciationRateDesc:
+            sortByNumericValue(&list, ascending: false) { $0.ssAppreciationRate }
+        case .profitPctAsc:
+            sortByNumericValue(&list, ascending: true) { $0.ssProfitPct.map(Double.init) }
         case .profitPctDesc:
-            list.sort {
-                let p0 = $0.ssProfitPct ?? 0, p1 = $1.ssProfitPct ?? 0
-                return p0 != p1 ? p0 > p1 : $0.name < $1.name
-            }
+            sortByNumericValue(&list, ascending: false) { $0.ssProfitPct.map(Double.init) }
+        case .favoriteCountAsc:
+            sortByNumericValue(&list, ascending: true) { $0.ssFavoriteCount.map(Double.init) }
+        case .favoriteCountDesc:
+            sortByNumericValue(&list, ascending: false) { $0.ssFavoriteCount.map(Double.init) }
+        case .scoreAsc:
+            sortByNumericValue(&list, ascending: true) { $0.listingScore.map(Double.init) }
         case .scoreDesc:
-            list.sort {
-                let s0 = $0.listingScore ?? 0, s1 = $1.listingScore ?? 0
-                return s0 != s1 ? s0 > s1 : $0.name < $1.name
-            }
+            sortByNumericValue(&list, ascending: false) { $0.listingScore.map(Double.init) }
+        case .priceFairnessAsc:
+            sortByNumericValue(&list, ascending: true) { $0.priceFairnessScore.map(Double.init) }
+        case .priceFairnessDesc:
+            sortByNumericValue(&list, ascending: false) { $0.priceFairnessScore.map(Double.init) }
+        case .resaleLiquidityAsc:
+            sortByNumericValue(&list, ascending: true) { $0.resaleLiquidityScore.map(Double.init) }
+        case .resaleLiquidityDesc:
+            sortByNumericValue(&list, ascending: false) { $0.resaleLiquidityScore.map(Double.init) }
+        case .competingListingsAsc:
+            sortByNumericValue(&list, ascending: true) { $0.competingListingsCount.map(Double.init) }
+        case .competingListingsDesc:
+            sortByNumericValue(&list, ascending: false) { $0.competingListingsCount.map(Double.init) }
+        case .forecastChangeRateAsc:
+            sortByNumericValue(&list, ascending: true) { $0.ssForecastChangeRate }
+        case .forecastChangeRateDesc:
+            sortByNumericValue(&list, ascending: false) { $0.ssForecastChangeRate }
         }
         return list
+    }
+
+    private func sortByNumericValue(
+        _ list: inout [Listing],
+        ascending: Bool,
+        value: (Listing) -> Double?
+    ) {
+        list.sort { lhs, rhs in
+            let left = value(lhs)
+            let right = value(rhs)
+            switch (left, right) {
+            case let (lv?, rv?):
+                if lv != rv {
+                    return ascending ? lv < rv : lv > rv
+                }
+            case (.some, nil):
+                return true
+            case (nil, .some):
+                return false
+            case (nil, nil):
+                break
+            }
+            return lhs.name < rhs.name
+        }
     }
 
     /// キャッシュを非同期再計算（onChange / onAppear から呼ぶ）。
@@ -262,6 +469,14 @@ struct ListingListView: View {
     /// 路線別駅名リスト（フィルタシートの選択肢用）
     private var availableRouteStations: [RouteStations] {
         ListingFilter.availableRouteStations(from: baseList)
+    }
+
+    private var availableDirections: [String] {
+        ListingFilter.availableDirections(from: baseList)
+    }
+
+    private var availableNumericFields: [ListingNumericField] {
+        ListingFilter.availableNumericFields(from: baseList)
     }
 
     var body: some View {
@@ -367,7 +582,7 @@ struct ListingListView: View {
                 ComparisonView(listings: comparisonListings)
             }
             .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, filteredCount: filteredAndSorted.count, showPriceUndecidedToggle: propertyTypeFilter == "shinchiku")
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, availableDirections: availableDirections, availableNumericFields: availableNumericFields, filteredCount: filteredAndSorted.count, showPriceUndecidedToggle: propertyTypeFilter == "shinchiku")
             }
             .alert("データ取得エラー", isPresented: $showErrorAlert) {
                 Button("OK", role: .cancel) { }
@@ -419,9 +634,9 @@ struct ListingListView: View {
                         withAnimation { sortOrder = order }
                     } label: {
                         if order == sortOrder {
-                            Label(order.rawValue, systemImage: "checkmark")
+                            Label(order.label, systemImage: "checkmark")
                         } else {
-                            Text(order.rawValue)
+                            Text(order.label)
                         }
                     }
                 }
