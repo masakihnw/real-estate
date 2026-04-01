@@ -1741,6 +1741,27 @@ def _listing_unchanged(current: dict, previous: dict) -> bool:
     )
 
 
+def _has_meaningful_shinchiku_enrichment(listing: dict) -> bool:
+    """新築の住まいサーフィン enrich が実用レベルまで揃っているか判定する。
+
+    `ss_purchase_judgment` だけ取得できるケースが多く、それだけで「完了」と見なすと
+    m²割安額や予測単価などの有用な指標を永続的に取り逃す。
+    そのため、新築では判定文言単独は未完了扱いにする。
+    """
+    return any(
+        listing.get(key) is not None
+        for key in (
+            "ss_profit_pct",
+            "ss_m2_discount",
+            "ss_sim_base_price",
+            "ss_new_m2_price",
+            "ss_forecast_m2_price",
+            "ss_forecast_change_rate",
+            "ss_surrounding_properties",
+        )
+    )
+
+
 def _load_previous_by_url(previous_path: Optional[str]) -> dict[str, dict]:
     """前回結果を URL をキーにした dict で返す。"""
     if not previous_path or not Path(previous_path).exists():
@@ -1792,6 +1813,8 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                 continue
             if not prev.get("ss_lookup_status"):
                 continue
+            if property_type == "shinchiku" and not _has_meaningful_shinchiku_enrichment(prev):
+                continue
             for key in SS_FIELDS:
                 if key in prev:
                     listing[key] = prev[key]
@@ -1824,9 +1847,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         if not name:
             continue
         if property_type == "shinchiku":
-            already = (listing.get("ss_profit_pct") is not None
-                       or listing.get("ss_m2_discount") is not None
-                       or listing.get("ss_purchase_judgment") is not None)
+            already = _has_meaningful_shinchiku_enrichment(listing)
         else:
             already = listing.get("ss_oki_price_70m2") is not None or listing.get("ss_appreciation_rate") is not None
         needs_address = not listing.get("ss_address")
@@ -1853,9 +1874,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         if not name:
             continue
         if property_type == "shinchiku":
-            already = (listing.get("ss_profit_pct") is not None
-                       or listing.get("ss_m2_discount") is not None
-                       or listing.get("ss_purchase_judgment") is not None)
+            already = _has_meaningful_shinchiku_enrichment(listing)
         else:
             already = listing.get("ss_oki_price_70m2") is not None or listing.get("ss_appreciation_rate") is not None
         needs_address = not listing.get("ss_address")
