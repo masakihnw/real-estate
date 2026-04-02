@@ -4959,10 +4959,10 @@
     {
       "date": "2026-04-02",
       "total_listings": 320,
-      "new_count": 3,
+      "new_count": 0,
       "removed_count": 0,
-      "updated_count": 11,
-      "price_changed_count": 1,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10389,
       "median_price_man": 10480,
       "price_distribution": {
@@ -9890,7 +9890,7 @@
       "total_listings": 92,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 1,
+      "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 9050,
       "median_price_man": 9200,
