@@ -4959,10 +4959,10 @@
     {
       "date": "2026-04-02",
       "total_listings": 321,
-      "new_count": 4,
-      "removed_count": 3,
-      "updated_count": 8,
-      "price_changed_count": 1,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10401,
       "median_price_man": 10480,
       "price_distribution": {
@@ -5033,17 +5033,17 @@
           "min_price_man": 9280,
           "max_price_man": 11490
         },
-        "北区": {
-          "count": 12,
-          "avg_price_man": 10094,
-          "min_price_man": 9290,
-          "max_price_man": 11000
-        },
         "板橋区": {
           "count": 12,
           "avg_price_man": 9976,
           "min_price_man": 9180,
           "max_price_man": 10980
+        },
+        "北区": {
+          "count": 12,
+          "avg_price_man": 10094,
+          "min_price_man": 9290,
+          "max_price_man": 11000
         },
         "江戸川区": {
           "count": 11,
@@ -9890,8 +9890,8 @@
       "total_listings": 92,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 2,
-      "price_changed_count": 1,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 9067,
       "median_price_man": 9400,
       "price_distribution": {
