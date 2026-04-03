@@ -11,6 +11,30 @@ import MapKit
 import SwiftData
 import UIKit
 
+private actor CommuteETACache {
+    static let shared = CommuteETACache()
+
+    private struct Entry {
+        let destination: CommuteDestination
+        let expiresAt: Date
+    }
+
+    private var storage: [String: Entry] = [:]
+
+    func get(key: String, now: Date = Date()) -> CommuteDestination? {
+        guard let entry = storage[key] else { return nil }
+        guard entry.expiresAt > now else {
+            storage.removeValue(forKey: key)
+            return nil
+        }
+        return entry.destination
+    }
+
+    func set(key: String, value: CommuteDestination, ttl: TimeInterval) {
+        storage[key] = Entry(destination: value, expiresAt: Date().addingTimeInterval(ttl))
+    }
+}
+
 // MARK: - 通勤先設定（ユーザー設定可能）
 
 /// ユーザーが設定する通勤先。UserDefaults に保存され、通勤時間計算・Google Maps 連携で参照可能。
@@ -70,6 +94,7 @@ final class CommuteTimeService {
     /// v2→v3: JSON 概算を廃止し、Apple Maps (MKDirections) のみで計算する方式に変更
     private static let coordinateVersion = 3
     private static let coordinateVersionKey = "commuteTime.coordinateVersion"
+    private static let etaFallbackCacheTTL: TimeInterval = 10 * 60
 
     private init() {
         // 座標バージョンが古い場合、全物件の通勤時間キャッシュを再計算対象にする
@@ -157,6 +182,7 @@ final class CommuteTimeService {
         let forceAll = needsRecalculation
         let targets = listings.filter { listing in
             guard listing.hasCoordinate else { return false }
+            if listing.parsedCommuteInfoV2?.hasAnyOffice == true { return false }
 
             let info = listing.parsedCommuteInfo
 
@@ -382,6 +408,10 @@ final class CommuteTimeService {
         to destination: CLLocationCoordinate2D,
         destinationName: String
     ) async -> CommuteDestination? {
+        if let etaEstimate = await Self.calculateTransitETA(from: origin, to: destination, destinationName: destinationName) {
+            return etaEstimate
+        }
+
         // 直線距離から概算（東京の公共交通機関: 直線距離の1.4倍 ÷ 平均速度25km/h + 徒歩15分）
         let originLocation = CLLocation(latitude: origin.latitude, longitude: origin.longitude)
         let destLocation = CLLocation(latitude: destination.latitude, longitude: destination.longitude)
@@ -394,6 +424,51 @@ final class CommuteTimeService {
             transfers: nil,
             calculatedAt: Date()
         )
+    }
+
+    nonisolated private static func calculateTransitETA(
+        from origin: CLLocationCoordinate2D,
+        to destination: CLLocationCoordinate2D,
+        destinationName: String
+    ) async -> CommuteDestination? {
+        let cacheKey = Self.etaCacheKey(origin: origin, destination: destination)
+        if let cached = await CommuteETACache.shared.get(key: cacheKey) {
+            return cached
+        }
+
+        let request = MKDirections.Request()
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: origin))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination))
+        request.transportType = .transit
+        request.arrivalDate = Self.nextWeekdayMorning(hour: 9)
+
+        let directions = MKDirections(request: request)
+        do {
+            let response = try await directions.calculateETA()
+            let result = CommuteDestination(
+                minutes: Int(ceil(response.expectedTravelTime / 60.0)),
+                summary: "Apple Maps ETA による概算",
+                transfers: nil,
+                calculatedAt: Date()
+            )
+            await CommuteETACache.shared.set(key: cacheKey, value: result, ttl: Self.etaFallbackCacheTTL)
+            return result
+        } catch {
+            let errorCode = (error as? MKError).map { String($0.errorCode) } ?? "unknown"
+            print("[CommuteTimeService] ETA 計算失敗 → \(destinationName): code=\(errorCode) \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    nonisolated private static func etaCacheKey(
+        origin: CLLocationCoordinate2D,
+        destination: CLLocationCoordinate2D
+    ) -> String {
+        let originLat = Int((origin.latitude * 10_000).rounded())
+        let originLon = Int((origin.longitude * 10_000).rounded())
+        let destLat = Int((destination.latitude * 10_000).rounded())
+        let destLon = Int((destination.longitude * 10_000).rounded())
+        return "\(originLat):\(originLon)->\(destLat):\(destLon)"
     }
 
     /// 経路情報からサマリーテキストを生成

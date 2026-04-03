@@ -169,29 +169,19 @@ def _calc_listing_score(listing: dict) -> Optional[int]:
         except (json.JSONDecodeError, TypeError):
             pass
 
-    commute_info = listing.get("commute_info")
-    if commute_info and isinstance(commute_info, str):
-        try:
-            ci = json.loads(commute_info)
-            commute_times = []
-            for dest in ("playground", "m3career"):
-                dest_info = ci.get(dest, {})
-                if isinstance(dest_info, dict) and dest_info.get("minutes"):
-                    commute_times.append(dest_info["minutes"])
-            if commute_times:
-                avg_commute = sum(commute_times) / len(commute_times)
-                if avg_commute <= 20:
-                    commute_score = 90
-                elif avg_commute <= 30:
-                    commute_score = 75
-                elif avg_commute <= 45:
-                    commute_score = 55
-                else:
-                    commute_score = 35
-                scores.append(commute_score)
-                weights.append(2)
-        except (json.JSONDecodeError, TypeError):
-            pass
+    commute_times = _extract_commute_minutes(listing)
+    if commute_times:
+        avg_commute = sum(commute_times) / len(commute_times)
+        if avg_commute <= 20:
+            commute_score = 90
+        elif avg_commute <= 30:
+            commute_score = 75
+        elif avg_commute <= 45:
+            commute_score = 55
+        else:
+            commute_score = 35
+        scores.append(commute_score)
+        weights.append(2)
 
     population_data = listing.get("estat_population_data")
     if population_data and isinstance(population_data, str):
@@ -217,6 +207,40 @@ def _calc_listing_score(listing: dict) -> Optional[int]:
     weighted_sum = sum(s * w for s, w in zip(scores, weights))
     total_weight = sum(weights)
     return min(100, max(0, int(weighted_sum / total_weight)))
+
+
+def _extract_commute_minutes(listing: dict) -> list[int]:
+    commute_info_v2 = listing.get("commute_info_v2")
+    if commute_info_v2 and isinstance(commute_info_v2, str):
+        try:
+            ci_v2 = json.loads(commute_info_v2)
+            offices = ci_v2.get("offices", {})
+            commute_times = []
+            for dest in ("playground", "m3career"):
+                dest_info = offices.get(dest, {})
+                minutes = dest_info.get("representative_minutes")
+                if isinstance(minutes, int):
+                    commute_times.append(minutes)
+            if commute_times:
+                return commute_times
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+    commute_info = listing.get("commute_info")
+    if commute_info and isinstance(commute_info, str):
+        try:
+            ci = json.loads(commute_info)
+            commute_times = []
+            for dest in ("playground", "m3career"):
+                dest_info = ci.get(dest, {})
+                minutes = dest_info.get("minutes")
+                if isinstance(minutes, int):
+                    commute_times.append(minutes)
+            return commute_times
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+    return []
 
 
 def enrich_investment_scores(

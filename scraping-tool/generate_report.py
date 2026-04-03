@@ -10,6 +10,7 @@
 """
 
 import argparse
+import json
 import sys
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
@@ -127,7 +128,7 @@ def get_search_conditions_md() -> str:
         "| 表示対象 | 資産性B以上（S/A/B）の物件のみ表示。根拠は表の「資産性根拠」列参照。 |",
         "| 10年シミュレーション | FutureEstatePredictor（収益還元・原価法ハイブリッド）による楽観・中立・悲観3シナリオ。各列に「予測金額（含み益/騰落率）」を表示。 |",
         "| ローン試算 | 50年変動金利・頭金なし。諸経費（修繕積立等）月3.5万円を加算した月額支払。 |",
-        "| 通勤時間 | エムスリーキャリア（虎ノ門）・playground（千代田区一番町）まで。ドアtoドア（物件→最寄駅の徒歩＋最寄駅→オフィス）。登録済み駅はその合計、未登録は(概算)で徒歩＋駅→会社最寄り駅＋会社最寄り駅→会社の徒歩を表示。 |",
+        "| 通勤時間 | エムスリーキャリア（虎ノ門）・playground（千代田区一番町）まで。Station Master の代表値を優先し、レンジがあれば併記。未計算時のみ既存概算を表示。 |",
     ]
     if ALLOWED_STATIONS:
         station_label = "・".join(ALLOWED_STATIONS[:8]) + (" など" if len(ALLOWED_STATIONS) > 8 else "")
@@ -159,7 +160,7 @@ def _listing_cells(r: dict) -> dict[str, Any]:
     _, rank, breakdown = optional_features.get_asset_score_and_rank_with_breakdown(r)
     opt_10y, neu_10y, pes_10y = optional_features.get_three_scenario_columns(r)
     monthly_loan, _ = optional_features.get_loan_display_for_listing(r.get("price_man"))
-    m3_str, pg_str = optional_features.get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
+    m3_str, pg_str = _commute_display_for_listing(r)
     return {
         "rank": rank,
         "breakdown": breakdown,
@@ -181,6 +182,72 @@ def _listing_cells(r: dict) -> dict[str, Any]:
         "address_trunc": best_address(r)[:20],
         "gmap": google_maps_link(r.get("name") or best_address(r)),
     }
+
+
+def _commute_display_for_listing(r: dict[str, Any]) -> tuple[str, str]:
+    v2 = _parse_commute_v2(r.get("commute_info_v2"))
+    if v2:
+        return (
+            _format_commute_v2(v2.get("m3career")),
+            _format_commute_v2(v2.get("playground")),
+        )
+
+    legacy = _parse_json_object(r.get("commute_info"))
+    if legacy:
+        return (
+            _format_commute_legacy(legacy.get("m3career")),
+            _format_commute_legacy(legacy.get("playground")),
+        )
+
+    return optional_features.get_commute_display_with_estimate(r.get("station_line"), r.get("walk_min"))
+
+
+def _parse_json_object(raw: Any) -> Optional[dict[str, Any]]:
+    if not raw:
+        return None
+    if isinstance(raw, dict):
+        return raw
+    if isinstance(raw, str):
+        try:
+            decoded = json.loads(raw)
+        except json.JSONDecodeError:
+            return None
+        return decoded if isinstance(decoded, dict) else None
+    return None
+
+
+def _parse_commute_v2(raw: Any) -> Optional[dict[str, Any]]:
+    decoded = _parse_json_object(raw)
+    if not decoded:
+        return None
+    offices = decoded.get("offices")
+    return offices if isinstance(offices, dict) else None
+
+
+def _format_commute_v2(dest_info: Any) -> str:
+    if not isinstance(dest_info, dict):
+        return "-"
+    minutes = dest_info.get("representative_minutes")
+    if not isinstance(minutes, int):
+        return "-"
+    quality = dest_info.get("quality") or {}
+    prefix = "(概算)" if quality.get("fallback_used") else ""
+    range_minutes = dest_info.get("range_minutes") or {}
+    range_min = range_minutes.get("min")
+    range_max = range_minutes.get("max")
+    if isinstance(range_min, int) and isinstance(range_max, int) and range_min != range_max:
+        return f"{prefix}{minutes}分（{range_min}-{range_max}分）"
+    return f"{prefix}{minutes}分"
+
+
+def _format_commute_legacy(dest_info: Any) -> str:
+    if not isinstance(dest_info, dict):
+        return "-"
+    minutes = dest_info.get("minutes")
+    if not isinstance(minutes, int):
+        return "-"
+    prefix = "(概算)" if "概算" in str(dest_info.get("summary") or "") else ""
+    return f"{prefix}{minutes}分"
 
 
 def _link_from_group(group: list[dict]) -> str:
