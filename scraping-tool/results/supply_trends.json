@@ -5184,17 +5184,17 @@
           "min_price_man": 9280,
           "max_price_man": 11490
         },
-        "北区": {
-          "count": 12,
-          "avg_price_man": 10094,
-          "min_price_man": 9290,
-          "max_price_man": 11000
-        },
         "板橋区": {
           "count": 12,
           "avg_price_man": 9976,
           "min_price_man": 9180,
           "max_price_man": 10980
+        },
+        "北区": {
+          "count": 12,
+          "avg_price_man": 10094,
+          "min_price_man": 9290,
+          "max_price_man": 11000
         },
         "江戸川区": {
           "count": 11,
