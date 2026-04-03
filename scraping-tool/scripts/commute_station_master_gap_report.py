@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from commute_station_master_enricher import (
     build_station_candidates,
+    build_named_station_candidates,
     load_listings,
     load_offices,
     load_station_master,
@@ -38,6 +39,11 @@ def main() -> None:
     stations = load_stations(Path(args.stations_csv))
     master_rows = load_station_master(Path(args.station_master_csv))
     offices = load_offices(Path(args.offices_yaml))
+    stations_by_name = {station.name: station for station in stations}
+    station_ids_by_name = {
+        master.station_name: master.station_id
+        for master in master_rows.values()
+    }
 
     candidate_zero_rows: list[dict[str, object]] = []
     master_gap_rows: list[dict[str, object]] = []
@@ -53,7 +59,18 @@ def main() -> None:
             radius_m=args.radius_m,
             candidate_k=args.candidate_k,
         )
-        if not candidates:
+        named_candidates = build_named_station_candidates(
+            listing,
+            stations_by_name,
+            station_ids_by_name,
+        )
+        seen_station_ids = {candidate.station.station_id for candidate in named_candidates}
+        merged_candidates = list(named_candidates)
+        for candidate in candidates:
+            if candidate.station.station_id not in seen_station_ids:
+                merged_candidates.append(candidate)
+                seen_station_ids.add(candidate.station.station_id)
+        if not merged_candidates:
             candidate_zero_rows.append(
                 {
                     "property_id": listing.get("property_id") or listing.get("id") or "",
@@ -66,10 +83,10 @@ def main() -> None:
             continue
 
         for office_id in offices.keys():
-            if any((station.station_id, office_id) in master_rows for station, _distance in candidates):
+            if any((candidate.station.station_id, office_id) in master_rows for candidate in merged_candidates):
                 continue
 
-            station_names = [station.name for station, _distance in candidates]
+            station_names = [candidate.station.name for candidate in merged_candidates]
             for station_name in station_names:
                 missing_station_counter[station_name] += 1
 
