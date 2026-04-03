@@ -48,6 +48,13 @@ class Station:
 
 
 @dataclass(frozen=True)
+class CandidateStation:
+    station: Station
+    distance_m: float | None
+    explicit_walk_minutes: int | None = None
+
+
+@dataclass(frozen=True)
 class Office:
     office_id: str
     office_name: str
@@ -200,31 +207,97 @@ def walk_override_minutes(listing: dict[str, Any]) -> int | None:
     return int(raw)
 
 
+def parse_station_walk_pairs(
+    station_line: str,
+    fallback_walk_min: int | None = None,
+) -> list[tuple[str, int | None]]:
+    if not station_line or not station_line.strip():
+        return []
+
+    import re
+
+    parts = re.split(r"[／/]", station_line.strip())
+    result: list[tuple[str, int | None]] = []
+    used_fallback = False
+    for part in parts:
+        seg = part.strip()
+        if not seg:
+            continue
+        walk_m = re.search(r"徒歩\s*約?\s*(\d+)\s*分", seg)
+        walk_val: int | None = int(walk_m.group(1)) if walk_m else None
+        if walk_val is None and fallback_walk_min is not None and not used_fallback:
+            walk_val = fallback_walk_min
+            used_fallback = True
+        station_name = ""
+        bracket = re.search(r"[「『]([^」』]+)[」』]", seg)
+        if bracket:
+            station_name = bracket.group(1).strip()
+        if station_name:
+            result.append((station_name, walk_val))
+    return result
+
+
 def build_station_candidates(
     listing: dict[str, Any],
     stations: list[Station],
     radius_m: int,
     candidate_k: int,
-) -> list[tuple[Station, float]]:
+) -> list[CandidateStation]:
     lat = listing.get("latitude")
     lng = listing.get("longitude")
     if lat is None or lng is None:
         return []
 
-    pairs: list[tuple[Station, float]] = []
+    pairs: list[CandidateStation] = []
     for station in stations:
         distance_m = haversine_m(float(lat), float(lng), station.lat, station.lng)
         if distance_m <= radius_m:
-            pairs.append((station, distance_m))
+            pairs.append(CandidateStation(station=station, distance_m=distance_m))
 
-    pairs.sort(key=lambda item: item[1])
+    pairs.sort(key=lambda item: item.distance_m if item.distance_m is not None else float("inf"))
     return pairs[:candidate_k]
+
+
+def build_named_station_candidates(
+    listing: dict[str, Any],
+    stations_by_name: dict[str, Station],
+    station_ids_by_name: dict[str, str],
+) -> list[CandidateStation]:
+    lat = listing.get("latitude")
+    lng = listing.get("longitude")
+    if lat is None or lng is None:
+        return []
+
+    named_candidates: list[CandidateStation] = []
+    seen_station_ids: set[str] = set()
+    for station_name, walk_minutes in parse_station_walk_pairs(
+        listing.get("station_line") or "",
+        listing.get("walk_min"),
+    ):
+        station_id = station_ids_by_name.get(station_name)
+        if station_id is None or station_id in seen_station_ids:
+            continue
+        seen_station_ids.add(station_id)
+        station = stations_by_name.get(station_name) or Station(
+            station_id=station_id,
+            name=station_name,
+            lat=float(lat),
+            lng=float(lng),
+        )
+        named_candidates.append(
+            CandidateStation(
+                station=station,
+                distance_m=None,
+                explicit_walk_minutes=walk_minutes,
+            )
+        )
+    return named_candidates
 
 
 def build_office_estimate(
     listing: dict[str, Any],
     office: Office,
-    candidates: list[tuple[Station, float]],
+    candidates: list[CandidateStation],
     master_rows: dict[tuple[str, str], MasterRow],
     walk_speed_m_per_min: float,
     detour_factor: float,
@@ -233,25 +306,36 @@ def build_office_estimate(
     best: dict[str, Any] | None = None
     override = walk_override_minutes(listing)
 
-    for station, distance_m in candidates:
+    for candidate in candidates:
+        station = candidate.station
         master = master_rows.get((station.station_id, office.office_id))
         if master is None:
             continue
 
-        walk_minutes = override if override is not None else math.ceil(distance_m * detour_factor / walk_speed_m_per_min)
+        if candidate.explicit_walk_minutes is not None:
+            walk_minutes = candidate.explicit_walk_minutes
+        elif override is not None:
+            walk_minutes = override
+        elif candidate.distance_m is not None:
+            walk_minutes = math.ceil(candidate.distance_m * detour_factor / walk_speed_m_per_min)
+        else:
+            continue
         representative = walk_minutes + master.med_minutes + office.last_walk_minutes + buffer_min
         range_min = walk_minutes + master.min_minutes + office.last_walk_minutes + buffer_min
         range_max = walk_minutes + master.max_minutes + office.last_walk_minutes + buffer_min
+
+        selected_station = {
+            "station_id": station.station_id,
+            "name": station.name,
+        }
+        if candidate.distance_m is not None:
+            selected_station["distance_m"] = round(candidate.distance_m, 1)
 
         current = {
             "representative_minutes": representative,
             "range_minutes": {"min": range_min, "max": range_max},
             "representative_stat": "median",
-            "selected_station": {
-                "station_id": station.station_id,
-                "name": station.name,
-                "distance_m": round(distance_m, 1),
-            },
+            "selected_station": selected_station,
             "components": {
                 "walk_origin_to_station": walk_minutes,
                 "station_to_office_master": master.med_minutes,
@@ -283,7 +367,18 @@ def build_commute_info_v2(
     buffer_min: int,
     ttl_days: int,
 ) -> str | None:
-    candidates = build_station_candidates(listing, stations, radius_m=radius_m, candidate_k=candidate_k)
+    stations_by_name = {station.name: station for station in stations}
+    station_ids_by_name = {
+        master.station_name: master.station_id
+        for master in master_rows.values()
+    }
+    candidates = build_named_station_candidates(listing, stations_by_name, station_ids_by_name)
+    geo_candidates = build_station_candidates(listing, stations, radius_m=radius_m, candidate_k=candidate_k)
+    seen_station_ids = {candidate.station.station_id for candidate in candidates}
+    for candidate in geo_candidates:
+        if candidate.station.station_id not in seen_station_ids:
+            candidates.append(candidate)
+            seen_station_ids.add(candidate.station.station_id)
     if not candidates:
         return None
 
@@ -338,7 +433,18 @@ def enrich(
         if listing.get("latitude") is None or listing.get("longitude") is None:
             continue
 
-        candidates = build_station_candidates(listing, stations, radius_m=radius_m, candidate_k=candidate_k)
+        stations_by_name = {station.name: station for station in stations}
+        station_ids_by_name = {
+            master.station_name: master.station_id
+            for master in master_rows.values()
+        }
+        candidates = build_named_station_candidates(listing, stations_by_name, station_ids_by_name)
+        geo_candidates = build_station_candidates(listing, stations, radius_m=radius_m, candidate_k=candidate_k)
+        seen_station_ids = {candidate.station.station_id for candidate in candidates}
+        for candidate in geo_candidates:
+            if candidate.station.station_id not in seen_station_ids:
+                candidates.append(candidate)
+                seen_station_ids.add(candidate.station.station_id)
         if not candidates:
             candidate_zero += 1
             continue

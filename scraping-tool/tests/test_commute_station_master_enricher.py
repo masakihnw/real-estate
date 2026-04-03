@@ -4,7 +4,13 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from commute_station_master_enricher import Office, Station, MasterRow, build_commute_info_v2, load_listings
+from commute_station_master_enricher import (
+    Office,
+    Station,
+    MasterRow,
+    build_commute_info_v2,
+    load_listings,
+)
 
 
 def test_build_commute_info_v2_selects_best_station():
@@ -82,3 +88,33 @@ def test_load_listings_supports_csv(tmp_path: Path):
     assert listings[0]["latitude"] == 35.6895
     assert listings[0]["longitude"] == 139.7004
     assert listings[0]["walk_override_min"] == 8
+
+
+def test_build_commute_info_v2_uses_station_line_when_station_coords_missing():
+    listing = {
+        "latitude": 35.657186,
+        "longitude": 139.771032,
+        "station_line": "都営大江戸線「勝どき」徒歩8分",
+    }
+    stations = []
+    offices = {"playground": Office("playground", "Playground株式会社", 6)}
+    master_rows = {
+        ("station-勝どき", "playground"): MasterRow("station-勝どき", "勝どき", "playground", "wkday0900", 24, 28, 34),
+    }
+
+    encoded = build_commute_info_v2(
+        listing=listing,
+        offices=offices,
+        stations=stations,
+        master_rows=master_rows,
+        candidate_k=4,
+        radius_m=2000,
+        walk_speed_m_per_min=80.0,
+        detour_factor=1.3,
+        buffer_min=4,
+        ttl_days=14,
+    )
+
+    assert encoded is not None
+    assert '"勝どき"' in encoded
+    assert '"walk_origin_to_station": 8' in encoded
