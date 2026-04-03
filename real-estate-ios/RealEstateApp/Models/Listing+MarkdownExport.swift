@@ -87,13 +87,24 @@ extension Listing {
         }
 
         if hasCommuteInfo {
-            let ci = parsedCommuteInfo
             md += "\n## 通勤時間\n\n"
-            if let pg = ci.playground {
-                md += "- **Playground株式会社**: \(pg.minutes)分（\(pg.summary)）\n"
-            }
-            if let m3 = ci.m3career {
-                md += "- **エムスリーキャリア株式会社**: \(m3.minutes)分（\(m3.summary)）\n"
+            if let v2 = parsedCommuteInfoV2 {
+                if let pg = v2.offices.playground {
+                    let station = pg.selectedStation?.name ?? "駅未設定"
+                    md += "- **Playground株式会社**: \(pg.representativeMinutes)分（レンジ \(pg.rangeDisplay) / \(station) ベース）\n"
+                }
+                if let m3 = v2.offices.m3career {
+                    let station = m3.selectedStation?.name ?? "駅未設定"
+                    md += "- **エムスリーキャリア株式会社**: \(m3.representativeMinutes)分（レンジ \(m3.rangeDisplay) / \(station) ベース）\n"
+                }
+            } else {
+                let ci = parsedCommuteInfo
+                if let pg = ci.playground {
+                    md += "- **Playground株式会社**: \(pg.minutes)分（\(pg.summary)）\n"
+                }
+                if let m3 = ci.m3career {
+                    md += "- **エムスリーキャリア株式会社**: \(m3.minutes)分（\(m3.summary)）\n"
+                }
             }
         }
 

@@ -1,0 +1,13 @@
+playground:
+  office_name: Playground株式会社
+  entrance_lat: 35.688449
+  entrance_lng: 139.743415
+  entrance_label: 一番町オフィス入口
+  last_walk_minutes: 6
+
+m3career:
+  office_name: エムスリーキャリア株式会社
+  entrance_lat: 35.666018
+  entrance_lng: 139.743807
+  entrance_label: 虎ノ門オフィス入口
+  last_walk_minutes: 6

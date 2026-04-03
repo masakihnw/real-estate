@@ -467,6 +467,9 @@ final class ListingStore {
                 existing.commuteInfoJSON = pipelineCommute
             }
         }
+        if let pipelineCommuteV2 = new.commuteInfoV2JSON {
+            existing.commuteInfoV2JSON = pipelineCommuteV2
+        }
         // 投資判断支援データ
         existing.priceHistoryJSON = new.priceHistoryJSON
         existing.firstSeenAt = new.firstSeenAt

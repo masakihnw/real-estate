@@ -1712,6 +1712,7 @@ struct ListingDetailView: View {
     @ViewBuilder
     private var commuteSection: some View {
         let commute = listing.parsedCommuteInfo
+        let commuteV2 = listing.parsedCommuteInfoV2
 
         VStack(alignment: .leading, spacing: 12) {
             // セクションヘッダー
@@ -1721,7 +1722,24 @@ struct ListingDetailView: View {
                 .foregroundStyle(Color.accentColor)
 
             // Playground
-            if let pg = commute.playground {
+            if let pgV2 = commuteV2?.offices.playground {
+                Button {
+                    CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
+                } label: {
+                    commuteDestinationCard(
+                        name: "Playground株式会社",
+                        minutes: pgV2.representativeMinutes,
+                        summary: commuteSummaryV2(pgV2),
+                        secondaryLine: commuteSecondaryLineV2(pgV2),
+                        transfers: nil,
+                        qualityLabel: commuteQualityLabelV2(pgV2),
+                        color: DesignSystem.commutePGColor,
+                        logoImage: "logo-playground"
+                    )
+                }
+                .buttonStyle(CommuteCardButtonStyle())
+                .accessibilityLabel("Playground株式会社への通勤経路を Google Maps で開く")
+            } else if let pg = commute.playground {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
                 } label: {
@@ -1729,7 +1747,9 @@ struct ListingDetailView: View {
                         name: "Playground株式会社",
                         minutes: pg.minutes,
                         summary: pg.summary,
+                        secondaryLine: nil,
                         transfers: pg.transfers,
+                        qualityLabel: pg.isFallbackEstimate ? "概算" : nil,
                         color: DesignSystem.commutePGColor,
                         logoImage: "logo-playground"
                     )
@@ -1739,7 +1759,24 @@ struct ListingDetailView: View {
             }
 
             // エムスリーキャリア
-            if let m3 = commute.m3career {
+            if let m3V2 = commuteV2?.offices.m3career {
+                Button {
+                    CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
+                } label: {
+                    commuteDestinationCard(
+                        name: "エムスリーキャリア株式会社",
+                        minutes: m3V2.representativeMinutes,
+                        summary: commuteSummaryV2(m3V2),
+                        secondaryLine: commuteSecondaryLineV2(m3V2),
+                        transfers: nil,
+                        qualityLabel: commuteQualityLabelV2(m3V2),
+                        color: DesignSystem.commuteM3Color,
+                        logoImage: "logo-m3career"
+                    )
+                }
+                .buttonStyle(CommuteCardButtonStyle())
+                .accessibilityLabel("エムスリーキャリアへの通勤経路を Google Maps で開く")
+            } else if let m3 = commute.m3career {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
                 } label: {
@@ -1747,7 +1784,9 @@ struct ListingDetailView: View {
                         name: "エムスリーキャリア株式会社",
                         minutes: m3.minutes,
                         summary: m3.summary,
+                        secondaryLine: nil,
                         transfers: m3.transfers,
+                        qualityLabel: m3.isFallbackEstimate ? "概算" : nil,
                         color: DesignSystem.commuteM3Color,
                         logoImage: "logo-m3career"
                     )
@@ -1795,7 +1834,10 @@ struct ListingDetailView: View {
 
             // 注釈（データソースに応じて表示を切替）
             VStack(alignment: .leading, spacing: 2) {
-                if commute.hasAnyGmapsData {
+                if commuteV2?.hasAnyOffice == true {
+                    Text("※ Station Master に基づく平日朝の代表値です")
+                    Text("※ 物件→駅徒歩 + 駅マスタ + オフィス徒歩 + バッファで算出しています")
+                } else if commute.hasAnyGmapsData {
                     Text("※ Google Maps の経路検索に基づく自動計算です")
                     Text("※ 平日朝 9:00 到着での最適経路")
                 } else {
@@ -1816,7 +1858,9 @@ struct ListingDetailView: View {
         name: String,
         minutes: Int,
         summary: String,
+        secondaryLine: String?,
         transfers: Int?,
+        qualityLabel: String?,
         color: Color,
         logoImage: String
     ) -> some View {
@@ -1831,6 +1875,16 @@ struct ListingDetailView: View {
                 Text(name)
                     .font(.subheadline)
                     .fontWeight(.semibold)
+
+                if let qualityLabel {
+                    Text(qualityLabel)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(color)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(color.opacity(0.10))
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                }
 
                 Spacer()
 
@@ -1871,6 +1925,20 @@ struct ListingDetailView: View {
                 }
                 .padding(.leading, 32)
             }
+
+            if let secondaryLine, !secondaryLine.isEmpty {
+                HStack(spacing: 4) {
+                    Image(systemName: "figure.walk")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text(secondaryLine)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                    Spacer(minLength: 0)
+                }
+                .padding(.leading, 32)
+            }
         }
         .padding(10)
         .background(color.opacity(0.04))
@@ -1880,6 +1948,38 @@ struct ListingDetailView: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .contentShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    private func commuteSummaryV2(_ estimate: CommuteOfficeEstimateV2) -> String {
+        if let station = estimate.selectedStation?.name {
+            return "\(station) ベース / 代表値 \(estimate.rangeDisplay)"
+        }
+        return "代表値 \(estimate.rangeDisplay)"
+    }
+
+    private func commuteSecondaryLineV2(_ estimate: CommuteOfficeEstimateV2) -> String? {
+        guard let c = estimate.components else { return nil }
+        var parts: [String] = []
+        if let walk = c.walkOriginToStation { parts.append("徒歩\(walk)分") }
+        if let master = c.stationToOfficeMaster { parts.append("駅マスタ\(master)分") }
+        if let officeWalk = c.officeLastWalk { parts.append("オフィス徒歩\(officeWalk)分") }
+        if let buffer = c.buffer { parts.append("バッファ\(buffer)分") }
+        return parts.isEmpty ? nil : parts.joined(separator: " + ")
+    }
+
+    private func commuteQualityLabelV2(_ estimate: CommuteOfficeEstimateV2) -> String? {
+        guard let quality = estimate.quality else { return nil }
+        if quality.fallbackUsed == true { return "概算" }
+        switch quality.label.lowercased() {
+        case "high":
+            return "高精度"
+        case "medium":
+            return "参考"
+        case "low":
+            return "概算"
+        default:
+            return nil
+        }
     }
 
     /// 通勤時間が未計算の場合の計算ボタン

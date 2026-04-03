@@ -1,0 +1,17 @@
+station_id,station,office,scenario,min,med,max
+shinjuku-east,新宿,playground,wkday0900,36,42,48
+shinjuku-east,新宿,m3career,wkday0900,28,34,40
+shibuya-hachiko,渋谷,playground,wkday0900,30,36,42
+shibuya-hachiko,渋谷,m3career,wkday0900,20,25,31
+ikebukuro-east,池袋,playground,wkday0900,38,45,52
+ikebukuro-east,池袋,m3career,wkday0900,30,37,44
+shinagawa-takanawa,品川,playground,wkday0900,26,32,38
+shinagawa-takanawa,品川,m3career,wkday0900,18,23,29
+tokyo-marunouchi,東京,playground,wkday0900,18,23,28
+tokyo-marunouchi,東京,m3career,wkday0900,16,20,25
+nakano-north,中野,playground,wkday0900,34,40,47
+nakano-north,中野,m3career,wkday0900,27,33,39
+meguro-west,目黒,playground,wkday0900,22,27,33
+meguro-west,目黒,m3career,wkday0900,15,20,25
+ebisu-west,恵比寿,playground,wkday0900,24,29,35
+ebisu-west,恵比寿,m3career,wkday0900,12,16,20
