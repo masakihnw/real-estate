@@ -3,11 +3,13 @@ import SwiftUI
 /// 賃貸 vs 購入の比較シミュレーション
 struct RentVsBuyView: View {
     let listing: Listing
+    private static let defaultLoanRate: Double = 1.2
+
     @State private var monthlyRent: Double = 250000
     @State private var simulationYears: Double = 10
     @State private var annualRentIncrease: Double = 1.0
     @State private var propertyAppreciation: Double
-    @State private var loanRate: Double = 0.5
+    @State private var loanRate: Double = Self.defaultLoanRate
 
     init(listing: Listing) {
         self.listing = listing

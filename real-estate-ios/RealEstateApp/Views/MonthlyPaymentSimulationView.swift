@@ -16,7 +16,9 @@ struct MonthlyPaymentSimulationView: View {
     // MARK: - フォーム状態
 
     @State private var isExpanded: Bool = false
-    @State private var interestRate: Double = LoanCalculator.annualRate   // デフォルト 0.8%
+    private static let defaultInterestRate: Double = 1.2
+
+    @State private var interestRate: Double = Self.defaultInterestRate
     @State private var loanYears: Int = LoanCalculator.termYears          // デフォルト 50年
     @State private var downPaymentMan: Double = 0                         // 頭金（万円）
 
@@ -190,12 +192,12 @@ struct MonthlyPaymentSimulationView: View {
             }
 
             // リセットボタン
-            if interestRate != LoanCalculator.annualRate
+            if interestRate != Self.defaultInterestRate
                 || loanYears != LoanCalculator.termYears
                 || downPaymentMan != 0 {
                 Button {
                     withAnimation {
-                        interestRate = LoanCalculator.annualRate
+                        interestRate = Self.defaultInterestRate
                         loanYears = LoanCalculator.termYears
                         downPaymentMan = 0
                     }

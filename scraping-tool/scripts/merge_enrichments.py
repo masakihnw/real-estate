@@ -94,6 +94,7 @@ ENRICHER_FIELDS: dict[str, set[str]] = {
     # Track C: commute_enricher
     "commute": {
         "commute_info",
+        "commute_info_v2",
     },
     # Track F: commute_gmaps_enricher (Google Maps door-to-door, Track C より高精度)
     "commute_gmaps": {

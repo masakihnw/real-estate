@@ -1,0 +1,13 @@
+playground:
+  office_name: オフィスA
+  entrance_lat: 0.0
+  entrance_lng: 0.0
+  entrance_label: 一番町オフィス入口
+  last_walk_minutes: 6
+
+m3career:
+  office_name: オフィスB株式会社
+  entrance_lat: 0.0
+  entrance_lng: 0.0
+  entrance_label: 虎ノ門オフィス入口
+  last_walk_minutes: 6

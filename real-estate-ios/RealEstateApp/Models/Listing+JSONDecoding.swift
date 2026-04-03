@@ -91,6 +91,7 @@ struct ListingDTO: Codable {
 
     // 通勤時間（駅ベース概算、パイプライン側で付与）
     var commute_info: String?
+    var commute_info_v2: String?
 
     // 不動産情報ライブラリ相場データ（パイプライン側で付与）
     var reinfolib_market_data: String?
@@ -323,6 +324,7 @@ extension Listing {
             longitude: dto.longitude,
             hazardInfo: dto.hazard_info,
             commuteInfoJSON: dto.commute_info,
+            commuteInfoV2JSON: dto.commute_info_v2,
             ssLookupStatus: dto.ss_lookup_status,
             ssProfitPct: dto.ss_profit_pct,
             ssOkiPrice70m2: dto.ss_oki_price_70m2,

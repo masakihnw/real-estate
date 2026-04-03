@@ -4,7 +4,7 @@ import SwiftUI
 struct PurchaseCostCalculatorView: View {
     let listing: Listing
     @State private var priceMan: Double
-    @State private var loanRatio: Double = 0.9
+    @State private var loanRatio: Double = 1.0
     @State private var isNewConstruction: Bool
 
     init(listing: Listing) {

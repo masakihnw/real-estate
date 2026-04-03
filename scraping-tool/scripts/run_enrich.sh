@@ -130,12 +130,18 @@ SS_PID=$!
 ) &
 HZ_PID=$!
 
-# Track C: commute_enricher
+# Track C: commute_enricher + commute_station_master_enricher
 (
     _t=$(date +%s)
     python3 commute_enricher.py \
         --input "$WORK_DIR/track_cm.json" \
         --output "$WORK_DIR/track_cm.json" || true
+    python3 commute_station_master_enricher.py \
+        --input "$WORK_DIR/track_cm.json" \
+        --output "$WORK_DIR/track_cm.json" \
+        --stations-csv ../configs/commute/stations.csv \
+        --station-master-csv ../data/commute/station_master_template.csv \
+        --offices-yaml ../configs/commute/offices.yaml || true
     echo "[TIMING] commute: $(( ($(date +%s) - _t) ))s" >&2
 ) &
 CM_PID=$!

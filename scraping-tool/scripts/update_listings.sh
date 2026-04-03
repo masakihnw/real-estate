@@ -447,6 +447,12 @@ _t_phase2b=$(date +%s)
     echo "通勤時間 enrichment (中古) 実行中..." >&2
     _t=$(date +%s)
     python3 commute_enricher.py --input "${OUTPUT_DIR}/latest.json" --output "${OUTPUT_DIR}/latest.json" || echo "通勤時間 enrichment (中古) 失敗（続行）" >&2
+    python3 commute_station_master_enricher.py \
+        --input "${OUTPUT_DIR}/latest.json" \
+        --output "${OUTPUT_DIR}/latest.json" \
+        --stations-csv ../configs/commute/stations.csv \
+        --station-master-csv ../data/commute/station_master_template.csv \
+        --offices-yaml ../configs/commute/offices.yaml || echo "通勤時間 enrichment v2 (中古) 失敗（続行）" >&2
     record_timing "$TIMING_FILE" "commute_chuko" "$_t"
 
     if [ -f "data/reinfolib_prices.json" ]; then
@@ -490,6 +496,12 @@ if [ "$HAS_SHINCHIKU" = true ]; then
     echo "通勤時間 enrichment (新築) 実行中..." >&2
     _t=$(date +%s)
     python3 commute_enricher.py --input "${OUTPUT_DIR}/latest_shinchiku.json" --output "${OUTPUT_DIR}/latest_shinchiku.json" || echo "通勤時間 enrichment (新築) 失敗（続行）" >&2
+    python3 commute_station_master_enricher.py \
+        --input "${OUTPUT_DIR}/latest_shinchiku.json" \
+        --output "${OUTPUT_DIR}/latest_shinchiku.json" \
+        --stations-csv ../configs/commute/stations.csv \
+        --station-master-csv ../data/commute/station_master_template.csv \
+        --offices-yaml ../configs/commute/offices.yaml || echo "通勤時間 enrichment v2 (新築) 失敗（続行）" >&2
     record_timing "$TIMING_FILE" "commute_shinchiku" "$_t"
 
     if [ -f "data/reinfolib_prices.json" ]; then

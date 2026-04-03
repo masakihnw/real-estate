@@ -188,6 +188,8 @@ final class Listing: @unchecked Sendable {
     /// フォーマット: {"playground":{"minutes":25,"summary":"東京メトロ半蔵門線→半蔵門駅","calculatedAt":"ISO8601"},
     ///              "m3career":{"minutes":30,"summary":"東京メトロ日比谷線→虎ノ門ヒルズ駅","calculatedAt":"ISO8601"}}
     var commuteInfoJSON: String?
+    /// 通勤時間情報 v2 JSON 文字列（Station Master ベースの事前計算結果）
+    var commuteInfoV2JSON: String?
 
     // MARK: - 不動産情報ライブラリ（MLIT）相場データ
     /// 不動産情報ライブラリの成約価格相場データ JSON 文字列
@@ -320,6 +322,7 @@ final class Listing: @unchecked Sendable {
         longitude: Double? = nil,
         hazardInfo: String? = nil,
         commuteInfoJSON: String? = nil,
+        commuteInfoV2JSON: String? = nil,
         ssLookupStatus: String? = nil,
         ssProfitPct: Int? = nil,
         ssOkiPrice70m2: Int? = nil,
@@ -404,6 +407,7 @@ final class Listing: @unchecked Sendable {
         self.longitude = longitude
         self.hazardInfo = hazardInfo
         self.commuteInfoJSON = commuteInfoJSON
+        self.commuteInfoV2JSON = commuteInfoV2JSON
         self.ssLookupStatus = ssLookupStatus
         self.ssProfitPct = ssProfitPct
         self.ssOkiPrice70m2 = ssOkiPrice70m2
@@ -1062,6 +1066,7 @@ final class Listing: @unchecked Sendable {
         var comments: (source: String?, result: [CommentData])?
         var photos: (source: String?, result: [PhotoMeta])?
         var commuteInfo: (source: String?, result: CommuteData)?
+        var commuteInfoV2: (source: String?, result: CommuteDataV2?)?
         var radarData: (source: String?, result: RadarData?)?
         var surrounding: (source: String?, result: [SurroundingProperty])?
         var priceJudgments: (source: String?, result: [PriceJudgmentUnit])?
@@ -1922,6 +1927,21 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - 通勤時間
 
+    /// パース済み通勤時間 v2 データ（キャッシュ付き）
+    var parsedCommuteInfoV2: CommuteDataV2? {
+        if let cached = _cache.commuteInfoV2, cached.source == commuteInfoV2JSON {
+            return cached.result
+        }
+        let result = Self._parseCommuteInfoV2(commuteInfoV2JSON)
+        _cache.commuteInfoV2 = (commuteInfoV2JSON, result)
+        return result
+    }
+
+    static func _parseCommuteInfoV2(_ json: String?) -> CommuteDataV2? {
+        guard let json, let data = json.data(using: .utf8) else { return nil }
+        return try? CommuteDataV2.decoder.decode(CommuteDataV2.self, from: data)
+    }
+
     /// パース済み通勤時間データ（キャッシュ付き）
     var parsedCommuteInfo: CommuteData {
         if let cached = _cache.commuteInfo, cached.source == commuteInfoJSON {
@@ -1939,18 +1959,25 @@ final class Listing: @unchecked Sendable {
 
     /// 通勤時間データがあるか
     var hasCommuteInfo: Bool {
+        if parsedCommuteInfoV2?.hasAnyOffice == true { return true }
         let info = parsedCommuteInfo
         return info.playground != nil || info.m3career != nil
     }
 
     /// 一覧表示用: Playground 通勤時間
     var commutePlaygroundDisplay: String? {
+        if let pg = parsedCommuteInfoV2?.offices.playground {
+            return "\(pg.representativeMinutes)分"
+        }
         guard let pg = parsedCommuteInfo.playground else { return nil }
         return "\(pg.minutes)分"
     }
 
     /// 一覧表示用: M3Career 通勤時間
     var commuteM3CareerDisplay: String? {
+        if let m3 = parsedCommuteInfoV2?.offices.m3career {
+            return "\(m3.representativeMinutes)分"
+        }
         guard let m3 = parsedCommuteInfo.m3career else { return nil }
         return "\(m3.minutes)分"
     }
@@ -2538,6 +2565,76 @@ struct CommuteDestination: Codable {
     var isGmaps: Bool {
         source == "gmaps"
     }
+}
+
+/// Station Master ベースの通勤時間 v2 フォーマット
+struct CommuteDataV2: Codable {
+    struct Offices: Codable {
+        var playground: CommuteOfficeEstimateV2?
+        var m3career: CommuteOfficeEstimateV2?
+    }
+
+    var schemaVersion: Int?
+    var algoVersion: String?
+    var computedAt: Date?
+    var expiresAt: Date?
+    var offices: Offices
+
+    static let decoder: JSONDecoder = {
+        let d = JSONDecoder()
+        d.dateDecodingStrategy = .iso8601
+        d.keyDecodingStrategy = .convertFromSnakeCase
+        return d
+    }()
+
+    var hasAnyOffice: Bool {
+        offices.playground != nil || offices.m3career != nil
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case schemaVersion
+        case algoVersion
+        case computedAt
+        case expiresAt
+        case offices
+    }
+}
+
+struct CommuteOfficeEstimateV2: Codable {
+    var representativeMinutes: Int
+    var rangeMinutes: CommuteRangeMinutesV2
+    var representativeStat: String?
+    var selectedStation: CommuteSelectedStationV2?
+    var components: CommuteComponentsV2?
+    var quality: CommuteQualityV2?
+
+    var rangeDisplay: String {
+        "\(rangeMinutes.min)-\(rangeMinutes.max)分"
+    }
+}
+
+struct CommuteRangeMinutesV2: Codable {
+    var min: Int
+    var max: Int
+}
+
+struct CommuteSelectedStationV2: Codable {
+    var stationId: String?
+    var name: String
+    var distanceM: Double?
+}
+
+struct CommuteComponentsV2: Codable {
+    var walkOriginToStation: Int?
+    var stationToOfficeMaster: Int?
+    var officeLastWalk: Int?
+    var buffer: Int?
+}
+
+struct CommuteQualityV2: Codable {
+    var label: String
+    var source: String?
+    var fallbackUsed: Bool?
 }
 
 // JSON Decoding: → Listing+JSONDecoding.swift
