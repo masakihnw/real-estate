@@ -5261,10 +5261,10 @@
     {
       "date": "2026-04-04",
       "total_listings": 326,
-      "new_count": 7,
+      "new_count": 0,
       "removed_count": 0,
-      "updated_count": 6,
-      "price_changed_count": 2,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10392,
       "median_price_man": 10480,
       "price_distribution": {
