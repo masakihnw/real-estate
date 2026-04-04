@@ -5260,24 +5260,24 @@
     },
     {
       "date": "2026-04-04",
-      "total_listings": 321,
+      "total_listings": 319,
       "new_count": 0,
-      "removed_count": 0,
-      "updated_count": 0,
+      "removed_count": 2,
+      "updated_count": 3,
       "price_changed_count": 0,
-      "avg_price_man": 10397,
+      "avg_price_man": 10392,
       "median_price_man": 10480,
       "price_distribution": {
         "under_10000": 132,
-        "10000_11000": 112,
-        "11000_12000": 77,
+        "10000_11000": 111,
+        "11000_12000": 76,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 66,
-          "avg_price_man": 10476,
+          "count": 65,
+          "avg_price_man": 10463,
           "min_price_man": 9250,
           "max_price_man": 11500
         },
@@ -5354,8 +5354,8 @@
           "max_price_man": 11180
         },
         "練馬区": {
-          "count": 11,
-          "avg_price_man": 9950,
+          "count": 10,
+          "avg_price_man": 9857,
           "min_price_man": 9280,
           "max_price_man": 11000
         },
