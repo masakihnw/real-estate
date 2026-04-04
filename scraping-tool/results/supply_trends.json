@@ -5261,10 +5261,10 @@
     {
       "date": "2026-04-04",
       "total_listings": 319,
-      "new_count": 1,
-      "removed_count": 1,
-      "updated_count": 7,
-      "price_changed_count": 1,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10393,
       "median_price_man": 10480,
       "price_distribution": {
@@ -5311,17 +5311,17 @@
           "min_price_man": 9480,
           "max_price_man": 11480
         },
-        "台東区": {
-          "count": 14,
-          "avg_price_man": 10297,
-          "min_price_man": 9180,
-          "max_price_man": 11390
-        },
         "足立区": {
           "count": 14,
           "avg_price_man": 10253,
           "min_price_man": 9380,
           "max_price_man": 11500
+        },
+        "台東区": {
+          "count": 14,
+          "avg_price_man": 10297,
+          "min_price_man": 9180,
+          "max_price_man": 11390
         },
         "中央区": {
           "count": 13,
@@ -10504,7 +10504,7 @@
     {
       "date": "2026-04-04",
       "total_listings": 92,
-      "new_count": 1,
+      "new_count": 0,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
