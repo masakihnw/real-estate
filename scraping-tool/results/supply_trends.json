@@ -5311,17 +5311,17 @@
           "min_price_man": 9480,
           "max_price_man": 11480
         },
-        "足立区": {
-          "count": 14,
-          "avg_price_man": 10253,
-          "min_price_man": 9380,
-          "max_price_man": 11500
-        },
         "台東区": {
           "count": 14,
           "avg_price_man": 10297,
           "min_price_man": 9180,
           "max_price_man": 11390
+        },
+        "足立区": {
+          "count": 14,
+          "avg_price_man": 10253,
+          "min_price_man": 9380,
+          "max_price_man": 11500
         },
         "中央区": {
           "count": 13,
