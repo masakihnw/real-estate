@@ -5261,11 +5261,11 @@
     {
       "date": "2026-04-04",
       "total_listings": 319,
-      "new_count": 0,
-      "removed_count": 2,
-      "updated_count": 3,
-      "price_changed_count": 0,
-      "avg_price_man": 10392,
+      "new_count": 1,
+      "removed_count": 1,
+      "updated_count": 7,
+      "price_changed_count": 1,
+      "avg_price_man": 10393,
       "median_price_man": 10480,
       "price_distribution": {
         "under_10000": 132,
@@ -5295,7 +5295,7 @@
         },
         "新宿区": {
           "count": 23,
-          "avg_price_man": 10513,
+          "avg_price_man": 10504,
           "min_price_man": 9080,
           "max_price_man": 11500
         },
@@ -5379,8 +5379,8 @@
         },
         "葛飾区": {
           "count": 4,
-          "avg_price_man": 10030,
-          "min_price_man": 9380,
+          "avg_price_man": 10105,
+          "min_price_man": 9480,
           "max_price_man": 11280
         },
         "港区": {
@@ -10503,8 +10503,8 @@
     },
     {
       "date": "2026-04-04",
-      "total_listings": 91,
-      "new_count": 0,
+      "total_listings": 92,
+      "new_count": 1,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
@@ -10515,11 +10515,11 @@
         "10000_11000": 3,
         "11000_12000": 3,
         "over_12000": 0,
-        "undecided": 59
+        "undecided": 60
       },
       "ward_stats": {
         "港区": {
-          "count": 11,
+          "count": 12,
           "avg_price_man": null,
           "min_price_man": null,
           "max_price_man": null
