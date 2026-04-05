@@ -5411,24 +5411,24 @@
     },
     {
       "date": "2026-04-05",
-      "total_listings": 325,
+      "total_listings": 324,
       "new_count": 0,
-      "removed_count": 0,
-      "updated_count": 0,
+      "removed_count": 1,
+      "updated_count": 2,
       "price_changed_count": 0,
-      "avg_price_man": 10394,
+      "avg_price_man": 10393,
       "median_price_man": 10480,
       "price_distribution": {
         "under_10000": 134,
-        "10000_11000": 113,
+        "10000_11000": 112,
         "11000_12000": 78,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 66,
-          "avg_price_man": 10489,
+          "count": 65,
+          "avg_price_man": 10485,
           "min_price_man": 9250,
           "max_price_man": 11500
         },
