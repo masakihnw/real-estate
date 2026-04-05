@@ -5413,9 +5413,9 @@
       "date": "2026-04-05",
       "total_listings": 325,
       "new_count": 0,
-      "removed_count": 1,
-      "updated_count": 7,
-      "price_changed_count": 1,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10394,
       "median_price_man": 10480,
       "price_distribution": {
