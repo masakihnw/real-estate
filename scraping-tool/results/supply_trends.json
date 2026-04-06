@@ -5562,30 +5562,30 @@
     },
     {
       "date": "2026-04-06",
-      "total_listings": 327,
+      "total_listings": 325,
       "new_count": 0,
-      "removed_count": 0,
-      "updated_count": 0,
+      "removed_count": 2,
+      "updated_count": 6,
       "price_changed_count": 0,
-      "avg_price_man": 10403,
+      "avg_price_man": 10406,
       "median_price_man": 10480,
       "price_distribution": {
-        "under_10000": 133,
-        "10000_11000": 114,
+        "under_10000": 132,
+        "10000_11000": 113,
         "11000_12000": 80,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 64,
+          "count": 63,
           "avg_price_man": 10496,
           "min_price_man": 9250,
           "max_price_man": 11500
         },
         "世田谷区": {
-          "count": 35,
-          "avg_price_man": 10669,
+          "count": 34,
+          "avg_price_man": 10704,
           "min_price_man": 9190,
           "max_price_man": 11500
         },
