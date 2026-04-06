@@ -5563,23 +5563,23 @@
     {
       "date": "2026-04-06",
       "total_listings": 327,
-      "new_count": 0,
-      "removed_count": 0,
-      "updated_count": 0,
+      "new_count": 2,
+      "removed_count": 2,
+      "updated_count": 7,
       "price_changed_count": 0,
-      "avg_price_man": 10394,
+      "avg_price_man": 10403,
       "median_price_man": 10480,
       "price_distribution": {
-        "under_10000": 135,
-        "10000_11000": 113,
-        "11000_12000": 79,
+        "under_10000": 133,
+        "10000_11000": 114,
+        "11000_12000": 80,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 65,
-          "avg_price_man": 10485,
+          "count": 64,
+          "avg_price_man": 10496,
           "min_price_man": 9250,
           "max_price_man": 11500
         },
@@ -5596,8 +5596,8 @@
           "max_price_man": 11500
         },
         "新宿区": {
-          "count": 23,
-          "avg_price_man": 10526,
+          "count": 22,
+          "avg_price_man": 10560,
           "min_price_man": 9080,
           "max_price_man": 11500
         },
@@ -5656,8 +5656,8 @@
           "max_price_man": 11000
         },
         "練馬区": {
-          "count": 10,
-          "avg_price_man": 9857,
+          "count": 11,
+          "avg_price_man": 9959,
           "min_price_man": 9280,
           "max_price_man": 11000
         },
@@ -5679,17 +5679,17 @@
           "min_price_man": 9480,
           "max_price_man": 11300
         },
+        "港区": {
+          "count": 4,
+          "avg_price_man": 11300,
+          "min_price_man": 11000,
+          "max_price_man": 11500
+        },
         "葛飾区": {
           "count": 4,
           "avg_price_man": 10155,
           "min_price_man": 9480,
           "max_price_man": 11480
-        },
-        "港区": {
-          "count": 3,
-          "avg_price_man": 11233,
-          "min_price_man": 11000,
-          "max_price_man": 11500
         },
         "渋谷区": {
           "count": 3,
