@@ -1,86 +1,6 @@
 {
   "transactions": [
     {
-      "id": "tx-7a79cf145809",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2021Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-cc97c6bab835",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2021Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-c340de84d863",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2022Q1",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-bfab263a1aa0",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 9800,
-      "area_m2": 65.0,
-      "m2_price": 1507692,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2022Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -678,7 +598,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-30ce35347a86",
@@ -798,7 +718,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-259e692a9a05",
@@ -1578,7 +1498,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-7a269e0435ea",
@@ -1678,7 +1598,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-beed0c0b17ba",
@@ -1698,7 +1618,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-2f7b8219f251",
@@ -2098,7 +2018,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-9b747f4af684",
@@ -2318,7 +2238,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-0b40c23a9112",
@@ -2338,7 +2258,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-84539e81539f",
@@ -2718,7 +2638,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-ca52c7520049",
@@ -2938,7 +2858,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-50abd2664105",
@@ -3318,7 +3238,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2012-RC",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "id": "tx-c919167f5c29",
@@ -23158,7 +23078,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "アージョ桜新町"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
     },
     {
       "id": "tx-33ba1cb163a8",
@@ -23258,7 +23178,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2011-RC",
-      "estimated_building_name": "アージョ桜新町 / ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町 / ザ・パークハウス弦巻104号室"
     },
     {
       "id": "tx-9abc123d3d7d",
@@ -24178,7 +24098,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "アージョ桜新町"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
     },
     {
       "id": "tx-89475d736ee3",
@@ -24238,7 +24158,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "アージョ桜新町"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
     },
     {
       "id": "tx-cd9d4b46471f",
@@ -24438,7 +24358,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "アージョ桜新町"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
     },
     {
       "id": "tx-48670b06ee2d",
@@ -24718,7 +24638,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "アージョ桜新町"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
     },
     {
       "id": "tx-144639cfaf05",
@@ -24978,7 +24898,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "アージョ桜新町"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
     },
     {
       "id": "tx-868a89150172",
@@ -32523,32 +32443,6 @@
   ],
   "building_groups": [
     {
-      "group_id": "131010010-2007-RC",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "built_year": 2007,
-      "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "transaction_count": 4,
-      "price_range_man": [
-        9800,
-        11000
-      ],
-      "avg_m2_price": 1646154,
-      "periods": [
-        "2021Q3",
-        "2021Q4",
-        "2022Q1",
-        "2022Q3"
-      ],
-      "latest_period": "2022Q3",
-      "estimated_building_name": null
-    },
-    {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -33197,7 +33091,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "ジオ西新宿ツインレジデンス イースト棟"
+      "estimated_building_name": "ジオ西新宿ツインレジデンスイースト棟"
     },
     {
       "group_id": "131040330-2015-RC",
@@ -41236,7 +41130,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "アージョ桜新町"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
     },
     {
       "group_id": "131120460-2011-RC",
@@ -41259,7 +41153,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "アージョ桜新町 / ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町 / ザ・パークハウス弦巻104号室"
     },
     {
       "group_id": "131120460-2012-RC",
@@ -45201,7 +45095,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-08T17:57:45",
+    "updated_at": "2026-04-08T20:09:45",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -45238,8 +45132,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1626,
-    "building_group_count": 520,
+    "transaction_count": 1622,
+    "building_group_count": 519,
     "scope": "東京23区"
   }
 }
