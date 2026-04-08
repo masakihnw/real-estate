@@ -5865,10 +5865,10 @@
     {
       "date": "2026-04-08",
       "total_listings": 331,
-      "new_count": 1,
+      "new_count": 0,
       "removed_count": 0,
-      "updated_count": 6,
-      "price_changed_count": 1,
+      "updated_count": 1,
+      "price_changed_count": 0,
       "avg_price_man": 10405,
       "median_price_man": 10480,
       "price_distribution": {
