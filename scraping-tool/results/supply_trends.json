@@ -6016,10 +6016,10 @@
     {
       "date": "2026-04-09",
       "total_listings": 336,
-      "new_count": 5,
-      "removed_count": 3,
-      "updated_count": 11,
-      "price_changed_count": 4,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10403,
       "median_price_man": 10480,
       "price_distribution": {
@@ -12045,7 +12045,7 @@
       "date": "2026-04-09",
       "total_listings": 93,
       "new_count": 0,
-      "removed_count": 3,
+      "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 9184,
