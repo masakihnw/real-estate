@@ -3898,7 +3898,7 @@
       "latitude": 35.7131491,
       "longitude": 139.7460916,
       "building_group_id": "131050040-2012-RC",
-      "estimated_building_name": "ブランズ文京小石川エアーフロント"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d32b08e299df",
@@ -4638,7 +4638,7 @@
       "latitude": 35.7131491,
       "longitude": 139.7460916,
       "building_group_id": "131050040-2012-RC",
-      "estimated_building_name": "ブランズ文京小石川エアーフロント"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a3b32ac4ac53",
@@ -4898,7 +4898,7 @@
       "latitude": 35.7131491,
       "longitude": 139.7460916,
       "building_group_id": "131050040-2012-RC",
-      "estimated_building_name": "ブランズ文京小石川エアーフロント"
+      "estimated_building_name": null
     },
     {
       "id": "tx-08d77931bd79",
@@ -5038,7 +5038,7 @@
       "latitude": 35.7131491,
       "longitude": 139.7460916,
       "building_group_id": "131050040-2011-RC",
-      "estimated_building_name": "ブランズ文京小石川エアーフロント"
+      "estimated_building_name": null
     },
     {
       "id": "tx-58ca6303cc57",
@@ -5798,7 +5798,7 @@
       "latitude": 35.7131491,
       "longitude": 139.7460916,
       "building_group_id": "131050040-2011-RC",
-      "estimated_building_name": "ブランズ文京小石川エアーフロント"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b03ad747f92e",
@@ -34513,7 +34513,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "ブランズ文京小石川エアーフロント"
+      "estimated_building_name": null
     },
     {
       "group_id": "131050040-2012-RC",
@@ -34538,7 +34538,7 @@
         "2023Q3"
       ],
       "latest_period": "2023Q3",
-      "estimated_building_name": "ブランズ文京小石川エアーフロント"
+      "estimated_building_name": null
     },
     {
       "group_id": "131050040-2013-RC",
@@ -45201,7 +45201,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-10T19:46:32",
+    "updated_at": "2026-04-10T21:29:57",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
