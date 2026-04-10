@@ -6169,7 +6169,7 @@
       "total_listings": 336,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 0,
+      "updated_count": 8,
       "price_changed_count": 0,
       "avg_price_man": 10403,
       "median_price_man": 10480,
@@ -6241,16 +6241,16 @@
           "min_price_man": 9280,
           "max_price_man": 11180
         },
-        "板橋区": {
-          "count": 13,
-          "avg_price_man": 10016,
-          "min_price_man": 9080,
-          "max_price_man": 11000
-        },
         "北区": {
           "count": 13,
           "avg_price_man": 10198,
           "min_price_man": 9290,
+          "max_price_man": 11000
+        },
+        "板橋区": {
+          "count": 13,
+          "avg_price_man": 10016,
+          "min_price_man": 9080,
           "max_price_man": 11000
         },
         "練馬区": {
