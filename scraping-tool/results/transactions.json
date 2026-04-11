@@ -1741,6 +1741,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-e1151b823bd8",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "余丁町",
+      "district_code": "131040870",
+      "price_man": 11000,
+      "area_m2": 80.0,
+      "m2_price": 1375000,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2023Q2",
+      "nearest_station": "若松河田",
+      "estimated_walk_min": 5,
+      "latitude": 35.6962861,
+      "longitude": 139.7160422,
+      "building_group_id": "131040870-2007-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-e5db080af59a",
       "prefecture": "東京都",
       "ward": "新宿区",
@@ -30221,6 +30241,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-33ef1efd93e7",
+      "prefecture": "東京都",
+      "ward": "北区",
+      "district": "田端",
+      "district_code": "131170210",
+      "price_man": 9800,
+      "area_m2": 110.0,
+      "m2_price": 890909,
+      "layout": "3LDK",
+      "built_year": 2009,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "田端",
+      "estimated_walk_min": 2,
+      "latitude": 35.7373723,
+      "longitude": 139.761707,
+      "building_group_id": "131170210-2009-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-7170a9ea61b6",
       "prefecture": "東京都",
       "ward": "北区",
@@ -34059,6 +34099,29 @@
         "2022Q1"
       ],
       "latest_period": "2022Q1",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131040870-2007-RC",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "余丁町",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "若松河田",
+      "estimated_walk_min": 5,
+      "latitude": 35.6962861,
+      "longitude": 139.7160422,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1375000,
+      "periods": [
+        "2023Q2"
+      ],
+      "latest_period": "2023Q2",
       "estimated_building_name": null
     },
     {
@@ -43960,6 +44023,29 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131170210-2009-RC",
+      "prefecture": "東京都",
+      "ward": "北区",
+      "district": "田端",
+      "built_year": 2009,
+      "structure": "RC",
+      "nearest_station": "田端",
+      "estimated_walk_min": 2,
+      "latitude": 35.7373723,
+      "longitude": 139.761707,
+      "transaction_count": 1,
+      "price_range_man": [
+        9800,
+        9800
+      ],
+      "avg_m2_price": 890909,
+      "periods": [
+        "2023Q4"
+      ],
+      "latest_period": "2023Q4",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131170240-2017-RC",
       "prefecture": "東京都",
       "ward": "北区",
@@ -45009,7 +45095,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-10T23:26:30",
+    "updated_at": "2026-04-11T03:28:42",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -45046,8 +45132,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1620,
-    "building_group_count": 517,
+    "transaction_count": 1622,
+    "building_group_count": 519,
     "scope": "東京23区"
   }
 }
