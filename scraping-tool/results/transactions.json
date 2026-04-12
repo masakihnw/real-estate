@@ -31398,7 +31398,7 @@
       "latitude": 35.7775424,
       "longitude": 139.6327785,
       "building_group_id": "131190370-2008-RC",
-      "estimated_building_name": "ブリリア成増シーズンテラス(Brillia成増シーズ…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7d87cd98a11a",
@@ -31578,7 +31578,7 @@
       "latitude": 35.7775424,
       "longitude": 139.6327785,
       "building_group_id": "131190370-2008-RC",
-      "estimated_building_name": "ブリリア成増シーズンテラス(Brillia成増シーズ…"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f1a322b6b7ec",
@@ -44654,7 +44654,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ブリリア成増シーズンテラス(Brillia成増シーズ…"
+      "estimated_building_name": null
     },
     {
       "group_id": "131190430-2007-RC",
@@ -45201,7 +45201,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-12T04:07:12",
+    "updated_at": "2026-04-12T06:39:06",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
