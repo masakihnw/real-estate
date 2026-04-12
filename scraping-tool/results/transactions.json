@@ -1298,7 +1298,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
     },
     {
       "id": "tx-866625585fa0",
@@ -2418,7 +2418,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
     },
     {
       "id": "tx-e4a8675c485e",
@@ -26158,7 +26158,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-c08b04beaa8c",
@@ -26218,7 +26218,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-4e70ecacb532",
@@ -27458,7 +27458,7 @@
       "latitude": 35.7058302,
       "longitude": 139.665633,
       "building_group_id": "131140090-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "id": "tx-08f3d6c9c2de",
@@ -33484,7 +33484,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / THEパームス高田馬場四丁目"
     },
     {
       "group_id": "131040540-2007-RC",
@@ -42191,7 +42191,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンス中野"
     },
     {
       "group_id": "131140090-2017-RC",
@@ -45201,7 +45201,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-12T17:31:25",
+    "updated_at": "2026-04-12T19:41:32",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
