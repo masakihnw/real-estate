@@ -6622,7 +6622,7 @@
       "total_listings": 343,
       "new_count": 0,
       "removed_count": 0,
-      "updated_count": 0,
+      "updated_count": 6,
       "price_changed_count": 0,
       "avg_price_man": 10413,
       "median_price_man": 10490,
@@ -6670,17 +6670,17 @@
           "min_price_man": 9180,
           "max_price_man": 11500
         },
-        "台東区": {
-          "count": 15,
-          "avg_price_man": 10287,
-          "min_price_man": 9180,
-          "max_price_man": 11390
-        },
         "足立区": {
           "count": 15,
           "avg_price_man": 10409,
           "min_price_man": 9480,
           "max_price_man": 11500
+        },
+        "台東区": {
+          "count": 15,
+          "avg_price_man": 10287,
+          "min_price_man": 9180,
+          "max_price_man": 11390
         },
         "江戸川区": {
           "count": 15,
