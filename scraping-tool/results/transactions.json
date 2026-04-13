@@ -20258,7 +20258,7 @@
       "latitude": 35.6237433,
       "longitude": 139.7052921,
       "building_group_id": "131090080-2014-RC",
-      "estimated_building_name": "オープンレジデンシア武蔵小山"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ad06b8b70810",
@@ -20278,7 +20278,7 @@
       "latitude": 35.6237433,
       "longitude": 139.7052921,
       "building_group_id": "131090080-2014-RC",
-      "estimated_building_name": "オープンレジデンシア武蔵小山"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a4f02a4bd718",
@@ -28638,7 +28638,7 @@
       "latitude": 35.7284313,
       "longitude": 139.7017131,
       "building_group_id": "131160140-2014-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "プレミスト西池袋"
     },
     {
       "id": "tx-6a9fcd568ad8",
@@ -29438,7 +29438,7 @@
       "latitude": 35.7284313,
       "longitude": 139.7017131,
       "building_group_id": "131160140-2014-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "プレミスト西池袋"
     },
     {
       "id": "tx-cdb9cc88344b",
@@ -39101,7 +39101,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "オープンレジデンシア武蔵小山"
+      "estimated_building_name": null
     },
     {
       "group_id": "131090240-2012-RC",
@@ -43587,7 +43587,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "プレミスト西池袋"
     },
     {
       "group_id": "131160140-2015-RC",
@@ -45095,7 +45095,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-13T17:55:41",
+    "updated_at": "2026-04-13T20:04:44",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
