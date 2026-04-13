@@ -6620,10 +6620,10 @@
     {
       "date": "2026-04-13",
       "total_listings": 338,
-      "new_count": 3,
-      "removed_count": 7,
-      "updated_count": 11,
-      "price_changed_count": 6,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10410,
       "median_price_man": 10480,
       "price_distribution": {
