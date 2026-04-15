@@ -3158,7 +3158,7 @@
       "latitude": 35.714067,
       "longitude": 139.6863482,
       "building_group_id": "131040600-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "四の坂テラス"
     },
     {
       "id": "tx-2135e41a50bb",
@@ -33631,7 +33631,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "四の坂テラス"
     },
     {
       "group_id": "131040610-2006-RC",
@@ -45201,7 +45201,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-15T17:54:05",
+    "updated_at": "2026-04-15T20:11:13",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
