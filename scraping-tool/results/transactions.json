@@ -1,86 +1,6 @@
 {
   "transactions": [
     {
-      "id": "tx-7a79cf145809",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2021Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-cc97c6bab835",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2021Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-c340de84d863",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2022Q1",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-bfab263a1aa0",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 9800,
-      "area_m2": 65.0,
-      "m2_price": 1507692,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2022Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -7558,7 +7478,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2015-RC",
-      "estimated_building_name": "アトラスタワー曳舟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7b9b8c6d6365",
@@ -7678,7 +7598,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2015-RC",
-      "estimated_building_name": "アトラスタワー曳舟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-01344dc9cf6b",
@@ -7778,7 +7698,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2015",
-      "estimated_building_name": "アトラスタワー曳舟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0d561c5b6aa8",
@@ -7838,7 +7758,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2015-RC",
-      "estimated_building_name": "アトラスタワー曳舟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fe7219313c05",
@@ -7858,7 +7778,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2014-RC",
-      "estimated_building_name": "アトラスタワー曳舟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-18307e028428",
@@ -11118,7 +11038,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-45d629355be3",
@@ -11138,7 +11058,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-e5d108479f36",
@@ -11878,7 +11798,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-fa1847525b8e",
@@ -11918,7 +11838,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-89769781a4b9",
@@ -13118,7 +13038,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-77c90bfd26ba",
@@ -14198,7 +14118,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-8992c3ec329f",
@@ -14258,7 +14178,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-56742a257c55",
@@ -14318,7 +14238,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-d20b5eab769b",
@@ -14358,7 +14278,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-2a537826e4bb",
@@ -14418,7 +14338,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-ebc6fa118efb",
@@ -15178,7 +15098,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-74c45bde83ed",
@@ -15338,7 +15258,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-46aab4d8f666",
@@ -15398,7 +15318,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-b116d32f7f04",
@@ -15478,7 +15398,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-SRC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-919deaa78f82",
@@ -16658,7 +16578,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-9e57f52c5a3b",
@@ -17558,7 +17478,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-b658c17d20ba",
@@ -17658,7 +17578,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-cdac5c02b180",
@@ -17738,7 +17658,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-a57c7e5bb0a9",
@@ -18438,7 +18358,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-ef3df69e97b1",
@@ -18498,7 +18418,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-2993bd02cfaa",
@@ -19138,7 +19058,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2014-RC",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "id": "tx-3e4f3b337d13",
@@ -19418,7 +19338,7 @@
       "latitude": 35.6743164,
       "longitude": 139.8262215,
       "building_group_id": "131080410-2011-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "テラス東陽町ネクスタワー"
     },
     {
       "id": "tx-46959a423465",
@@ -19458,7 +19378,7 @@
       "latitude": 35.6485139,
       "longitude": 139.8119175,
       "building_group_id": "131080290-2012-RC",
-      "estimated_building_name": "クレヴィア辰巳"
+      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳"
     },
     {
       "id": "tx-f7925682a29f",
@@ -32523,32 +32443,6 @@
   ],
   "building_groups": [
     {
-      "group_id": "131010010-2007-RC",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "built_year": 2007,
-      "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "transaction_count": 4,
-      "price_range_man": [
-        9800,
-        11000
-      ],
-      "avg_m2_price": 1646154,
-      "periods": [
-        "2021Q3",
-        "2021Q4",
-        "2022Q1",
-        "2022Q3"
-      ],
-      "latest_period": "2022Q3",
-      "estimated_building_name": null
-    },
-    {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -36623,7 +36517,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "アトラスタワー曳舟"
+      "estimated_building_name": null
     },
     {
       "group_id": "131070060-2015",
@@ -36646,7 +36540,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": "アトラスタワー曳舟"
+      "estimated_building_name": null
     },
     {
       "group_id": "131070060-2015-RC",
@@ -36671,7 +36565,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "アトラスタワー曳舟"
+      "estimated_building_name": null
     },
     {
       "group_id": "131070070-2014-RC",
@@ -37849,7 +37743,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "group_id": "131080180-2014-SRC",
@@ -37872,7 +37766,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": "パークタワー東雲 【29F・オーシャンビュー住戸】"
+      "estimated_building_name": "パークタワー東雲 / パークタワー東雲 【29F・オーシャンビュー住戸】"
     },
     {
       "group_id": "131080180-2017-RC",
@@ -38198,7 +38092,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "クレヴィア辰巳"
+      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳"
     },
     {
       "group_id": "131080300-2016-RC",
@@ -38772,7 +38666,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "テラス東陽町ネクスタワー"
     },
     {
       "group_id": "131080430-2014-RC",
@@ -45201,7 +45095,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-16T18:04:29",
+    "updated_at": "2026-04-16T20:04:49",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -45238,8 +45132,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1626,
-    "building_group_count": 520,
+    "transaction_count": 1622,
+    "building_group_count": 519,
     "scope": "東京23区"
   }
 }
