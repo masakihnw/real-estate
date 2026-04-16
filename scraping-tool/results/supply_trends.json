@@ -7073,10 +7073,10 @@
     {
       "date": "2026-04-16",
       "total_listings": 344,
-      "new_count": 3,
-      "removed_count": 1,
-      "updated_count": 5,
-      "price_changed_count": 1,
+      "new_count": 344,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10431,
       "median_price_man": 10499,
       "price_distribution": {
