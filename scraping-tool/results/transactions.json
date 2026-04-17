@@ -7558,7 +7558,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2015-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラスタワー曳舟"
     },
     {
       "id": "tx-7b9b8c6d6365",
@@ -7678,7 +7678,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2015-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラスタワー曳舟"
     },
     {
       "id": "tx-01344dc9cf6b",
@@ -7778,7 +7778,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2015",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラスタワー曳舟"
     },
     {
       "id": "tx-0d561c5b6aa8",
@@ -7838,7 +7838,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2015-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラスタワー曳舟"
     },
     {
       "id": "tx-fe7219313c05",
@@ -7858,7 +7858,7 @@
       "latitude": 35.7156541,
       "longitude": 139.820884,
       "building_group_id": "131070060-2014-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラスタワー曳舟"
     },
     {
       "id": "tx-18307e028428",
@@ -36623,7 +36623,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラスタワー曳舟"
     },
     {
       "group_id": "131070060-2015",
@@ -36646,7 +36646,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラスタワー曳舟"
     },
     {
       "group_id": "131070060-2015-RC",
@@ -36671,7 +36671,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラスタワー曳舟"
     },
     {
       "group_id": "131070070-2014-RC",
@@ -45201,7 +45201,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-17T04:05:08",
+    "updated_at": "2026-04-17T06:50:33",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
