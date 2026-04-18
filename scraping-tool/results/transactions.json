@@ -1,6 +1,86 @@
 {
   "transactions": [
     {
+      "id": "tx-7a79cf145809",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cc97c6bab835",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c340de84d863",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfab263a1aa0",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -6618,7 +6698,7 @@
       "latitude": 35.7207075,
       "longitude": 139.7846075,
       "building_group_id": "131060060-2021-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
     },
     {
       "id": "tx-0ef1f855644b",
@@ -7258,7 +7338,7 @@
       "latitude": 35.7207075,
       "longitude": 139.7846075,
       "building_group_id": "131060060-2021-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
     },
     {
       "id": "tx-1f741e3dd2fc",
@@ -7278,7 +7358,7 @@
       "latitude": 35.7207075,
       "longitude": 139.7846075,
       "building_group_id": "131060060-2021-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
     },
     {
       "id": "tx-2b571679916f",
@@ -15538,7 +15618,7 @@
       "latitude": 35.6899027,
       "longitude": 139.8350597,
       "building_group_id": "131080090-2009-RC",
-      "estimated_building_name": "プラウド大島セントラル"
+      "estimated_building_name": null
     },
     {
       "id": "tx-20a54523cee9",
@@ -22778,7 +22858,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2012-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
     },
     {
       "id": "tx-a68f773f5ffb",
@@ -22818,7 +22898,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2013-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
     },
     {
       "id": "tx-2e8ca6cb62cc",
@@ -23178,7 +23258,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2011-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町 / ザ・パークハウス弦巻104号室"
     },
     {
       "id": "tx-9abc123d3d7d",
@@ -24318,7 +24398,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2013-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
     },
     {
       "id": "tx-b07c9d3390b1",
@@ -25098,7 +25178,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2013-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
     },
     {
       "id": "tx-2d2967c228ae",
@@ -25378,7 +25458,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2012-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
     },
     {
       "id": "tx-f7dbf6ffb9b3",
@@ -31878,7 +31958,7 @@
       "latitude": 35.7355613,
       "longitude": 139.6412751,
       "building_group_id": "131200290-2016-RC",
-      "estimated_building_name": "レジデンスコート練馬"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b8583edb4d03",
@@ -32442,6 +32522,32 @@
     }
   ],
   "building_groups": [
+    {
+      "group_id": "131010010-2007-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 4,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1646154,
+      "periods": [
+        "2021Q3",
+        "2021Q4",
+        "2022Q1",
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
     {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
@@ -35781,7 +35887,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": null
+      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
     },
     {
       "group_id": "131060070-2006-RC",
@@ -37256,7 +37362,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": "プラウド大島セントラル"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080090-2020-RC",
@@ -41153,7 +41259,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
+      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町 / ザ・パークハウス弦巻104号室"
     },
     {
       "group_id": "131120460-2012-RC",
@@ -41177,7 +41283,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ザ・パークハウス弦巻 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
     },
     {
       "group_id": "131120460-2013-RC",
@@ -41202,7 +41308,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "ザ・パークハウス弦巻 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室 / 【ザ・パークハウス弦巻】専用駐車場・ペット飼育可"
     },
     {
       "group_id": "131120460-2014-RC",
@@ -44666,7 +44772,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "レジデンスコート練馬"
+      "estimated_building_name": null
     },
     {
       "group_id": "131200340-2017-RC",
@@ -45095,7 +45201,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-18T17:36:59",
+    "updated_at": "2026-04-18T19:43:26",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -45132,8 +45238,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1622,
-    "building_group_count": 519,
+    "transaction_count": 1626,
+    "building_group_count": 520,
     "scope": "東京23区"
   }
 }
