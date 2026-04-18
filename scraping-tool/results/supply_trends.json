@@ -7375,11 +7375,11 @@
     {
       "date": "2026-04-18",
       "total_listings": 352,
-      "new_count": 352,
+      "new_count": 0,
       "removed_count": 0,
-      "updated_count": 0,
-      "price_changed_count": 0,
-      "avg_price_man": 10420,
+      "updated_count": 1,
+      "price_changed_count": 1,
+      "avg_price_man": 10418,
       "median_price_man": 10490,
       "price_distribution": {
         "under_10000": 142,
@@ -7409,7 +7409,7 @@
         },
         "新宿区": {
           "count": 27,
-          "avg_price_man": 10668,
+          "avg_price_man": 10650,
           "min_price_man": 9080,
           "max_price_man": 11500
         },
