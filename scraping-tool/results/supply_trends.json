@@ -7677,9 +7677,9 @@
     {
       "date": "2026-04-20",
       "total_listings": 346,
-      "new_count": 346,
+      "new_count": 0,
       "removed_count": 0,
-      "updated_count": 0,
+      "updated_count": 2,
       "price_changed_count": 0,
       "avg_price_man": 10430,
       "median_price_man": 10490,
