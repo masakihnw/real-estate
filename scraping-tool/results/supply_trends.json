@@ -7828,9 +7828,9 @@
     {
       "date": "2026-04-21",
       "total_listings": 350,
-      "new_count": 2,
-      "removed_count": 1,
-      "updated_count": 5,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 10437,
       "median_price_man": 10490,
@@ -7872,17 +7872,17 @@
           "min_price_man": 9980,
           "max_price_man": 11500
         },
-        "大田区": {
-          "count": 19,
-          "avg_price_man": 10043,
-          "min_price_man": 9080,
-          "max_price_man": 11000
-        },
         "品川区": {
           "count": 19,
           "avg_price_man": 10673,
           "min_price_man": 9280,
           "max_price_man": 11500
+        },
+        "大田区": {
+          "count": 19,
+          "avg_price_man": 10043,
+          "min_price_man": 9080,
+          "max_price_man": 11000
         },
         "足立区": {
           "count": 17,
