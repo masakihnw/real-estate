@@ -7872,17 +7872,17 @@
           "min_price_man": 9980,
           "max_price_man": 11500
         },
-        "品川区": {
-          "count": 19,
-          "avg_price_man": 10673,
-          "min_price_man": 9280,
-          "max_price_man": 11500
-        },
         "大田区": {
           "count": 19,
           "avg_price_man": 10043,
           "min_price_man": 9080,
           "max_price_man": 11000
+        },
+        "品川区": {
+          "count": 19,
+          "avg_price_man": 10673,
+          "min_price_man": 9280,
+          "max_price_man": 11500
         },
         "足立区": {
           "count": 17,
