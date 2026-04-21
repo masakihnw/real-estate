@@ -6398,7 +6398,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / イニシアイオ浅草"
+      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / 浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-cc94e3bb961c",
@@ -6418,7 +6418,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / イニシアイオ浅草"
+      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / 浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-08299a4de323",
@@ -6458,7 +6458,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / イニシアイオ浅草"
+      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / 浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-32bdb91adb5b",
@@ -6478,7 +6478,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / イニシアイオ浅草"
+      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / 浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-666badfbd5ae",
@@ -7218,7 +7218,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / イニシアイオ浅草"
+      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / 浅草タワー / イニシアイオ浅草"
     },
     {
       "id": "tx-88695abb0c63",
@@ -7638,7 +7638,7 @@
       "latitude": 35.6903221,
       "longitude": 139.7957621,
       "building_group_id": "131070130-2017-RC",
-      "estimated_building_name": "アスコットパーク森下"
+      "estimated_building_name": null
     },
     {
       "id": "tx-76379aea7f01",
@@ -36291,7 +36291,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / イニシアイオ浅草"
+      "estimated_building_name": "レーベンリヴァーレ浅草エヴァープライド / 浅草タワー / イニシアイオ浅草"
     },
     {
       "group_id": "131060230-2016-RC",
@@ -36882,7 +36882,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "アスコットパーク森下"
+      "estimated_building_name": null
     },
     {
       "group_id": "131070150-2009-RC",
@@ -45201,7 +45201,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-21T17:53:11",
+    "updated_at": "2026-04-21T20:04:12",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
