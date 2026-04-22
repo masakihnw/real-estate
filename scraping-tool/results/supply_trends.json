@@ -7978,15 +7978,15 @@
     },
     {
       "date": "2026-04-22",
-      "total_listings": 353,
+      "total_listings": 352,
       "new_count": 0,
-      "removed_count": 0,
-      "updated_count": 0,
-      "price_changed_count": 0,
-      "avg_price_man": 10438,
+      "removed_count": 1,
+      "updated_count": 4,
+      "price_changed_count": 1,
+      "avg_price_man": 10441,
       "median_price_man": 10490,
       "price_distribution": {
-        "under_10000": 138,
+        "under_10000": 137,
         "10000_11000": 119,
         "11000_12000": 96,
         "over_12000": 0,
@@ -8000,8 +8000,8 @@
           "max_price_man": 11500
         },
         "世田谷区": {
-          "count": 38,
-          "avg_price_man": 10584,
+          "count": 37,
+          "avg_price_man": 10619,
           "min_price_man": 9190,
           "max_price_man": 11500
         },
