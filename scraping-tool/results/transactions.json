@@ -1,6 +1,86 @@
 {
   "transactions": [
     {
+      "id": "tx-7a79cf145809",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cc97c6bab835",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c340de84d863",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfab263a1aa0",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -7918,7 +7998,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-6a573b090d94",
@@ -8978,7 +9058,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-dcf7c814bd41",
@@ -10338,7 +10418,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-7ffcd9e31304",
@@ -10358,7 +10438,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-SRC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-d4d31bf99452",
@@ -13258,7 +13338,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-bb42bfeb5a59",
@@ -13398,7 +13478,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-37f0a717c35c",
@@ -14938,7 +15018,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-4ebcd7923480",
@@ -16018,7 +16098,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-4c7c5d37de91",
@@ -16098,7 +16178,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-eecd2c87954b",
@@ -16418,7 +16498,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-30b7790f1d94",
@@ -17818,7 +17898,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-29edb66ba49e",
@@ -17918,7 +17998,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-9abd4946eefb",
@@ -18658,7 +18738,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-49d593689e05",
@@ -18698,7 +18778,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-7194d05355a9",
@@ -18778,7 +18858,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "id": "tx-fae3b8c9d192",
@@ -32443,6 +32523,32 @@
   ],
   "building_groups": [
     {
+      "group_id": "131010010-2007-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 4,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1646154,
+      "periods": [
+        "2021Q3",
+        "2021Q4",
+        "2022Q1",
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -37019,7 +37125,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "group_id": "131080020-2014-SRC",
@@ -37042,7 +37148,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": "ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9… / ブリリア有明シティタワー"
+      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
     },
     {
       "group_id": "131080020-2019-RC",
@@ -45095,7 +45201,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-22T17:50:52",
+    "updated_at": "2026-04-22T20:13:29",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -45132,8 +45238,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1622,
-    "building_group_count": 519,
+    "transaction_count": 1626,
+    "building_group_count": 520,
     "scope": "東京23区"
   }
 }
