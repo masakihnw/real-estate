@@ -7978,24 +7978,24 @@
     },
     {
       "date": "2026-04-22",
-      "total_listings": 352,
-      "new_count": 0,
+      "total_listings": 355,
+      "new_count": 3,
       "removed_count": 0,
-      "updated_count": 0,
-      "price_changed_count": 0,
+      "updated_count": 2,
+      "price_changed_count": 1,
       "avg_price_man": 10441,
       "median_price_man": 10490,
       "price_distribution": {
-        "under_10000": 137,
-        "10000_11000": 119,
-        "11000_12000": 96,
+        "under_10000": 138,
+        "10000_11000": 120,
+        "11000_12000": 97,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 70,
-          "avg_price_man": 10544,
+          "count": 72,
+          "avg_price_man": 10557,
           "min_price_man": 9080,
           "max_price_man": 11500
         },
@@ -8036,8 +8036,8 @@
           "max_price_man": 11000
         },
         "足立区": {
-          "count": 17,
-          "avg_price_man": 10414,
+          "count": 18,
+          "avg_price_man": 10362,
           "min_price_man": 9280,
           "max_price_man": 11500
         },
@@ -16048,8 +16048,8 @@
     {
       "date": "2026-04-22",
       "total_listings": 97,
-      "new_count": 0,
-      "removed_count": 0,
+      "new_count": 1,
+      "removed_count": 1,
       "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 9215,
@@ -16116,17 +16116,17 @@
           "min_price_man": 4400,
           "max_price_man": 8900
         },
-        "台東区": {
-          "count": 4,
-          "avg_price_man": 9790,
-          "min_price_man": 9390,
-          "max_price_man": 10190
-        },
         "板橋区": {
           "count": 4,
           "avg_price_man": 8800,
           "min_price_man": 8800,
           "max_price_man": 8800
+        },
+        "台東区": {
+          "count": 4,
+          "avg_price_man": 9790,
+          "min_price_man": 9390,
+          "max_price_man": 10190
         },
         "足立区": {
           "count": 4,
