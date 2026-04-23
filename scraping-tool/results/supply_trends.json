@@ -8130,10 +8130,10 @@
     {
       "date": "2026-04-23",
       "total_listings": 357,
-      "new_count": 7,
-      "removed_count": 1,
-      "updated_count": 5,
-      "price_changed_count": 3,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10434,
       "median_price_man": 10490,
       "price_distribution": {
@@ -16356,10 +16356,10 @@
     {
       "date": "2026-04-23",
       "total_listings": 97,
-      "new_count": 1,
-      "removed_count": 1,
-      "updated_count": 1,
-      "price_changed_count": 1,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 9169,
       "median_price_man": 9480,
       "price_distribution": {
