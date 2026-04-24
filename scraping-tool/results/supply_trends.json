@@ -8281,15 +8281,15 @@
     {
       "date": "2026-04-24",
       "total_listings": 357,
-      "new_count": 357,
-      "removed_count": 0,
-      "updated_count": 0,
-      "price_changed_count": 0,
-      "avg_price_man": 10434,
+      "new_count": 2,
+      "removed_count": 2,
+      "updated_count": 15,
+      "price_changed_count": 1,
+      "avg_price_man": 10440,
       "median_price_man": 10490,
       "price_distribution": {
-        "under_10000": 140,
-        "10000_11000": 121,
+        "under_10000": 138,
+        "10000_11000": 123,
         "11000_12000": 96,
         "over_12000": 0,
         "undecided": 0
@@ -8319,16 +8319,16 @@
           "min_price_man": 9080,
           "max_price_man": 11500
         },
-        "品川区": {
-          "count": 21,
-          "avg_price_man": 10536,
-          "min_price_man": 9180,
-          "max_price_man": 11500
-        },
         "中央区": {
           "count": 20,
           "avg_price_man": 11021,
           "min_price_man": 9980,
+          "max_price_man": 11500
+        },
+        "品川区": {
+          "count": 20,
+          "avg_price_man": 10598,
+          "min_price_man": 9180,
           "max_price_man": 11500
         },
         "大田区": {
@@ -8338,14 +8338,14 @@
           "max_price_man": 11000
         },
         "足立区": {
-          "count": 18,
-          "avg_price_man": 10306,
+          "count": 19,
+          "avg_price_man": 10316,
           "min_price_man": 9280,
           "max_price_man": 11500
         },
         "台東区": {
           "count": 14,
-          "avg_price_man": 10397,
+          "avg_price_man": 10481,
           "min_price_man": 9180,
           "max_price_man": 11390
         },
