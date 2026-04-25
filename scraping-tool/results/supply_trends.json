@@ -8432,9 +8432,9 @@
     {
       "date": "2026-04-25",
       "total_listings": 358,
-      "new_count": 2,
-      "removed_count": 1,
-      "updated_count": 2,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 10446,
       "median_price_man": 10499,
@@ -8512,17 +8512,17 @@
           "min_price_man": 9280,
           "max_price_man": 11180
         },
-        "板橋区": {
-          "count": 12,
-          "avg_price_man": 9952,
-          "min_price_man": 9080,
-          "max_price_man": 11000
-        },
         "北区": {
           "count": 12,
           "avg_price_man": 10355,
           "min_price_man": 9380,
           "max_price_man": 11480
+        },
+        "板橋区": {
+          "count": 12,
+          "avg_price_man": 9952,
+          "min_price_man": 9080,
+          "max_price_man": 11000
         },
         "練馬区": {
           "count": 10,
