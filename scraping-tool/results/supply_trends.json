@@ -8432,9 +8432,9 @@
     {
       "date": "2026-04-25",
       "total_listings": 358,
-      "new_count": 0,
+      "new_count": 358,
       "removed_count": 0,
-      "updated_count": 6,
+      "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 10446,
       "median_price_man": 10499,

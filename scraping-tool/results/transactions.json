@@ -1,86 +1,6 @@
 {
   "transactions": [
     {
-      "id": "tx-7a79cf145809",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2021Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-cc97c6bab835",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2021Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-c340de84d863",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2022Q1",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-bfab263a1aa0",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 9800,
-      "area_m2": 65.0,
-      "m2_price": 1507692,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2022Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -7718,7 +7638,7 @@
       "latitude": 35.7159673,
       "longitude": 139.8093821,
       "building_group_id": "131070220-2017-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラス押上 桜花テラス"
     },
     {
       "id": "tx-23532e9a0219",
@@ -11098,7 +11018,7 @@
       "latitude": 35.6918189,
       "longitude": 139.8160147,
       "building_group_id": "131080430-2014-RC",
-      "estimated_building_name": "パークホームズ錦糸町猿江恩賜公園"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9a49bb933b57",
@@ -15658,7 +15578,7 @@
       "latitude": 35.6899027,
       "longitude": 139.8350597,
       "building_group_id": "131080090-2020-RC",
-      "estimated_building_name": "パレステージ大島"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0fac933b736e",
@@ -17838,7 +17758,7 @@
       "latitude": 35.6918189,
       "longitude": 139.8160147,
       "building_group_id": "131080430-2014-RC",
-      "estimated_building_name": "パークホームズ錦糸町猿江恩賜公園"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5b59cbe366a2",
@@ -19438,7 +19358,7 @@
       "latitude": 35.6918189,
       "longitude": 139.8160147,
       "building_group_id": "131080430-2014-RC",
-      "estimated_building_name": "パークホームズ錦糸町猿江恩賜公園"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a0d004fe47b1",
@@ -29498,7 +29418,7 @@
       "latitude": 35.7262074,
       "longitude": 139.6864893,
       "building_group_id": "131160190-2022-RC",
-      "estimated_building_name": "プラウド椎名町ガーデンテラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b44c7638f3bc",
@@ -32522,32 +32442,6 @@
     }
   ],
   "building_groups": [
-    {
-      "group_id": "131010010-2007-RC",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "built_year": 2007,
-      "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "transaction_count": 4,
-      "price_range_man": [
-        9800,
-        11000
-      ],
-      "avg_m2_price": 1646154,
-      "periods": [
-        "2021Q3",
-        "2021Q4",
-        "2022Q1",
-        "2022Q3"
-      ],
-      "latest_period": "2022Q3",
-      "estimated_building_name": null
-    },
     {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
@@ -36953,7 +36847,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "アトラス押上 桜花テラス"
     },
     {
       "group_id": "131070240-2012-RC",
@@ -37385,7 +37279,7 @@
         "2024Q3"
       ],
       "latest_period": "2024Q3",
-      "estimated_building_name": "パレステージ大島"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080090-2023-RC",
@@ -38797,7 +38691,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "パークホームズ錦糸町猿江恩賜公園"
+      "estimated_building_name": null
     },
     {
       "group_id": "131090010-2020-RC",
@@ -43795,7 +43689,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "プラウド椎名町ガーデンテラス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131160200-2007-RC",
@@ -45201,7 +45095,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-25T17:35:22",
+    "updated_at": "2026-04-25T19:47:45",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -45238,8 +45132,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1626,
-    "building_group_count": 520,
+    "transaction_count": 1622,
+    "building_group_count": 519,
     "scope": "東京23区"
   }
 }
