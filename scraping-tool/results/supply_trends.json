@@ -8583,10 +8583,10 @@
     {
       "date": "2026-04-26",
       "total_listings": 355,
-      "new_count": 2,
-      "removed_count": 1,
-      "updated_count": 4,
-      "price_changed_count": 1,
+      "new_count": 0,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
       "avg_price_man": 10434,
       "median_price_man": 10490,
       "price_distribution": {
