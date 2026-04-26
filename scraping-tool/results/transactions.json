@@ -3598,7 +3598,7 @@
       "latitude": 35.7302853,
       "longitude": 139.751492,
       "building_group_id": "131050150-2013-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンシア本駒込"
     },
     {
       "id": "tx-71bdc98f1be7",
@@ -4358,7 +4358,7 @@
       "latitude": 35.7302853,
       "longitude": 139.751492,
       "building_group_id": "131050150-2013-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンシア本駒込"
     },
     {
       "id": "tx-f36da2dbe852",
@@ -19378,7 +19378,7 @@
       "latitude": 35.6485139,
       "longitude": 139.8119175,
       "building_group_id": "131080290-2012-RC",
-      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳 キャナルステージ / クレヴィア辰巳"
+      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
     },
     {
       "id": "tx-f7925682a29f",
@@ -35539,7 +35539,7 @@
         "2023Q1"
       ],
       "latest_period": "2023Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "オープンレジデンシア本駒込"
     },
     {
       "group_id": "131050150-2015-RC",
@@ -38092,7 +38092,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳 キャナルステージ / クレヴィア辰巳"
+      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
     },
     {
       "group_id": "131080300-2016-RC",
@@ -45095,7 +45095,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-26T04:19:12",
+    "updated_at": "2026-04-26T06:55:04",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
