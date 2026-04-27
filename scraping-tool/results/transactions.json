@@ -1,6 +1,106 @@
 {
   "transactions": [
     {
+      "id": "tx-7a79cf145809",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cc97c6bab835",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c340de84d863",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfab263a1aa0",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-623a7c0c1b95",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2012-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -8878,7 +8978,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-5d5ef1138d40",
@@ -8898,7 +8998,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-e49a27201e91",
@@ -9198,7 +9298,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-c7f60787b0f0",
@@ -10858,7 +10958,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-9d22d972e06b",
@@ -13038,7 +13138,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-88bd1f6d961d",
@@ -13078,7 +13178,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-b63d3a9649c9",
@@ -13098,7 +13198,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-fe1e2ae5bf06",
@@ -13118,7 +13218,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-e3f29842fd5e",
@@ -14618,7 +14718,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-a37aa1413c01",
@@ -14698,7 +14798,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-0566bb2d4e30",
@@ -14738,7 +14838,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-61c2b6932421",
@@ -14798,7 +14898,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-b8f09a4b6812",
@@ -15538,7 +15638,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-004334cb2c51",
@@ -15558,7 +15658,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-35a3d5815cf0",
@@ -16398,7 +16498,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-b7e6c969fb98",
@@ -16478,7 +16578,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-b13b5f490cda",
@@ -16918,7 +17018,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-44178d7a1465",
@@ -17158,7 +17258,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-af202bd52690",
@@ -17998,7 +18098,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-2d4d5e9b4e0f",
@@ -18778,7 +18878,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-e92238cd07b1",
@@ -18938,7 +19038,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-3f1aef3a8b54",
@@ -18998,7 +19098,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-11a2ef730252",
@@ -19598,7 +19698,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-dcdfb3fe3d14",
@@ -19618,7 +19718,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-893d144986a1",
@@ -20318,7 +20418,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-a8e1172c8375",
@@ -20418,7 +20518,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-aa2c0742dc5c",
@@ -25598,7 +25698,7 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2016-RC",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "id": "tx-07df9a3110ea",
@@ -25618,7 +25718,7 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2016-RC",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "id": "tx-c250d9c63955",
@@ -34595,8 +34695,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373437,
-      "longitude": 139.6544918,
+      "latitude": 35.7373912,
+      "longitude": 139.6544824,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -35302,6 +35402,55 @@
     }
   ],
   "building_groups": [
+    {
+      "group_id": "131010010-2007-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 4,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1646154,
+      "periods": [
+        "2021Q3",
+        "2021Q4",
+        "2022Q1",
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131010010-2012-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1833333,
+      "periods": [
+        "2025Q4"
+      ],
+      "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
     {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
@@ -40853,7 +41002,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ 湾岸タワー レックスガーデン / ザ・湾岸タワーレックスガーデン"
+      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "group_id": "131080180-2014-RC",
@@ -44287,7 +44436,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "group_id": "131120400-2018-RC",
@@ -48618,8 +48767,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373437,
-      "longitude": 139.6544918,
+      "latitude": 35.7373912,
+      "longitude": 139.6544824,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -49109,7 +49258,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-27T04:22:45",
+    "updated_at": "2026-04-27T07:19:36",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -49146,8 +49295,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1765,
-    "building_group_count": 566,
+    "transaction_count": 1770,
+    "building_group_count": 568,
     "scope": "東京23区"
   }
 }
