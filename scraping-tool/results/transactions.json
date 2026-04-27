@@ -1,106 +1,6 @@
 {
   "transactions": [
     {
-      "id": "tx-7a79cf145809",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2021Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-cc97c6bab835",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2021Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-c340de84d863",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 65.0,
-      "m2_price": 1692308,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2022Q1",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-bfab263a1aa0",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 9800,
-      "area_m2": 65.0,
-      "m2_price": 1507692,
-      "layout": "2LDK",
-      "built_year": 2007,
-      "structure": "RC",
-      "trade_period": "2022Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2007-RC",
-      "estimated_building_name": null
-    },
-    {
-      "id": "tx-623a7c0c1b95",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "district_code": "131010010",
-      "price_man": 11000,
-      "area_m2": 60.0,
-      "m2_price": 1833333,
-      "layout": "2LDK",
-      "built_year": 2012,
-      "structure": "RC",
-      "trade_period": "2025Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "building_group_id": "131010010-2012-RC",
-      "estimated_building_name": null
-    },
-    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -7715,8 +7615,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "両国",
       "estimated_walk_min": 10,
-      "latitude": 35.6974024,
-      "longitude": 139.784686,
+      "latitude": 35.6973931,
+      "longitude": 139.7846834,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -34695,8 +34595,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.7373437,
+      "longitude": 139.6544918,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -35402,55 +35302,6 @@
     }
   ],
   "building_groups": [
-    {
-      "group_id": "131010010-2007-RC",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "built_year": 2007,
-      "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "transaction_count": 4,
-      "price_range_man": [
-        9800,
-        11000
-      ],
-      "avg_m2_price": 1646154,
-      "periods": [
-        "2021Q3",
-        "2021Q4",
-        "2022Q1",
-        "2022Q3"
-      ],
-      "latest_period": "2022Q3",
-      "estimated_building_name": null
-    },
-    {
-      "group_id": "131010010-2012-RC",
-      "prefecture": "東京都",
-      "ward": "千代田区",
-      "district": "飯田橋",
-      "built_year": 2012,
-      "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
-      "transaction_count": 1,
-      "price_range_man": [
-        11000,
-        11000
-      ],
-      "avg_m2_price": 1833333,
-      "periods": [
-        "2025Q4"
-      ],
-      "latest_period": "2025Q4",
-      "estimated_building_name": null
-    },
     {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
@@ -38731,8 +38582,8 @@
       "structure": "RC",
       "nearest_station": "両国",
       "estimated_walk_min": 10,
-      "latitude": 35.6974024,
-      "longitude": 139.784686,
+      "latitude": 35.6973931,
+      "longitude": 139.7846834,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -48767,8 +48618,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.7373437,
+      "longitude": 139.6544918,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -49258,7 +49109,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-27T07:19:36",
+    "updated_at": "2026-04-27T11:05:10",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -49295,8 +49146,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1770,
-    "building_group_count": 568,
+    "transaction_count": 1765,
+    "building_group_count": 566,
     "scope": "東京23区"
   }
 }
