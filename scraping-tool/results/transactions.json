@@ -25598,7 +25598,7 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2016-RC",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "id": "tx-07df9a3110ea",
@@ -25618,7 +25618,7 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2016-RC",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "id": "tx-c250d9c63955",
@@ -44287,7 +44287,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "group_id": "131120400-2018-RC",
@@ -49109,7 +49109,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-29T04:25:51",
+    "updated_at": "2026-04-29T07:14:46",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
