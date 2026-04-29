@@ -34595,8 +34595,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.7373437,
+      "longitude": 139.6544918,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -48618,8 +48618,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.7373437,
+      "longitude": 139.6544918,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -49109,7 +49109,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-29T14:58:02",
+    "updated_at": "2026-04-29T18:29:17",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
