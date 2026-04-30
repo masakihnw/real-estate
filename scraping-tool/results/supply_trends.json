@@ -9186,16 +9186,16 @@
     },
     {
       "date": "2026-04-30",
-      "total_listings": 360,
+      "total_listings": 359,
       "new_count": 0,
-      "removed_count": 0,
-      "updated_count": 0,
+      "removed_count": 1,
+      "updated_count": 1,
       "price_changed_count": 0,
-      "avg_price_man": 10421,
+      "avg_price_man": 10420,
       "median_price_man": 10490,
       "price_distribution": {
         "under_10000": 146,
-        "10000_11000": 121,
+        "10000_11000": 120,
         "11000_12000": 93,
         "over_12000": 0,
         "undecided": 0
@@ -9250,8 +9250,8 @@
           "max_price_man": 11000
         },
         "台東区": {
-          "count": 16,
-          "avg_price_man": 10469,
+          "count": 15,
+          "avg_price_man": 10435,
           "min_price_man": 9180,
           "max_price_man": 11480
         },
