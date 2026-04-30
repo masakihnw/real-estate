@@ -7614,9 +7614,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6973931,
-      "longitude": 139.7846834,
+      "estimated_walk_min": 8,
+      "latitude": 35.6973915,
+      "longitude": 139.7863101,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -14858,7 +14858,7 @@
       "latitude": 35.6828746,
       "longitude": 139.8037452,
       "building_group_id": "131080190-2006-RC",
-      "estimated_building_name": "パークハウス清澄白河リバーサイド"
+      "estimated_building_name": null
     },
     {
       "id": "tx-20fc717701ba",
@@ -14918,7 +14918,7 @@
       "latitude": 35.6828746,
       "longitude": 139.8037452,
       "building_group_id": "131080190-2006-RC",
-      "estimated_building_name": "パークハウス清澄白河リバーサイド"
+      "estimated_building_name": null
     },
     {
       "id": "tx-eaf8a9c87bfd",
@@ -16638,7 +16638,7 @@
       "latitude": 35.6828746,
       "longitude": 139.8037452,
       "building_group_id": "131080190-2006-RC",
-      "estimated_building_name": "パークハウス清澄白河リバーサイド"
+      "estimated_building_name": null
     },
     {
       "id": "tx-30b7790f1d94",
@@ -19018,7 +19018,7 @@
       "latitude": 35.6828746,
       "longitude": 139.8037452,
       "building_group_id": "131080190-2006-RC",
-      "estimated_building_name": "パークハウス清澄白河リバーサイド"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ddc4ad6db12b",
@@ -34595,8 +34595,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.7372962,
+      "longitude": 139.6545012,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -38581,9 +38581,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6973931,
-      "longitude": 139.7846834,
+      "estimated_walk_min": 8,
+      "latitude": 35.6973915,
+      "longitude": 139.7863101,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -40987,7 +40987,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "パークハウス清澄白河リバーサイド"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080190-2008-RC",
@@ -48618,8 +48618,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.7372962,
+      "longitude": 139.6545012,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -49109,7 +49109,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-30T14:56:46",
+    "updated_at": "2026-04-30T18:10:27",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
