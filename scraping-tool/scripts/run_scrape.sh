@@ -31,10 +31,10 @@ echo "--- 中古 + 新築 並列スクレイピング開始 ---" >&2
 
 _t_start=$(date +%s)
 
-python3 main.py --source suumo --property-type chuko -o "$CHUKO_RAW" &
+python3 main.py --source all --property-type chuko -o "$CHUKO_RAW" &
 CHUKO_PID=$!
 
-python3 main.py --source suumo --property-type shinchiku -o "$SHINCHIKU_RAW" &
+python3 main.py --source all --property-type shinchiku -o "$SHINCHIKU_RAW" &
 SHINCHIKU_PID=$!
 
 echo "[並列] 中古 (PID: $CHUKO_PID) + 新築 (PID: $SHINCHIKU_PID) 実行中..." >&2
