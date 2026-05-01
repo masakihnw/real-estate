@@ -185,6 +185,7 @@ final class ListingStore {
         // 両ソースが304（データ変更なし）の場合はスキップ
         if !bothNotModified {
             if useSupabase {
+                await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
                 await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
                     Task { @MainActor in
                         syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
@@ -525,8 +526,9 @@ final class ListingStore {
                 NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
             }
 
-            // アノテーション同期
+            // アノテーション同期（Supabase 初回はローカルデータを push してから pull）
             if useSupabase {
+                await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
                 await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
                     Task { @MainActor in
                         syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
