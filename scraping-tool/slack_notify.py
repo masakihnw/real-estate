@@ -365,13 +365,22 @@ def main() -> None:
     current = load_json(current_path, missing_ok=True, default=[])
     previous = load_json(previous_path, missing_ok=True, default=[]) if previous_path else []
 
-    # 投稿対象は資産性B以上のみ。前回ありかつB以上の新規・削除がなければ投稿をスキップする
+    # 通知判定:
+    #   - 新規追加あり → 毎回通知
+    #   - 削除のみ → 朝の回（JST 9:00 = UTC 0）だけ通知
+    #   - 変更なし → スキップ
+    from datetime import datetime, timezone
+    current_utc_hour = datetime.now(timezone.utc).hour
+    is_morning = current_utc_hour in (0, 1)  # UTC 0-1 = JST 9-10時台
     if previous:
         diff = compare_listings(current, previous)
         diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
         diff_removed_a = [r for r in diff.get("removed", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
         if not diff_new_a and not diff_removed_a:
             logger.warning("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします")
+            sys.exit(0)
+        elif not diff_new_a and diff_removed_a and not is_morning:
+            logger.warning("削除のみの変更 — 朝の回（JST 9:00）まで通知を保留します")
             sys.exit(0)
 
     # CI（GitHub Actions）では GITHUB_REPOSITORY / GITHUB_REF_NAME から正しい URL を組み立てる
