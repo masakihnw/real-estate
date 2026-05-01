@@ -43,6 +43,8 @@
 		66EF22D9734F413C7E26F3B2 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438CDAB54F0C420E60FF2E31 /* BackgroundRefreshManager.swift */; };
 		6A0EA76B5A6736641390DA6F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A60F143943F3CB7DDAC336 /* DashboardView.swift */; };
 		6A37F920CBBA5FC9545DEF3F /* ListingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5549338A98AC303BCC728D /* ListingStore.swift */; };
+		AABB001122334455DEADBEE1 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB001122334455DEADBEEF /* SupabaseClient.swift */; };
+		AABB001122334455DEADBEE2 /* SupabaseListingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB001122334455DEADBEE0 /* SupabaseListingStore.swift */; };
 		6AC9E38350EA1E689D272877 /* CommuteDestinationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6D0D2EC190261EE2AC889 /* CommuteDestinationSettingsView.swift */; };
 		6B368955BF644132571E4C9D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A46680E300D1AAFC546F4450 /* FirebaseAuth */; };
 		7040BD509BB73F81C2B3CD3D /* LoanCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853FEEF66F713933C5CC415D /* LoanCalculator.swift */; };
@@ -189,6 +191,8 @@
 		E6DC892696F0E098888C28B1 /* TransactionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionMapView.swift; sourceTree = "<group>"; };
 		EA3890AAC58D1F45D703CF33 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		EA5549338A98AC303BCC728D /* ListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingStore.swift; sourceTree = "<group>"; };
+		AABB001122334455DEADBEEF /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
+		AABB001122334455DEADBEE0 /* SupabaseListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseListingStore.swift; sourceTree = "<group>"; };
 		EBAE64911ACD8407EC794380 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EC43BF3AAA685CC0040239D7 /* RentVsBuyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentVsBuyView.swift; sourceTree = "<group>"; };
 		EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTabView.swift; sourceTree = "<group>"; };
@@ -220,6 +224,8 @@
 				4C01B541CE8BDAC3B3E2C7BD /* CommuteTimeService.swift */,
 				32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */,
 				EA5549338A98AC303BCC728D /* ListingStore.swift */,
+				AABB001122334455DEADBEEF /* SupabaseClient.swift */,
+				AABB001122334455DEADBEE0 /* SupabaseListingStore.swift */,
 				06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */,
 				A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */,
 				BCDE998C1AE443D8DBEC7DB2 /* PDFExporter.swift */,
@@ -487,6 +493,8 @@
 				28F22887EDD883FDBE3CF7E7 /* ListingFilterSheet.swift in Sources */,
 				D0CB8E0312FD2887D70458A7 /* ListingListView.swift in Sources */,
 				6A37F920CBBA5FC9545DEF3F /* ListingStore.swift in Sources */,
+				AABB001122334455DEADBEE1 /* SupabaseClient.swift in Sources */,
+				AABB001122334455DEADBEE2 /* SupabaseListingStore.swift in Sources */,
 				7040BD509BB73F81C2B3CD3D /* LoanCalculator.swift in Sources */,
 				A4CBD4C7F34B166222CCED63 /* LoginView.swift in Sources */,
 				27560686B331DE043F6A5E92 /* MapTabView.swift in Sources */,

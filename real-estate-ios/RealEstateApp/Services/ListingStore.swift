@@ -27,6 +27,13 @@ final class ListingStore {
     static let defaultChukoURL = "https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/latest.json"
     static let defaultShinchikuURL = "https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/latest_shinchiku.json"
 
+    // MARK: - データソース切り替え
+    private let useSupabaseKey = "realestate.useSupabase"
+    var useSupabase: Bool {
+        get { defaults.bool(forKey: useSupabaseKey) }
+        set { defaults.set(newValue, forKey: useSupabaseKey) }
+    }
+
     private(set) var isRefreshing = false
     private(set) var lastError: String?
     /// 非致命的な同期警告（Firebase いいね・メモ、通勤時間計算など）。UI で任意に表示可能。
@@ -100,6 +107,12 @@ final class ListingStore {
         lastError = nil
         syncWarning = nil
         lastRefreshHadChanges = false
+
+        // Supabase モードの場合は SupabaseListingStore に委譲
+        if useSupabase {
+            await refreshFromSupabase(modelContext: modelContext)
+            return
+        }
 
         // SwiftData が空の場合は ETag をクリアしてフルフェッチを強制する。
         // アプリの再インストール/リビルドで SwiftData はクリアされるが
@@ -479,6 +492,50 @@ final class ListingStore {
         existing.listingScore = new.listingScore
         existing.altSourcesJSON = new.altSourcesJSON
         // existing.memo, existing.isLiked, existing.isNew, existing.isNewBuilding, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
+    }
+
+    /// SupabaseListingStore から呼ばれる public 版 update（同じロジック）
+    func updateFromSupabase(_ existing: Listing, from new: Listing) {
+        update(existing, from: new)
+    }
+
+    /// Supabase 経由でデータ取得・同期
+    private func refreshFromSupabase(modelContext: ModelContext) async {
+        do {
+            let (chukoNew, shinNew) = try await SupabaseListingStore.shared.refresh(modelContext: modelContext)
+            let totalNew = chukoNew + shinNew
+            lastRefreshHadChanges = totalNew > 0
+
+            let fetchedAt = Date()
+            await MainActor.run {
+                lastFetchedAt = fetchedAt
+                defaults.set(fetchedAt, forKey: lastFetchedKey)
+                isRefreshing = false
+            }
+
+            if totalNew > 0 {
+                NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
+            }
+
+            // Firestore アノテーション同期
+            await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                Task { @MainActor in
+                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                }
+            }
+
+            // 通勤時間計算
+            await CommuteTimeService.shared.calculateForAllListings(modelContext: modelContext) { [self] msg in
+                Task { @MainActor in
+                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                }
+            }
+        } catch {
+            await MainActor.run {
+                lastError = error.localizedDescription
+                isRefreshing = false
+            }
+        }
     }
 
     func requestNotificationPermission() {
