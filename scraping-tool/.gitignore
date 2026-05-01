@@ -17,6 +17,10 @@ data/shinchiku_html_cache/
 # results/previous.json は Slack 差分用の一時ファイル（コミットしない）
 results/previous.json
 
+# SQLite WAL 補助ファイル
+*.db-wal
+*.db-shm
+
 # Python
 __pycache__/
 *.py[cod]

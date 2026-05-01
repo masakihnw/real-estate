@@ -119,6 +119,7 @@ CREATE INDEX IF NOT EXISTS idx_listing_events_listing_id ON listing_events(listi
 CREATE INDEX IF NOT EXISTS idx_listing_events_event_type ON listing_events(event_type);
 CREATE INDEX IF NOT EXISTS idx_listings_is_active ON listings(is_active);
 CREATE INDEX IF NOT EXISTS idx_listings_normalized_name ON listings(normalized_name);
+CREATE INDEX IF NOT EXISTS idx_listings_property_type ON listings(property_type);
 """
 
 
@@ -377,28 +378,30 @@ def get_price_history(conn: sqlite3.Connection, listing_id: int) -> list[dict]:
 # Batch sync
 # ---------------------------------------------------------------------------
 
-def sync_scrape_results(conn: sqlite3.Connection, scraped_listings: list[dict], source: str) -> dict:
+def sync_scrape_results(
+    conn: sqlite3.Connection,
+    scraped_listings: list[dict],
+    source: str,
+    property_type: str | None = None,
+) -> dict:
     """Main entry point: sync a batch of scraped listings from one source.
 
     Returns a summary dict with counts of new, updated, removed, unchanged listings.
 
-    Logic:
-    1. For each scraped listing, compute identity_key
-    2. Upsert into listings table
-    3. Upsert into listing_sources table
-    4. Detect price changes -> record in price_history + listing_events
-    5. Detect newly appeared listings -> record 'appeared' event
-    6. Mark listings not in current batch as inactive -> record 'removed' event
-    7. Detect re-appeared listings -> record 'reappeared' event
+    Args:
+        property_type: If provided, only mark listings of this type as inactive when
+                       they're missing from the batch. Prevents cross-contamination
+                       between chuko/shinchiku when they share the same source.
     """
-    from report_utils import identity_key as compute_identity_key, normalize_listing_name
+    from report_utils import identity_key_str, normalize_listing_name
 
     summary = {"new": 0, "updated": 0, "removed": 0, "unchanged": 0, "reappeared": 0}
     seen_listing_ids: set[int] = set()
 
     for item in scraped_listings:
-        key_tuple = compute_identity_key(item)
-        ik = "|".join(str(v) if v is not None else "" for v in key_tuple)
+        ik = identity_key_str(item)
+        if not ik or all(p in ("None", "") for p in ik.split("|")):
+            continue
 
         normalized_name = normalize_listing_name(item.get("name") or "")
         listing_data = {
@@ -463,13 +466,8 @@ def sync_scrape_results(conn: sqlite3.Connection, scraped_listings: list[dict], 
         upsert_listing_source(conn, listing_id, source, source_data)
 
         if existing_source is None:
-            # Brand new source for this listing
-            if existing is None:
-                record_event(conn, listing_id, source, "appeared")
-                summary["new"] += 1
-            else:
-                record_event(conn, listing_id, source, "appeared")
-                summary["new"] += 1
+            record_event(conn, listing_id, source, "appeared")
+            summary["new"] += 1
         elif was_inactive_source:
             record_event(conn, listing_id, source, "reappeared")
             summary["reappeared"] += 1
@@ -477,12 +475,21 @@ def sync_scrape_results(conn: sqlite3.Connection, scraped_listings: list[dict], 
             summary["unchanged"] += 1
 
     # Mark listings from this source that were not in the current batch as inactive
-    currently_active = conn.execute(
-        """SELECT ls.listing_id, ls.id AS source_id
-           FROM listing_sources ls
-           WHERE ls.source = ? AND ls.is_active = 1""",
-        (source,),
-    ).fetchall()
+    if property_type:
+        currently_active = conn.execute(
+            """SELECT ls.listing_id, ls.id AS source_id
+               FROM listing_sources ls
+               JOIN listings l ON l.id = ls.listing_id
+               WHERE ls.source = ? AND ls.is_active = 1 AND l.property_type = ?""",
+            (source, property_type),
+        ).fetchall()
+    else:
+        currently_active = conn.execute(
+            """SELECT ls.listing_id, ls.id AS source_id
+               FROM listing_sources ls
+               WHERE ls.source = ? AND ls.is_active = 1""",
+            (source,),
+        ).fetchall()
 
     for row in currently_active:
         if row["listing_id"] not in seen_listing_ids:
