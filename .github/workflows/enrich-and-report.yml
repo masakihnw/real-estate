@@ -472,6 +472,7 @@ jobs:
             scraping-tool/data/station_cache.json \
             scraping-tool/data/reverse_geocode_cache.json \
             scraping-tool/data/first_seen_at.json \
+            scraping-tool/data/listings.db \
             2>/dev/null || true
           [ -d scraping-tool/results/risk_geojson ] && git add scraping-tool/results/risk_geojson/
 

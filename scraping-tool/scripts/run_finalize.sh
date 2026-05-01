@@ -133,6 +133,18 @@ echo "[TIMING] upload_floor_plans: $(( ($(date +%s) - _t) ))s" >&2
 
 # ──────────────────────────── is_new フラグ注入 ────────────────────────────
 
+# ──────────────────────────── SQLite DB 同期 ────────────────────────────
+
+echo "--- SQLite DB 同期 ---" >&2
+_t=$(date +%s)
+
+python3 scripts/sync_db.py --output-dir "${OUTPUT_DIR}" \
+    || echo "SQLite DB 同期失敗（続行）" >&2
+
+echo "[TIMING] sync_db: $(( ($(date +%s) - _t) ))s" >&2
+
+# ──────────────────────────── is_new フラグ注入 ────────────────────────────
+
 echo "--- is_new フラグ注入 ---" >&2
 
 python3 scripts/finalize_helpers.py inject-new --output-dir "${OUTPUT_DIR}" \
