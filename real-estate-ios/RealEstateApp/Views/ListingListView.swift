@@ -595,7 +595,7 @@ struct ListingListView: View {
                     for url in selectedForDeletion {
                         if let listing = cachedFiltered.first(where: { $0.url == url }) {
                             listing.isLiked = false
-                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                            AnnotationRouter.pushLikeState(for: listing)
                         }
                     }
                     selectedForDeletion.removeAll()
@@ -890,7 +890,7 @@ struct ListingListView: View {
                         onLikeTapped: {
                             listing.isLiked.toggle()
                             SaveErrorHandler.shared.save(modelContext, source: "ListingList")
-                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                            AnnotationRouter.pushLikeState(for: listing)
                             if listing.isLiked {
                                 SpotlightIndexer.indexListing(listing)
                             } else {
@@ -920,7 +920,7 @@ struct ListingListView: View {
                         Button {
                             listing.isLiked.toggle()
                             SaveErrorHandler.shared.save(modelContext, source: "ListingList")
-                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                            AnnotationRouter.pushLikeState(for: listing)
                             if listing.isLiked {
                                 SpotlightIndexer.indexListing(listing)
                             } else {
@@ -950,7 +950,7 @@ struct ListingListView: View {
                         Button {
                             listing.isLiked.toggle()
                             SaveErrorHandler.shared.save(modelContext, source: "ListingList")
-                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                            AnnotationRouter.pushLikeState(for: listing)
                         } label: {
                             Label(listing.isLiked ? "いいね解除" : "いいね", systemImage: listing.isLiked ? "heart.slash" : "heart")
                         }
