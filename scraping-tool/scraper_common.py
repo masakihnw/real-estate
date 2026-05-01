@@ -9,6 +9,7 @@ suumo_scraper / suumo_shinchiku_scraper / homes_scraper / homes_shinchiku_scrape
 import json
 import re
 import sys
+from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
@@ -54,6 +55,7 @@ def is_waf_challenge(html: str) -> bool:
 # ──────────────────────────── 駅乗降客数 ────────────────────────────
 
 
+@lru_cache(maxsize=1)
 def load_station_passengers() -> dict[str, int]:
     """data/station_passengers.json から 駅名 → 乗降客数 を読み込む。"""
     path = Path(__file__).resolve().parent / "data" / "station_passengers.json"

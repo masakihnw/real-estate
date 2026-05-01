@@ -1,0 +1,94 @@
+{
+  "patterns": [
+    {
+      "developer": "三井不動産",
+      "brokerage": "rehouse",
+      "name_patterns": [
+        "パークタワー",
+        "パークホームズ",
+        "パークシティ",
+        "パークコート",
+        "パークリュクス",
+        "パークマンション",
+        "パークウェル",
+        "パークアクシス"
+      ]
+    },
+    {
+      "developer": "野村不動産",
+      "brokerage": "nomucom",
+      "name_patterns": [
+        "プラウド",
+        "プラウドタワー",
+        "プラウドシティ",
+        "プラウドフラット",
+        "オハナ"
+      ]
+    },
+    {
+      "developer": "住友不動産",
+      "brokerage": "stepon",
+      "name_patterns": [
+        "シティタワー",
+        "シティハウス",
+        "シティテラス",
+        "グランドヒルズ",
+        "ラ・トゥール",
+        "クラッシィ"
+      ]
+    },
+    {
+      "developer": "東急不動産",
+      "brokerage": "livable",
+      "name_patterns": [
+        "ブランズ",
+        "ブランズタワー",
+        "ブランズシティ",
+        "ブランズガーデン"
+      ]
+    },
+    {
+      "developer": "東京建物",
+      "brokerage": null,
+      "name_patterns": [
+        "ブリリア",
+        "ブリリアタワー",
+        "ブリリアシティ",
+        "ブリリアイスト"
+      ]
+    },
+    {
+      "developer": "三菱地所",
+      "brokerage": null,
+      "name_patterns": [
+        "ザ・パークハウス",
+        "パークハウス",
+        "ザ・タワー"
+      ]
+    },
+    {
+      "developer": "大京",
+      "brokerage": null,
+      "name_patterns": [
+        "ライオンズ",
+        "ライオンズタワー",
+        "ライオンズマンション"
+      ]
+    },
+    {
+      "developer": "NTT都市開発",
+      "brokerage": null,
+      "name_patterns": [
+        "ウエリス",
+        "ウェリス"
+      ]
+    },
+    {
+      "developer": "長谷工",
+      "brokerage": null,
+      "name_patterns": [
+        "ブランシエラ"
+      ]
+    }
+  ]
+}

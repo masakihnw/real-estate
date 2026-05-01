@@ -82,7 +82,7 @@ def parse_area_m2(s: str) -> Optional[float]:
     if not s:
         return None
     # 数値＋単位の形のみマッチ（「㎡」単体だと group(1) が None になるため数値を必須に）
-    m = re.search(r"([0-9.]+)\s*(?:m2|㎡|m\s*2)", s, re.I)
+    m = re.search(r"([0-9.]+)\s*(?:m[2²]|㎡|m\s*2)", s, re.I)
     if m and m.group(1) is not None:
         return float(m.group(1))
     return None
@@ -92,7 +92,7 @@ def parse_area_range(text: str) -> tuple[Optional[float], Optional[float]]:
     """面積幅をパース。"60.71m2～85.42m2" → (60.71, 85.42)。"""
     if not text:
         return (None, None)
-    vals = re.findall(r"([0-9.]+)\s*(?:m2|㎡|m\s*2)", text, re.I)
+    vals = re.findall(r"([0-9.]+)\s*(?:m[2²]|㎡|m\s*2)", text, re.I)
     if len(vals) >= 2:
         return (float(vals[0]), float(vals[1]))
     elif len(vals) == 1:
