@@ -305,6 +305,33 @@ def build_slack_message_from_listings(
     return "\n".join(lines)
 
 
+def build_bargain_alert_message(new_listings: list[dict]) -> Optional[str]:
+    """NEW かつ asset_score rank S/A の物件があれば即時アラートメッセージを生成。"""
+    bargains = []
+    for r in new_listings:
+        _, rank = optional_features.get_asset_score_and_rank(r)
+        if rank in ("S", "A"):
+            bargains.append((r, rank))
+    if not bargains:
+        return None
+
+    lines = ["\U0001f525 *割安物件を検出*", ""]
+    for r, rank in sorted(bargains, key=lambda x: x[0].get("price_man") or 0):
+        name = (r.get("name") or "")[:35]
+        price = format_price(r.get("price_man"))
+        layout = r.get("layout", "-")
+        # Include source info if alt_sources present
+        sources = ", ".join(r.get("alt_sources") or [r.get("source") or ""])
+        lines.append(f"  \U0001f3f7️ [{rank}ランク] {name}")
+        lines.append(f"    {price} | {layout} | 掲載: {sources}")
+        url = r.get("url", "")
+        if url:
+            lines.append(f"    <{url}|詳細を見る>")
+    lines.append("")
+    lines.append("_通常の更新通知は次回の定期実行で送信されます_")
+    return "\n".join(lines)
+
+
 def build_message_from_report(report_path: Path, report_url: Optional[str] = None) -> Optional[str]:
     """レポート md ファイルの中身を読み取り、Slack 投稿文にする。※Slack用には build_slack_message_from_listings を推奨。"""
     if not report_path or not report_path.exists():

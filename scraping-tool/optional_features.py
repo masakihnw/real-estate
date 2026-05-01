@@ -3,6 +3,8 @@
 オプショナル依存（asset_score, loan_calc, commute, price_predictor 等）を一箇所でロードする。
 ImportError 時は "-" / None 等の互換値を返すスタブに差し替え。generate_report / slack_notify から try/except を撤去する。
 """
+import json
+from pathlib import Path
 from typing import Any, Optional
 
 from report_utils import format_price
@@ -52,6 +54,43 @@ def format_walk_stub(walk_min: Optional[int]) -> str:
     if walk_min is None:
         return "-"
     return f"徒歩{walk_min}分"
+
+
+def inject_developer_affiliation(listings: list[dict]) -> list[dict]:
+    """マンション名からデベロッパー系列を推定し、フィールドを付与する。"""
+    map_path = Path(__file__).parent / "data" / "developer_brokerage_map.json"
+    try:
+        with open(map_path, encoding="utf-8") as f:
+            dev_map = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return listings
+
+    patterns = dev_map.get("patterns", [])
+
+    for listing in listings:
+        name = listing.get("name") or ""
+        source = listing.get("source") or ""
+        matched = False
+        for entry in patterns:
+            for pat in sorted(entry.get("name_patterns", []), key=len, reverse=True):
+                if pat in name:
+                    listing["developer_name"] = entry["developer"]
+                    listing["developer_brokerage"] = entry.get("brokerage")
+                    # priority_alert: source がデベロッパーの仲介会社と一致 → 自社掲載
+                    listing["developer_priority_alert"] = (
+                        entry.get("brokerage") is not None
+                        and source == entry["brokerage"]
+                    )
+                    matched = True
+                    break
+            if matched:
+                break
+        if not matched:
+            listing.setdefault("developer_name", None)
+            listing.setdefault("developer_brokerage", None)
+            listing.setdefault("developer_priority_alert", False)
+
+    return listings
 
 
 def _load_optional_features() -> OptionalFeatures:

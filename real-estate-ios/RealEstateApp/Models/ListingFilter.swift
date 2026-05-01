@@ -189,13 +189,16 @@ struct ListingFilter: Equatable, Codable {
     var propertyType: PropertyTypeFilter = .all   // 新築/中古/すべて
     var directions: Set<String> = []      // 空 = 全て
     var numericFilters: [ListingNumericField: ListingNumericRange] = [:]
+    var monthlyPaymentMax: Double? = nil    // 万円/月
+    var loanInterestRate: Double = 0.8      // 変動金利 (%)
+    var loanTermYears: Int = 50             // 返済期間 (年)
 
     var isActive: Bool {
-        priceMin != nil || priceMax != nil || !includePriceUndecided || tsuboUnitPriceMin != nil || tsuboUnitPriceMax != nil || !layouts.isEmpty || !wards.isEmpty || !stations.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty || propertyType != .all || !directions.isEmpty || numericFilters.values.contains(where: \.isActive)
+        priceMin != nil || priceMax != nil || !includePriceUndecided || tsuboUnitPriceMin != nil || tsuboUnitPriceMax != nil || !layouts.isEmpty || !wards.isEmpty || !stations.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty || propertyType != .all || !directions.isEmpty || numericFilters.values.contains(where: \.isActive) || monthlyPaymentMax != nil
     }
 
     mutating func reset() {
-        priceMin = nil; priceMax = nil; includePriceUndecided = true; tsuboUnitPriceMin = nil; tsuboUnitPriceMax = nil; layouts = []; wards = []; stations = []; walkMax = nil; areaMin = nil; ownershipTypes = []; propertyType = .all; directions = []; numericFilters = [:]
+        priceMin = nil; priceMax = nil; includePriceUndecided = true; tsuboUnitPriceMin = nil; tsuboUnitPriceMax = nil; layouts = []; wards = []; stations = []; walkMax = nil; areaMin = nil; ownershipTypes = []; propertyType = .all; directions = []; numericFilters = [:]; monthlyPaymentMax = nil; loanInterestRate = 0.8; loanTermYears = 50
     }
 
     /// 住所から区名を抽出（例: "東京都江東区豊洲5丁目" → "江東区"）
@@ -299,6 +302,20 @@ struct ListingFilter: Equatable, Codable {
                 if let min = range.min, value < min { return false }
                 if let max = range.max, value > max { return false }
                 return true
+            }
+        }
+        // 月額支払額フィルタ（ローン返済 + 管理費 + 修繕積立金）
+        if let maxPaymentMan = monthlyPaymentMax {
+            let maxPaymentYen = Int(maxPaymentMan * 10000)
+            list = list.filter { listing in
+                let loanMonthly = LoanCalculator.monthlyPayment(
+                    principal: Double(listing.priceMan ?? 0),
+                    rate: loanInterestRate, years: loanTermYears
+                ) * 10000  // 万円→円
+                let total = Int(loanMonthly)
+                    + (listing.managementFee ?? 0)
+                    + (listing.repairReserveFund ?? 0)
+                return total <= maxPaymentYen
             }
         }
         return list

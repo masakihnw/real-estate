@@ -25,6 +25,9 @@ private let pricePresets: [Int] = [5000, 6000, 7000, 8000, 9000, 10000, 11000, 1
 private let tsuboPresets: [Double] = [200, 250, 300, 350, 400, 450, 500]
 private let walkPresets: [Int] = [3, 5, 7, 10, 15, 20]
 private let areaPresets: [Double] = [45, 50, 55, 60, 65, 70, 75, 80]
+private let monthlyPaymentPresets: [Double] = [15, 20, 25, 30, 35, 40, 45, 50]
+private let interestRatePresets: [Double] = [0.5, 0.8, 1.0, 1.2, 1.5, 2.0]
+private let loanTermPresets: [Int] = [20, 25, 30, 35, 40, 45, 50]
 
 // MARK: - Filter Sheet
 
@@ -49,6 +52,14 @@ struct ListingFilterSheet: View {
     @State private var renamingTemplate: FilterTemplate?
     @State private var renameText = ""
 
+    // 価格帯フリーテキスト入力用
+    @State private var priceMinText = ""
+    @State private var priceMaxText = ""
+
+    // 月額支払額フリーテキスト入力用
+    @State private var monthlyPaymentMaxText = ""
+    @State private var interestRateText = ""
+
     private var activeFilterCount: Int {
         var count = 0
         if filter.propertyType != .all { count += 1 }
@@ -61,6 +72,7 @@ struct ListingFilterSheet: View {
         if !filter.ownershipTypes.isEmpty { count += 1 }
         if !filter.wards.isEmpty { count += 1 }
         if !filter.directions.isEmpty { count += 1 }
+        if filter.monthlyPaymentMax != nil { count += 1 }
         count += filter.numericFilters.values.filter(\.isActive).count
         return count
     }
@@ -88,7 +100,7 @@ struct ListingFilterSheet: View {
                         title: "価格帯",
                         summary: priceSummary,
                         isActiveSection: filter.priceMin != nil || filter.priceMax != nil || !filter.includePriceUndecided,
-                        onClear: { filter.priceMin = nil; filter.priceMax = nil; filter.includePriceUndecided = true }
+                        onClear: { filter.priceMin = nil; filter.priceMax = nil; filter.includePriceUndecided = true; priceMinText = ""; priceMaxText = "" }
                     ) {
                         priceChipsContent
                     }
@@ -100,6 +112,21 @@ struct ListingFilterSheet: View {
                         onClear: { filter.tsuboUnitPriceMin = nil; filter.tsuboUnitPriceMax = nil }
                     ) {
                         tsuboChipsContent
+                    }
+
+                    FilterAccordion(
+                        title: "月額支払額",
+                        summary: monthlyPaymentSummary,
+                        isActiveSection: filter.monthlyPaymentMax != nil,
+                        onClear: {
+                            filter.monthlyPaymentMax = nil
+                            filter.loanInterestRate = 0.8
+                            filter.loanTermYears = 50
+                            monthlyPaymentMaxText = ""
+                            interestRateText = ""
+                        }
+                    ) {
+                        monthlyPaymentContent
                     }
 
                     if !availableLayouts.isEmpty {
@@ -248,7 +275,13 @@ struct ListingFilterSheet: View {
                     renameText = ""
                 }
             }
-            .onAppear { originalFilter = filter }
+            .onAppear {
+                originalFilter = filter
+                priceMinText = filter.priceMin.map { "\($0)" } ?? ""
+                priceMaxText = filter.priceMax.map { "\($0)" } ?? ""
+                monthlyPaymentMaxText = filter.monthlyPaymentMax.map { formatDecimal($0) } ?? ""
+                interestRateText = formatDecimal(filter.loanInterestRate)
+            }
             .onDisappear {
                 if !didApply {
                     filter = originalFilter
@@ -449,6 +482,11 @@ struct ListingFilterSheet: View {
         return "\(sorted.prefix(2).joined(separator: ", ")) 他\(sorted.count - 2)区"
     }
 
+    private var monthlyPaymentSummary: String {
+        guard let max = filter.monthlyPaymentMax else { return "指定なし" }
+        return "\(formatDecimal(max))万円/月以下"
+    }
+
     private func numericSummary(for field: ListingNumericField) -> String {
         let range = numericRange(for: field)
         if let min = range.min, let max = range.max {
@@ -466,13 +504,47 @@ struct ListingFilterSheet: View {
     @ViewBuilder
     private var priceChipsContent: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // 自由入力（万円）
+            HStack(spacing: 8) {
+                HStack(spacing: 4) {
+                    TextField("下限", text: $priceMinText)
+                        .keyboardType(.numberPad)
+                        .font(.subheadline)
+                        .frame(width: 80)
+                        .textFieldStyle(.roundedBorder)
+                        .onChange(of: priceMinText) { _, newValue in
+                            filter.priceMin = Int(newValue)
+                        }
+                    Text("万円")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Text("〜")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    TextField("上限", text: $priceMaxText)
+                        .keyboardType(.numberPad)
+                        .font(.subheadline)
+                        .frame(width: 80)
+                        .textFieldStyle(.roundedBorder)
+                        .onChange(of: priceMaxText) { _, newValue in
+                            filter.priceMax = Int(newValue)
+                        }
+                    Text("万円")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
             PresetChipSection(label: "下限") {
                 PresetChip(label: "指定なし", isSelected: filter.priceMin == nil) {
                     filter.priceMin = nil
+                    priceMinText = ""
                 }
                 ForEach(pricePresets.filter { $0 < (filter.priceMax ?? Int.max) }, id: \.self) { value in
                     PresetChip(label: formatPrice(value), isSelected: filter.priceMin == value) {
                         filter.priceMin = value
+                        priceMinText = "\(value)"
                     }
                 }
             }
@@ -480,10 +552,12 @@ struct ListingFilterSheet: View {
                 ForEach(pricePresets.filter { $0 > (filter.priceMin ?? 0) }, id: \.self) { value in
                     PresetChip(label: formatPrice(value), isSelected: filter.priceMax == value) {
                         filter.priceMax = value
+                        priceMaxText = "\(value)"
                     }
                 }
                 PresetChip(label: "指定なし", isSelected: filter.priceMax == nil) {
                     filter.priceMax = nil
+                    priceMaxText = ""
                 }
             }
             if showPriceUndecidedToggle {
@@ -623,6 +697,125 @@ struct ListingFilterSheet: View {
                     filter.propertyType = type
                 }
             }
+        }
+    }
+
+    // MARK: - Monthly Payment
+
+    @ViewBuilder
+    private var monthlyPaymentContent: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // 上限金額
+            VStack(alignment: .leading, spacing: 6) {
+                Text("上限金額")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    TextField("例: 25", text: $monthlyPaymentMaxText)
+                        .keyboardType(.decimalPad)
+                        .font(.subheadline)
+                        .frame(width: 80)
+                        .textFieldStyle(.roundedBorder)
+                        .onChange(of: monthlyPaymentMaxText) { _, newValue in
+                            filter.monthlyPaymentMax = Double(newValue)
+                        }
+                    Text("万円/月")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            PresetChipSection {
+                PresetChip(label: "指定なし", isSelected: filter.monthlyPaymentMax == nil) {
+                    filter.monthlyPaymentMax = nil
+                    monthlyPaymentMaxText = ""
+                }
+                ForEach(monthlyPaymentPresets, id: \.self) { value in
+                    PresetChip(label: "\(Int(value))万", isSelected: filter.monthlyPaymentMax == value) {
+                        filter.monthlyPaymentMax = value
+                        monthlyPaymentMaxText = formatDecimal(value)
+                    }
+                }
+            }
+
+            // 金利
+            VStack(alignment: .leading, spacing: 6) {
+                Text("金利（変動）")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    TextField("0.8", text: $interestRateText)
+                        .keyboardType(.decimalPad)
+                        .font(.subheadline)
+                        .frame(width: 60)
+                        .textFieldStyle(.roundedBorder)
+                        .onChange(of: interestRateText) { _, newValue in
+                            if let rate = Double(newValue), rate >= 0 {
+                                filter.loanInterestRate = rate
+                            }
+                        }
+                    Text("%")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            PresetChipSection {
+                ForEach(interestRatePresets, id: \.self) { value in
+                    PresetChip(
+                        label: "\(formatDecimal(value))%",
+                        isSelected: filter.loanInterestRate == value
+                    ) {
+                        filter.loanInterestRate = value
+                        interestRateText = formatDecimal(value)
+                    }
+                }
+            }
+
+            // 返済期間
+            VStack(alignment: .leading, spacing: 6) {
+                Text("返済期間")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            PresetChipSection {
+                ForEach(loanTermPresets, id: \.self) { value in
+                    PresetChip(
+                        label: "\(value)年",
+                        isSelected: filter.loanTermYears == value
+                    ) {
+                        filter.loanTermYears = value
+                    }
+                }
+            }
+
+            // リアルタイムプレビュー
+            if filter.monthlyPaymentMax != nil {
+                monthlyPaymentPreview
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var monthlyPaymentPreview: some View {
+        let maxMan = filter.monthlyPaymentMax ?? 0
+        let maxYen = Int(maxMan * 10000)
+        VStack(alignment: .leading, spacing: 4) {
+            Divider()
+            HStack(spacing: 4) {
+                Image(systemName: "info.circle")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Text("計算プレビュー")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.top, 4)
+            Text("上限 \(maxYen.formatted())円/月（金利\(formatDecimal(filter.loanInterestRate))% / \(filter.loanTermYears)年返済）")
+                .font(.caption)
+                .foregroundStyle(.primary)
+                .padding(.vertical, 6)
+                .padding(.horizontal, 10)
+                .background(Color.accentColor.opacity(0.06))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
         }
     }
 
@@ -843,6 +1036,13 @@ struct ListingFilterSheet: View {
 
     private func clearNumericFilter(_ field: ListingNumericField) {
         filter.numericFilters.removeValue(forKey: field)
+    }
+
+    private func formatDecimal(_ value: Double) -> String {
+        if value == value.rounded() {
+            return String(Int(value))
+        }
+        return String(format: "%.1f", value)
     }
 
     private func formatPrice(_ man: Int) -> String {
