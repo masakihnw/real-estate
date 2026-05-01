@@ -185,7 +185,8 @@ final class SupabaseAnnotationService {
                 }
 
                 if !allComments.isEmpty {
-                    allComments.sort { $0.createdAt < $1.createdAt }
+                    let unique = Dictionary(allComments.map { ($0.id, $0) }, uniquingKeysWith: { _, later in later })
+                    allComments = Array(unique.values).sorted { $0.createdAt < $1.createdAt }
                     let newJSON = CommentData.encode(allComments)
 
                     if listing.commentsJSON != newJSON {
