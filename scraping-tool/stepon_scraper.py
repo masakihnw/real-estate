@@ -8,9 +8,13 @@ stepon.co.jp はボット検知が厳しく、通常の requests/curl では
 サイトは Shift-JIS エンコーディングを使用。
 """
 
+import json
+import random
 import re
 import time
 from dataclasses import dataclass, asdict
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from typing import Iterator, Optional
 
 from config import (
@@ -31,6 +35,7 @@ from parse_utils import (
     parse_built_year,
     parse_floor_position,
     parse_floor_total,
+    parse_monthly_yen,
     parse_total_units_strict,
     layout_ok,
 )
@@ -91,6 +96,11 @@ class SteponListing:
     total_units: Optional[int] = None
     floor_position: Optional[int] = None
     floor_total: Optional[int] = None
+    management_fee: Optional[int] = None
+    repair_reserve_fund: Optional[int] = None
+    ownership: Optional[str] = None
+    suumo_images: Optional[list] = None
+    floor_plan_images: Optional[list] = None
     listing_agent: Optional[str] = "住友不動産販売"
     is_motodzuke: Optional[bool] = True
 
@@ -108,56 +118,52 @@ def _launch_browser():
     context = browser.new_context(
         user_agent=USER_AGENT,
         locale="ja-JP",
-        # Shift-JIS サイトでも Playwright が自動でデコードするが、
-        # 念のため Accept-Language でロケールを明示
+        viewport={"width": 1920, "height": 1080},
         extra_http_headers={
             "Accept-Language": "ja,en;q=0.9",
+            "Referer": "https://www.google.co.jp/",
         },
     )
     return pw, browser, context
 
 
-def fetch_list_page_pw(context: BrowserContext, url: str) -> str:
+def fetch_list_page_pw(context: BrowserContext, url: str, *, max_retries: int = 3) -> str:
     """Playwright でページを取得し、レンダリング済み HTML を返す。
 
-    ボット検知を回避するため networkidle まで待機し、
-    コンテンツの存在を確認する。
+    ボット検知時は指数バックオフ（5s→10s→20s）でリトライする。
     """
-    page = context.new_page()
-    try:
-        logger.info("Stepon: ページ取得中: %s", url)
-        page.goto(url, wait_until="networkidle", timeout=60000)
-
-        # 追加待機: 動的レンダリングの完了を待つ
-        # 物件リストが表示されるまで最大10秒待機
+    for attempt in range(max_retries):
+        page = context.new_page()
         try:
-            page.wait_for_selector(
-                "table, .property, .bukken, .mansion, .result, article, [class*=list]",
-                timeout=10000,
-            )
-        except Exception:
-            # セレクタが見つからなくても HTML 全体は取得可能
-            logger.debug("Stepon: 物件セレクタの待機タイムアウト（コンテンツ全体は取得済み）")
+            logger.info("Stepon: ページ取得中 (attempt %d): %s", attempt + 1, url)
+            page.goto(url, wait_until="domcontentloaded", timeout=45000)
 
-        html = page.content()
+            try:
+                page.wait_for_selector(
+                    "table, .property, .bukken, .mansion, .result, article, [class*=list]",
+                    timeout=10000,
+                )
+            except Exception:
+                logger.debug("Stepon: 物件セレクタの待機タイムアウト（コンテンツ全体は取得済み）")
 
-        # ボット検知ページの検出
-        if _is_bot_block(html):
-            logger.warning("Stepon: ボット検知ページが返されました: %s", url)
-            # リトライ: 少し待ってから再取得
-            time.sleep(5)
-            page.reload(wait_until="networkidle", timeout=60000)
             html = page.content()
-            if _is_bot_block(html):
-                logger.error("Stepon: リトライ後もボット検知ページ: %s", url)
-                return ""
 
-        return html
-    except Exception as e:
-        logger.error("Stepon: ページ取得エラー: %s — %s", url, e)
-        return ""
-    finally:
-        page.close()
+            if not _is_bot_block(html):
+                return html
+
+            logger.warning("Stepon: ボット検知 (attempt %d): %s", attempt + 1, url)
+        except Exception as e:
+            logger.error("Stepon: ページ取得エラー (attempt %d): %s — %s", attempt + 1, url, e)
+        finally:
+            page.close()
+
+        if attempt < max_retries - 1:
+            backoff = (5 * (2 ** attempt)) + random.uniform(1, 3)
+            logger.info("Stepon: %0.1f秒待機後にリトライ...", backoff)
+            time.sleep(backoff)
+
+    logger.error("Stepon: 全リトライ失敗: %s", url)
+    return ""
 
 
 def _is_bot_block(html: str) -> bool:
@@ -701,7 +707,7 @@ def apply_conditions(listings: list[SteponListing]) -> list[SteponListing]:
     for r in listings:
         if not is_tokyo_23_by_address(r.address):
             continue
-        if not line_ok(r.station_line, empty_passes=False):
+        if not line_ok(r.station_line, empty_passes=True):
             continue
         if not station_passengers_ok(r.station_line, passengers_map):
             continue
@@ -749,9 +755,9 @@ def scrape_stepon(
         while page_num <= limit:
             url = LIST_URL_FIRST if page_num == 1 else LIST_URL_PAGE.format(page=page_num)
 
-            # ページ間のディレイ（初回以外）
+            # ページ間のディレイ（初回以外）— ランダム化でボット検知回避
             if page_num > 1:
-                time.sleep(STEPON_REQUEST_DELAY_SEC)
+                time.sleep(STEPON_REQUEST_DELAY_SEC + random.uniform(1, 3))
 
             html = fetch_list_page_pw(context, url)
             if not html:
@@ -808,3 +814,187 @@ def scrape_stepon(
     finally:
         browser.close()
         pw.stop()
+
+
+# ──────────────────────────── 詳細ページ ────────────────────────────
+
+_DETAIL_CACHE_PATH = Path(__file__).resolve().parent / "data" / "detail_cache_stepon.json"
+_CACHE_EXPIRY_DAYS = 90
+
+
+def _load_detail_cache() -> dict:
+    if not _DETAIL_CACHE_PATH.exists():
+        return {}
+    try:
+        with open(_DETAIL_CACHE_PATH, "r", encoding="utf-8") as f:
+            cache = json.load(f)
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=_CACHE_EXPIRY_DAYS)).isoformat()
+        return {k: v for k, v in cache.items() if v.get("cached_at", "") >= cutoff}
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _save_detail_cache(cache: dict) -> None:
+    _DETAIL_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(_DETAIL_CACHE_PATH, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False, indent=1)
+
+
+def _fetch_detail_page_pw(context, url: str) -> str:
+    """Playwright で詳細ページを取得。"""
+    page = context.new_page()
+    try:
+        page.goto(url, wait_until="domcontentloaded", timeout=45000)
+        try:
+            page.wait_for_selector("table, dl, .detail, .bukken-detail", timeout=10000)
+        except Exception:
+            pass
+        return page.content()
+    except Exception as e:
+        logger.error("Stepon detail: ページ取得エラー: %s — %s", url, e)
+        return ""
+    finally:
+        page.close()
+
+
+def parse_stepon_detail_html(html: str, url: str = "") -> dict:
+    """ステップ物件詳細ページから追加情報を抽出。"""
+    result: dict = {
+        "management_fee": None,
+        "repair_reserve_fund": None,
+        "ownership": None,
+        "total_units": None,
+        "floor_plan_images": None,
+        "suumo_images": None,
+    }
+    if not html or not HAS_BS4:
+        return result
+
+    soup = BeautifulSoup(html, "lxml")
+
+    # th/td テーブルから情報抽出
+    for tr in soup.find_all("tr"):
+        cells = tr.find_all(["th", "td"], recursive=False)
+        for i, cell in enumerate(cells):
+            if cell.name != "th" or i + 1 >= len(cells):
+                continue
+            th = (cell.get_text(strip=True) or "").strip()
+            td = (cells[i + 1].get_text(strip=True) or "").strip()
+
+            if "管理費" in th and "修繕" not in th:
+                val = parse_monthly_yen(td)
+                if val and val > 0:
+                    result["management_fee"] = val
+            elif "修繕積立金" in th:
+                val = parse_monthly_yen(td)
+                if val and val > 0:
+                    result["repair_reserve_fund"] = val
+            elif "権利" in th or "所有権" in th:
+                if td and td != "-":
+                    result["ownership"] = td
+            elif "総戸数" in th:
+                m = re.search(r"(\d+)\s*戸", td)
+                if m:
+                    result["total_units"] = int(m.group(1))
+
+    # dl/dt/dd パターンも試行
+    for dt in soup.find_all("dt"):
+        dt_text = (dt.get_text(strip=True) or "").strip()
+        dd = dt.find_next_sibling("dd")
+        if not dd:
+            continue
+        dd_text = (dd.get_text(strip=True) or "").strip()
+
+        if "管理費" in dt_text and "修繕" not in dt_text and not result["management_fee"]:
+            val = parse_monthly_yen(dd_text)
+            if val and val > 0:
+                result["management_fee"] = val
+        elif "修繕積立金" in dt_text and not result["repair_reserve_fund"]:
+            val = parse_monthly_yen(dd_text)
+            if val and val > 0:
+                result["repair_reserve_fund"] = val
+        elif ("権利" in dt_text or "所有権" in dt_text) and not result["ownership"]:
+            if dd_text and dd_text != "-":
+                result["ownership"] = dd_text
+        elif "総戸数" in dt_text and not result["total_units"]:
+            m = re.search(r"(\d+)\s*戸", dd_text)
+            if m:
+                result["total_units"] = int(m.group(1))
+
+    # 画像抽出
+    floor_plan_images: list[str] = []
+    suumo_images: list[dict] = []
+    seen_urls: set[str] = set()
+
+    for img in soup.find_all("img"):
+        alt = (img.get("alt") or "").strip()
+        src = (img.get("data-src") or img.get("src") or "").strip()
+        if not src or src.startswith("data:"):
+            continue
+        if any(x in src for x in ("/logo", "/icon", "/btn", "/spacer", "/common/")):
+            continue
+        if src in seen_urls:
+            continue
+        if "stepon" not in src and not src.startswith("/"):
+            continue
+        if src.startswith("/"):
+            src = BASE_URL + src
+
+        seen_urls.add(src)
+        if "間取" in alt:
+            floor_plan_images.append(src)
+        elif "/photo/" in src or "/image/" in src or "/bukken/" in src:
+            suumo_images.append({"url": src, "label": alt or "外観"})
+
+    if floor_plan_images:
+        result["floor_plan_images"] = floor_plan_images
+    if suumo_images:
+        result["suumo_images"] = suumo_images
+
+    return result
+
+
+def enrich_stepon_listings(listings: list[SteponListing]) -> list[SteponListing]:
+    """フィルタ通過済みリストの各物件の詳細ページを取得し、追加情報を注入する。"""
+    if not listings or not HAS_PLAYWRIGHT:
+        return listings
+
+    cache = _load_detail_cache()
+    enriched_count = 0
+
+    pw, browser, context = _launch_browser()
+    try:
+        for listing in listings:
+            cached = cache.get(listing.url)
+            if cached:
+                detail = cached
+            else:
+                time.sleep(STEPON_REQUEST_DELAY_SEC + random.uniform(1, 3))
+                html = _fetch_detail_page_pw(context, listing.url)
+                detail = parse_stepon_detail_html(html, listing.url)
+                detail["cached_at"] = datetime.now(timezone.utc).isoformat()
+                cache[listing.url] = detail
+
+            if detail.get("management_fee") and not listing.management_fee:
+                listing.management_fee = detail["management_fee"]
+            if detail.get("repair_reserve_fund") and not listing.repair_reserve_fund:
+                listing.repair_reserve_fund = detail["repair_reserve_fund"]
+            if detail.get("ownership") and not listing.ownership:
+                listing.ownership = detail["ownership"]
+            if detail.get("total_units") and not listing.total_units:
+                listing.total_units = detail["total_units"]
+            if detail.get("floor_plan_images"):
+                listing.floor_plan_images = detail["floor_plan_images"]
+            if detail.get("suumo_images"):
+                listing.suumo_images = detail["suumo_images"]
+
+            enriched_count += 1
+            if enriched_count % 5 == 0:
+                logger.info("Stepon detail: %d/%d件取得済", enriched_count, len(listings))
+    finally:
+        browser.close()
+        pw.stop()
+
+    _save_detail_cache(cache)
+    logger.info("Stepon detail: 完了 — %d件エンリッチ", enriched_count)
+    return listings

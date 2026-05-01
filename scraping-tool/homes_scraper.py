@@ -121,20 +121,20 @@ def fetch_list_page(context: BrowserContext, url: str) -> str:
     """Playwright でページを取得し、レンダリング済み HTML を返す。
 
     WAF の JavaScript チャレンジはブラウザが自動的に処理するため、
-    requests 時代のような WAF 検出・リトライロジックは不要。
+    domcontentloaded + セレクタ待機で十分。networkidle はタイムアウトしやすい。
     """
     page = context.new_page()
     try:
         logger.info("HOME'S: ページ取得中: %s", url)
-        page.goto(url, wait_until="networkidle", timeout=60000)
+        page.goto(url, wait_until="domcontentloaded", timeout=45000)
 
-        # 追加待機: 物件リストが表示されるまで最大10秒待機
+        # 物件リストが表示されるまで最大15秒待機
         try:
             page.wait_for_selector(
                 "div.mod-mergeBuilding--sale, div.mod-listKks, "
                 "script[type='application/ld+json'], "
                 "a[href*='/mansion/b-']",
-                timeout=10000,
+                timeout=15000,
             )
         except Exception:
             logger.debug("HOME'S: 物件セレクタの待機タイムアウト（コンテンツ全体は取得済み）")
@@ -144,9 +144,8 @@ def fetch_list_page(context: BrowserContext, url: str) -> str:
         # ページが極端に短い場合はブロックの可能性
         if len(html) < 1000 and "mansion" not in html.lower():
             logger.warning("HOME'S: ページが極端に短い（WAF/ブロックの可能性）: %s", url)
-            # リトライ: 少し待ってから再取得
             time.sleep(5)
-            page.reload(wait_until="networkidle", timeout=60000)
+            page.reload(wait_until="domcontentloaded", timeout=45000)
             html = page.content()
 
         return html
@@ -524,7 +523,7 @@ def apply_conditions(listings: list[HomesListing]) -> list[HomesListing]:
     for r in listings:
         if not is_tokyo_23_by_address(r.address):
             continue
-        if not line_ok(r.station_line, empty_passes=False):
+        if not line_ok(r.station_line, empty_passes=True):
             continue
         if not station_passengers_ok(r.station_line, passengers_map):
             continue

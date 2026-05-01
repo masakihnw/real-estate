@@ -274,6 +274,10 @@ final class Listing: @unchecked Sendable {
     /// 総合投資スコア（0-100）
     var listingScore: Int?
 
+    /// 代替ソース情報 JSON 文字列
+    /// フォーマット: [{"source":"rehouse","url":"https://..."},...]
+    var altSourcesJSON: String?
+
     init(
         source: String? = nil,
         url: String,
@@ -358,7 +362,8 @@ final class Listing: @unchecked Sendable {
         priceFairnessScore: Int? = nil,
         resaleLiquidityScore: Int? = nil,
         competingListingsCount: Int? = nil,
-        listingScore: Int? = nil
+        listingScore: Int? = nil,
+        altSourcesJSON: String? = nil
     ) {
         self.source = source
         self.url = url
@@ -444,9 +449,41 @@ final class Listing: @unchecked Sendable {
         self.resaleLiquidityScore = resaleLiquidityScore
         self.competingListingsCount = competingListingsCount
         self.listingScore = listingScore
+        self.altSourcesJSON = altSourcesJSON
     }
 
     // MARK: - Identity
+
+    // MARK: - ソースリンク
+
+    struct SourceLink: Codable {
+        let source: String
+        let url: String
+    }
+
+    var allSourceLinks: [SourceLink] {
+        var links: [SourceLink] = []
+        links.append(SourceLink(source: source ?? "suumo", url: url))
+        if let json = altSourcesJSON,
+           let data = json.data(using: .utf8),
+           let alts = try? JSONDecoder().decode([SourceLink].self, from: data) {
+            links.append(contentsOf: alts)
+        }
+        return links
+    }
+
+    static func sourceDisplayName(_ source: String) -> String {
+        switch source {
+        case "suumo": return "SUUMO"
+        case "homes": return "HOME'S"
+        case "athome": return "アットホーム"
+        case "rehouse": return "三井のリハウス"
+        case "nomucom": return "ノムコム"
+        case "stepon": return "住友不動産販売"
+        case "livable": return "東急リバブル"
+        default: return source.uppercased()
+        }
+    }
 
     /// 同一物件判定用（report_utils.identity_key と同一フィールド・同一順序）。
     /// 価格・walk_min・total_units は重複集約の代表レコード変更で変動するため含めない。

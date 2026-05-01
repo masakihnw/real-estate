@@ -4,9 +4,12 @@
 一覧は SearchList ページの div.item_resultsmall カードから取得。
 """
 
+import json
 import re
 import time
 from dataclasses import dataclass, asdict
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from typing import Iterator, Optional
 
 import requests
@@ -31,6 +34,7 @@ from parse_utils import (
     parse_built_year,
     parse_floor_position,
     parse_floor_total,
+    parse_monthly_yen,
     layout_ok,
 )
 from report_utils import clean_listing_name
@@ -85,6 +89,11 @@ class NomucomListing:
     total_units: Optional[int] = None
     floor_position: Optional[int] = None
     floor_total: Optional[int] = None
+    management_fee: Optional[int] = None
+    repair_reserve_fund: Optional[int] = None
+    ownership: Optional[str] = None
+    suumo_images: Optional[list] = None
+    floor_plan_images: Optional[list] = None
     listing_agent: Optional[str] = "野村不動産アーバンネット"
     is_motodzuke: Optional[bool] = True
 
@@ -263,7 +272,7 @@ def apply_conditions(listings: list[NomucomListing]) -> list[NomucomListing]:
     for r in listings:
         if not is_tokyo_23_by_address(r.address):
             continue
-        if not line_ok(r.station_line, empty_passes=False):
+        if not line_ok(r.station_line, empty_passes=True):
             continue
         if not station_passengers_ok(r.station_line, passengers_map):
             continue
@@ -327,3 +336,185 @@ def scrape_nomucom(max_pages: Optional[int] = 2, apply_filter: bool = True) -> I
         page += 1
     if total_parsed > 0:
         logger.info(f"nomucom: 完了 — {total_parsed}件パース, {total_passed}件通過")
+
+
+# ──────────────────────────── 詳細ページ ────────────────────────────
+
+_DETAIL_CACHE_PATH = Path(__file__).resolve().parent / "data" / "detail_cache_nomucom.json"
+_CACHE_EXPIRY_DAYS = 90
+
+
+def _load_detail_cache() -> dict:
+    if not _DETAIL_CACHE_PATH.exists():
+        return {}
+    try:
+        with open(_DETAIL_CACHE_PATH, "r", encoding="utf-8") as f:
+            cache = json.load(f)
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=_CACHE_EXPIRY_DAYS)).isoformat()
+        return {k: v for k, v in cache.items() if v.get("cached_at", "") >= cutoff}
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _save_detail_cache(cache: dict) -> None:
+    _DETAIL_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(_DETAIL_CACHE_PATH, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False, indent=1)
+
+
+def _fetch_detail_page(session: requests.Session, url: str) -> str:
+    for attempt in range(REQUEST_RETRIES):
+        try:
+            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
+            if r.status_code == 429:
+                time.sleep(int(r.headers.get("Retry-After", 30)))
+                continue
+            r.raise_for_status()
+            r.encoding = r.apparent_encoding or "utf-8"
+            return r.text
+        except (requests.exceptions.HTTPError, requests.exceptions.Timeout,
+                requests.exceptions.ConnectionError):
+            if attempt < REQUEST_RETRIES - 1:
+                time.sleep(3)
+    return ""
+
+
+def parse_nomucom_detail_html(html: str, url: str = "") -> dict:
+    """ノムコム物件詳細ページから追加情報を抽出。"""
+    result: dict = {
+        "management_fee": None,
+        "repair_reserve_fund": None,
+        "ownership": None,
+        "total_units": None,
+        "floor_plan_images": None,
+        "suumo_images": None,
+    }
+    if not html:
+        return result
+
+    soup = BeautifulSoup(html, "lxml")
+
+    # th/td テーブルから情報抽出
+    for tr in soup.find_all("tr"):
+        cells = tr.find_all(["th", "td"], recursive=False)
+        for i, cell in enumerate(cells):
+            if cell.name != "th" or i + 1 >= len(cells):
+                continue
+            th = (cell.get_text(strip=True) or "").strip()
+            td = (cells[i + 1].get_text(strip=True) or "").strip()
+
+            if "管理費" in th and "修繕" not in th:
+                val = parse_monthly_yen(td)
+                if val and val > 0:
+                    result["management_fee"] = val
+            elif "修繕積立金" in th:
+                val = parse_monthly_yen(td)
+                if val and val > 0:
+                    result["repair_reserve_fund"] = val
+            elif "権利" in th or "所有権" in th:
+                if td and td != "-":
+                    result["ownership"] = td
+            elif "総戸数" in th:
+                m = re.search(r"(\d+)\s*戸", td)
+                if m:
+                    result["total_units"] = int(m.group(1))
+
+    # dl/dt/dd パターンも試行
+    for dt in soup.find_all("dt"):
+        dt_text = (dt.get_text(strip=True) or "").strip()
+        dd = dt.find_next_sibling("dd")
+        if not dd:
+            continue
+        dd_text = (dd.get_text(strip=True) or "").strip()
+
+        if "管理費" in dt_text and "修繕" not in dt_text and not result["management_fee"]:
+            val = parse_monthly_yen(dd_text)
+            if val and val > 0:
+                result["management_fee"] = val
+        elif "修繕積立金" in dt_text and not result["repair_reserve_fund"]:
+            val = parse_monthly_yen(dd_text)
+            if val and val > 0:
+                result["repair_reserve_fund"] = val
+        elif ("権利" in dt_text or "所有権" in dt_text) and not result["ownership"]:
+            if dd_text and dd_text != "-":
+                result["ownership"] = dd_text
+        elif "総戸数" in dt_text and not result["total_units"]:
+            m = re.search(r"(\d+)\s*戸", dd_text)
+            if m:
+                result["total_units"] = int(m.group(1))
+
+    # 画像抽出
+    floor_plan_images: list[str] = []
+    suumo_images: list[dict] = []
+    seen_urls: set[str] = set()
+
+    for img in soup.find_all("img"):
+        alt = (img.get("alt") or "").strip()
+        src = (img.get("data-src") or img.get("src") or "").strip()
+        if not src or src.startswith("data:"):
+            continue
+        if any(x in src for x in ("/logo", "/icon", "/btn", "/spacer", "/common/", "/header/")):
+            continue
+        if src in seen_urls:
+            continue
+        if "nomu.com" not in src and not src.startswith("/"):
+            continue
+        if src.startswith("/"):
+            src = BASE_URL + src
+
+        seen_urls.add(src)
+        if "間取" in alt:
+            floor_plan_images.append(src)
+        elif "/photo/" in src or "/image/" in src or "/bukken/" in src:
+            suumo_images.append({"url": src, "label": alt or "外観"})
+
+    if floor_plan_images:
+        result["floor_plan_images"] = floor_plan_images
+    if suumo_images:
+        result["suumo_images"] = suumo_images
+
+    return result
+
+
+def enrich_nomucom_listings(listings: list[NomucomListing], session=None) -> list[NomucomListing]:
+    """フィルタ通過済みリストの各物件の詳細ページを取得し、追加情報を注入する。"""
+    if not listings:
+        return listings
+
+    if session is None:
+        session = create_session()
+
+    cache = _load_detail_cache()
+    enriched_count = 0
+
+    for listing in listings:
+        cached = cache.get(listing.url)
+        if cached:
+            detail = cached
+        else:
+            time.sleep(NOMUCOM_REQUEST_DELAY_SEC)
+            html = _fetch_detail_page(session, listing.url)
+            detail = parse_nomucom_detail_html(html, listing.url)
+            detail["cached_at"] = datetime.now(timezone.utc).isoformat()
+            cache[listing.url] = detail
+
+        if detail.get("management_fee") and not listing.management_fee:
+            listing.management_fee = detail["management_fee"]
+        if detail.get("repair_reserve_fund") and not listing.repair_reserve_fund:
+            listing.repair_reserve_fund = detail["repair_reserve_fund"]
+        if detail.get("ownership") and not listing.ownership:
+            listing.ownership = detail["ownership"]
+        if detail.get("total_units") and not listing.total_units:
+            listing.total_units = detail["total_units"]
+        if detail.get("floor_plan_images"):
+            listing.floor_plan_images = detail["floor_plan_images"]
+        if detail.get("suumo_images"):
+            listing.suumo_images = detail["suumo_images"]
+
+        enriched_count += 1
+        if enriched_count % 10 == 0:
+            logger.info(f"nomucom detail: {enriched_count}/{len(listings)}件取得済")
+
+    _save_detail_cache(cache)
+    logger.info(f"nomucom detail: 完了 — {enriched_count}件エンリッチ")
+    return listings

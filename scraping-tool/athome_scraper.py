@@ -3,9 +3,12 @@
 利用規約を遵守し、負荷軽減・私的利用に留めること。
 """
 
+import json
 import re
 import time
 from dataclasses import dataclass, asdict
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from typing import Iterator, Optional
 
 import requests
@@ -82,7 +85,10 @@ class AthomeListing:
     floor_total: Optional[int] = None
     management_fee: Optional[int] = None
     repair_reserve_fund: Optional[int] = None
+    ownership: Optional[str] = None
     listing_agent: Optional[str] = None
+    suumo_images: Optional[list] = None  # [{"url": "...", "label": "..."}, ...]
+    floor_plan_images: Optional[list] = None  # ["url1", "url2", ...]
 
     def to_dict(self):
         return asdict(self)
@@ -261,6 +267,229 @@ def parse_list_html(html: str) -> list[AthomeListing]:
     return items
 
 
+# ---------------------------------------------------------------------------
+# 詳細ページ取得・パース・キャッシュ
+# ---------------------------------------------------------------------------
+
+_DETAIL_CACHE_PATH = Path(__file__).resolve().parent / "data" / "detail_cache_athome.json"
+_DETAIL_CACHE_TTL_DAYS = 90
+
+
+def _load_detail_cache() -> dict[str, dict]:
+    """詳細ページキャッシュを読み込む。期限切れエントリは除外する。"""
+    if not _DETAIL_CACHE_PATH.exists():
+        return {}
+    try:
+        raw = json.loads(_DETAIL_CACHE_PATH.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as e:
+        logger.warning("athome: 詳細キャッシュ読み込みエラー: %s", e)
+        return {}
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=_DETAIL_CACHE_TTL_DAYS)).isoformat()
+    valid: dict[str, dict] = {}
+    for url, entry in raw.items():
+        if isinstance(entry, dict) and entry.get("cached_at", "") >= cutoff:
+            valid[url] = entry
+    return valid
+
+
+def _save_detail_cache(cache: dict[str, dict]) -> None:
+    """詳細ページキャッシュを保存する。"""
+    _DETAIL_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _DETAIL_CACHE_PATH.write_text(
+        json.dumps(cache, ensure_ascii=False, indent=1),
+        encoding="utf-8",
+    )
+
+
+def _fetch_detail_page(session: requests.Session, url: str) -> str:
+    """アットホーム詳細ページのHTMLを取得する。429/5xx時はリトライする。"""
+    last_error: Optional[Exception] = None
+    for attempt in range(REQUEST_RETRIES):
+        time.sleep(ATHOME_REQUEST_DELAY_SEC)
+        try:
+            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
+            if r.status_code == 429:
+                retry_after = int(r.headers.get("Retry-After", 60))
+                backoff = min(retry_after, 120)
+                logger.warning("athome detail: 429 Rate Limited, waiting %ds (attempt %d/%d)", backoff, attempt + 1, REQUEST_RETRIES)
+                time.sleep(backoff)
+                continue
+            r.raise_for_status()
+            r.encoding = r.apparent_encoding or "utf-8"
+            return r.text
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
+                last_error = e
+                backoff = min(2 ** (attempt + 1), 30)
+                logger.warning("athome detail: HTTP %d, retrying in %ds (attempt %d/%d)", e.response.status_code, backoff, attempt + 1, REQUEST_RETRIES)
+                time.sleep(backoff)
+            else:
+                raise
+        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as e:
+            last_error = e
+            if attempt < REQUEST_RETRIES - 1:
+                backoff = min(2 ** (attempt + 1), 30)
+                logger.warning("athome detail: %s, retrying in %ds (attempt %d/%d)", type(e).__name__, backoff, attempt + 1, REQUEST_RETRIES)
+                time.sleep(backoff)
+            else:
+                raise last_error
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError(f"athome detail: 全 {REQUEST_RETRIES} 回のリトライが失敗しました: {url}")
+
+
+def parse_athome_detail_html(html: str, url: str) -> dict:
+    """アットホーム詳細ページHTMLをパースし、補足情報を返す。"""
+    soup = BeautifulSoup(html, "lxml")
+    management_fee: Optional[int] = None
+    repair_reserve_fund: Optional[int] = None
+    ownership: Optional[str] = None
+    total_units: Optional[int] = None
+
+    # テーブル行（th/td ペア）から情報を抽出
+    for tr in soup.find_all("tr"):
+        cells = tr.find_all(["th", "td"], recursive=False)
+        for i, cell in enumerate(cells):
+            if cell.name != "th" or i + 1 >= len(cells) or cells[i + 1].name != "td":
+                continue
+            th_text = (cell.get_text() or "").strip()
+            td_text = (cells[i + 1].get_text() or "").strip()
+
+            if "管理費" in th_text and "修繕" not in th_text:
+                val = parse_monthly_yen(td_text)
+                if val is not None and val > 0:
+                    management_fee = val
+
+            if "修繕積立金" in th_text:
+                val = parse_monthly_yen(td_text)
+                if val is not None and val > 0:
+                    repair_reserve_fund = val
+
+            if ("権利形態" in th_text or "土地権利" in th_text) and td_text.strip():
+                ownership = td_text.strip()
+
+            if "総戸数" in th_text:
+                m = re.search(r"(\d+)\s*戸", td_text)
+                if m:
+                    total_units = int(m.group(1))
+
+    # dt/dd ペアも探索（一部のアットホーム詳細ページはこの形式）
+    for dt in soup.find_all("dt"):
+        dt_text = (dt.get_text() or "").strip()
+        dd = dt.find_next_sibling("dd")
+        if dd is None:
+            continue
+        dd_text = (dd.get_text() or "").strip()
+
+        if "管理費" in dt_text and "修繕" not in dt_text and management_fee is None:
+            val = parse_monthly_yen(dd_text)
+            if val is not None and val > 0:
+                management_fee = val
+
+        if "修繕積立金" in dt_text and repair_reserve_fund is None:
+            val = parse_monthly_yen(dd_text)
+            if val is not None and val > 0:
+                repair_reserve_fund = val
+
+        if ("権利形態" in dt_text or "土地権利" in dt_text) and dd_text.strip() and ownership is None:
+            ownership = dd_text.strip()
+
+        if "総戸数" in dt_text and total_units is None:
+            m = re.search(r"(\d+)\s*戸", dd_text)
+            if m:
+                total_units = int(m.group(1))
+
+    # 画像抽出
+    floor_plan_images: list[str] = []
+    suumo_images: list[dict[str, str]] = []
+    _EXCLUDE_SRC_PARTS = ("/logo", "/btn", "/icon", "spacer.gif", "/common/", "/pagetop")
+
+    seen_urls: set[str] = set()
+    for img in soup.find_all("img"):
+        alt = (img.get("alt") or "").strip()
+        raw_url = (img.get("data-src") or img.get("src") or "").strip()
+        if isinstance(raw_url, list):
+            raw_url = raw_url[0] if raw_url else ""
+        if not raw_url or raw_url.startswith("data:"):
+            continue
+        if any(part in raw_url for part in _EXCLUDE_SRC_PARTS):
+            continue
+        # athome の物件画像は通常 athome.co.jp ドメインの画像サーバーから配信される
+        if "athome" not in raw_url and raw_url.startswith("/"):
+            raw_url = BASE_URL + raw_url
+        elif not raw_url.startswith("http"):
+            continue
+
+        if raw_url in seen_urls:
+            continue
+        seen_urls.add(raw_url)
+
+        if "間取" in alt:
+            floor_plan_images.append(raw_url)
+        elif alt and alt not in ("", "アットホーム", "at home"):
+            suumo_images.append({"url": raw_url, "label": alt})
+
+    return {
+        "management_fee": management_fee,
+        "repair_reserve_fund": repair_reserve_fund,
+        "ownership": ownership,
+        "total_units": total_units,
+        "floor_plan_images": floor_plan_images if floor_plan_images else None,
+        "suumo_images": suumo_images if suumo_images else None,
+    }
+
+
+def enrich_athome_listings(listings: list[AthomeListing]) -> list[AthomeListing]:
+    """フィルタ通過済みのリストに対し、詳細ページから追加情報を取得して付与する。"""
+    if not listings:
+        return listings
+
+    cache = _load_detail_cache()
+    session = create_session()
+    enriched_count = 0
+    cache_hit_count = 0
+
+    for r in listings:
+        url = r.url
+        cached_entry = cache.get(url)
+
+        if cached_entry is not None:
+            detail = cached_entry
+            cache_hit_count += 1
+        else:
+            try:
+                html = _fetch_detail_page(session, url)
+                detail = parse_athome_detail_html(html, url)
+            except Exception as e:
+                logger.warning("athome detail: 詳細取得に失敗: %s (%s)", url, e)
+                continue
+            detail["cached_at"] = datetime.now(timezone.utc).isoformat()
+            cache[url] = detail
+
+        # None/空のフィールドのみ上書き
+        if r.management_fee is None and detail.get("management_fee") is not None:
+            r.management_fee = detail["management_fee"]
+        if r.repair_reserve_fund is None and detail.get("repair_reserve_fund") is not None:
+            r.repair_reserve_fund = detail["repair_reserve_fund"]
+        if r.ownership is None and detail.get("ownership") is not None:
+            r.ownership = detail["ownership"]
+        if r.total_units is None and detail.get("total_units") is not None:
+            r.total_units = detail["total_units"]
+        if r.floor_plan_images is None and detail.get("floor_plan_images") is not None:
+            r.floor_plan_images = detail["floor_plan_images"]
+        if r.suumo_images is None and detail.get("suumo_images") is not None:
+            r.suumo_images = detail["suumo_images"]
+
+        enriched_count += 1
+
+    _save_detail_cache(cache)
+    logger.info(
+        "athome detail: enrichment完了 — %d件処理 (キャッシュヒット: %d件, 新規取得: %d件)",
+        enriched_count, cache_hit_count, enriched_count - cache_hit_count,
+    )
+    return listings
+
+
 def apply_conditions(listings: list[AthomeListing]) -> list[AthomeListing]:
     """価格・専有・間取り・築年・徒歩・地域（東京23区）・路線・総戸数・駅乗降客数でフィルタ。"""
     passengers_map = load_station_passengers()
@@ -268,7 +497,7 @@ def apply_conditions(listings: list[AthomeListing]) -> list[AthomeListing]:
     for r in listings:
         if not is_tokyo_23_by_address(r.address):
             continue
-        if not line_ok(r.station_line, empty_passes=False):
+        if not line_ok(r.station_line, empty_passes=True):
             continue
         if not station_passengers_ok(r.station_line, passengers_map):
             continue
