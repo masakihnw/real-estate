@@ -443,30 +443,53 @@ def parse_nomucom_detail_html(html: str, url: str = "") -> dict:
             if m:
                 result["total_units"] = int(m.group(1))
 
+    # 物件IDを抽出 (URL: /mansion/id/FF7C2008/)
+    prop_id = ""
+    m = re.search(r"/id/([A-Z0-9]+)", url)
+    if m:
+        prop_id = m.group(1)
+
     # 画像抽出
     floor_plan_images: list[str] = []
     suumo_images: list[dict] = []
     seen_urls: set[str] = set()
+
+    _EXCLUDE = ("/logo", "/icon", "/btn", "/spacer", "/common/", "/header/",
+                "/footer", "/staff/", "/arrow", "/bg_", "/noimages/")
+
+    def _upgrade_nomu_image(src: str) -> str:
+        """image.nomu.com の画像URLを高解像度版(_35=1200x900)に変換。"""
+        if "image.nomu.com" not in src:
+            return src
+        # パターン: {ID}_{type}_{size}.jpg — 最後の _XX を _35 に
+        return re.sub(r"_(\d{2})\.jpg", r"_35.jpg", src)
 
     for img in soup.find_all("img"):
         alt = (img.get("alt") or "").strip()
         src = (img.get("data-src") or img.get("src") or "").strip()
         if not src or src.startswith("data:"):
             continue
-        if any(x in src for x in ("/logo", "/icon", "/btn", "/spacer", "/common/", "/header/")):
-            continue
-        if src in seen_urls:
+        if any(x in src for x in _EXCLUDE):
             continue
         if "nomu.com" not in src and not src.startswith("/"):
             continue
         if src.startswith("/"):
             src = BASE_URL + src
+        # 自物件の画像のみ (他物件の推薦画像を除外)
+        if prop_id and "image.nomu.com" in src and prop_id not in src:
+            continue
 
+        src = _upgrade_nomu_image(src)
+        if src in seen_urls:
+            continue
         seen_urls.add(src)
-        if "間取" in alt:
+
+        if "間取" in alt or "_0701_" in src:
             floor_plan_images.append(src)
-        elif "/photo/" in src or "/image/" in src or "/bukken/" in src:
-            suumo_images.append({"url": src, "label": alt or "外観"})
+        elif "image.nomu.com" in src and alt:
+            label = alt
+            label = re.sub(r"^【[^】]+】\S+\s*", "", label) or label
+            suumo_images.append({"url": src, "label": label})
 
     if floor_plan_images:
         result["floor_plan_images"] = floor_plan_images
