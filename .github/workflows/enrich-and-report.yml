@@ -46,14 +46,23 @@ jobs:
     steps:
       - name: Resolve run ID
         id: resolve
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -n "${{ github.event.inputs.run_id }}" ]; then
             echo "run_id=${{ github.event.inputs.run_id }}" >> $GITHUB_OUTPUT
           elif [ -n "${{ github.event.workflow_run.id }}" ]; then
             echo "run_id=${{ github.event.workflow_run.id }}" >> $GITHUB_OUTPUT
           else
-            echo "::error::run ID が特定できません"
-            exit 1
+            # 手動実行で run_id 未指定: 最新の成功した Scrape Listings run を使用
+            LATEST=$(gh run list --workflow=scrape-listings.yml --status=success --limit=1 --json databaseId -q '.[0].databaseId' --repo ${{ github.repository }})
+            if [ -n "$LATEST" ]; then
+              echo "run_id=$LATEST" >> $GITHUB_OUTPUT
+              echo "最新の Scrape Listings run ID: $LATEST"
+            else
+              echo "::error::run ID が特定できません（成功した Scrape Listings run がありません）"
+              exit 1
+            fi
           fi
 
       - name: Download metadata
