@@ -30,7 +30,7 @@ final class ListingStore {
     // MARK: - データソース切り替え
     private let useSupabaseKey = "realestate.useSupabase"
     var useSupabase: Bool {
-        get { defaults.bool(forKey: useSupabaseKey) }
+        get { defaults.object(forKey: useSupabaseKey) as? Bool ?? true }
         set { defaults.set(newValue, forKey: useSupabaseKey) }
     }
 
