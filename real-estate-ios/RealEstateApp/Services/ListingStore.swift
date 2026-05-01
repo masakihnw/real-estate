@@ -181,12 +181,20 @@ final class ListingStore {
         let bothNotModified = !chukoResult.hadChanges && chukoResult.error == nil
             && !shinResult.hadChanges && shinResult.error == nil
 
-        // Firestore からアノテーション（いいね・メモ）を取得してマージ
+        // アノテーション（いいね・コメント）を取得してマージ
         // 両ソースが304（データ変更なし）の場合はスキップ
         if !bothNotModified {
-            await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
-                Task { @MainActor in
-                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+            if useSupabase {
+                await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                    Task { @MainActor in
+                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                    }
+                }
+            } else {
+                await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                    Task { @MainActor in
+                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                    }
                 }
             }
         }
@@ -517,10 +525,18 @@ final class ListingStore {
                 NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
             }
 
-            // Firestore アノテーション同期
-            await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
-                Task { @MainActor in
-                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+            // アノテーション同期
+            if useSupabase {
+                await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                    Task { @MainActor in
+                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                    }
+                }
+            } else {
+                await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                    Task { @MainActor in
+                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                    }
                 }
             }
 

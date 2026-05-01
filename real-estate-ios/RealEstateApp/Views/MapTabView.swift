@@ -1093,7 +1093,7 @@ struct MapTabView: View {
             selectedListing: $selectedListing,
             onLikeTapped: { listing in
                 SaveErrorHandler.shared.save(modelContext, source: "MapTab")
-                FirebaseSyncService.shared.pushLikeState(for: listing)
+                AnnotationRouter.pushLikeState(for: listing)
                 if listing.isLiked {
                     SpotlightIndexer.indexListing(listing)
                 } else {

@@ -231,7 +231,7 @@ struct ListingDetailView: View {
                         Button {
                             listing.isLiked.toggle()
                             saveContext()
-                            FirebaseSyncService.shared.pushLikeState(for: listing)
+                            AnnotationRouter.pushLikeState(for: listing)
                             if listing.isLiked {
                                 SpotlightIndexer.indexListing(listing)
                             } else {
@@ -902,7 +902,7 @@ struct ListingDetailView: View {
     @ViewBuilder
     private var commentSection: some View {
         let comments = listing.parsedComments
-        let currentUserId = FirebaseSyncService.shared.currentUserId
+        let currentUserId = AnnotationRouter.currentUserId
 
         VStack(alignment: .leading, spacing: 10) {
             // ヘッダー
@@ -999,7 +999,7 @@ struct ListingDetailView: View {
             }
 
             // 入力欄（認証済みの場合のみ）— iMessage 風カプセル入力バー
-            if FirebaseSyncService.shared.isAuthenticated {
+            if AnnotationRouter.isAuthenticated {
                 VStack(alignment: .leading, spacing: 6) {
                     // 編集中インジケーター
                     if editingCommentId != nil {
@@ -1031,7 +1031,7 @@ struct ListingDetailView: View {
                         Button {
                             if let commentId = editingCommentId {
                                 // 編集モード: 既存コメントを更新
-                                FirebaseSyncService.shared.editComment(
+                                AnnotationRouter.editComment(
                                     for: listing,
                                     commentId: commentId,
                                     newText: newCommentText,
@@ -1039,7 +1039,7 @@ struct ListingDetailView: View {
                                 )
                             } else {
                                 // 新規投稿モード
-                                FirebaseSyncService.shared.addComment(
+                                AnnotationRouter.addComment(
                                     for: listing,
                                     text: newCommentText,
                                     modelContext: modelContext
@@ -1084,7 +1084,7 @@ struct ListingDetailView: View {
         )) {
             Button("削除", role: .destructive) {
                 if let commentId = deletingCommentId {
-                    FirebaseSyncService.shared.deleteComment(
+                    AnnotationRouter.deleteComment(
                         for: listing,
                         commentId: commentId,
                         modelContext: modelContext

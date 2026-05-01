@@ -43,8 +43,6 @@
 		66EF22D9734F413C7E26F3B2 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438CDAB54F0C420E60FF2E31 /* BackgroundRefreshManager.swift */; };
 		6A0EA76B5A6736641390DA6F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A60F143943F3CB7DDAC336 /* DashboardView.swift */; };
 		6A37F920CBBA5FC9545DEF3F /* ListingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5549338A98AC303BCC728D /* ListingStore.swift */; };
-		AABB001122334455DEADBEE1 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB001122334455DEADBEEF /* SupabaseClient.swift */; };
-		AABB001122334455DEADBEE2 /* SupabaseListingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB001122334455DEADBEE0 /* SupabaseListingStore.swift */; };
 		6AC9E38350EA1E689D272877 /* CommuteDestinationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6D0D2EC190261EE2AC889 /* CommuteDestinationSettingsView.swift */; };
 		6B368955BF644132571E4C9D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A46680E300D1AAFC546F4450 /* FirebaseAuth */; };
 		7040BD509BB73F81C2B3CD3D /* LoanCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853FEEF66F713933C5CC415D /* LoanCalculator.swift */; };
@@ -74,6 +72,7 @@
 		B3DED758AAB9646802BDDAC5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743ACD98A09AC230E7A67B19 /* SettingsView.swift */; };
 		B60E9F83EC85E4223D691998 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDC862D4D8B290913A0CD40 /* WidgetDataProvider.swift */; };
 		BB733BB9BB4EF0FEC253805F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */; };
+		BC1486C2315DA9543B052649 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E077CAC08921E24541D9707D /* SupabaseClient.swift */; };
 		C0E762D91A03E361EA0FEC5F /* SaveErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD3E9BA23AEB1C1A566EF4D /* SaveErrorHandler.swift */; };
 		CC96986E6F49533736E0051D /* PropertyListingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */; };
 		D02597AD698F8E60CF1F11D4 /* WalkthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1FD6AB10F203FC324097D8 /* WalkthroughView.swift */; };
@@ -89,6 +88,9 @@
 		F47AF2150D0396E4FB91AAE8 /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDE998C1AE443D8DBEC7DB2 /* PDFExporter.swift */; };
 		F4C92ACF4AD03ECB5EA847CB /* Listing+JSONDecoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAA7CF5DD9B1840536F3B4 /* Listing+JSONDecoding.swift */; };
 		F8F6F80803BB401BF19AC593 /* ListingDetailPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0300C4A7026740400F29F0C /* ListingDetailPagerView.swift */; };
+		FB58B4A6419882B93F768747 /* SupabaseListingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1F3E61F3E266258775A797 /* SupabaseListingStore.swift */; };
+		A1B2C3D4E5F60718A9B0C1D2 /* SupabaseAnnotationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E2F3A4B5C60718D9E0F1A2 /* SupabaseAnnotationService.swift */; };
+		B2C3D4E5F6A70829BAC1D2E3 /* AnnotationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F3A4B5C6D70829EAF0A1B2 /* AnnotationRouter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -177,6 +179,9 @@
 		A94333B46786557992552519 /* RadarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarChartView.swift; sourceTree = "<group>"; };
 		AFD3E9BA23AEB1C1A566EF4D /* SaveErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveErrorHandler.swift; sourceTree = "<group>"; };
 		B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStorageService.swift; sourceTree = "<group>"; };
+		BB1F3E61F3E266258775A797 /* SupabaseListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseListingStore.swift; sourceTree = "<group>"; };
+		D1E2F3A4B5C60718D9E0F1A2 /* SupabaseAnnotationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAnnotationService.swift; sourceTree = "<group>"; };
+		E2F3A4B5C6D70829EAF0A1B2 /* AnnotationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationRouter.swift; sourceTree = "<group>"; };
 		BB2B439F060EE0745A8D2196 /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
 		BC682E85B3EDC44519956DB8 /* RealEstateWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RealEstateWidget.entitlements; sourceTree = "<group>"; };
 		BCDE998C1AE443D8DBEC7DB2 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
@@ -185,14 +190,13 @@
 		CD7391AC642FF221BD72EBEB /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilter.swift; sourceTree = "<group>"; };
 		D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogService.swift; sourceTree = "<group>"; };
+		E077CAC08921E24541D9707D /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		E48C62989FA6BAC697E31F00 /* Listing+MarkdownExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Listing+MarkdownExport.swift"; sourceTree = "<group>"; };
 		E623D7A7882FFF98A5AEFA57 /* RecentlyViewedListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyViewedListView.swift; sourceTree = "<group>"; };
 		E6DC892696F0E098888C28B1 /* TransactionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionMapView.swift; sourceTree = "<group>"; };
 		EA3890AAC58D1F45D703CF33 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		EA5549338A98AC303BCC728D /* ListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingStore.swift; sourceTree = "<group>"; };
-		AABB001122334455DEADBEEF /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
-		AABB001122334455DEADBEE0 /* SupabaseListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseListingStore.swift; sourceTree = "<group>"; };
 		EBAE64911ACD8407EC794380 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EC43BF3AAA685CC0040239D7 /* RentVsBuyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentVsBuyView.swift; sourceTree = "<group>"; };
 		EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTabView.swift; sourceTree = "<group>"; };
@@ -224,8 +228,6 @@
 				4C01B541CE8BDAC3B3E2C7BD /* CommuteTimeService.swift */,
 				32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */,
 				EA5549338A98AC303BCC728D /* ListingStore.swift */,
-				AABB001122334455DEADBEEF /* SupabaseClient.swift */,
-				AABB001122334455DEADBEE0 /* SupabaseListingStore.swift */,
 				06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */,
 				A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */,
 				BCDE998C1AE443D8DBEC7DB2 /* PDFExporter.swift */,
@@ -236,6 +238,10 @@
 				4D33E9EF2F06718A077B1DAD /* ScrapingConfigService.swift */,
 				D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */,
 				97A7F9C6F1B590BF3BCF62B3 /* SpotlightIndexer.swift */,
+				E077CAC08921E24541D9707D /* SupabaseClient.swift */,
+				BB1F3E61F3E266258775A797 /* SupabaseListingStore.swift */,
+				D1E2F3A4B5C60718D9E0F1A2 /* SupabaseAnnotationService.swift */,
+				E2F3A4B5C6D70829EAF0A1B2 /* AnnotationRouter.swift */,
 				03BF7C431D158CB3C8FED573 /* TransactionStore.swift */,
 				8CC3A219B7AF772D1DADDF0E /* UserAnnotationStore.swift */,
 				1DDC862D4D8B290913A0CD40 /* WidgetDataProvider.swift */,
@@ -493,8 +499,6 @@
 				28F22887EDD883FDBE3CF7E7 /* ListingFilterSheet.swift in Sources */,
 				D0CB8E0312FD2887D70458A7 /* ListingListView.swift in Sources */,
 				6A37F920CBBA5FC9545DEF3F /* ListingStore.swift in Sources */,
-				AABB001122334455DEADBEE1 /* SupabaseClient.swift in Sources */,
-				AABB001122334455DEADBEE2 /* SupabaseListingStore.swift in Sources */,
 				7040BD509BB73F81C2B3CD3D /* LoanCalculator.swift in Sources */,
 				A4CBD4C7F34B166222CCED63 /* LoginView.swift in Sources */,
 				27560686B331DE043F6A5E92 /* MapTabView.swift in Sources */,
@@ -526,6 +530,10 @@
 				B3DED758AAB9646802BDDAC5 /* SettingsView.swift in Sources */,
 				72188035EBF232524AD778B9 /* SimulationChartView.swift in Sources */,
 				139E0B39961D38C474315622 /* SpotlightIndexer.swift in Sources */,
+				BC1486C2315DA9543B052649 /* SupabaseClient.swift in Sources */,
+				FB58B4A6419882B93F768747 /* SupabaseListingStore.swift in Sources */,
+				A1B2C3D4E5F60718A9B0C1D2 /* SupabaseAnnotationService.swift in Sources */,
+				B2C3D4E5F6A70829BAC1D2E3 /* AnnotationRouter.swift in Sources */,
 				713D6244BCC833B25493C5BB /* TransactionDetailView.swift in Sources */,
 				1F72CE93F21F2E14D524D3D9 /* TransactionFilter.swift in Sources */,
 				A0B33EC2E6F5533C53E1F616 /* TransactionFilterSheet.swift in Sources */,
@@ -615,7 +623,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 361;
+				CURRENT_PROJECT_VERSION = 363;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -745,7 +753,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 361;
+				CURRENT_PROJECT_VERSION = 363;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_NS_ASSERTIONS = NO;
