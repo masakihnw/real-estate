@@ -3,17 +3,17 @@ HOME'S（LIFULL HOME'S）中古マンション一覧のスクレイピング。
 利用規約: terms-check.md を参照。規約上明示的クローラー禁止はないが、
 負荷軽減・私的利用に留めること。
 一覧は JSON-LD (ItemList) と HTML (mod-mergeBuilding--sale / mod-listKks) の両方から取得。
+
+AWS WAF チャレンジ回避のため Playwright（ヘッドレスブラウザ）を使用。
 """
 
 import json
 import re
-import sys
 import time
 from dataclasses import dataclass, asdict
 from typing import Any, Iterator, Optional
 from urllib.parse import urljoin
 
-import requests
 from bs4 import BeautifulSoup
 
 from config import (
@@ -24,11 +24,8 @@ from config import (
     BUILT_YEAR_MIN,
     WALK_MIN_MAX,
     TOTAL_UNITS_MIN,
-    STATION_PASSENGERS_MIN,
-    ALLOWED_LINE_KEYWORDS,
     HOMES_REQUEST_DELAY_SEC,
-    REQUEST_TIMEOUT_SEC,
-    REQUEST_RETRIES,
+    USER_AGENT,
 )
 from parse_utils import (
     parse_price,
@@ -44,8 +41,6 @@ from parse_utils import (
 )
 from report_utils import clean_listing_name
 from scraper_common import (
-    create_session,
-    is_waf_challenge,
     load_station_passengers,
     station_passengers_ok,
     line_ok,
@@ -54,6 +49,14 @@ from scraper_common import (
 
 from logger import get_logger
 logger = get_logger(__name__)
+
+# Playwright はオプション依存: インストールされていない環境では警告を出してスキップ
+HAS_PLAYWRIGHT = False
+try:
+    from playwright.sync_api import sync_playwright, BrowserContext
+    HAS_PLAYWRIGHT = True
+except ImportError:
+    logger.warning("Playwright がインストールされていません。homes スクレイパーは無効です。")
 
 
 BASE_URL = "https://www.homes.co.jp"
@@ -100,43 +103,58 @@ class HomesListing:
         return asdict(self)
 
 
-def fetch_list_page(session: requests.Session, url: str) -> str:
-    """一覧ページのHTMLを取得。5xx/429/WAF/タイムアウト・接続エラー時はリトライする。"""
-    last_error: Optional[Exception] = None
-    for attempt in range(REQUEST_RETRIES + 2):  # WAF 対策で追加リトライ
-        time.sleep(HOMES_REQUEST_DELAY_SEC)
+def _launch_browser():
+    """Playwright ブラウザを起動し、(pw, browser, context) を返す。"""
+    pw = sync_playwright().start()
+    browser = pw.chromium.launch(headless=True)
+    context = browser.new_context(
+        user_agent=USER_AGENT,
+        locale="ja-JP",
+        extra_http_headers={
+            "Accept-Language": "ja,en;q=0.9",
+        },
+    )
+    return pw, browser, context
+
+
+def fetch_list_page(context: BrowserContext, url: str) -> str:
+    """Playwright でページを取得し、レンダリング済み HTML を返す。
+
+    WAF の JavaScript チャレンジはブラウザが自動的に処理するため、
+    requests 時代のような WAF 検出・リトライロジックは不要。
+    """
+    page = context.new_page()
+    try:
+        logger.info("HOME'S: ページ取得中: %s", url)
+        page.goto(url, wait_until="networkidle", timeout=60000)
+
+        # 追加待機: 物件リストが表示されるまで最大10秒待機
         try:
-            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
-            # 429 Too Many Requests — レートリミット対策
-            if r.status_code == 429:
-                retry_after = int(r.headers.get("Retry-After", 60))
-                logger.warning(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})")
-                time.sleep(retry_after)
-                continue
-            r.raise_for_status()
-            r.encoding = r.apparent_encoding or "utf-8"
-            html = r.text
-            # AWS WAF チャレンジページの検出
-            if is_waf_challenge(html):
-                wait = min(30 * (attempt + 1), 120)
-                logger.info(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})")
-                time.sleep(wait)
-                continue
-            return html
-        except requests.exceptions.HTTPError as e:
-            # 500/502/503 は一時的なサーバーエラーのためリトライ
-            if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
-                last_error = e
-                time.sleep(2)
-            else:
-                raise
-        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as e:
-            last_error = e
-            if attempt < REQUEST_RETRIES - 1:
-                time.sleep(2)
-    if last_error is not None:
-        raise last_error
-    raise RuntimeError(f"全リトライが失敗しました (WAF/Rate Limited): {url}")
+            page.wait_for_selector(
+                "div.mod-mergeBuilding--sale, div.mod-listKks, "
+                "script[type='application/ld+json'], "
+                "a[href*='/mansion/b-']",
+                timeout=10000,
+            )
+        except Exception:
+            logger.debug("HOME'S: 物件セレクタの待機タイムアウト（コンテンツ全体は取得済み）")
+
+        html = page.content()
+
+        # ページが極端に短い場合はブロックの可能性
+        if len(html) < 1000 and "mansion" not in html.lower():
+            logger.warning("HOME'S: ページが極端に短い（WAF/ブロックの可能性）: %s", url)
+            # リトライ: 少し待ってから再取得
+            time.sleep(5)
+            page.reload(wait_until="networkidle", timeout=60000)
+            html = page.content()
+
+        return html
+    except Exception as e:
+        logger.error("HOME'S: ページ取得エラー: %s — %s", url, e)
+        return ""
+    finally:
+        page.close()
 
 
 def _parse_jsonld_itemlist(html: str) -> list[dict[str, Any]]:
@@ -527,54 +545,72 @@ def apply_conditions(listings: list[HomesListing]) -> list[HomesListing]:
 
 
 def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Iterator[HomesListing]:
-    """HOME'S 東京23区中古マンション一覧を取得。max_pages=0 のときは結果がなくなるまで全ページ取得。"""
-    session = create_session()
+    """HOME'S 東京23区中古マンション一覧を取得。max_pages=0 のときは結果がなくなるまで全ページ取得。
+
+    Playwright が未インストールの場合は警告を出して何も返さない。
+    """
+    if not HAS_PLAYWRIGHT:
+        logger.warning("HOME'S: Playwright がインストールされていないためスキップします。")
+        return
+
     limit = max_pages if max_pages and max_pages > 0 else HOMES_MAX_PAGES_SAFETY
-    page = 1
-    total_parsed = 0
-    total_passed = 0
-    pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
-    start_time = time.monotonic()
-    while page <= limit:
-        # タイムリミットチェック（WAF 遅延でパイプライン全体がタイムアウトするのを防止）
-        elapsed = time.monotonic() - start_time
-        if elapsed > HOMES_SCRAPE_TIMEOUT_SEC:
-            logger.info(f"HOME'S: タイムリミット到達（{int(elapsed)}秒, {page - 1}ページ処理済, 通過: {total_passed}件）")
-            break
-        url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
-        try:
-            html = fetch_list_page(session, url)
-        except Exception as e:
-            logger.error(f"HOME'S: ページ{page}でエラー（WAF/ネットワーク）: {e}")
-            break
-        rows = parse_list_html(html)
-        if not rows:
-            logger.info(f"HOME'S: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。")
-            break
-        total_parsed += len(rows)
-        passed = 0
-        for row in rows:
-            if apply_filter:
-                filtered = apply_conditions([row])
-                if filtered:
-                    yield filtered[0]
+    pw, browser, context = _launch_browser()
+    try:
+        page = 1
+        total_parsed = 0
+        total_passed = 0
+        pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
+        start_time = time.monotonic()
+        while page <= limit:
+            # タイムリミットチェック
+            elapsed = time.monotonic() - start_time
+            if elapsed > HOMES_SCRAPE_TIMEOUT_SEC:
+                logger.info(f"HOME'S: タイムリミット到達（{int(elapsed)}秒, {page - 1}ページ処理済, 通過: {total_passed}件）")
+                break
+
+            url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
+
+            # ページ間のディレイ（初回以外）
+            if page > 1:
+                time.sleep(HOMES_REQUEST_DELAY_SEC)
+
+            html = fetch_list_page(context, url)
+            if not html:
+                logger.info(f"HOME'S: ページ{page}で空HTML。WAF/ネットワークエラーの可能性。")
+                break
+
+            rows = parse_list_html(html)
+            if not rows:
+                logger.info(f"HOME'S: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。")
+                break
+
+            total_parsed += len(rows)
+            passed = 0
+            for row in rows:
+                if apply_filter:
+                    filtered = apply_conditions([row])
+                    if filtered:
+                        yield filtered[0]
+                        passed += 1
+                        logger.debug(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)")
+                else:
+                    yield row
                     passed += 1
-                    logger.debug(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)")
+            total_passed += passed
+            # 早期打ち切り判定: 連続 N ページで新規通過0件なら中断
+            if passed > 0:
+                pages_since_last_pass = 0
             else:
-                yield row
-                passed += 1
-        total_passed += passed
-        # 早期打ち切り判定: 連続 N ページで新規通過0件なら中断
-        if passed > 0:
-            pages_since_last_pass = 0
-        else:
-            pages_since_last_pass += 1
-        if pages_since_last_pass >= HOMES_EARLY_EXIT_PAGES:
-            logger.info(f"HOME'S: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
-            break
-        # 進捗: 10ページごとにサマリー
-        if page % 10 == 0:
-            logger.info(f"HOME'S: ...{page}ページ処理済 (通過: {total_passed}件)")
-        page += 1
-    if total_parsed > 0:
-        logger.info(f"HOME'S: 完了 — {total_parsed}件パース, {total_passed}件通過")
+                pages_since_last_pass += 1
+            if pages_since_last_pass >= HOMES_EARLY_EXIT_PAGES:
+                logger.info(f"HOME'S: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
+                break
+            # 進捗: 10ページごとにサマリー
+            if page % 10 == 0:
+                logger.info(f"HOME'S: ...{page}ページ処理済 (通過: {total_passed}件)")
+            page += 1
+        if total_parsed > 0:
+            logger.info(f"HOME'S: 完了 — {total_parsed}件パース, {total_passed}件通過")
+    finally:
+        browser.close()
+        pw.stop()

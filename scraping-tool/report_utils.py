@@ -673,22 +673,103 @@ def inject_first_seen_at(
 
 
 def inject_competing_count(listings: list[dict]) -> list[dict]:
-    """同一マンション（正規化物件名+区名）で何件売り出されているかを competing_listings_count として付与。"""
-    from collections import Counter
-    groups: Counter = Counter()
+    """同一マンション（正規化物件名+区名）で何件売り出されているかを付与。
+    competing_listings_count, competing_price_range, is_cheapest_in_building を追加。"""
+    from collections import defaultdict
+    groups: dict[tuple, list[dict]] = defaultdict(list)
     for r in listings:
         name = normalize_listing_name(r.get("name") or "")
         ward = get_ward_from_address(r.get("address") or "")
         if name and ward:
-            groups[(name, ward)] += 1
+            groups[(name, ward)].append(r)
 
     for r in listings:
         name = normalize_listing_name(r.get("name") or "")
         ward = get_ward_from_address(r.get("address") or "")
         key = (name, ward)
-        r["competing_listings_count"] = groups.get(key, 1)
+        group = groups.get(key, [r])
+        r["competing_listings_count"] = len(group)
+        prices = [g.get("price_man") for g in group if g.get("price_man") is not None]
+        if len(prices) >= 2:
+            lo, hi = min(prices), max(prices)
+            r["competing_price_range"] = f"{format_price(lo)}〜{format_price(hi)}"
+            r["is_cheapest_in_building"] = (r.get("price_man") is not None and r["price_man"] == lo)
+        else:
+            r["competing_price_range"] = None
+            r["is_cheapest_in_building"] = None
 
     return listings
+
+
+def inject_days_on_market(listings: list[dict]) -> list[dict]:
+    """first_seen_at から掲載日数を計算し days_on_market, is_long_listed を付与。"""
+    from datetime import date
+    today = date.today()
+    for r in listings:
+        fsa = r.get("first_seen_at")
+        if fsa:
+            try:
+                first = date.fromisoformat(fsa)
+                dom = (today - first).days
+                r["days_on_market"] = dom
+                r["is_long_listed"] = dom >= 30
+            except (ValueError, TypeError):
+                r["days_on_market"] = None
+                r["is_long_listed"] = False
+        else:
+            r["days_on_market"] = None
+            r["is_long_listed"] = False
+    return listings
+
+
+def inject_relisted_flag(
+    current: list[dict],
+    previous: Optional[list[dict]] = None,
+    *,
+    event_history_path: Optional[str] = None,
+) -> list[dict]:
+    """再掲載（一度消えて再出現）を検出し was_relisted フラグを付与。
+    event_history_path があれば掲載イベント履歴を永続化する。"""
+    import json as _json
+    from datetime import date
+    from pathlib import Path
+
+    today = date.today().isoformat()
+
+    events: dict[str, list[dict]] = {}
+    event_file = Path(event_history_path) if event_history_path else None
+    if event_file and event_file.exists():
+        try:
+            events = _json.loads(event_file.read_text(encoding="utf-8"))
+        except (_json.JSONDecodeError, OSError):
+            events = {}
+
+    current_keys = {_key_str(r) for r in current}
+    prev_keys = {_key_str(r) for r in (previous or [])}
+
+    for ks in current_keys - prev_keys:
+        hist = events.setdefault(ks, [])
+        if hist and hist[-1].get("event") == "removed":
+            hist.append({"event": "reappeared", "date": today})
+        elif not hist:
+            hist.append({"event": "appeared", "date": today})
+
+    for ks in prev_keys - current_keys:
+        events.setdefault(ks, []).append({"event": "removed", "date": today})
+
+    for r in current:
+        ks = _key_str(r)
+        hist = events.get(ks, [])
+        r["was_relisted"] = any(e.get("event") == "reappeared" for e in hist)
+
+    if event_file:
+        event_file.parent.mkdir(parents=True, exist_ok=True)
+        event_file.write_text(
+            _json.dumps(events, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+    return current
 
 
 def load_json(

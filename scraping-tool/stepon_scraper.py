@@ -91,6 +91,8 @@ class SteponListing:
     total_units: Optional[int] = None
     floor_position: Optional[int] = None
     floor_total: Optional[int] = None
+    listing_agent: Optional[str] = "住友不動産販売"
+    is_motodzuke: Optional[bool] = True
 
     def to_dict(self):
         return asdict(self)
