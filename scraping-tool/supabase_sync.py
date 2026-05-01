@@ -95,11 +95,35 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                 for row in resp.data:
                     existing_sources[row["listing_id"]] = row
 
+    # 旧キー(6要素)→新キー(7要素)のフォールバックマップ構築
+    def _resolve_identity_key(ik: str) -> str:
+        """新キーが既存DBに無い場合、旧キーや floor=None 版で既存を検索し、あれば更新する。"""
+        if ik in existing_listings:
+            return ik
+        parts = ik.split("|")
+        if len(parts) == 7:
+            # floor=None 版で検索
+            fallback = "|".join(parts[:6] + ["None"])
+            if fallback in existing_listings:
+                lid = existing_listings.pop(fallback)
+                client.table("listings").update({"identity_key": ik}).eq("id", lid).execute()
+                existing_listings[ik] = lid
+                return ik
+            # 旧6要素版で検索
+            legacy = "|".join(parts[:6])
+            if legacy in existing_listings:
+                lid = existing_listings.pop(legacy)
+                client.table("listings").update({"identity_key": ik}).eq("id", lid).execute()
+                existing_listings[ik] = lid
+                return ik
+        return ik
+
     # 物件を1件ずつ処理
     for item in listings:
         ik = identity_key_str(item)
         if not ik or all(p in ("None", "") for p in ik.split("|")):
             continue
+        ik = _resolve_identity_key(ik)
 
         normalized_name = normalize_listing_name(item.get("name") or "")
         listing_row = {

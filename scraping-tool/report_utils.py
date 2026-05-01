@@ -237,7 +237,9 @@ def identity_key(r: dict) -> tuple:
     """同一物件の識別用キー（価格を除く）。差分検出で「同じ物件で価格だけ変わった → updated」とするために使う。
     station_line は駅名のみに正規化（路線テキストの表記揺れを吸収）。
     address は丁目レベルに正規化（番地以下の精度差を吸収）。
+    floor_position は両方に値がある場合のみ区別する（片方 None なら無視）。
     total_units / walk_min は重複集約の代表レコード変更で変動するため含めない。"""
+    floor = r.get("floor_position")
     return (
         normalize_listing_name(r.get("name") or ""),
         (r.get("layout") or "").strip(),
@@ -245,6 +247,7 @@ def identity_key(r: dict) -> tuple:
         _normalize_address_for_key(r.get("address") or ""),
         r.get("built_year"),
         _extract_station_name(r.get("station_line") or ""),
+        floor if floor is not None else None,
     )
 
 

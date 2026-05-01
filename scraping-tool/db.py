@@ -331,10 +331,44 @@ def get_active_listings(conn: sqlite3.Connection, source: str | None = None) -> 
 
 
 def get_listing_by_identity_key(conn: sqlite3.Connection, identity_key: str) -> dict | None:
-    """Look up a listing by identity key."""
-    return conn.execute(
+    """Look up a listing by identity key.
+    折衷案: 完全一致を優先し、見つからなければ floor=None 版でフォールバック検索する。
+    これにより、片方の媒体に階数がない場合でも同一物件としてマージされる。"""
+    exact = conn.execute(
         "SELECT * FROM listings WHERE identity_key = ?", (identity_key,)
     ).fetchone()
+    if exact:
+        return exact
+
+    # フォールバック: 新キー(7要素)で見つからない場合、floor部分を None に置き換えて検索
+    parts = identity_key.split("|")
+    if len(parts) == 7 and parts[6] != "None":
+        fallback_key = "|".join(parts[:6] + ["None"])
+        found = conn.execute(
+            "SELECT * FROM listings WHERE identity_key = ?", (fallback_key,)
+        ).fetchone()
+        if found:
+            # 既存レコードの identity_key を階数ありに更新
+            conn.execute(
+                "UPDATE listings SET identity_key = ? WHERE id = ?",
+                (identity_key, found["id"])
+            )
+            return found
+
+    # フォールバック: 旧キー(6要素)との互換性
+    if len(parts) == 7:
+        legacy_key = "|".join(parts[:6])
+        found = conn.execute(
+            "SELECT * FROM listings WHERE identity_key = ?", (legacy_key,)
+        ).fetchone()
+        if found:
+            conn.execute(
+                "UPDATE listings SET identity_key = ? WHERE id = ?",
+                (identity_key, found["id"])
+            )
+            return found
+
+    return None
 
 
 def get_listing_sources(conn: sqlite3.Connection, listing_id: int) -> list[dict]:
