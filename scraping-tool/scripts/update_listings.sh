@@ -128,12 +128,12 @@ echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
 echo "--- Phase 1: スクレイピング（中古・新築並列実行） ---" >&2
 
 _t_chuko=$(date +%s)
-python3 main.py --source suumo --property-type chuko -o "$CURRENT" &
+python3 main.py --source all --property-type chuko -o "$CURRENT" &
 CHUKO_PID=$!
 register_bg_pid $CHUKO_PID
 
 _t_shinchiku=$(date +%s)
-python3 main.py --source suumo --property-type shinchiku -o "$CURRENT_SHINCHIKU" &
+python3 main.py --source all --property-type shinchiku -o "$CURRENT_SHINCHIKU" &
 SHINCHIKU_PID=$!
 register_bg_pid $SHINCHIKU_PID
 
