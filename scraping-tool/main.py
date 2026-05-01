@@ -70,10 +70,11 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
         count = len(group)
         representative["duplicate_count"] = count
         if count > 1:
-            alt = [r["url"] for r in group if r.get("url") and r["url"] != representative.get("url")]
-            if alt:
-                representative["alt_urls"] = alt
-            representative["alt_sources"] = _collect_sources(group)
+            alts = [(r.get("source", "unknown"), r["url"])
+                    for r in group if r.get("url") and r["url"] != representative.get("url")]
+            if alts:
+                representative["alt_sources"] = [s for s, _ in alts]
+                representative["alt_urls"] = [u for _, u in alts]
         out.append(representative)
 
     # 2次判定: ファジーマッチング（クロスサイト表記揺れの吸収）
@@ -93,11 +94,13 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
                 used.add(j)
         if len(group) > 1:
             representative = max(group, key=lambda r: sum(1 for v in r.values() if v is not None))
-            alt = [r["url"] for r in group if r.get("url") and r["url"] != representative.get("url")]
-            if alt:
-                existing_alt = representative.get("alt_urls", [])
-                representative["alt_urls"] = existing_alt + alt
-            representative["alt_sources"] = _collect_sources(group)
+            alts = [(r.get("source", "unknown"), r["url"])
+                    for r in group if r.get("url") and r["url"] != representative.get("url")]
+            if alts:
+                existing_alt_s = representative.get("alt_sources", [])
+                existing_alt_u = representative.get("alt_urls", [])
+                representative["alt_sources"] = existing_alt_s + [s for s, _ in alts]
+                representative["alt_urls"] = existing_alt_u + [u for _, u in alts]
             representative["duplicate_count"] = representative.get("duplicate_count", 1) + len(group) - 1
             merged.append(representative)
         else:
@@ -149,9 +152,11 @@ def _scrape_homes_shinchiku(max_pages: int, apply_filter: bool) -> list[dict]:
 
 def _scrape_athome_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
     """アットホーム中古スクレイピング（スレッド用）"""
-    from athome_scraper import scrape_athome
+    from athome_scraper import scrape_athome, enrich_athome_listings
+    listings = list(scrape_athome(max_pages=max_pages, apply_filter=apply_filter))
+    listings = enrich_athome_listings(listings)
     rows = []
-    for row in scrape_athome(max_pages=max_pages, apply_filter=apply_filter):
+    for row in listings:
         d = row.to_dict()
         d["property_type"] = "chuko"
         rows.append(d)
@@ -160,9 +165,11 @@ def _scrape_athome_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
 
 def _scrape_rehouse_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
     """リハウス中古スクレイピング（スレッド用）"""
-    from rehouse_scraper import scrape_rehouse
+    from rehouse_scraper import scrape_rehouse, enrich_rehouse_listings
+    listings = list(scrape_rehouse(max_pages=max_pages, apply_filter=apply_filter))
+    listings = enrich_rehouse_listings(listings)
     rows = []
-    for row in scrape_rehouse(max_pages=max_pages, apply_filter=apply_filter):
+    for row in listings:
         d = row.to_dict()
         d["property_type"] = "chuko"
         rows.append(d)
@@ -171,9 +178,11 @@ def _scrape_rehouse_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
 
 def _scrape_nomucom_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
     """ノムコム中古スクレイピング（スレッド用）"""
-    from nomucom_scraper import scrape_nomucom
+    from nomucom_scraper import scrape_nomucom, enrich_nomucom_listings
+    listings = list(scrape_nomucom(max_pages=max_pages, apply_filter=apply_filter))
+    listings = enrich_nomucom_listings(listings)
     rows = []
-    for row in scrape_nomucom(max_pages=max_pages, apply_filter=apply_filter):
+    for row in listings:
         d = row.to_dict()
         d["property_type"] = "chuko"
         rows.append(d)
@@ -182,9 +191,11 @@ def _scrape_nomucom_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
 
 def _scrape_stepon_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
     """住友不動産販売中古スクレイピング（スレッド用）"""
-    from stepon_scraper import scrape_stepon
+    from stepon_scraper import scrape_stepon, enrich_stepon_listings
+    listings = list(scrape_stepon(max_pages=max_pages, apply_filter=apply_filter))
+    listings = enrich_stepon_listings(listings)
     rows = []
-    for row in scrape_stepon(max_pages=max_pages, apply_filter=apply_filter):
+    for row in listings:
         d = row.to_dict()
         d["property_type"] = "chuko"
         rows.append(d)
@@ -193,9 +204,11 @@ def _scrape_stepon_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
 
 def _scrape_livable_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
     """東急リバブル中古スクレイピング（スレッド用）"""
-    from livable_scraper import scrape_livable
+    from livable_scraper import scrape_livable, enrich_livable_listings
+    listings = list(scrape_livable(max_pages=max_pages, apply_filter=apply_filter))
+    listings = enrich_livable_listings(listings)
     rows = []
-    for row in scrape_livable(max_pages=max_pages, apply_filter=apply_filter):
+    for row in listings:
         d = row.to_dict()
         d["property_type"] = "chuko"
         rows.append(d)

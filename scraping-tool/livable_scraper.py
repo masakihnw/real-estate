@@ -6,10 +6,13 @@
 区ごとに並列取得し、各区をページネーションする。
 """
 
+import json
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, asdict
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from typing import Iterator, Optional
 from urllib.parse import urljoin
 
@@ -35,6 +38,7 @@ from parse_utils import (
     parse_built_year,
     parse_floor_position,
     parse_floor_total,
+    parse_monthly_yen,
     layout_ok,
 )
 from report_utils import clean_listing_name
@@ -117,6 +121,11 @@ class LivableListing:
     total_units: Optional[int] = None
     floor_position: Optional[int] = None
     floor_total: Optional[int] = None
+    management_fee: Optional[int] = None
+    repair_reserve_fund: Optional[int] = None
+    ownership: Optional[str] = None
+    suumo_images: Optional[list] = None  # [{"url": "...", "label": "..."}, ...]
+    floor_plan_images: Optional[list] = None  # ["url1", "url2", ...]
     listing_agent: Optional[str] = "東急リバブル"
     is_motodzuke: Optional[bool] = True
 
@@ -386,7 +395,7 @@ def apply_conditions(listings: list[LivableListing]) -> list[LivableListing]:
     for r in listings:
         if not is_tokyo_23_by_address(r.address):
             continue
-        if not line_ok(r.station_line, empty_passes=False):
+        if not line_ok(r.station_line, empty_passes=True):
             continue
         if not station_passengers_ok(r.station_line, passengers_map):
             continue
@@ -538,3 +547,298 @@ def scrape_livable(max_pages: Optional[int] = 2, apply_filter: bool = True) -> I
                     total_yielded += 1
 
     logger.info("livable: 全区完了 — 合計 %d 件", total_yielded)
+
+
+# ──────────────────────────── 詳細ページ取得・パース ────────────────────────────
+
+
+DETAIL_CACHE_PATH = Path(__file__).resolve().parent / "data" / "detail_cache_livable.json"
+DETAIL_CACHE_EXPIRY_DAYS = 90
+
+
+def _load_detail_cache() -> dict[str, dict]:
+    """詳細キャッシュファイルを読み込む。"""
+    if DETAIL_CACHE_PATH.exists():
+        try:
+            return json.loads(DETAIL_CACHE_PATH.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            pass
+    return {}
+
+
+def _save_detail_cache(cache: dict[str, dict]) -> None:
+    """詳細キャッシュファイルを保存する。"""
+    DETAIL_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    DETAIL_CACHE_PATH.write_text(
+        json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+
+def _is_detail_cache_valid(entry: dict) -> bool:
+    """キャッシュエントリが有効期限内か判定する。"""
+    cached_at = entry.get("cached_at")
+    if not cached_at:
+        return False
+    try:
+        dt = datetime.fromisoformat(cached_at)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return (datetime.now(timezone.utc) - dt).days < DETAIL_CACHE_EXPIRY_DAYS
+    except (ValueError, TypeError):
+        return False
+
+
+def _fetch_detail_page(session: requests.Session, url: str) -> str:
+    """livable 詳細ページの HTML を取得する。リトライ付き。"""
+    last_error: Optional[Exception] = None
+    for attempt in range(REQUEST_RETRIES):
+        time.sleep(LIVABLE_REQUEST_DELAY_SEC)
+        try:
+            r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
+            if r.status_code == 429:
+                retry_after = int(r.headers.get("Retry-After", 60))
+                backoff = min(retry_after, 120)
+                logger.warning(
+                    "livable detail: 429 Rate Limited, waiting %ds (attempt %d/%d)",
+                    backoff, attempt + 1, REQUEST_RETRIES,
+                )
+                time.sleep(backoff)
+                continue
+            r.raise_for_status()
+            r.encoding = r.apparent_encoding or "utf-8"
+            return r.text
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and e.response.status_code in (500, 502, 503) and attempt < REQUEST_RETRIES - 1:
+                last_error = e
+                backoff = min(2 ** (attempt + 1), 30)
+                logger.warning(
+                    "livable detail: HTTP %d, retrying in %ds (attempt %d/%d)",
+                    e.response.status_code, backoff, attempt + 1, REQUEST_RETRIES,
+                )
+                time.sleep(backoff)
+            else:
+                raise
+        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as e:
+            last_error = e
+            if attempt < REQUEST_RETRIES - 1:
+                backoff = min(2 ** (attempt + 1), 30)
+                logger.warning(
+                    "livable detail: %s, retrying in %ds (attempt %d/%d)",
+                    type(e).__name__, backoff, attempt + 1, REQUEST_RETRIES,
+                )
+                time.sleep(backoff)
+            else:
+                raise last_error
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError(f"全 {REQUEST_RETRIES} 回のリトライが失敗しました: {url}")
+
+
+def parse_livable_detail_html(html: str, url: str = "") -> dict:
+    """livable 詳細ページ HTML をパースして物件情報辞書を返す。
+
+    Returns:
+        {
+            "management_fee": int or None,
+            "repair_reserve_fund": int or None,
+            "ownership": str or None,
+            "total_units": int or None,
+            "floor_plan_images": ["url1", ...] or None,
+            "suumo_images": [{"url": "...", "label": "..."}, ...] or None,
+        }
+    """
+    soup = BeautifulSoup(html, "lxml")
+    result: dict = {
+        "management_fee": None,
+        "repair_reserve_fund": None,
+        "ownership": None,
+        "total_units": None,
+        "floor_plan_images": None,
+        "suumo_images": None,
+    }
+
+    # --- テーブルから物件情報を抽出 ---
+    # livable の詳細ページは th/td ペアのテーブルで物件情報を表示
+    for th in soup.find_all("th"):
+        th_text = (th.get_text(strip=True) or "").strip()
+        td = th.find_next_sibling("td")
+        if not td:
+            # dt/dd パターンにもフォールバック
+            td = th.find_next("td")
+        if not td:
+            continue
+        td_text = (td.get_text(strip=True) or "").strip()
+
+        if "管理費" in th_text and "修繕" not in th_text:
+            result["management_fee"] = parse_monthly_yen(td_text)
+        elif "修繕積立金" in th_text or "修繕積立" in th_text:
+            result["repair_reserve_fund"] = parse_monthly_yen(td_text)
+        elif "権利" in th_text or "土地権利" in th_text:
+            # 所有権 / 借地権 / 定期借地権 etc
+            m = re.search(r"(所有権|借地権|底地権|普通借地権|定期借地権)", td_text)
+            if m:
+                result["ownership"] = m.group(1)
+        elif "総戸数" in th_text:
+            m = re.search(r"(\d+)\s*戸?", td_text)
+            if m:
+                result["total_units"] = int(m.group(1))
+
+    # --- dl > dt/dd パターンにも対応 ---
+    for dt in soup.find_all("dt"):
+        dt_text = (dt.get_text(strip=True) or "").strip()
+        dd = dt.find_next_sibling("dd")
+        if not dd:
+            continue
+        dd_text = (dd.get_text(strip=True) or "").strip()
+
+        if "管理費" in dt_text and "修繕" not in dt_text:
+            if result["management_fee"] is None:
+                result["management_fee"] = parse_monthly_yen(dd_text)
+        elif "修繕積立金" in dt_text or "修繕積立" in dt_text:
+            if result["repair_reserve_fund"] is None:
+                result["repair_reserve_fund"] = parse_monthly_yen(dd_text)
+        elif "権利" in dt_text or "土地権利" in dt_text:
+            if result["ownership"] is None:
+                m = re.search(r"(所有権|借地権|底地権|普通借地権|定期借地権)", dd_text)
+                if m:
+                    result["ownership"] = m.group(1)
+        elif "総戸数" in dt_text:
+            if result["total_units"] is None:
+                m = re.search(r"(\d+)\s*戸?", dd_text)
+                if m:
+                    result["total_units"] = int(m.group(1))
+
+    # --- 画像の抽出 ---
+    # 間取り図: "間取り" ラベル付きの画像、または alt に「間取」を含む img
+    floor_plan_imgs: list[str] = []
+    all_images: list[dict] = []
+
+    # ギャラリー/カルーセル内の画像を取得
+    for img in soup.find_all("img", src=True):
+        src = img.get("src", "")
+        if not src or src.startswith("data:"):
+            continue
+        img_url = urljoin(url or BASE_URL, src)
+        alt = (img.get("alt") or "").strip()
+        # 小さなアイコン画像を除外
+        width = img.get("width")
+        height = img.get("height")
+        if width and height:
+            try:
+                if int(width) < 50 or int(height) < 50:
+                    continue
+            except (ValueError, TypeError):
+                pass
+
+        # 間取り図の判定
+        if "間取" in alt or "madori" in src.lower() or "floor_plan" in src.lower():
+            if img_url not in floor_plan_imgs:
+                floor_plan_imgs.append(img_url)
+
+        # 物件画像としてラベル付きで収集（物件写真のみ対象）
+        if re.search(r"/(?:photo|image|bukken|property|mansion|room|view|gaikan)", src, re.IGNORECASE) or \
+           re.search(r"間取|外観|内装|リビング|キッチン|バス|トイレ|洋室|和室|バルコニー|眺望", alt):
+            all_images.append({"url": img_url, "label": alt or ""})
+
+    # data-src (遅延読み込み) にも対応
+    for img in soup.find_all("img", attrs={"data-src": True}):
+        src = img.get("data-src", "")
+        if not src or src.startswith("data:"):
+            continue
+        img_url = urljoin(url or BASE_URL, src)
+        alt = (img.get("alt") or "").strip()
+
+        if "間取" in alt or "madori" in src.lower() or "floor_plan" in src.lower():
+            if img_url not in floor_plan_imgs:
+                floor_plan_imgs.append(img_url)
+
+        if re.search(r"/(?:photo|image|bukken|property|mansion|room|view|gaikan)", src, re.IGNORECASE) or \
+           re.search(r"間取|外観|内装|リビング|キッチン|バス|トイレ|洋室|和室|バルコニー|眺望", alt):
+            entry = {"url": img_url, "label": alt or ""}
+            if entry not in all_images:
+                all_images.append(entry)
+
+    if floor_plan_imgs:
+        result["floor_plan_images"] = floor_plan_imgs
+    if all_images:
+        result["suumo_images"] = all_images
+
+    return result
+
+
+def _merge_detail_into_listing(listing: LivableListing, detail: dict) -> None:
+    """詳細ページ由来の値で listing の不足フィールドを補完する。"""
+    if listing.management_fee is None and detail.get("management_fee") is not None:
+        listing.management_fee = detail["management_fee"]
+    if listing.repair_reserve_fund is None and detail.get("repair_reserve_fund") is not None:
+        listing.repair_reserve_fund = detail["repair_reserve_fund"]
+    if listing.ownership is None and detail.get("ownership") is not None:
+        listing.ownership = detail["ownership"]
+    if listing.total_units is None and detail.get("total_units") is not None:
+        listing.total_units = detail["total_units"]
+    if listing.floor_plan_images is None and detail.get("floor_plan_images") is not None:
+        listing.floor_plan_images = detail["floor_plan_images"]
+    if listing.suumo_images is None and detail.get("suumo_images") is not None:
+        listing.suumo_images = detail["suumo_images"]
+
+
+def enrich_livable_listings(
+    listings: list[LivableListing],
+    session: Optional[requests.Session] = None,
+) -> list[LivableListing]:
+    """各 listing の詳細ページを取得して管理費・修繕積立金・権利形態・総戸数・画像を補完する。
+
+    キャッシュ付き。90日で期限切れ。
+    """
+    if not listings:
+        return listings
+
+    if session is None:
+        session = create_session()
+
+    cache = _load_detail_cache()
+    fetched_count = 0
+    cache_hit_count = 0
+
+    logger.info("livable detail: %d件の詳細ページ取得を開始", len(listings))
+
+    for i, listing in enumerate(listings):
+        url = listing.url
+        if not url:
+            continue
+
+        # キャッシュチェック
+        cached_entry = cache.get(url)
+        if cached_entry and _is_detail_cache_valid(cached_entry):
+            _merge_detail_into_listing(listing, cached_entry)
+            cache_hit_count += 1
+            continue
+
+        # 詳細ページ取得
+        try:
+            html = _fetch_detail_page(session, url)
+            detail = parse_livable_detail_html(html, url)
+        except Exception as e:
+            logger.warning("livable detail: 詳細取得失敗: %s (%s)", url, e)
+            # 失敗時も空エントリでキャッシュして再取得を抑止
+            cache[url] = {"cached_at": datetime.now(timezone.utc).isoformat()}
+            continue
+
+        # キャッシュ保存
+        detail["cached_at"] = datetime.now(timezone.utc).isoformat()
+        cache[url] = detail
+        _merge_detail_into_listing(listing, detail)
+        fetched_count += 1
+
+        if (fetched_count) % 10 == 0:
+            logger.info("livable detail: %d件取得済（キャッシュ: %d件）", fetched_count, cache_hit_count)
+            # 中間保存
+            _save_detail_cache(cache)
+
+    _save_detail_cache(cache)
+    logger.info(
+        "livable detail: 完了 — 取得: %d件, キャッシュヒット: %d件, 合計: %d件",
+        fetched_count, cache_hit_count, len(listings),
+    )
+
+    return listings

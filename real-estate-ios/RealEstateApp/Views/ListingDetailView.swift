@@ -1674,19 +1674,37 @@ struct ListingDetailView: View {
     @ViewBuilder
     private var externalLinksSection: some View {
         VStack(spacing: 8) {
-            if let url = URL(string: listing.url) {
-                Button {
-                    safariURL = url
-                } label: {
-                    HStack {
-                        Image(systemName: "safari")
-                        Text("SUUMO/HOME'S で詳細を開く")
+            let sourceLinks = listing.allSourceLinks
+            ForEach(Array(sourceLinks.enumerated()), id: \.offset) { index, link in
+                if let url = URL(string: link.url) {
+                    if index == 0 {
+                        Button {
+                            safariURL = url
+                        } label: {
+                            HStack {
+                                Image(systemName: "safari")
+                                Text(Listing.sourceDisplayName(link.source) + " で見る")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .accessibilityLabel("\(Listing.sourceDisplayName(link.source))で詳細を開く")
+                    } else {
+                        Button {
+                            safariURL = url
+                        } label: {
+                            HStack {
+                                Image(systemName: "link")
+                                Text(Listing.sourceDisplayName(link.source) + " で見る")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                        }
+                        .buttonStyle(.bordered)
+                        .accessibilityLabel("\(Listing.sourceDisplayName(link.source))で詳細を開く")
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
                 }
-                .buttonStyle(.borderedProminent)
-                .accessibilityLabel("SUUMO または HOME'S で詳細を開く")
             }
 
             if let ssURL = listing.ssSumaiSurfinURL,

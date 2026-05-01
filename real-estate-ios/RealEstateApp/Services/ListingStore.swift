@@ -477,6 +477,7 @@ final class ListingStore {
         existing.resaleLiquidityScore = new.resaleLiquidityScore
         existing.competingListingsCount = new.competingListingsCount
         existing.listingScore = new.listingScore
+        existing.altSourcesJSON = new.altSourcesJSON
         // existing.memo, existing.isLiked, existing.isNew, existing.isNewBuilding, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
     }
 

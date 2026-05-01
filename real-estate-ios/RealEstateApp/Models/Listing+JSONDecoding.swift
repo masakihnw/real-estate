@@ -114,6 +114,10 @@ struct ListingDTO: Codable {
     var is_new: Bool?
     // 新着かつ同一マンション名が前回データに無い＝新規マンション（false＝既存マンションの別部屋）
     var is_new_building: Bool?
+
+    // 複数媒体リンク（dedup 時に集約）
+    var alt_sources: [String]?
+    var alt_urls: [String]?
 }
 
 extension Listing {
@@ -282,6 +286,14 @@ extension Listing {
            let data = try? JSONSerialization.data(withJSONObject: tags) {
             featureTagsJSON = String(data: data, encoding: .utf8)
         }
+        // alt_sources + alt_urls → altSourcesJSON に変換
+        var altSourcesJSON: String?
+        if let sources = dto.alt_sources, let urls = dto.alt_urls, !sources.isEmpty {
+            let links = zip(sources, urls).map { ["source": $0, "url": $1] }
+            if let data = try? JSONSerialization.data(withJSONObject: links) {
+                altSourcesJSON = String(data: data, encoding: .utf8)
+            }
+        }
         return Listing(
             source: dto.source,
             url: url,
@@ -366,7 +378,8 @@ extension Listing {
             priceFairnessScore: dto.price_fairness_score,
             resaleLiquidityScore: dto.resale_liquidity_score,
             competingListingsCount: dto.competing_listings_count,
-            listingScore: dto.listing_score
+            listingScore: dto.listing_score,
+            altSourcesJSON: altSourcesJSON
         )
     }
 }
