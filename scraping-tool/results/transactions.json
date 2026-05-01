@@ -1,6 +1,106 @@
 {
   "transactions": [
     {
+      "id": "tx-7a79cf145809",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cc97c6bab835",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c340de84d863",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfab263a1aa0",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-623a7c0c1b95",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2012-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-a037b7abcd44",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -21698,7 +21798,7 @@
       "latitude": 35.59332,
       "longitude": 139.7350645,
       "building_group_id": "131090240-2014-SRC",
-      "estimated_building_name": null
+      "estimated_building_name": "クレストフォルム大井町サウステラス"
     },
     {
       "id": "tx-e7f0be1d8e45",
@@ -25598,7 +25698,7 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2016-RC",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "id": "tx-07df9a3110ea",
@@ -25618,7 +25718,7 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2016-RC",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "id": "tx-c250d9c63955",
@@ -29798,7 +29898,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-657614e4c12c",
@@ -29878,7 +29978,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-95594abff6d7",
@@ -29918,7 +30018,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-906264afd53e",
@@ -30078,7 +30178,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-48d0eca261e8",
@@ -30198,7 +30298,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b6cdbbfbed9a",
@@ -30218,7 +30318,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-784a96f00a6e",
@@ -30258,7 +30358,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5ab009c6c109",
@@ -30278,7 +30378,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-608cc2c7405b",
@@ -30478,7 +30578,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-63ca853a441b",
@@ -30698,7 +30798,7 @@
       "latitude": 35.680503,
       "longitude": 139.6582853,
       "building_group_id": "131150290-2017-RC",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c3c71f2a81d4",
@@ -34595,8 +34695,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7372962,
-      "longitude": 139.6545012,
+      "latitude": 35.7373437,
+      "longitude": 139.6544918,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -35302,6 +35402,55 @@
     }
   ],
   "building_groups": [
+    {
+      "group_id": "131010010-2007-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 4,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1646154,
+      "periods": [
+        "2021Q3",
+        "2021Q4",
+        "2022Q1",
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131010010-2012-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1833333,
+      "periods": [
+        "2025Q4"
+      ],
+      "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
     {
       "group_id": "131020210-2016",
       "prefecture": "東京都",
@@ -42412,7 +42561,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "クレストフォルム大井町サウステラス"
     },
     {
       "group_id": "131090240-2018-RC",
@@ -44287,7 +44436,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": "マストレジデンス世田谷 / マストレジデンス世田谷代田"
+      "estimated_building_name": "マストレジデンス世田谷代田 / マストレジデンス世田谷"
     },
     {
       "group_id": "131120400-2018-RC",
@@ -46771,7 +46920,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "シティテラス杉並方南町サウス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131150290-2021-RC",
@@ -48618,8 +48767,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7372962,
-      "longitude": 139.6545012,
+      "latitude": 35.7373437,
+      "longitude": 139.6544918,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -49109,7 +49258,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-04-30T23:42:43",
+    "updated_at": "2026-05-01T08:57:54",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -49146,8 +49295,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 1765,
-    "building_group_count": 566,
+    "transaction_count": 1770,
+    "building_group_count": 568,
     "scope": "東京23区"
   }
 }
