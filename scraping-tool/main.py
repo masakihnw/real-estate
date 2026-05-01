@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-SUUMO から10年住み替え前提の中古・新築マンション条件に合う候補をスクレイピングし、
+SUUMO / HOME'S / アットホーム / リハウス / ノムコム / 住友不動産販売 / 東急リバブル
+から10年住み替え前提の中古・新築マンション条件に合う候補をスクレイピングし、
 CSV/JSON で出力する。
 
 ※ HOME'S は WAF が厳しく実用的な取得が困難なため、現在は無効化。
@@ -9,6 +10,7 @@ CSV/JSON で出力する。
 利用規約: terms-check.md を参照。私的利用・軽負荷を前提とする。
 
   python main.py                                  # 中古 SUUMO のみ（デフォルト）
+  python main.py --source all                     # 全ソースから中古取得
   python main.py --property-type shinchiku        # 新築 SUUMO のみ
   python main.py --max-pages 2 --no-filter        # フィルタなしで2ページ取得
   python main.py --output result.json
@@ -34,15 +36,29 @@ try:
 except Exception as e:
     logger.warning("Firestore 設定の読み込みに失敗（デフォルトを使用）: %s", e)
 
-from report_utils import listing_key, clean_listing_name
+from report_utils import listing_key, clean_listing_name, fuzzy_identity_match
+
+
+def _collect_sources(group: list[dict]) -> list[str]:
+    """グループ内の全ソースを重複なしで収集する。"""
+    sources = []
+    seen = set()
+    for r in group:
+        s = r.get("source", "unknown")
+        if s not in seen:
+            sources.append(s)
+            seen.add(s)
+    return sources
 
 
 def dedupe_listings(rows: list[dict]) -> list[dict]:
     """物件名・間取り・価格が同一の物件を1件にまとめる。
     同一条件が複数ある場合は duplicate_count に戸数を記録し、
-    代表以外の URL を alt_urls に保持する。"""
+    代表以外の URL を alt_urls に保持する。
+    クロスサイト重複はファジーマッチングで2次判定する。"""
     from collections import OrderedDict
 
+    # 1次判定: listing_key 完全一致
     groups: OrderedDict[tuple, list[dict]] = OrderedDict()
     for r in rows:
         key = listing_key(r)
@@ -50,17 +66,45 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
 
     out: list[dict] = []
     for _key, group in groups.items():
-        # 代表行: 情報量が多い（None でないフィールドが多い）ものを選ぶ
         representative = max(group, key=lambda r: sum(1 for v in r.values() if v is not None))
         count = len(group)
         representative["duplicate_count"] = count
         if count > 1:
-            # 代表以外の URL を alt_urls に保持（情報を失わない）
             alt = [r["url"] for r in group if r.get("url") and r["url"] != representative.get("url")]
             if alt:
                 representative["alt_urls"] = alt
+            representative["alt_sources"] = _collect_sources(group)
         out.append(representative)
-    return out
+
+    # 2次判定: ファジーマッチング（クロスサイト表記揺れの吸収）
+    merged = []
+    used = set()
+    for i, a in enumerate(out):
+        if i in used:
+            continue
+        group = [a]
+        for j in range(i + 1, len(out)):
+            if j in used:
+                continue
+            if a.get("source") == out[j].get("source"):
+                continue
+            if fuzzy_identity_match(a, out[j]):
+                group.append(out[j])
+                used.add(j)
+        if len(group) > 1:
+            representative = max(group, key=lambda r: sum(1 for v in r.values() if v is not None))
+            alt = [r["url"] for r in group if r.get("url") and r["url"] != representative.get("url")]
+            if alt:
+                existing_alt = representative.get("alt_urls", [])
+                representative["alt_urls"] = existing_alt + alt
+            representative["alt_sources"] = _collect_sources(group)
+            representative["duplicate_count"] = representative.get("duplicate_count", 1) + len(group) - 1
+            merged.append(representative)
+        else:
+            merged.append(a)
+        used.add(i)
+
+    return merged
 
 
 def _scrape_suumo_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
@@ -103,9 +147,64 @@ def _scrape_homes_shinchiku(max_pages: int, apply_filter: bool) -> list[dict]:
     return rows
 
 
+def _scrape_athome_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
+    """アットホーム中古スクレイピング（スレッド用）"""
+    from athome_scraper import scrape_athome
+    rows = []
+    for row in scrape_athome(max_pages=max_pages, apply_filter=apply_filter):
+        d = row.to_dict()
+        d["property_type"] = "chuko"
+        rows.append(d)
+    return rows
+
+
+def _scrape_rehouse_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
+    """リハウス中古スクレイピング（スレッド用）"""
+    from rehouse_scraper import scrape_rehouse
+    rows = []
+    for row in scrape_rehouse(max_pages=max_pages, apply_filter=apply_filter):
+        d = row.to_dict()
+        d["property_type"] = "chuko"
+        rows.append(d)
+    return rows
+
+
+def _scrape_nomucom_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
+    """ノムコム中古スクレイピング（スレッド用）"""
+    from nomucom_scraper import scrape_nomucom
+    rows = []
+    for row in scrape_nomucom(max_pages=max_pages, apply_filter=apply_filter):
+        d = row.to_dict()
+        d["property_type"] = "chuko"
+        rows.append(d)
+    return rows
+
+
+def _scrape_stepon_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
+    """住友不動産販売中古スクレイピング（スレッド用）"""
+    from stepon_scraper import scrape_stepon
+    rows = []
+    for row in scrape_stepon(max_pages=max_pages, apply_filter=apply_filter):
+        d = row.to_dict()
+        d["property_type"] = "chuko"
+        rows.append(d)
+    return rows
+
+
+def _scrape_livable_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
+    """東急リバブル中古スクレイピング（スレッド用）"""
+    from livable_scraper import scrape_livable
+    rows = []
+    for row in scrape_livable(max_pages=max_pages, apply_filter=apply_filter):
+        d = row.to_dict()
+        d["property_type"] = "chuko"
+        rows.append(d)
+    return rows
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="マンション条件に合う物件を SUUMO/HOME'S から取得（中古・新築対応）")
-    ap.add_argument("--source", choices=["suumo", "homes", "both"], default="suumo", help="取得元")
+    ap.add_argument("--source", choices=["suumo", "homes", "athome", "rehouse", "nomucom", "stepon", "livable", "all", "both"], default="suumo", help="取得元")
     ap.add_argument("--property-type", choices=["chuko", "shinchiku"], default="chuko", help="物件種別（中古 or 新築）")
     ap.add_argument("--max-pages", type=int, default=0, help="最大ページ数。0=結果がなくなるまで全ページ取得（デフォルト）")
     ap.add_argument("--no-filter", action="store_true", help="条件フィルタをかけずに全件出力")
@@ -116,19 +215,33 @@ def main() -> None:
 
     # property_type に応じたスクレイパー関数を選択
     scraper_map = {
-        "chuko": {"suumo": _scrape_suumo_chuko, "homes": _scrape_homes_chuko},
+        "chuko": {
+            "suumo": _scrape_suumo_chuko,
+            "homes": _scrape_homes_chuko,
+            "athome": _scrape_athome_chuko,
+            "rehouse": _scrape_rehouse_chuko,
+            "nomucom": _scrape_nomucom_chuko,
+            "stepon": _scrape_stepon_chuko,
+            "livable": _scrape_livable_chuko,
+        },
         "shinchiku": {"suumo": _scrape_suumo_shinchiku, "homes": _scrape_homes_shinchiku},
     }
     scrapers = scraper_map[args.property_type]
     type_label = "中古" if args.property_type == "chuko" else "新築"
 
-    # SUUMO と HOME'S を並列スクレイピング（--source both の場合）
+    # ソース選択: all は全ソース、both は suumo+homes（後方互換）、単一指定も可
+    if args.source == "all":
+        sources_to_run = list(scrapers.keys())
+    elif args.source == "both":
+        sources_to_run = ["suumo", "homes"]
+    else:
+        sources_to_run = [args.source]
+
     tasks = {}
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        if args.source in ("suumo", "both"):
-            tasks["suumo"] = executor.submit(scrapers["suumo"], args.max_pages, not args.no_filter)
-        if args.source in ("homes", "both"):
-            tasks["homes"] = executor.submit(scrapers["homes"], args.max_pages, not args.no_filter)
+    with ThreadPoolExecutor(max_workers=7) as executor:
+        for src in sources_to_run:
+            if src in scrapers:
+                tasks[src] = executor.submit(scrapers[src], args.max_pages, not args.no_filter)
         for name, future in tasks.items():
             try:
                 all_rows.extend(future.result())

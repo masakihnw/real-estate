@@ -31,6 +31,15 @@ _KNOWN_NAME_TYPOS: list[tuple[str, str]] = [
     ("フォレスコート", "フォレストコート"),
 ]
 
+_DEVELOPER_PREFIXES = (
+    "三井不動産レジデンシャル", "三井不動産", "三井",
+    "野村不動産", "野村",
+    "住友不動産", "住友",
+    "東京建物", "東急不動産", "東急",
+    "大京", "長谷工", "NTT都市開発",
+    "三菱地所レジデンス", "三菱地所", "三菱",
+)
+
 
 def normalize_listing_name(name: str) -> str:
     """同一判定用に物件名を正規化。iOS cleanListingName と同等の装飾除去を行い、
@@ -97,6 +106,11 @@ def normalize_listing_name(name: str) -> str:
     # SUUMO 掲載データの既知の誤字を補正
     for typo, correct in _KNOWN_NAME_TYPOS:
         s = s.replace(typo, correct)
+    # デベロッパー接頭辞を除去（クロスサイトでの表記揺れ吸収）
+    for prefix in _DEVELOPER_PREFIXES:
+        if s.startswith(prefix):
+            s = s[len(prefix):]
+            break
     return s
 
 
@@ -289,6 +303,39 @@ def building_key(r: dict) -> tuple:
         normalize_listing_name(r.get("name") or ""),
         get_ward_from_address(r.get("address") or ""),
     )
+
+
+def _name_similarity(a: str, b: str) -> float:
+    """2つの正規化済み物件名の類似度を計算（0.0〜1.0）。SequenceMatcher ベース。"""
+    if not a or not b:
+        return 0.0
+    if a == b:
+        return 1.0
+    from difflib import SequenceMatcher
+    return SequenceMatcher(None, a, b).ratio()
+
+
+def fuzzy_identity_match(a: dict, b: dict, threshold: float = 0.8) -> bool:
+    """identity_key が一致しないが構造的フィールドが一致し、名前が類似している場合に True。
+    クロスサイトでの物件名表記揺れ（三井パークタワー晴海 vs パークタワー晴海）を吸収する。"""
+    if (a.get("layout") or "").strip() != (b.get("layout") or "").strip():
+        return False
+    if a.get("area_m2") != b.get("area_m2"):
+        return False
+    if a.get("built_year") != b.get("built_year"):
+        return False
+    addr_a = _normalize_address_for_key(a.get("address") or "")
+    addr_b = _normalize_address_for_key(b.get("address") or "")
+    if addr_a != addr_b:
+        return False
+    name_a = normalize_listing_name(a.get("name") or "")
+    name_b = normalize_listing_name(b.get("name") or "")
+    return _name_similarity(name_a, name_b) >= threshold
+
+
+def identity_key_str(r: dict) -> str:
+    """identity_key のタプルをパイプ区切り文字列に変換する。DB/JSONキー用。"""
+    return "|".join(str(x) for x in identity_key(r))
 
 
 def inject_is_new(
@@ -542,18 +589,26 @@ def inject_first_seen_at(
     *,
     history_path: Optional[str] = None,
 ) -> list[dict]:
-    """各物件に first_seen_at（初回掲載検出日）を付与して返す。
+    """各物件に first_seen_at（初回掲載検出日）と掲載速度情報を付与して返す。
 
     history_path が指定された場合、永続ファイル (data/first_seen_at.json) を
     信頼源として使用し、previous.json のデータ破損に依存しない。
-    新規物件は今日の日付で追加し、ファイルを更新する。"""
+    新規物件は今日の日付で追加し、ファイルを更新する。
+
+    新スキーマ（ソース別トラッキング）:
+      {"first_seen": "2026-03-15", "by_source": {"suumo": "2026-03-15T09:00:00+09:00", ...}}
+    旧スキーマ（後方互換）:
+      "2026-03-15"
+    """
     import json as _json
-    from datetime import date
+    from datetime import date, datetime, timezone, timedelta
     from pathlib import Path
 
+    JST = timezone(timedelta(hours=9))
     today = date.today().isoformat()
+    now_iso = datetime.now(JST).strftime("%Y-%m-%dT%H:%M:%S+09:00")
 
-    history: dict[str, str] = {}
+    history: dict[str, Any] = {}
     history_file = Path(history_path) if history_path else None
     if history_file and history_file.exists():
         history = _json.loads(history_file.read_text(encoding="utf-8"))
@@ -562,16 +617,50 @@ def inject_first_seen_at(
         for r in previous:
             ks = _key_str(r)
             fsa = r.get("first_seen_at")
-            if fsa and (ks not in history or fsa < history[ks]):
-                history[ks] = fsa
+            if fsa:
+                entry = history.get(ks)
+                if isinstance(entry, str):
+                    if fsa < entry:
+                        history[ks] = {"first_seen": fsa, "by_source": {}}
+                elif isinstance(entry, dict):
+                    if fsa < entry.get("first_seen", "9999"):
+                        entry["first_seen"] = fsa
+                else:
+                    history[ks] = {"first_seen": fsa, "by_source": {}}
 
     for r in current:
         ks = _key_str(r)
-        if ks in history:
-            r["first_seen_at"] = history[ks]
-        elif not r.get("first_seen_at"):
-            r["first_seen_at"] = today
-            history[ks] = today
+        source = r.get("source", "unknown")
+
+        entry = history.get(ks)
+        if isinstance(entry, str):
+            entry = {"first_seen": entry, "by_source": {}}
+            history[ks] = entry
+        elif entry is None:
+            entry = {"first_seen": today, "by_source": {}}
+            history[ks] = entry
+
+        if source not in entry.get("by_source", {}):
+            entry.setdefault("by_source", {})[source] = now_iso
+
+        r["first_seen_at"] = entry["first_seen"]
+
+        by_source = entry.get("by_source", {})
+        if by_source:
+            earliest_source = min(by_source, key=lambda s: by_source[s])
+            r["first_seen_source"] = earliest_source
+            earliest_time = by_source[earliest_source]
+            lag = {}
+            for s, t in by_source.items():
+                if s != earliest_source:
+                    try:
+                        dt_e = datetime.fromisoformat(earliest_time)
+                        dt_s = datetime.fromisoformat(t)
+                        lag[s] = round((dt_s - dt_e).total_seconds() / 3600, 1)
+                    except (ValueError, TypeError):
+                        pass
+            if lag:
+                r["source_lag_hours"] = lag
 
     if history_file:
         history_file.parent.mkdir(parents=True, exist_ok=True)
