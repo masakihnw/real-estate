@@ -26,6 +26,8 @@ final class SupabaseAnnotationService {
     private let defaults = UserDefaults.standard
     private let lastSyncKey = "supabase.annotations.lastSync"
 
+    private let didPushLocalKey = "supabase.annotations.didPushLocal"
+
     private init() {}
 
     // MARK: - Auth
@@ -208,6 +210,55 @@ final class SupabaseAnnotationService {
         } catch {
             logger.error("pullAnnotations 失敗: \(error.localizedDescription, privacy: .public)")
             onError?("Supabase アノテーション同期失敗: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - 初回一括 Push（ローカル → Supabase）
+
+    /// Supabase モード有効化時に、ローカルのいいね・メモ・コメントを一括で Supabase に push する。
+    /// 一度実行したらフラグを立てて再実行しない。
+    @MainActor
+    func pushAllLocalAnnotationsIfNeeded(modelContext: ModelContext) async {
+        guard !defaults.bool(forKey: didPushLocalKey) else { return }
+        guard let userId = currentUserId else { return }
+
+        do {
+            let descriptor = FetchDescriptor<Listing>()
+            let listings = try modelContext.fetch(descriptor)
+            let annotated = listings.filter { $0.isLiked || $0.hasComments || !($0.memo ?? "").isEmpty }
+
+            guard !annotated.isEmpty else {
+                defaults.set(true, forKey: didPushLocalKey)
+                return
+            }
+
+            logger.info("ローカルアノテーション \(annotated.count) 件を Supabase に push 開始")
+
+            for listing in annotated {
+                let commentsParam: Any
+                if let json = listing.commentsJSON,
+                   let data = json.data(using: .utf8),
+                   let arr = try? JSONSerialization.jsonObject(with: data) {
+                    commentsParam = arr
+                } else {
+                    commentsParam = NSNull()
+                }
+
+                let params: [String: Any] = [
+                    "p_user_id": userId,
+                    "p_identity_key": listing.identityKey,
+                    "p_is_liked": listing.isLiked,
+                    "p_memo": listing.memo ?? NSNull(),
+                    "p_comments": commentsParam,
+                    "p_name": listing.name
+                ]
+                _ = try await client.rpc("upsert_annotation", params: params)
+            }
+
+            defaults.set(true, forKey: didPushLocalKey)
+            logger.info("ローカルアノテーション push 完了")
+        } catch {
+            logger.error("pushAllLocalAnnotations 失敗: \(error.localizedDescription, privacy: .public)")
         }
     }
 
