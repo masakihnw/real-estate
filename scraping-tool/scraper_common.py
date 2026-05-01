@@ -122,8 +122,26 @@ def line_ok(station_line: str, *, empty_passes: bool = True) -> bool:
 # ──────────────────────────── 地域フィルタ ────────────────────────────
 
 
+_OTHER_PREFECTURES_RE = re.compile(
+    r"(?:北海道|青森|岩手|宮城|秋田|山形|福島"
+    r"|茨城|栃木|群馬|埼玉|千葉|神奈川"
+    r"|新潟|富山|石川|福井|山梨|長野"
+    r"|岐阜|静岡|愛知|三重"
+    r"|滋賀|京都府|大阪|兵庫|奈良|和歌山"
+    r"|鳥取|島根|岡山|広島|山口"
+    r"|徳島|香川|愛媛|高知"
+    r"|福岡|佐賀|長崎|熊本|大分|宮崎|鹿児島|沖縄)"
+)
+_OTHER_CITIES = ("大阪市", "名古屋市", "横浜市", "堺市", "川崎市", "さいたま市",
+                 "札幌市", "神戸市", "京都市", "福岡市", "北九州市", "浜松市", "相模原市")
+
+
 def is_tokyo_23_by_address(address: str) -> bool:
-    """住所が東京23区のいずれかを含むか（シンプル版）。HOME'S 系で使用。"""
+    """住所が東京23区のいずれかを含むか。他県の同名区（大阪市北区等）を除外。"""
     if not (address and address.strip()):
+        return False
+    if _OTHER_PREFECTURES_RE.search(address):
+        return False
+    if any(city in address for city in _OTHER_CITIES):
         return False
     return any(ward in address for ward in TOKYO_23_WARDS)

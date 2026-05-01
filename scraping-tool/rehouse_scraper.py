@@ -1,12 +1,14 @@
 """
 三井のリハウス（rehouse.co.jp）中古マンション一覧のスクレイピング。
 利用規約: terms-check.md を参照。負荷軽減・私的利用に留めること。
-一覧は Nuxt.js SSR で HTML が直接取得可能。
+検索ページ (/buy/mansion/prefecture/13/city/{ward}/) を区ごとに取得。
 """
 
 import json
 import re
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -56,15 +58,25 @@ logger = get_logger(__name__)
 
 BASE_URL = "https://www.rehouse.co.jp"
 
-# 東京都・中古マンション一覧
-LIST_URL_FIRST = "https://www.rehouse.co.jp/mansion/tokyo/"
-LIST_URL_PAGE = "https://www.rehouse.co.jp/mansion/tokyo/?page={page}"
+# 区ごとの検索URL (サーバーサイドで価格・面積フィルタ可能)
+_WARD_URL_TEMPLATE = (
+    "https://www.rehouse.co.jp/buy/mansion/prefecture/13/city/{ward_code}/"
+    "?priceLowerLimit={price_min}&exclusiveAreaLowerLimit={area_min}"
+)
+_WARD_URL_PAGE_TEMPLATE = (
+    "https://www.rehouse.co.jp/buy/mansion/prefecture/13/city/{ward_code}/"
+    "?priceLowerLimit={price_min}&exclusiveAreaLowerLimit={area_min}&page={page}"
+)
 
-# 全ページ取得時の安全上限（無限ループ防止）
-MAX_PAGES_SAFETY = 100
+_WARD_CODES = (
+    "13101", "13102", "13103", "13104", "13105", "13106", "13107", "13108",
+    "13109", "13110", "13111", "13112", "13113", "13114", "13115", "13116",
+    "13117", "13118", "13119", "13120", "13121", "13122", "13123",
+)
 
-# 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
-EARLY_EXIT_PAGES = 20
+MAX_PAGES_PER_WARD = 30
+PARALLEL_WARD_WORKERS = 3
+EARLY_EXIT_PAGES = 5
 
 
 @dataclass
@@ -128,21 +140,23 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
 
 
 def parse_list_html(html: str, base_url: str = BASE_URL) -> list[RehouseListing]:
-    """三井のリハウス 一覧HTMLから物件リストをパース。
+    """三井のリハウス 検索結果HTMLから物件リストをパース。
 
-    各物件は div.property-card 内に:
-      - a.property-card__link (href: /buy/mansion/bkdetail/{ID}/)
-      - h3.property-title (物件名)
-      - p.price-text / span.price (価格)
-      - div.content > p.paragraph-body.gray (住所, 路線駅, 間取り/面積, 築年月)
+    各物件は div.property-index-card 内に:
+      - h2.property-title (物件名)
+      - span.price (価格: "69,800" — 万円は外)
+      - div.content > p.paragraph-body.gray ×2:
+        [0] "港区浜松町１丁目 / 山手線 浜松町駅 徒歩5分"
+        [1] "3LDK / 87.56㎡ / 2019年02月築 / 36階"
+      - a[href*="/buy/mansion/bkdetail/"] (詳細URL)
     """
     soup = BeautifulSoup(html, "lxml")
-    cards = soup.select("div.property-card")
+    cards = soup.select("div.property-index-card")
     items: list[RehouseListing] = []
 
     for card in cards:
         # URL
-        link = card.select_one("a.property-card__link")
+        link = card.select_one('a[href*="/buy/mansion/bkdetail/"]')
         if not link:
             continue
         href = link.get("href", "")
@@ -151,24 +165,21 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[RehouseListing]
             continue
 
         # 物件名
-        title_el = card.select_one("h3.property-title")
-        name = clean_listing_name((title_el.get_text(strip=True) or "")) if title_el else ""
+        title_el = card.select_one("h2.property-title")
+        name = clean_listing_name(title_el.get_text(strip=True) or "") if title_el else ""
 
-        # 価格
+        # 価格 (span.price は "69,800" のように数値のみ)
         price_man: Optional[int] = None
         price_span = card.select_one("span.price")
         if price_span:
             price_text = (price_span.get_text(strip=True) or "").replace(",", "")
-            # span.price には数値のみ入ることがあるため万円を補完
             price_man = parse_price(price_text + "万円") if price_text else None
-        if price_man is None:
-            price_el = card.select_one("p.price-text")
-            if price_el:
-                price_man = parse_price(price_el.get_text(strip=True) or "")
 
-        # コンテンツ段落: 住所, 路線駅, 間取り/面積, 築年月
+        # コンテンツ段落:
+        # [0] "住所 / 路線 駅名 徒歩N分"
+        # [1] "間取り / 面積㎡ / 築年月 / 階"
         content_div = card.select_one("div.content")
-        paragraphs = content_div.select("p.paragraph-body.gray") if content_div else []
+        paragraphs = content_div.select("p.paragraph-body") if content_div else []
 
         address = ""
         station_line = ""
@@ -180,37 +191,32 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[RehouseListing]
         floor_position: Optional[int] = None
         floor_total: Optional[int] = None
 
-        # 段落は順に: 住所, 路線駅, 間取り/面積, 築年月
         if len(paragraphs) >= 1:
-            address = (paragraphs[0].get_text(strip=True) or "").strip()
-        if len(paragraphs) >= 2:
-            station_text = (paragraphs[1].get_text(strip=True) or "").strip()
-            station_line = station_text
-            walk_min = parse_walk_min(station_text)
-        if len(paragraphs) >= 3:
-            layout_area_text = (paragraphs[2].get_text(strip=True) or "").strip()
-            # "3LDK / 80.08㎡" のような形式を分割
-            parts = layout_area_text.split("/")
+            line1 = (paragraphs[0].get_text(strip=True) or "").strip()
+            # "港区浜松町１丁目 / 山手線 浜松町駅 徒歩5分"
+            parts = line1.split("/")
             if len(parts) >= 2:
-                layout = parts[0].strip()
-                area_m2 = parse_area_m2(parts[1].strip())
-            elif len(parts) == 1:
-                # "/"なしの場合: 間取りと面積が混在
-                layout_area = parts[0].strip()
-                # 間取り部分を抽出
-                m = re.match(r"([0-9]+[LDKS]+)", layout_area)
-                if m:
-                    layout = m.group(1)
-                area_m2 = parse_area_m2(layout_area)
-        if len(paragraphs) >= 4:
-            built_text = (paragraphs[3].get_text(strip=True) or "").strip()
-            built_str = built_text
-            built_year = parse_built_year(built_text)
+                address = parts[0].strip()
+                station_line = "/".join(parts[1:]).strip()
+            else:
+                address = line1
+            walk_min = parse_walk_min(line1)
 
-        # カード全体テキストからフロア情報をフォールバック取得
-        card_text = card.get_text() or ""
-        floor_position = parse_floor_position(card_text)
-        floor_total = parse_floor_total(card_text)
+        if len(paragraphs) >= 2:
+            line2 = (paragraphs[1].get_text(strip=True) or "").strip()
+            # "3LDK / 87.56㎡ / 2019年02月築 / 36階"
+            parts = line2.split("/")
+            for part in parts:
+                p = part.strip()
+                if re.match(r"\d+[LDKS]+", p):
+                    layout = p
+                elif "㎡" in p or "m2" in p.lower():
+                    area_m2 = parse_area_m2(p)
+                elif "築" in p or re.search(r"\d{4}年", p):
+                    built_str = p
+                    built_year = parse_built_year(p)
+                elif "階" in p:
+                    floor_position = parse_floor_position(p)
 
         items.append(RehouseListing(
             source="rehouse",
@@ -224,29 +230,22 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[RehouseListing]
             layout=layout,
             built_str=built_str,
             built_year=built_year,
-            total_units=None,  # 一覧ページには総戸数なし
+            total_units=None,
             floor_position=floor_position,
             floor_total=floor_total,
         ))
 
     if not items and cards:
-        # カードはあるのにパースできなかった: HTML 構造の変更を疑う
         title = soup.find("title")
         title_text = title.get_text(strip=True) if title else "(no title)"
         logger.warning(
-            "rehouse: div.property-card は存在するがパース0件 — HTML構造が変わった可能性があります。"
-            " title=%r",
+            "rehouse: div.property-index-card は存在するがパース0件 — HTML構造変更の可能性。 title=%r",
             title_text,
         )
     elif not items:
         title = soup.find("title")
         title_text = title.get_text(strip=True) if title else "(no title)"
-        body_snippet = (soup.get_text()[:200] or "").replace("\n", " ")
-        logger.warning(
-            "rehouse: セレクタが0件 — HTML構造が変わった可能性があります。"
-            " title=%r, body_snippet=%r",
-            title_text, body_snippet,
-        )
+        logger.debug("rehouse: ページに物件カードなし。 title=%r", title_text)
 
     return items
 
@@ -278,52 +277,81 @@ def apply_conditions(listings: list[RehouseListing]) -> list[RehouseListing]:
     return out
 
 
-def scrape_rehouse(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Iterator[RehouseListing]:
-    """三井のリハウス 東京中古マンション一覧を取得。max_pages=0 のときは結果がなくなるまで全ページ取得。"""
+def _scrape_ward(ward_code: str, apply_filter: bool,
+                  seen_urls: set, url_lock: threading.Lock) -> list[RehouseListing]:
+    """1区分のスクレイピング。全ページ巡回して条件合致物件を返す。"""
     session = create_session()
-    limit = max_pages if max_pages and max_pages > 0 else MAX_PAGES_SAFETY
-    page = 1
-    total_parsed = 0
-    total_passed = 0
-    pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
-    while page <= limit:
-        url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
+    results: list[RehouseListing] = []
+    price_min = PRICE_MIN_MAN if PRICE_MIN_MAN else 0
+    area_min = int(AREA_MIN_M2) if AREA_MIN_M2 else 0
+    pages_no_pass = 0
+
+    for page in range(1, MAX_PAGES_PER_WARD + 1):
+        if page == 1:
+            url = _WARD_URL_TEMPLATE.format(
+                ward_code=ward_code, price_min=price_min, area_min=area_min)
+        else:
+            url = _WARD_URL_PAGE_TEMPLATE.format(
+                ward_code=ward_code, price_min=price_min, area_min=area_min, page=page)
+
         try:
             html = fetch_list_page(session, url)
         except Exception as e:
-            logger.error(f"rehouse: ページ{page}でエラー: {e}")
+            logger.warning(f"rehouse: ward={ward_code} page={page} エラー: {e}")
             break
+
         rows = parse_list_html(html)
         if not rows:
-            logger.info(f"rehouse: ページ{page}で0件パース。一覧終了または構造変更の可能性。")
             break
-        total_parsed += len(rows)
+
         passed = 0
         for row in rows:
+            with url_lock:
+                if row.url in seen_urls:
+                    continue
+                seen_urls.add(row.url)
             if apply_filter:
                 filtered = apply_conditions([row])
                 if filtered:
-                    yield filtered[0]
+                    results.append(filtered[0])
                     passed += 1
-                    logger.debug(f"  -> {filtered[0].name} ({filtered[0].price_man}万)")
             else:
-                yield row
+                results.append(row)
                 passed += 1
-        total_passed += passed
-        # 早期打ち切り判定: 連続 N ページで新規通過0件なら中断
+
         if passed > 0:
-            pages_since_last_pass = 0
+            pages_no_pass = 0
         else:
-            pages_since_last_pass += 1
-        if pages_since_last_pass >= EARLY_EXIT_PAGES:
-            logger.info(f"rehouse: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
+            pages_no_pass += 1
+        if pages_no_pass >= EARLY_EXIT_PAGES:
             break
-        # 進捗: 10ページごとにサマリー
-        if page % 10 == 0:
-            logger.info(f"rehouse: ...{page}ページ処理済 (通過: {total_passed}件)")
-        page += 1
-    if total_parsed > 0:
-        logger.info(f"rehouse: 完了 — {total_parsed}件パース, {total_passed}件通過")
+
+    return results
+
+
+def scrape_rehouse(max_pages: Optional[int] = None, apply_filter: bool = True) -> Iterator[RehouseListing]:
+    """三井のリハウス 東京23区を区ごとに並列取得。max_pages は後方互換のため残置。"""
+    seen_urls: set = set()
+    url_lock = threading.Lock()
+    all_results: list[RehouseListing] = []
+
+    def _worker(ward_code: str) -> list[RehouseListing]:
+        return _scrape_ward(ward_code, apply_filter, seen_urls, url_lock)
+
+    with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
+        futures = {executor.submit(_worker, wc): wc for wc in _WARD_CODES}
+        for future in as_completed(futures):
+            ward_code = futures[future]
+            try:
+                ward_results = future.result()
+                all_results.extend(ward_results)
+                if ward_results:
+                    logger.info(f"rehouse: ward={ward_code} → {len(ward_results)}件通過")
+            except Exception as e:
+                logger.error(f"rehouse: ward={ward_code} 失敗: {e}")
+
+    logger.info(f"rehouse: 完了 — 全{len(all_results)}件通過 (23区)")
+    yield from all_results
 
 
 # ──────────────────────────── 詳細ページ ────────────────────────────

@@ -14,7 +14,7 @@ from dataclasses import dataclass, asdict
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Iterator, Optional
-from urllib.parse import urljoin
+from urllib.parse import unquote, urljoin
 
 import requests
 from bs4 import BeautifulSoup, Tag
@@ -653,6 +653,9 @@ def parse_livable_detail_html(html: str, url: str = "") -> dict:
         "repair_reserve_fund": None,
         "ownership": None,
         "total_units": None,
+        "area_m2": None,
+        "floor_position": None,
+        "floor_total": None,
         "floor_plan_images": None,
         "suumo_images": None,
     }
@@ -682,6 +685,15 @@ def parse_livable_detail_html(html: str, url: str = "") -> dict:
             m = re.search(r"(\d+)\s*戸?", td_text)
             if m:
                 result["total_units"] = int(m.group(1))
+        elif "専有面積" in th_text:
+            result["area_m2"] = parse_area_m2(td_text)
+        elif "所在階" in th_text or ("階" in th_text and "建" in th_text and "総戸" not in th_text):
+            result["floor_position"] = parse_floor_position(td_text)
+            m = re.search(r"地上\s*(\d+)\s*階", td_text)
+            if m:
+                result["floor_total"] = int(m.group(1))
+            else:
+                result["floor_total"] = parse_floor_total(td_text)
 
     # --- dl > dt/dd パターンにも対応 ---
     for dt in soup.find_all("dt"):
@@ -707,20 +719,44 @@ def parse_livable_detail_html(html: str, url: str = "") -> dict:
                 m = re.search(r"(\d+)\s*戸?", dd_text)
                 if m:
                     result["total_units"] = int(m.group(1))
+        elif "専有面積" in dt_text:
+            if result["area_m2"] is None:
+                result["area_m2"] = parse_area_m2(dd_text)
+        elif "所在階" in dt_text or ("階" in dt_text and "建" in dt_text and "総戸" not in dt_text):
+            if result["floor_position"] is None:
+                result["floor_position"] = parse_floor_position(dd_text)
+            if result["floor_total"] is None:
+                m = re.search(r"地上\s*(\d+)\s*階", dd_text)
+                if m:
+                    result["floor_total"] = int(m.group(1))
+                else:
+                    result["floor_total"] = parse_floor_total(dd_text)
 
     # --- 画像の抽出 ---
-    # 間取り図: "間取り" ラベル付きの画像、または alt に「間取」を含む img
     floor_plan_imgs: list[str] = []
     all_images: list[dict] = []
+    seen_urls: set[str] = set()
 
-    # ギャラリー/カルーセル内の画像を取得
-    for img in soup.find_all("img", src=True):
-        src = img.get("src", "")
+    _EXCLUDE_SRC_PARTS = ("/logo", "/icon", "/btn", "/spacer", "/common/",
+                          "/header/", "/nav/", "/global/", "/_assets/",
+                          "/templates/", "/features/")
+
+    for img in soup.find_all("img"):
+        src = (img.get("data-src") or img.get("src") or "").strip()
         if not src or src.startswith("data:"):
             continue
+
         img_url = urljoin(url or BASE_URL, src)
+        if img_url in seen_urls:
+            continue
+
         alt = (img.get("alt") or "").strip()
-        # 小さなアイコン画像を除外
+        src_lower = src.lower()
+
+        # SVG/アイコン/サイト共通画像を除外
+        src_decoded = unquote(src_lower)
+        if src.endswith(".svg") or any(x in src_decoded for x in _EXCLUDE_SRC_PARTS):
+            continue
         width = img.get("width")
         height = img.get("height")
         if width and height:
@@ -730,33 +766,41 @@ def parse_livable_detail_html(html: str, url: str = "") -> dict:
             except (ValueError, TypeError):
                 pass
 
-        # 間取り図の判定
-        if "間取" in alt or "madori" in src.lower() or "floor_plan" in src.lower():
+        # livable 画像: img.livable.co.jp/?url=...rue_image/{category}/...
+        # 間取り図: URL に /layout/ or %2Flayout%2F を含む
+        is_layout = "/layout/" in src_lower or "%2flayout%2f" in src_lower
+        if is_layout or "間取" in alt or "madori" in src_lower or "floor_plan" in src_lower:
             if img_url not in floor_plan_imgs:
                 floor_plan_imgs.append(img_url)
-
-        # 物件画像としてラベル付きで収集（物件写真のみ対象）
-        if re.search(r"/(?:photo|image|bukken|property|mansion|room|view|gaikan)", src, re.IGNORECASE) or \
-           re.search(r"間取|外観|内装|リビング|キッチン|バス|トイレ|洋室|和室|バルコニー|眺望", alt):
-            all_images.append({"url": img_url, "label": alt or ""})
-
-    # data-src (遅延読み込み) にも対応
-    for img in soup.find_all("img", attrs={"data-src": True}):
-        src = img.get("data-src", "")
-        if not src or src.startswith("data:"):
+            seen_urls.add(img_url)
             continue
-        img_url = urljoin(url or BASE_URL, src)
-        alt = (img.get("alt") or "").strip()
 
-        if "間取" in alt or "madori" in src.lower() or "floor_plan" in src.lower():
-            if img_url not in floor_plan_imgs:
-                floor_plan_imgs.append(img_url)
+        # 物件画像: rue_image 内の photo/misc 等
+        is_property_img = ("rue_image" in src_lower or "rue_image" in img_url.lower() or
+                           re.search(r"(?:/|%2[fF])(?:photo|misc|image|bukken|property|mansion|room|view|gaikan)(?:/|%2[fF])", src, re.IGNORECASE))
+        if is_property_img:
+            all_images.append({"url": img_url, "label": alt or ""})
+            seen_urls.add(img_url)
+        elif re.search(r"間取|外観|内装|リビング|キッチン|バス|トイレ|洋室|和室|バルコニー|眺望", alt):
+            all_images.append({"url": img_url, "label": alt})
+            seen_urls.add(img_url)
 
-        if re.search(r"/(?:photo|image|bukken|property|mansion|room|view|gaikan)", src, re.IGNORECASE) or \
-           re.search(r"間取|外観|内装|リビング|キッチン|バス|トイレ|洋室|和室|バルコニー|眺望", alt):
-            entry = {"url": img_url, "label": alt or ""}
-            if entry not in all_images:
-                all_images.append(entry)
+    # 間取りが HTML から見つからない場合、URLパターンから推定
+    if not floor_plan_imgs and url:
+        m = re.search(r"/mansion/([A-Za-z0-9]+)/?", url)
+        if m:
+            prop_id = m.group(1)
+            inferred_url = f"https://www.livable.co.jp/rue_image/layout/{prop_id}.gif"
+            try:
+                head_r = requests.head(inferred_url, timeout=5, allow_redirects=True,
+                                       headers={"User-Agent": "Mozilla/5.0"})
+                if head_r.status_code == 200:
+                    floor_plan_imgs.append(inferred_url)
+                    logger.debug(f"livable: 間取り推定成功 {prop_id}")
+                else:
+                    logger.debug(f"livable: 間取り推定失敗 {prop_id} status={head_r.status_code}")
+            except Exception as e:
+                logger.debug(f"livable: 間取り推定エラー {prop_id}: {e}")
 
     if floor_plan_imgs:
         result["floor_plan_images"] = floor_plan_imgs
@@ -776,6 +820,12 @@ def _merge_detail_into_listing(listing: LivableListing, detail: dict) -> None:
         listing.ownership = detail["ownership"]
     if listing.total_units is None and detail.get("total_units") is not None:
         listing.total_units = detail["total_units"]
+    if detail.get("area_m2") is not None:
+        listing.area_m2 = detail["area_m2"]
+    if listing.floor_position is None and detail.get("floor_position") is not None:
+        listing.floor_position = detail["floor_position"]
+    if listing.floor_total is None and detail.get("floor_total") is not None:
+        listing.floor_total = detail["floor_total"]
     if listing.floor_plan_images is None and detail.get("floor_plan_images") is not None:
         listing.floor_plan_images = detail["floor_plan_images"]
     if listing.suumo_images is None and detail.get("suumo_images") is not None:

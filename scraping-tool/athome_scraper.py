@@ -51,15 +51,30 @@ logger = get_logger(__name__)
 
 BASE_URL = "https://www.athome.co.jp"
 
-# 東京都・中古マンション一覧
+# 東京23区・中古マンション一覧（区ごとにスクレイプ）
+_WARD_URL_FIRST = "https://www.athome.co.jp/mansion/chuko/13-{ward}/list/"
+_WARD_URL_PAGE = "https://www.athome.co.jp/mansion/chuko/13-{ward}/list/page{page}/"
+
+# 後方互換: 旧URL（全東京）
 LIST_URL_FIRST = "https://www.athome.co.jp/mansion/chuko/tokyo/list/"
 LIST_URL_PAGE = "https://www.athome.co.jp/mansion/chuko/tokyo/list/page{page}/"
 
 # 安全上限（無限ループ防止）
-MAX_PAGES_SAFETY = 100
+MAX_PAGES_SAFETY = 50
 
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
-EARLY_EXIT_PAGES = 20
+EARLY_EXIT_PAGES = 10
+
+# athome の区名スラッグ（URL用）
+_ATHOME_WARD_SLUGS = (
+    "chiyoda-ku", "chuo-ku", "minato-ku", "shinjuku-ku", "bunkyo-ku",
+    "taito-ku", "sumida-ku", "koto-ku", "shinagawa-ku", "meguro-ku",
+    "ota-ku", "setagaya-ku", "shibuya-ku", "nakano-ku", "suginami-ku",
+    "toshima-ku", "kita-ku", "arakawa-ku", "itabashi-ku", "nerima-ku",
+    "adachi-ku", "katsushika-ku", "edogawa-ku",
+)
+
+PARALLEL_WARD_WORKERS = 3
 
 # detail table のラベルキー（分割用）
 _DETAIL_LABELS = ("間取り", "築年月", "階建", "構造", "専有面積", "所在地", "交通", "総戸数", "管理費", "修繕積立金")
@@ -94,9 +109,12 @@ class AthomeListing:
         return asdict(self)
 
 
-def fetch_list_page(session: requests.Session, page: int) -> str:
+def fetch_list_page(session: requests.Session, page: int, *, ward: str = "") -> str:
     """一覧ページのHTMLを取得。429/5xx時はリトライする。"""
-    url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
+    if ward:
+        url = _WARD_URL_FIRST.format(ward=ward) if page == 1 else _WARD_URL_PAGE.format(ward=ward, page=page)
+    else:
+        url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
         time.sleep(ATHOME_REQUEST_DELAY_SEC)
@@ -517,56 +535,74 @@ def apply_conditions(listings: list[AthomeListing]) -> list[AthomeListing]:
     return out
 
 
-def scrape_athome(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Iterator[AthomeListing]:
-    """アットホーム東京中古マンション一覧を取得。max_pages=0 で全ページ取得。"""
+def _scrape_ward(ward: str, max_pages: int, apply_filter: bool) -> list[AthomeListing]:
+    """1区分のスクレイピング。"""
     session = create_session()
-    limit = max_pages if max_pages and max_pages > 0 else MAX_PAGES_SAFETY
+    limit = max_pages if max_pages > 0 else MAX_PAGES_SAFETY
+    results: list[AthomeListing] = []
     page = 1
-    total_parsed = 0
-    total_passed = 0
     pages_since_last_pass = 0
 
     while page <= limit:
         try:
-            html = fetch_list_page(session, page)
+            html = fetch_list_page(session, page, ward=ward)
         except Exception as e:
-            logger.error(f"athome: ページ{page}でエラー: {e}")
+            logger.error(f"athome/{ward}: ページ{page}でエラー: {e}")
             break
 
         rows = parse_list_html(html)
         if not rows:
-            logger.info(f"athome: ページ{page}で0件パース。一覧終了または HTML構造変更の可能性。")
             break
 
-        total_parsed += len(rows)
         passed = 0
         for row in rows:
             if apply_filter:
                 filtered = apply_conditions([row])
                 if filtered:
-                    yield filtered[0]
+                    results.append(filtered[0])
                     passed += 1
-                    logger.debug(f"  pass: {filtered[0].name} ({filtered[0].price_man}万)")
             else:
-                yield row
+                results.append(row)
                 passed += 1
 
-        total_passed += passed
-
-        # 早期打ち切り判定
         if passed > 0:
             pages_since_last_pass = 0
         else:
             pages_since_last_pass += 1
         if pages_since_last_pass >= EARLY_EXIT_PAGES:
-            logger.info(f"athome: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
             break
-
-        # 進捗ログ: 10ページごと
-        if page % 10 == 0:
-            logger.info(f"athome: ...{page}ページ処理済 (通過: {total_passed}件)")
 
         page += 1
 
-    if total_parsed > 0:
-        logger.info(f"athome: 完了 — {total_parsed}件パース, {total_passed}件通過")
+    if results:
+        logger.info(f"athome/{ward}: {len(results)}件通過")
+    return results
+
+
+def scrape_athome(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Iterator[AthomeListing]:
+    """アットホーム東京23区中古マンション一覧を区ごとに取得。max_pages=0 で全ページ取得。"""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    limit = max_pages if max_pages and max_pages > 0 else MAX_PAGES_SAFETY
+    total_passed = 0
+    seen_urls: set[str] = set()
+
+    with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
+        futures = {
+            executor.submit(_scrape_ward, ward, limit, apply_filter): ward
+            for ward in _ATHOME_WARD_SLUGS
+        }
+        for future in as_completed(futures):
+            ward = futures[future]
+            try:
+                results = future.result()
+                for r in results:
+                    if r.url in seen_urls:
+                        continue
+                    seen_urls.add(r.url)
+                    total_passed += 1
+                    yield r
+            except Exception as e:
+                logger.error(f"athome/{ward}: エラー: {e}")
+
+    logger.info(f"athome: 完了 — {total_passed}件通過（全23区）")
