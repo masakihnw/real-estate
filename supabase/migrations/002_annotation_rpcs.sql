@@ -107,3 +107,6 @@ RETURNS TABLE(
     FROM user_annotations ua
     WHERE ua.updated_at > p_since;
 $$ LANGUAGE sql SECURITY DEFINER;
+
+-- Index for incremental sync
+CREATE INDEX IF NOT EXISTS idx_annotations_updated_at ON user_annotations(updated_at);
