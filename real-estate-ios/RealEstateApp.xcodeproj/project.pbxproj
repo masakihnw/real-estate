@@ -85,6 +85,8 @@
 		F47AF2150D0396E4FB91AAE8 /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDE998C1AE443D8DBEC7DB2 /* PDFExporter.swift */; };
 		F4C92ACF4AD03ECB5EA847CB /* Listing+JSONDecoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAA7CF5DD9B1840536F3B4 /* Listing+JSONDecoding.swift */; };
 		F8F6F80803BB401BF19AC593 /* ListingDetailPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0300C4A7026740400F29F0C /* ListingDetailPagerView.swift */; };
+		AA1B2C3D4E5F6A7B8C9D0E1F /* PurchaseReadiness.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2C3D4E5F6A7B8C9D0E1FA2 /* PurchaseReadiness.swift */; };
+		CC3D4E5F6A7B8C9D0E1F2A3B /* PurchaseReadinessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E5F6A7B8C9D0E1F2A3B4C /* PurchaseReadinessView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -190,6 +192,8 @@
 		EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTabView.swift; sourceTree = "<group>"; };
 		F0300C4A7026740400F29F0C /* ListingDetailPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingDetailPagerView.swift; sourceTree = "<group>"; };
 		F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BB2C3D4E5F6A7B8C9D0E1FA2 /* PurchaseReadiness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseReadiness.swift; sourceTree = "<group>"; };
+		DD4E5F6A7B8C9D0E1F2A3B4C /* PurchaseReadinessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseReadinessView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,6 +247,7 @@
 				E48C62989FA6BAC697E31F00 /* Listing+MarkdownExport.swift */,
 				D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */,
 				853FEEF66F713933C5CC415D /* LoanCalculator.swift */,
+				BB2C3D4E5F6A7B8C9D0E1FA2 /* PurchaseReadiness.swift */,
 				3D5DAB8EDCE8C47645261F77 /* TransactionFilter.swift */,
 				1B7EB56BA37D75701E3BF605 /* TransactionRecord.swift */,
 			);
@@ -329,6 +334,7 @@
 				A050CCBF6353433066A86B6E /* PopulationSectionView.swift */,
 				55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */,
 				65EDC02769358655CE9A3590 /* PurchaseCostCalculatorView.swift */,
+				DD4E5F6A7B8C9D0E1F2A3B4C /* PurchaseReadinessView.swift */,
 				A94333B46786557992552519 /* RadarChartView.swift */,
 				E623D7A7882FFF98A5AEFA57 /* RecentlyViewedListView.swift */,
 				256866F0A410C0ED41438357 /* RenovationEstimateView.swift */,
@@ -496,6 +502,8 @@
 				7CCCDC03AC2811D2C49DD09B /* PopulationSectionView.swift in Sources */,
 				CC96986E6F49533736E0051D /* PropertyListingTabView.swift in Sources */,
 				9DE130586344E133A76B3BBB /* PurchaseCostCalculatorView.swift in Sources */,
+				AA1B2C3D4E5F6A7B8C9D0E1F /* PurchaseReadiness.swift in Sources */,
+				CC3D4E5F6A7B8C9D0E1F2A3B /* PurchaseReadinessView.swift in Sources */,
 				0E04EDAC2E32A4D19103DC14 /* PushNotificationService.swift in Sources */,
 				12B65D4123AAFFE21EAF8D07 /* RadarChartView.swift in Sources */,
 				9ADBC2C61259A3B927778797 /* RealEstateAppApp.swift in Sources */,
