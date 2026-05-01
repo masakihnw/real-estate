@@ -227,18 +227,18 @@ fi
 
 fi  # end HAS_CHANGES
 
-# ──────────────────────────── Slack 日次通知 ────────────────────────────
-# has_changes に依存しない。前回 Slack 通知時点のスナップショット (previous_slack.json) と比較し、
-# 蓄積された差分があれば通知する。通知後にスナップショットを更新。
+# ──────────────────────────── Slack 通知 ────────────────────────────
+# 毎回実行。前回通知時点のスナップショット (previous_slack.json) と比較し、
+# 差分（新規追加 or 削除）があれば通知する。通知後にスナップショットを更新。
 
-if [ "$IS_SLACK_TIME" = "true" ] && [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
     SLACK_PREVIOUS="${OUTPUT_DIR}/previous_slack.json"
     if [ ! -f "$SLACK_PREVIOUS" ]; then
         SLACK_PREVIOUS="${OUTPUT_DIR}/previous.json"
         echo "previous_slack.json が存在しないため previous.json をフォールバックとして使用" >&2
     fi
 
-    echo "Slack 日次通知送信中（前回通知からの差分）..." >&2
+    echo "Slack 通知送信中（前回通知からの差分）..." >&2
     python3 slack_notify.py \
         "${OUTPUT_DIR}/latest.json" \
         "$SLACK_PREVIOUS" \
