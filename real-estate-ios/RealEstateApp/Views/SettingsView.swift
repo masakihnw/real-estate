@@ -309,6 +309,12 @@ struct SettingsView: View {
     private var advancedSection: some View {
         Section {
             NavigationLink {
+                PurchaseReadinessView()
+            } label: {
+                Label("買付準備", systemImage: "doc.text.magnifyingglass")
+            }
+
+            NavigationLink {
                 CommuteDestinationSettingsView()
             } label: {
                 Label("通勤先設定", systemImage: "building.2")
