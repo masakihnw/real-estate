@@ -81,6 +81,13 @@ def main():
 
     conn.close()
 
+    # Supabase 並行同期（未設定時は自動スキップ）
+    try:
+        from supabase_sync import sync_to_supabase
+        sync_to_supabase(str(output_dir))
+    except Exception as e:
+        print(f"[sync_db] Supabase 同期失敗（非致命的）: {e}", file=sys.stderr)
+
 
 if __name__ == "__main__":
     main()
