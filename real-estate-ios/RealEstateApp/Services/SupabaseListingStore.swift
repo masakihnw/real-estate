@@ -53,7 +53,7 @@ final class SupabaseListingStore {
             dtos = try await fetchAll(propertyType: propertyType)
         }
 
-        if dtos.isEmpty && lastSync != nil {
+        if dtos.isEmpty {
             return 0
         }
 
@@ -156,8 +156,9 @@ final class SupabaseListingStore {
                 }
             }
 
-            // フルフェッチ時のみ、JSON から消えた物件を処理
-            if !isIncremental {
+            // フルフェッチ時のみ、Supabase から消えた物件を処理
+            // 安全策: 取得件数が0または既存の10%未満の場合はスキップ（API障害時の誤削除防止）
+            if !isIncremental && !incomingKeys.isEmpty && incomingKeys.count >= existing.count / 10 {
                 for e in existing where !incomingKeys.contains(e.identityKey) {
                     let hasUserData = e.isLiked || e.hasComments || e.hasPhotos || !(e.memo ?? "").isEmpty
                     if hasUserData {
