@@ -156,12 +156,6 @@ struct SettingsView: View {
     @ViewBuilder
     private var dataSection: some View {
         Section {
-            Toggle(isOn: Binding(
-                get: { store.useSupabase },
-                set: { store.useSupabase = $0 }
-            )) {
-                Label("Supabase API", systemImage: "server.rack")
-            }
             NavigationLink {
                 RecentlyViewedListView()
             } label: {
@@ -207,7 +201,7 @@ struct SettingsView: View {
         } header: {
             Text("データ")
         } footer: {
-            Text("物件データは自動で更新されます。\nフルリフレッシュはキャッシュをクリアして全件再取得します。")
+            Text("物件データは Supabase API から差分同期されます。\nフルリフレッシュはキャッシュをクリアして全件再取得します。")
         }
         .alert("フルリフレッシュしますか？", isPresented: $showFullRefreshConfirmation) {
             Button("実行", role: .destructive) {
@@ -365,45 +359,54 @@ struct SettingsView: View {
                 }
             }
 
-            DisclosureGroup(isExpanded: $showAdvancedURL) {
-                TextField("中古マンション JSON URL", text: $chukoURLInput)
-                    .keyboardType(.URL)
-                    .autocapitalization(.none)
-                    .autocorrectionDisabled()
-                    .font(.caption)
-                TextField("新築マンション JSON URL", text: $shinchikuURLInput)
-                    .keyboardType(.URL)
-                    .autocapitalization(.none)
-                    .autocorrectionDisabled()
-                    .font(.caption)
+            Toggle(isOn: Binding(
+                get: { store.useSupabase },
+                set: { store.useSupabase = $0 }
+            )) {
+                Label("Supabase API", systemImage: "server.rack")
+            }
 
-                Button {
-                    store.listURL = chukoURLInput.trimmingCharacters(in: .whitespaces)
-                    store.shinchikuListURL = shinchikuURLInput.trimmingCharacters(in: .whitespaces)
-                    store.clearETags()
-                    showSaveConfirmation = true
-                } label: {
-                    Label("カスタム URL を保存", systemImage: "checkmark.circle")
-                }
+            if !store.useSupabase {
+                DisclosureGroup(isExpanded: $showAdvancedURL) {
+                    TextField("中古マンション JSON URL", text: $chukoURLInput)
+                        .keyboardType(.URL)
+                        .autocapitalization(.none)
+                        .autocorrectionDisabled()
+                        .font(.caption)
+                    TextField("新築マンション JSON URL", text: $shinchikuURLInput)
+                        .keyboardType(.URL)
+                        .autocapitalization(.none)
+                        .autocorrectionDisabled()
+                        .font(.caption)
 
-                if store.isUsingCustomURL {
-                    Button(role: .destructive) {
-                        showResetConfirmation = true
-                    } label: {
-                        Label("デフォルト URL に戻す", systemImage: "arrow.uturn.backward")
-                    }
-                }
-            } label: {
-                HStack {
-                    Text("カスタム URL 設定")
                     Button {
-                        showCustomURLInfo = true
+                        store.listURL = chukoURLInput.trimmingCharacters(in: .whitespaces)
+                        store.shinchikuListURL = shinchikuURLInput.trimmingCharacters(in: .whitespaces)
+                        store.clearETags()
+                        showSaveConfirmation = true
                     } label: {
-                        Image(systemName: "info.circle")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                        Label("カスタム URL を保存", systemImage: "checkmark.circle")
                     }
-                    .buttonStyle(.plain)
+
+                    if store.isUsingCustomURL {
+                        Button(role: .destructive) {
+                            showResetConfirmation = true
+                        } label: {
+                            Label("デフォルト URL に戻す", systemImage: "arrow.uturn.backward")
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Text("カスタム URL 設定")
+                        Button {
+                            showCustomURLInfo = true
+                        } label: {
+                            Image(systemName: "info.circle")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
             }
         } header: {
