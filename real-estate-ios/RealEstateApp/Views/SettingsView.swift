@@ -156,6 +156,12 @@ struct SettingsView: View {
     @ViewBuilder
     private var dataSection: some View {
         Section {
+            Toggle(isOn: Binding(
+                get: { store.useSupabase },
+                set: { store.useSupabase = $0 }
+            )) {
+                Label("Supabase API", systemImage: "server.rack")
+            }
             NavigationLink {
                 RecentlyViewedListView()
             } label: {
