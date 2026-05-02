@@ -51,10 +51,43 @@ def _collect_sources(group: list[dict]) -> list[str]:
     return sources
 
 
+def _merge_images(representative: dict, others: list[dict]) -> None:
+    """他リスティングの画像を代表に統合（URL重複除去）。
+    間取り図は代表に既に1枚以上あればマージしない（1枚あれば十分）。
+    物件写真は全ソースから重複除去してマージ。"""
+    seen_urls = set()
+
+    fps = list(representative.get("floor_plan_images") or [])
+    for url in fps:
+        seen_urls.add(url)
+
+    imgs = list(representative.get("suumo_images") or [])
+    for img in imgs:
+        if isinstance(img, dict):
+            seen_urls.add(img.get("url", ""))
+
+    for other in others:
+        if not fps:
+            for url in other.get("floor_plan_images") or []:
+                if url and url not in seen_urls:
+                    fps.append(url)
+                    seen_urls.add(url)
+                    break
+        for img in other.get("suumo_images") or []:
+            if isinstance(img, dict) and img.get("url") and img["url"] not in seen_urls:
+                imgs.append(img)
+                seen_urls.add(img["url"])
+
+    if fps:
+        representative["floor_plan_images"] = fps
+    if imgs:
+        representative["suumo_images"] = imgs
+
+
 def dedupe_listings(rows: list[dict]) -> list[dict]:
     """物件名・間取り・価格が同一の物件を1件にまとめる。
     同一条件が複数ある場合は duplicate_count に戸数を記録し、
-    代表以外の URL を alt_urls に保持する。
+    代表以外の URL を alt_urls に保持する。画像は全ソースからマージする。
     クロスサイト重複はファジーマッチングで2次判定する。"""
     from collections import OrderedDict
 
@@ -70,11 +103,13 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
         count = len(group)
         representative["duplicate_count"] = count
         if count > 1:
+            others = [r for r in group if r is not representative]
             alts = [(r.get("source", "unknown"), r["url"])
-                    for r in group if r.get("url") and r["url"] != representative.get("url")]
+                    for r in others if r.get("url") and r["url"] != representative.get("url")]
             if alts:
                 representative["alt_sources"] = [s for s, _ in alts]
                 representative["alt_urls"] = [u for _, u in alts]
+            _merge_images(representative, others)
         out.append(representative)
 
     # 2次判定: ファジーマッチング（クロスサイト表記揺れの吸収）
@@ -94,13 +129,15 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
                 used.add(j)
         if len(group) > 1:
             representative = max(group, key=lambda r: sum(1 for v in r.values() if v is not None))
+            others = [r for r in group if r is not representative]
             alts = [(r.get("source", "unknown"), r["url"])
-                    for r in group if r.get("url") and r["url"] != representative.get("url")]
+                    for r in others if r.get("url") and r["url"] != representative.get("url")]
             if alts:
                 existing_alt_s = representative.get("alt_sources", [])
                 existing_alt_u = representative.get("alt_urls", [])
                 representative["alt_sources"] = existing_alt_s + [s for s, _ in alts]
                 representative["alt_urls"] = existing_alt_u + [u for _, u in alts]
+            _merge_images(representative, others)
             representative["duplicate_count"] = representative.get("duplicate_count", 1) + len(group) - 1
             merged.append(representative)
         else:
@@ -139,10 +176,12 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
                 (merged[idx] for idx in sub_indices),
                 key=lambda r: sum(1 for v in r.values() if v is not None),
             )
+            others = [merged[idx] for idx in sub_indices if merged[idx] is not representative]
             for idx in sub_indices:
                 if merged[idx].get("url") != representative.get("url"):
                     representative.setdefault("alt_sources", []).append(merged[idx].get("source", "unknown"))
                     representative.setdefault("alt_urls", []).append(merged[idx]["url"])
+            _merge_images(representative, others)
             representative["duplicate_count"] = sum(merged[idx].get("duplicate_count", 1) for idx in sub_indices)
             final.append(representative)
             for idx in sub_indices:
