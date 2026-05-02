@@ -412,7 +412,44 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
 
     soup = BeautifulSoup(html, "lxml")
 
-    # テーブル（th/td ペア）から情報抽出
+    def _apply_field(th: str, td: str) -> None:
+        """ヘッダー/値ペアから result に値を埋める共通ロジック。"""
+        if "管理費" in th and "修繕" not in th and not result["management_fee"]:
+            val = parse_monthly_yen(td)
+            if val and val > 0:
+                result["management_fee"] = val
+        elif "修繕積立金" in th and not result["repair_reserve_fund"]:
+            val = parse_monthly_yen(td)
+            if val and val > 0:
+                result["repair_reserve_fund"] = val
+        elif ("権利" in th or "所有権" in th) and not result["ownership"]:
+            if td and td != "-":
+                result["ownership"] = td
+        elif "総戸数" in th and not result["total_units"]:
+            m = re.search(r"(\d+)\s*戸", td)
+            if m:
+                result["total_units"] = int(m.group(1))
+        elif ("階数" in th or "階建" in th or "所在階" in th) and not result.get("floor_position"):
+            result["floor_position"] = parse_floor_position(td)
+            m = re.search(r"地上\s*(\d+)\s*階", td)
+            if m:
+                result["floor_total"] = int(m.group(1))
+            else:
+                result["floor_total"] = parse_floor_total(td)
+
+    # パターン1: td.table-header + td.table-data（Vue.js SSR ページ）
+    for tr in soup.find_all("tr", class_="table-row"):
+        cells = tr.find_all("td", recursive=False)
+        if len(cells) < 2:
+            continue
+        header_cell = cells[0]
+        if "table-header" not in (header_cell.get("class") or []):
+            continue
+        th = (header_cell.get_text(strip=True) or "").strip()
+        td = (cells[1].get_text(strip=True) or "").strip()
+        _apply_field(th, td)
+
+    # パターン2: 従来の th/td ペア（フォールバック）
     for tr in soup.find_all("tr"):
         cells = tr.find_all(["th", "td"], recursive=False)
         for i, cell in enumerate(cells):
@@ -420,78 +457,45 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
                 continue
             th = (cell.get_text(strip=True) or "").strip()
             td = (cells[i + 1].get_text(strip=True) or "").strip()
+            _apply_field(th, td)
 
-            if "管理費" in th and "修繕" not in th:
-                val = parse_monthly_yen(td)
-                if val and val > 0:
-                    result["management_fee"] = val
-            elif "修繕積立金" in th:
-                val = parse_monthly_yen(td)
-                if val and val > 0:
-                    result["repair_reserve_fund"] = val
-            elif "権利" in th or "所有権" in th:
-                if td and td != "-":
-                    result["ownership"] = td
-            elif "総戸数" in th:
-                m = re.search(r"(\d+)\s*戸", td)
-                if m:
-                    result["total_units"] = int(m.group(1))
-            elif "階数" in th or "階建" in th or "所在階" in th:
-                result["floor_position"] = parse_floor_position(td)
-                m = re.search(r"地上\s*(\d+)\s*階", td)
-                if m:
-                    result["floor_total"] = int(m.group(1))
-                else:
-                    result["floor_total"] = parse_floor_total(td)
-
-    # dl/dt/dd パターンも試行
+    # パターン3: dl/dt/dd
     for dt in soup.find_all("dt"):
         dt_text = (dt.get_text(strip=True) or "").strip()
         dd = dt.find_next_sibling("dd")
         if not dd:
             continue
         dd_text = (dd.get_text(strip=True) or "").strip()
+        _apply_field(dt_text, dd_text)
 
-        if "管理費" in dt_text and "修繕" not in dt_text and not result["management_fee"]:
-            val = parse_monthly_yen(dd_text)
-            if val and val > 0:
-                result["management_fee"] = val
-        elif "修繕積立金" in dt_text and not result["repair_reserve_fund"]:
-            val = parse_monthly_yen(dd_text)
-            if val and val > 0:
-                result["repair_reserve_fund"] = val
-        elif ("権利" in dt_text or "所有権" in dt_text) and not result["ownership"]:
-            if dd_text and dd_text != "-":
-                result["ownership"] = dd_text
-        elif "総戸数" in dt_text and not result["total_units"]:
-            m = re.search(r"(\d+)\s*戸", dd_text)
-            if m:
-                result["total_units"] = int(m.group(1))
-        elif ("階数" in dt_text or "階建" in dt_text or "所在階" in dt_text) and not result.get("floor_position"):
-            result["floor_position"] = parse_floor_position(dd_text)
-            m = re.search(r"地上\s*(\d+)\s*階", dd_text)
-            if m:
-                result["floor_total"] = int(m.group(1))
-            else:
-                result["floor_total"] = parse_floor_total(dd_text)
-
-    # 画像抽出
+    # 画像抽出 — カルーセル内のみ対象（関連物件・ロゴ等を除外）
     floor_plan_images: list[str] = []
     suumo_images: list[dict] = []
     seen_urls: set[str] = set()
 
-    for img in soup.find_all("img"):
+    carousel = soup.select_one("div.sale-property-image-carousel")
+    img_scope = carousel.find_all("img") if carousel else []
+    if not img_scope:
+        img_scope = soup.find_all("img")
+
+    for img in img_scope:
+        if img.find_parent("div", class_="property-card"):
+            continue
         alt = (img.get("alt") or "").strip()
         src = (img.get("data-src") or img.get("src") or "").strip()
         if not src or src.startswith("data:"):
             continue
-        if any(x in src for x in ("/logo", "/icon", "/btn", "/spacer", "/common/")):
+        if src.endswith(".svg"):
+            continue
+        if any(x in src for x in ("/rh-n3/", "/logo", "/icon", "/btn", "/spacer", "/common/")):
             continue
         if src in seen_urls:
             continue
         if not any(x in src for x in ("rehouse", "cdn", "miraie")) and not src.startswith("/"):
             continue
-        if src.startswith("/"):
+        if src.startswith("//"):
+            src = "https:" + src
+        elif src.startswith("/"):
             src = BASE_URL + src
 
         seen_urls.add(src)
