@@ -7614,9 +7614,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 8,
-      "latitude": 35.697411,
-      "longitude": 139.7862521,
+      "estimated_walk_min": 10,
+      "latitude": 35.6974192,
+      "longitude": 139.784685,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -24978,7 +24978,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": "グローリオ蘆花公園 テラス棟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2c772462c365",
@@ -24998,7 +24998,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": "グローリオ蘆花公園 テラス棟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-30b730105f85",
@@ -25578,7 +25578,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": "グローリオ蘆花公園 テラス棟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-04641553f8c0",
@@ -25938,7 +25938,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": "グローリオ蘆花公園 テラス棟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-53f4c06efa7a",
@@ -26118,7 +26118,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": "グローリオ蘆花公園 テラス棟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e7e8e6bcf87f",
@@ -26578,7 +26578,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": "グローリオ蘆花公園 テラス棟"
+      "estimated_building_name": null
     },
     {
       "id": "tx-12bcbad38a20",
@@ -38581,9 +38581,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 8,
-      "latitude": 35.697411,
-      "longitude": 139.7862521,
+      "estimated_walk_min": 10,
+      "latitude": 35.6974192,
+      "longitude": 139.784685,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -44846,7 +44846,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "グローリオ蘆花公園 テラス棟"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120580-2016-RC",
@@ -49109,7 +49109,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-02T01:27:13",
+    "updated_at": "2026-05-02T03:40:50",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
