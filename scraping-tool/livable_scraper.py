@@ -851,7 +851,6 @@ def enrich_livable_listings(
     cache_hit_count = 0
 
     logger.info("livable detail: %d件の詳細ページ取得を開始", len(listings))
-    _img_cache_cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
 
     for i, listing in enumerate(listings):
         url = listing.url
@@ -861,8 +860,7 @@ def enrich_livable_listings(
         # キャッシュチェック
         cached_entry = cache.get(url)
         if cached_entry and not cached_entry.get("floor_plan_images") and not cached_entry.get("suumo_images"):
-            if cached_entry.get("cached_at", "") < _img_cache_cutoff:
-                cached_entry = None
+            cached_entry = None
         if cached_entry and _is_detail_cache_valid(cached_entry):
             _merge_detail_into_listing(listing, cached_entry)
             cache_hit_count += 1

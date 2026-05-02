@@ -149,6 +149,20 @@ final class SupabaseListingStore {
                 guard let listing = Listing.from(dto: dto, fetchedAt: fetchedAt) else { continue }
                 listing.propertyType = propertyType
                 let key = listing.identityKey
+
+                // 非アクティブ物件: Supabase で is_active=false になった
+                if dto.is_active == false {
+                    if let existing = existingByKey[key] {
+                        let hasUserData = existing.isLiked || existing.hasComments || existing.hasPhotos || !(existing.memo ?? "").isEmpty
+                        if hasUserData {
+                            existing.isDelisted = true
+                        } else {
+                            modelContext.delete(existing)
+                        }
+                    }
+                    continue
+                }
+
                 incomingKeys.insert(key)
 
                 if let same = existingByKey[key] {
