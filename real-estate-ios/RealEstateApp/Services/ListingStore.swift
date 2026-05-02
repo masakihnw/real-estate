@@ -230,6 +230,7 @@ final class ListingStore {
     func clearETags() {
         defaults.removeObject(forKey: chukoETagKey)
         defaults.removeObject(forKey: shinchikuETagKey)
+        SupabaseListingStore.shared.clearSyncState()
     }
 
     // MARK: - Private
