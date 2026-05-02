@@ -350,11 +350,44 @@ def _name_similarity(a: str, b: str) -> float:
     return SequenceMatcher(None, a, b).ratio()
 
 
+def _layout_total_rooms(layout: str) -> tuple[int, str]:
+    """レイアウトから総部屋数（S/納戸含む）とベースタイプを抽出。
+    例: '2LDK+S（納戸）' → (3, 'LDK'), '3LDK' → (3, 'LDK'), '2SLDK' → (3, 'LDK')"""
+    import unicodedata
+    if not layout:
+        return (0, "")
+    s = unicodedata.normalize("NFKC", layout).strip().upper()
+    s = re.sub(r"[（(][^）)]*[）)]", "", s)
+    m = re.match(r"(\d+)", s)
+    if not m:
+        return (0, "")
+    rooms = int(m.group(1))
+    rest = s[m.end():]
+    s_count = len(re.findall(r"S", rest))
+    total = rooms + s_count
+    base = ""
+    if "LDK" in rest:
+        base = "LDK"
+    elif "DK" in rest:
+        base = "DK"
+    elif "K" in rest:
+        base = "K"
+    return (total, base)
+
+
 def fuzzy_identity_match(a: dict, b: dict, threshold: float = 0.8) -> bool:
     """identity_key が一致しないが構造的フィールドが一致し、名前が類似している場合に True。
-    クロスサイトでの物件名表記揺れ（三井パークタワー晴海 vs パークタワー晴海）を吸収する。"""
-    if (a.get("layout") or "").strip() != (b.get("layout") or "").strip():
-        return False
+    クロスサイトでの物件名表記揺れ（三井パークタワー晴海 vs パークタワー晴海）を吸収する。
+    レイアウトは総部屋数（S/納戸含む）で比較し、±1 の差を許容する。"""
+    la = (a.get("layout") or "").strip()
+    lb = (b.get("layout") or "").strip()
+    if la != lb:
+        rooms_a, base_a = _layout_total_rooms(la)
+        rooms_b, base_b = _layout_total_rooms(lb)
+        if base_a != base_b or rooms_a == 0 or rooms_b == 0:
+            return False
+        if abs(rooms_a - rooms_b) > 1:
+            return False
     if a.get("area_m2") != b.get("area_m2"):
         return False
     if a.get("built_year") != b.get("built_year"):
