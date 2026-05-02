@@ -83,8 +83,29 @@ enum UserAnnotationStore {
     /// ListingStore.syncToDatabase の新規物件挿入ループ内で呼ぶこと。
     static func restore(to listing: Listing) {
         guard let cache = loadedCache else { return }
-        guard let annotation = cache[listing.identityKey] else { return }
 
+        if let annotation = cache[listing.identityKey] {
+            apply(annotation, to: listing)
+            return
+        }
+
+        // 旧キー（生住所）でフォールバック — identityKey 正規化変更前のバックアップに対応
+        let oldKey = [
+            Listing.cleanListingName(listing.name)
+                .replacingOccurrences(of: #"\s+"#, with: "", options: .regularExpression),
+            (listing.layout ?? "").trimmingCharacters(in: .whitespaces),
+            listing.areaM2.map { "\($0)" } ?? "",
+            (listing.address ?? "").trimmingCharacters(in: .whitespaces),
+            listing.builtYear.map { "\($0)" } ?? "",
+            Listing.extractStationName(from: listing.stationLine ?? "")
+        ].joined(separator: "|")
+
+        if let annotation = cache[oldKey] {
+            apply(annotation, to: listing)
+        }
+    }
+
+    private static func apply(_ annotation: UserAnnotation, to listing: Listing) {
         if annotation.isLiked { listing.isLiked = true }
         if let v = annotation.commentsJSON, listing.commentsJSON == nil { listing.commentsJSON = v }
         if let v = annotation.memo, listing.memo == nil { listing.memo = v }

@@ -232,17 +232,21 @@ def clean_listing_name(name: str) -> str:
 
 
 def _normalize_address_for_key(address: str) -> str:
-    """住所を丁目レベルに正規化（番・号を除去）。
-    iOS normalizeAddressForGrouping と同等。SUUMOの住所表記揺れを吸収する。
-    例: '東京都世田谷区上北沢５-13-2' → '東京都世田谷区上北沢5'
-        '東京都世田谷区上北沢５-１３－２' → '東京都世田谷区上北沢5'
-        '東京都世田谷区上北沢５' → '東京都世田谷区上北沢5'
+    """住所を丁目レベルに正規化（都道府県prefix・番地以下・丁目suffixを除去）。
+    クロスサイトの住所表記揺れを吸収する。
+    例: '東京都世田谷区上北沢５-13-2' → '世田谷区上北沢5'
+        '世田谷区上北沢5丁目' → '世田谷区上北沢5'
+        '東京都江東区東雲１' → '江東区東雲1'
+        '江東区東雲1丁目' → '江東区東雲1'
     """
     import unicodedata
     if not address:
         return ""
     s = unicodedata.normalize("NFKC", address).strip()
+    if s.startswith("東京都"):
+        s = s[3:]
     s = re.sub(r"(\d+)\s*[-ー－/／].*$", r"\1", s)
+    s = re.sub(r"(\d+)丁目$", r"\1", s)
     return s
 
 

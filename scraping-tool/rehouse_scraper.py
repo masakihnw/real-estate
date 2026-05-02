@@ -58,6 +58,13 @@ logger = get_logger(__name__)
 
 BASE_URL = "https://www.rehouse.co.jp"
 
+_REHOUSE_JUNK_LABELS = frozenset({
+    "ペット可", "角住戸", "LDK\n20畳以上", "スーパー\n徒歩5分以内",
+    "小学校\n徒歩10分以内", "対面式\nキッチン", "みらい君",
+    "買い替えをご検討の方はこちら", "マイページガイド男性", "マイページガイド女性",
+    "リンクコピー", "LINEで送る", "簡単入力ですぐ売却依頼", "AIくらし予報",
+})
+
 # 区ごとの検索URL (サーバーサイドで価格・面積フィルタ可能)
 _WARD_URL_TEMPLATE = (
     "https://www.rehouse.co.jp/buy/mansion/prefecture/13/city/{ward_code}/"
@@ -475,8 +482,6 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
 
     carousel = soup.select_one("div.sale-property-image-carousel")
     img_scope = carousel.find_all("img") if carousel else []
-    if not img_scope:
-        img_scope = soup.find_all("img")
 
     for img in img_scope:
         if img.find_parent("div", class_="property-card"):
@@ -501,7 +506,7 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
         seen_urls.add(src)
         if "間取" in alt:
             floor_plan_images.append(src)
-        elif alt and alt not in ("", "写真", "画像"):
+        elif alt and alt not in ("", "写真", "画像") and alt not in _REHOUSE_JUNK_LABELS:
             suumo_images.append({"url": src, "label": alt})
         elif "/photo/" in src or "/image/" in src or "miraie" in src:
             suumo_images.append({"url": src, "label": alt or "外観"})
@@ -525,18 +530,13 @@ def enrich_rehouse_listings(listings: list[RehouseListing], session=None) -> lis
     cache = _load_detail_cache()
     enriched_count = 0
 
-    _JUNK_LABELS = {"ペット可", "角住戸", "LDK\n20畳以上", "スーパー\n徒歩5分以内",
-                    "小学校\n徒歩10分以内", "対面式\nキッチン", "みらい君",
-                    "買い替えをご検討の方はこちら", "マイページガイド男性",
-                    "リンクコピー", "LINEで送る"}
-
     for listing in listings:
         cached = cache.get(listing.url)
         if cached and not cached.get("floor_plan_images") and not cached.get("suumo_images"):
             cached = None
         if cached and cached.get("suumo_images"):
             labels = {img.get("label", "") for img in cached["suumo_images"]}
-            if labels & _JUNK_LABELS:
+            if labels & _REHOUSE_JUNK_LABELS:
                 cached = None
         if cached:
             detail = cached

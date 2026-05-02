@@ -43,6 +43,11 @@ final class SupabaseListingStore {
         async let shinResult = fetchAndSync(propertyType: "shinchiku", modelContext: modelContext)
 
         let (chuko, shin) = try await (chukoResult, shinResult)
+
+        if UserAnnotationStore.hasBackup {
+            UserAnnotationStore.clearBackup()
+        }
+
         return (chuko, shin)
     }
 
@@ -127,6 +132,11 @@ final class SupabaseListingStore {
 
     /// SwiftData に同期 (既存 ListingStore.syncToDatabase のロジックを流用)
     private func syncToDatabase(dtos: [ListingDTO], propertyType: String, modelContext: ModelContext, isIncremental: Bool) -> Int {
+        // フルフェッチ時: identityKey 変更による不一致に備え自動バックアップ
+        if !isIncremental && !UserAnnotationStore.hasBackup {
+            UserAnnotationStore.backup(from: modelContext)
+        }
+
         let fetchedAt = Date()
 
         do {
@@ -194,10 +204,6 @@ final class SupabaseListingStore {
                         modelContext.delete(e)
                     }
                 }
-            }
-
-            if hasAnnotationBackup && propertyType == "shinchiku" {
-                UserAnnotationStore.clearBackup()
             }
 
             try modelContext.save()

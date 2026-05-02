@@ -6,6 +6,7 @@ import pytest
 from pathlib import Path
 
 from report_utils import (
+    _normalize_address_for_key,
     compare_listings,
     format_area,
     format_floor,
@@ -163,6 +164,31 @@ def test_format_ownership():
     # 一般定期借地権は詳細を省略して「一般定期借地権（賃借権）」のみ表示
     long_teiki = "一般定期借地権（賃借権）、借地期間残存59年8ヶ月、借地権設定登記不可、賃料改定は3年毎に改定、改定後賃料は公式による、借地権の譲渡・転貸可(転貸主承諾、承諾要、承諾料不要)"
     assert format_ownership(long_teiki) == "一般定期借地権（賃借権）"
+
+
+# --- _normalize_address_for_key ---
+
+
+def test_normalize_address_strips_tokyo_prefix():
+    assert _normalize_address_for_key("東京都江東区東雲１") == "江東区東雲1"
+    assert _normalize_address_for_key("東京都世田谷区上北沢５-13-2") == "世田谷区上北沢5"
+
+
+def test_normalize_address_strips_chome_suffix():
+    assert _normalize_address_for_key("江東区東雲1丁目") == "江東区東雲1"
+    assert _normalize_address_for_key("板橋区加賀1丁目") == "板橋区加賀1"
+
+
+def test_normalize_address_cross_site_match():
+    """SUUMO と nomucom の住所が正規化後に一致すること。"""
+    assert _normalize_address_for_key("東京都江東区東雲１") == _normalize_address_for_key("江東区東雲1丁目")
+    assert _normalize_address_for_key("東京都板橋区加賀１") == _normalize_address_for_key("板橋区加賀1丁目")
+    assert _normalize_address_for_key("東京都墨田区本所１") == _normalize_address_for_key("墨田区本所1丁目")
+
+
+def test_normalize_address_empty():
+    assert _normalize_address_for_key("") == ""
+    assert _normalize_address_for_key(None) == ""
 
 
 def test_google_maps_url():
