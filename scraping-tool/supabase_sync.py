@@ -116,6 +116,14 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                 client.table("listings").update({"identity_key": ik}).eq("id", lid).execute()
                 existing_listings[ik] = lid
                 return ik
+            # prefix一致: 同じ6要素prefixで異なるfloor値を持つ旧行を検索
+            prefix = "|".join(parts[:6]) + "|"
+            for existing_ik in list(existing_listings.keys()):
+                if existing_ik.startswith(prefix) or existing_ik == legacy:
+                    lid = existing_listings.pop(existing_ik)
+                    client.table("listings").update({"identity_key": ik}).eq("id", lid).execute()
+                    existing_listings[ik] = lid
+                    return ik
         return ik
 
     # 物件を1件ずつ処理
@@ -393,5 +401,24 @@ def sync_to_supabase(output_dir: str) -> None:
         logger.info("[supabase] enrichments(新築): %d 件同期", enriched)
     else:
         logger.info("[supabase] latest_shinchiku.json が空（スキップ）")
+
+    # 整合性検証: JSON件数 vs Supabase is_active=true 件数
+    for pt, items in [("chuko", chuko), ("shinchiku", shinchiku)]:
+        if not items:
+            continue
+        json_count = len(items)
+        db_resp = (client.table("listings")
+                   .select("id", count="exact")
+                   .eq("property_type", pt)
+                   .eq("is_active", True)
+                   .execute())
+        db_count = db_resp.count or 0
+        if abs(json_count - db_count) > json_count * 0.1:
+            logger.warning(
+                "[supabase] 整合性警告: JSON=%d, Supabase=%d (property_type=%s, 乖離%.0f%%)",
+                json_count, db_count, pt, abs(json_count - db_count) / json_count * 100,
+            )
+        else:
+            logger.info("[supabase] 整合性OK: JSON=%d, Supabase=%d (%s)", json_count, db_count, pt)
 
     logger.info("[supabase] 同期完了")

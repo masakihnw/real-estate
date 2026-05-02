@@ -118,6 +118,9 @@ struct ListingDTO: Codable {
     // 複数媒体リンク（dedup 時に集約）
     var alt_sources: [String]?
     var alt_urls: [String]?
+
+    // Supabase 同期用: 物件のアクティブ状態
+    var is_active: Bool?
 }
 
 extension Listing {

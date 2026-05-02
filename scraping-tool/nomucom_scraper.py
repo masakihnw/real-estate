@@ -510,13 +510,10 @@ def enrich_nomucom_listings(listings: list[NomucomListing], session=None) -> lis
     cache = _load_detail_cache()
     enriched_count = 0
 
-    _img_cache_cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
-
     for listing in listings:
         cached = cache.get(listing.url)
         if cached and not cached.get("suumo_images"):
-            if cached.get("cached_at", "") < _img_cache_cutoff:
-                cached = None
+            cached = None
         if cached:
             detail = cached
         else:
