@@ -44,9 +44,14 @@ def main():
     # グルーピング: normalized_name + area_m2 + layout + property_type
     groups = defaultdict(list)
     for row in all_listings:
+        name = row.get("normalized_name") or ""
+        area = row.get("area_m2")
+        # normalized_name が空 or area が None の行はユニーク判定不能 → スキップ
+        if not name or area is None:
+            continue
         key = (
-            row.get("normalized_name") or "",
-            row.get("area_m2"),
+            name,
+            area,
             row.get("layout") or "",
             row.get("property_type") or "",
         )
