@@ -1,0 +1,50 @@
+name: Cleanup Supabase Duplicates
+
+# 一時実行ワークフロー: Supabase上の重複identity_keyをクリーンアップする
+# 実行後に削除すること
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: '実行モード (dry-run / apply)'
+        required: true
+        default: 'dry-run'
+        type: choice
+        options:
+          - 'dry-run'
+          - 'apply'
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scraping-tool/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: pip install -r requirements.txt
+
+      - name: Run cleanup script
+        working-directory: scraping-tool
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ "${{ github.event.inputs.apply }}" = "apply" ]; then
+            python scripts/cleanup_supabase_duplicates.py --apply
+          else
+            python scripts/cleanup_supabase_duplicates.py
+          fi
