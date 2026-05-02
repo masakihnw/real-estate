@@ -58,7 +58,7 @@
       "latitude": 35.6875758,
       "longitude": 139.7885881,
       "building_group_id": "131020250-2006-RC",
-      "estimated_building_name": "アスコットパーク日本橋浜町公園"
+      "estimated_building_name": null
     },
     {
       "id": "tx-8e43018a0e23",
@@ -6498,7 +6498,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー"
     },
     {
       "id": "tx-cc94e3bb961c",
@@ -6518,7 +6518,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー"
     },
     {
       "id": "tx-2b2a79ac628b",
@@ -6618,7 +6618,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー"
     },
     {
       "id": "tx-32bdb91adb5b",
@@ -6638,7 +6638,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー"
     },
     {
       "id": "tx-666badfbd5ae",
@@ -7318,7 +7318,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー"
     },
     {
       "id": "tx-88695abb0c63",
@@ -7614,9 +7614,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6974192,
-      "longitude": 139.784685,
+      "estimated_walk_min": 8,
+      "latitude": 35.697411,
+      "longitude": 139.7862521,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -7738,7 +7738,7 @@
       "latitude": 35.7144096,
       "longitude": 139.7903283,
       "building_group_id": "131060210-2012-RC",
-      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー"
     },
     {
       "id": "tx-3d5016ba456c",
@@ -8578,7 +8578,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-9af5f054f1fc",
@@ -8718,7 +8718,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-21e200d5ac5b",
@@ -8938,7 +8938,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-9b83fb7c775d",
@@ -9238,7 +9238,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2009-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ…"
+      "estimated_building_name": "シティタワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ… / Brillia 有明 Sky Tower(ブリリア有…"
     },
     {
       "id": "tx-cf0a8ea19544",
@@ -11058,7 +11058,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-13a3b4f00f95",
@@ -12278,7 +12278,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-f39e488bd50d",
@@ -12318,7 +12318,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-5955422c0c5a",
@@ -13198,7 +13198,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-3fb6be66326f",
@@ -13218,7 +13218,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-ac4f83e5bf06",
@@ -13278,7 +13278,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2009-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ…"
+      "estimated_building_name": "シティタワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ… / Brillia 有明 Sky Tower(ブリリア有…"
     },
     {
       "id": "tx-cab7505fb844",
@@ -13398,7 +13398,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-9ca23a6011ea",
@@ -13918,7 +13918,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-1f8b9c7a4800",
@@ -13978,7 +13978,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2009-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ…"
+      "estimated_building_name": "シティタワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ… / Brillia 有明 Sky Tower(ブリリア有…"
     },
     {
       "id": "tx-b2c11f7d1ac1",
@@ -14938,7 +14938,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-837a34c9defb",
@@ -14978,7 +14978,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-c704f7e51b38",
@@ -15738,7 +15738,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-274f9640747b",
@@ -17518,7 +17518,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2009-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ…"
+      "estimated_building_name": "シティタワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ… / Brillia 有明 Sky Tower(ブリリア有…"
     },
     {
       "id": "tx-14ce21b5dd24",
@@ -17558,7 +17558,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-cae77d942bd0",
@@ -18278,7 +18278,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-0612fcd26bac",
@@ -19218,7 +19218,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2008-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "id": "tx-6161f391dcef",
@@ -19918,7 +19918,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2009-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ…"
+      "estimated_building_name": "シティタワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ… / Brillia 有明 Sky Tower(ブリリア有…"
     },
     {
       "id": "tx-b5e5f056136f",
@@ -19938,7 +19938,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2009-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ…"
+      "estimated_building_name": "シティタワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ… / Brillia 有明 Sky Tower(ブリリア有…"
     },
     {
       "id": "tx-d2282f49135f",
@@ -19958,7 +19958,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2009-RC",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ…"
+      "estimated_building_name": "シティタワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ… / Brillia 有明 Sky Tower(ブリリア有…"
     },
     {
       "id": "tx-0067879d89e1",
@@ -23458,7 +23458,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018-RC",
-      "estimated_building_name": "ザ・グランプルーヴ上馬"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ba43122e7aba",
@@ -24338,7 +24338,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018-RC",
-      "estimated_building_name": "ザ・グランプルーヴ上馬"
+      "estimated_building_name": null
     },
     {
       "id": "tx-938ad4b00815",
@@ -24538,7 +24538,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "id": "tx-33ba1cb163a8",
@@ -24778,7 +24778,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2011-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "アージョ桜新町 / ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室"
     },
     {
       "id": "tx-9abc123d3d7d",
@@ -25018,7 +25018,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018-RC",
-      "estimated_building_name": "ザ・グランプルーヴ上馬"
+      "estimated_building_name": null
     },
     {
       "id": "tx-1b3e9b38db99",
@@ -25558,7 +25558,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "id": "tx-44c2ed3a9960",
@@ -25698,7 +25698,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "id": "tx-cd9d4b46471f",
@@ -25878,7 +25878,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "id": "tx-af4d4355ea5c",
@@ -25958,7 +25958,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2018-RC",
-      "estimated_building_name": "ザ・グランプルーヴ上馬"
+      "estimated_building_name": null
     },
     {
       "id": "tx-08d35cc38871",
@@ -26098,7 +26098,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "id": "tx-144639cfaf05",
@@ -26358,7 +26358,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "id": "tx-868a89150172",
@@ -26698,7 +26698,7 @@
       "latitude": 35.6372239,
       "longitude": 139.6625859,
       "building_group_id": "131120120-2019-RC",
-      "estimated_building_name": "ザ・グランプルーヴ上馬"
+      "estimated_building_name": null
     },
     {
       "id": "tx-69173469a06f",
@@ -27038,7 +27038,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "id": "tx-9d2ecf8648b7",
@@ -27058,7 +27058,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "id": "tx-24619ecb0933",
@@ -31118,7 +31118,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-40344e8ba01e",
@@ -31258,7 +31258,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-cca83fe09669",
@@ -31598,7 +31598,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-28a4ed09c619",
@@ -31658,7 +31658,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-cdb9cc88344b",
@@ -31718,7 +31718,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-612a55dd5720",
@@ -31818,7 +31818,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-b30cd2b69cac",
@@ -31918,7 +31918,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-16ed98c0096a",
@@ -31938,7 +31938,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-f266a9e03ba2",
@@ -31958,7 +31958,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-caaa01b4e9e1",
@@ -32018,7 +32018,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-9c55a953f7e9",
@@ -32038,7 +32038,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-732ceecd205d",
@@ -32058,7 +32058,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-d36e06862f28",
@@ -32078,7 +32078,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-18c2a63f0273",
@@ -32178,7 +32178,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-03c22a95221c",
@@ -32238,7 +32238,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-e5d96eed00f6",
@@ -32378,7 +32378,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-3713889a47e6",
@@ -32398,7 +32398,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-ff57d3746134",
@@ -32418,7 +32418,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-908e051d8b54",
@@ -33738,7 +33738,7 @@
       "latitude": 35.746647,
       "longitude": 139.695736,
       "building_group_id": "131190140-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大山パークフロント(Brillia大山Par…"
     },
     {
       "id": "tx-b6c1752e56be",
@@ -33778,7 +33778,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020-RC",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-78be52d455dd",
@@ -33818,7 +33818,7 @@
       "latitude": 35.7775424,
       "longitude": 139.6327785,
       "building_group_id": "131190370-2008-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ成増マークレジデンス"
     },
     {
       "id": "tx-7d87cd98a11a",
@@ -33838,7 +33838,7 @@
       "latitude": 35.746647,
       "longitude": 139.695736,
       "building_group_id": "131190140-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大山パークフロント(Brillia大山Par…"
     },
     {
       "id": "tx-4ce0a8f84d9a",
@@ -33858,7 +33858,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020-RC",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ee09466b9e90",
@@ -33898,7 +33898,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020-RC",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5ae85d3f2847",
@@ -33998,7 +33998,7 @@
       "latitude": 35.7775424,
       "longitude": 139.6327785,
       "building_group_id": "131190370-2008-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ成増マークレジデンス"
     },
     {
       "id": "tx-f1a322b6b7ec",
@@ -34018,7 +34018,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020-RC",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c8775a1b4a74",
@@ -34038,7 +34038,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020-RC",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-bef7e456fea4",
@@ -34078,7 +34078,7 @@
       "latitude": 35.7567663,
       "longitude": 139.7162427,
       "building_group_id": "131190160-2020-RC",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4c79073d688b",
@@ -34238,7 +34238,7 @@
       "latitude": 35.746647,
       "longitude": 139.695736,
       "building_group_id": "131190140-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大山パークフロント(Brillia大山Par…"
     },
     {
       "id": "tx-f090ed5a254e",
@@ -35078,7 +35078,7 @@
       "latitude": 35.7260236,
       "longitude": 139.883879,
       "building_group_id": "131230450-2015-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "アルファグランデ小岩スカイファースト"
     },
     {
       "id": "tx-a49a877235f6",
@@ -35118,7 +35118,7 @@
       "latitude": 35.7260236,
       "longitude": 139.883879,
       "building_group_id": "131230450-2015-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "アルファグランデ小岩スカイファースト"
     },
     {
       "id": "tx-58e5f9f3b440",
@@ -35178,7 +35178,7 @@
       "latitude": 35.7260236,
       "longitude": 139.883879,
       "building_group_id": "131230450-2015-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "アルファグランデ小岩スカイファースト"
     },
     {
       "id": "tx-0eabb62acc48",
@@ -35370,7 +35370,7 @@
         "2021Q3"
       ],
       "latest_period": "2021Q3",
-      "estimated_building_name": "アスコットパーク日本橋浜町公園"
+      "estimated_building_name": null
     },
     {
       "group_id": "131020250-2010-RC",
@@ -38581,9 +38581,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6974192,
-      "longitude": 139.784685,
+      "estimated_walk_min": 8,
+      "latitude": 35.697411,
+      "longitude": 139.7862521,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -39148,7 +39148,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "浅草タワー / イニシアイオ浅草"
+      "estimated_building_name": "浅草タワー"
     },
     {
       "group_id": "131060210-2015-RC",
@@ -39966,7 +39966,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明"
+      "estimated_building_name": "シティタワー有明"
     },
     {
       "group_id": "131080020-2009-RC",
@@ -39993,7 +39993,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "シティタワー有明 / シティータワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ…"
+      "estimated_building_name": "シティタワー有明 / ブリリア有明スカイタワー Ｂｒｉｌｌｉａ有明ＳｋｙＴ… / Brillia 有明 Sky Tower(ブリリア有…"
     },
     {
       "group_id": "131080020-2010-RC",
@@ -43587,7 +43587,7 @@
         "2024Q4"
       ],
       "latest_period": "2024Q4",
-      "estimated_building_name": "ザ・グランプルーヴ上馬"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120120-2019-RC",
@@ -43610,7 +43610,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ザ・グランプルーヴ上馬"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120130-2015-RC",
@@ -44562,7 +44562,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町"
+      "estimated_building_name": "アージョ桜新町"
     },
     {
       "group_id": "131120460-2011-RC",
@@ -44585,7 +44585,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "ザ・パークハウス弦巻 / アージョ桜新町 / ザ・パークハウス弦巻104号室"
+      "estimated_building_name": "アージョ桜新町 / ザ・パークハウス弦巻 / ザ・パークハウス弦巻104号室"
     },
     {
       "group_id": "131120460-2012-RC",
@@ -47220,7 +47220,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ブリリアシティ西早稲田 / Ｂｒｉｌｌｉａ Ｃｉｔｙ西早稲田 / ブリリアシティ西早稲田(Brillia City 西…"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田（Ｂｒｉｌｌｉａ Ｃｉｔｙ 西… / ブリリアシティ西早稲田"
     },
     {
       "group_id": "131160140-2012-RC",
@@ -48205,7 +48205,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "ブリリア大山パークフロント(Brillia大山Par…"
     },
     {
       "group_id": "131190160-2008-RC",
@@ -48301,7 +48301,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "アトラス加賀"
+      "estimated_building_name": null
     },
     {
       "group_id": "131190190-2024-RC",
@@ -48372,7 +48372,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "パークホームズ成増マークレジデンス"
     },
     {
       "group_id": "131190430-2007-RC",
@@ -49078,7 +49078,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": null
+      "estimated_building_name": "アルファグランデ小岩スカイファースト"
     },
     {
       "group_id": "131230450-2022-RC",
@@ -49109,7 +49109,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-01T17:18:49",
+    "updated_at": "2026-05-02T01:27:13",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
