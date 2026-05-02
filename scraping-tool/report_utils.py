@@ -40,6 +40,19 @@ _DEVELOPER_PREFIXES = (
     "三菱地所レジデンス", "三菱地所", "三菱",
 )
 
+_SUB_BUILDING_SUFFIXES = (
+    "ノースタワー", "サウスタワー", "イーストタワー", "ウエストタワー", "ウェストタワー",
+    "セントラルタワー", "ミッドタワー", "スカイタワー",
+    "サンライズタワー", "サンセットタワー",
+    "エアリーコート", "フォレストコート", "ガーデンコート", "ブリーズコート",
+    "サウスコート", "ノースコート", "フロントコート",
+    "イーストウイング", "ウエストウイング", "イーストウィング", "ウエストウィング",
+    "ノースゲート", "サウスゲート", "イーストゲート", "ウエストゲート", "ウェストゲート",
+    "キャナルステージ",
+    "グランスイート", "グランスタイル",
+    "スカイファースト", "スカイセカンド",
+)
+
 
 def normalize_listing_name(name: str) -> str:
     """同一判定用に物件名を正規化。iOS cleanListingName と同等の装飾除去を行い、
@@ -298,12 +311,27 @@ def listing_key(r: dict) -> tuple:
     )
 
 
+def normalize_building_name(name: str) -> str:
+    """building_key 用。normalize_listing_name に加えて大規模マンションの
+    サブビル名（タワー名・コート名・ウイング名等）を除去し、同一敷地内の
+    異なる棟を同一建物として扱う。"""
+    s = normalize_listing_name(name)
+    if not s:
+        return s
+    s = re.sub(r"\S{1,4}の棟$", "", s)
+    for suffix in _SUB_BUILDING_SUFFIXES:
+        if s.endswith(suffix) and len(s) > len(suffix) + 3:
+            s = s[:-len(suffix)]
+            break
+    return s
+
+
 def building_key(r: dict) -> tuple:
     """同一マンション（建物）の識別用キー。
     正規化した物件名と区名で判定する（inject_competing_count と同じ粒度）。
     新規物件が「まったく新しいマンション」か「既存マンションの別部屋」かを区別するために使う。"""
     return (
-        normalize_listing_name(r.get("name") or ""),
+        normalize_building_name(r.get("name") or ""),
         get_ward_from_address(r.get("address") or ""),
     )
 
