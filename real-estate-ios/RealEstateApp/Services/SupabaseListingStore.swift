@@ -30,6 +30,12 @@ final class SupabaseListingStore {
 
     // MARK: - Public
 
+    /// 次回の Supabase 同期を差分ではなく全件取得にする。
+    func clearSyncState() {
+        defaults.removeObject(forKey: lastSyncKeyChuko)
+        defaults.removeObject(forKey: lastSyncKeyShinchiku)
+    }
+
     /// Supabase から物件データを取得して SwiftData に同期する。
     /// 初回はフルフェッチ、2回目以降は差分同期。
     func refresh(modelContext: ModelContext) async throws -> (chukoNew: Int, shinchikuNew: Int) {
@@ -44,7 +50,14 @@ final class SupabaseListingStore {
 
     private func fetchAndSync(propertyType: String, modelContext: ModelContext) async throws -> Int {
         let syncKey = propertyType == "chuko" ? lastSyncKeyChuko : lastSyncKeyShinchiku
-        let lastSync = defaults.string(forKey: syncKey)
+        var lastSync = defaults.string(forKey: syncKey)
+
+        let descriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == propertyType })
+        let localCount = (try? modelContext.fetchCount(descriptor)) ?? 0
+        if localCount == 0 {
+            lastSync = nil
+            defaults.removeObject(forKey: syncKey)
+        }
 
         let dtos: [ListingDTO]
         if let lastSync = lastSync {
