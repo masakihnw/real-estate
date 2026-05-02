@@ -525,10 +525,19 @@ def enrich_rehouse_listings(listings: list[RehouseListing], session=None) -> lis
     cache = _load_detail_cache()
     enriched_count = 0
 
+    _JUNK_LABELS = {"ペット可", "角住戸", "LDK\n20畳以上", "スーパー\n徒歩5分以内",
+                    "小学校\n徒歩10分以内", "対面式\nキッチン", "みらい君",
+                    "買い替えをご検討の方はこちら", "マイページガイド男性",
+                    "リンクコピー", "LINEで送る"}
+
     for listing in listings:
         cached = cache.get(listing.url)
         if cached and not cached.get("floor_plan_images") and not cached.get("suumo_images"):
             cached = None
+        if cached and cached.get("suumo_images"):
+            labels = {img.get("label", "") for img in cached["suumo_images"]}
+            if labels & _JUNK_LABELS:
+                cached = None
         if cached:
             detail = cached
         else:
