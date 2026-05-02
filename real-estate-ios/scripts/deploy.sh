@@ -123,6 +123,11 @@ bump_build_number() {
         fail "xcodegen が見つかりません。brew install xcodegen でインストールしてください"
     fi
 
+    # ビルド番号をgitにコミットして、Apple側とのずれを防止
+    (cd "$PROJECT_DIR" && \
+        git add project.yml RealEstateApp.xcodeproj/project.pbxproj && \
+        git commit -m "Bump build number to $next" 2>/dev/null) || true
+
     ok "ビルド番号更新完了 (build $next)"
 }
 
