@@ -36,7 +36,7 @@ try:
 except Exception as e:
     logger.warning("Firestore 設定の読み込みに失敗（デフォルトを使用）: %s", e)
 
-from report_utils import listing_key, clean_listing_name, fuzzy_identity_match
+from report_utils import listing_key, clean_listing_name, fuzzy_identity_match, building_key
 
 
 def _collect_sources(group: list[dict]) -> list[str]:
@@ -107,7 +107,52 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
             merged.append(a)
         used.add(i)
 
-    return merged
+    # 3次判定: 同一建物内で面積・階・価格が一致する物件をマージ
+    building_groups: dict[tuple, list[int]] = {}
+    for i, r in enumerate(merged):
+        bk = building_key(r)
+        building_groups.setdefault(bk, []).append(i)
+
+    final = []
+    used3: set[int] = set()
+    for bk, indices in building_groups.items():
+        if len(indices) < 2:
+            for idx in indices:
+                if idx not in used3:
+                    final.append(merged[idx])
+                    used3.add(idx)
+            continue
+        sub: dict[tuple, list[int]] = {}
+        for idx in indices:
+            r = merged[idx]
+            sk = (r.get("area_m2"), r.get("floor_position"), r.get("price_man"))
+            if sk == (None, None, None):
+                if idx not in used3:
+                    final.append(merged[idx])
+                    used3.add(idx)
+                continue
+            sub.setdefault(sk, []).append(idx)
+        for sk, sub_indices in sub.items():
+            if sub_indices[0] in used3:
+                continue
+            representative = max(
+                (merged[idx] for idx in sub_indices),
+                key=lambda r: sum(1 for v in r.values() if v is not None),
+            )
+            for idx in sub_indices:
+                if merged[idx].get("url") != representative.get("url"):
+                    representative.setdefault("alt_sources", []).append(merged[idx].get("source", "unknown"))
+                    representative.setdefault("alt_urls", []).append(merged[idx]["url"])
+            representative["duplicate_count"] = sum(merged[idx].get("duplicate_count", 1) for idx in sub_indices)
+            final.append(representative)
+            for idx in sub_indices:
+                used3.add(idx)
+        for idx in indices:
+            if idx not in used3:
+                final.append(merged[idx])
+                used3.add(idx)
+
+    return final
 
 
 def _scrape_suumo_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
