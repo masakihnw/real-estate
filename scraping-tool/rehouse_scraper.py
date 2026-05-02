@@ -402,6 +402,8 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
         "repair_reserve_fund": None,
         "ownership": None,
         "total_units": None,
+        "floor_position": None,
+        "floor_total": None,
         "floor_plan_images": None,
         "suumo_images": None,
     }
@@ -434,6 +436,13 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
                 m = re.search(r"(\d+)\s*戸", td)
                 if m:
                     result["total_units"] = int(m.group(1))
+            elif "階数" in th or "階建" in th or "所在階" in th:
+                result["floor_position"] = parse_floor_position(td)
+                m = re.search(r"地上\s*(\d+)\s*階", td)
+                if m:
+                    result["floor_total"] = int(m.group(1))
+                else:
+                    result["floor_total"] = parse_floor_total(td)
 
     # dl/dt/dd パターンも試行
     for dt in soup.find_all("dt"):
@@ -458,6 +467,13 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
             m = re.search(r"(\d+)\s*戸", dd_text)
             if m:
                 result["total_units"] = int(m.group(1))
+        elif ("階数" in dt_text or "階建" in dt_text or "所在階" in dt_text) and not result.get("floor_position"):
+            result["floor_position"] = parse_floor_position(dd_text)
+            m = re.search(r"地上\s*(\d+)\s*階", dd_text)
+            if m:
+                result["floor_total"] = int(m.group(1))
+            else:
+                result["floor_total"] = parse_floor_total(dd_text)
 
     # 画像抽出
     floor_plan_images: list[str] = []
@@ -473,8 +489,7 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
             continue
         if src in seen_urls:
             continue
-        # リハウスの物件画像は通常 img.rehouse.co.jp or cdn を使用
-        if "rehouse" not in src and "cdn" not in src and not src.startswith("/"):
+        if not any(x in src for x in ("rehouse", "cdn", "miraie")) and not src.startswith("/"):
             continue
         if src.startswith("/"):
             src = BASE_URL + src
@@ -484,7 +499,7 @@ def parse_rehouse_detail_html(html: str, url: str = "") -> dict:
             floor_plan_images.append(src)
         elif alt and alt not in ("", "写真", "画像"):
             suumo_images.append({"url": src, "label": alt})
-        elif "/photo/" in src or "/image/" in src:
+        elif "/photo/" in src or "/image/" in src or "miraie" in src:
             suumo_images.append({"url": src, "label": alt or "外観"})
 
     if floor_plan_images:
@@ -506,8 +521,13 @@ def enrich_rehouse_listings(listings: list[RehouseListing], session=None) -> lis
     cache = _load_detail_cache()
     enriched_count = 0
 
+    _img_cache_cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+
     for listing in listings:
         cached = cache.get(listing.url)
+        if cached and not cached.get("floor_plan_images") and not cached.get("suumo_images"):
+            if cached.get("cached_at", "") < _img_cache_cutoff:
+                cached = None
         if cached:
             detail = cached
         else:
@@ -525,6 +545,10 @@ def enrich_rehouse_listings(listings: list[RehouseListing], session=None) -> lis
             listing.ownership = detail["ownership"]
         if detail.get("total_units") and not listing.total_units:
             listing.total_units = detail["total_units"]
+        if listing.floor_position is None and detail.get("floor_position") is not None:
+            listing.floor_position = detail["floor_position"]
+        if listing.floor_total is None and detail.get("floor_total") is not None:
+            listing.floor_total = detail["floor_total"]
         if detail.get("floor_plan_images"):
             listing.floor_plan_images = detail["floor_plan_images"]
         if detail.get("suumo_images"):

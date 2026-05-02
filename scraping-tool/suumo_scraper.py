@@ -522,6 +522,9 @@ def parse_suumo_detail_html(html: str) -> dict:
     - feature_tags (JavaScript gapSuumoPcForKr から取得)
     - floor_plan_images, suumo_images
     """
+    if "過去の掲載情報を元に作成しています" in html:
+        return {"delisted": True}
+
     soup = BeautifulSoup(html, "lxml")
     total_units: Optional[int] = None
     floor_position: Optional[int] = None
@@ -799,6 +802,8 @@ def _load_detail_for_tower_judgement(
     if not isinstance(detail, dict):
         detail = {}
     detail_cache[r.url] = detail
+    if detail.get("delisted"):
+        return detail
     _merge_detail_cache_into_listing(r, detail)
     return detail
 
@@ -841,6 +846,9 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
             if detail_session is None:
                 detail_session = create_session()
             detail = _load_detail_for_tower_judgement(r, detail_session, detail_cache)
+            if detail.get("delisted"):
+                logger.info("SUUMO: 掲載終了を検知 — %s (%s)", r.name, r.url)
+                continue
             if total_units is None:
                 total_units = detail.get("total_units")
             is_tower = (r.floor_total is not None and r.floor_total >= 20) or _is_tower_name(r.name)
