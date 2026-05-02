@@ -202,6 +202,8 @@ def _collect_urls(listings: list[dict]) -> dict[str, str]:
 
     Returns: {original_url: storage_dir}
     """
+    from rehouse_scraper import _REHOUSE_JUNK_LABELS
+
     urls: dict[str, str] = {}
     for listing in listings:
         if not isinstance(listing, dict):
@@ -211,6 +213,8 @@ def _collect_urls(listings: list[dict]) -> dict[str, str]:
                 urls[url] = "floor_plans"
         for img in listing.get("suumo_images") or []:
             if isinstance(img, dict) and isinstance(img.get("url"), str):
+                if img.get("label", "") in _REHOUSE_JUNK_LABELS:
+                    continue
                 url = img["url"]
                 if url and url not in urls:
                     urls[url] = "property_images"
@@ -293,6 +297,8 @@ def _parallel_upload(
 
 def _apply_urls(listings: list[dict], manifest: dict[str, str]) -> None:
     """manifest のマッピングを使って listings 内の画像 URL を Firebase Storage URL に置換。"""
+    from rehouse_scraper import _REHOUSE_JUNK_LABELS
+
     for listing in listings:
         if not isinstance(listing, dict):
             continue
@@ -311,6 +317,8 @@ def _apply_urls(listings: list[dict], manifest: dict[str, str]) -> None:
             new_suumo: list[dict[str, str]] = []
             for img in suumo:
                 if not isinstance(img, dict) or "url" not in img:
+                    continue
+                if img.get("label", "") in _REHOUSE_JUNK_LABELS:
                     continue
                 orig = img["url"]
                 new_url = (

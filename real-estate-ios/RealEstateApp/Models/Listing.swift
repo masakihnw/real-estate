@@ -494,7 +494,7 @@ final class Listing: @unchecked Sendable {
                 .replacingOccurrences(of: #"\s+"#, with: "", options: .regularExpression),
             (layout ?? "").trimmingCharacters(in: .whitespaces),
             areaM2.map { "\($0)" } ?? "",
-            (address ?? "").trimmingCharacters(in: .whitespaces),
+            Self.normalizeAddressForIdentityKey(address ?? ""),
             builtYear.map { "\($0)" } ?? "",
             Self.extractStationName(from: stationLine ?? "")
         ].joined(separator: "|")
@@ -607,6 +607,25 @@ final class Listing: @unchecked Sendable {
         // 最初の数字ブロックの後のセパレータ（-／ー／－）以降を除去
         s = s.replacingOccurrences(
             of: #"(\d+)\s*[ー－\-/／].*$"#,
+            with: "$1",
+            options: .regularExpression
+        )
+        return s
+    }
+
+    /// identity_key 用住所正規化。Python _normalize_address_for_key と同等。
+    /// 東京都prefix除去 + 番地以下除去 + 丁目suffix除去。
+    static func normalizeAddressForIdentityKey(_ addr: String) -> String {
+        var s = addr.precomposedStringWithCompatibilityMapping
+            .trimmingCharacters(in: .whitespaces)
+        if s.hasPrefix("東京都") { s = String(s.dropFirst(3)) }
+        s = s.replacingOccurrences(
+            of: #"(\d+)\s*[ー－\-/／].*$"#,
+            with: "$1",
+            options: .regularExpression
+        )
+        s = s.replacingOccurrences(
+            of: #"(\d+)丁目$"#,
             with: "$1",
             options: .regularExpression
         )
