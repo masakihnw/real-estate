@@ -27,6 +27,40 @@ KEYS = (
 )
 
 
+def merge_detail_cache(listings: list, cache: dict) -> tuple[list, int, int]:
+    """SUUMO 詳細キャッシュを listings に反映し、掲載終了行は除外する。"""
+    merged = 0
+    removed = 0
+    output = []
+
+    for r in listings:
+        if not isinstance(r, dict) or r.get("source") != "suumo":
+            output.append(r)
+            continue
+        url = r.get("url")
+        if not url or url not in cache:
+            output.append(r)
+            continue
+        entry = cache[url]
+        if isinstance(entry, int):
+            entry = {"total_units": entry}
+        if isinstance(entry, dict) and entry.get("delisted"):
+            removed += 1
+            continue
+        if not isinstance(entry, dict):
+            output.append(r)
+            continue
+        for key in KEYS:
+            if key not in entry or entry[key] is None:
+                continue
+            if r.get(key) is None or (key in r and r[key] is None):
+                r[key] = entry[key]
+                merged += 1
+        output.append(r)
+
+    return output, merged, removed
+
+
 def main() -> None:
     if len(sys.argv) < 2:
         logger.info("usage: merge_detail_cache.py <listings.json>")
@@ -50,29 +84,14 @@ def main() -> None:
     with open(CACHE_PATH, "r", encoding="utf-8") as f:
         cache = json.load(f)
 
-    merged = 0
-    for r in listings:
-        if not isinstance(r, dict) or r.get("source") != "suumo":
-            continue
-        url = r.get("url")
-        if not url or url not in cache:
-            continue
-        entry = cache[url]
-        if isinstance(entry, int):
-            entry = {"total_units": entry}
-        for key in KEYS:
-            if key not in entry or entry[key] is None:
-                continue
-            if r.get(key) is None or (key in r and r[key] is None):
-                r[key] = entry[key]
-                merged += 1
+    listings, merged, removed = merge_detail_cache(listings, cache)
 
     # 原子的書き込み
     tmp_path = json_path.with_suffix(".json.tmp")
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(json_path)
-    logger.info(f"詳細キャッシュをマージしました: {json_path}（{merged}件のフィールドを補完）")
+    logger.info(f"詳細キャッシュをマージしました: {json_path}（{merged}件のフィールドを補完, 掲載終了{removed}件を除外）")
 
 
 if __name__ == "__main__":

@@ -58,6 +58,10 @@ from scraper_common import (
 from report_utils import clean_listing_name
 
 BASE_URL = "https://suumo.jp"
+DELISTED_DETAIL_MARKERS = (
+    "過去の掲載情報を元に作成しています",
+    "過去の掲載情報をもとに作成しています",
+)
 
 # サーバーサイドフィルタの追加パラメータ（空=制限なし）
 # cn: 築年数（"9030"=30年以内, "9020"=20年以内 等）
@@ -522,7 +526,7 @@ def parse_suumo_detail_html(html: str) -> dict:
     - feature_tags (JavaScript gapSuumoPcForKr から取得)
     - floor_plan_images, suumo_images
     """
-    if "過去の掲載情報を元に作成しています" in html:
+    if any(marker in html for marker in DELISTED_DETAIL_MARKERS):
         return {"delisted": True}
 
     soup = BeautifulSoup(html, "lxml")
@@ -834,6 +838,9 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
         cache_val = units_cache.get(r.url)
         total_units = r.total_units
         if isinstance(cache_val, dict):
+            if cache_val.get("delisted"):
+                logger.info("SUUMO: 掲載終了キャッシュにより除外 — %s (%s)", r.name, r.url)
+                continue
             _merge_detail_cache_into_listing(r, cache_val)
             if total_units is None:
                 total_units = cache_val.get("total_units")

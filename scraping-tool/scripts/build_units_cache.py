@@ -39,7 +39,7 @@ MANIFEST_PATH = CACHE_DIR / "manifest.json"
 ETAG_PATH = CACHE_DIR / "etags.json"
 BUILDING_UNITS_PATH = ROOT / "data" / "building_units.json"
 
-STALE_DAYS = 7  # この日数以上キャッシュされた HTML を再検証対象にする
+STALE_DAYS = 0  # 掲載終了を即日検知するため、キャッシュ済み HTML も毎回条件付き再検証する
 
 
 def _url_to_hash(url: str) -> str:
@@ -175,6 +175,9 @@ def fetch_detail(
 
 def _detail_to_cache_entry(parsed: dict) -> dict:
     """parse_suumo_detail_html の戻り値を building_units.json 用のエントリに変換。None は含めない。"""
+    if parsed.get("delisted"):
+        return {"delisted": True}
+
     entry = {}
     _SCALAR_KEYS = (
         "total_units", "floor_position", "floor_total", "floor_structure",
