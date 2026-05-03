@@ -45,7 +45,7 @@ echo "--- キャッシュマージ ---" >&2
 # 各ジョブが更新した可能性のあるキャッシュをマージ
 for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_manifest.json station_cache.json reverse_geocode_cache.json building_units.json mansion_review_cache.json; do
     UPDATES=""
-    for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-shinchiku; do
+    for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude enriched-shinchiku; do
         if [ -f "${job_dir}/data/${cache_file}" ]; then
             UPDATES="${UPDATES} ${job_dir}/data/${cache_file}"
         fi
@@ -65,7 +65,7 @@ echo "--- 成果物配置 ---" >&2
 
 # 3ジョブの enriched 成果物をフィールドレベルマージ
 CHUKO_SOURCES=""
-for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion; do
+for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude; do
     for candidate in "${job_dir}/latest.json" "${job_dir}/results/latest.json"; do
         if [ -f "$candidate" ]; then
             CHUKO_SOURCES="${CHUKO_SOURCES} $candidate"
@@ -174,6 +174,17 @@ echo "--- 価格変動・掲載日数・競合・投資スコア注入 ---" >&2
 
 python3 scripts/finalize_helpers.py inject-investment --output-dir "${OUTPUT_DIR}" \
     || echo "投資スコア注入失敗（続行）" >&2
+
+# ──────────────────────────── Claude 投資サマリー生成 ────────────────────────────
+
+if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+    echo "--- Claude 投資サマリー生成 ---" >&2
+    _t=$(date +%s)
+    python3 claude_investment_summarizer.py \
+        --input "${OUTPUT_DIR}/latest.json" \
+        --output "${OUTPUT_DIR}/latest.json" || echo "Claude サマリー生成失敗（続行）" >&2
+    echo "[TIMING] claude_investment_summary: $(( ($(date +%s) - _t) ))s" >&2
+fi
 
 # ──────────────────────────── 供給トレンド生成 ────────────────────────────
 
@@ -302,7 +313,7 @@ for f in "${REPORT_DIR}"/report_*.md; do
 done
 
 # enriched-* ワーキングディレクトリを削除
-rm -rf enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-shinchiku transactions scrape-results
+rm -rf enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude enriched-shinchiku transactions scrape-results
 
 # ──────────────────────────── データ品質検証 ────────────────────────────
 

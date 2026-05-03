@@ -230,6 +230,42 @@ if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "mansion" ]; then
 
 fi
 
+# ── claude トラック ──
+if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "claude" ]; then
+
+    if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+        # Track CL1: claude_dedup + claude_text_enricher
+        cp "$INPUT" "$WORK_DIR/track_cl.json"
+        (
+            _t=$(date +%s)
+            python3 claude_dedup.py \
+                --input "$WORK_DIR/track_cl.json" \
+                --output "$WORK_DIR/track_cl.json" || true
+            python3 claude_text_enricher.py \
+                --input "$WORK_DIR/track_cl.json" \
+                --output "$WORK_DIR/track_cl.json" || true
+            echo "[TIMING] claude_dedup+text: $(( ($(date +%s) - _t) ))s" >&2
+        ) &
+        PIDS="$PIDS $!"
+        ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_cl.json"
+
+        # Track CL2: claude_image_analyzer (独立、画像処理は重いため分離)
+        cp "$INPUT" "$WORK_DIR/track_ci.json"
+        (
+            _t=$(date +%s)
+            python3 claude_image_analyzer.py \
+                --input "$WORK_DIR/track_ci.json" \
+                --output "$WORK_DIR/track_ci.json" || true
+            echo "[TIMING] claude_image: $(( ($(date +%s) - _t) ))s" >&2
+        ) &
+        PIDS="$PIDS $!"
+        ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_ci.json"
+    else
+        echo "claude: ANTHROPIC_API_KEY 未設定（スキップ）" >&2
+    fi
+
+fi
+
 echo "enricher 起動完了 (PIDs:$PIDS)" >&2
 
 # 全プロセス完了待ち (各プロセスの exit code は無視)
