@@ -2125,9 +2125,30 @@ final class Listing: @unchecked Sendable {
         }
         if hasCommuteInfo {
             let ci = parsedCommuteInfo
+            let ciV2 = parsedCommuteInfoV2
             var times: [Int] = []
-            if let pg = ci.playground { times.append(pg.minutes) }
-            if let m3 = ci.m3career { times.append(m3.minutes) }
+            var parts: [String] = []
+            // gmaps 優先、v2 フォールバック
+            if let pg = ci.playground, pg.isGmaps {
+                times.append(pg.minutes)
+                parts.append("Playground \(pg.minutes)分")
+            } else if let pgV2 = ciV2?.offices.playground {
+                times.append(pgV2.representativeMinutes)
+                parts.append("Playground \(pgV2.representativeMinutes)分")
+            } else if let pg = ci.playground {
+                times.append(pg.minutes)
+                parts.append("Playground \(pg.minutes)分")
+            }
+            if let m3 = ci.m3career, m3.isGmaps {
+                times.append(m3.minutes)
+                parts.append("M3Career \(m3.minutes)分")
+            } else if let m3V2 = ciV2?.offices.m3career {
+                times.append(m3V2.representativeMinutes)
+                parts.append("M3Career \(m3V2.representativeMinutes)分")
+            } else if let m3 = ci.m3career {
+                times.append(m3.minutes)
+                parts.append("M3Career \(m3.minutes)分")
+            }
             if !times.isEmpty {
                 let avg = Double(times.reduce(0, +)) / Double(times.count)
                 let s: Int
@@ -2137,10 +2158,6 @@ final class Listing: @unchecked Sendable {
                 case ...45: s = 55
                 default: s = 35
                 }
-                let parts = [
-                    ci.playground.map { "Playground \($0.minutes)分" },
-                    ci.m3career.map { "M3Career \($0.minutes)分" },
-                ].compactMap { $0 }
                 components.append(.init(label: "通勤利便性", icon: "tram", score: s, weight: 2,
                                         detail: parts.joined(separator: " / ")))
             }
