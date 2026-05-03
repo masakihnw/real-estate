@@ -320,9 +320,10 @@ def build_office_estimate(
             walk_minutes = math.ceil(candidate.distance_m * detour_factor / walk_speed_m_per_min)
         else:
             continue
-        representative = walk_minutes + master.med_minutes + office.last_walk_minutes + buffer_min
-        range_min = walk_minutes + master.min_minutes + office.last_walk_minutes + buffer_min
-        range_max = walk_minutes + master.max_minutes + office.last_walk_minutes + buffer_min
+        # station master の値は駅→オフィスの door-to-door 時間（最終徒歩を含む）
+        representative = walk_minutes + master.med_minutes + buffer_min
+        range_min = walk_minutes + master.min_minutes + buffer_min
+        range_max = walk_minutes + master.max_minutes + buffer_min
 
         selected_station = {
             "station_id": station.station_id,
@@ -339,7 +340,6 @@ def build_office_estimate(
             "components": {
                 "walk_origin_to_station": walk_minutes,
                 "station_to_office_master": master.med_minutes,
-                "office_last_walk": office.last_walk_minutes,
                 "buffer": buffer_min,
             },
             "quality": {
@@ -486,7 +486,7 @@ def main() -> None:
     parser.add_argument("--radius-m", type=int, default=2000)
     parser.add_argument("--walk-speed-m-per-min", type=float, default=80.0)
     parser.add_argument("--detour-factor", type=float, default=1.3)
-    parser.add_argument("--buffer-min", type=int, default=4)
+    parser.add_argument("--buffer-min", type=int, default=2)
     parser.add_argument("--ttl-days", type=int, default=14)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()

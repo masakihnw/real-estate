@@ -2218,15 +2218,19 @@ final class Listing: @unchecked Sendable {
         return (try? CommuteData.decoder.decode(CommuteData.self, from: data)) ?? CommuteData()
     }
 
-    /// 通勤時間データがあるか
+    /// 通勤時間データがあるか（gmaps 優先）
     var hasCommuteInfo: Bool {
-        if parsedCommuteInfoV2?.hasAnyOffice == true { return true }
         let info = parsedCommuteInfo
-        return info.playground != nil || info.m3career != nil
+        if info.playground != nil || info.m3career != nil { return true }
+        if parsedCommuteInfoV2?.hasAnyOffice == true { return true }
+        return false
     }
 
-    /// 一覧表示用: Playground 通勤時間
+    /// 一覧表示用: Playground 通勤時間（gmaps 優先）
     var commutePlaygroundDisplay: String? {
+        if let pg = parsedCommuteInfo.playground, pg.isGmaps {
+            return "\(pg.minutes)分"
+        }
         if let pg = parsedCommuteInfoV2?.offices.playground {
             return "\(pg.representativeMinutes)分"
         }
@@ -2234,8 +2238,11 @@ final class Listing: @unchecked Sendable {
         return "\(pg.minutes)分"
     }
 
-    /// 一覧表示用: M3Career 通勤時間
+    /// 一覧表示用: M3Career 通勤時間（gmaps 優先）
     var commuteM3CareerDisplay: String? {
+        if let m3 = parsedCommuteInfo.m3career, m3.isGmaps {
+            return "\(m3.minutes)分"
+        }
         if let m3 = parsedCommuteInfoV2?.offices.m3career {
             return "\(m3.representativeMinutes)分"
         }

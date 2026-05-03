@@ -1755,8 +1755,25 @@ struct ListingDetailView: View {
                 .fontWeight(.bold)
                 .foregroundStyle(Color.accentColor)
 
-            // Playground
-            if let pgV2 = commuteV2?.offices.playground {
+            // Playground（gmaps 優先）
+            if let pg = commute.playground, pg.isGmaps {
+                Button {
+                    CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
+                } label: {
+                    commuteDestinationCard(
+                        name: "Playground株式会社",
+                        minutes: pg.minutes,
+                        summary: pg.summary,
+                        secondaryLine: nil,
+                        transfers: pg.transfers,
+                        qualityLabel: nil,
+                        color: DesignSystem.commutePGColor,
+                        logoImage: "logo-playground"
+                    )
+                }
+                .buttonStyle(CommuteCardButtonStyle())
+                .accessibilityLabel("Playground株式会社への通勤経路を Google Maps で開く")
+            } else if let pgV2 = commuteV2?.offices.playground {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
                 } label: {
@@ -1792,8 +1809,25 @@ struct ListingDetailView: View {
                 .accessibilityLabel("Playground株式会社への通勤経路を Google Maps で開く")
             }
 
-            // エムスリーキャリア
-            if let m3V2 = commuteV2?.offices.m3career {
+            // エムスリーキャリア（gmaps 優先）
+            if let m3 = commute.m3career, m3.isGmaps {
+                Button {
+                    CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
+                } label: {
+                    commuteDestinationCard(
+                        name: "エムスリーキャリア株式会社",
+                        minutes: m3.minutes,
+                        summary: m3.summary,
+                        secondaryLine: nil,
+                        transfers: m3.transfers,
+                        qualityLabel: nil,
+                        color: DesignSystem.commuteM3Color,
+                        logoImage: "logo-m3career"
+                    )
+                }
+                .buttonStyle(CommuteCardButtonStyle())
+                .accessibilityLabel("エムスリーキャリアへの通勤経路を Google Maps で開く")
+            } else if let m3V2 = commuteV2?.offices.m3career {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
                 } label: {
@@ -1868,12 +1902,12 @@ struct ListingDetailView: View {
 
             // 注釈（データソースに応じて表示を切替）
             VStack(alignment: .leading, spacing: 2) {
-                if commuteV2?.hasAnyOffice == true {
-                    Text("※ Station Master に基づく平日朝の代表値です")
-                    Text("※ 物件→駅徒歩 + 駅マスタ + オフィス徒歩 + バッファで算出しています")
-                } else if commute.hasAnyGmapsData {
+                if commute.hasAnyGmapsData {
                     Text("※ Google Maps の経路検索に基づく自動計算です")
                     Text("※ 平日朝 9:00 到着での最適経路")
+                } else if commuteV2?.hasAnyOffice == true {
+                    Text("※ Station Master に基づく平日朝の代表値です")
+                    Text("※ 物件→駅徒歩 + 駅マスタ中央値で算出しています")
                 } else {
                     Text("※ Apple Maps の公共交通機関経路に基づく参考値です")
                     Text("※ Google Maps の表示と異なる場合があります")
