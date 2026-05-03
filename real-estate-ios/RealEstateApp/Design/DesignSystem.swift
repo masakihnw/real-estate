@@ -40,6 +40,53 @@ enum DesignSystem {
     static let commutePGColor = Color(red: 0.0, green: 0.48, blue: 1.0)
     /// 通勤バッジ: M3Career 社カラー
     static let commuteM3Color = Color(red: 0.55, green: 0.24, blue: 0.78)
+
+    // MARK: - AI Accent (Claude生成コンテンツ用)
+
+    static let aiAccent = Color(red: 0.345, green: 0.337, blue: 0.839)
+    static let aiAccentTint = Color(red: 0.345, green: 0.337, blue: 0.839).opacity(0.10)
+    static let aiAccentBorder = Color(red: 0.345, green: 0.337, blue: 0.839).opacity(0.22)
+
+    // MARK: - Score Grades (S/A/B/C/D)
+
+    static let scoreS = Color(red: 1.0, green: 0.7, blue: 0.0)
+    static let scoreA = Color(red: 0.0, green: 0.478, blue: 1.0)
+    static let scoreB = Color(red: 0.204, green: 0.78, blue: 0.349)
+    static let scoreC = Color(red: 0.557, green: 0.557, blue: 0.576)
+    static let scoreD = Color.red
+
+    static func scoreColor(for grade: String) -> Color {
+        switch grade {
+        case "S": return scoreS
+        case "A": return scoreA
+        case "B": return scoreB
+        case "C": return scoreC
+        case "D": return scoreD
+        default: return scoreC
+        }
+    }
+
+    // MARK: - Source / Portal Colors
+
+    static let srcSuumo = Color(red: 0.0, green: 0.592, blue: 0.231)
+    static let srcHomes = Color(red: 0.949, green: 0.588, blue: 0.0)
+    static let srcRehouse = Color(red: 0.784, green: 0.063, blue: 0.18)
+    static let srcNomucom = Color(red: 0.0, green: 0.247, blue: 0.533)
+    static let srcAthome = Color(red: 0.9, green: 0.0, blue: 0.071)
+    static let srcStepon = Color(red: 0.122, green: 0.306, blue: 0.616)
+    static let srcLivable = Color(red: 0.0, green: 0.604, blue: 0.267)
+
+    // MARK: - Hazard Severity
+
+    static let hazardHigh = Color.red
+    static let hazardMid = Color.orange
+    static let hazardLow = Color.yellow
+
+    // MARK: - Monthly Payment Defaults
+
+    static let monthlyPaymentRate: Double = 1.2
+    static let monthlyPaymentYears: Int = 50
+    static let purchaseFeeMultiplier: Double = 1.065
 }
 
 // MARK: - カード背景色（プロンプト準拠）

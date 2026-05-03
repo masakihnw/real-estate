@@ -54,47 +54,38 @@ struct ListingDetailView: View {
                     // 掲載終了バナー
                     delistedBanner
 
-                    // ① 物件名（いいねボタンはナビバーに移動）
+                    // ① 物件画像ギャラリー（Claude分類 → 従来フォールバック）
+                    if !listing.parsedImageCategories.isEmpty {
+                        CategorizedImageGallery(listing: listing)
+                    } else if listing.hasFloorPlanImages || listing.hasSuumoImages {
+                        propertyImagesGallery
+                    }
+
+                    // ② タイトルブロック（物件名 + 住所 + 価格）
                     Text(listing.name)
                         .font(.title2)
                         .fontWeight(.semibold)
                         .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .id("summary")
 
-                    // ② 住所（Google Maps アイコンボタン）— ss_address 優先
                     addressSection
 
-                    // ②-b サマリーカード（主要指標を視覚的に集約）
-                    summaryCardSection
+                    // ③ スタットストリップ（3セル横並び）
+                    statStripSection
 
-                    Divider()
+                    // ④ 購入判断サマリー（AI投資サマリー）
+                    InvestmentSummaryCard(listing: listing)
 
-                    // ③④ 内見メモ（コメント・写真）— アイコンタップでオーバーレイ表示
-                    notesCompactButton
-
-                    Divider()
-                    inspectionChecklistSection
-
-                    // ④-b 物件画像ギャラリー（間取り図＋SUUMO物件写真を統合表示）
-                    if listing.hasFloorPlanImages || listing.hasSuumoImages {
-                        Divider()
-                        propertyImagesGallery
-                    }
-
-                    Divider()
-
-                    // ⑤ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
-                    propertyInfoSection
-                        .id("info")
-
-                    // ⑤-b 投資スコア・価格変動・掲載状況
+                    // ④-b 投資スコア・価格変動・掲載状況
                     if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
                         Divider()
                         investmentScoreSection
                     }
 
-                    // ⑥ 月額支払いシミュレーション（中古・新築共通）
+                    // ⑤ 月額支払いシミュレーション（中古・新築共通）
                     if let priceMan = listing.priceMan, priceMan > 0 {
+                        Divider()
                         MonthlyPaymentSimulationView(listing: listing)
                             .id("loan")
 
@@ -103,20 +94,44 @@ struct ListingDetailView: View {
                         financialToolsSection
                     }
 
+                    Divider()
+
+                    // ⑥ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
+                    propertyInfoSection
+                        .id("info")
+
+                    // ⑥-b AI抽出情報（リノベ・管理・設備）
+                    if let features = listing.parsedExtractedFeatures {
+                        ExtractedFeaturesSection(features: features)
+                    }
+
+                    // ⑥-c 他サイト価格比較
+                    AlternateSourcesSection(listing: listing)
+
+                    // ⑥-d 同一物件候補
+                    DedupCandidateCard(listing: listing)
+
+                    Divider()
+
                     // ⑦ 通勤時間
                     if listing.hasCommuteInfo {
-                        Divider()
                         commuteSection
                             .id("commute")
                     } else if listing.hasCoordinate {
-                        Divider()
                         commuteCalculateSection
                             .id("commute")
                     }
 
+                    // ⑧ ハザード情報
+                    if listing.hasHazardData {
+                        Divider()
+                        hazardSection
+                            .id("hazard")
+                    }
+
                     Divider()
 
-                    // ⑧ 住まいサーフィン評価
+                    // ⑨ 資産性（住まいサーフィン評価）
                     Group {
                         if listing.hasSumaiSurfinData {
                             sumaiSurfinSection
@@ -126,7 +141,7 @@ struct ListingDetailView: View {
                     }
                     .id("sumai")
 
-                    // ⑧-b 周辺相場（住まいサーフィン）
+                    // ⑨-b 周辺相場（住まいサーフィン）
                     if listing.hasSurroundingProperties {
                         Divider()
                         surroundingPropertiesSection
@@ -134,42 +149,35 @@ struct ListingDetailView: View {
                             .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
                     }
 
-                    // ⑨ 値上がり・含み益シミュレーション
+                    // ⑨-c 値上がり・含み益シミュレーション
                     if listing.hasSimulationData {
                         Divider()
                         SimulationSectionView(listing: listing)
                             .id("simulation")
                     }
 
-                    // ⑩ 成約相場との比較（不動産情報ライブラリ）
+                    // ⑨-d 成約相場との比較（不動産情報ライブラリ）
                     if listing.hasMarketData {
                         Divider()
                         MarketDataSectionView(listing: listing)
                             .id("market")
                     }
 
-                    // ⑩-b マンションレビュー
+                    // ⑨-e マンションレビュー
                     if listing.parsedMansionReviewData != nil {
                         Divider()
                         mansionReviewSection
                             .id("mansion-review")
                     }
 
-                    // ⑪ エリア人口動態（e-Stat）
+                    // ⑨-f エリア人口動態（e-Stat）
                     if listing.hasPopulationData {
                         Divider()
                         PopulationSectionView(listing: listing)
                             .id("population")
                     }
 
-                    // ⑫ ハザード情報（低ランクでもデータがあれば表示）
-                    if listing.hasHazardData {
-                        Divider()
-                        hazardSection
-                            .id("hazard")
-                    }
-
-                    // ⑫-b 類似物件
+                    // ⑨-g 類似物件
                     if !similarListings.isEmpty {
                         Divider()
                         similarListingsSection
@@ -182,13 +190,21 @@ struct ListingDetailView: View {
 
                     Divider()
 
-                    // ⑭ AI 相談セクション
+                    // ⑩ AI 相談セクション
                     AIConsultationSectionView(listing: listing)
                         .id("ai")
 
                     Divider()
 
-                    // ⑬ 外部サイトボタン or 掲載終了メッセージ
+                    // ⑪ 内見メモ（コメント・写真）
+                    notesCompactButton
+
+                    Divider()
+                    inspectionChecklistSection
+
+                    Divider()
+
+                    // ⑫ 外部サイトボタン or 掲載終了メッセージ
                     if listing.isDelisted {
                         delistedNotice
                     } else {
@@ -364,27 +380,19 @@ struct ListingDetailView: View {
     private var sectionNavBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                sectionChip("物件情報", id: "info")
+                sectionChip("サマリー", id: "summary")
+                sectionChip("情報", id: "info")
                 if listing.priceMan != nil && listing.priceMan! > 0 {
-                    sectionChip("ローン", id: "loan")
+                    sectionChip("月額", id: "loan")
                 }
                 if listing.hasCommuteInfo || listing.hasCoordinate {
                     sectionChip("通勤", id: "commute")
                 }
-                sectionChip("評価", id: "sumai")
-                if listing.hasSimulationData {
-                    sectionChip("シミュレーション", id: "simulation")
-                }
-                if listing.hasMarketData {
-                    sectionChip("相場", id: "market")
-                }
-                if listing.hasPopulationData {
-                    sectionChip("人口", id: "population")
-                }
                 if listing.hasHazardData {
                     sectionChip("ハザード", id: "hazard")
                 }
-                sectionChip("AI相談", id: "ai")
+                sectionChip("資産性", id: "sumai")
+                sectionChip("AI", id: "ai")
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 6)
@@ -430,39 +438,47 @@ struct ListingDetailView: View {
         }
     }
 
-    // MARK: - ②-b サマリーカード
+    // MARK: - スタットストリップ（3セル横並び）
 
     @ViewBuilder
-    private var summaryCardSection: some View {
-        let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-        LazyVGrid(columns: columns, spacing: 10) {
-            summaryItem(icon: "yensign.circle.fill", label: "価格", value: listing.priceDisplayCompact, color: .blue)
-            summaryItem(icon: "ruler.fill", label: "面積", value: listing.areaM2 != nil ? String(format: "%.1f㎡", listing.areaM2!) : "—", color: .green)
-            summaryItem(icon: "figure.walk", label: "徒歩", value: listing.walkMin != nil ? "\(listing.walkMin!)分" : "—", color: .orange)
-            summaryItem(icon: "building.2.fill", label: "築年", value: builtYearShortDisplay, color: .purple)
-            summaryItem(icon: "square.grid.3x3.fill", label: "間取り", value: listing.layout ?? "—", color: .teal)
-            summaryItem(icon: "chart.bar.fill", label: "坪単価", value: listing.tsuboUnitPriceDisplay, color: .indigo)
-        }
-        .padding(12)
-        .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
-    }
+    private var statStripSection: some View {
+        HStack(spacing: 0) {
+            // Cell 1: Monthly payment
+            VStack(spacing: 2) {
+                Text("月々")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Text("約\(String(format: "%.1f", listing.estimatedMonthlyPayment ?? 0))万")
+                    .font(.system(.subheadline, design: .rounded).weight(.bold))
+            }
+            .frame(maxWidth: .infinity)
 
-    private func summaryItem(icon: String, label: String, value: String, color: Color) -> some View {
-        VStack(spacing: 4) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(color)
-            Text(label)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-            Text(value)
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+            Divider().frame(height: 30)
+
+            // Cell 2: Layout + Area
+            VStack(spacing: 2) {
+                Text("間取り・面積")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Text("\(listing.layout ?? "-") · \(String(format: "%.1f", listing.areaM2 ?? 0))㎡")
+                    .font(.system(.subheadline, design: .rounded).weight(.medium))
+            }
+            .frame(maxWidth: .infinity)
+
+            Divider().frame(height: 30)
+
+            // Cell 3: Walk + Age
+            VStack(spacing: 2) {
+                Text("徒歩・築年")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Text("\(listing.walkMin ?? 0)分 · \(builtYearShortDisplay)")
+                    .font(.system(.subheadline, design: .rounded).weight(.medium))
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
+        .padding(.vertical, 10)
+        .listingGlassBackground()
     }
 
     private var builtYearShortDisplay: String {
