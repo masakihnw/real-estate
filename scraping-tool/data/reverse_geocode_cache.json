@@ -526,5 +526,53 @@
 "quarter": "王子",
 "neighbourhood": "王子二丁目",
 "city_district": ""
+},
+"35.709788,139.719462": {
+"display_name": "西早稲田一丁目, 西早稲田, 新宿区, 東京都, 169-0051, 日本",
+"city": "新宿区",
+"suburb": "",
+"quarter": "西早稲田",
+"neighbourhood": "西早稲田一丁目",
+"city_district": ""
+},
+"35.641289,139.698383": {
+"display_name": "上目黒二丁目, 上目黒, 目黒区, 東京都, 153-0051, 日本",
+"city": "目黒区",
+"suburb": "",
+"quarter": "上目黒",
+"neighbourhood": "上目黒二丁目",
+"city_district": ""
+},
+"35.635501,139.687189": {
+"display_name": "五本木二丁目, 五本木, 目黒区, 東京都, 153-0053, 日本",
+"city": "目黒区",
+"suburb": "",
+"quarter": "五本木",
+"neighbourhood": "五本木二丁目",
+"city_district": ""
+},
+"35.642047,139.825480": {
+"display_name": "新木場二丁目, 新木場, 江東区, 東京都, 136-0082, 日本",
+"city": "江東区",
+"suburb": "新木場",
+"quarter": "",
+"neighbourhood": "新木場二丁目",
+"city_district": ""
+},
+"35.669416,139.806545": {
+"display_name": "永代通り, 木場五丁目, 木場, 江東区, 東京都, 135-0042, 日本",
+"city": "江東区",
+"suburb": "",
+"quarter": "木場",
+"neighbourhood": "木場五丁目",
+"city_district": ""
+},
+"35.715171,139.716434": {
+"display_name": "高田一丁目, 高田, 豊島区, 東京都, 171-0033, 日本",
+"city": "豊島区",
+"suburb": "",
+"quarter": "高田",
+"neighbourhood": "高田一丁目",
+"city_district": ""
 }
 }
