@@ -289,6 +289,69 @@ jobs:
           retention-days: 1
           if-no-files-found: warn
 
+  # ──────────────────────────── Job 1d: enrich-chuko-claude ────────────────────────────
+  enrich-chuko-claude:
+    needs: check
+    if: needs.check.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-scraping
+        with:
+          install-playwright: 'false'
+
+      - name: Download scrape results
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-results
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/results/
+
+      - name: Download cache files
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-caches
+          run-id: ${{ needs.check.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/data/
+        continue-on-error: true
+
+      - name: Prepare input
+        working-directory: scraping-tool
+        run: cp results/latest_raw.json results/latest.json
+
+      - name: Run enrichment (claude tracks)
+        working-directory: scraping-tool
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            chmod +x scripts/run_enrich.sh
+            ./scripts/run_enrich.sh --property-type chuko --tracks claude
+          else
+            echo "ANTHROPIC_API_KEY 未設定: スキップ"
+          fi
+
+      - name: Upload enriched results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: enriched-chuko-claude
+          path: |
+            scraping-tool/results/latest.json
+            scraping-tool/data/claude_cache.db
+          retention-days: 1
+          if-no-files-found: warn
+
   # ──────────────────────────── Job 2: enrich-shinchiku ────────────────────────────
   enrich-shinchiku:
     needs: check
@@ -444,7 +507,7 @@ jobs:
 
   # ──────────────────────────── Job 4: finalize ────────────────────────────
   finalize:
-    needs: [check, enrich-chuko-core, enrich-chuko-sumai, enrich-chuko-mansion, enrich-shinchiku, build-transaction-feed]
+    needs: [check, enrich-chuko-core, enrich-chuko-sumai, enrich-chuko-mansion, enrich-chuko-claude, enrich-shinchiku, build-transaction-feed]
     if: "!cancelled() && (needs.check.outputs.has_changes == 'true' || needs.check.outputs.is_slack_time == 'true')"
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -487,6 +550,13 @@ jobs:
         with:
           name: enriched-chuko-mansion
           path: scraping-tool/enriched-chuko-mansion/
+        continue-on-error: true
+
+      - name: Download enriched chuko claude
+        uses: actions/download-artifact@v4
+        with:
+          name: enriched-chuko-claude
+          path: scraping-tool/enriched-chuko-claude/
         continue-on-error: true
 
       - name: Download enriched shinchiku
@@ -537,6 +607,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           chmod +x scripts/run_finalize.sh
           ./scripts/run_finalize.sh \

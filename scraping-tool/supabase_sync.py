@@ -63,67 +63,100 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     if not seen_identity_keys:
         return summary
 
-    # 現在 DB にある active な物件 (このソース + property_type) を取得
-    existing_listings = {}
+    # 現在 DB にある物件 (このproperty_type) を全件取得（active/inactive 両方）
+    # inactive も取得しないとフォールバック検索で重複が発生する
+    all_db_listings: dict[str, tuple[int, bool]] = {}  # identity_key → (id, is_active)
+    existing_listings: dict[str, int] = {}  # active のみ: identity_key → id
     offset = 0
     while True:
         resp = (client.table("listings")
                 .select("id, identity_key, is_active")
                 .eq("property_type", property_type)
-                .eq("is_active", True)
                 .range(offset, offset + 999)
                 .execute())
         if not resp.data:
             break
         for row in resp.data:
-            existing_listings[row["identity_key"]] = row["id"]
+            ik = row["identity_key"]
+            all_db_listings[ik] = (row["id"], row["is_active"])
+            if row["is_active"]:
+                existing_listings[ik] = row["id"]
         if len(resp.data) < 1000:
             break
         offset += 1000
 
     existing_sources = {}
-    if existing_listings:
-        listing_ids = list(existing_listings.values())
-        for i in range(0, len(listing_ids), 100):
-            batch_ids = listing_ids[i:i + 100]
-            resp = (client.table("listing_sources")
-                    .select("id, listing_id, source, price_man, is_active")
-                    .eq("source", source)
-                    .in_("listing_id", batch_ids)
-                    .execute())
-            if resp.data:
-                for row in resp.data:
-                    existing_sources[row["listing_id"]] = row
+    all_listing_ids = [lid for lid, _ in all_db_listings.values()]
+    for i in range(0, len(all_listing_ids), 100):
+        batch_ids = all_listing_ids[i:i + 100]
+        resp = (client.table("listing_sources")
+                .select("id, listing_id, source, price_man, is_active")
+                .eq("source", source)
+                .in_("listing_id", batch_ids)
+                .execute())
+        if resp.data:
+            for row in resp.data:
+                existing_sources[row["listing_id"]] = row
 
-    # 旧キー(6要素)→新キー(7要素)のフォールバックマップ構築
+    # 重複削除済み ID を記録（同一物件の旧レコードを削除した際に再処理を防ぐ）
+    _deleted_ids: set[int] = set()
+
     def _resolve_identity_key(ik: str) -> str:
-        """新キーが既存DBに無い場合、旧キーや floor=None 版で既存を検索し、あれば更新する。"""
+        """新キーが既存DBに無い場合、旧キーや floor=None 版で既存を検索し、あれば更新する。
+        active/inactive 両方を検索し、重複レコードがあれば1つに統合する。"""
         if ik in existing_listings:
             return ik
+        # inactive でも完全一致があればそれを再利用（active に戻す）
+        if ik in all_db_listings:
+            lid, was_active = all_db_listings[ik]
+            if lid not in _deleted_ids:
+                existing_listings[ik] = lid
+                return ik
+
         parts = ik.split("|")
-        if len(parts) == 7:
-            # floor=None 版で検索
-            fallback = "|".join(parts[:6] + ["None"])
-            if fallback in existing_listings:
-                lid = existing_listings.pop(fallback)
-                client.table("listings").update({"identity_key": ik}).eq("id", lid).execute()
-                existing_listings[ik] = lid
-                return ik
-            # 旧6要素版で検索
-            legacy = "|".join(parts[:6])
-            if legacy in existing_listings:
-                lid = existing_listings.pop(legacy)
-                client.table("listings").update({"identity_key": ik}).eq("id", lid).execute()
-                existing_listings[ik] = lid
-                return ik
-            # prefix一致: 同じ6要素prefixで異なるfloor値を持つ旧行を検索
-            prefix = "|".join(parts[:6]) + "|"
-            for existing_ik in list(existing_listings.keys()):
-                if existing_ik.startswith(prefix) or existing_ik == legacy:
-                    lid = existing_listings.pop(existing_ik)
-                    client.table("listings").update({"identity_key": ik}).eq("id", lid).execute()
-                    existing_listings[ik] = lid
-                    return ik
+        if len(parts) != 7:
+            return ik
+
+        # フォールバック候補を収集（active/inactive 両方から）
+        candidates: list[tuple[str, int, bool]] = []  # (old_key, id, is_active)
+        fallback = "|".join(parts[:6] + ["None"])
+        legacy = "|".join(parts[:6])
+        prefix = "|".join(parts[:6]) + "|"
+
+        for db_ik, (lid, is_active) in list(all_db_listings.items()):
+            if lid in _deleted_ids:
+                continue
+            if db_ik == fallback or db_ik == legacy or (db_ik.startswith(prefix) and db_ik != ik):
+                candidates.append((db_ik, lid, is_active))
+
+        if not candidates:
+            return ik
+
+        # 最優先: active なレコードを再利用
+        # 複数ある場合は id が最も大きい（最新）ものを選択
+        candidates.sort(key=lambda c: (c[2], c[1]), reverse=True)
+        best_key, best_id, _ = candidates[0]
+
+        # best を新しい identity_key に更新
+        client.table("listings").update({"identity_key": ik}).eq("id", best_id).execute()
+        existing_listings.pop(best_key, None)
+        existing_listings[ik] = best_id
+        all_db_listings.pop(best_key, None)
+        all_db_listings[ik] = (best_id, True)
+
+        # 残りの重複レコードを削除
+        for old_key, old_id, _ in candidates[1:]:
+            if old_id == best_id:
+                continue
+            client.table("listing_sources").delete().eq("listing_id", old_id).execute()
+            client.table("enrichments").delete().eq("listing_id", old_id).execute()
+            client.table("price_history").delete().eq("listing_id", old_id).execute()
+            client.table("listing_events").delete().eq("listing_id", old_id).execute()
+            client.table("listings").delete().eq("id", old_id).execute()
+            _deleted_ids.add(old_id)
+            existing_listings.pop(old_key, None)
+            all_db_listings.pop(old_key, None)
+
         return ik
 
     # 物件を1件ずつ処理
@@ -301,6 +334,10 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
         "reinfolib_market_data", "mansion_review_data", "estat_population_data",
         "price_fairness_score", "resale_liquidity_score", "competing_listings_count",
         "listing_score", "floor_plan_images", "suumo_images",
+        "investment_summary", "highlight_badge", "best_thumbnail_url",
+        "extracted_features", "image_categories",
+        "dedup_confidence", "alt_sources", "dedup_candidates",
+        "key_strengths", "key_risks",
     ]
 
     count = 0
