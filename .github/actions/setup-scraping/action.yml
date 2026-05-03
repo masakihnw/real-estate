@@ -1,0 +1,36 @@
+name: Setup Scraping Environment
+description: Python + pip + optional Playwright のセットアップ
+
+inputs:
+  install-playwright:
+    description: 'Playwright Chromium をインストールするか'
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        cache-dependency-path: scraping-tool/requirements.txt
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: scraping-tool
+      run: pip install -r requirements.txt
+
+    - name: Cache Playwright browsers
+      if: inputs.install-playwright == 'true'
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-chromium-${{ runner.os }}
+
+    - name: Install Playwright browser
+      if: inputs.install-playwright == 'true'
+      shell: bash
+      working-directory: scraping-tool
+      run: |
+        python3 -c "import playwright" 2>/dev/null && playwright install chromium --with-deps || echo "playwright インストールスキップ"

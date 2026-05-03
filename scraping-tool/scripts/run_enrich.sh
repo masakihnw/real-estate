@@ -13,19 +13,21 @@ cd "$SCRIPT_DIR"
 # ──────────────────────────── 引数パース ────────────────────────────
 
 PROPERTY_TYPE=""
+TRACKS="all"
 while [[ $# -gt 0 ]]; do
     case $1 in
         --property-type) PROPERTY_TYPE="$2"; shift 2 ;;
+        --tracks) TRACKS="$2"; shift 2 ;;
         *) echo "不明な引数: $1" >&2; exit 1 ;;
     esac
 done
 
 if [ -z "$PROPERTY_TYPE" ]; then
-    echo "使い方: run_enrich.sh --property-type chuko|shinchiku" >&2
+    echo "使い方: run_enrich.sh --property-type chuko|shinchiku [--tracks core|sumai|mansion|all]" >&2
     exit 1
 fi
 
-echo "=== Enrich: ${PROPERTY_TYPE} ===" >&2
+echo "=== Enrich: ${PROPERTY_TYPE} (tracks: ${TRACKS}) ===" >&2
 echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
 
 # ──────────────────────────── ファイルパス設定 ────────────────────────────
@@ -78,136 +80,160 @@ _t=$(date +%s)
 python3 scripts/embed_geocode.py "$INPUT" || echo "embed_geocode 失敗（続行）" >&2
 echo "[TIMING] embed_geocode: $(( ($(date +%s) - _t) ))s" >&2
 
-# ──────────────────────────── Phase 2: 全 enricher 完全並列 ────────────────────────────
+# ──────────────────────────── Phase 2: enricher 実行 ────────────────────────────
 
-echo "--- Phase 2: 全 enricher 完全並列実行 ---" >&2
+echo "--- Phase 2: enricher 実行 (tracks: ${TRACKS}) ---" >&2
 _t_phase2=$(date +%s)
 
-# 各 enricher 用にファイルをコピー
-cp "$INPUT" "$WORK_DIR/track_uc.json"  # Track PREP: units_cache
-cp "$INPUT" "$WORK_DIR/track_ss.json"  # sumai_surfin
-cp "$INPUT" "$WORK_DIR/track_hz.json"  # geocode_cross + hazard
-cp "$INPUT" "$WORK_DIR/track_cm.json"  # commute
-cp "$INPUT" "$WORK_DIR/track_ri.json"  # reinfolib
-cp "$INPUT" "$WORK_DIR/track_es.json"  # estat
-cp "$INPUT" "$WORK_DIR/track_gm.json"  # commute_gmaps
-cp "$INPUT" "$WORK_DIR/track_mr.json"  # mansion_review
+PIDS=""
+ENRICHED_FILES=""
 
-# Track PREP: build_units_cache → merge_detail_cache
-(
-    _t=$(date +%s)
-    if [ "$PROPERTY_TYPE" = "chuko" ]; then
-        python3 scripts/build_units_cache.py "$WORK_DIR/track_uc.json" || true
-        python3 scripts/merge_detail_cache.py "$WORK_DIR/track_uc.json" || true
-    else
-        python3 shinchiku_detail_enricher.py \
-            --input "$WORK_DIR/track_uc.json" \
-            --output "$WORK_DIR/track_uc.json" || true
-    fi
-    echo "[TIMING] track_prep: $(( ($(date +%s) - _t) ))s" >&2
-) &
-PREP_PID=$!
+# ── core トラック ──
+if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "core" ]; then
 
-# Track A: sumai_surfin
-(
-    _t=$(date +%s)
-    python3 sumai_surfin_enricher.py \
-        --input "$WORK_DIR/track_ss.json" \
-        --output "$WORK_DIR/track_ss.json" \
-        --property-type "$PROPERTY_TYPE" $BROWSER_FLAG || true
-    echo "[TIMING] sumai_surfin: $(( ($(date +%s) - _t) ))s" >&2
-) &
-SS_PID=$!
+    # Track PREP: build_units_cache → merge_detail_cache
+    cp "$INPUT" "$WORK_DIR/track_uc.json"
+    (
+        _t=$(date +%s)
+        if [ "$PROPERTY_TYPE" = "chuko" ]; then
+            python3 scripts/build_units_cache.py "$WORK_DIR/track_uc.json" || true
+            python3 scripts/merge_detail_cache.py "$WORK_DIR/track_uc.json" || true
+        else
+            python3 shinchiku_detail_enricher.py \
+                --input "$WORK_DIR/track_uc.json" \
+                --output "$WORK_DIR/track_uc.json" || true
+        fi
+        echo "[TIMING] track_prep: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_uc.json"
 
-# Track B: geocode_cross_validator → hazard_enricher
-(
-    _t=$(date +%s)
-    python3 scripts/geocode_cross_validator.py "$WORK_DIR/track_hz.json" --fix || true
-    python3 hazard_enricher.py \
-        --input "$WORK_DIR/track_hz.json" \
-        --output "$WORK_DIR/track_hz.json" || true
-    echo "[TIMING] geocode_hazard: $(( ($(date +%s) - _t) ))s" >&2
-) &
-HZ_PID=$!
+    # Track B: geocode_cross_validator → hazard_enricher
+    cp "$INPUT" "$WORK_DIR/track_hz.json"
+    (
+        _t=$(date +%s)
+        python3 scripts/geocode_cross_validator.py "$WORK_DIR/track_hz.json" --fix || true
+        python3 hazard_enricher.py \
+            --input "$WORK_DIR/track_hz.json" \
+            --output "$WORK_DIR/track_hz.json" || true
+        echo "[TIMING] geocode_hazard: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_hz.json"
 
-# Track C: commute_enricher + commute_station_master_enricher
-(
-    _t=$(date +%s)
-    python3 commute_enricher.py \
-        --input "$WORK_DIR/track_cm.json" \
-        --output "$WORK_DIR/track_cm.json" || true
-    python3 commute_station_master_enricher.py \
-        --input "$WORK_DIR/track_cm.json" \
-        --output "$WORK_DIR/track_cm.json" \
-        --stations-csv ../configs/commute/stations.csv \
-        --station-master-csv ../data/commute/station_master_template.csv \
-        --offices-yaml ../configs/commute/offices.yaml || true
-    echo "[TIMING] commute: $(( ($(date +%s) - _t) ))s" >&2
-) &
-CM_PID=$!
+    # Track C: commute_enricher + commute_station_master_enricher
+    cp "$INPUT" "$WORK_DIR/track_cm.json"
+    (
+        _t=$(date +%s)
+        python3 commute_enricher.py \
+            --input "$WORK_DIR/track_cm.json" \
+            --output "$WORK_DIR/track_cm.json" || true
+        python3 commute_station_master_enricher.py \
+            --input "$WORK_DIR/track_cm.json" \
+            --output "$WORK_DIR/track_cm.json" \
+            --stations-csv ../configs/commute/stations.csv \
+            --station-master-csv ../data/commute/station_master_template.csv \
+            --offices-yaml ../configs/commute/offices.yaml || true
+        echo "[TIMING] commute: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_cm.json"
 
-# Track D: reinfolib_enricher
-(
-    _t=$(date +%s)
-    if [ -f "data/reinfolib_prices.json" ]; then
-        python3 reinfolib_enricher.py \
-            --input "$WORK_DIR/track_ri.json" \
-            --output "$WORK_DIR/track_ri.json" || true
-    else
-        echo "reinfolib: キャッシュなし（スキップ）" >&2
-    fi
-    echo "[TIMING] reinfolib: $(( ($(date +%s) - _t) ))s" >&2
-) &
-RI_PID=$!
+    # Track D: reinfolib_enricher
+    cp "$INPUT" "$WORK_DIR/track_ri.json"
+    (
+        _t=$(date +%s)
+        if [ -f "data/reinfolib_prices.json" ]; then
+            python3 reinfolib_enricher.py \
+                --input "$WORK_DIR/track_ri.json" \
+                --output "$WORK_DIR/track_ri.json" || true
+        else
+            echo "reinfolib: キャッシュなし（スキップ）" >&2
+        fi
+        echo "[TIMING] reinfolib: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_ri.json"
 
-# Track E: estat_enricher
-(
-    _t=$(date +%s)
-    if [ -f "data/estat_population.json" ]; then
-        python3 estat_enricher.py \
-            --input "$WORK_DIR/track_es.json" \
-            --output "$WORK_DIR/track_es.json" || true
-    else
-        echo "estat: キャッシュなし（スキップ）" >&2
-    fi
-    echo "[TIMING] estat: $(( ($(date +%s) - _t) ))s" >&2
-) &
-ES_PID=$!
+    # Track E: estat_enricher
+    cp "$INPUT" "$WORK_DIR/track_es.json"
+    (
+        _t=$(date +%s)
+        if [ -f "data/estat_population.json" ]; then
+            python3 estat_enricher.py \
+                --input "$WORK_DIR/track_es.json" \
+                --output "$WORK_DIR/track_es.json" || true
+        else
+            echo "estat: キャッシュなし（スキップ）" >&2
+        fi
+        echo "[TIMING] estat: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_es.json"
 
-# Track F: commute_gmaps_enricher (Google Maps door-to-door スクレイピング)
-(
-    _t=$(date +%s)
-    if [ -n "$BROWSER_FLAG" ]; then
-        python3 commute_gmaps_enricher.py \
-            --input "$WORK_DIR/track_gm.json" \
-            --output "$WORK_DIR/track_gm.json" \
-            --workers 2 || true
-    else
-        echo "commute_gmaps: Playwright 未検出（スキップ）" >&2
-    fi
-    echo "[TIMING] commute_gmaps: $(( ($(date +%s) - _t) ))s" >&2
-) &
-GM_PID=$!
+    # Track F: commute_gmaps_enricher
+    cp "$INPUT" "$WORK_DIR/track_gm.json"
+    (
+        _t=$(date +%s)
+        if [ -n "$BROWSER_FLAG" ]; then
+            python3 commute_gmaps_enricher.py \
+                --input "$WORK_DIR/track_gm.json" \
+                --output "$WORK_DIR/track_gm.json" \
+                --workers 2 || true
+        else
+            echo "commute_gmaps: Playwright 未検出（スキップ）" >&2
+        fi
+        echo "[TIMING] commute_gmaps: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_gm.json"
 
-# Track G: mansion_review_scraper
-(
-    _t=$(date +%s)
-    if [ "$PROPERTY_TYPE" = "chuko" ]; then
-        python3 mansion_review_scraper.py \
-            --input "$WORK_DIR/track_mr.json" \
-            --output "$WORK_DIR/track_mr.json" \
-            --max-time 40 || true
-    else
-        echo "mansion_review: 新築はスキップ" >&2
-    fi
-    echo "[TIMING] mansion_review: $(( ($(date +%s) - _t) ))s" >&2
-) &
-MR_PID=$!
+fi
 
-echo "全 enricher 起動完了 (PID: PREP=$PREP_PID SS=$SS_PID HZ=$HZ_PID CM=$CM_PID RI=$RI_PID ES=$ES_PID GM=$GM_PID MR=$MR_PID)" >&2
+# ── sumai トラック ──
+if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "sumai" ]; then
+
+    cp "$INPUT" "$WORK_DIR/track_ss.json"
+    (
+        _t=$(date +%s)
+        python3 sumai_surfin_enricher.py \
+            --input "$WORK_DIR/track_ss.json" \
+            --output "$WORK_DIR/track_ss.json" \
+            --property-type "$PROPERTY_TYPE" \
+            --max-time 40 \
+            $BROWSER_FLAG || true
+        echo "[TIMING] sumai_surfin: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_ss.json"
+
+fi
+
+# ── mansion トラック ──
+if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "mansion" ]; then
+
+    cp "$INPUT" "$WORK_DIR/track_mr.json"
+    (
+        _t=$(date +%s)
+        if [ "$PROPERTY_TYPE" = "chuko" ]; then
+            python3 mansion_review_scraper.py \
+                --input "$WORK_DIR/track_mr.json" \
+                --output "$WORK_DIR/track_mr.json" \
+                --max-time 40 || true
+        else
+            echo "mansion_review: 新築はスキップ" >&2
+        fi
+        echo "[TIMING] mansion_review: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_mr.json"
+
+fi
+
+echo "enricher 起動完了 (PIDs:$PIDS)" >&2
 
 # 全プロセス完了待ち (各プロセスの exit code は無視)
-for pid in $PREP_PID $SS_PID $HZ_PID $CM_PID $RI_PID $ES_PID $GM_PID $MR_PID; do
+for pid in $PIDS; do
     wait "$pid" 2>/dev/null || true
 done
 
@@ -218,18 +244,14 @@ echo "[TIMING] phase2_parallel: $(( ($(date +%s) - _t_phase2) ))s" >&2
 echo "--- Phase 3: マージ ---" >&2
 _t=$(date +%s)
 
-python3 scripts/merge_enrichments.py \
-    --base "$INPUT" \
-    --enriched \
-        "$WORK_DIR/track_uc.json" \
-        "$WORK_DIR/track_ss.json" \
-        "$WORK_DIR/track_hz.json" \
-        "$WORK_DIR/track_cm.json" \
-        "$WORK_DIR/track_ri.json" \
-        "$WORK_DIR/track_es.json" \
-        "$WORK_DIR/track_gm.json" \
-        "$WORK_DIR/track_mr.json" \
-    --output "$INPUT"
+if [ -n "$ENRICHED_FILES" ]; then
+    python3 scripts/merge_enrichments.py \
+        --base "$INPUT" \
+        --enriched $ENRICHED_FILES \
+        --output "$INPUT"
+else
+    echo "実行されたトラックがありません" >&2
+fi
 
 echo "[TIMING] merge: $(( ($(date +%s) - _t) ))s" >&2
 
