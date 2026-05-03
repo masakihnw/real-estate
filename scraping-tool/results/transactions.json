@@ -6798,7 +6798,7 @@
       "latitude": 35.7207075,
       "longitude": 139.7846075,
       "building_group_id": "131060060-2021-RC",
-      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0f2c62e56276",
@@ -7418,7 +7418,7 @@
       "latitude": 35.7207075,
       "longitude": 139.7846075,
       "building_group_id": "131060060-2021-RC",
-      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-1f741e3dd2fc",
@@ -7438,7 +7438,7 @@
       "latitude": 35.7207075,
       "longitude": 139.7846075,
       "building_group_id": "131060060-2021-RC",
-      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2b571679916f",
@@ -7615,8 +7615,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "両国",
       "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "latitude": 35.697411,
+      "longitude": 139.7862521,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -7698,7 +7698,7 @@
       "latitude": 35.7207075,
       "longitude": 139.7846075,
       "building_group_id": "131060060-2021-RC",
-      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-021222527f0b",
@@ -13158,7 +13158,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2016-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "id": "tx-2d3bfc5397f8",
@@ -16998,7 +16998,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2016-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "id": "tx-92da8131a0f7",
@@ -19078,7 +19078,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2016-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "id": "tx-565438334906",
@@ -19758,7 +19758,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2016-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "id": "tx-1d123b4563a5",
@@ -19778,7 +19778,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2016-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "id": "tx-c4c9b4eddb48",
@@ -20518,7 +20518,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2016-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "id": "tx-c2b0588ac53f",
@@ -20538,7 +20538,7 @@
       "latitude": 35.6706676,
       "longitude": 139.8141034,
       "building_group_id": "131080300-2017-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "id": "tx-868bf6c38ab9",
@@ -21698,7 +21698,7 @@
       "latitude": 35.59332,
       "longitude": 139.7350645,
       "building_group_id": "131090240-2014-SRC",
-      "estimated_building_name": null
+      "estimated_building_name": "クレストフォルム大井町サウステラス"
     },
     {
       "id": "tx-e7f0be1d8e45",
@@ -34878,7 +34878,7 @@
       "latitude": 35.7695843,
       "longitude": 139.8706926,
       "building_group_id": "131220040-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "id": "tx-13f4e1bd3ccc",
@@ -34918,7 +34918,7 @@
       "latitude": 35.7695843,
       "longitude": 139.8706926,
       "building_group_id": "131220040-2021-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "id": "tx-7db9aec2bc19",
@@ -34978,7 +34978,7 @@
       "latitude": 35.7695843,
       "longitude": 139.8706926,
       "building_group_id": "131220040-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "id": "tx-5766b9b680cd",
@@ -38582,8 +38582,8 @@
       "structure": "RC",
       "nearest_station": "両国",
       "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "latitude": 35.697411,
+      "longitude": 139.7862521,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -38740,7 +38740,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "リビオレゾン上野入谷ザ・テラス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131060070-2006-RC",
@@ -41284,7 +41284,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "group_id": "131080300-2017-RC",
@@ -41307,7 +41307,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "シティテラス東陽町"
     },
     {
       "group_id": "131080300-2018-RC",
@@ -42412,7 +42412,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "クレストフォルム大井町サウステラス"
     },
     {
       "group_id": "131090240-2018-RC",
@@ -48889,7 +48889,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "group_id": "131220040-2021-RC",
@@ -48912,7 +48912,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "group_id": "131220110-2022-RC",
@@ -49109,7 +49109,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-02T15:05:06",
+    "updated_at": "2026-05-03T03:01:01",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
