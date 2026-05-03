@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Color tokens — Brand Semantic</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:18px;background:#fff;font:var(--t-footnote);color:var(--fg-primary)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .sw{display:flex;flex-direction:column;gap:6px}
+  .chip{height:48px;border-radius:8px;border:1px solid rgba(0,0,0,.06)}
+  .name{font:600 12px/1.2 var(--font-system)}
+  .hex{font:var(--t-caption2);color:var(--fg-secondary);font-feature-settings:"tnum"}
+  h4{margin:0 0 8px;font:var(--t-caption);color:var(--fg-secondary);text-transform:uppercase;letter-spacing:.04em}
+  section+section{margin-top:14px}
+</style></head>
+<body>
+<section>
+<h4>Finance signals</h4>
+<div class="grid">
+  <div class="sw"><div class="chip" style="background:var(--positive)"></div><div class="name">positive</div><div class="hex">#34C759 · 値上がり/プラス</div></div>
+  <div class="sw"><div class="chip" style="background:var(--negative)"></div><div class="name">negative</div><div class="hex">#FF3B30 · 値下がり/マイナス</div></div>
+  <div class="sw"><div class="chip" style="background:var(--price-down)"></div><div class="name">price-down</div><div class="hex">#2E87C2 · 値下げ</div></div>
+  <div class="sw"><div class="chip" style="background:var(--price-up)"></div><div class="name">price-up</div><div class="hex">#E67D21 · 値上げ</div></div>
+</div>
+</section>
+<section>
+<h4>AI accent (Claude-generated content)</h4>
+<div class="grid">
+  <div class="sw"><div class="chip" style="background:var(--ai-accent)"></div><div class="name">ai-accent</div><div class="hex">#5856D6 · indigo</div></div>
+  <div class="sw"><div class="chip" style="background:var(--ai-accent-tint)"></div><div class="name">ai-accent-tint</div><div class="hex">10% indigo</div></div>
+  <div class="sw"><div class="chip" style="background:#fff;border-color:var(--ai-accent-border)"></div><div class="name">ai-accent-border</div><div class="hex">22% indigo</div></div>
+  <div class="sw"><div class="chip" style="background:var(--commute-pg)"></div><div class="name">commute-pg</div><div class="hex">#007AFF</div></div>
+</div>
+</section>
+</body></html>
