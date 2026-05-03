@@ -340,6 +340,7 @@ def enrich_listings(
     input_path: str,
     output_path: str,
     retry_not_found: bool = False,
+    max_time_min: int = 0,
 ) -> None:
     """
     物件リストにマンションレビューのデータを付与。
@@ -349,6 +350,8 @@ def enrich_listings(
 
     cache = load_cache()
     session = _make_session()
+
+    deadline = time.time() + max_time_min * 60 if max_time_min > 0 else None
 
     if retry_not_found:
         keys_to_remove = [
@@ -364,6 +367,7 @@ def enrich_listings(
 
     enriched = 0
     skipped = 0
+    timed_out = 0
     total = len(listings)
 
     for i, listing in enumerate(listings):
@@ -374,6 +378,14 @@ def enrich_listings(
         name = listing.get("name", "")
         if not name:
             continue
+
+        if deadline and time.time() > deadline:
+            timed_out = total - i
+            print(
+                f"  [{i + 1}/{total}] 残り{timed_out}件: 時間切れ（{max_time_min}分）",
+                file=sys.stderr,
+            )
+            break
 
         data = enrich_single(session, name, cache)
 
@@ -400,9 +412,10 @@ def enrich_listings(
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    timeout_msg = f", タイムアウト: {timed_out}" if timed_out else ""
     print(
         f"\nマンションレビュー enrichment 完了: "
-        f"{enriched}/{total} 件取得 (スキップ: {skipped})",
+        f"{enriched}/{total} 件取得 (スキップ: {skipped}{timeout_msg})",
         file=sys.stderr,
     )
 
@@ -418,8 +431,14 @@ def main() -> None:
         action="store_true",
         help="前回該当なしだった物件を再検索",
     )
+    ap.add_argument(
+        "--max-time",
+        type=int,
+        default=0,
+        help="最大実行時間（分）。0=無制限",
+    )
     args = ap.parse_args()
-    enrich_listings(args.input, args.output, args.retry_not_found)
+    enrich_listings(args.input, args.output, args.retry_not_found, args.max_time)
 
 
 if __name__ == "__main__":
