@@ -195,7 +195,8 @@ GM_PID=$!
     if [ "$PROPERTY_TYPE" = "chuko" ]; then
         python3 mansion_review_scraper.py \
             --input "$WORK_DIR/track_mr.json" \
-            --output "$WORK_DIR/track_mr.json" || true
+            --output "$WORK_DIR/track_mr.json" \
+            --max-time 40 || true
     else
         echo "mansion_review: 新築はスキップ" >&2
     fi
