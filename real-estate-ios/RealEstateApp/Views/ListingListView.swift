@@ -1175,8 +1175,9 @@ struct ListingRowView: View {
 
                     Spacer(minLength: 0)
 
-                    if let score = listing.listingScore {
-                        ScoreBadge(score: score)
+                    if let score = listing.listingScore,
+                       let grade = listing.scoreGradeLetter {
+                        ScoreBadge(grade: grade, value: score)
                     }
 
                     Button(action: onLikeTapped) {
@@ -1706,45 +1707,6 @@ extension View {
     }
 }
 
-/// 総合投資スコアバッジ（0-100）
-private struct ScoreBadge: View {
-    let score: Int
-
-    private var color: Color {
-        switch score {
-        case 80...: return .green
-        case 65..<80: return .blue
-        case 50..<65: return .orange
-        case 35..<50: return .gray
-        default: return .red
-        }
-    }
-
-    private var label: String {
-        switch score {
-        case 80...: return "S"
-        case 65..<80: return "A"
-        case 50..<65: return "B"
-        case 35..<50: return "C"
-        default: return "D"
-        }
-    }
-
-    var body: some View {
-        HStack(spacing: 2) {
-            Text(label)
-                .font(.caption2.weight(.black))
-            Text("\(score)")
-                .font(.caption2.weight(.bold))
-                .monospacedDigit()
-        }
-        .foregroundStyle(color)
-        .padding(.horizontal, 5)
-        .padding(.vertical, 2)
-        .background(color.opacity(0.12))
-        .clipShape(RoundedRectangle(cornerRadius: 4))
-    }
-}
 
 #Preview {
     ListingListView()
