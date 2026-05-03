@@ -4,7 +4,7 @@ Phase 1 の Station Master ベース通勤 enricher。
 
 物件 JSON に commute_info_v2 を付与する。
 計算式:
-  物件 -> 候補駅 徒歩 + Station Master 中央値 + オフィス最終徒歩 + バッファ
+  物件 -> 候補駅 徒歩 + Station Master 中央値 + バッファ
 
 使い方:
   python3 commute_station_master_enricher.py \
