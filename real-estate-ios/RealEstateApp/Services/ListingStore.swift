@@ -501,6 +501,16 @@ final class ListingStore {
         existing.competingListingsCount = new.competingListingsCount
         existing.listingScore = new.listingScore
         existing.altSourcesJSON = new.altSourcesJSON
+        // Claude AI Enrichment
+        existing.investmentSummary = new.investmentSummary
+        existing.highlightBadge = new.highlightBadge
+        existing.bestThumbnailURL = new.bestThumbnailURL
+        existing.extractedFeaturesJSON = new.extractedFeaturesJSON
+        existing.imageCategoriesJSON = new.imageCategoriesJSON
+        existing.dedupConfidence = new.dedupConfidence
+        existing.dedupCandidatesJSON = new.dedupCandidatesJSON
+        existing.keyStrengthsJSON = new.keyStrengthsJSON
+        existing.keyRisksJSON = new.keyRisksJSON
         // existing.memo, existing.isLiked, existing.isNew, existing.isNewBuilding, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
     }
 

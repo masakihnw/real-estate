@@ -119,6 +119,17 @@ struct ListingDTO: Codable {
     var alt_sources: [String]?
     var alt_urls: [String]?
 
+    // Claude AI Enrichment
+    var investment_summary: String?
+    var highlight_badge: String?
+    var best_thumbnail_url: String?
+    var extracted_features: String?
+    var image_categories: String?
+    var dedup_confidence: Double?
+    var dedup_candidates: String?
+    var key_strengths: [String]?
+    var key_risks: [String]?
+
     // Supabase 同期用: 物件のアクティブ状態
     var is_active: Bool?
 }
@@ -382,7 +393,28 @@ extension Listing {
             resaleLiquidityScore: dto.resale_liquidity_score,
             competingListingsCount: dto.competing_listings_count,
             listingScore: dto.listing_score,
-            altSourcesJSON: altSourcesJSON
+            altSourcesJSON: altSourcesJSON,
+            investmentSummary: dto.investment_summary,
+            highlightBadge: dto.highlight_badge,
+            bestThumbnailURL: dto.best_thumbnail_url,
+            extractedFeaturesJSON: dto.extracted_features,
+            imageCategoriesJSON: dto.image_categories,
+            dedupConfidence: dto.dedup_confidence,
+            dedupCandidatesJSON: dto.dedup_candidates,
+            keyStrengthsJSON: {
+                if let arr = dto.key_strengths, !arr.isEmpty,
+                   let data = try? JSONEncoder().encode(arr) {
+                    return String(data: data, encoding: .utf8)
+                }
+                return nil
+            }(),
+            keyRisksJSON: {
+                if let arr = dto.key_risks, !arr.isEmpty,
+                   let data = try? JSONEncoder().encode(arr) {
+                    return String(data: data, encoding: .utf8)
+                }
+                return nil
+            }()
         )
     }
 }

@@ -1087,6 +1087,7 @@ struct ListingRowView: View {
     var onLikeTapped: () -> Void
 
     @State private var isExpanded = false
+    @State private var isAISummaryExpanded: Bool = false
 
     private var hasExpandableUnits: Bool { siblings.count > 1 }
 
@@ -1106,6 +1107,13 @@ struct ListingRowView: View {
         return "\(f.string(from: NSNumber(value: yen)) ?? "\(yen)")円"
     }
 
+    /// 月額支払いの表示文字列（万円単位）
+    private func monthlyPaymentDisplay(for item: Listing) -> String? {
+        guard let payment = item.estimatedMonthlyPayment else { return nil }
+        let suffix = item.hasFullMonthlyCost ? "" : "〜"
+        return String(format: "月々 約%.1f万円%@", payment, suffix)
+    }
+
     /// 表示用の売出戸数（グループ住戸数 or 旧 duplicateCount のいずれか大きい方）
     private var displayUnitCount: Int {
         hasExpandableUnits ? siblings.count : listing.duplicateCount
@@ -1119,6 +1127,11 @@ struct ListingRowView: View {
             }
             .buttonStyle(.plain)
 
+            // AI評価トグルセクション
+            if listing.investmentSummary != nil {
+                aiSummarySection
+            }
+
             // 展開セクション（同一マンション内に2件以上の住戸がある場合）
             if hasExpandableUnits {
                 expandableSection
@@ -1131,12 +1144,19 @@ struct ListingRowView: View {
     private var cardContent: some View {
         HStack(alignment: .top, spacing: 10) {
             // サムネイル画像（外観写真を優先・余白自動トリミング）
-            if let thumbURL = listing.thumbnailURL {
-                TrimmedAsyncImage(url: thumbURL, width: 100)
+            VStack(spacing: 4) {
+                if let thumbURL = listing.thumbnailURL {
+                    TrimmedAsyncImage(url: thumbURL, width: 80)
+                }
+
+                // マルチソースバッジ（サムネ下）
+                if let badge = listing.highlightBadge {
+                    HighlightBadgeView(text: badge)
+                }
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                // 1行目: 物件名 + New + 📷 + 💬 + ♥
+                // 1行目: 物件名 + スコアバッジ + ♥
                 HStack(alignment: .center, spacing: 6) {
                     Text(listing.name)
                         .font(.subheadline.weight(.semibold))
@@ -1155,24 +1175,8 @@ struct ListingRowView: View {
 
                     Spacer(minLength: 0)
 
-                    if listing.hasPhotos {
-                        HStack(spacing: 2) {
-                            Image(systemName: "camera.fill")
-                                .font(.caption2)
-                            Text("\(listing.photoCount)")
-                                .font(.caption2.weight(.medium))
-                        }
-                        .foregroundStyle(.secondary)
-                    }
-
-                    if listing.hasComments {
-                        HStack(spacing: 2) {
-                            Image(systemName: "bubble.left.fill")
-                                .font(.caption2)
-                            Text("\(listing.commentCount)")
-                                .font(.caption2.weight(.medium))
-                        }
-                        .foregroundStyle(.secondary)
+                    if let score = listing.listingScore {
+                        ScoreBadge(score: score)
                     }
 
                     Button(action: onLikeTapped) {
@@ -1184,15 +1188,9 @@ struct ListingRowView: View {
                     .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
                 }
 
-                // 2行目: 所有権/定借 + 価格 + 騰落率/儲かる確率 + [掲載終了]
-                HStack(alignment: .center, spacing: 6) {
+                // 2行目: バッジ行（所有権 + New/別部屋 + 騰落率 etc）
+                HStack(alignment: .center, spacing: 4) {
                     OwnershipBadge(listing: listing, size: .small)
-
-                    Text(listing.priceDisplayCompact)
-                        .font(.footnote.weight(.bold))
-                        .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
-                        .lineLimit(1)
-                        .layoutPriority(1)
 
                     if listing.isShinchiku {
                         if let pct = listing.ssProfitPct {
@@ -1231,20 +1229,24 @@ struct ListingRowView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
 
-                    if let change = listing.latestPriceChange, change != 0 {
-                        let isDown = change < 0
-                        let dateLabel = Self.priceChangeDateLabel(for: listing)
-                        Text("\(isDown ? "↓" : "↑")\(abs(change))万\(dateLabel.map { " (\($0))" } ?? "")")
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 2)
-                            .background((isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor).opacity(0.10))
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    if listing.hasPhotos {
+                        HStack(spacing: 2) {
+                            Image(systemName: "camera.fill")
+                                .font(.caption2)
+                            Text("\(listing.photoCount)")
+                                .font(.caption2.weight(.medium))
+                        }
+                        .foregroundStyle(.secondary)
                     }
 
-                    if let score = listing.listingScore {
-                        ScoreBadge(score: score)
+                    if listing.hasComments {
+                        HStack(spacing: 2) {
+                            Image(systemName: "bubble.left.fill")
+                                .font(.caption2)
+                            Text("\(listing.commentCount)")
+                                .font(.caption2.weight(.medium))
+                        }
+                        .foregroundStyle(.secondary)
                     }
 
                     if listing.isDelisted {
@@ -1258,56 +1260,47 @@ struct ListingRowView: View {
                     }
                 }
 
-                // 3行目: 間取り・面積・築年/入居・階・向き・戸数
-                HStack(spacing: 4) {
-                    Text(listing.layout ?? "—")
-                    Text(listing.areaDisplay)
-                    if listing.isShinchiku {
-                        Text(listing.deliveryDateDisplay)
-                        if listing.floorTotalDisplay != "—" {
-                            Text(listing.floorTotalDisplay)
-                        }
-                        Text(listing.totalUnitsDisplay)
-                    } else {
-                        Text(listing.builtAgeDisplay)
-                        if !listing.floorDisplay.isEmpty {
-                            Text(listing.floorDisplay)
-                        }
-                        if let dir = listing.direction, !dir.isEmpty {
-                            Text(dir)
-                        }
-                        Text(listing.totalUnitsDisplay)
+                Divider()
+
+                // 3行目: 価格 + 値下げ
+                HStack(alignment: .center, spacing: 6) {
+                    Text(listing.priceDisplayCompact)
+                        .font(.footnote.weight(.bold))
+                        .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
+                        .lineLimit(1)
+                        .layoutPriority(1)
+
+                    if let change = listing.latestPriceChange, change != 0 {
+                        let isDown = change < 0
+                        let dateLabel = Self.priceChangeDateLabel(for: listing)
+                        Text("\(isDown ? "↓" : "↑")\(abs(change))万\(dateLabel.map { " (\($0))" } ?? "")")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background((isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor).opacity(0.10))
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
 
-                // 4行目: 路線・駅
+                // 4行目: 月々支払い
+                if let monthlyText = monthlyPaymentDisplay(for: listing) {
+                    Text(monthlyText)
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+
+                Divider()
+
+                // 5行目: スペック（ドット区切り）+ ハザードチップ
+                specsRow
+
+                // 6行目: 路線・駅
                 if let line = listing.displayStationLine, !line.isEmpty {
                     Text(line)
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .lineLimit(1)
-                }
-
-                // 5行目: 管理費+修繕積立金（データがある場合のみ）
-                if listing.managementFee != nil || listing.repairReserveFund != nil {
-                    HStack(spacing: 4) {
-                        if let mf = listing.managementFee {
-                            Text("管理費\(formatYenCompact(mf))")
-                        }
-                        if let rf = listing.repairReserveFund {
-                            Text("修繕\(formatYenCompact(rf))")
-                        }
-                        if let mf = listing.managementFee, let rf = listing.repairReserveFund {
-                            Text("計\(formatYenCompact(mf + rf))/月")
-                                .foregroundStyle(.orange)
-                        }
-                    }
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
                 }
 
                 // ハザード＋通勤バッジ
@@ -1320,6 +1313,74 @@ struct ListingRowView: View {
         .opacity(listing.isDelisted ? 0.75 : 1.0)
     }
 
+    // MARK: - Specs Row (dot-separated)
+
+    @ViewBuilder
+    private var specsRow: some View {
+        let parts: [String] = {
+            var items: [String] = []
+            if let layout = listing.layout { items.append(layout) }
+            items.append(listing.areaDisplay)
+            if listing.isShinchiku {
+                if let w = listing.walkMin { items.append("🚶\(w)分") }
+                items.append(listing.deliveryDateDisplay)
+                if listing.floorTotalDisplay != "—" { items.append(listing.floorTotalDisplay) }
+            } else {
+                if let w = listing.walkMin { items.append("🚶\(w)分") }
+                items.append(listing.builtAgeDisplay)
+                if !listing.floorDisplay.isEmpty { items.append(listing.floorDisplay) }
+                if let dir = listing.direction, !dir.isEmpty { items.append(dir) }
+            }
+            return items
+        }()
+
+        Text(parts.joined(separator: " · "))
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .lineLimit(2)
+    }
+
+    // MARK: - AI Summary Toggle
+
+    @ViewBuilder
+    private var aiSummarySection: some View {
+        Divider()
+            .padding(.top, 2)
+
+        Button {
+            withAnimation(.easeInOut(duration: 0.25)) {
+                isAISummaryExpanded.toggle()
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Text("✦")
+                    .font(.caption2)
+                Text("AI評価")
+                    .font(.caption2.weight(.semibold))
+                Text(isAISummaryExpanded ? "" : "タップで表示")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                Spacer()
+                Image(systemName: "chevron.down")
+                    .font(.caption2.weight(.semibold))
+                    .rotationEffect(.degrees(isAISummaryExpanded ? 180 : 0))
+            }
+            .foregroundStyle(.purple)
+            .padding(.vertical, 5)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+
+        if isAISummaryExpanded, let summary = listing.investmentSummary {
+            Text(summary)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(4)
+                .padding(.bottom, 4)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+        }
+    }
+
     // MARK: - Expandable Section
 
     @ViewBuilder
@@ -1327,7 +1388,7 @@ struct ListingRowView: View {
         Divider()
             .padding(.top, 2)
 
-        // 展開トグル: 「N戸売出中 ▼」
+        // 展開トグル: 「同マンションでN戸売出中 ▼」
         Button {
             withAnimation(.easeInOut(duration: 0.25)) {
                 isExpanded.toggle()
@@ -1336,7 +1397,7 @@ struct ListingRowView: View {
             HStack(spacing: 4) {
                 Image(systemName: "building.2")
                     .font(.caption2)
-                Text("\(siblings.count)戸売出中")
+                Text("同マンションで\(siblings.count)戸売出中")
                     .font(.caption2.weight(.semibold))
                 Spacer()
                 Image(systemName: "chevron.down")
@@ -1363,12 +1424,12 @@ struct ListingRowView: View {
             HStack(spacing: 0) {
                 Text("間取り")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Text("面積")
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text("価格")
                     .frame(maxWidth: .infinity, alignment: .leading)
+                Text("月々")
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text("階")
-                    .frame(width: 80, alignment: .trailing)
+                    .frame(width: 60, alignment: .trailing)
             }
             .font(.caption2.weight(.medium))
             .foregroundStyle(.secondary)
@@ -1383,20 +1444,33 @@ struct ListingRowView: View {
                     VStack(spacing: 0) {
                         Divider()
                         HStack(spacing: 0) {
-                            Text(unit.layout ?? "—")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Text(unit.areaDisplay)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(unit.layout ?? "—")
+                                Text(unit.areaDisplay)
+                                    .font(.system(size: 9))
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             Text(unit.priceDisplayCompact)
                                 .foregroundStyle(unit.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                            Group {
+                                if let payment = unit.estimatedMonthlyPayment {
+                                    Text(String(format: "%.1f万%@", payment, unit.hasFullMonthlyCost ? "" : "〜"))
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    Text("—")
+                                        .foregroundStyle(.tertiary)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             HStack(spacing: 2) {
                                 Text(unit.floorDisplay.isEmpty ? "—" : unit.floorDisplay)
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 8, weight: .semibold))
                                     .foregroundStyle(.tertiary)
                             }
-                            .frame(width: 80, alignment: .trailing)
+                            .frame(width: 60, alignment: .trailing)
                         }
                         .font(.caption)
                         .padding(.vertical, 8)

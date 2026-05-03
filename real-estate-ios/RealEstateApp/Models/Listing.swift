@@ -275,8 +275,40 @@ final class Listing: @unchecked Sendable {
     var listingScore: Int?
 
     /// 代替ソース情報 JSON 文字列
-    /// フォーマット: [{"source":"rehouse","url":"https://..."},...]
+    /// フォーマット: [{"source":"rehouse","url":"https://...","price_man":9500},...]
     var altSourcesJSON: String?
+
+    // MARK: - Claude AI Enrichment
+
+    /// Claude生成の投資判断サマリー（1-2文）
+    var investmentSummary: String?
+
+    /// カード表示用バッジテキスト（3-5文字、例: "築浅×駅2分"）
+    var highlightBadge: String?
+
+    /// Claude選定のベスト代表画像URL
+    var bestThumbnailURL: String?
+
+    /// 構造化抽出データ JSON
+    /// フォーマット: {"renovation_history":"...","management_quality":"...","equipment_highlights":[],...}
+    var extractedFeaturesJSON: String?
+
+    /// 画像カテゴリ分類 JSON
+    /// フォーマット: {"exterior":[{"url":"...","quality":0.8}],"interior":[...],...}
+    var imageCategoriesJSON: String?
+
+    /// セマンティック名寄せの信頼度スコア（0.0-1.0、マージ済み物件のみ）
+    var dedupConfidence: Double?
+
+    /// 同一物件候補 JSON（confidence 0.6-0.9 のペア）
+    /// フォーマット: [{"source":"...","url":"...","price_man":0,"name":"...","confidence":0.7}]
+    var dedupCandidatesJSON: String?
+
+    /// AI分析による主要な強み
+    var keyStrengthsJSON: String?
+
+    /// AI分析による主要なリスク
+    var keyRisksJSON: String?
 
     init(
         source: String? = nil,
@@ -363,7 +395,16 @@ final class Listing: @unchecked Sendable {
         resaleLiquidityScore: Int? = nil,
         competingListingsCount: Int? = nil,
         listingScore: Int? = nil,
-        altSourcesJSON: String? = nil
+        altSourcesJSON: String? = nil,
+        investmentSummary: String? = nil,
+        highlightBadge: String? = nil,
+        bestThumbnailURL: String? = nil,
+        extractedFeaturesJSON: String? = nil,
+        imageCategoriesJSON: String? = nil,
+        dedupConfidence: Double? = nil,
+        dedupCandidatesJSON: String? = nil,
+        keyStrengthsJSON: String? = nil,
+        keyRisksJSON: String? = nil
     ) {
         self.source = source
         self.url = url
@@ -450,6 +491,15 @@ final class Listing: @unchecked Sendable {
         self.competingListingsCount = competingListingsCount
         self.listingScore = listingScore
         self.altSourcesJSON = altSourcesJSON
+        self.investmentSummary = investmentSummary
+        self.highlightBadge = highlightBadge
+        self.bestThumbnailURL = bestThumbnailURL
+        self.extractedFeaturesJSON = extractedFeaturesJSON
+        self.imageCategoriesJSON = imageCategoriesJSON
+        self.dedupConfidence = dedupConfidence
+        self.dedupCandidatesJSON = dedupCandidatesJSON
+        self.keyStrengthsJSON = keyStrengthsJSON
+        self.keyRisksJSON = keyRisksJSON
     }
 
     // MARK: - Identity
@@ -1043,6 +1093,35 @@ final class Listing: @unchecked Sendable {
     var monthlyRunningCost: Int? {
         guard managementFee != nil || repairReserveFund != nil else { return nil }
         return (managementFee ?? 0) + (repairReserveFund ?? 0)
+    }
+
+    /// カード表示用の月額支払い（万円）: ローン(諸費用6.5%込) + 管理費 + 修繕積立金
+    var estimatedMonthlyPayment: Double? {
+        guard let price = priceMan, price > 0 else { return nil }
+        let principal = Double(price) * DesignSystem.purchaseFeeMultiplier
+        let loan = LoanCalculator.monthlyPayment(
+            principal: principal,
+            rate: DesignSystem.monthlyPaymentRate,
+            years: DesignSystem.monthlyPaymentYears
+        )
+        let mgmt = Double(managementFee ?? 0) / 10000.0
+        let repair = Double(repairReserveFund ?? 0) / 10000.0
+        return loan + mgmt + repair
+    }
+
+    var hasFullMonthlyCost: Bool {
+        managementFee != nil && repairReserveFund != nil
+    }
+
+    var scoreGradeLetter: String? {
+        guard let score = listingScore else { return nil }
+        switch score {
+        case 80...: return "S"
+        case 65..<80: return "A"
+        case 50..<65: return "B"
+        case 35..<50: return "C"
+        default: return "D"
+        }
     }
 
     /// 表示用: 修繕積立基金（一時金）
@@ -1802,15 +1881,141 @@ final class Listing: @unchecked Sendable {
         return groups
     }
 
-    /// 一覧カードのサムネイル用 URL（外観写真を優先、なければ先頭画像にフォールバック）
+    /// 一覧カードのサムネイル用 URL（Claude選定 → 外観写真 → 先頭画像の優先順）
     var thumbnailURL: URL? {
+        if let best = bestThumbnailURL, let url = URL(string: best) {
+            return url
+        }
         let images = parsedSuumoImages
-        // 外観カテゴリの画像を優先
         if let exterior = images.first(where: { $0.category == .exterior }) {
             return exterior.resolvedURL
         }
-        // 外観写真がない場合は先頭画像にフォールバック
         return images.first?.resolvedURL
+    }
+
+    // MARK: - Claude AI Enrichment Parsed Properties
+
+    struct ExtractedFeatures: Codable {
+        var renovationHistory: String?
+        var managementQuality: String?
+        var equipmentHighlights: [String]?
+        var sellerMotivation: String?
+        var negativeFactors: [String]?
+        var notablePoints: String?
+
+        enum CodingKeys: String, CodingKey {
+            case renovationHistory = "renovation_history"
+            case managementQuality = "management_quality"
+            case equipmentHighlights = "equipment_highlights"
+            case sellerMotivation = "seller_motivation"
+            case negativeFactors = "negative_factors"
+            case notablePoints = "notable_points"
+        }
+    }
+
+    var parsedExtractedFeatures: ExtractedFeatures? {
+        guard let json = extractedFeaturesJSON, let data = json.data(using: .utf8) else { return nil }
+        return try? JSONDecoder().decode(ExtractedFeatures.self, from: data)
+    }
+
+    struct DedupCandidate: Codable, Identifiable {
+        var source: String
+        var url: String
+        var priceMan: Int?
+        var name: String
+        var confidence: Double
+
+        var id: String { "\(source)_\(url)" }
+
+        enum CodingKeys: String, CodingKey {
+            case source, url, name, confidence
+            case priceMan = "price_man"
+        }
+    }
+
+    var parsedDedupCandidates: [DedupCandidate] {
+        guard let json = dedupCandidatesJSON, let data = json.data(using: .utf8) else { return [] }
+        return (try? JSONDecoder().decode([DedupCandidate].self, from: data)) ?? []
+    }
+
+    struct AlternateSourcePrice: Codable, Identifiable {
+        var source: String
+        var url: String
+        var priceMan: Int?
+
+        var id: String { source }
+
+        enum CodingKeys: String, CodingKey {
+            case source, url
+            case priceMan = "price_man"
+        }
+    }
+
+    var parsedAltSourcePrices: [AlternateSourcePrice] {
+        guard let json = altSourcesJSON, let data = json.data(using: .utf8) else { return [] }
+        return (try? JSONDecoder().decode([AlternateSourcePrice].self, from: data)) ?? []
+    }
+
+    struct ImageCategoryGroup: Identifiable {
+        let category: String
+        let images: [CategorizedImage]
+        var id: String { category }
+
+        var localizedCategory: String {
+            switch category {
+            case "exterior": return "外観"
+            case "interior": return "室内"
+            case "water": return "水回り"
+            case "floor_plan": return "間取り"
+            case "view": return "眺望"
+            case "common_area": return "共用部"
+            case "surroundings": return "周辺環境"
+            default: return "その他"
+            }
+        }
+    }
+
+    struct CategorizedImage: Codable, Identifiable {
+        var url: String
+        var label: String?
+        var quality: Double?
+        var description: String?
+        var id: String { url }
+    }
+
+    var parsedImageCategories: [ImageCategoryGroup] {
+        guard let json = imageCategoriesJSON, let data = json.data(using: .utf8),
+              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: [[String: Any]]] else {
+            return []
+        }
+        let categoryOrder = ["exterior", "interior", "water", "floor_plan", "view", "common_area", "surroundings"]
+        var groups: [ImageCategoryGroup] = []
+        for cat in categoryOrder {
+            guard let items = dict[cat] else { continue }
+            let images = items.compactMap { item -> CategorizedImage? in
+                guard let url = item["url"] as? String else { return nil }
+                return CategorizedImage(
+                    url: url,
+                    label: item["label"] as? String,
+                    quality: item["quality"] as? Double,
+                    description: item["description"] as? String
+                )
+            }
+            if !images.isEmpty {
+                groups.append(ImageCategoryGroup(category: cat, images: images))
+            }
+        }
+        return groups
+    }
+
+    var parsedKeyStrengths: [String] {
+        guard let json = keyStrengthsJSON, let data = json.data(using: .utf8) else { return [] }
+        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+    }
+
+    var parsedKeyRisks: [String] {
+        guard let json = keyRisksJSON, let data = json.data(using: .utf8) else { return [] }
+        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
     }
 
     // MARK: - 投資判断支援

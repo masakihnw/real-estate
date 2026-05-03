@@ -2,10 +2,10 @@
 //  MonthlyPaymentSimulationView.swift
 //  RealEstateApp
 //
-//  月額支払いシミュレーション — 動的フォーム付き
+//  月額支払いシミュレーション — 諸費用6.5%込み・内訳バー・プリセット付き
 //
-//  タップで展開し、金利・返済期間・頭金を変更してリアルタイムに再計算する。
 //  計算式: 元利均等返済 M = P * r * (1+r)^n / ((1+r)^n - 1)
+//  借入額 = (物件価格 - 頭金) × 1.065（購入諸費用6.5%）
 //
 
 import SwiftUI
@@ -19,98 +19,210 @@ struct MonthlyPaymentSimulationView: View {
     private static let defaultInterestRate: Double = 1.2
 
     @State private var interestRate: Double = Self.defaultInterestRate
-    @State private var loanYears: Int = LoanCalculator.termYears          // デフォルト 50年
-    @State private var downPaymentMan: Double = 0                         // 頭金（万円）
+    @State private var loanYears: Int = LoanCalculator.termYears
+    @State private var downPaymentMan: Double = 0
 
-    // MARK: - 返済期間の選択肢
     private static let yearOptions: [Int] = [20, 30, 35, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
 
     // MARK: - 計算値
 
-    /// 借入元本（万円）
     private var principalMan: Double {
         let price = Double(listing.priceMan ?? 0)
-        return max(price - downPaymentMan, 0)
+        return max(price - downPaymentMan, 0) * DesignSystem.purchaseFeeMultiplier
     }
 
-    /// ローン月額返済額（円）
+    private var loanMonthlyMan: Double {
+        LoanCalculator.monthlyPayment(principal: principalMan, rate: interestRate, years: loanYears)
+    }
+
     private var loanMonthlyYen: Int {
-        let man = LoanCalculator.monthlyPayment(principal: principalMan, rate: interestRate, years: loanYears)
-        return Int(round(man * 10000))
+        Int(round(loanMonthlyMan * 10000))
     }
 
-    /// 管理費（円/月）
     private var mgmtFee: Int { listing.managementFee ?? 0 }
-
-    /// 修繕積立金（円/月）
     private var repairFund: Int { listing.repairReserveFund ?? 0 }
 
-    /// 月額合計（円）
     private var totalMonthlyYen: Int {
         loanMonthlyYen + mgmtFee + repairFund
     }
 
-    /// 返済総額（万円）
+    private var totalMonthlyMan: Double {
+        loanMonthlyMan + Double(mgmtFee) / 10000.0 + Double(repairFund) / 10000.0
+    }
+
     private var totalRepaymentMan: Double {
         LoanCalculator.totalRepayment(principal: principalMan, rate: interestRate, years: loanYears)
     }
 
     private var hasFixedCost: Bool { mgmtFee > 0 || repairFund > 0 }
 
-    /// 頭金の上限（万円）
     private var maxDownPayment: Double {
         Double(listing.priceMan ?? 0)
+    }
+
+    private var isCustom: Bool {
+        interestRate != Self.defaultInterestRate
+            || loanYears != LoanCalculator.termYears
+            || downPaymentMan != 0
     }
 
     // MARK: - Body
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // ヘッダー + 折りたたみ合計表示
-            headerView
+            // 合計額ヘッダー
+            totalHeader
+
+            // 借入額注記
+            Text("借入額 \(formatManYen(principalMan))（諸費用6.5%込）")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+
+            // 内訳テキスト
+            HStack(spacing: 0) {
+                Text("ローン\(String(format: "%.1f", loanMonthlyMan))")
+                Text(" + 管理費\(String(format: "%.1f", Double(mgmtFee) / 10000.0))")
+                Text(" + 修繕\(String(format: "%.1f", Double(repairFund) / 10000.0))")
+            }
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+
+            // 内訳バー
+            breakdownBar
+
+            // トグルボタン
+            simToggleButton
 
             if isExpanded {
-                Divider()
+                // 内訳詳細
+                breakdownDetail
+                // フォーム
                 formSection
-                Divider()
+                // プリセット
+                presetButtons
             }
-
-            // 計算結果
-            resultSection
-
-            // 注記
-            conditionNote
         }
         .padding(12)
         .listingGlassBackground()
         .animation(.easeInOut(duration: 0.25), value: isExpanded)
     }
 
-    // MARK: - ヘッダー
+    // MARK: - 合計ヘッダー
 
-    private var headerView: some View {
-        Button {
-            withAnimation { isExpanded.toggle() }
-        } label: {
-            HStack {
+    private var totalHeader: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .firstTextBaseline) {
                 Label("月額支払いシミュレーション", systemImage: "yensign.circle")
                     .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundStyle(Color.accentColor)
                 Spacer()
+            }
+
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text("約\(String(format: "%.1f", totalMonthlyMan))")
+                    .font(.system(.title2, design: .rounded).weight(.bold))
+                    .foregroundStyle(Color.accentColor)
+                Text("万円/月")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+        }
+    }
+
+    // MARK: - 内訳バー
+
+    private var breakdownBar: some View {
+        GeometryReader { geo in
+            let total = max(totalMonthlyMan, 0.01)
+            let loanW = (loanMonthlyMan / total) * geo.size.width
+            let mgmtW = (Double(mgmtFee) / 10000.0 / total) * geo.size.width
+            let repairW = (Double(repairFund) / 10000.0 / total) * geo.size.width
+
+            HStack(spacing: 1) {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.accentColor)
+                    .frame(width: max(loanW, 2))
+                if mgmtFee > 0 {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(DesignSystem.positiveColor)
+                        .frame(width: max(mgmtW, 2))
+                }
+                if repairFund > 0 {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color.orange)
+                        .frame(width: max(repairW, 2))
+                }
+            }
+        }
+        .frame(height: 6)
+        .clipShape(RoundedRectangle(cornerRadius: 3))
+    }
+
+    // MARK: - トグルボタン
+
+    private var simToggleButton: some View {
+        Button {
+            withAnimation { isExpanded.toggle() }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "slider.horizontal.3")
+                    .font(.caption)
+                    .foregroundStyle(Color.accentColor)
+                Text("条件を変更してシミュレーション")
+                    .font(.caption)
+                Spacer()
+                Text("\(String(format: "%.1f", interestRate))% / \(loanYears)年 / 頭金\(Int(downPaymentMan))万")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 10)
+            .background(Color(.systemGray6))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
+    }
+
+    // MARK: - 内訳詳細
+
+    private var breakdownDetail: some View {
+        VStack(spacing: 4) {
+            breakdownRow(title: "ローン返済", yen: loanMonthlyYen, color: .accentColor)
+            if mgmtFee > 0 {
+                breakdownRow(title: "管理費", yen: mgmtFee, color: DesignSystem.positiveColor)
+            }
+            if repairFund > 0 {
+                breakdownRow(title: "修繕積立金", yen: repairFund, color: .orange)
+            }
+            if !hasFixedCost {
+                Text("※ 管理費・修繕積立金は未取得（ローン返済額のみ）")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            Divider().padding(.vertical, 2)
+            HStack {
+                Text("返済総額（参考）")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text(formatManYen(totalRepaymentMan))
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 
     // MARK: - フォーム
 
     private var formSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // 金利
+            Divider()
+
             VStack(alignment: .leading, spacing: 4) {
                 Text("金利（年利）")
                     .font(.caption2)
@@ -126,13 +238,8 @@ struct MonthlyPaymentSimulationView: View {
                 .padding(.vertical, 4)
                 .background(Color(.systemGray6))
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color(.systemGray4), lineWidth: 0.5)
-                )
             }
 
-            // 返済期間（プルダウン）
             VStack(alignment: .leading, spacing: 4) {
                 Text("返済期間")
                     .font(.caption2)
@@ -157,14 +264,9 @@ struct MonthlyPaymentSimulationView: View {
                     .padding(.vertical, 8)
                     .background(Color(.systemGray6))
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(Color(.systemGray4), lineWidth: 0.5)
-                    )
                 }
             }
 
-            // 頭金
             if maxDownPayment > 0 {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("頭金")
@@ -184,114 +286,60 @@ struct MonthlyPaymentSimulationView: View {
                     .padding(.vertical, 4)
                     .background(Color(.systemGray6))
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(Color(.systemGray4), lineWidth: 0.5)
-                    )
-                }
-            }
-
-            // リセットボタン
-            if interestRate != Self.defaultInterestRate
-                || loanYears != LoanCalculator.termYears
-                || downPaymentMan != 0 {
-                Button {
-                    withAnimation {
-                        interestRate = Self.defaultInterestRate
-                        loanYears = LoanCalculator.termYears
-                        downPaymentMan = 0
-                    }
-                } label: {
-                    Label("デフォルトに戻す", systemImage: "arrow.counterclockwise")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
                 }
             }
         }
         .padding(.vertical, 4)
     }
 
-    // MARK: - 計算結果
+    // MARK: - プリセットボタン
 
-    private var resultSection: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            // 合計月額
-            HStack(alignment: .firstTextBaseline) {
-                Text("月額合計（目安）")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Text("\(totalMonthlyYen.formatted())円")
-                    .font(.system(.title3, design: .rounded).weight(.bold))
-                    .foregroundStyle(Color.accentColor)
-                Text("/月")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+    private var presetButtons: some View {
+        let price = listing.priceMan ?? 0
+        let presets: [(String, Double, Int, Double)] = [
+            ("基準", 1.2, 50, 0),
+            ("頭金1割", 1.2, 50, Double(Int(Double(price) * 0.1 / 100) * 100)),
+            ("頭金2割", 1.2, 50, Double(Int(Double(price) * 0.2 / 100) * 100)),
+            ("35年返済", 1.2, 35, 0),
+        ]
 
-            // 内訳
-            breakdownRow(title: "ローン返済", yen: loanMonthlyYen)
-            if hasFixedCost {
-                if mgmtFee > 0 {
-                    breakdownRow(title: "管理費", yen: mgmtFee)
-                }
-                if repairFund > 0 {
-                    breakdownRow(title: "修繕積立金", yen: repairFund)
-                }
-            } else {
-                Text("※ 管理費・修繕積立金は未取得（ローン返済額のみ）")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-            }
-
-            // 返済総額（展開時のみ表示）
-            if isExpanded {
-                Divider()
-                    .padding(.vertical, 2)
-                HStack {
-                    Text("返済総額（参考）")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    Text(formatManYen(totalRepaymentMan))
-                        .font(.caption2.weight(.medium))
-                        .foregroundStyle(.secondary)
-                }
-                if downPaymentMan > 0 {
-                    HStack {
-                        Text("借入額")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                        Spacer()
-                        Text("\(Int(principalMan).formatted())万円")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(presets, id: \.0) { preset in
+                    let rateMatch = interestRate == preset.1
+                    let yearsMatch = loanYears == preset.2
+                    let downMatch = downPaymentMan == preset.3
+                    let isOn = rateMatch && yearsMatch && downMatch
+                    let bg: Color = isOn ? Color.accentColor.opacity(0.15) : Color(.systemGray6)
+                    let fg: Color = isOn ? Color.accentColor : Color.primary
+                    Button {
+                        withAnimation {
+                            interestRate = preset.1
+                            loanYears = preset.2
+                            downPaymentMan = preset.3
+                        }
+                    } label: {
+                        Text(preset.0)
+                            .font(.caption)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(bg)
+                            .foregroundStyle(fg)
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
                     }
+                    .buttonStyle(.plain)
                 }
-            }
-        }
-    }
-
-    // MARK: - 注記
-
-    private var conditionNote: some View {
-        Group {
-            if isExpanded {
-                Text("※ 元利均等返済で計算。変動金利の将来変動は考慮していません")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-            } else {
-                Text("※ 金利\(String(format: "%.1f", interestRate))%・返済\(loanYears)年・頭金\(Int(downPaymentMan))万円で計算")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
             }
         }
     }
 
     // MARK: - ヘルパー
 
-    private func breakdownRow(title: String, yen: Int) -> some View {
-        HStack {
+    private func breakdownRow(title: String, yen: Int, color: Color) -> some View {
+        HStack(spacing: 6) {
+            Circle()
+                .fill(color)
+                .frame(width: 6, height: 6)
             Text(title)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
@@ -302,7 +350,6 @@ struct MonthlyPaymentSimulationView: View {
         }
     }
 
-    /// 万円表示（1億以上は「X億Y万円」形式）
     private func formatManYen(_ man: Double) -> String {
         let intMan = Int(round(man))
         if intMan >= 10000 {
