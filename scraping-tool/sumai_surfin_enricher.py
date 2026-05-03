@@ -1780,7 +1780,8 @@ def _load_previous_by_url(previous_path: Optional[str]) -> dict[str, dict]:
 def enrich_listings(input_path: str, output_path: str, session: requests.Session,
                     property_type: str = "chuko",
                     retry_not_found: bool = False,
-                    previous_path: Optional[str] = None) -> None:
+                    previous_path: Optional[str] = None,
+                    max_time_min: int = 0) -> None:
     """
     JSON ファイルの各物件に住まいサーフィンの評価データを付加する。
     property_type: "chuko" (中古) or "shinchiku" (新築)
@@ -1835,6 +1836,8 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         if null_keys:
             logger.info(f"キャッシュから {len(null_keys)} 件の未発見エントリをクリア（再検索対象）")
             save_cache(cache)
+    deadline = time.time() + max_time_min * 60 if max_time_min > 0 else None
+
     enriched_count = 0
     skip_count = 0
     not_found_count = 0
@@ -1914,11 +1917,17 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         return "ok", data
 
     # 3) ThreadPoolExecutor で並列処理（max_workers=3、各ワーカー内で DELAY を維持）
+    timed_out = False
     idx_to_listing = {idx: lst for idx, lst in to_enrich}
     with ThreadPoolExecutor(max_workers=3) as executor:
         futures = {executor.submit(_enrich_one, idx, lst): idx for idx, lst in to_enrich}
         processed = 0
         for future in as_completed(futures):
+            if deadline and time.time() > deadline:
+                timed_out = True
+                logger.warning(f"住まいサーフィン: 時間切れ（{max_time_min}分）— 残りをキャンセル")
+                executor.shutdown(wait=False, cancel_futures=True)
+                break
             idx = futures[future]
             listing = idx_to_listing[idx]
             try:
@@ -2059,6 +2068,8 @@ def main() -> None:
     ap.add_argument("--retry-not-found", action="store_true",
                     help="キャッシュの未発見(null)エントリをクリアして再検索する"
                          "（名前正規化ロジック改善後に実行）")
+    ap.add_argument("--max-time", type=int, default=0,
+                    help="最大実行時間（分）。0=無制限")
     ap.add_argument("--previous", "-p",
                     help="前回の enrichment 結果 JSON。指定時は変更なし物件をスキップ（インクリメンタル）")
     args = ap.parse_args()
@@ -2100,7 +2111,8 @@ def main() -> None:
         enrich_listings(args.input, args.output, session,
                         property_type=prop_type,
                         retry_not_found=args.retry_not_found,
-                        previous_path=args.previous)
+                        previous_path=args.previous,
+                        max_time_min=args.max_time)
 
     # ── ブラウザ自動化 enrichment ──
     if args.browser or args.browser_only:

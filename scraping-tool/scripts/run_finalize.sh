@@ -43,10 +43,9 @@ if [ "$HAS_CHANGES" = "true" ]; then
 echo "--- キャッシュマージ ---" >&2
 
 # 各ジョブが更新した可能性のあるキャッシュをマージ
-# enriched-chuko/, enriched-shinchiku/ ディレクトリから取得
-for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_manifest.json station_cache.json reverse_geocode_cache.json building_units.json; do
+for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_manifest.json station_cache.json reverse_geocode_cache.json building_units.json mansion_review_cache.json; do
     UPDATES=""
-    for job_dir in enriched-chuko enriched-shinchiku; do
+    for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-shinchiku; do
         if [ -f "${job_dir}/data/${cache_file}" ]; then
             UPDATES="${UPDATES} ${job_dir}/data/${cache_file}"
         fi
@@ -64,23 +63,42 @@ done
 
 echo "--- 成果物配置 ---" >&2
 
-# enriched-chuko の latest.json を配置
-# upload-artifact@v4 は共通祖先 (scraping-tool/) を除去するため、
-# ダウンロード先には results/latest.json として展開される
-CHUKO_ENRICHED=""
-for candidate in "enriched-chuko/latest.json" "enriched-chuko/results/latest.json"; do
-    if [ -f "$candidate" ]; then
-        CHUKO_ENRICHED="$candidate"
-        break
-    fi
+# 3ジョブの enriched 成果物をフィールドレベルマージ
+CHUKO_SOURCES=""
+for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion; do
+    for candidate in "${job_dir}/latest.json" "${job_dir}/results/latest.json"; do
+        if [ -f "$candidate" ]; then
+            CHUKO_SOURCES="${CHUKO_SOURCES} $candidate"
+            echo "  中古ソース発見: $candidate" >&2
+            break
+        fi
+    done
 done
-if [ -n "$CHUKO_ENRICHED" ]; then
+
+if [ -n "$CHUKO_SOURCES" ]; then
+    # ベースファイルを決定（raw があれば raw、なければ現在の latest）
+    BASE=""
+    for candidate in "scrape-results/latest_raw.json" "results/latest_raw.json"; do
+        if [ -f "$candidate" ]; then
+            BASE="$candidate"
+            break
+        fi
+    done
+    if [ -z "$BASE" ]; then
+        BASE="${OUTPUT_DIR}/latest.json"
+    fi
+
     cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
-    cp "$CHUKO_ENRICHED" "${OUTPUT_DIR}/latest.json"
-    echo "中古: enriched データを配置 (from ${CHUKO_ENRICHED})" >&2
+    python3 scripts/merge_enrichments.py \
+        --base "$BASE" \
+        --enriched $CHUKO_SOURCES \
+        --output "${OUTPUT_DIR}/latest.json"
+    echo "中古: ${CHUKO_SOURCES} をマージ完了" >&2
 else
-    echo "警告: enriched-chuko の latest.json が見つかりません（前回データを維持）" >&2
-    ls -R enriched-chuko/ 2>/dev/null || echo "  enriched-chuko/ ディレクトリ自体が存在しません" >&2
+    echo "警告: enriched-chuko の成果物が1つも見つかりません（前回データを維持）" >&2
+    for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion; do
+        ls -R "${job_dir}/" 2>/dev/null || echo "  ${job_dir}/ ディレクトリ自体が存在しません" >&2
+    done
 fi
 
 # enriched-shinchiku の latest_shinchiku.json を配置
@@ -284,7 +302,7 @@ for f in "${REPORT_DIR}"/report_*.md; do
 done
 
 # enriched-* ワーキングディレクトリを削除
-rm -rf enriched-chuko enriched-shinchiku transactions
+rm -rf enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-shinchiku transactions scrape-results
 
 # ──────────────────────────── データ品質検証 ────────────────────────────
 
