@@ -1,0 +1,172 @@
+/* RealEstate iOS Design System — Colors & Type
+ * Source: real-estate-public/real-estate-ios/RealEstateApp/Design/DesignSystem.swift
+ * iOS 17+ HIG semantic colors, Liquid Glass (iOS 26+) friendly.
+ * Japanese real-estate investment app — clean, data-dense, dark-mode safe.
+ */
+
+:root {
+  /* ========== iOS HIG semantic palette (light) ========== */
+  --ios-blue: #007AFF;        /* systemBlue, accent */
+  --ios-green: #34C759;       /* systemGreen, positive (rgb 52,199,89) */
+  --ios-red: #FF3B30;         /* systemRed, negative */
+  --ios-orange: #FF9500;      /* systemOrange */
+  --ios-yellow: #FFCC00;      /* systemYellow */
+  --ios-purple: #AF52DE;      /* systemPurple */
+  --ios-indigo: #5856D6;      /* systemIndigo — AI accent */
+  --ios-teal: #30B0C7;
+  --ios-pink: #FF2D55;
+  --ios-gray: #8E8E93;        /* systemGray */
+  --ios-gray2: #AEAEB2;
+  --ios-gray3: #C7C7CC;
+  --ios-gray4: #D1D1D6;
+  --ios-gray5: #E5E5EA;
+  --ios-gray6: #F2F2F7;       /* systemGroupedBackground */
+
+  /* ========== Brand semantic tokens (from DesignSystem.swift) ========== */
+  --positive: #34C759;        /* rgb(52,199,89) — gain/up */
+  --negative: #FF3B30;        /* loss/down */
+  --price-down: #2E87C2;      /* rgb(46,135,194) — blue, 値下げ */
+  --price-up: #E67D21;        /* rgb(230,125,33) — orange, 値上げ */
+  --shinchiku-price: #34C759; /* 新築 price color */
+  --commute-pg: #007AFF;      /* Playground commute badge */
+  --commute-m3: #8C3DC7;      /* M3Career commute badge */
+
+  /* ========== AI accent (Claude-generated content) ========== */
+  --ai-accent: #5856D6;       /* indigo — controlled, not loud */
+  --ai-accent-tint: rgba(88, 86, 214, 0.10);
+  --ai-accent-border: rgba(88, 86, 214, 0.22);
+
+  /* ========== Score grades (S/A/B/C/D) ========== */
+  --score-s: #34C759;  /* green — exceptional */
+  --score-a: #007AFF;  /* blue — strong */
+  --score-b: #FF9500;  /* orange — moderate */
+  --score-c: #8E8E93;  /* gray — weak */
+  --score-d: #FF3B30;  /* red — avoid */
+
+  /* ========== Source / portal colors (7 portals) ========== */
+  --src-suumo: #00973B;       /* SUUMO green */
+  --src-homes: #F29600;       /* HOME'S orange */
+  --src-rehouse: #C8102E;     /* 三井のリハウス red */
+  --src-nomucom: #003F88;     /* ノムコム navy */
+  --src-athome: #E60012;      /* アットホーム red */
+  --src-stepon: #1F4E9D;      /* 住友不動産 (StepOn) blue */
+  --src-livable: #009A44;     /* 東急リバブル green */
+
+  /* ========== Hazard severity ========== */
+  --hazard-high: #FF3B30;
+  --hazard-mid: #FF9500;
+  --hazard-low: #FFCC00;
+
+  /* ========== Backgrounds (light) ========== */
+  --bg-primary: #FFFFFF;             /* systemBackground */
+  --bg-secondary: #F2F2F7;           /* systemGroupedBackground */
+  --bg-tertiary: #FFFFFF;            /* secondarySystemGroupedBackground (light) */
+  --bg-card: #F8F8FB;                /* Color(white: 0.973) — cardBackground */
+  --bg-elevated: #FFFFFF;
+  --bg-glass: rgba(255,255,255,0.72);
+
+  /* ========== Foregrounds (light) ========== */
+  --fg-primary: #000000;             /* label */
+  --fg-secondary: rgba(60,60,67,0.60);   /* secondaryLabel */
+  --fg-tertiary: rgba(60,60,67,0.30);    /* tertiaryLabel */
+  --fg-quaternary: rgba(60,60,67,0.18);  /* quaternaryLabel */
+  --fg-on-tint: #FFFFFF;
+
+  /* Separators */
+  --separator: rgba(60,60,67,0.29);
+  --separator-opaque: #C6C6C8;
+
+  /* ========== Spacing (HIG content margins) ========== */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;   /* listRowVerticalPadding */
+  --space-16: 16px;   /* listRowHorizontalPadding, detailGridSpacing */
+  --space-20: 20px;   /* detailSectionSpacing */
+  --space-24: 24px;
+  --space-32: 32px;
+
+  /* ========== Radius ========== */
+  --radius-sm: 4px;     /* AI indicator chip */
+  --radius-md: 6px;     /* HighlightBadge */
+  --radius-lg: 8px;     /* thumbnail, alt-source section */
+  --radius-xl: 12px;    /* DesignSystem.cornerRadius — cards */
+  --radius-pill: 999px; /* tab chips, score pills */
+
+  /* ========== Shadow ========== */
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.04);
+  --shadow-floating: 0 2px 4px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
+  --shadow-pressed: 0 1px 1px rgba(0,0,0,0.04);
+
+  /* ========== Type — system fonts ========== */
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+                 "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP",
+                 system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --font-rounded: -apple-system-rounded, ui-rounded, "SF Pro Rounded", var(--font-system);
+
+  /* HIG Dynamic Type defaults (Large) */
+  --t-largeTitle: 700 34px/1.2 var(--font-system);
+  --t-title1: 700 28px/1.25 var(--font-system);
+  --t-title2: 700 22px/1.27 var(--font-system);
+  --t-title3: 600 20px/1.3 var(--font-system);
+  --t-headline: 600 17px/1.29 var(--font-system);
+  --t-body: 400 17px/1.41 var(--font-system);
+  --t-callout: 400 16px/1.31 var(--font-system);
+  --t-subheadline: 400 15px/1.33 var(--font-system);
+  --t-footnote: 400 13px/1.38 var(--font-system);
+  --t-caption: 400 12px/1.33 var(--font-system);
+  --t-caption2: 400 11px/1.18 var(--font-system);
+
+  /* App-specific type roles */
+  --t-price: 700 22px/1.1 var(--font-rounded);    /* price display, bold rounded */
+  --t-price-lg: 800 28px/1.05 var(--font-rounded);
+  --t-badge: 600 12px/1 var(--font-system);
+  --t-score-badge: 700 13px/1 var(--font-rounded);
+  --t-ai-indicator: 500 9px/1 var(--font-system);
+}
+
+/* ========== Dark mode ========== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #000000;
+    --bg-secondary: #000000;
+    --bg-tertiary: #1C1C1E;          /* secondarySystemGroupedBackground (dark) */
+    --bg-card: #1C1C1E;
+    --bg-elevated: #2C2C2E;
+    --bg-glass: rgba(28,28,30,0.72);
+
+    --fg-primary: #FFFFFF;
+    --fg-secondary: rgba(235,235,245,0.60);
+    --fg-tertiary: rgba(235,235,245,0.30);
+    --fg-quaternary: rgba(235,235,245,0.18);
+
+    --separator: rgba(84,84,88,0.65);
+    --separator-opaque: #38383A;
+
+    --ios-gray6: #1C1C1E;
+    --ios-gray5: #2C2C2E;
+    --ios-gray4: #3A3A3C;
+    --ios-gray3: #48484A;
+    --ios-gray2: #636366;
+
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.3);
+  }
+}
+
+/* ========== Semantic element styles ========== */
+body { font: var(--t-body); color: var(--fg-primary); background: var(--bg-secondary); }
+h1 { font: var(--t-largeTitle); }
+h2 { font: var(--t-title2); }
+h3 { font: var(--t-title3); }
+h4 { font: var(--t-headline); }
+.t-body { font: var(--t-body); }
+.t-callout { font: var(--t-callout); }
+.t-subheadline { font: var(--t-subheadline); }
+.t-footnote { font: var(--t-footnote); color: var(--fg-secondary); }
+.t-caption { font: var(--t-caption); color: var(--fg-secondary); }
+.t-caption2 { font: var(--t-caption2); color: var(--fg-tertiary); }
+.t-price { font: var(--t-price); color: var(--ios-blue); letter-spacing: -0.01em; }
+.t-price-lg { font: var(--t-price-lg); letter-spacing: -0.02em; }

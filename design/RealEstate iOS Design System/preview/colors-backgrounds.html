@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Backgrounds & layers</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:18px;background:var(--bg-secondary);font:var(--t-footnote);color:var(--fg-primary)}
+  .stack{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pane{padding:16px;border-radius:12px}
+  .lbl{font:600 12px/1 var(--font-system)}
+  .v{font:var(--t-caption2);color:var(--fg-secondary);margin-top:4px;font-feature-settings:"tnum"}
+  .card{padding:12px;border-radius:12px;background:var(--bg-card);box-shadow:var(--shadow-card);margin-top:8px}
+  .glass{background:rgba(255,255,255,.6);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border:1px solid rgba(255,255,255,.5)}
+</style></head>
+<body>
+<div class="stack">
+  <div class="pane" style="background:var(--bg-primary);border:1px solid var(--separator)"><div class="lbl">bg-primary</div><div class="v">#FFFFFF · systemBackground</div></div>
+  <div class="pane" style="background:var(--bg-secondary);border:1px solid var(--separator)"><div class="lbl">bg-secondary</div><div class="v">#F2F2F7 · grouped</div></div>
+  <div class="pane" style="background:var(--bg-card)"><div class="lbl">bg-card</div><div class="v">#F8F8FB · Color(white:0.973)</div></div>
+  <div class="pane glass"><div class="lbl">glass (iOS 26 approx)</div><div class="v">backdrop-filter blur+saturate</div></div>
+</div>
+<div class="card"><div class="lbl">Elevated card · radius 12</div><div class="v">shadow-card · 0 1px 2px / 0 4px 8px @ 4% black</div></div>
+</body></html>

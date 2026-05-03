@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Type — Price & numerics</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:20px;background:#fff;color:var(--fg-primary);font-feature-settings:"tnum"}
+  .row{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px solid var(--separator)}
+  .name{font:var(--t-caption);color:var(--fg-secondary)}
+  .price-blue{font:var(--t-price);color:var(--ios-blue)}
+  .price-lg{font:var(--t-price-lg);color:var(--ios-blue)}
+  .price-green{font:var(--t-price);color:var(--shinchiku-price)}
+  .pct-up{font:var(--t-subheadline);font-weight:600;color:var(--positive)}
+  .pct-down{font:var(--t-subheadline);font-weight:600;color:var(--negative)}
+  .dev{font:var(--t-callout);font-weight:600;color:var(--ios-blue)}
+</style></head>
+<body>
+<div class="row"><span class="price-lg">1億2,300万円</span><span class="name">price-lg · SF Rounded 800</span></div>
+<div class="row"><span class="price-blue">9,150万</span><span class="name">price · 中古 blue</span></div>
+<div class="row"><span class="price-green">1.0億</span><span class="name">price · 新築 green</span></div>
+<div class="row"><span class="pct-up">↑78%</span><span class="name">appreciation positive</span></div>
+<div class="row"><span class="pct-down">↓12%</span><span class="name">appreciation negative</span></div>
+<div class="row"><span class="dev">📊 61.4</span><span class="name">deviation score</span></div>
+<div class="row"><span style="font:var(--t-caption);color:var(--fg-secondary)">管理費1.3万 修繕1.2万 <b style="color:var(--price-up)">計2.5万/月</b></span><span class="name">running cost</span></div>
+</body></html>

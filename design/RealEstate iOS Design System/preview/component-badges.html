@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Score & Highlight badges</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:18px;background:#fff;color:var(--fg-primary);font:var(--t-footnote)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  h4{margin:0 0 6px;font:var(--t-caption);color:var(--fg-secondary);text-transform:uppercase;letter-spacing:.04em}
+  .score{padding:3px 9px;border-radius:6px;font:var(--t-score-badge);color:#fff}
+  .hl{padding:4px 8px;border-radius:6px;font:var(--t-badge)}
+  .hl.acc{background:rgba(0,122,255,.12);color:var(--ios-blue)}
+  .hl.pos{background:rgba(52,199,89,.14);color:#1f7a3a}
+  .hl.warn{background:rgba(255,149,0,.14);color:#a35e00}
+  .hl.neu{background:rgba(142,142,147,.16);color:#3c3c43}
+</style></head>
+<body>
+<h4>Score badge (S/A/B/C/D)</h4>
+<div class="row">
+  <span class="score" style="background:var(--score-s)">S 92</span>
+  <span class="score" style="background:var(--score-a)">A 78</span>
+  <span class="score" style="background:var(--score-b)">B 61</span>
+  <span class="score" style="background:var(--score-c)">C 44</span>
+  <span class="score" style="background:var(--score-d)">D 22</span>
+</div>
+<h4>Highlight badge</h4>
+<div class="row">
+  <span class="hl acc">築浅×駅2分</span>
+  <span class="hl pos">含み益S</span>
+  <span class="hl warn">値下げ注目</span>
+  <span class="hl neu">再開発エリア</span>
+</div>
+</body></html>

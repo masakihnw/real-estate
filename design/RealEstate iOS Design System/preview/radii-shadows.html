@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Radii & shadows</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:18px;background:var(--bg-secondary);color:var(--fg-primary);font:var(--t-footnote)}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+  .box{aspect-ratio:1;background:#fff;display:flex;align-items:flex-end;justify-content:center;padding:6px;font:var(--t-caption2);color:var(--fg-secondary)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .card{background:#fff;border-radius:12px;padding:18px;font:600 12px/1 var(--font-system)}
+  .card.s1{box-shadow:var(--shadow-card)}
+  .card.s2{box-shadow:var(--shadow-floating)}
+</style></head>
+<body>
+<div class="grid">
+  <div class="box" style="border-radius:4px">4 · chip</div>
+  <div class="box" style="border-radius:6px">6 · badge</div>
+  <div class="box" style="border-radius:8px">8 · thumb</div>
+  <div class="box" style="border-radius:12px">12 · card</div>
+  <div class="box" style="border-radius:999px">999 · pill</div>
+</div>
+<div class="row">
+  <div class="card s1">shadow-card<br><span style="font-weight:400;color:var(--fg-secondary)">0 1px 2px / 0 4px 8px @ 4%</span></div>
+  <div class="card s2">shadow-floating<br><span style="font-weight:400;color:var(--fg-secondary)">0 2px 4px / 0 8px 24px @ 6–8%</span></div>
+</div>
+</body></html>

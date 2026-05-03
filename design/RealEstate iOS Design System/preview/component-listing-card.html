@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>Listing card · compact</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:12px;background:var(--bg-secondary);color:var(--fg-primary);font-feature-settings:"tnum";display:flex;flex-direction:column;gap:6px}
+
+  .card{
+    background:var(--bg-card);border-radius:10px;padding:8px 10px 8px 8px;
+    display:grid;grid-template-columns:72px 1fr;gap:10px;position:relative;
+  }
+  .thumb{width:72px;height:72px;border-radius:6px;background:linear-gradient(135deg,#cfd6e0,#9aa6b3);position:relative;overflow:hidden;flex-shrink:0}
+  .thumb::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.4), transparent 60%)}
+  .score{position:absolute;left:4px;top:4px;padding:1px 5px;border-radius:4px;color:#fff;font:600 10px/1.2 var(--font-rounded);letter-spacing:0.02em}
+
+  .right{display:flex;flex-direction:column;gap:2px;min-width:0}
+
+  /* Row 1 — TITLE + AI highlight + heart
+     AI-generated subjective tags live HERE, with AI indicator marker. */
+  .row1{display:flex;align-items:center;gap:6px;min-width:0}
+  .name{font:600 14px/1.25 var(--font-system);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.01em;flex-shrink:1;min-width:0}
+  .ai-tag{
+    padding:1px 5px 1px 4px;border-radius:4px;
+    font:500 10px/1.4 var(--font-system);
+    background:rgba(88,86,214,.10);color:var(--ai-accent);
+    display:inline-flex;align-items:center;gap:3px;flex-shrink:0;
+  }
+  .ai-tag::before{content:"✦";font-size:8px}
+  .multi{font:500 10px/1 var(--font-system);color:var(--ai-accent);display:inline-flex;align-items:center;gap:2px;flex-shrink:0}
+  .spacer{flex:1}
+  .heart{color:var(--fg-tertiary);font-size:14px;flex-shrink:0}
+  .heart.on{color:var(--ios-red)}
+
+  /* Row 2 — QUANTITATIVE FACTS only: price (with monthly loan), % change, deviation score.
+     No subjective chips, no warnings. */
+  .row2{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+  .price{font:700 17px/1 var(--font-rounded);color:var(--ios-blue);letter-spacing:-0.02em}
+  .monthly{
+    font:700 14px/1 var(--font-rounded);color:var(--ios-blue);
+    font-feature-settings:"tnum";letter-spacing:-0.01em;
+    padding:2px 6px 2px 5px;border-radius:5px;
+    background:rgba(0,122,255,.10);
+    display:inline-flex;align-items:baseline;gap:1px;
+  }
+  .monthly .unit{font-size:10px;font-weight:600;opacity:.75}
+  .pct{font:600 12px/1 var(--font-rounded);margin-left:2px}
+  .pct.up{color:var(--positive)}
+  .pct.down{color:var(--negative)}
+  .dev{font:600 12px/1 var(--font-rounded);color:var(--ios-blue);display:inline-flex;align-items:center;gap:2px}
+
+  /* Row 3 — SPEC: layout / area / age / floor / cost (factual portal data) */
+  .spec{font:11px/1.35 var(--font-system);color:var(--fg-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .spec b{color:var(--fg-primary);font-weight:600}
+  .spec .sep{color:var(--fg-tertiary);margin:0 5px}
+
+  /* Row 4 — LOCATION & RISK FACTS: station, hazard, commute time.
+     Hazard chips live HERE because they're factual + location-bound. */
+  .row4{display:flex;align-items:center;gap:5px;flex-wrap:nowrap;overflow:hidden}
+  .station{font:11px/1.35 var(--font-system);color:var(--fg-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+  .station::before{content:"📍 ";font-size:10px}
+  .haz{padding:1px 5px;border-radius:4px;font:500 10px/1.4 var(--font-system);background:rgba(255,59,48,.12);color:var(--negative);flex-shrink:0;display:inline-flex;align-items:center;gap:2px}
+  .commute{padding:1px 5px;border-radius:4px;font:500 10px/1.4 var(--font-rounded);color:#fff;flex-shrink:0;font-feature-settings:"tnum"}
+  .c-pg{background:var(--commute-pg)}
+  .c-m3{background:var(--commute-m3)}
+
+  /* Annotation strip showing slot taxonomy */
+  .legend{
+    margin-top:4px;padding:8px 10px;background:transparent;
+    font:10px/1.5 var(--font-system);color:var(--fg-tertiary);
+    border-top:1px dashed var(--separator);
+  }
+  .legend b{color:var(--fg-secondary);font-weight:600}
+  .legend .sw{display:inline-block;width:8px;height:8px;border-radius:2px;vertical-align:middle;margin-right:4px}
+</style></head>
+<body>
+
+<!-- Card 1 — AI highlight + hazard, separated by slot -->
+<div class="card">
+  <div class="thumb"><span class="score" style="background:var(--score-b)">B 61</span></div>
+  <div class="right">
+    <div class="row1">
+      <div class="name">AQUA VISTA アクアヴィスタ</div>
+      <span class="ai-tag">含み益S</span>
+      <span class="spacer"></span>
+      <span class="multi">⛓ 他2</span>
+      <div class="heart on">♥</div>
+    </div>
+    <div class="row2">
+      <span class="price">1億250万</span>
+      <span class="monthly">23.0<span class="unit">万/月</span></span>
+      <span class="pct up">↑78%</span>
+      <span class="dev">📊61.4</span>
+    </div>
+    <div class="spec"><b>3LDK</b><span class="sep">·</span>92.2㎡<span class="sep">·</span>築11年<span class="sep">·</span>7/16階<span class="sep">·</span>管理2.5万/月</div>
+    <div class="row4">
+      <div class="station">京成本線「千住大橋」徒歩3分</div>
+      <span class="haz">⚠浸水高</span>
+      <span class="commute c-pg">P51</span>
+      <span class="commute c-m3">M48</span>
+    </div>
+  </div>
+</div>
+
+<!-- Card 2 — different AI tag, no hazard -->
+<div class="card">
+  <div class="thumb"><span class="score" style="background:var(--score-a)">A 72</span></div>
+  <div class="right">
+    <div class="row1">
+      <div class="name">KAZAHANA カザハナ</div>
+      <span class="ai-tag">低層×希少</span>
+      <span class="spacer"></span>
+      <div class="heart">♡</div>
+    </div>
+    <div class="row2">
+      <span class="price">1億1,000万</span>
+      <span class="monthly">24.4<span class="unit">万/月</span></span>
+      <span class="pct down">↓50万</span>
+      <span class="dev">📊54.1</span>
+    </div>
+    <div class="spec"><b>2LDK+S</b><span class="sep">·</span>73.8㎡<span class="sep">·</span>築6年<span class="sep">·</span>1/3階<span class="sep">·</span>管理2.4万/月</div>
+    <div class="row4">
+      <div class="station">東京メトロ南北線「白金高輪」徒歩7分</div>
+      <span class="commute c-pg">P32</span>
+      <span class="commute c-m3">M41</span>
+    </div>
+  </div>
+</div>
+
+<!-- Slot taxonomy annotation -->
+<div class="legend">
+  <b>情報粒度ごとのスロット:</b><br>
+  <span class="sw" style="background:rgba(88,86,214,.6)"></span><b>Row 1:</b> AIハイライト（主観的サマリー、AI生成、紫＋✦マーカー）　
+  <span class="sw" style="background:var(--ios-blue)"></span><b>Row 2:</b> 定量ファクト（価格＋月次返済額・偏差値・%変動のみ、チップ無し）　
+  <span class="sw" style="background:var(--fg-secondary)"></span><b>Row 3:</b> 物件スペック（間取り・面積・築年・階・管理費）　
+  <span class="sw" style="background:var(--negative)"></span><b>Row 4:</b> 立地&リスクファクト（駅距離・ハザード・通勤時間）<br>
+  <span style="color:var(--fg-tertiary)">※ 月次返済額 = 物件価格 × 金利1.2% / 50年元利均等。設定画面で金利・年数を変更可能。管理費・修繕費は別途 Row 3 に表示。</span>
+</div>
+
+</body></html>

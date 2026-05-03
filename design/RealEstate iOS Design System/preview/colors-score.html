@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Score grades</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:20px;background:#fff;font:var(--t-footnote);color:var(--fg-primary)}
+  .row{display:flex;gap:12px;align-items:flex-end}
+  .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .pill{padding:4px 10px;border-radius:999px;font:var(--t-score-badge);color:#fff}
+  .bar{width:100%;border-radius:6px;background:var(--ios-gray6);overflow:hidden}
+  .fill{height:100%}
+  .count{font:var(--t-caption);color:var(--fg-secondary);font-feature-settings:"tnum"}
+  .label{font:600 18px/1 var(--font-rounded)}
+  h4{margin:0 0 12px;font:var(--t-caption);color:var(--fg-secondary);text-transform:uppercase;letter-spacing:.04em}
+</style></head>
+<body>
+<h4>Investment Score · S/A/B/C/D</h4>
+<div class="row" style="height:120px">
+  <div class="col"><div class="label" style="color:var(--score-s)">S</div><div class="bar" style="height:60%"><div class="fill" style="background:var(--score-s);height:100%;opacity:.85"></div></div><div class="count">156</div></div>
+  <div class="col"><div class="label" style="color:var(--score-a)">A</div><div class="bar" style="height:100%"><div class="fill" style="background:var(--score-a);height:100%;opacity:.85"></div></div><div class="count">446</div></div>
+  <div class="col"><div class="label" style="color:var(--score-b)">B</div><div class="bar" style="height:78%"><div class="fill" style="background:var(--score-b);height:100%;opacity:.85"></div></div><div class="count">338</div></div>
+  <div class="col"><div class="label" style="color:var(--score-c)">C</div><div class="bar" style="height:22%"><div class="fill" style="background:var(--score-c);height:100%;opacity:.85"></div></div><div class="count">76</div></div>
+  <div class="col"><div class="label" style="color:var(--score-d)">D</div><div class="bar" style="height:5%"><div class="fill" style="background:var(--score-d);height:100%;opacity:.85"></div></div><div class="count">2</div></div>
+</div>
+<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+  <span class="pill" style="background:var(--score-s)">S 92</span>
+  <span class="pill" style="background:var(--score-a)">A 78</span>
+  <span class="pill" style="background:var(--score-b)">B 61</span>
+  <span class="pill" style="background:var(--score-c)">C 44</span>
+  <span class="pill" style="background:var(--score-d)">D 22</span>
+</div>
+</body></html>

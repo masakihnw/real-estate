@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Tab bar & filter chips</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:14px;background:var(--bg-secondary);color:var(--fg-primary);font:var(--t-footnote)}
+  h4{margin:0 0 8px;font:var(--t-caption);color:var(--fg-secondary);text-transform:uppercase;letter-spacing:.04em}
+  .seg{display:flex;background:var(--ios-gray5);border-radius:9px;padding:2px;width:280px;margin-bottom:14px}
+  .seg button{flex:1;border:0;background:transparent;padding:6px;border-radius:7px;font:600 13px/1 var(--font-system);color:var(--fg-primary)}
+  .seg button.on{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .chip{padding:6px 12px;border-radius:999px;font:var(--t-footnote);background:var(--ios-gray6);display:inline-flex;align-items:center;gap:4px}
+  .chip.on{background:var(--ios-blue);color:#fff;font-weight:600}
+  .chip-row{display:flex;gap:8px;margin-bottom:14px}
+  .tabbar{display:flex;justify-content:space-around;padding:8px 4px 6px;background:var(--bg-glass);backdrop-filter:blur(20px) saturate(1.4);border-top:1px solid var(--separator);border-radius:12px}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:2px;font:var(--t-caption2);color:var(--fg-secondary);min-width:48px}
+  .tab.on{color:var(--ios-blue);font-weight:600}
+  .tab .ic{width:24px;height:24px;background:currentColor;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}
+</style></head>
+<body>
+<h4>Segmented control · 中古/新築</h4>
+<div class="seg"><button class="on">中古</button><button>新築</button></div>
+
+<h4>Filter chips · お気に入り</h4>
+<div class="chip-row">
+  <span class="chip on">すべて <b style="opacity:.8">12</b></span>
+  <span class="chip">掲載中 <b style="color:var(--fg-secondary)">9</b></span>
+  <span class="chip">⚠ 掲載終了 <b style="color:var(--fg-secondary)">3</b></span>
+</div>
+
+<h4>Tab bar (5 items)</h4>
+<div class="tabbar">
+  <div class="tab on"><div class="ic" style="-webkit-mask-image:url(../assets/tab-chuko.png);mask-image:url(../assets/tab-chuko.png);background:currentColor"></div>概況</div>
+  <div class="tab"><div class="ic" style="-webkit-mask-image:url(../assets/tab-shinchiku.png);mask-image:url(../assets/tab-shinchiku.png)"></div>物件</div>
+  <div class="tab"><div class="ic" style="-webkit-mask-image:url(../assets/tab-map.png);mask-image:url(../assets/tab-map.png)"></div>地図</div>
+  <div class="tab"><div class="ic" style="-webkit-mask-image:url(../assets/tab-favorites.png);mask-image:url(../assets/tab-favorites.png)"></div>お気に入り</div>
+  <div class="tab"><div class="ic" style="-webkit-mask-image:url(../assets/tab-settings.png);mask-image:url(../assets/tab-settings.png)"></div>More</div>
+</div>
+</body></html>

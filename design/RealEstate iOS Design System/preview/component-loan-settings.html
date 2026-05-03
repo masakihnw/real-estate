@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>Loan settings · slider + numeric</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:14px;background:var(--bg-secondary);color:var(--fg-primary);font-feature-settings:"tnum"}
+
+  /* iOS-style grouped section */
+  .group-h{font:600 10px/1 var(--font-system);color:var(--fg-tertiary);text-transform:uppercase;letter-spacing:.06em;padding:0 4px 6px}
+
+  .card{
+    background:var(--bg-card);border-radius:10px;
+    padding:12px 14px;display:flex;flex-direction:column;gap:14px;
+  }
+  .row + .row{border-top:1px solid var(--separator);padding-top:14px}
+
+  .row{display:flex;flex-direction:column;gap:8px}
+  .label-line{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .label{font:500 13px/1.3 var(--font-system);color:var(--fg-primary)}
+
+  /* Numeric pill — tap to focus, keyboard input */
+  .num-pill{
+    display:inline-flex;align-items:baseline;gap:2px;
+    background:rgba(0,122,255,.10);color:var(--ios-blue);
+    border-radius:7px;padding:5px 10px;
+    font:700 17px/1 var(--font-rounded);letter-spacing:-0.01em;
+    cursor:text;
+    transition:background .12s, box-shadow .12s;
+    min-width:78px;justify-content:flex-end;
+  }
+  .num-pill:hover{background:rgba(0,122,255,.14)}
+  .num-pill:focus-within{
+    background:#fff;
+    box-shadow:0 0 0 2px var(--ios-blue);
+  }
+  .num-pill input{
+    width:54px;text-align:right;border:0;background:transparent;color:inherit;
+    font:inherit;padding:0;outline:none;font-variant-numeric:tabular-nums;
+    -moz-appearance:textfield;caret-color:var(--ios-blue);
+  }
+  .num-pill input::-webkit-outer-spin-button,
+  .num-pill input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .num-pill input::selection{background:rgba(0,122,255,.25)}
+  .num-pill .unit{font:600 12px/1 var(--font-rounded);opacity:.7;margin-left:1px}
+
+  /* Slider — iOS-style track with thumb */
+  .slider-wrap{position:relative;height:28px;display:flex;align-items:center}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;
+    background:transparent;margin:0;padding:0;outline:none;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    height:4px;border-radius:2px;
+    background:linear-gradient(to right,
+      var(--ios-blue) 0%, var(--ios-blue) var(--pct,50%),
+      rgba(120,120,128,.18) var(--pct,50%), rgba(120,120,128,.18) 100%);
+  }
+  input[type=range]::-moz-range-track{
+    height:4px;border-radius:2px;background:rgba(120,120,128,.18);
+  }
+  input[type=range]::-moz-range-progress{
+    height:4px;border-radius:2px;background:var(--ios-blue);
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;
+    width:28px;height:28px;border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 4px rgba(0,0,0,.10), 0 0 1px rgba(0,0,0,.15);
+    cursor:grab;margin-top:-12px;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:28px;height:28px;border-radius:50%;background:#fff;border:0;
+    box-shadow:0 2px 4px rgba(0,0,0,.10), 0 0 1px rgba(0,0,0,.15);
+    cursor:grab;
+  }
+  input[type=range]:active::-webkit-slider-thumb{cursor:grabbing;transform:scale(1.04)}
+
+  /* Tick labels under slider */
+  .ticks{
+    display:flex;justify-content:space-between;
+    font:500 10px/1 var(--font-rounded);color:var(--fg-tertiary);
+    padding:0 2px;margin-top:-2px;
+  }
+
+  /* Live preview block */
+  .preview{
+    background:rgba(0,122,255,.05);border-radius:8px;
+    padding:10px 12px;margin-top:4px;
+    display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  }
+  .preview .lbl{font:500 11px/1.3 var(--font-system);color:var(--fg-secondary)}
+  .preview .lbl b{color:var(--fg-primary);font-weight:600}
+  .preview .val{
+    font:700 18px/1 var(--font-rounded);color:var(--ios-blue);letter-spacing:-0.02em;
+    font-feature-settings:"tnum";
+  }
+  .preview .val .unit{font:600 11px/1 var(--font-rounded);opacity:.7;margin-left:1px}
+
+  .footnote{font:11px/1.4 var(--font-system);color:var(--fg-tertiary);padding:0 4px}
+</style></head>
+<body>
+
+<div class="group-h">ローン設定</div>
+
+<div class="card">
+  <!-- Interest rate row -->
+  <div class="row">
+    <div class="label-line">
+      <span class="label">金利</span>
+      <span class="num-pill" onclick="this.querySelector('input').focus()">
+        <input id="rate" type="number" inputmode="decimal" step="0.05" min="0" max="5" value="1.20">
+        <span class="unit">%</span>
+      </span>
+    </div>
+    <div class="slider-wrap">
+      <input id="rateSlider" type="range" min="0" max="5" step="0.05" value="1.20" style="--pct:24%">
+    </div>
+    <div class="ticks"><span>0%</span><span>1.25%</span><span>2.5%</span><span>3.75%</span><span>5%</span></div>
+  </div>
+
+  <!-- Years row -->
+  <div class="row">
+    <div class="label-line">
+      <span class="label">ローン年数</span>
+      <span class="num-pill" onclick="this.querySelector('input').focus()">
+        <input id="years" type="number" inputmode="numeric" step="1" min="10" max="50" value="50">
+        <span class="unit">年</span>
+      </span>
+    </div>
+    <div class="slider-wrap">
+      <input id="yearsSlider" type="range" min="10" max="50" step="1" value="50" style="--pct:100%">
+    </div>
+    <div class="ticks"><span>10</span><span>20</span><span>30</span><span>40</span><span>50年</span></div>
+  </div>
+
+  <!-- Live preview -->
+  <div class="row" style="border-top:1px solid var(--separator);padding-top:12px;gap:6px">
+    <div class="preview">
+      <span class="lbl">プレビュー · 物件価格 <b>1億250万</b></span>
+      <span class="val"><span id="monthly">23.0</span><span class="unit">万/月</span></span>
+    </div>
+    <div class="footnote">数値ピルをタップでキーボード入力（金利は decimal pad、年数は number pad）。スライダーと完全同期。元利均等返済式。</div>
+  </div>
+</div>
+
+<script>
+  const rateInput = document.getElementById('rate');
+  const rateSlider = document.getElementById('rateSlider');
+  const yearsInput = document.getElementById('years');
+  const yearsSlider = document.getElementById('yearsSlider');
+  const monthlyEl = document.getElementById('monthly');
+  const PRINCIPAL = 102_500_000; // 1億250万
+
+  function calcMonthly(p, ratePct, years) {
+    const r = (ratePct / 100) / 12;
+    const n = years * 12;
+    if (r === 0) return p / n;
+    return p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  }
+  function update() {
+    const r = parseFloat(rateInput.value) || 0;
+    const y = parseInt(yearsInput.value) || 35;
+    const m = calcMonthly(PRINCIPAL, r, y);
+    monthlyEl.textContent = (m / 10000).toFixed(1);
+    rateSlider.style.setProperty('--pct', (r / 5 * 100) + '%');
+    yearsSlider.style.setProperty('--pct', ((y - 10) / 40 * 100) + '%');
+  }
+  function bind(input, slider) {
+    input.addEventListener('input', () => { slider.value = input.value; update(); });
+    slider.addEventListener('input', () => { input.value = slider.value; update(); });
+  }
+  bind(rateInput, rateSlider);
+  bind(yearsInput, yearsSlider);
+  update();
+</script>
+
+</body></html>
