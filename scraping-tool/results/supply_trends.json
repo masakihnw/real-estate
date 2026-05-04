@@ -9790,15 +9790,15 @@
     },
     {
       "date": "2026-05-04",
-      "total_listings": 327,
-      "new_count": 4,
+      "total_listings": 326,
+      "new_count": 0,
       "removed_count": 1,
-      "updated_count": 4,
-      "price_changed_count": 2,
-      "avg_price_man": 10399,
+      "updated_count": 0,
+      "price_changed_count": 0,
+      "avg_price_man": 10401,
       "median_price_man": 10480,
       "price_distribution": {
-        "under_10000": 140,
+        "under_10000": 139,
         "10000_11000": 103,
         "11000_12000": 84,
         "over_12000": 0,
@@ -9824,8 +9824,8 @@
           "max_price_man": 11500
         },
         "新宿区": {
-          "count": 23,
-          "avg_price_man": 10673,
+          "count": 22,
+          "avg_price_man": 10723,
           "min_price_man": 9080,
           "max_price_man": 11490
         },
@@ -19743,10 +19743,10 @@
     },
     {
       "date": "2026-05-04",
-      "total_listings": 272,
-      "new_count": 6,
+      "total_listings": 273,
+      "new_count": 5,
       "removed_count": 4,
-      "updated_count": 7,
+      "updated_count": 4,
       "price_changed_count": 0,
       "avg_price_man": 9010,
       "median_price_man": 9300,
@@ -19755,7 +19755,7 @@
         "10000_11000": 8,
         "11000_12000": 6,
         "over_12000": 0,
-        "undecided": 202
+        "undecided": 203
       },
       "ward_stats": {
         "港区": {
@@ -19866,17 +19866,17 @@
           "min_price_man": 7900,
           "max_price_man": 8790
         },
+        "台東区": {
+          "count": 6,
+          "avg_price_man": 9790,
+          "min_price_man": 9390,
+          "max_price_man": 10190
+        },
         "豊島区": {
           "count": 5,
           "avg_price_man": 8900,
           "min_price_man": 8900,
           "max_price_man": 8900
-        },
-        "台東区": {
-          "count": 5,
-          "avg_price_man": 9790,
-          "min_price_man": 9390,
-          "max_price_man": 10190
         },
         "目黒区": {
           "count": 4,
