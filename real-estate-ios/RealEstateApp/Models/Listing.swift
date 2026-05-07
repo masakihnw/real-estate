@@ -310,6 +310,18 @@ final class Listing: @unchecked Sendable {
     /// AI分析による主要なリスク
     var keyRisksJSON: String?
 
+    /// AI購入推奨度（1-5、5=強く推奨）
+    var aiRecommendationScore: Int?
+
+    /// AI購入推奨の結論（1-2文）
+    var aiRecommendationSummary: String?
+
+    /// AI推奨の判断フラグ JSON（例: ["立地◎", "7年後手狭リスク"]）
+    var aiRecommendationFlagsJSON: String?
+
+    /// AI推奨の次のアクション
+    var aiRecommendationAction: String?
+
     init(
         source: String? = nil,
         url: String,
@@ -404,7 +416,11 @@ final class Listing: @unchecked Sendable {
         dedupConfidence: Double? = nil,
         dedupCandidatesJSON: String? = nil,
         keyStrengthsJSON: String? = nil,
-        keyRisksJSON: String? = nil
+        keyRisksJSON: String? = nil,
+        aiRecommendationScore: Int? = nil,
+        aiRecommendationSummary: String? = nil,
+        aiRecommendationFlagsJSON: String? = nil,
+        aiRecommendationAction: String? = nil
     ) {
         self.source = source
         self.url = url
@@ -500,6 +516,10 @@ final class Listing: @unchecked Sendable {
         self.dedupCandidatesJSON = dedupCandidatesJSON
         self.keyStrengthsJSON = keyStrengthsJSON
         self.keyRisksJSON = keyRisksJSON
+        self.aiRecommendationScore = aiRecommendationScore
+        self.aiRecommendationSummary = aiRecommendationSummary
+        self.aiRecommendationFlagsJSON = aiRecommendationFlagsJSON
+        self.aiRecommendationAction = aiRecommendationAction
     }
 
     // MARK: - Identity
@@ -2015,6 +2035,16 @@ final class Listing: @unchecked Sendable {
     var parsedKeyRisks: [String] {
         guard let json = keyRisksJSON, let data = json.data(using: .utf8) else { return [] }
         return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+    }
+
+    var parsedRecommendationFlags: [String] {
+        guard let json = aiRecommendationFlagsJSON, let data = json.data(using: .utf8) else { return [] }
+        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+    }
+
+    var recommendationStars: String {
+        guard let score = aiRecommendationScore, score >= 1, score <= 5 else { return "" }
+        return String(repeating: "★", count: score) + String(repeating: "☆", count: 5 - score)
     }
 
     // MARK: - 投資判断支援

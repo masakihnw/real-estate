@@ -511,6 +511,10 @@ final class ListingStore {
         existing.dedupCandidatesJSON = new.dedupCandidatesJSON
         existing.keyStrengthsJSON = new.keyStrengthsJSON
         existing.keyRisksJSON = new.keyRisksJSON
+        existing.aiRecommendationScore = new.aiRecommendationScore
+        existing.aiRecommendationSummary = new.aiRecommendationSummary
+        existing.aiRecommendationFlagsJSON = new.aiRecommendationFlagsJSON
+        existing.aiRecommendationAction = new.aiRecommendationAction
         // existing.memo, existing.isLiked, existing.isNew, existing.isNewBuilding, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
     }
 

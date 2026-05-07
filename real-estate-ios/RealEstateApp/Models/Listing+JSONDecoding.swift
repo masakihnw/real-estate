@@ -130,6 +130,12 @@ struct ListingDTO: Codable {
     var key_strengths: [String]?
     var key_risks: [String]?
 
+    // AI 購入推奨度
+    var ai_recommendation_score: Int?
+    var ai_recommendation_summary: String?
+    var ai_recommendation_flags: [String]?
+    var ai_recommendation_action: String?
+
     // Supabase 同期用: 物件のアクティブ状態
     var is_active: Bool?
 }
@@ -414,7 +420,17 @@ extension Listing {
                     return String(data: data, encoding: .utf8)
                 }
                 return nil
-            }()
+            }(),
+            aiRecommendationScore: dto.ai_recommendation_score,
+            aiRecommendationSummary: dto.ai_recommendation_summary,
+            aiRecommendationFlagsJSON: {
+                if let arr = dto.ai_recommendation_flags, !arr.isEmpty,
+                   let data = try? JSONEncoder().encode(arr) {
+                    return String(data: data, encoding: .utf8)
+                }
+                return nil
+            }(),
+            aiRecommendationAction: dto.ai_recommendation_action
         )
     }
 }

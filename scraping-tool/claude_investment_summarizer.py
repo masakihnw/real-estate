@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-Claude API による投資判断サマリー生成モジュール。
+Claude API による購入推奨度生成モジュール。
 
-全スコア・enrichmentデータを統合し、各物件に対して:
-- investment_summary: 1-2文の自然言語サマリー
-- highlight_badge: 3-5文字のバッジテキスト
+買い手プロファイルと物件データを照合し、各物件に対して:
+- ai_recommendation_score: 1-5 の購入推奨度（★の数）
+- ai_recommendation_summary: 総合判断の結論（1-2文）
+- ai_recommendation_flags: 判断のキータグ（配列）
+- ai_recommendation_action: 具体的な次のアクション
 
 コスト最適化: デフォルトでは「有望物件」のみ Claude API に送信する。
-フィルタ条件を満たさない物件はスキップされ、サマリーは生成されない。
 --skip-filter オプションで全件処理も可能。
 """
 
@@ -24,28 +25,55 @@ from logger import get_logger
 logger = get_logger(__name__)
 
 # ─────────────────────── フィルタ閾値（有望物件の判定） ───────────────────────
-# いずれか1つでも満たせば「有望」と判定する（OR 条件）
-# listing_score: 総合投資スコア（0-100）。55以上で上位〜中上位
 FILTER_LISTING_SCORE_MIN = 55
-# ss_profit_pct: 住まいサーフィン儲かる確率（0-100%）。50%以上で利益期待
 FILTER_SS_PROFIT_PCT_MIN = 50
-# asset_rank: 資産性ランク。S/A/B が有望（C は除外）
 FILTER_ASSET_RANKS_PROMISING = {"S", "A", "B"}
-# price_fairness_score: 価格妥当性スコア。60以上は割安寄り
 FILTER_PRICE_FAIRNESS_MIN = 60
+
+_BUYER_PROFILE_PATH = Path(__file__).resolve().parent / "config" / "buyer_profile.json"
+
+
+def _load_buyer_profile() -> dict:
+    if not _BUYER_PROFILE_PATH.exists():
+        logger.warning("buyer_profile.json が見つかりません: %s", _BUYER_PROFILE_PATH)
+        return {}
+    try:
+        return json.loads(_BUYER_PROFILE_PATH.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as e:
+        logger.warning("buyer_profile.json 読み込みエラー: %s", e)
+        return {}
+
+
+def _format_buyer_profile(profile: dict) -> str:
+    if not profile:
+        return "（買い手プロファイル未設定）"
+    lines = []
+    field_labels = {
+        "family_composition": "家族構成",
+        "household_income": "世帯年収",
+        "child_plan": "子ども計画",
+        "work_style": "働き方",
+        "priorities": "重視する点",
+        "neighborhood_preference": "街の雰囲気の好み",
+        "school_priority": "学区・教育方針",
+        "commute_quality": "通勤の質の重視点",
+        "weekend_lifestyle": "休日の過ごし方",
+        "community_preference": "コミュニティ希望",
+        "deal_breakers": "絶対NG条件",
+        "planned_borrowing": "借入予定",
+        "monthly_payment_limit": "月額上限",
+        "relocation_reason": "住み替え理由",
+        "post_sale_strategy": "出口方針",
+    }
+    for key, label in field_labels.items():
+        val = profile.get(key, "")
+        if val:
+            lines.append(f"- {label}: {val}")
+    return "\n".join(lines)
 
 
 def _is_promising(listing: dict) -> bool:
-    """
-    物件が「有望」かどうかを判定する。
-    以下のいずれか1つでも満たせば有望と判定（OR 条件）:
-    1. listing_score >= FILTER_LISTING_SCORE_MIN
-    2. ss_profit_pct >= FILTER_SS_PROFIT_PCT_MIN
-    3. asset_rank が S/A/B のいずれか
-    4. price_fairness_score >= FILTER_PRICE_FAIRNESS_MIN
-
-    スコアデータが一切ない物件は判定不能のためスキップ（有望でないと扱う）。
-    """
+    """有望物件判定（OR条件）。"""
     listing_score = listing.get("listing_score")
     if listing_score is not None and listing_score >= FILTER_LISTING_SCORE_MIN:
         return True
@@ -64,23 +92,37 @@ def _is_promising(listing: dict) -> bool:
 
     return False
 
-SYSTEM_PROMPT = """あなたは不動産投資アドバイザーです。
-物件のスコアと特徴から、投資判断サマリーを生成してください。
+
+SYSTEM_PROMPT = """あなたは不動産購入エージェントです。
+以下の買い手プロファイルと物件情報を照合し、「この買い手にとってこの物件は買いかどうか」を総合判断してください。
+
+## 判断の姿勢
+- 個別スコアを並べるのではなく、複合的に判断する
+- メリット・デメリットは両方あることが前提。その上で「総合的に買いか」を結論づける
+- 出口での資産性（7-13年後に売却時に損しないか）も判断要素の一つとして考慮する
+- 間取り・広さが家族計画（子ども3人）に7年以上耐えうるかを重視する
+- 絶対NG条件に該当する場合は即座にスコア1を付ける
+
+## スコア基準
+5: 強く推奨。この家族の条件にほぼ完璧にフィット。迷わず買い。
+4: 推奨。弱点はあるが総合的にメリットが上回る。条件交渉で買い。
+3: 条件次第。良い点と悪い点が拮抗。指値が通れば検討、通らなければ見送り。
+2: 非推奨。致命的ではないが、この家族にはもっと適した物件がありそう。
+1: 見送り。NG条件に該当、または複数の重大ミスマッチ。
 
 JSON形式で回答:
 {
-  "summary": "駅2分の築浅タワマン。含み益S判定かつ流動性高く、10年後の資産価値維持が期待できる好物件。",
-  "highlight_badge": "築浅×駅2分",
-  "key_strengths": ["駅近", "含み益S", "管理良好"],
-  "key_risks": ["価格帯が高い"]
+  "score": 4,
+  "conclusion": "駅近×管理良好で資産性は堅い。3LDK65m²は子ども3人には7年目以降厳しいが、立地の希少性と出口の確実性がそれを上回る。指値7,200万円以下なら買い。",
+  "flags": ["立地◎", "資産性堅い", "7年後手狭リスク"],
+  "action": "指値7,200万円で買付申込"
 }
 
 ルール:
-- summary: 1-2文。具体的な数値や判定結果を含め、「なぜ良いか/悪いか」を伝える
-- highlight_badge: 物件リストで一目で分かる3-5文字のキーフレーズ。例: "築浅×駅2分", "含み益S", "値下げ注目", "割安判定", "再開発エリア"
-- key_strengths: 主要な強み（3個以内）
-- key_risks: 主要なリスク（3個以内、なければ空配列）
-- 客観的事実に基づき、投資初心者にも分かりやすい日本語で"""
+- score: 1-5の整数
+- conclusion: 1-2文。「なぜ買いか/見送りか」をこの家族の状況に紐づけて具体的に述べる。スコアの羅列ではなく総合判断。
+- flags: この判断を左右した主要因を3-5個のタグで（良い点も悪い点も混ぜる）
+- action: 具体的な次のアクション（指値金額、見送り理由等）"""
 
 
 def _build_score_context(listing: dict) -> str:
@@ -93,6 +135,23 @@ def _build_score_context(listing: dict) -> str:
     parts.append(f"築年: {listing.get('built_year', '?')}年")
     parts.append(f"徒歩: {listing.get('walk_min', '?')}分")
     parts.append(f"総戸数: {listing.get('total_units', '?')}戸")
+
+    address = listing.get("address", "")
+    if address:
+        parts.append(f"所在地: {address}")
+
+    station_line = listing.get("station_line", "")
+    station_name = listing.get("station_name", "")
+    if station_line or station_name:
+        parts.append(f"路線/駅: {station_line} {station_name}")
+
+    floor_pos = listing.get("floor_position")
+    if floor_pos:
+        parts.append(f"所在階: {floor_pos}階")
+
+    direction = listing.get("direction", "")
+    if direction:
+        parts.append(f"向き: {direction}")
 
     if listing.get("listing_score") is not None:
         parts.append(f"総合投資スコア: {listing['listing_score']}/100")
@@ -107,6 +166,8 @@ def _build_score_context(listing: dict) -> str:
         parts.append(f"住まいサーフィン評価: {listing['ss_value_judgment']}")
     if listing.get("ss_appreciation_rate") is not None:
         parts.append(f"値上がり率: {listing['ss_appreciation_rate']}%")
+    if listing.get("ss_profit_pct") is not None:
+        parts.append(f"儲かる確率: {listing['ss_profit_pct']}%")
 
     hazard = listing.get("hazard_info")
     if hazard:
@@ -119,6 +180,19 @@ def _build_score_context(listing: dict) -> str:
             risk_level = hazard.get("overall_risk", "")
             if risk_level:
                 parts.append(f"災害リスク: {risk_level}")
+
+    commute_info = listing.get("commute_info_json") or listing.get("commute_info")
+    if commute_info:
+        if isinstance(commute_info, str):
+            try:
+                commute_info = json.loads(commute_info)
+            except (json.JSONDecodeError, TypeError):
+                commute_info = None
+        if commute_info and isinstance(commute_info, dict):
+            for dest, info in commute_info.items():
+                if isinstance(info, dict) and info.get("duration_min"):
+                    transfers = info.get("transfers", "?")
+                    parts.append(f"通勤({dest}): {info['duration_min']}分（乗換{transfers}回）")
 
     price_history = listing.get("price_history")
     if price_history:
@@ -149,36 +223,40 @@ def _build_score_context(listing: dict) -> str:
             if features.get("management_quality"):
                 parts.append(f"管理: {features['management_quality']}")
 
+    management_fee = listing.get("management_fee")
+    repair_fund = listing.get("repair_reserve_fund")
+    if management_fee is not None or repair_fund is not None:
+        mf = f"{management_fee:,}円" if management_fee else "?"
+        rf = f"{repair_fund:,}円" if repair_fund else "?"
+        parts.append(f"管理費/修繕積立金: {mf} / {rf}")
+
     return "\n".join(parts)
 
 
 def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = False) -> list[dict]:
-    """有望物件に投資サマリーを生成。
-
-    Args:
-        listings: 物件リスト（投資スコア注入済み）
-        skip_filter: True の場合、フィルタリングを無効化して全件処理する
-    """
-    from claude_client import ClaudeClient, BatchRequest, DEFAULT_MODEL
+    """有望物件に購入推奨度を生成。"""
+    from claude_client import ClaudeClient, BatchRequest, SONNET_MODEL
 
     if not ClaudeClient.is_available():
-        logger.warning("ANTHROPIC_API_KEY 未設定: サマリー生成スキップ")
+        logger.warning("ANTHROPIC_API_KEY 未設定: 推奨度生成スキップ")
         return listings
 
-    # フィルタリング: 有望物件のみを対象とする
+    buyer_profile = _load_buyer_profile()
+    buyer_context = _format_buyer_profile(buyer_profile)
+
     if skip_filter:
         target_indices = list(range(len(listings)))
-        logger.info("サマリー生成: フィルタ無効 (全%d件を対象)", len(listings))
+        logger.info("推奨度生成: フィルタ無効 (全%d件を対象)", len(listings))
     else:
         target_indices = [i for i, listing in enumerate(listings) if _is_promising(listing)]
         skipped_count = len(listings) - len(target_indices)
         logger.info(
-            "サマリー生成: %d/%d件が有望物件 (%d件フィルタ除外)",
+            "推奨度生成: %d/%d件が有望物件 (%d件フィルタ除外)",
             len(target_indices), len(listings), skipped_count,
         )
 
     if not target_indices:
-        logger.info("サマリー生成: 有望物件なし、スキップ")
+        logger.info("推奨度生成: 有望物件なし、スキップ")
         return listings
 
     client = ClaudeClient()
@@ -187,67 +265,88 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
 
     for i in target_indices:
         listing = listings[i]
-        if listing.get("investment_summary") and listing.get("highlight_badge"):
+        if listing.get("ai_recommendation_score") is not None:
             continue
 
         context = _build_score_context(listing)
-        cache_key_data = {"context": context[:600]}
-        cached = client.get_cached("investment_summary", cache_key_data)
+        user_message = f"## 買い手プロファイル\n{buyer_context}\n\n## 物件情報\n{context}"
+
+        cache_key_data = {"buyer_hash": hash(buyer_context) % 10**8, "context": context[:800]}
+        cached = client.get_cached("ai_recommendation", cache_key_data)
         if cached:
-            listing["investment_summary"] = cached.get("summary", "")
-            listing["highlight_badge"] = cached.get("highlight_badge", "")
-            listing["key_strengths"] = cached.get("key_strengths", [])
-            listing["key_risks"] = cached.get("key_risks", [])
+            listing["ai_recommendation_score"] = cached.get("score")
+            listing["ai_recommendation_summary"] = cached.get("conclusion", "")
+            listing["ai_recommendation_flags"] = cached.get("flags", [])
+            listing["ai_recommendation_action"] = cached.get("action", "")
+            # 後方互換: 旧フィールドも維持
+            listing["investment_summary"] = cached.get("conclusion", "")
+            listing["highlight_badge"] = _score_to_badge(cached.get("score", 3))
+            listing["key_strengths"] = [f for f in cached.get("flags", []) if "◎" in f or "堅い" in f or "良" in f]
+            listing["key_risks"] = [f for f in cached.get("flags", []) if "リスク" in f or "懸念" in f or "不足" in f]
             continue
 
         requests.append(BatchRequest(
-            custom_id=f"summary_{i}",
-            messages=[{"role": "user", "content": context}],
+            custom_id=f"recommendation_{i}",
+            messages=[{"role": "user", "content": user_message}],
             system=SYSTEM_PROMPT,
-            model=DEFAULT_MODEL,
-            max_tokens=384,
+            model=SONNET_MODEL,
+            max_tokens=512,
         ))
         request_indices.append(i)
 
     if not requests:
-        logger.info("サマリー生成: 全てキャッシュ済み")
+        logger.info("推奨度生成: 全てキャッシュ済み")
         return listings
 
-    logger.info("サマリー生成: %d件を送信", len(requests))
+    logger.info("推奨度生成: %d件を送信 (model=%s)", len(requests), SONNET_MODEL)
     batch_results = client.send_messages(requests)
 
     success_count = 0
     for br in batch_results:
-        idx_str = br.custom_id.replace("summary_", "")
+        idx_str = br.custom_id.replace("recommendation_", "")
         try:
             i = int(idx_str)
         except ValueError:
             continue
 
         if br.error:
-            logger.warning("サマリー生成エラー (listing %d): %s", i, br.error)
+            logger.warning("推奨度生成エラー (listing %d): %s", i, br.error)
             continue
 
         parsed = client.parse_json_response(br.content)
         if parsed:
-            listings[i]["investment_summary"] = parsed.get("summary", "")
-            listings[i]["highlight_badge"] = parsed.get("highlight_badge", "")
-            listings[i]["key_strengths"] = parsed.get("key_strengths", [])
-            listings[i]["key_risks"] = parsed.get("key_risks", [])
+            score = parsed.get("score", 3)
+            if not isinstance(score, int) or score < 1 or score > 5:
+                score = 3
+
+            listings[i]["ai_recommendation_score"] = score
+            listings[i]["ai_recommendation_summary"] = parsed.get("conclusion", "")
+            listings[i]["ai_recommendation_flags"] = parsed.get("flags", [])
+            listings[i]["ai_recommendation_action"] = parsed.get("action", "")
+            # 後方互換
+            listings[i]["investment_summary"] = parsed.get("conclusion", "")
+            listings[i]["highlight_badge"] = _score_to_badge(score)
+            listings[i]["key_strengths"] = [f for f in parsed.get("flags", []) if "◎" in f or "堅い" in f or "良" in f]
+            listings[i]["key_risks"] = [f for f in parsed.get("flags", []) if "リスク" in f or "懸念" in f or "不足" in f]
 
             context = _build_score_context(listings[i])
-            client.set_cached("investment_summary", {"context": context[:600]}, parsed,
-                              model=DEFAULT_MODEL,
+            client.set_cached("ai_recommendation", {"buyer_hash": hash(buyer_context) % 10**8, "context": context[:800]}, parsed,
+                              model=SONNET_MODEL,
                               input_tokens=br.input_tokens,
                               output_tokens=br.output_tokens)
             success_count += 1
 
-    logger.info("サマリー生成完了: %d/%d件成功", success_count, len(requests))
+    logger.info("推奨度生成完了: %d/%d件成功", success_count, len(requests))
     return listings
 
 
+def _score_to_badge(score: int) -> str:
+    badges = {5: "強く推奨", 4: "推奨", 3: "条件次第", 2: "非推奨", 1: "見送り"}
+    return badges.get(score, "条件次第")
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Claude 投資判断サマリー生成")
+    parser = argparse.ArgumentParser(description="Claude 購入推奨度生成")
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--skip-filter", action="store_true",
