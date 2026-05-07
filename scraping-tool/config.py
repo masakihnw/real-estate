@@ -265,7 +265,7 @@ _disabled_env = os.environ.get("DISABLED_SCRAPERS")
 if _disabled_env is not None:
     DISABLED_SCRAPERS: tuple[str, ...] = tuple(s.strip() for s in _disabled_env.split(",") if s.strip())
 else:
-    DISABLED_SCRAPERS: tuple[str, ...] = ("athome", "stepon", "homes_shinchiku")
+    DISABLED_SCRAPERS: tuple[str, ...] = ("stepon",)
 
 
 def _normalize_runtime_config() -> None:
