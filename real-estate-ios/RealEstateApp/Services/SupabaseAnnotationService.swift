@@ -29,7 +29,15 @@ final class SupabaseAnnotationService {
     private let didPushLocalKey = "supabase.annotations.didPushLocal"
     private let pushLocalFormatVersion = 3
 
-    private init() {}
+    private let pullResetVersionKey = "supabase.annotations.pullResetVersion"
+    private let currentPullResetVersion = 1
+
+    private init() {
+        if defaults.integer(forKey: pullResetVersionKey) < currentPullResetVersion {
+            defaults.removeObject(forKey: lastSyncKey)
+            defaults.set(currentPullResetVersion, forKey: pullResetVersionKey)
+        }
+    }
 
     // MARK: - Auth
 
