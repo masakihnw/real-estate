@@ -162,15 +162,16 @@ class ClaudeClient:
         except Exception as e:
             if _is_credit_error(e):
                 raise CreditError(str(e)) from e
-            logger.error("Batch API 作成失敗: %s", e)
-            return [BatchResult(custom_id=r.custom_id, error=str(e)) for r in requests]
+            logger.warning("Batch API 作成失敗 → 同期 API フォールバック (%d件): %s", len(requests), e)
+            return self._send_sync(requests)
 
         batch_id = batch.id
         logger.info("Batch ID: %s, status: %s", batch_id, batch.processing_status)
 
         results = self._poll_batch(batch_id, timeout_minutes=60)
-        if not results:
-            logger.warning("Batch タイムアウト → 同期 API フォールバック (%d件)", len(requests))
+        succeeded = sum(1 for r in results if not r.error)
+        if not succeeded:
+            logger.warning("Batch 結果なし → 同期 API フォールバック (%d件)", len(requests))
             results = self._send_sync(requests)
         return results
 
