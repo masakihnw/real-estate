@@ -7,43 +7,26 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
+
+private let logger = Logger(subsystem: "com.realestate", category: "TransactionStore")
 
 @Observable
 final class TransactionStore {
     static let shared = TransactionStore()
-
-    // MARK: - デフォルト URL（GitHub raw）
-
-    static let defaultURL = "https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/transactions.json"
 
     private(set) var isRefreshing = false
     private(set) var lastError: String?
     private(set) var lastFetchedAt: Date?
     private(set) var lastRefreshHadChanges = true
 
-    private static let session: URLSession = {
-        let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 30
-        config.timeoutIntervalForResource = 120  // transactions.json は大きい可能性
-        return URLSession(configuration: config)
-    }()
-
     private let defaults = UserDefaults.standard
-    private let urlKey = "realestate.transactionsURL"
     private let lastFetchedKey = "realestate.transactions.lastFetchedAt"
-    private let etagKey = "realestate.etag.transactions"
 
-    /// JSON URL（空ならデフォルトを使う）
-    var transactionsURL: String {
-        get { defaults.string(forKey: urlKey) ?? "" }
-        set { defaults.set(newValue, forKey: urlKey) }
-    }
-
-    /// 実際に使用する URL
-    var effectiveURL: String {
-        let custom = transactionsURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        return custom.isEmpty ? Self.defaultURL : custom
+    /// ListingStore と同じ useSupabase フラグを参照
+    private var useSupabase: Bool {
+        defaults.object(forKey: "realestate.useSupabase") as? Bool ?? true
     }
 
     init() {
@@ -61,29 +44,14 @@ final class TransactionStore {
         lastError = nil
         lastRefreshHadChanges = false
 
-        // SwiftData が空なら ETag クリアしてフルフェッチ
-        let descriptor = FetchDescriptor<TransactionRecord>()
-        let existingCount = (try? modelContext.fetchCount(descriptor)) ?? 0
-        if existingCount == 0 {
-            defaults.removeObject(forKey: etagKey)
-        }
-
         do {
-            let result = try await fetchData()
-            if let (data, newETag) = result {
-                let count = try syncToDatabase(data: data, modelContext: modelContext)
-                if let etag = newETag {
-                    defaults.set(etag, forKey: etagKey)
-                }
-                lastRefreshHadChanges = true
-                print("[TransactionStore] 同期完了: \(count) 件")
-            } else {
-                // 304 Not Modified
-                print("[TransactionStore] 変更なし (304)")
-            }
+            let data = try await fetchFromSupabase()
+            let count = try syncToDatabase(data: data, modelContext: modelContext)
+            lastRefreshHadChanges = true
+            logger.info("同期完了: \(count) 件")
         } catch {
             lastError = error.localizedDescription
-            print("[TransactionStore] エラー: \(error)")
+            logger.error("エラー: \(error.localizedDescription, privacy: .public)")
         }
 
         lastFetchedAt = Date()
@@ -91,35 +59,10 @@ final class TransactionStore {
         isRefreshing = false
     }
 
-    // MARK: - Fetch
+    // MARK: - Supabase Fetch
 
-    private func fetchData() async throws -> (Data, String?)? {
-        guard let url = URL(string: effectiveURL) else {
-            throw URLError(.badURL)
-        }
-
-        var request = URLRequest(url: url)
-        request.cachePolicy = .reloadIgnoringLocalCacheData
-
-        // ETag による差分判定
-        if let etag = defaults.string(forKey: etagKey) {
-            request.setValue(etag, forHTTPHeaderField: "If-None-Match")
-        }
-
-        let (data, response) = try await Self.session.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw URLError(.badServerResponse)
-        }
-
-        switch httpResponse.statusCode {
-        case 200:
-            let etag = httpResponse.value(forHTTPHeaderField: "ETag")
-            return (data, etag)
-        case 304:
-            return nil  // 変更なし
-        default:
-            throw URLError(.init(rawValue: httpResponse.statusCode))
-        }
+    private func fetchFromSupabase() async throws -> Data {
+        try await SupabaseClient.shared.rpc("get_transaction_feed")
     }
 
     // MARK: - Sync

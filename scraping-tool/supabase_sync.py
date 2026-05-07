@@ -422,6 +422,81 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
     return count
 
 
+def _sync_transactions(client, tx_path: str) -> int:
+    """transactions.json を Supabase の transactions / building_groups / transaction_metadata に同期。"""
+    data = _load_json(tx_path)
+    if isinstance(data, list):
+        return 0
+    transactions = data.get("transactions", [])
+    building_groups = data.get("building_groups", [])
+    metadata = data.get("metadata")
+
+    tx_count = 0
+    if transactions:
+        tx_rows = []
+        for tx in transactions:
+            row = {
+                "id": tx["id"],
+                "prefecture": tx.get("prefecture", ""),
+                "ward": tx.get("ward", ""),
+                "district": tx.get("district", ""),
+                "district_code": tx.get("district_code", ""),
+                "price_man": tx.get("price_man"),
+                "area_m2": tx.get("area_m2"),
+                "m2_price": tx.get("m2_price"),
+                "layout": tx.get("layout", ""),
+                "built_year": tx.get("built_year"),
+                "structure": tx.get("structure", ""),
+                "trade_period": tx.get("trade_period", ""),
+                "nearest_station": tx.get("nearest_station"),
+                "estimated_walk_min": tx.get("estimated_walk_min"),
+                "latitude": tx.get("latitude"),
+                "longitude": tx.get("longitude"),
+                "building_group_id": tx.get("building_group_id"),
+                "estimated_building_name": tx.get("estimated_building_name"),
+            }
+            tx_rows.append({k: v for k, v in row.items() if v is not None})
+        tx_count = _batch_upsert(client, "transactions", tx_rows, "id")
+
+    if building_groups:
+        bg_rows = []
+        for bg in building_groups:
+            row = {
+                "group_id": bg["group_id"],
+                "prefecture": bg.get("prefecture", ""),
+                "ward": bg.get("ward", ""),
+                "district": bg.get("district", ""),
+                "built_year": bg.get("built_year"),
+                "structure": bg.get("structure", ""),
+                "nearest_station": bg.get("nearest_station"),
+                "estimated_walk_min": bg.get("estimated_walk_min"),
+                "latitude": bg.get("latitude"),
+                "longitude": bg.get("longitude"),
+                "transaction_count": bg.get("transaction_count", 0),
+                "price_range_man": bg.get("price_range_man"),
+                "avg_m2_price": bg.get("avg_m2_price"),
+                "periods": bg.get("periods"),
+                "latest_period": bg.get("latest_period"),
+                "estimated_building_name": bg.get("estimated_building_name"),
+            }
+            bg_rows.append({k: v for k, v in row.items() if v is not None})
+        _batch_upsert(client, "building_groups", bg_rows, "group_id")
+
+    if metadata:
+        meta_row = {
+            "id": "default",
+            "updated_at": metadata.get("updated_at", _now_iso()),
+            "periods_covered": metadata.get("periods_covered", []),
+            "data_source": metadata.get("data_source", ""),
+            "transaction_count": metadata.get("transaction_count", 0),
+            "building_group_count": metadata.get("building_group_count", 0),
+            "scope": metadata.get("scope", ""),
+        }
+        client.table("transaction_metadata").upsert(meta_row, on_conflict="id").execute()
+
+    return tx_count
+
+
 def sync_to_supabase(output_dir: str) -> None:
     """メインエントリ: latest.json / latest_shinchiku.json を Supabase に同期する。"""
     client = get_client()
@@ -493,5 +568,11 @@ def sync_to_supabase(output_dir: str) -> None:
             )
         else:
             logger.info("[supabase] 整合性OK: JSON=%d, Supabase=%d (%s)", json_count, db_count, pt)
+
+    # トランザクション同期
+    tx_path = output_path / "transactions.json"
+    if tx_path.exists():
+        tx_count = _sync_transactions(client, str(tx_path))
+        logger.info("[supabase] transactions: %d 件同期", tx_count)
 
     logger.info("[supabase] 同期完了")
