@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -22,6 +23,21 @@ logger = logging.getLogger(__name__)
 
 JST = timezone(timedelta(hours=9))
 BATCH_SIZE = 500
+
+
+def _sanitize_value(obj: object) -> object:
+    """Recursively sanitize values for PostgreSQL/PostgREST compatibility."""
+    if isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+        return obj
+    if isinstance(obj, str):
+        return obj.replace("\x00", "") if "\x00" in obj else obj
+    if isinstance(obj, dict):
+        return {k: _sanitize_value(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_sanitize_value(item) for item in obj]
+    return obj
 
 
 def _now_iso() -> str:
@@ -41,7 +57,7 @@ def _batch_upsert(client, table: str, rows: list[dict], on_conflict: str) -> int
     """バッチ upsert。BATCH_SIZE ごとに分割して送信。"""
     total = 0
     for i in range(0, len(rows), BATCH_SIZE):
-        batch = rows[i:i + BATCH_SIZE]
+        batch = [_sanitize_value(row) for row in rows[i:i + BATCH_SIZE]]
         resp = client.table(table).upsert(batch, on_conflict=on_conflict).execute()
         total += len(resp.data) if resp.data else 0
     return total
@@ -230,7 +246,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             "first_seen_at": item.get("first_seen_at"),
         }
         # None 値を除去 (Supabase は NULL として扱う)
-        listing_row = {k: v for k, v in listing_row.items() if v is not None}
+        listing_row = {k: v for k, v in _sanitize_value(listing_row).items() if v is not None}
 
         # listings テーブルに upsert
         resp = (client.table("listings")
@@ -253,7 +269,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             "last_seen_at": _now_iso(),
             "is_active": True,
         }
-        source_row = {k: v for k, v in source_row.items() if v is not None}
+        source_row = {k: v for k, v in _sanitize_value(source_row).items() if v is not None}
 
         # 価格変動検出
         existing_src = existing_sources.get(listing_id)
@@ -496,7 +512,7 @@ def _sync_transactions(client, tx_path: str) -> int:
             "building_group_count": metadata.get("building_group_count", 0),
             "scope": metadata.get("scope", ""),
         }
-        client.table("transaction_metadata").upsert(meta_row, on_conflict="id").execute()
+        client.table("transaction_metadata").upsert(_sanitize_value(meta_row), on_conflict="id").execute()
 
     return tx_count
 
