@@ -103,7 +103,9 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
 
     def _resolve_identity_key(ik: str) -> str:
         """新キーが既存DBに無い場合、旧キーや floor=None 版で既存を検索し、あれば更新する。
-        active/inactive 両方を検索し、重複レコードがあれば1つに統合する。"""
+        active/inactive 両方を検索し、重複レコードがあれば1つに統合する。
+        新形式: 6要素 (name|layout|area|address|built_year|floor)
+        旧形式: 7要素 (name|layout|area|address|built_year|station_name|floor)"""
         if ik in existing_listings:
             return ik
         # inactive でも完全一致があればそれを再利用（active に戻す）
@@ -114,20 +116,28 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                 return ik
 
         parts = ik.split("|")
-        if len(parts) != 7:
+        if len(parts) != 6:
             return ik
+
+        # 新形式: name|layout|area|address|built_year|floor
+        new_prefix_5 = "|".join(parts[:5])
+        new_floor = parts[5]
 
         # フォールバック候補を収集（active/inactive 両方から）
         candidates: list[tuple[str, int, bool]] = []  # (old_key, id, is_active)
-        fallback = "|".join(parts[:6] + ["None"])
-        legacy = "|".join(parts[:6])
-        prefix = "|".join(parts[:6]) + "|"
 
         for db_ik, (lid, is_active) in list(all_db_listings.items()):
             if lid in _deleted_ids:
                 continue
-            if db_ik == fallback or db_ik == legacy or (db_ik.startswith(prefix) and db_ik != ik):
-                candidates.append((db_ik, lid, is_active))
+            old_parts = db_ik.split("|")
+            if len(old_parts) == 7:
+                # 旧7要素: name|layout|area|address|built_year|station_name|floor
+                if "|".join(old_parts[:5]) == new_prefix_5 and old_parts[6] == new_floor:
+                    candidates.append((db_ik, lid, is_active))
+            elif len(old_parts) == 6 and db_ik != ik:
+                # 同じ6要素だが floor 違い or station入り旧形式
+                if "|".join(old_parts[:5]) == new_prefix_5:
+                    candidates.append((db_ik, lid, is_active))
 
         if not candidates:
             return ik

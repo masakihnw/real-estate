@@ -535,9 +535,9 @@ final class Listing: @unchecked Sendable {
         }
     }
 
-    /// 同一物件判定用（report_utils.identity_key と同一フィールド・同一順序）。
+    /// 同一物件判定用（user_annotations のキーとして使用）。
     /// 価格・walk_min・total_units は重複集約の代表レコード変更で変動するため含めない。
-    /// station_line は駅名のみ抽出して表記揺れを吸収。
+    /// station_name は除外: ソース間の形式差異で同一物件が別キーになる問題を解消。
     var identityKey: String {
         [
             Self.cleanListingName(name)
@@ -546,7 +546,6 @@ final class Listing: @unchecked Sendable {
             areaM2.map { "\($0)" } ?? "",
             Self.normalizeAddressForIdentityKey(address ?? ""),
             builtYear.map { "\($0)" } ?? "",
-            Self.extractStationName(from: stationLine ?? "")
         ].joined(separator: "|")
     }
 
