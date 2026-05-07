@@ -27,7 +27,7 @@ final class SupabaseAnnotationService {
     private let lastSyncKey = "supabase.annotations.lastSync"
 
     private let didPushLocalKey = "supabase.annotations.didPushLocal"
-    private let pushLocalFormatVersion = 2
+    private let pushLocalFormatVersion = 3
 
     private init() {}
 
@@ -203,6 +203,16 @@ final class SupabaseAnnotationService {
                         listing.commentsJSON = newJSON
                     }
                 }
+
+                // memo: ローカルが空なら Supabase から復元
+                if listing.memo == nil || (listing.memo ?? "").isEmpty {
+                    for ann in anns {
+                        if let memo = ann["memo"] as? String, !memo.isEmpty {
+                            listing.memo = memo
+                            break
+                        }
+                    }
+                }
             }
 
             SaveErrorHandler.shared.save(modelContext, source: "SupabaseAnnotation")
@@ -231,8 +241,6 @@ final class SupabaseAnnotationService {
             let annotated = listings.filter { $0.isLiked || $0.hasComments || !($0.memo ?? "").isEmpty }
 
             guard !annotated.isEmpty else {
-                defaults.set(true, forKey: didPushLocalKey)
-                defaults.set(pushLocalFormatVersion, forKey: "\(didPushLocalKey).version")
                 return
             }
 
