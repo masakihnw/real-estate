@@ -110,13 +110,21 @@ SELECT
         JSONB_BUILD_OBJECT('date', dt, 'price_man', price_man) ORDER BY dt
      )
      FROM (
-         SELECT DISTINCT ON (TO_CHAR(ph.recorded_at, 'YYYY-MM-DD'))
-             TO_CHAR(ph.recorded_at, 'YYYY-MM-DD') AS dt,
-             ph.price_man
-         FROM price_history ph
-         WHERE ph.listing_id = l.id AND ph.source = ls.source
-         ORDER BY TO_CHAR(ph.recorded_at, 'YYYY-MM-DD'), ph.recorded_at DESC
-     ) deduped
+         SELECT dt, price_man
+         FROM (
+             SELECT dt, price_man,
+                    LAG(price_man) OVER (ORDER BY dt) AS prev_price
+             FROM (
+                 SELECT DISTINCT ON (TO_CHAR(ph.recorded_at, 'YYYY-MM-DD'))
+                     TO_CHAR(ph.recorded_at, 'YYYY-MM-DD') AS dt,
+                     ph.price_man
+                 FROM price_history ph
+                 WHERE ph.listing_id = l.id AND ph.source = ls.source
+                 ORDER BY TO_CHAR(ph.recorded_at, 'YYYY-MM-DD'), ph.recorded_at DESC
+             ) daily
+         ) with_lag
+         WHERE prev_price IS NULL OR price_man != prev_price
+     ) changes_only
     ) AS price_history_json
 FROM listings l
 LEFT JOIN LATERAL (
