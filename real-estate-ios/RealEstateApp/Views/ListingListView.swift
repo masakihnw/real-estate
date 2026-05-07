@@ -495,10 +495,13 @@ struct ListingListView: View {
                 Group {
                 if cachedFiltered.isEmpty && !isInitialLoadComplete {
                     SkeletonLoadingView()
+                } else if favoritesOnly && delistFilter != .all && (baseList.isEmpty || filteredAndSorted.isEmpty) {
+                    VStack(spacing: 0) {
+                        delistChipBar
+                        delistFilterEmptyState
+                    }
                 } else if baseList.isEmpty && !store.isRefreshing {
                     emptyState
-                    } else if favoritesOnly && delistFilter != .all && filteredAndSorted.isEmpty && !baseList.isEmpty {
-                        delistFilterEmptyState
                     } else if filteredAndSorted.isEmpty && filterStore.filter.isActive {
                         filterEmptyState
                     } else {
