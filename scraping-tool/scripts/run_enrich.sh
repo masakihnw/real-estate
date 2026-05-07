@@ -315,6 +315,19 @@ if ! python3 -c "import json; json.load(open('$INPUT'))" 2>/dev/null; then
     echo "警告: 出力 JSON が破損しています。Phase 1 の結果にフォールバック。" >&2
 fi
 
+# finalize 互換の成果物ディレクトリに配置
+if [ "$TRACKS" = "all" ]; then
+    _ARTIFACT_TRACKS="core sumai mansion claude"
+else
+    _ARTIFACT_TRACKS="$TRACKS"
+fi
+for _track in $_ARTIFACT_TRACKS; do
+    _dir="enriched-${PROPERTY_TYPE}-${_track}"
+    mkdir -p "$_dir"
+    cp "$INPUT" "$_dir/latest.json"
+    echo "成果物配置: $_dir/latest.json" >&2
+done
+
 # クリーンアップ
 rm -rf "$WORK_DIR"
 
