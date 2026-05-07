@@ -424,8 +424,12 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
 
 def _sync_transactions(client, tx_path: str) -> int:
     """transactions.json を Supabase の transactions / building_groups / transaction_metadata に同期。"""
-    data = _load_json(tx_path)
-    if isinstance(data, list):
+    p = Path(tx_path)
+    if not p.exists() or p.stat().st_size == 0:
+        return 0
+    with open(p) as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
         return 0
     transactions = data.get("transactions", [])
     building_groups = data.get("building_groups", [])
