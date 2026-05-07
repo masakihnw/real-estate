@@ -294,7 +294,7 @@ jobs:
     needs: check
     if: needs.check.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 75
     continue-on-error: true
 
     steps:
