@@ -1031,9 +1031,7 @@ def browser_enrich_listings(
                             parts.append(f"標準10年: {sim_data['ss_sim_standard_10yr']}万")
                         if sim_data.get("ss_gain_standard_10yr"):
                             parts.append(f"含み益: {sim_data['ss_gain_standard_10yr']}万")
-                        logger.error(f"  ✓ {name} — シミュレーション({sim_price}万): {', '.join(parts)}",
-                            file=sys.stderr,
-                        )
+                        logger.info(f"  ✓ {name} — シミュレーション({sim_price}万): {', '.join(parts)}")
                     else:
                         error_count += 1
                         print(f"  ✗ {name} — シミュレーションデータ取得失敗")
@@ -1044,10 +1042,8 @@ def browser_enrich_listings(
 
             # 進捗表示 & 中間セーブ（10件ごと）
             if (idx + 1) % 10 == 0:
-                logger.error(f"  ブラウザ進捗: {idx + 1}/{len(targets)}件 "
-                    f"(成功: {enriched_count}, 失敗: {error_count})",
-                    file=sys.stderr,
-                )
+                logger.info(f"  ブラウザ進捗: {idx + 1}/{len(targets)}件 "
+                    f"(成功: {enriched_count}, 失敗: {error_count})")
                 # 中間セーブ
                 _save_json(listings, output_path_p)
 

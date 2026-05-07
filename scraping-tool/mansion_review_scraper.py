@@ -106,9 +106,7 @@ def search_building(
             SEARCH_URL, params=params, timeout=30, allow_redirects=True
         )
         if resp.status_code != 200:
-            logger.error(f"  検索エラー: {resp.status_code} ({name})",
-                file=sys.stderr,
-            )
+            logger.error(f"  検索エラー: {resp.status_code} ({name})")
             return None
 
         soup = BeautifulSoup(resp.text, "html.parser")

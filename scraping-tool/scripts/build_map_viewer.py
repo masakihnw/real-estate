@@ -271,7 +271,7 @@ def main() -> None:
                 if isinstance(shinchiku_data, list):
                     shinchiku_count = len(shinchiku_data)
                     listings = listings + shinchiku_data
-                    logger.error(f"Loaded {shinchiku_count} shinchiku listings from {shinchiku_path}")
+                    logger.info(f"Loaded {shinchiku_count} shinchiku listings from {shinchiku_path}")
             except Exception as e:
                 print(f"Warning: failed to load shinchiku JSON: {e}")
         else:
