@@ -36,6 +36,7 @@ try:
 except Exception as e:
     logger.warning("Firestore 設定の読み込みに失敗（デフォルトを使用）: %s", e)
 
+from config import DISABLED_SCRAPERS
 from report_utils import listing_key, clean_listing_name, fuzzy_identity_match, building_key
 
 
@@ -253,9 +254,18 @@ def _scrape_homes_shinchiku(max_pages: int, apply_filter: bool) -> list[dict]:
 
 def _scrape_athome_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
     """アットホーム中古スクレイピング（スレッド用）"""
-    from athome_scraper import scrape_athome, enrich_athome_listings
+    from athome_scraper import scrape_athome, enrich_athome_listings, HAS_PLAYWRIGHT
     listings = list(scrape_athome(max_pages=max_pages, apply_filter=apply_filter))
-    listings = enrich_athome_listings(listings)
+    if HAS_PLAYWRIGHT and listings:
+        from scraper_common import launch_stealth_browser
+        pw, browser, context = launch_stealth_browser(referer="https://www.athome.co.jp/")
+        try:
+            listings = enrich_athome_listings(listings, pw_context=context)
+        finally:
+            browser.close()
+            pw.stop()
+    else:
+        listings = enrich_athome_listings(listings)
     rows = []
     for row in listings:
         d = row.to_dict()
@@ -355,6 +365,10 @@ def main() -> None:
     with ThreadPoolExecutor(max_workers=7) as executor:
         for src in sources_to_run:
             if src in scrapers:
+                composite_key = f"{src}_{args.property_type}"
+                if src in DISABLED_SCRAPERS or composite_key in DISABLED_SCRAPERS:
+                    logger.info("%s %sスクレイパーは現在無効化中（DISABLED_SCRAPERS）。スキップします。", src, type_label)
+                    continue
                 tasks[src] = executor.submit(scrapers[src], args.max_pages, not args.no_filter)
         for name, future in tasks.items():
             try:

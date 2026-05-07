@@ -157,7 +157,7 @@ class ClaudeClient:
         batch_id = batch.id
         logger.info("Batch ID: %s, status: %s", batch_id, batch.processing_status)
 
-        results = self._poll_batch(batch_id, timeout_minutes=15)
+        results = self._poll_batch(batch_id, timeout_minutes=20)
         return results
 
     def _poll_batch(self, batch_id: str, timeout_minutes: int = 15) -> list[BatchResult]:
@@ -190,6 +190,11 @@ class ClaudeClient:
             poll_interval = min(poll_interval * 1.5, 30)
 
         logger.warning("Batch タイムアウト (%d分): %s", timeout_minutes, batch_id)
+        try:
+            self._client.messages.batches.cancel(batch_id)
+            logger.info("Batch キャンセル送信: %s", batch_id)
+        except Exception as e:
+            logger.warning("Batch キャンセル失敗: %s", e)
         return []
 
     def _retrieve_batch_results(self, batch_id: str) -> list[BatchResult]:

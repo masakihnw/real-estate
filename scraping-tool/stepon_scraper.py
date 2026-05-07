@@ -113,18 +113,8 @@ class SteponListing:
 
 def _launch_browser():
     """Playwright ブラウザを起動し、(pw, browser, context) を返す。"""
-    pw = sync_playwright().start()
-    browser = pw.chromium.launch(headless=True)
-    context = browser.new_context(
-        user_agent=USER_AGENT,
-        locale="ja-JP",
-        viewport={"width": 1920, "height": 1080},
-        extra_http_headers={
-            "Accept-Language": "ja,en;q=0.9",
-            "Referer": "https://www.google.co.jp/",
-        },
-    )
-    return pw, browser, context
+    from scraper_common import launch_stealth_browser
+    return launch_stealth_browser(referer="https://www.stepon.co.jp/")
 
 
 def fetch_list_page_pw(context: BrowserContext, url: str, *, max_retries: int = 3) -> str:
@@ -158,7 +148,7 @@ def fetch_list_page_pw(context: BrowserContext, url: str, *, max_retries: int = 
             page.close()
 
         if attempt < max_retries - 1:
-            backoff = (5 * (2 ** attempt)) + random.uniform(1, 3)
+            backoff = (10 * (2 ** attempt)) + random.uniform(2, 5)
             logger.info("Stepon: %0.1f秒待機後にリトライ...", backoff)
             time.sleep(backoff)
 

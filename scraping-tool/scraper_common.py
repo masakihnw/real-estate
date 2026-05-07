@@ -7,6 +7,7 @@ suumo_scraper / suumo_shinchiku_scraper / homes_scraper / homes_shinchiku_scrape
 """
 
 import json
+import random
 import re
 import sys
 from functools import lru_cache
@@ -145,3 +146,53 @@ def is_tokyo_23_by_address(address: str) -> bool:
     if any(city in address for city in _OTHER_CITIES):
         return False
     return any(ward in address for ward in TOKYO_23_WARDS)
+
+
+# ──────────────────────────── ステルスブラウザ ────────────────────────────
+
+_STEALTH_INIT_SCRIPT = """
+Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+window.chrome = { runtime: {} };
+const _origQuery = window.navigator.permissions.query;
+window.navigator.permissions.query = (params) =>
+    params.name === 'notifications'
+        ? Promise.resolve({ state: Notification.permission })
+        : _origQuery(params);
+"""
+
+_VIEWPORTS = (
+    {"width": 1920, "height": 1080},
+    {"width": 1366, "height": 768},
+    {"width": 1440, "height": 900},
+    {"width": 1536, "height": 864},
+)
+
+
+def launch_stealth_browser(
+    *,
+    locale: str = "ja-JP",
+    referer: str = "https://www.google.co.jp/",
+) -> tuple:
+    """Playwright ブラウザを anti-detection 設定で起動。Returns (pw, browser, context)."""
+    from playwright.sync_api import sync_playwright
+
+    pw = sync_playwright().start()
+    browser = pw.chromium.launch(
+        headless=True,
+        args=[
+            "--disable-blink-features=AutomationControlled",
+            "--no-first-run",
+            "--no-default-browser-check",
+        ],
+    )
+    context = browser.new_context(
+        user_agent=USER_AGENT,
+        locale=locale,
+        viewport=random.choice(_VIEWPORTS),
+        extra_http_headers={
+            "Accept-Language": "ja,en;q=0.9",
+            "Referer": referer,
+        },
+    )
+    context.add_init_script(_STEALTH_INIT_SCRIPT)
+    return pw, browser, context

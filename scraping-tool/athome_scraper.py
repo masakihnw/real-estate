@@ -4,6 +4,7 @@
 """
 
 import json
+import random
 import re
 import time
 from dataclasses import dataclass, asdict
@@ -48,6 +49,13 @@ from scraper_common import (
 
 from logger import get_logger
 logger = get_logger(__name__)
+
+HAS_PLAYWRIGHT = False
+try:
+    from playwright.sync_api import BrowserContext
+    HAS_PLAYWRIGHT = True
+except ImportError:
+    logger.warning("Playwright がインストールされていません。athome スクレイパーは Playwright なしで動作します。")
 
 BASE_URL = "https://www.athome.co.jp"
 
@@ -109,8 +117,55 @@ class AthomeListing:
         return asdict(self)
 
 
-def fetch_list_page(session: requests.Session, page: int, *, ward: str = "") -> str:
-    """一覧ページのHTMLを取得。429/5xx時はリトライする。"""
+def _is_captcha_page(html: str) -> bool:
+    """athome のCAPTCHA/認証ページかどうかを判定。"""
+    if not html:
+        return True
+    if "認証中" in html and len(html) < 10000:
+        return True
+    if len(html) < 1000 and "mansion" not in html.lower():
+        return True
+    return False
+
+
+def fetch_list_page(context: "BrowserContext", page: int, *, ward: str = "", max_retries: int = 3) -> str:
+    """Playwright で一覧ページの HTML を取得。CAPTCHA 検知時は指数バックオフでリトライ。"""
+    if ward:
+        url = _WARD_URL_FIRST.format(ward=ward) if page == 1 else _WARD_URL_PAGE.format(ward=ward, page=page)
+    else:
+        url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
+
+    for attempt in range(max_retries):
+        pw_page = context.new_page()
+        try:
+            pw_page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            try:
+                pw_page.wait_for_selector("div.card-box, div.property-detail-table", timeout=15000)
+            except Exception:
+                pass
+
+            html = pw_page.content()
+
+            if not _is_captcha_page(html):
+                return html
+
+            logger.warning("athome: CAPTCHA検知 (attempt %d): %s", attempt + 1, url)
+        except Exception as e:
+            logger.error("athome: ページ取得エラー (attempt %d): %s — %s", attempt + 1, url, e)
+        finally:
+            pw_page.close()
+
+        if attempt < max_retries - 1:
+            backoff = (10 * (2 ** attempt)) + random.uniform(2, 5)
+            logger.info("athome: %.1f秒待機後にリトライ...", backoff)
+            time.sleep(backoff)
+
+    logger.error("athome: 全リトライ失敗: %s", url)
+    return ""
+
+
+def _fetch_list_page_requests(session: requests.Session, page: int, *, ward: str = "") -> str:
+    """requests 版の一覧ページ取得（Playwright 未インストール時のフォールバック）。"""
     if ward:
         url = _WARD_URL_FIRST.format(ward=ward) if page == 1 else _WARD_URL_PAGE.format(ward=ward, page=page)
     else:
@@ -319,8 +374,33 @@ def _save_detail_cache(cache: dict[str, dict]) -> None:
     )
 
 
-def _fetch_detail_page(session: requests.Session, url: str) -> str:
-    """アットホーム詳細ページのHTMLを取得する。429/5xx時はリトライする。"""
+def _fetch_detail_page_pw(context: "BrowserContext", url: str, *, max_retries: int = 3) -> str:
+    """Playwright でアットホーム詳細ページの HTML を取得する。"""
+    for attempt in range(max_retries):
+        pw_page = context.new_page()
+        try:
+            time.sleep(ATHOME_REQUEST_DELAY_SEC)
+            pw_page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            try:
+                pw_page.wait_for_selector("table, .property-detail", timeout=10000)
+            except Exception:
+                pass
+            html = pw_page.content()
+            if not _is_captcha_page(html):
+                return html
+            logger.warning("athome detail: CAPTCHA検知 (attempt %d): %s", attempt + 1, url)
+        except Exception as e:
+            logger.error("athome detail: 取得エラー (attempt %d): %s — %s", attempt + 1, url, e)
+        finally:
+            pw_page.close()
+        if attempt < max_retries - 1:
+            backoff = (10 * (2 ** attempt)) + random.uniform(2, 5)
+            time.sleep(backoff)
+    return ""
+
+
+def _fetch_detail_page_requests(session: requests.Session, url: str) -> str:
+    """requests 版の詳細ページ取得（フォールバック）。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
         time.sleep(ATHOME_REQUEST_DELAY_SEC)
@@ -457,15 +537,34 @@ def parse_athome_detail_html(html: str, url: str) -> dict:
     }
 
 
-def enrich_athome_listings(listings: list[AthomeListing]) -> list[AthomeListing]:
+def _apply_detail_to_listing(r: AthomeListing, detail: dict) -> None:
+    """詳細情報を None/空のフィールドにのみ適用する。"""
+    if r.management_fee is None and detail.get("management_fee") is not None:
+        r.management_fee = detail["management_fee"]
+    if r.repair_reserve_fund is None and detail.get("repair_reserve_fund") is not None:
+        r.repair_reserve_fund = detail["repair_reserve_fund"]
+    if r.ownership is None and detail.get("ownership") is not None:
+        r.ownership = detail["ownership"]
+    if r.total_units is None and detail.get("total_units") is not None:
+        r.total_units = detail["total_units"]
+    if r.floor_plan_images is None and detail.get("floor_plan_images") is not None:
+        r.floor_plan_images = detail["floor_plan_images"]
+    if r.suumo_images is None and detail.get("suumo_images") is not None:
+        r.suumo_images = detail["suumo_images"]
+
+
+def enrich_athome_listings(listings: list[AthomeListing], pw_context: "BrowserContext | None" = None) -> list[AthomeListing]:
     """フィルタ通過済みのリストに対し、詳細ページから追加情報を取得して付与する。"""
     if not listings:
         return listings
 
     cache = _load_detail_cache()
-    session = create_session()
     enriched_count = 0
     cache_hit_count = 0
+
+    # Playwright コンテキストが渡されていない場合は requests フォールバック
+    use_requests = pw_context is None
+    session = create_session() if use_requests else None
 
     for r in listings:
         url = r.url
@@ -476,7 +575,12 @@ def enrich_athome_listings(listings: list[AthomeListing]) -> list[AthomeListing]
             cache_hit_count += 1
         else:
             try:
-                html = _fetch_detail_page(session, url)
+                if use_requests:
+                    html = _fetch_detail_page_requests(session, url)
+                else:
+                    html = _fetch_detail_page_pw(pw_context, url)
+                if not html:
+                    continue
                 detail = parse_athome_detail_html(html, url)
             except Exception as e:
                 logger.warning("athome detail: 詳細取得に失敗: %s (%s)", url, e)
@@ -484,20 +588,7 @@ def enrich_athome_listings(listings: list[AthomeListing]) -> list[AthomeListing]
             detail["cached_at"] = datetime.now(timezone.utc).isoformat()
             cache[url] = detail
 
-        # None/空のフィールドのみ上書き
-        if r.management_fee is None and detail.get("management_fee") is not None:
-            r.management_fee = detail["management_fee"]
-        if r.repair_reserve_fund is None and detail.get("repair_reserve_fund") is not None:
-            r.repair_reserve_fund = detail["repair_reserve_fund"]
-        if r.ownership is None and detail.get("ownership") is not None:
-            r.ownership = detail["ownership"]
-        if r.total_units is None and detail.get("total_units") is not None:
-            r.total_units = detail["total_units"]
-        if r.floor_plan_images is None and detail.get("floor_plan_images") is not None:
-            r.floor_plan_images = detail["floor_plan_images"]
-        if r.suumo_images is None and detail.get("suumo_images") is not None:
-            r.suumo_images = detail["suumo_images"]
-
+        _apply_detail_to_listing(r, detail)
         enriched_count += 1
 
     _save_detail_cache(cache)
@@ -535,8 +626,55 @@ def apply_conditions(listings: list[AthomeListing]) -> list[AthomeListing]:
     return out
 
 
-def _scrape_ward(ward: str, max_pages: int, apply_filter: bool) -> list[AthomeListing]:
-    """1区分のスクレイピング。"""
+def _scrape_ward_pw(context: "BrowserContext", ward: str, max_pages: int, apply_filter: bool) -> list[AthomeListing]:
+    """Playwright で1区分のスクレイピング。"""
+    limit = max_pages if max_pages > 0 else MAX_PAGES_SAFETY
+    results: list[AthomeListing] = []
+    page = 1
+    pages_since_last_pass = 0
+
+    while page <= limit:
+        try:
+            html = fetch_list_page(context, page, ward=ward)
+        except Exception as e:
+            logger.error("athome/%s: ページ%dでエラー: %s", ward, page, e)
+            break
+
+        if not html:
+            break
+
+        rows = parse_list_html(html)
+        if not rows:
+            break
+
+        passed = 0
+        for row in rows:
+            if apply_filter:
+                filtered = apply_conditions([row])
+                if filtered:
+                    results.append(filtered[0])
+                    passed += 1
+            else:
+                results.append(row)
+                passed += 1
+
+        if passed > 0:
+            pages_since_last_pass = 0
+        else:
+            pages_since_last_pass += 1
+        if pages_since_last_pass >= EARLY_EXIT_PAGES:
+            break
+
+        page += 1
+        time.sleep(ATHOME_REQUEST_DELAY_SEC)
+
+    if results:
+        logger.info("athome/%s: %d件通過", ward, len(results))
+    return results
+
+
+def _scrape_ward_requests(ward: str, max_pages: int, apply_filter: bool) -> list[AthomeListing]:
+    """requests 版の1区分スクレイピング（フォールバック）。"""
     session = create_session()
     limit = max_pages if max_pages > 0 else MAX_PAGES_SAFETY
     results: list[AthomeListing] = []
@@ -545,9 +683,9 @@ def _scrape_ward(ward: str, max_pages: int, apply_filter: bool) -> list[AthomeLi
 
     while page <= limit:
         try:
-            html = fetch_list_page(session, page, ward=ward)
+            html = _fetch_list_page_requests(session, page, ward=ward)
         except Exception as e:
-            logger.error(f"athome/{ward}: ページ{page}でエラー: {e}")
+            logger.error("athome/%s: ページ%dでエラー: %s", ward, page, e)
             break
 
         rows = parse_list_html(html)
@@ -575,34 +713,47 @@ def _scrape_ward(ward: str, max_pages: int, apply_filter: bool) -> list[AthomeLi
         page += 1
 
     if results:
-        logger.info(f"athome/{ward}: {len(results)}件通過")
+        logger.info("athome/%s: %d件通過", ward, len(results))
     return results
 
 
 def scrape_athome(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Iterator[AthomeListing]:
     """アットホーム東京23区中古マンション一覧を区ごとに取得。max_pages=0 で全ページ取得。"""
-    from concurrent.futures import ThreadPoolExecutor, as_completed
-
     limit = max_pages if max_pages and max_pages > 0 else MAX_PAGES_SAFETY
     total_passed = 0
     seen_urls: set[str] = set()
 
-    with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
-        futures = {
-            executor.submit(_scrape_ward, ward, limit, apply_filter): ward
-            for ward in _ATHOME_WARD_SLUGS
-        }
-        for future in as_completed(futures):
-            ward = futures[future]
-            try:
-                results = future.result()
+    if HAS_PLAYWRIGHT:
+        from scraper_common import launch_stealth_browser
+        pw, browser, context = launch_stealth_browser(referer="https://www.athome.co.jp/")
+        try:
+            for ward in _ATHOME_WARD_SLUGS:
+                results = _scrape_ward_pw(context, ward, limit, apply_filter)
                 for r in results:
-                    if r.url in seen_urls:
-                        continue
-                    seen_urls.add(r.url)
-                    total_passed += 1
-                    yield r
-            except Exception as e:
-                logger.error(f"athome/{ward}: エラー: {e}")
+                    if r.url not in seen_urls:
+                        seen_urls.add(r.url)
+                        total_passed += 1
+                        yield r
+        finally:
+            browser.close()
+            pw.stop()
+    else:
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
+            futures = {
+                executor.submit(_scrape_ward_requests, ward, limit, apply_filter): ward
+                for ward in _ATHOME_WARD_SLUGS
+            }
+            for future in as_completed(futures):
+                ward = futures[future]
+                try:
+                    results = future.result()
+                    for r in results:
+                        if r.url not in seen_urls:
+                            seen_urls.add(r.url)
+                            total_passed += 1
+                            yield r
+                except Exception as e:
+                    logger.error("athome/%s: エラー: %s", ward, e)
 
-    logger.info(f"athome: 完了 — {total_passed}件通過（全23区）")
+    logger.info("athome: 完了 — %d件通過（全23区）", total_passed)
