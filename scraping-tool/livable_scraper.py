@@ -218,16 +218,13 @@ def _classify_detail_item(text: str) -> tuple[str, str]:
     if not text:
         return ("unknown", text)
 
+    # 駅・路線: 「駅」を含む（住所より先に判定 — 「都営」等の誤判定防止）
+    if "駅" in text:
+        return ("station", text)
+
     # 住所: 「区」「丁目」「番地」を含む
     if re.search(r"[都道府県]|区(?!分)|丁目|番地", text):
         return ("address", text)
-
-    # 駅・路線: 「駅」と「徒歩」を含む
-    if "駅" in text and ("徒歩" in text or "分" in text):
-        return ("station", text)
-    # 「線」「ライン」を含み路線っぽい場合
-    if "駅" in text:
-        return ("station", text)
 
     # 間取り: 1LDK, 2DK, 3LDK+S 等
     if re.search(r"\d+[LDKS]", text):
