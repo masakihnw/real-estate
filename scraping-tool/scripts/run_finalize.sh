@@ -163,18 +163,6 @@ echo "[TIMING] post_enrich_dedup: $(( ($(date +%s) - _t) ))s" >&2
 
 # ──────────────────────────── is_new フラグ注入 ────────────────────────────
 
-# ──────────────────────────── SQLite DB 同期 ────────────────────────────
-
-echo "--- SQLite DB 同期 ---" >&2
-_t=$(date +%s)
-
-python3 scripts/sync_db.py --output-dir "${OUTPUT_DIR}" \
-    || echo "SQLite DB 同期失敗（続行）" >&2
-
-echo "[TIMING] sync_db: $(( ($(date +%s) - _t) ))s" >&2
-
-# ──────────────────────────── is_new フラグ注入 ────────────────────────────
-
 echo "--- is_new フラグ注入 ---" >&2
 
 python3 scripts/finalize_helpers.py inject-new --output-dir "${OUTPUT_DIR}" \
@@ -197,6 +185,17 @@ if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
         --output "${OUTPUT_DIR}/latest.json" || echo "Claude サマリー生成失敗（続行）" >&2
     echo "[TIMING] claude_investment_summary: $(( ($(date +%s) - _t) ))s" >&2
 fi
+
+# ──────────────────────────── SQLite DB + Supabase 同期 ────────────────────────────
+# JSON への全フィールド注入完了後に同期する（is_new, 投資スコア, AI推奨を含む）
+
+echo "--- SQLite DB + Supabase 同期 ---" >&2
+_t=$(date +%s)
+
+python3 scripts/sync_db.py --output-dir "${OUTPUT_DIR}" \
+    || echo "SQLite DB 同期失敗（続行）" >&2
+
+echo "[TIMING] sync_db: $(( ($(date +%s) - _t) ))s" >&2
 
 # ──────────────────────────── 供給トレンド生成 ────────────────────────────
 

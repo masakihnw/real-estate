@@ -299,6 +299,12 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                     "event_type": "appeared",
                 }).execute()
                 summary["new"] += 1
+            if new_price is not None:
+                client.table("price_history").insert({
+                    "listing_id": listing_id,
+                    "source": source,
+                    "price_man": new_price,
+                }).execute()
         elif listing_id not in existing_sources:
             client.table("listing_events").insert({
                 "listing_id": listing_id,
@@ -306,6 +312,12 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                 "event_type": "appeared",
             }).execute()
             summary["new"] += 1
+            if new_price is not None:
+                client.table("price_history").insert({
+                    "listing_id": listing_id,
+                    "source": source,
+                    "price_man": new_price,
+                }).execute()
         else:
             summary["unchanged"] += 1
 
