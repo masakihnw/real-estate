@@ -15,6 +15,7 @@ Claude API による購入推奨度生成モジュール。
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -271,7 +272,7 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
         context = _build_score_context(listing)
         user_message = f"## 買い手プロファイル\n{buyer_context}\n\n## 物件情報\n{context}"
 
-        cache_key_data = {"buyer_hash": hash(buyer_context) % 10**8, "context": context[:800]}
+        cache_key_data = {"buyer_hash": int(hashlib.sha256(buyer_context.encode()).hexdigest()[:8], 16), "context": context[:800]}
         cached = client.get_cached("ai_recommendation", cache_key_data)
         if cached:
             listing["ai_recommendation_score"] = cached.get("score")
@@ -330,7 +331,7 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
             listings[i]["key_risks"] = [f for f in parsed.get("flags", []) if "リスク" in f or "懸念" in f or "不足" in f]
 
             context = _build_score_context(listings[i])
-            client.set_cached("ai_recommendation", {"buyer_hash": hash(buyer_context) % 10**8, "context": context[:800]}, parsed,
+            client.set_cached("ai_recommendation", {"buyer_hash": int(hashlib.sha256(buyer_context.encode()).hexdigest()[:8], 16), "context": context[:800]}, parsed,
                               model=SONNET_MODEL,
                               input_tokens=br.input_tokens,
                               output_tokens=br.output_tokens)
