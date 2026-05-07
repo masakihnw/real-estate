@@ -920,6 +920,7 @@ def browser_enrich_listings(
     sim_rate: float = DEFAULT_SIM_RATE,
     sim_term: int = DEFAULT_SIM_TERM,
     sim_down: int = DEFAULT_SIM_DOWN_PAYMENT,
+    max_time_min: int = 30,
 ) -> None:
     """物件 JSON の各物件にブラウザ自動化でデータを付加する。
 
@@ -962,7 +963,9 @@ def browser_enrich_listings(
         logger.info("ブラウザ enrichment: 全物件処理済み")
         return
 
-    logger.info(f"ブラウザ enrichment 開始: {len(targets)}件 ({property_type})")
+    deadline = time.time() + max_time_min * 60
+    logger.info(f"ブラウザ enrichment 開始: {len(targets)}件 ({property_type}), "
+                f"タイムアウト: {max_time_min}分")
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -986,6 +989,14 @@ def browser_enrich_listings(
         error_count = 0
 
         for idx, (i, listing) in enumerate(targets):
+            if time.time() > deadline:
+                logger.warning(
+                    f"ブラウザ enrichment タイムアウト ({max_time_min}分): "
+                    f"{idx}/{len(targets)}件で中断、結果を保存します"
+                )
+                _save_json(listings, output_path_p)
+                break
+
             url = listing["ss_sumai_surfin_url"]
             name = listing.get("name", "???")
 

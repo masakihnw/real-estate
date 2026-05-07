@@ -27,97 +27,42 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from logger import get_logger
 logger = get_logger(__name__)
 
-# 各 enricher が追加するフィールドのホワイトリスト
-# これ以外のフィールドは base の値を維持（誤上書き防止）
-ENRICHER_FIELDS: dict[str, set[str]] = {
-    # Track PREP: build_units_cache → merge_detail_cache
-    "units_cache": {
-        "total_units",
-        "floor_position",
-        "floor_total",
-        "floor_structure",
-        "ownership",
-        "management_fee",
-        "repair_reserve_fund",
-        "direction",
-        "balcony_area_m2",
-        "parking",
-        "constructor",
-        "zoning",
-        "repair_fund_onetime",
-        "delivery_date",
-        "feature_tags",
-        "floor_plan_images",
-        "suumo_images",
-    },
-    # Track A: sumai_surfin_enricher
-    "sumai_surfin": {
-        "ss_sumai_surfin_url",
-        "ss_address",
-        "ss_oki_price_70m2",
-        "ss_value_judgment",
-        "ss_station_rank",
-        "ss_ward_rank",
-        "ss_appreciation_rate",
-        "ss_favorite_count",
-        "ss_purchase_judgment",
-        "ss_profit_pct",
-        "ss_m2_discount",
-        "ss_new_m2_price",
-        "ss_forecast_m2_price",
-        "ss_forecast_change_rate",
-        "ss_lookup_status",
-        "ss_radar_data",
-        "ss_past_market_trends",
-        "ss_surrounding_properties",
-        "ss_sim_monthly_payment",
-        "ss_sim_total_payment",
-        "ss_sim_interest_total",
-        "ss_sim_base_price",
-        "ss_loan_balance_5y",
-        "ss_loan_balance_10y",
-        "ss_loan_balance_15y",
-        "ss_loan_balance_20y",
-        "ss_loan_balance_25y",
-        "ss_loan_balance_30y",
-        "ss_loan_balance_35y",
-        "address",  # sumai_surfin が上書きする場合あり
-    },
-    # Track B: geocode_cross_validator + hazard_enricher
-    "geocode_hazard": {
-        "latitude",
-        "longitude",
-        "geocode_confidence",
-        "geocode_fixed",
-        "hazard_info",
-    },
-    # Track C: commute_enricher
-    "commute": {
-        "commute_info",
-        "commute_info_v2",
-    },
-    # Track F: commute_gmaps_enricher (Google Maps door-to-door, Track C より高精度)
-    "commute_gmaps": {
-        "commute_info",
-    },
-    # Track D: reinfolib_enricher
-    "reinfolib": {
-        "reinfolib_market_data",
-    },
-    # Track E: estat_enricher
-    "estat": {
-        "estat_population_data",
-    },
-    # Track G: mansion_review_scraper
-    "mansion_review": {
-        "mansion_review_data",
-    },
+# enricher ごとのフィールドマッチングルール
+# プレフィックスベース: そのプレフィックスで始まるフィールドは全て取り込む
+# 個別指定: プレフィックスに収まらないフィールドを明示的に列挙
+ENRICHER_PREFIXES: dict[str, list[str]] = {
+    "sumai_surfin": ["ss_"],
+    "geocode_hazard": ["hazard_", "geocode_"],
+    "commute": ["commute_"],
+    "commute_gmaps": ["commute_"],
+    "reinfolib": ["reinfolib_"],
+    "estat": ["estat_"],
+    "mansion_review": ["mansion_review_"],
 }
 
-# 全 enricher フィールドの union
-ALL_ENRICHER_FIELDS = set()
-for fields in ENRICHER_FIELDS.values():
-    ALL_ENRICHER_FIELDS |= fields
+ENRICHER_EXACT: dict[str, set[str]] = {
+    "units_cache": {
+        "total_units", "floor_position", "floor_total", "floor_structure",
+        "ownership", "management_fee", "repair_reserve_fund", "direction",
+        "balcony_area_m2", "parking", "constructor", "zoning",
+        "repair_fund_onetime", "delivery_date", "feature_tags",
+        "floor_plan_images", "suumo_images",
+    },
+    "sumai_surfin": {"address"},
+    "geocode_hazard": {"latitude", "longitude"},
+}
+
+
+def _is_enricher_field(field: str) -> bool:
+    """フィールドがいずれかの enricher に属するかを判定する。"""
+    for prefixes in ENRICHER_PREFIXES.values():
+        for prefix in prefixes:
+            if field.startswith(prefix):
+                return True
+    for exact_fields in ENRICHER_EXACT.values():
+        if field in exact_fields:
+            return True
+    return False
 
 
 def load_json_safe(path: Path) -> list[dict] | None:
@@ -163,11 +108,14 @@ def merge(base: list[dict], enriched_files: list[Path]) -> list[dict]:
                 continue
 
             enriched_item = enriched_index[key]
-            for field in ALL_ENRICHER_FIELDS:
-                if field in enriched_item and enriched_item[field] is not None:
-                    if field not in item or item[field] != enriched_item[field]:
-                        item[field] = enriched_item[field]
-                        merged_count += 1
+            for field, value in enriched_item.items():
+                if value is None:
+                    continue
+                if not _is_enricher_field(field):
+                    continue
+                if field not in item or item[field] != value:
+                    item[field] = value
+                    merged_count += 1
 
         logger.info(f"[merge] {enriched_path.name}: {merged_count} フィールドをマージ")
 
