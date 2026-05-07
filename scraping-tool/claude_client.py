@@ -25,6 +25,15 @@ DEFAULT_CACHE_DB = str(Path(__file__).resolve().parent / "data" / "claude_cache.
 DEFAULT_MODEL = "claude-haiku-4-5-20251001"
 SONNET_MODEL = "claude-sonnet-4-20250514"
 
+
+class CreditError(Exception):
+    """API クレジット不足。ジョブを即座に失敗させる。"""
+
+
+def _is_credit_error(exc: Exception) -> bool:
+    msg = str(exc).lower()
+    return "credit balance" in msg or "payment required" in msg
+
 _CACHE_SCHEMA = """
 CREATE TABLE IF NOT EXISTS claude_cache (
     cache_key TEXT PRIMARY KEY,
@@ -151,6 +160,8 @@ class ClaudeClient:
         try:
             batch = self._client.messages.batches.create(requests=batch_requests)
         except Exception as e:
+            if _is_credit_error(e):
+                raise CreditError(str(e)) from e
             logger.error("Batch API 作成失敗: %s", e)
             return [BatchResult(custom_id=r.custom_id, error=str(e)) for r in requests]
 
@@ -252,6 +263,8 @@ class ClaudeClient:
                     ))
                     break
                 except Exception as e:
+                    if _is_credit_error(e):
+                        raise CreditError(str(e)) from e
                     if attempt < 2:
                         wait = 2 ** (attempt + 1)
                         logger.warning("API エラー（リトライ %d/%d, %ds待機）: %s", attempt + 1, 3, wait, e)

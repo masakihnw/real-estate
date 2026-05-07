@@ -234,6 +234,22 @@ fi
 if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "claude" ]; then
 
     if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+        # プリフライト: Claude API 課金状態チェック
+        if ! python3 -c "
+import os, sys
+from anthropic import Anthropic
+try:
+    c = Anthropic(api_key=os.environ['ANTHROPIC_API_KEY'])
+    c.messages.create(model='claude-haiku-4-5-20251001', max_tokens=1, messages=[{'role':'user','content':'ping'}])
+except Exception as e:
+    if 'credit balance' in str(e).lower() or 'payment required' in str(e).lower():
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+" 2>&1; then
+            echo "::error::Claude API クレジット不足 — enrichment をスキップできません" >&2
+            exit 1
+        fi
+
         # Track CL1: claude_dedup + claude_text_enricher
         cp "$INPUT" "$WORK_DIR/track_cl.json"
         (
