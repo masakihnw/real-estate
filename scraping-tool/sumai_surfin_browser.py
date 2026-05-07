@@ -967,22 +967,16 @@ def browser_enrich_listings(
     logger.info(f"ブラウザ enrichment 開始: {len(targets)}件 ({property_type}), "
                 f"タイムアウト: {max_time_min}分")
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context(
-            user_agent=(
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            ),
-            viewport={"width": 1280, "height": 800},
-            locale="ja-JP",
-        )
+    from scraper_common import launch_stealth_browser
+    pw, browser, context = launch_stealth_browser(
+        referer="https://sumai-surfin.com/",
+    )
+    try:
         page = context.new_page()
 
         # ── ログイン ──
         if not browser_login(page, user, password):
             logger.error("ブラウザ enrichment: ログイン失敗のためスキップ")
-            browser.close()
             return
 
         enriched_count = 0
@@ -1008,9 +1002,6 @@ def browser_enrich_listings(
                         listing["ss_price_judgments"] = json.dumps(
                             judgments, ensure_ascii=False
                         )
-                        # ── ss_value_judgment を住戸判定から導出 ──
-                        # 掲載価格に最も近い住戸の判定を採用。
-                        # 該当なしの場合は最初の住戸の判定を使用。
                         best_judgment = _pick_value_judgment(
                             judgments, listing.get("price_man")
                         )
@@ -1033,7 +1024,6 @@ def browser_enrich_listings(
                         term=sim_term, down_payment=sim_down,
                     )
                     if sim_data:
-                        # 既存のシミュレーションデータを上書き
                         for k, v in sim_data.items():
                             listing[k] = v
                         enriched_count += 1
@@ -1055,13 +1045,16 @@ def browser_enrich_listings(
             if (idx + 1) % 10 == 0:
                 logger.info(f"  ブラウザ進捗: {idx + 1}/{len(targets)}件 "
                     f"(成功: {enriched_count}, 失敗: {error_count})")
-                # 中間セーブ
                 _save_json(listings, output_path_p)
 
             # ページ間のディレイ
             time.sleep(PAGE_DELAY)
 
-        browser.close()
+    finally:
+        try:
+            browser.close()
+        finally:
+            pw.stop()
 
     # ── 最終出力 ──
     _save_json(listings, output_path_p)

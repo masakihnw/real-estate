@@ -40,7 +40,7 @@ CACHE_PATH = SCRIPT_DIR / "data" / "mansion_review_cache.json"
 CACHE_TTL_DAYS = 14
 
 BASE_URL = "https://www.mansion-review.jp"
-SEARCH_URL = f"{BASE_URL}/keyword_search/"
+AJAX_SEARCH_URL = f"{BASE_URL}/ajax/mansion_direct_search.php"
 
 USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -87,8 +87,10 @@ def _make_session() -> requests.Session:
     session = requests.Session()
     session.headers.update({
         "User-Agent": USER_AGENT,
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept": "application/json, text/javascript, */*;q=0.01",
         "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
+        "X-Requested-With": "XMLHttpRequest",
+        "Referer": f"{BASE_URL}/",
     })
     return session
 
@@ -97,36 +99,26 @@ def search_building(
     session: requests.Session, name: str
 ) -> Optional[str]:
     """
-    マンション名でマンションレビューを検索し、建物ページ URL を返す。
+    マンション名でマンションレビューの AJAX API を検索し、建物ページ URL を返す。
     見つからなければ None。
     """
-    params = {"free_text": name}
+    params = {"name": name}
     try:
         resp = session.get(
-            SEARCH_URL, params=params, timeout=30, allow_redirects=True
+            AJAX_SEARCH_URL, params=params, timeout=30
         )
         if resp.status_code != 200:
             logger.error(f"  検索エラー: {resp.status_code} ({name})")
             return None
 
-        soup = BeautifulSoup(resp.text, "html.parser")
+        data = resp.json()
+        for item in data.get("list", []):
+            building_id = item.get("id")
+            if building_id:
+                return f"{BASE_URL}/mansion/{building_id}.html"
 
-        # 直接建物ページにリダイレクトされた場合
-        if "/mansion/" in resp.url and resp.url.endswith(".html"):
-            return resp.url
-
-        # 検索結果からリンクを探す
-        for a_tag in soup.select("a[href*='/mansion/']"):
-            href = a_tag.get("href", "")
-            if re.match(r"/mansion/\d+\.html", href):
-                return BASE_URL + href
-            if re.match(
-                r"https://www\.mansion-review\.jp/mansion/\d+\.html", href
-            ):
-                return href
-
-    except Exception as e:
-        print(f"  検索例外: {name} — {e}")
+    except (requests.RequestException, ValueError) as e:
+        logger.warning(f"  検索例外: {name} — {e}")
 
     return None
 
