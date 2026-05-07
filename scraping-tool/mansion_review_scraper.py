@@ -58,6 +58,20 @@ def _normalize_name(name: str) -> str:
     return s
 
 
+def _clean_search_name(name: str) -> str:
+    """検索API用に物件名をクリーニング。階数・棟名・装飾文字を除去。"""
+    s = unicodedata.normalize("NFKC", name)
+    s = re.sub(r"\s+", " ", s).strip()
+    s = re.sub(r"[【】■□▲△▼▽●○◆◇]", "", s)
+    s = re.sub(r"\s*\d+\s*階.*$", "", s)
+    s = re.sub(r"\s*\d+F.*$", "", s, flags=re.IGNORECASE)
+    s = re.sub(r"\s*(EAST|WEST|NORTH|SOUTH|East|West)\s*$", "", s)
+    s = re.sub(r"\s*\S*棟\s*$", "", s)
+    s = re.sub(r"\s*\d+[LLDDKK]+.*$", "", s)
+    s = re.sub(r"\s*ペット.*$", "", s)
+    return s.strip()
+
+
 def load_cache() -> dict:
     if CACHE_PATH.exists():
         return json.loads(CACHE_PATH.read_text(encoding="utf-8"))
@@ -305,25 +319,35 @@ def enrich_single(
         if entry is None:
             return None
 
+    clean_name = _clean_search_name(name)
+    clean_key = _normalize_name(clean_name)
+    if clean_key != key and clean_key in cache:
+        entry = cache[clean_key]
+        if isinstance(entry, dict) and _is_cache_valid(entry):
+            cache[key] = entry
+            return entry.get("data")
+
     time.sleep(DELAY)
 
-    url = search_building(session, name)
+    url = search_building(session, clean_name)
     if not url:
-        cache[key] = {"data": None, "cached_at": datetime.now().isoformat()}
+        entry = {"data": None, "cached_at": datetime.now().isoformat()}
+        cache[key] = entry
+        if clean_key != key:
+            cache[clean_key] = entry
         return None
 
     time.sleep(DELAY)
 
     data = parse_building_page(session, url)
-    if data:
-        cache[key] = {
-            "data": data,
-            "cached_at": datetime.now().isoformat(),
-        }
-        return data
-    else:
-        cache[key] = {"data": None, "cached_at": datetime.now().isoformat()}
-        return None
+    entry = {
+        "data": data if data else None,
+        "cached_at": datetime.now().isoformat(),
+    }
+    cache[key] = entry
+    if clean_key != key:
+        cache[clean_key] = entry
+    return data
 
 
 def enrich_listings(

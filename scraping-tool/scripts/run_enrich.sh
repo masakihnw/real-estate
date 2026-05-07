@@ -200,7 +200,7 @@ if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "sumai" ]; then
             --input "$WORK_DIR/track_ss.json" \
             --output "$WORK_DIR/track_ss.json" \
             --property-type "$PROPERTY_TYPE" \
-            --max-time 40 \
+            --max-time 65 \
             $BROWSER_FLAG || true
         echo "[TIMING] sumai_surfin: $(( ($(date +%s) - _t) ))s" >&2
     ) &
