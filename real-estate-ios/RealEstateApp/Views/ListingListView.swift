@@ -135,6 +135,8 @@ struct ListingListView: View {
         case competingListingsDesc
         case forecastChangeRateAsc
         case forecastChangeRateDesc
+        case recommendationAsc
+        case recommendationDesc
 
         var label: String {
             switch self {
@@ -184,6 +186,8 @@ struct ListingListView: View {
             case .competingListingsDesc: return "競合売出数（多い順）"
             case .forecastChangeRateAsc: return "予測変動率（低い順）"
             case .forecastChangeRateDesc: return "予測変動率（高い順）"
+            case .recommendationAsc: return "AI推奨度（低い順）"
+            case .recommendationDesc: return "AI推奨度（高い順）"
             }
         }
 
@@ -229,6 +233,8 @@ struct ListingListView: View {
                 return { $0.competingListingsCount != nil }
             case .forecastChangeRateAsc, .forecastChangeRateDesc:
                 return { $0.ssForecastChangeRate != nil }
+            case .recommendationAsc, .recommendationDesc:
+                return { $0.aiRecommendationScore != nil }
             }
         }
     }
@@ -358,6 +364,10 @@ struct ListingListView: View {
             sortByNumericValue(&list, ascending: true) { $0.ssForecastChangeRate }
         case .forecastChangeRateDesc:
             sortByNumericValue(&list, ascending: false) { $0.ssForecastChangeRate }
+        case .recommendationAsc:
+            sortByNumericValue(&list, ascending: true) { $0.aiRecommendationScore.map(Double.init) }
+        case .recommendationDesc:
+            sortByNumericValue(&list, ascending: false) { $0.aiRecommendationScore.map(Double.init) }
         }
         return list
     }

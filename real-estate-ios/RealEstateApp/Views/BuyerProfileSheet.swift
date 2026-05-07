@@ -31,6 +31,15 @@ struct BuyerProfileSheet: View {
                     profileField("重視する点", text: $profile.priorities, placeholder: "例：1.資産価値 2.通勤利便 3.子育て環境")
                 }
 
+                Section("エリア・ライフスタイル希望") {
+                    profileField("街の雰囲気", text: $profile.neighborhoodPreference, placeholder: "例：ファミリー層が多く安心感のある住宅街")
+                    profileField("学区・教育", text: $profile.schoolPriority, placeholder: "例：公立小学校の評判重視 / 私立予定なので不問")
+                    profileField("通勤の質", text: $profile.commuteQuality, placeholder: "例：乗換1回以内、座れるとなお良い")
+                    profileField("休日の過ごし方", text: $profile.weekendLifestyle, placeholder: "例：公園で子どもと遊ぶ / カフェ巡り")
+                    profileField("コミュニティ", text: $profile.communityPreference, placeholder: "例：ファミリー世帯が多いエリア希望")
+                    profileField("絶対NG条件", text: $profile.dealBreakers, placeholder: "例：ハザード高リスク、1階、北向きのみ")
+                }
+
                 Section("住まい") {
                     profileField("現在の住居", text: $profile.currentHousing, placeholder: "例：賃貸 / 持ち家（売却予定）")
                 }
