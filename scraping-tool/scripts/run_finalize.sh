@@ -149,6 +149,18 @@ fi
 
 echo "[TIMING] upload_floor_plans: $(( ($(date +%s) - _t) ))s" >&2
 
+# ──────────────────────────── enrichment 後 再重複排除 ────────────────────────────
+
+echo "--- enrichment 後 再重複排除 ---" >&2
+_t=$(date +%s)
+
+python3 scripts/post_enrich_dedup.py \
+    "${OUTPUT_DIR}/latest.json" \
+    "${OUTPUT_DIR}/latest_shinchiku.json" \
+    || echo "post_enrich_dedup 失敗（続行）" >&2
+
+echo "[TIMING] post_enrich_dedup: $(( ($(date +%s) - _t) ))s" >&2
+
 # ──────────────────────────── is_new フラグ注入 ────────────────────────────
 
 # ──────────────────────────── SQLite DB 同期 ────────────────────────────

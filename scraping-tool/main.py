@@ -162,13 +162,30 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
         sub: dict[tuple, list[int]] = {}
         for idx in indices:
             r = merged[idx]
-            sk = (r.get("area_m2"), r.get("floor_position"), r.get("price_man"))
-            if sk == (None, None, None):
+            area = r.get("area_m2")
+            floor = r.get("floor_position")
+            price = r.get("price_man")
+            if area is None and floor is None and price is None:
                 if idx not in used3:
                     final.append(merged[idx])
                     used3.add(idx)
                 continue
-            sub.setdefault(sk, []).append(idx)
+            # floor_position=None はワイルドカード: 同一 (area, price) の既存グループにマッチ
+            matched_key: tuple | None = None
+            for existing_sk in sub:
+                if existing_sk[0] == area and existing_sk[2] == price:
+                    if floor is None or existing_sk[1] is None or floor == existing_sk[1]:
+                        matched_key = existing_sk
+                        break
+            if matched_key is not None:
+                # floor=None のグループキーを具体値に昇格
+                if matched_key[1] is None and floor is not None:
+                    sub[(area, floor, price)] = sub.pop(matched_key)
+                    sub[(area, floor, price)].append(idx)
+                else:
+                    sub[matched_key].append(idx)
+            else:
+                sub.setdefault((area, floor, price), []).append(idx)
         for sk, sub_indices in sub.items():
             if sub_indices[0] in used3:
                 continue
