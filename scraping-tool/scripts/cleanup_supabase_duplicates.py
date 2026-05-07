@@ -38,6 +38,8 @@ def _normalize_key_prefix(ik: str) -> str:
         addr = addr[3:]
     addr = re.sub(r"(\d+)丁目$", r"\1", addr)
     addr = re.sub(r"(\d+)\s*[-ー－/／].*$", r"\1", addr)
+    # 番地レベルの差異を吸収: 「富久町12」→「富久町」
+    addr = re.sub(r"([一-鿿])\d+$", r"\1", addr)
 
     return f"{name}|{layout}|{area}|{addr}|{built}"
 

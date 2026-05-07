@@ -49,7 +49,7 @@ def _batch_upsert(client, table: str, rows: list[dict], on_conflict: str) -> int
 
 def _sync_source_listings(client, listings: list[dict], source: str, property_type: str) -> dict:
     """1ソース分の物件リストを Supabase に同期する。"""
-    from report_utils import identity_key_str, normalize_listing_name
+    from report_utils import identity_key_str, normalize_listing_name, _normalize_address_for_key
 
     summary = {"new": 0, "updated": 0, "removed": 0, "unchanged": 0, "reappeared": 0}
     seen_identity_keys: set[str] = set()
@@ -123,6 +123,16 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         new_prefix_5 = "|".join(parts[:5])
         new_floor = parts[5]
 
+        def _normalize_prefix(p5: str) -> str:
+            """住所部分を正規化して比較用プレフィックスを生成。
+            旧レコードの東京都prefix/丁目suffix/番地差異を吸収する。"""
+            segs = p5.split("|")
+            if len(segs) >= 4:
+                segs[3] = _normalize_address_for_key(segs[3])
+            return "|".join(segs)
+
+        norm_new = _normalize_prefix(new_prefix_5)
+
         # フォールバック候補を収集（active/inactive 両方から）
         candidates: list[tuple[str, int, bool]] = []  # (old_key, id, is_active)
 
@@ -132,11 +142,13 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             old_parts = db_ik.split("|")
             if len(old_parts) == 7:
                 # 旧7要素: name|layout|area|address|built_year|station_name|floor
-                if "|".join(old_parts[:5]) == new_prefix_5 and old_parts[6] == new_floor:
+                norm_old = _normalize_prefix("|".join(old_parts[:5]))
+                if norm_old == norm_new and old_parts[6] == new_floor:
                     candidates.append((db_ik, lid, is_active))
             elif len(old_parts) == 6 and db_ik != ik:
                 # 同じ6要素だが floor 違い or station入り旧形式
-                if "|".join(old_parts[:5]) == new_prefix_5:
+                norm_old = _normalize_prefix("|".join(old_parts[:5]))
+                if norm_old == norm_new:
                     candidates.append((db_ik, lid, is_active))
 
         if not candidates:
