@@ -27,6 +27,7 @@ final class SupabaseAnnotationService {
     private let lastSyncKey = "supabase.annotations.lastSync"
 
     private let didPushLocalKey = "supabase.annotations.didPushLocal"
+    private let pushLocalFormatVersion = 2
 
     private init() {}
 
@@ -219,7 +220,9 @@ final class SupabaseAnnotationService {
     /// 一度実行したらフラグを立てて再実行しない。
     @MainActor
     func pushAllLocalAnnotationsIfNeeded(modelContext: ModelContext) async {
-        guard !defaults.bool(forKey: didPushLocalKey) else { return }
+        let alreadyPushed = defaults.bool(forKey: didPushLocalKey)
+            && defaults.integer(forKey: "\(didPushLocalKey).version") >= pushLocalFormatVersion
+        guard !alreadyPushed else { return }
         guard let userId = currentUserId else { return }
 
         do {
@@ -229,6 +232,7 @@ final class SupabaseAnnotationService {
 
             guard !annotated.isEmpty else {
                 defaults.set(true, forKey: didPushLocalKey)
+                defaults.set(pushLocalFormatVersion, forKey: "\(didPushLocalKey).version")
                 return
             }
 
@@ -256,6 +260,7 @@ final class SupabaseAnnotationService {
             }
 
             defaults.set(true, forKey: didPushLocalKey)
+            defaults.set(pushLocalFormatVersion, forKey: "\(didPushLocalKey).version")
             logger.info("ローカルアノテーション push 完了")
         } catch {
             logger.error("pushAllLocalAnnotations 失敗: \(error.localizedDescription, privacy: .public)")

@@ -251,11 +251,11 @@ def _normalize_address_for_key(address: str) -> str:
 
 
 def identity_key(r: dict) -> tuple:
-    """同一物件の識別用キー（価格を除く）。差分検出で「同じ物件で価格だけ変わった → updated」とするために使う。
-    station_line は駅名のみに正規化（路線テキストの表記揺れを吸収）。
-    address は丁目レベルに正規化（番地以下の精度差を吸収）。
-    floor_position は両方に値がある場合のみ区別する（片方 None なら無視）。
-    total_units / walk_min は重複集約の代表レコード変更で変動するため含めない。"""
+    """同一物件の識別用キー（価��を除く）。差分検出で「同じ物件で価格���け変わった → updated」とするために使う。
+    address は丁目レ��ルに正規化（番地以下の精度差���吸収）。
+    floor_position は両方に値がある場合のみ区別する（片方 None なら無��）。
+    station_name は除外: ソース間の表記形式差異（「勝どき」vs 空文字）で同一物件が別キーになる問題を根本解消。
+    total_units / walk_min は重複集約の代表レコード変更で変動するため含め��い。"""
     floor = r.get("floor_position")
     return (
         normalize_listing_name(r.get("name") or ""),
@@ -263,7 +263,6 @@ def identity_key(r: dict) -> tuple:
         r.get("area_m2"),
         _normalize_address_for_key(r.get("address") or ""),
         r.get("built_year"),
-        _extract_station_name(r.get("station_line") or ""),
         floor if floor is not None else None,
     )
 
@@ -297,13 +296,11 @@ def listing_has_property_changes(curr: dict, prev: dict) -> bool:
 
 
 def listing_key(r: dict) -> tuple:
-    """ユニーク判定用キー（名前・間取り・面積・価格・住所・築年・駅名）。
+    """ユニーク判定用キー（名前・間取り・面積・価格・住所・築年）。
     全フィールドが一致する物件を同一とみなす。dedupe_listings 側で
     duplicate_count として戸数を集計する。
-    station_line は駅名のみに正規化し、walk_min は除外。
-    address は丁目レベルに正規化（番地以下の精度差を吸収）。
-    SUUMOの路線表記揺れ（ＪＲ総武線 vs ＪＲ総武線快速 等）や
-    同一駅での徒歩分数違い（5分 vs 6分）による重複を防ぐ。"""
+    station_name は除外（ソース間の形式差異を吸収）。walk_min も除外。
+    address は丁目レベルに正規化（番地以下の精度差を吸収）。"""
     return (
         normalize_listing_name(r.get("name") or ""),
         (r.get("layout") or "").strip(),
@@ -311,7 +308,6 @@ def listing_key(r: dict) -> tuple:
         r.get("price_man"),
         _normalize_address_for_key(r.get("address") or ""),
         r.get("built_year"),
-        _extract_station_name(r.get("station_line") or ""),
     )
 
 

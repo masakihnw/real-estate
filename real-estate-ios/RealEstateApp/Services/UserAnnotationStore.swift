@@ -84,12 +84,26 @@ enum UserAnnotationStore {
     static func restore(to listing: Listing) {
         guard let cache = loadedCache else { return }
 
+        // 新キー（5要素: station_name なし）
         if let annotation = cache[listing.identityKey] {
             apply(annotation, to: listing)
             return
         }
 
-        // 旧キー（生住所）でフォールバック — identityKey 正規化変更前のバックアップに対応
+        // フォールバック: 旧6要素キー（station_name 入り）をプレフィックスマッチ
+        let newKey = listing.identityKey
+        for (cachedKey, annotation) in cache {
+            let parts = cachedKey.split(separator: "|", omittingEmptySubsequences: false)
+            if parts.count == 6 {
+                let withoutStation = parts[0..<5].joined(separator: "|")
+                if withoutStation == newKey {
+                    apply(annotation, to: listing)
+                    return
+                }
+            }
+        }
+
+        // レガシーフォールバック（住所正規化前 + station_name 入り）
         let oldKey = [
             Listing.cleanListingName(listing.name)
                 .replacingOccurrences(of: #"\s+"#, with: "", options: .regularExpression),
