@@ -10244,10 +10244,10 @@
     {
       "date": "2026-05-07",
       "total_listings": 326,
-      "new_count": 2,
-      "removed_count": 1,
-      "updated_count": 1,
-      "price_changed_count": 0,
+      "new_count": 17,
+      "removed_count": 13,
+      "updated_count": 4,
+      "price_changed_count": 1,
       "avg_price_man": 10401,
       "median_price_man": 10480,
       "price_distribution": {
