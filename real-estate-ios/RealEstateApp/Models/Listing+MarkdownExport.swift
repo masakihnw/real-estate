@@ -316,8 +316,8 @@ extension Listing {
             prompt += "\n"
         }
 
-        let stationName = primaryStation?.name ?? "最寄駅"
-        let lineName = primaryStation?.line ?? "路線"
+        let stationName = primaryStation?.stationName ?? "最寄駅"
+        let lineName = primaryStation?.routeName ?? "路線"
 
         prompt += """
 
@@ -492,8 +492,8 @@ extension Listing {
 
         """
         for st in stations {
-            prompt += "4. 「\(st.line ?? "") \(st.name ?? "") 住みやすさ ファミリー」で沿線・駅の生活感を調査\n"
-            prompt += "5. 「\(st.name ?? "") 子育て 学区 公園」で子育て環境を調査\n"
+            prompt += "4. 「\(st.routeName) \(st.stationName) 住みやすさ ファミリー」で沿線・駅の生活感を調査\n"
+            prompt += "5. 「\(st.stationName) 子育て 学区 公園」で子育て環境を調査\n"
         }
 
         prompt += """

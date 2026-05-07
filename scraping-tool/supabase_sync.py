@@ -348,6 +348,8 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
         "extracted_features", "image_categories",
         "dedup_confidence", "alt_sources", "dedup_candidates",
         "key_strengths", "key_risks",
+        "ai_recommendation_score", "ai_recommendation_summary",
+        "ai_recommendation_flags", "ai_recommendation_action",
     ]
 
     count = 0
