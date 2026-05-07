@@ -558,7 +558,16 @@ def extract_shinchiku_custom_simulation(
         }
     """
     try:
-        page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+        for _attempt in range(2):
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+                break
+            except Exception:
+                if _attempt == 0:
+                    logger.info(f"  [Browser] リトライ: {url}")
+                    time.sleep(3)
+                else:
+                    raise
         time.sleep(PAGE_DELAY)
 
         # ── Step 1: 「10年後予測詳細を見る」ボタンをクリック ──
