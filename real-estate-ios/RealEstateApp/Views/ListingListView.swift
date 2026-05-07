@@ -1138,7 +1138,7 @@ struct ListingRowView: View {
             .buttonStyle(.plain)
 
             // AI評価トグルセクション
-            if listing.investmentSummary != nil {
+            if listing.aiRecommendationScore != nil || listing.investmentSummary != nil {
                 aiSummarySection
             }
 
@@ -1366,8 +1366,14 @@ struct ListingRowView: View {
             HStack(spacing: 4) {
                 Text("✦")
                     .font(.caption2)
-                Text("AI評価")
-                    .font(.caption2.weight(.semibold))
+                if let score = listing.aiRecommendationScore, score >= 1, score <= 5 {
+                    Text(String(repeating: "★", count: score) + String(repeating: "☆", count: 5 - score))
+                        .font(.caption2)
+                        .foregroundStyle(aiStarColor)
+                } else {
+                    Text("AI評価")
+                        .font(.caption2.weight(.semibold))
+                }
                 Text(isAISummaryExpanded ? "" : "タップで表示")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
@@ -1382,13 +1388,45 @@ struct ListingRowView: View {
         }
         .buttonStyle(.plain)
 
-        if isAISummaryExpanded, let summary = listing.investmentSummary {
+        if isAISummaryExpanded {
+            aiExpandedContent
+                .padding(.bottom, 4)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+        }
+    }
+
+    @ViewBuilder
+    private var aiExpandedContent: some View {
+        if let conclusion = listing.aiRecommendationSummary {
+            Text(conclusion)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            if let action = listing.aiRecommendationAction, !action.isEmpty {
+                HStack(spacing: 4) {
+                    Image(systemName: "arrow.right.circle.fill")
+                        .font(.system(size: 10))
+                    Text(action)
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                }
+                .foregroundStyle(Color.accentColor)
+                .padding(.top, 2)
+            }
+        } else if let summary = listing.investmentSummary {
             Text(summary)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .lineLimit(4)
-                .padding(.bottom, 4)
-                .transition(.opacity.combined(with: .move(edge: .top)))
+        }
+    }
+
+    private var aiStarColor: Color {
+        switch listing.aiRecommendationScore {
+        case 5: return .green
+        case 4: return .blue
+        case 3: return .orange
+        default: return .secondary
         }
     }
 
