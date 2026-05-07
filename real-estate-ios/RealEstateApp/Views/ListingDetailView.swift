@@ -74,7 +74,7 @@ struct ListingDetailView: View {
                     // ③ スタットストリップ（3セル横並び）
                     statStripSection
 
-                    // ④ 購入判断サマリー（AI投資サマリー）
+                    // ④ AI購入推奨度 / 投資サマリー
                     InvestmentSummaryCard(listing: listing)
 
                     // ④-b 投資スコア・価格変動・掲載状況
