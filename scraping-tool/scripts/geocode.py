@@ -133,7 +133,7 @@ def validate_tokyo_coordinate(address: str, lat: float, lon: float) -> bool:
     # 東京23区の大枠チェック
     if not (TOKYO_23KU_LAT_MIN <= lat <= TOKYO_23KU_LAT_MAX and
             TOKYO_23KU_LON_MIN <= lon <= TOKYO_23KU_LON_MAX):
-        logger.error(f"⚠ バリデーション失敗（東京範囲外）: {address} → [{lat}, {lon}]")
+        logger.warning(f"⚠ バリデーション失敗（東京範囲外）: {address} → [{lat}, {lon}]")
         return False
 
     # 区の中心からの距離チェック
@@ -142,7 +142,7 @@ def validate_tokyo_coordinate(address: str, lat: float, lon: float) -> bool:
         center_lat, center_lon = _WARD_CENTERS[ward]
         dist = _haversine_km(lat, lon, center_lat, center_lon)
         if dist > _MAX_WARD_RADIUS_KM:
-            logger.error(f"⚠ バリデーション失敗（{ward}中心から{dist:.1f}km）: {address} → [{lat}, {lon}]")
+            logger.warning(f"⚠ バリデーション失敗（{ward}中心から{dist:.1f}km）: {address} → [{lat}, {lon}]")
             return False
 
     return True
