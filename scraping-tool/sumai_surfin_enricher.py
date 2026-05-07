@@ -2118,6 +2118,7 @@ def main() -> None:
     if args.browser or args.browser_only:
         try:
             from sumai_surfin_browser import browser_enrich_listings
+            browser_max_time = args.max_time if args.max_time > 0 else 30
             logger.info("ブラウザ自動化 enrichment を実行中...")
             browser_enrich_listings(
                 input_path=args.input if args.browser_only else args.output,
@@ -2125,6 +2126,7 @@ def main() -> None:
                 property_type=prop_type,
                 user=user,
                 password=password,
+                max_time_min=browser_max_time,
             )
         except ImportError:
             print(
