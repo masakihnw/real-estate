@@ -1660,6 +1660,57 @@ final class Listing: @unchecked Sendable {
             return results
         }
 
+        /// マンション購入者視点での総合安全レベル
+        var safetyLevel: HazardSafetyLevel {
+            var level: HazardSafetyLevel = .safe
+
+            // 致命的リスク → elevated
+            if sediment || tsunami || buildingCollapse >= 4 || fire >= 4 || combined >= 4 {
+                return .elevated
+            }
+
+            // 資産価値直結リスク → moderate
+            if flood || liquefaction || buildingCollapse >= 3 || fire >= 3 || combined >= 3 {
+                level = .moderate
+            }
+
+            // 軽微リスク → lowRisk
+            if level == .safe && (inlandWater || stormSurge) {
+                level = .lowRisk
+            }
+
+            // 東京都ランク2のみ → lowRisk
+            if level == .safe {
+                let maxRank = max(buildingCollapse, fire, combined)
+                if maxRank == 2 { level = .lowRisk }
+            }
+
+            return level
+        }
+
+        /// マンション購入の重要度順にソートされたラベル（一覧バッジ・コールアウト用）
+        func topLabels(max count: Int) -> (labels: [(icon: String, label: String, severity: HazardSeverity)], remaining: Int) {
+            let sorted = activeLabels.sorted { a, b in
+                priorityOrder(a.label) < priorityOrder(b.label)
+            }
+            let visible = Array(sorted.prefix(count))
+            let remaining = max(0, sorted.count - count)
+            return (visible, remaining)
+        }
+
+        private func priorityOrder(_ label: String) -> Int {
+            if label.hasPrefix("土砂") { return 0 }
+            if label.hasPrefix("津波") { return 1 }
+            if label.hasPrefix("洪水") { return 2 }
+            if label.hasPrefix("液状") { return 3 }
+            if label.hasPrefix("倒壊") { return 4 }
+            if label.hasPrefix("火災") { return 5 }
+            if label.hasPrefix("総合") { return 6 }
+            if label.hasPrefix("高潮") { return 7 }
+            if label.hasPrefix("内水") { return 8 }
+            return 9
+        }
+
         /// 全ハザード種別のラベル配列（詳細画面用 — 全ランク表示）
         var allLabels: [(icon: String, label: String, severity: HazardSeverity)] {
             var results: [(String, String, HazardSeverity)] = []
@@ -1689,6 +1740,16 @@ final class Listing: @unchecked Sendable {
         case info     // 低リスク（緑〜グレー: ランク1-2）
         case warning  // 注意（黄〜オレンジ: ランク3）
         case danger   // 危険（赤: ランク4-5）
+    }
+
+    /// マンション購入者視点での総合的な安全レベル（progressive disclosure 用）
+    enum HazardSafetyLevel: Int, Comparable {
+        case safe = 0       // ハザードなし or 東京都ランク全て≤2
+        case lowRisk = 1    // 軽微なハザード（内水・高潮のみ）or ランク2のみ
+        case moderate = 2   // 洪水・液状化あり or ランク3
+        case elevated = 3   // 土砂・津波あり or ランク4以上
+
+        static func < (lhs: Self, rhs: Self) -> Bool { lhs.rawValue < rhs.rawValue }
     }
 
     /// hazardInfo JSON をパースして HazardData を返す（キャッシュ付き）
@@ -2315,6 +2376,8 @@ final class Listing: @unchecked Sendable {
         var sameBuildingTransactions: [SameBuildingTransaction]
         var station: StationMarketData?    // 駅レベル比較
         var dataSource: String
+        var enrichedAt: String?            // データ更新日 (ISO 8601)
+        var periodsCovered: [String]       // ["2024Q4", "2025Q1", ...]
 
         struct QuarterlyPrice {
             var quarter: String            // "2024Q3"
@@ -2496,6 +2559,69 @@ final class Listing: @unchecked Sendable {
             default: return "エリア比較"
             }
         }
+
+        /// 集計期間レンジ（四半期データから算出）
+        var samplePeriodRange: String? {
+            let periods = quarterlyM2Prices.map(\.quarter).sorted()
+            guard let first = periods.first, let last = periods.last,
+                  first != last else { return nil }
+            return "\(first)〜\(last)"
+        }
+
+        /// データ鮮度の表示テキスト
+        var dataAgeDescription: String? {
+            guard let date = enrichedDate else { return nil }
+            return Self.formatDataAge(date)
+        }
+
+        /// データが古いか（90日超）
+        var isStale: Bool {
+            guard let date = enrichedDate else { return false }
+            return Calendar.current.dateComponents([.day], from: date, to: Date()).day ?? 0 > 90
+        }
+
+        /// 対象期間の表示テキスト（1四半期のみの場合は冗長な "Q4〜Q4" を避けて nil）
+        var periodsCoveredDescription: String? {
+            guard let first = periodsCovered.first,
+                  let last = periodsCovered.last,
+                  first != last else { return nil }
+            return "\(first)〜\(last)の成約データ"
+        }
+
+        private var enrichedDate: Date? {
+            guard let dateStr = enrichedAt else { return nil }
+            return Self.parseISO8601(dateStr)
+        }
+
+        private static func parseISO8601(_ str: String) -> Date? {
+            isoFullFormatter.date(from: str)
+                ?? isoDateOnlyFormatter.date(from: String(str.prefix(10)))
+        }
+
+        private static let isoFullFormatter: ISO8601DateFormatter = {
+            let f = ISO8601DateFormatter()
+            f.formatOptions = [.withFullDate, .withTime, .withColonSeparatorInTime]
+            return f
+        }()
+
+        private static let isoDateOnlyFormatter: ISO8601DateFormatter = {
+            let f = ISO8601DateFormatter()
+            f.formatOptions = [.withFullDate]
+            return f
+        }()
+
+        private static let dataAgeDateFormatter: DateFormatter = {
+            let f = DateFormatter()
+            f.dateFormat = "yyyy年M月更新"
+            return f
+        }()
+
+        private static func formatDataAge(_ date: Date) -> String {
+            let days = Calendar.current.dateComponents([.day], from: date, to: Date()).day ?? 0
+            if days < 1 { return "本日更新" }
+            if days < 30 { return "\(days)日前更新" }
+            return dataAgeDateFormatter.string(from: date)
+        }
     }
 
     // MARK: - MansionReviewData
@@ -2671,7 +2797,9 @@ final class Listing: @unchecked Sendable {
             yearlyM2Prices: yearly,
             sameBuildingTransactions: sameBuildingTxs,
             station: stationData,
-            dataSource: dict["data_source"] as? String ?? "不動産情報ライブラリ（国土交通省）"
+            dataSource: dict["data_source"] as? String ?? "不動産情報ライブラリ（国土交通省）",
+            enrichedAt: dict["enriched_at"] as? String,
+            periodsCovered: dict["periods_covered"] as? [String] ?? []
         )
     }
 

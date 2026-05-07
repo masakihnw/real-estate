@@ -131,10 +131,11 @@ jobs:
           fi
 
       - name: Commit and push
+        id: commit
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           # キャッシュファイルを追加
           git add --ignore-missing \
             scraping-tool/data/reinfolib_prices.json \
@@ -144,17 +145,19 @@ jobs:
             scraping-tool/data/reinfolib_land_prices.json \
             scraping-tool/data/estat_population.json \
             2>/dev/null || true
-          
+
           DATE=$(date +%Y-%m-%d)
           QUARTER="Q$(( ($(date +%-m) - 1) / 3 + 1 ))"
-          
+
           if git diff --cached --quiet; then
             echo "変更なし（スキップ）"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
           else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
             git commit -m "chore: update MLIT/e-Stat cache ${DATE} ${QUARTER}
 
           自動更新: GitHub Actions (update-reinfolib-cache)"
-            
+
             # rebase 方式で push（コンフリクト時はフォールバック）
             if git pull --rebase origin ${{ github.ref_name }}; then
               git push origin HEAD:refs/heads/${{ github.ref_name }}
@@ -164,6 +167,24 @@ jobs:
               git pull --no-rebase -X ours origin ${{ github.ref_name }}
               git push origin HEAD:refs/heads/${{ github.ref_name }}
             fi
+          fi
+
+      - name: Trigger enrichment on new data
+        if: steps.commit.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run enrich-and-report.yml --ref ${{ github.ref_name }}
+
+      - name: Notify new data to Slack
+        if: steps.commit.outputs.has_changes == 'true'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-type: application/json' \
+              -d "{\"text\": \":tada: *MLIT/e-Stat 新データ検知・キャッシュ更新完了*\nエンリッチメントを自動起動しました。\n実行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
           fi
 
       - name: Notify failure to Slack

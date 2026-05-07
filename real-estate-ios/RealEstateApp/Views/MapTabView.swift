@@ -793,10 +793,10 @@ struct HazardMapView: UIViewRepresentable {
                 stack.addArrangedSubview(subRowStack)
             }
 
-            // ハザード情報
+            // ハザード情報（深刻度に応じた色分け＋優先度順）
             let hazard = listing.parsedHazardData
-            if hazard.hasAnyHazard {
-                // スペーサー
+            let safetyLevel = hazard.safetyLevel
+            if safetyLevel >= .moderate {
                 let spacer = UIView()
                 spacer.translatesAutoresizingMaskIntoConstraints = false
                 spacer.heightAnchor.constraint(equalToConstant: 2).isActive = true
@@ -807,22 +807,26 @@ struct HazardMapView: UIViewRepresentable {
                 hazardStack.spacing = 4
                 hazardStack.alignment = .center
 
-                let warningIcon = UIImageView(image: UIImage(systemName: "exclamationmark.triangle.fill"))
-                warningIcon.tintColor = .systemOrange
+                let iconName = safetyLevel == .elevated
+                    ? "exclamationmark.octagon.fill"
+                    : "exclamationmark.triangle.fill"
+                let tintColor: UIColor = safetyLevel == .elevated ? .systemRed : .systemOrange
+                let warningIcon = UIImageView(image: UIImage(systemName: iconName))
+                warningIcon.tintColor = tintColor
                 warningIcon.translatesAutoresizingMaskIntoConstraints = false
                 warningIcon.widthAnchor.constraint(equalToConstant: 12).isActive = true
                 warningIcon.heightAnchor.constraint(equalToConstant: 12).isActive = true
                 warningIcon.contentMode = .scaleAspectFit
                 hazardStack.addArrangedSubview(warningIcon)
 
-                let labels = hazard.activeLabels.map { $0.label }
+                let (topLabels, remaining) = hazard.topLabels(max: 3)
                 let hazardLabel = UILabel()
-                let displayLabels = labels.prefix(3).joined(separator: "・")
-                hazardLabel.text = labels.count > 3
-                    ? "\(displayLabels) 他\(labels.count - 3)件"
-                    : displayLabels
+                let displayText = topLabels.map(\.label).joined(separator: "・")
+                hazardLabel.text = remaining > 0
+                    ? "\(displayText) 他\(remaining)件"
+                    : displayText
                 hazardLabel.font = .systemFont(ofSize: 10, weight: .medium)
-                hazardLabel.textColor = .systemOrange
+                hazardLabel.textColor = tintColor
                 hazardLabel.numberOfLines = 2
                 hazardStack.addArrangedSubview(hazardLabel)
 

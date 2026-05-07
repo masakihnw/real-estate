@@ -82,6 +82,15 @@ enum DesignSystem {
     static let hazardMid = Color.orange
     static let hazardLow = Color.yellow
 
+    static func hazardSafetyColor(_ level: Listing.HazardSafetyLevel) -> Color {
+        switch level {
+        case .safe: return positiveColor
+        case .lowRisk: return Color.secondary
+        case .moderate: return hazardMid
+        case .elevated: return hazardHigh
+        }
+    }
+
     // MARK: - Monthly Payment Defaults
 
     static let monthlyPaymentRate: Double = 1.2
