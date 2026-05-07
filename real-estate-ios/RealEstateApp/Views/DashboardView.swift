@@ -111,7 +111,7 @@ struct DashboardView: View {
 
     private var aiInsightsSection: some View {
         let topListings = chukoListings
-            .filter { $0.highlightBadge != nil && $0.investmentSummary != nil }
+            .filter { $0.highlightBadge != nil && $0.investmentSummary != nil && ($0.aiRecommendationScore ?? 0) >= 4 }
             .sorted { ($0.listingScore ?? 0) > ($1.listingScore ?? 0) }
             .prefix(3)
 
@@ -140,7 +140,7 @@ struct DashboardView: View {
 
                     if !topListings.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("注目物件 Top 3")
+                            Text("AI推奨物件")
                                 .font(.subheadline.weight(.medium))
                                 .foregroundStyle(.secondary)
                             ForEach(Array(topListings), id: \.url) { listing in
