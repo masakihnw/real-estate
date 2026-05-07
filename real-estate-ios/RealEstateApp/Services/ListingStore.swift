@@ -3,11 +3,7 @@
 //  RealEstateApp
 //
 //  物件一覧の取得・永続化・差分検出（新規→プッシュ用）
-//  中古 (latest.json) と新築 (latest_shinchiku.json) の2ソースをサポート。
-//
-//  ハイブリッド改善:
-//  - デフォルト URL をハードコード（初回設定不要）
-//  - ETag ベース差分チェック（未変更ならダウンロードスキップ）
+//  デフォルトは Supabase モード。JSON フォールバックはカスタム URL 設定時のみ。
 //
 
 import Foundation
@@ -20,12 +16,6 @@ private let logger = Logger(subsystem: "com.realestate", category: "ListingStore
 @Observable
 final class ListingStore {
     static let shared = ListingStore()
-
-    // MARK: - デフォルト URL（GitHub raw）
-    // ユーザーが未設定の場合はこの URL から自動取得する。
-    // Settings 画面でカスタム URL に上書き可能。
-    static let defaultChukoURL = "https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/latest.json"
-    static let defaultShinchikuURL = "https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/latest_shinchiku.json"
 
     // MARK: - データソース切り替え
     private let useSupabaseKey = "realestate.useSupabase"
@@ -76,16 +66,14 @@ final class ListingStore {
         set { defaults.set(newValue, forKey: shinchikuURLKey) }
     }
 
-    /// 実際に使用される中古 URL（カスタムが空ならデフォルト）
+    /// 実際に使用される中古 URL（カスタム URL が必要。Supabase がデフォルト）
     var effectiveChukoURL: String {
-        let custom = listURL.trimmingCharacters(in: .whitespaces)
-        return custom.isEmpty ? Self.defaultChukoURL : custom
+        listURL.trimmingCharacters(in: .whitespaces)
     }
 
-    /// 実際に使用される新築 URL（カスタムが空ならデフォルト）
+    /// 実際に使用される新築 URL（カスタム URL が必要。Supabase がデフォルト）
     var effectiveShinchikuURL: String {
-        let custom = shinchikuListURL.trimmingCharacters(in: .whitespaces)
-        return custom.isEmpty ? Self.defaultShinchikuURL : custom
+        shinchikuListURL.trimmingCharacters(in: .whitespaces)
     }
 
     /// カスタム URL を使用中かどうか
