@@ -167,9 +167,8 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
             floor = r.get("floor_position")
             price = r.get("price_man")
             if area is None and floor is None and price is None:
-                if idx not in used3:
-                    final.append(merged[idx])
-                    used3.add(idx)
+                layout_key = (r.get("layout") or "").strip()
+                sub.setdefault((None, None, None, layout_key), []).append(idx)
                 continue
             # floor_position=None はワイルドカード: 同一 (area, price) の既存グループにマッチ
             matched_key: tuple | None = None
