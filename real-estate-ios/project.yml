@@ -22,7 +22,7 @@ settings:
     TARGETED_DEVICE_FAMILY: "1,2"        # iPhone + iPad
     SUPPORTS_MACCATALYST: "YES"
     DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER: "NO"
-    CURRENT_PROJECT_VERSION: "721"
+    CURRENT_PROJECT_VERSION: "722"
     MARKETING_VERSION: "1.0.0"
 
 targets:
@@ -50,6 +50,7 @@ targets:
       properties:
         CFBundleDisplayName: "物件情報"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        ITSAppUsesNonExemptEncryption: false
         LSApplicationCategoryType: "public.app-category.lifestyle"
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
@@ -106,6 +107,7 @@ targets:
       properties:
         CFBundleDisplayName: "物件情報ウィジェット"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        ITSAppUsesNonExemptEncryption: false
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
