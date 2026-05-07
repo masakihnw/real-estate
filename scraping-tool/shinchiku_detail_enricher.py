@@ -537,9 +537,7 @@ def main() -> None:
         logger.info("画像未取得の SUUMO 新築物件はありません")
         sys.exit(0)
 
-    logger.warning(f"SUUMO 新築詳細取得: {len(targets)}件の詳細・間取りページを取得します",
-        file=sys.stderr,
-    )
+    logger.warning(f"SUUMO 新築詳細取得: {len(targets)}件の詳細・間取りページを取得します")
 
     manifest = _load_manifest()
     etags = _load_etags()
