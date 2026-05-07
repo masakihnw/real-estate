@@ -20975,8 +20975,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "両国",
       "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "latitude": 35.697411,
+      "longitude": 139.7862521,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -33378,7 +33378,7 @@
       "latitude": 35.6485139,
       "longitude": 139.8119175,
       "building_group_id": "131080290-2012-RC",
-      "estimated_building_name": "クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
+      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
     },
     {
       "id": "tx-62fdc6645b5e",
@@ -34158,7 +34158,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-0c936cb79d84",
@@ -34318,7 +34318,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-1ae81d8e04f2",
@@ -34338,7 +34338,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-5dcb9135a5b9",
@@ -34358,7 +34358,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-9835190423af",
@@ -34458,7 +34458,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-c7efe630dcd8",
@@ -34478,7 +34478,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-b60056b9a0ca",
@@ -34498,7 +34498,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-d4d55d818f9b",
@@ -34518,7 +34518,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-5d21ee96607a",
@@ -34538,7 +34538,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-7c6bf5dd4da0",
@@ -34558,7 +34558,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-99599f7521e5",
@@ -34638,7 +34638,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-1c7487cbe3f1",
@@ -34658,7 +34658,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-5e2de86846f5",
@@ -34678,7 +34678,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-1b57fddbdfed",
@@ -34698,7 +34698,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-545eb3e610c2",
@@ -34838,7 +34838,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-a1b10dbb0522",
@@ -34898,7 +34898,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-e20059ed5551",
@@ -34918,7 +34918,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-311ed5b24340",
@@ -34938,7 +34938,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-61bc0c0d2ff1",
@@ -34958,7 +34958,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-03bcc149cef8",
@@ -34978,7 +34978,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-6fca5185571f",
@@ -35038,7 +35038,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-edadff33ed99",
@@ -35058,7 +35058,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-ea79e5a0b954",
@@ -35178,7 +35178,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-a478f02fac7b",
@@ -35198,7 +35198,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-5c4587a036d7",
@@ -35218,7 +35218,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-78d3a39635cf",
@@ -35238,7 +35238,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-5e9ac35f50a5",
@@ -35258,7 +35258,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-329f12a68027",
@@ -35278,7 +35278,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-a4df5cd47827",
@@ -35298,7 +35298,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-afb6c98a8929",
@@ -35438,7 +35438,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-2c480b4cd3aa",
@@ -35478,7 +35478,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2020-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-b1d5e2d60e2c",
@@ -35498,7 +35498,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-e899a4fc5f0d",
@@ -35518,7 +35518,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-7676c2f602b3",
@@ -35538,7 +35538,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-73c418211195",
@@ -35578,7 +35578,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-0ea32ad5743d",
@@ -35638,7 +35638,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-9cf7c60b43dd",
@@ -35678,7 +35678,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-99bdc6f3e095",
@@ -35738,7 +35738,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-d825210f4f5e",
@@ -35778,7 +35778,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-ac211cd77dfa",
@@ -35898,7 +35898,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-3007f969e537",
@@ -35938,7 +35938,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-5a766ec74372",
@@ -36018,7 +36018,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-ccce395825b5",
@@ -36038,7 +36038,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-aca13ba97927",
@@ -36058,7 +36058,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-d8ca3b041d0b",
@@ -36078,7 +36078,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-72c72e1ae313",
@@ -36098,7 +36098,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-c4b10d56c978",
@@ -36118,7 +36118,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2020-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-3878c28dc7ce",
@@ -36298,7 +36298,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-9cc3da0c9f14",
@@ -36338,7 +36338,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-ec45702a4cf2",
@@ -36418,7 +36418,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-fa388e1526e0",
@@ -36438,7 +36438,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-137c4fbfe5c9",
@@ -36538,7 +36538,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-517ef4c5d9e8",
@@ -36558,7 +36558,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-6df21beb7889",
@@ -36578,7 +36578,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-5107cf8dc0c4",
@@ -36598,7 +36598,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "id": "tx-efb2b4c99a83",
@@ -36718,7 +36718,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "id": "tx-90422464b921",
@@ -57663,8 +57663,8 @@
       "structure": "RC",
       "nearest_station": "両国",
       "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "latitude": 35.697411,
+      "longitude": 139.7862521,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -60437,7 +60437,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
+      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
     },
     {
       "group_id": "131080300-2016-RC",
@@ -61702,7 +61702,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "品川イーストシティタワー / プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "group_id": "131090180-2019",
@@ -61725,7 +61725,7 @@
         "2023Q1"
       ],
       "latest_period": "2023Q1",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "group_id": "131090180-2019-RC",
@@ -61761,7 +61761,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー / 品川イーストシティタワー"
     },
     {
       "group_id": "131090180-2020-RC",
@@ -61785,7 +61785,7 @@
         "2025Q1"
       ],
       "latest_period": "2025Q1",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー / プライムパークス品川シーサイド ザ・タワー"
+      "estimated_building_name": "プライムパークス品川シーサイド ザ・タワー"
     },
     {
       "group_id": "131090180-2024-RC",
@@ -69196,7 +69196,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-07T09:13:32",
+    "updated_at": "2026-05-07T10:51:58",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
