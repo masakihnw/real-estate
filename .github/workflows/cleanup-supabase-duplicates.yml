@@ -1,0 +1,33 @@
+name: Cleanup Supabase Duplicates
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-scraping
+        with:
+          install-playwright: 'false'
+
+      - name: Dry run
+        working-directory: scraping-tool
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/cleanup_supabase_duplicates.py
+
+      - name: Apply cleanup
+        working-directory: scraping-tool
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/cleanup_supabase_duplicates.py --apply
