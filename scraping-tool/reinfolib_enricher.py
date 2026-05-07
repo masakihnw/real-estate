@@ -774,6 +774,8 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
             "station": station_market,
             # メタデータ
             "data_source": data_source,
+            "enriched_at": prices.get("updated_at"),
+            "periods_covered": prices.get("periods_covered") or [],
         }
 
         listing["reinfolib_market_data"] = json.dumps(

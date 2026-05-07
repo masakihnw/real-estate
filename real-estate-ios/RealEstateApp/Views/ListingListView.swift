@@ -1550,7 +1550,7 @@ private struct BadgeRow: View {
             }
             // 改行が必要な場合：ハザード行＋通勤時間行
             VStack(alignment: .leading, spacing: 3) {
-                if listing.hasHazardRisk {
+                if listing.parsedHazardData.safetyLevel >= .moderate {
                     HStack(spacing: 4) { hazardBadges }
                 }
                 if listing.hasCommuteInfo {
@@ -1562,9 +1562,32 @@ private struct BadgeRow: View {
 
     @ViewBuilder
     private var hazardBadges: some View {
-        if listing.hasHazardRisk {
-            let labels = listing.parsedHazardData.activeLabels
-            ForEach(Array(labels.enumerated()), id: \.element.label) { _, item in
+        let hazard = listing.parsedHazardData
+        let level = hazard.safetyLevel
+        if level >= .moderate {
+            let color = DesignSystem.hazardSafetyColor(level)
+            let totalCount = hazard.activeLabels.count
+            let (top, remaining) = hazard.topLabels(max: 2)
+
+            // 集約バッジ
+            HStack(spacing: 2) {
+                Image(systemName: level == .elevated
+                    ? "exclamationmark.octagon.fill"
+                    : "exclamationmark.triangle.fill")
+                    .font(.caption2)
+                Text(level == .elevated ? "要確認" : "注意")
+                    .font(.caption2.weight(.bold))
+                Text("\(totalCount)件")
+                    .font(.caption2)
+            }
+            .foregroundStyle(color)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(color.opacity(0.12))
+            .clipShape(RoundedRectangle(cornerRadius: 4))
+
+            // 上位2件の具体バッジ
+            ForEach(Array(top.enumerated()), id: \.element.label) { _, item in
                 HStack(spacing: 2) {
                     Image(systemName: item.icon)
                         .font(.caption2)
@@ -1578,6 +1601,13 @@ private struct BadgeRow: View {
                     (item.severity == .danger ? Color.red : Color.orange).opacity(0.12)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 4))
+            }
+
+            // 超過分カウント
+            if remaining > 0 {
+                Text("+\(remaining)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
         }
     }

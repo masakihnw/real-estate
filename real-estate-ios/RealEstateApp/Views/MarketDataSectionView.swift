@@ -13,6 +13,8 @@ import Charts
 
 struct MarketDataSectionView: View {
     let listing: Listing
+    @State private var showTierExplanation = false
+    @State private var showConfidenceExplanation = false
 
     var body: some View {
         if let market = listing.parsedMarketData {
@@ -52,12 +54,30 @@ struct MarketDataSectionView: View {
                 }
 
                 // フッター
-                HStack(spacing: 4) {
-                    Image(systemName: "info.circle")
-                    Text("出典: \(market.dataSource)（成約価格ベース）")
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "info.circle")
+                        Text("出典: \(market.dataSource)（成約価格ベース）")
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+
+                    if let age = market.dataAgeDescription {
+                        HStack(spacing: 4) {
+                            if market.isStale {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.system(size: 8))
+                                    .foregroundStyle(.orange)
+                            }
+                            Text(age)
+                            if let period = market.periodsCoveredDescription {
+                                Text("・\(period)")
+                            }
+                        }
+                        .font(.system(size: 9))
+                        .foregroundStyle(market.isStale ? Color.orange : Color(.tertiaryLabel))
+                    }
                 }
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
             }
             .padding(14)
             .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
@@ -98,21 +118,54 @@ struct MarketDataSectionView: View {
             }
 
             // 補足: マッチ条件 + サンプル数
-            HStack(spacing: 6) {
-                // マッチ精度バッジ
-                Text(market.matchTierLabel)
-                    .font(.caption2)
-                    .fontWeight(.medium)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(matchTierBadgeColor(market.matchTier))
-                    .clipShape(Capsule())
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 6) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showTierExplanation.toggle()
+                        }
+                    } label: {
+                        HStack(spacing: 3) {
+                            Text(market.matchTierLabel)
+                                .font(.caption2)
+                                .fontWeight(.medium)
+                            Image(systemName: "questionmark.circle")
+                                .font(.system(size: 9))
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(matchTierBadgeColor(market.matchTier))
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
 
-                Text("\(market.matchDescription)の成約\(market.sampleCount)件")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    if market.sampleCount < 20 {
+                        Text("少数サンプル")
+                            .font(.system(size: 8, weight: .medium))
+                            .foregroundStyle(.orange)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 1)
+                            .background(Color.orange.opacity(0.12))
+                            .clipShape(Capsule())
+                    }
 
-                Spacer()
+                    Spacer()
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("\(market.matchDescription)の成約\(market.sampleCount)件")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    if let range = market.samplePeriodRange {
+                        Text("集計期間: \(range)")
+                            .font(.system(size: 9))
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+
+                if showTierExplanation {
+                    tierExplanationCard(currentTier: market.matchTier)
+                }
             }
         }
         .padding(12)
@@ -273,11 +326,26 @@ struct MarketDataSectionView: View {
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)
 
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showConfidenceExplanation.toggle()
+                    }
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+                .buttonStyle(.plain)
+
                 Spacer()
 
                 Text("\(market.sameBuildingTransactions.count)件")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
+            }
+
+            if showConfidenceExplanation {
+                confidenceExplanationCard
             }
 
             // 間取り別サマリー（DisclosureGroup で明細展開）
@@ -287,8 +355,8 @@ struct MarketDataSectionView: View {
 
             // 注意書き
             Text("※ 同区・同町名・同築年・同構造で推定。同一棟を保証するものではありません")
-                .font(.system(size: 9))
-                .foregroundStyle(.quaternary)
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
         }
     }
 
@@ -593,6 +661,66 @@ struct MarketDataSectionView: View {
         guard let yoy else { return .primary }
         if abs(yoy) < 0.5 { return .primary }
         return yoy > 0 ? .green : .red
+    }
+
+    // MARK: - Tier/信頼度 説明カード
+
+    @ViewBuilder
+    private func tierExplanationCard(currentTier: Int) -> some View {
+        let tiers: [(Int, String, String)] = [
+            (1, "精密比較", "同区 + 同間取り + 面積±15m² + 築年±10年"),
+            (2, "標準比較", "同区 + 同間取り + 面積±20m²"),
+            (3, "間取り比較", "同区 + 同間取り"),
+            (4, "エリア比較", "同区のみ"),
+        ]
+        VStack(alignment: .leading, spacing: 4) {
+            ForEach(tiers, id: \.0) { tier, label, desc in
+                HStack(spacing: 6) {
+                    Text(label)
+                        .font(.system(size: 9, weight: .bold))
+                        .frame(width: 52, alignment: .leading)
+                        .foregroundStyle(tier == currentTier ? .primary : .secondary)
+                    Text(desc)
+                        .font(.system(size: 9))
+                        .foregroundStyle(tier == currentTier ? .primary : .tertiary)
+                    if tier == currentTier {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 9))
+                            .foregroundStyle(matchTierBadgeColor(tier))
+                    }
+                }
+            }
+        }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .fill(Color(.systemGray6).opacity(0.6))
+        )
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private var confidenceExplanationCard: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("信頼度の基準")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.secondary)
+            Group {
+                Label("同区 + 同町名 + 築年±1年 + 同構造 + 延床面積近似", systemImage: "circle.fill")
+                    .foregroundStyle(.green)
+                Label("同区 + 同町名 + 築年±1年 + 同構造", systemImage: "circle.fill")
+                    .foregroundStyle(.orange)
+                Label("同区 + 同町名 + 築年±1年", systemImage: "circle.fill")
+                    .foregroundStyle(.gray)
+            }
+            .font(.system(size: 9))
+            .labelStyle(ConfidenceLabelStyle())
+        }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .fill(Color(.systemGray6).opacity(0.6))
+        )
+        .transition(.opacity.combined(with: .move(edge: .top)))
     }
 
     private func matchTierBadgeColor(_ tier: Int) -> Color {
@@ -908,5 +1036,15 @@ struct MarketTrendChart: View {
             return String(year.suffix(2)) + "'"
         }
         return year
+    }
+}
+
+private struct ConfidenceLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 4) {
+            configuration.icon
+                .font(.system(size: 5))
+            configuration.title
+        }
     }
 }

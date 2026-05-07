@@ -123,6 +123,88 @@ def test_compare_listings_no_previous():
     assert result["unchanged"] == []
 
 
+# --- compare_listings: floor_position fallback ---
+
+
+def _listing_with_floor(name="A", layout="2LDK", area_m2=65.0, price_man=8000,
+                         address="東京都目黒区", built_year=2020, floor_position=None):
+    return {
+        "name": name, "layout": layout, "area_m2": area_m2,
+        "price_man": price_man, "address": address,
+        "built_year": built_year, "floor_position": floor_position,
+        "station_line": "", "walk_min": 5,
+    }
+
+
+def test_compare_listings_floor_none_to_value_is_updated():
+    """floor_position が None→値 に変わった場合は updated（not new+removed）。"""
+    prev = [_listing_with_floor(name="アップルタワー", floor_position=None, price_man=11450)]
+    curr = [_listing_with_floor(name="アップルタワー", floor_position=33, price_man=11450)]
+    result = compare_listings(curr, prev)
+    assert len(result["new"]) == 0
+    assert len(result["removed"]) == 0
+    assert len(result["updated"]) == 1
+
+
+def test_compare_listings_floor_value_to_none_is_updated():
+    """floor_position が値→None に変わった場合も updated。"""
+    prev = [_listing_with_floor(name="ベイサイドタワー", floor_position=18, price_man=10980)]
+    curr = [_listing_with_floor(name="ベイサイドタワー", floor_position=None, price_man=10980)]
+    result = compare_listings(curr, prev)
+    assert len(result["new"]) == 0
+    assert len(result["removed"]) == 0
+    assert len(result["updated"]) == 1
+
+
+def test_compare_listings_floor_both_none_matches():
+    """両方 floor_position=None なら完全一致で unchanged。"""
+    prev = [_listing_with_floor(name="X", floor_position=None, price_man=8000)]
+    curr = [_listing_with_floor(name="X", floor_position=None, price_man=8000)]
+    result = compare_listings(curr, prev)
+    assert len(result["unchanged"]) == 1
+    assert len(result["new"]) == 0
+    assert len(result["removed"]) == 0
+
+
+def test_compare_listings_floor_different_values_are_different():
+    """両方に階数がある場合（3階 vs 11階）は別ユニットとして扱う。"""
+    prev = [_listing_with_floor(name="マンションA", floor_position=3, price_man=8000)]
+    curr = [_listing_with_floor(name="マンションA", floor_position=11, price_man=9000)]
+    result = compare_listings(curr, prev)
+    assert len(result["new"]) == 1
+    assert len(result["removed"]) == 1
+    assert len(result["updated"]) == 0
+
+
+def test_compare_listings_floor_fallback_with_price_change():
+    """floor_position が None→値 + 価格変更 の場合も updated。"""
+    prev = [_listing_with_floor(name="タワーX", floor_position=None, price_man=9000)]
+    curr = [_listing_with_floor(name="タワーX", floor_position=5, price_man=8500)]
+    result = compare_listings(curr, prev)
+    assert len(result["new"]) == 0
+    assert len(result["removed"]) == 0
+    assert len(result["updated"]) == 1
+    assert result["updated"][0]["current"]["price_man"] == 8500
+    assert result["updated"][0]["previous"]["price_man"] == 9000
+
+
+def test_compare_listings_floor_fallback_does_not_steal_exact_match():
+    """完全一致の物件がある場合、フォールバックが横取りしないこと。"""
+    prev = [
+        _listing_with_floor(name="M", floor_position=5, price_man=8000),
+        _listing_with_floor(name="M", floor_position=None, price_man=7000),
+    ]
+    curr = [
+        _listing_with_floor(name="M", floor_position=5, price_man=8000),
+        _listing_with_floor(name="M", floor_position=10, price_man=7000),
+    ]
+    result = compare_listings(curr, prev)
+    assert len(result["unchanged"]) == 1
+    assert len(result["updated"]) == 1
+    assert len(result["new"]) == 0
+    assert len(result["removed"]) == 0
+
+
 # --- format 境界値 ---
 
 

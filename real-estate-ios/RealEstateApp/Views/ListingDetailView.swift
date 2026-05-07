@@ -156,12 +156,16 @@ struct ListingDetailView: View {
                             .id("simulation")
                     }
 
-                    // ⑨-d 成約相場との比較（不動産情報ライブラリ）
-                    if listing.hasMarketData {
+                    // ⑨-d 成約相場との比較（不動産情報ライブラリ）+ 近隣の成約事例
+                    if listing.hasMarketData || !nearbyTransactions.isEmpty {
                         Divider()
+                    }
+                    if listing.hasMarketData {
                         MarketDataSectionView(listing: listing)
                             .id("market")
                     }
+                    nearbyTransactionsSection
+                        .id("nearby-tx")
 
                     // ⑨-e マンションレビュー
                     if listing.parsedMansionReviewData != nil {
@@ -182,11 +186,6 @@ struct ListingDetailView: View {
                         Divider()
                         similarListingsSection
                     }
-
-                    Divider()
-
-                    // 近隣の成約事例（同一区の成約実績）
-                    nearbyTransactionsSection
 
                     Divider()
 
@@ -1644,7 +1643,8 @@ struct ListingDetailView: View {
         let txns = nearbyTransactions
         if !txns.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
-                Text("近隣の成約事例")
+                let ward = listing.parsedMarketData?.ward ?? listing.wardName
+                Text(ward.isEmpty ? "近隣の成約事例" : "\(ward)の直近成約事例")
                     .font(.headline)
 
                 ForEach(txns, id: \.txId) { txn in
@@ -2111,14 +2111,26 @@ struct ListingDetailView: View {
     @ViewBuilder
     private var hazardSection: some View {
         let hazard = listing.parsedHazardData
-        let labels = hazard.allLabels  // 全ランク表示（低リスクも含む）
+        let labels = hazard.allLabels
+        let level = hazard.safetyLevel
+        let levelColor = DesignSystem.hazardSafetyColor(level)
 
         VStack(alignment: .leading, spacing: 12) {
-            // セクションヘッダー
-            Label("ハザード情報", systemImage: "exclamationmark.triangle.fill")
+            // セクションヘッダー（深刻度反映）
+            HStack(spacing: 6) {
+                Label {
+                    Text("ハザード情報")
+                } icon: {
+                    Image(systemName: hazardHeaderIcon(level))
+                }
                 .font(.subheadline)
                 .fontWeight(.bold)
-                .foregroundStyle(.orange)
+                .foregroundStyle(levelColor)
+
+                Text(hazardHeaderSuffix(level))
+                    .font(.caption)
+                    .foregroundStyle(levelColor.opacity(0.8))
+            }
 
             // GSI ハザードマップ vs 東京都地域危険度で分類
             let tokyoPrefixes = ["建物倒壊", "火災", "総合危険度"]
@@ -2157,13 +2169,23 @@ struct ListingDetailView: View {
                             Text(item.label)
                                 .font(.subheadline)
                                 .fontWeight(.medium)
+                            // 低ランク安心テキスト
+                            let rank = extractRank(from: item.label)
+                            if rank == 1 {
+                                Text("(問題なし)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            } else if rank == 2 {
+                                Text("(一般的な水準)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                             Spacer()
                             // ランクバー
                             HStack(spacing: 2) {
-                                let rank = extractRank(from: item.label)
-                                ForEach(1...5, id: \.self) { level in
+                                ForEach(1...5, id: \.self) { barLevel in
                                     RoundedRectangle(cornerRadius: 2)
-                                        .fill(level <= rank ? rankBarColor(rank) : Color.gray.opacity(0.2))
+                                        .fill(barLevel <= rank ? rankBarColor(rank) : Color.gray.opacity(0.2))
                                         .frame(width: 16, height: 12)
                                 }
                             }
@@ -2173,6 +2195,9 @@ struct ListingDetailView: View {
                 }
             }
 
+            // マンション購入者向けコンテキスト
+            hazardBuyerContext(hazard)
+
             Text("※ 国土地理院ハザードマップ・東京都地域危険度データに基づく自動判定です")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
@@ -2181,7 +2206,68 @@ struct ListingDetailView: View {
             hazardGuide
         }
         .padding(14)
-        .tintedGlassBackground(tint: .orange, tintOpacity: 0.03, borderOpacity: 0.08)
+        .tintedGlassBackground(tint: levelColor, tintOpacity: 0.03, borderOpacity: 0.08)
+    }
+
+    private func hazardHeaderIcon(_ level: Listing.HazardSafetyLevel) -> String {
+        switch level {
+        case .safe, .lowRisk: return "checkmark.shield.fill"
+        case .moderate: return "exclamationmark.triangle.fill"
+        case .elevated: return "exclamationmark.octagon.fill"
+        }
+    }
+
+    private func hazardHeaderSuffix(_ level: Listing.HazardSafetyLevel) -> String {
+        switch level {
+        case .safe: return "— 特に心配なし"
+        case .lowRisk: return "— 特に心配なし"
+        case .moderate: return "— 一部注意"
+        case .elevated: return "— 要確認"
+        }
+    }
+
+    @ViewBuilder
+    private func hazardBuyerContext(_ hazard: Listing.HazardData) -> some View {
+        let tips = hazardBuyerTips(hazard)
+        if !tips.isEmpty {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("マンション購入者向けポイント")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.orange)
+                ForEach(tips, id: \.self) { tip in
+                    HStack(alignment: .top, spacing: 6) {
+                        Image(systemName: "lightbulb.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.orange)
+                            .frame(width: 14)
+                        Text(tip)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .padding(10)
+            .background(Color.orange.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+    }
+
+    private func hazardBuyerTips(_ hazard: Listing.HazardData) -> [String] {
+        var tips: [String] = []
+        if hazard.flood || hazard.inlandWater {
+            tips.append("高層階（3F以上）であれば浸水の直接被害は限定的です。1階・地下駐車場がある場合は要注意。")
+        }
+        if hazard.liquefaction {
+            tips.append("杭基礎のRC造マンションでは建物自体の倒壊リスクは低いですが、周辺インフラへの影響に注意。")
+        }
+        if hazard.buildingCollapse >= 3 {
+            tips.append("築年数と耐震基準（新耐震 1981年以降）を確認してください。")
+        }
+        if hazard.stormSurge {
+            tips.append("台風時の高潮リスク。高層階であれば直接被害は限定的ですが、共用部・エレベーターへの影響に注意。")
+        }
+        return tips
     }
 
     /// ハザード解説ガイド — 各ランク・各ハザード項目の実際の影響度を説明

@@ -428,7 +428,8 @@ def inject_is_new(
 
 
 def compare_listings(current: list[dict], previous: Optional[list[dict]] = None) -> dict[str, Any]:
-    """前回結果と比較して差分を検出。同一物件は identity_key で判定し、価格や総戸数などのプロパティ変更があれば updated とする。"""
+    """前回結果と比較して差分を検出。同一物件は identity_key で判定し、価格や総戸数などのプロパティ変更があれば updated とする。
+    floor_position が片方 None の場合は floor を除いたベースキーでフォールバックマッチする。"""
     if not previous:
         return {
             "new": current,
@@ -452,18 +453,47 @@ def compare_listings(current: list[dict], previous: Optional[list[dict]] = None)
     updated = []
     unchanged = []
     removed = []
+    matched_prev_keys: set[tuple] = set()
 
     for k, curr in current_by_key.items():
         prev = previous_by_key.get(k)
-        if not prev:
-            new.append(curr)
-        elif listing_has_property_changes(curr, prev):
-            updated.append({"current": curr, "previous": prev})
-        else:
-            unchanged.append(curr)
+        if prev:
+            matched_prev_keys.add(k)
+            if listing_has_property_changes(curr, prev):
+                updated.append({"current": curr, "previous": prev})
+            else:
+                unchanged.append(curr)
+
+    # 第2パス: 未マッチの current に対し floor_position を除いたベースキーでフォールバック
+    # 片方が None の場合のみ適用（両方に値がある場合は別ユニット）
+    unmatched_prev_by_base: dict[tuple, tuple[tuple, dict]] = {}
+    for k, prev in previous_by_key.items():
+        if k not in matched_prev_keys:
+            base = k[:-1]
+            if base not in unmatched_prev_by_base:
+                unmatched_prev_by_base[base] = (k, prev)
+
+    for k, curr in current_by_key.items():
+        if k in matched_prev_keys or previous_by_key.get(k):
+            continue
+        base = k[:-1]
+        fallback = unmatched_prev_by_base.get(base)
+        if fallback:
+            prev_k, prev_r = fallback
+            curr_floor = curr.get("floor_position")
+            prev_floor = prev_r.get("floor_position")
+            if curr_floor is None or prev_floor is None:
+                matched_prev_keys.add(prev_k)
+                del unmatched_prev_by_base[base]
+                if listing_has_property_changes(curr, prev_r):
+                    updated.append({"current": curr, "previous": prev_r})
+                else:
+                    unchanged.append(curr)
+                continue
+        new.append(curr)
 
     for k, prev in previous_by_key.items():
-        if k not in current_by_key:
+        if k not in matched_prev_keys:
             removed.append(prev)
 
     return {
