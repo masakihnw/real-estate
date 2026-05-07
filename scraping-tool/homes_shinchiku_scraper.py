@@ -153,7 +153,7 @@ def fetch_list_page_requests(session: requests.Session, url: str) -> str:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
-                logger.warning(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})")
+                logger.warning("  429 Rate Limited, waiting %ds (attempt %d)", retry_after, attempt + 1)
                 time.sleep(retry_after)
                 continue
             r.raise_for_status()
@@ -161,7 +161,7 @@ def fetch_list_page_requests(session: requests.Session, url: str) -> str:
             html = r.text
             if is_waf_challenge(html):
                 wait = min(30 * (attempt + 1), 120)
-                logger.info(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})")
+                logger.info("  WAF challenge detected, waiting %ds (attempt %d)", wait, attempt + 1)
                 time.sleep(wait)
                 continue
             return html
@@ -545,10 +545,12 @@ def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
     try:
         yield from _scrape_loop(context if use_pw else session, limit, apply_filter, use_pw=use_pw)
     finally:
-        if browser:
-            browser.close()
-        if pw:
-            pw.stop()
+        try:
+            if browser:
+                browser.close()
+        finally:
+            if pw:
+                pw.stop()
 
 
 def _scrape_loop(fetcher, limit: int, apply_filter: bool, *, use_pw: bool) -> Iterator[HomesShinchikuListing]:

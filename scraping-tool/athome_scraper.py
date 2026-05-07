@@ -569,6 +569,7 @@ def enrich_athome_listings(listings: list[AthomeListing], pw_context: "BrowserCo
     for r in listings:
         url = r.url
         cached_entry = cache.get(url)
+        detail: dict | None = None
 
         if cached_entry is not None:
             detail = cached_entry
@@ -588,6 +589,8 @@ def enrich_athome_listings(listings: list[AthomeListing], pw_context: "BrowserCo
             detail["cached_at"] = datetime.now(timezone.utc).isoformat()
             cache[url] = detail
 
+        if detail is None:
+            continue
         _apply_detail_to_listing(r, detail)
         enriched_count += 1
 
@@ -688,6 +691,9 @@ def _scrape_ward_requests(ward: str, max_pages: int, apply_filter: bool) -> list
             logger.error("athome/%s: ページ%dでエラー: %s", ward, page, e)
             break
 
+        if not html:
+            break
+
         rows = parse_list_html(html)
         if not rows:
             break
@@ -735,8 +741,10 @@ def scrape_athome(max_pages: Optional[int] = 2, apply_filter: bool = True) -> It
                         total_passed += 1
                         yield r
         finally:
-            browser.close()
-            pw.stop()
+            try:
+                browser.close()
+            finally:
+                pw.stop()
     else:
         from concurrent.futures import ThreadPoolExecutor, as_completed
         with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
