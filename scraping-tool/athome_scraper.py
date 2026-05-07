@@ -60,8 +60,8 @@ except ImportError:
 BASE_URL = "https://www.athome.co.jp"
 
 # 東京23区・中古マンション一覧（区ごとにスクレイプ）
-_WARD_URL_FIRST = "https://www.athome.co.jp/mansion/chuko/13-{ward}/list/"
-_WARD_URL_PAGE = "https://www.athome.co.jp/mansion/chuko/13-{ward}/list/page{page}/"
+_WARD_URL_FIRST = "https://www.athome.co.jp/mansion/chuko/tokyo/{ward}/list/"
+_WARD_URL_PAGE = "https://www.athome.co.jp/mansion/chuko/tokyo/{ward}/list/page{page}/"
 
 # 後方互換: 旧URL（全東京）
 LIST_URL_FIRST = "https://www.athome.co.jp/mansion/chuko/tokyo/list/"
@@ -75,11 +75,11 @@ EARLY_EXIT_PAGES = 10
 
 # athome の区名スラッグ（URL用）
 _ATHOME_WARD_SLUGS = (
-    "chiyoda-ku", "chuo-ku", "minato-ku", "shinjuku-ku", "bunkyo-ku",
-    "taito-ku", "sumida-ku", "koto-ku", "shinagawa-ku", "meguro-ku",
-    "ota-ku", "setagaya-ku", "shibuya-ku", "nakano-ku", "suginami-ku",
-    "toshima-ku", "kita-ku", "arakawa-ku", "itabashi-ku", "nerima-ku",
-    "adachi-ku", "katsushika-ku", "edogawa-ku",
+    "chiyoda-city", "chuo-city", "minato-city", "shinjuku-city", "bunkyo-city",
+    "taito-city", "sumida-city", "koto-city", "shinagawa-city", "meguro-city",
+    "ota-city", "setagaya-city", "shibuya-city", "nakano-city", "suginami-city",
+    "toshima-city", "kita-city", "arakawa-city", "itabashi-city", "nerima-city",
+    "adachi-city", "katsushika-city", "edogawa-city",
 )
 
 PARALLEL_WARD_WORKERS = 3
