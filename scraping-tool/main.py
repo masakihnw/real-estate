@@ -262,8 +262,10 @@ def _scrape_athome_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
         try:
             listings = enrich_athome_listings(listings, pw_context=context)
         finally:
-            browser.close()
-            pw.stop()
+            try:
+                browser.close()
+            finally:
+                pw.stop()
     else:
         listings = enrich_athome_listings(listings)
     rows = []
