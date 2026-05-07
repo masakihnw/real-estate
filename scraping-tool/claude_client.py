@@ -131,7 +131,7 @@ class ClaudeClient:
         if not requests:
             return []
 
-        if use_batch and len(requests) >= 2:
+        if use_batch and len(requests) >= 100:
             return self._send_batch(requests)
         else:
             return self._send_sync(requests)
@@ -168,10 +168,13 @@ class ClaudeClient:
         batch_id = batch.id
         logger.info("Batch ID: %s, status: %s", batch_id, batch.processing_status)
 
-        results = self._poll_batch(batch_id, timeout_minutes=20)
+        results = self._poll_batch(batch_id, timeout_minutes=60)
+        if not results:
+            logger.warning("Batch タイムアウト → 同期 API フォールバック (%d件)", len(requests))
+            results = self._send_sync(requests)
         return results
 
-    def _poll_batch(self, batch_id: str, timeout_minutes: int = 15) -> list[BatchResult]:
+    def _poll_batch(self, batch_id: str, timeout_minutes: int = 60) -> list[BatchResult]:
         """バッチの完了をポーリング。"""
         deadline = time.time() + timeout_minutes * 60
         poll_interval = 10
