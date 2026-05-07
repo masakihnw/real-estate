@@ -10,6 +10,7 @@ HOME'S（LIFULL HOME'S）新築マンション一覧のスクレイピング。
 """
 
 import json
+import random
 import re
 import sys
 import time
@@ -37,6 +38,13 @@ from scraper_common import create_session, is_waf_challenge, load_station_passen
 
 from logger import get_logger
 logger = get_logger(__name__)
+
+HAS_PLAYWRIGHT = False
+try:
+    from playwright.sync_api import BrowserContext
+    HAS_PLAYWRIGHT = True
+except ImportError:
+    pass
 
 BASE_URL = "https://www.homes.co.jp"
 
@@ -87,14 +95,62 @@ class HomesShinchikuListing:
 # ---------- ページ取得 ----------
 
 
-def fetch_list_page(session: requests.Session, url: str) -> str:
-    """一覧ページのHTMLを取得。5xx/429/WAF/タイムアウト・接続エラー時はリトライする。"""
+def _is_waf_or_captcha(html: str) -> bool:
+    """HOME'S 新築の WAF/CAPTCHA ページかどうかを判定。"""
+    if not html:
+        return True
+    low = html.lower()
+    if "human verification" in low:
+        return True
+    if is_waf_challenge(html):
+        return True
+    if len(html) < 1000 and "mansion" not in low:
+        return True
+    return False
+
+
+def fetch_list_page_pw(context: "BrowserContext", url: str, *, max_retries: int = 4) -> str:
+    """Playwright で一覧ページの HTML を取得。WAF/CAPTCHA 検知時は指数バックオフでリトライ。"""
+    for attempt in range(max_retries):
+        pw_page = context.new_page()
+        try:
+            time.sleep(HOMES_REQUEST_DELAY_SEC)
+            pw_page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            try:
+                pw_page.wait_for_selector(
+                    "script[type='application/ld+json'], a[href*='/mansion/shinchiku/'], div.mod-mergeBuilding",
+                    timeout=15000,
+                )
+            except Exception:
+                pass
+
+            html = pw_page.content()
+
+            if not _is_waf_or_captcha(html):
+                return html
+
+            logger.warning("HOME'S 新築: WAF/CAPTCHA検知 (attempt %d): %s", attempt + 1, url)
+        except Exception as e:
+            logger.error("HOME'S 新築: ページ取得エラー (attempt %d): %s — %s", attempt + 1, url, e)
+        finally:
+            pw_page.close()
+
+        if attempt < max_retries - 1:
+            backoff = (15 * (2 ** attempt)) + random.uniform(2, 5)
+            logger.info("HOME'S 新築: %.1f秒待機後にリトライ...", backoff)
+            time.sleep(backoff)
+
+    logger.error("HOME'S 新築: 全リトライ失敗: %s", url)
+    return ""
+
+
+def fetch_list_page_requests(session: requests.Session, url: str) -> str:
+    """requests 版の一覧ページ取得（フォールバック）。"""
     last_error: Optional[Exception] = None
-    for attempt in range(REQUEST_RETRIES + 2):  # WAF 対策で追加リトライ
+    for attempt in range(REQUEST_RETRIES + 2):
         time.sleep(HOMES_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
-            # 429 Too Many Requests — レートリミット対策
             if r.status_code == 429:
                 retry_after = int(r.headers.get("Retry-After", 60))
                 logger.warning(f"  429 Rate Limited, waiting {retry_after}s (attempt {attempt + 1})")
@@ -103,7 +159,6 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
             r.raise_for_status()
             r.encoding = r.apparent_encoding or "utf-8"
             html = r.text
-            # AWS WAF チャレンジページの検出
             if is_waf_challenge(html):
                 wait = min(30 * (attempt + 1), 120)
                 logger.info(f"  WAF challenge detected, waiting {wait}s (attempt {attempt + 1})")
@@ -476,28 +531,52 @@ def apply_conditions(listings: list[HomesShinchikuListing]) -> list[HomesShinchi
 
 def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = True) -> Iterator[HomesShinchikuListing]:
     """HOME'S 新築マンション一覧を取得。max_pages=0 のときは全ページ取得。"""
-    session = create_session()
     limit = max_pages if max_pages and max_pages > 0 else HOMES_SHINCHIKU_MAX_PAGES_SAFETY
+
+    use_pw = HAS_PLAYWRIGHT
+    pw = browser = context = None
+    session = None
+    if use_pw:
+        from scraper_common import launch_stealth_browser
+        pw, browser, context = launch_stealth_browser(referer="https://www.homes.co.jp/")
+    else:
+        session = create_session()
+
+    try:
+        yield from _scrape_loop(context if use_pw else session, limit, apply_filter, use_pw=use_pw)
+    finally:
+        if browser:
+            browser.close()
+        if pw:
+            pw.stop()
+
+
+def _scrape_loop(fetcher, limit: int, apply_filter: bool, *, use_pw: bool) -> Iterator[HomesShinchikuListing]:
+    """共通のスクレイプループ。fetcher は BrowserContext (Playwright) または Session (requests)。"""
     page = 1
     total_parsed = 0
     total_passed = 0
-    pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
+    pages_since_last_pass = 0
     start_time = time.monotonic()
     while page <= limit:
-        # タイムリミットチェック（WAF 遅延でパイプライン全体がタイムアウトするのを防止）
         elapsed = time.monotonic() - start_time
         if elapsed > HOMES_SHINCHIKU_SCRAPE_TIMEOUT_SEC:
-            logger.info(f"HOME'S 新築: タイムリミット到達（{int(elapsed)}秒, {page - 1}ページ処理済, 通過: {total_passed}件）")
+            logger.info("HOME'S 新築: タイムリミット到達（%d秒, %dページ処理済, 通過: %d件）", int(elapsed), page - 1, total_passed)
             break
         url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
         try:
-            html = fetch_list_page(session, url)
+            html = fetch_list_page_pw(fetcher, url) if use_pw else fetch_list_page_requests(fetcher, url)
         except Exception as e:
-            logger.error(f"HOME'S 新築: ページ{page}でエラー: {e}")
+            logger.error("HOME'S 新築: ページ%dでエラー: %s", page, e)
             break
+
+        if not html:
+            logger.info("HOME'S 新築: ページ%dで空HTML。WAF/ブロックの可能性。", page)
+            break
+
         rows = parse_list_html(html)
         if not rows:
-            logger.info(f"HOME'S 新築: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。")
+            logger.info("HOME'S 新築: ページ%dで0件パース。一覧のHTML構造が変わった可能性があります。", page)
             break
         total_parsed += len(rows)
         passed = 0
@@ -507,23 +586,19 @@ def scrape_homes_shinchiku(max_pages: Optional[int] = 0, apply_filter: bool = Tr
                 if filtered:
                     yield filtered[0]
                     passed += 1
-                    _price = f"{filtered[0].price_man}万" if filtered[0].price_man else "価格未定"
-                    logger.debug(f"  ✓ {filtered[0].name} ({_price})")
             else:
                 yield row
                 passed += 1
         total_passed += passed
-        # 早期打ち切り判定: 連続 N ページで新規通過0件なら中断
         if passed > 0:
             pages_since_last_pass = 0
         else:
             pages_since_last_pass += 1
         if pages_since_last_pass >= HOMES_SHINCHIKU_EARLY_EXIT_PAGES:
-            logger.warning(f"HOME'S 新築: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
+            logger.warning("HOME'S 新築: 早期打ち切り（%dページ連続で通過0件, 累計通過: %d件）", pages_since_last_pass, total_passed)
             break
-        # 進捗: 10ページごとにサマリー
         if page % 10 == 0:
-            logger.info(f"HOME'S 新築: ...{page}ページ処理済 (通過: {total_passed}件)")
+            logger.info("HOME'S 新築: ...%dページ処理済 (通過: %d件)", page, total_passed)
         page += 1
     if total_parsed > 0:
-        logger.info(f"HOME'S 新築: 完了 — {total_parsed}件パース, {total_passed}件通過")
+        logger.info("HOME'S 新築: 完了 — %d件パース, %d件通過", total_parsed, total_passed)

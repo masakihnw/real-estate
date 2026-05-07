@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import datetime
 import json
+import os
 import threading
 from pathlib import Path
 from typing import Any, TypedDict, cast
@@ -256,6 +257,15 @@ USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
+
+# ボット検知で取得不能なスクレイパーを一時的に無効化。
+# 環境変数 DISABLED_SCRAPERS（カンマ区切り）で上書き可能。空文字列で全て有効化。
+# "athome" → chuko/shinchiku 両方無効, "homes_shinchiku" → shinchiku の homes のみ無効
+_disabled_env = os.environ.get("DISABLED_SCRAPERS")
+if _disabled_env is not None:
+    DISABLED_SCRAPERS: tuple[str, ...] = tuple(s.strip() for s in _disabled_env.split(",") if s.strip())
+else:
+    DISABLED_SCRAPERS: tuple[str, ...] = ("athome", "stepon", "homes_shinchiku")
 
 
 def _normalize_runtime_config() -> None:
