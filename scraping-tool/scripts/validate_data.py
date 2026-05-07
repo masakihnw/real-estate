@@ -17,7 +17,7 @@ from logger import get_logger
 logger = get_logger(__name__)
 
 try:
-    from report_utils import identity_key, normalize_listing_name
+    from report_utils import identity_key, normalize_listing_name, building_key
 except ImportError:
     pass
 
@@ -56,6 +56,39 @@ class ValidationResult:
         for k, v in self.stats.items():
             lines.append(f"- {k}: {v}")
         return "\n".join(lines)
+
+
+def detect_ui_duplicates(listings: list[dict]) -> list[dict]:
+    """iOSアプリの「同マンションでN戸売出中」と同じロジックで重複を検出。
+    同一 building_key 内で (layout, area_m2, price_man, floor_position) が
+    完全一致する物件が複数あれば、UIで同一行として表示される偽重複。"""
+    from collections import defaultdict
+
+    groups: dict[tuple, list[dict]] = defaultdict(list)
+    for r in listings:
+        groups[building_key(r)].append(r)
+
+    duplicates = []
+    for bk, members in groups.items():
+        if len(members) < 2:
+            continue
+        display_counts: dict[tuple, int] = defaultdict(int)
+        for r in members:
+            dk = (
+                (r.get("layout") or "").strip(),
+                r.get("area_m2"),
+                r.get("price_man"),
+                r.get("floor_position"),
+            )
+            display_counts[dk] += 1
+        for dk, count in display_counts.items():
+            if count > 1:
+                duplicates.append({
+                    "building": bk[0],
+                    "display_key": dk,
+                    "count": count,
+                })
+    return duplicates
 
 
 def validate_listings(listings: list[dict], label: str = "中古") -> ValidationResult:
@@ -134,6 +167,22 @@ def validate_listings(listings: list[dict], label: str = "中古") -> Validation
     empty_names = sum(1 for r in listings if not (r.get("name") or "").strip())
     if empty_names > 0:
         result.add_warning(f"{label}: 物件名が空 {empty_names}件")
+
+    # UI表示上の重複検知（同マンション内で同一行として見える物件）
+    try:
+        ui_dupes = detect_ui_duplicates(listings)
+        if ui_dupes:
+            result.stats["ui_duplicate_groups"] = len(ui_dupes)
+            for group in ui_dupes:
+                bldg = group["building"]
+                display = group["display_key"]
+                n = group["count"]
+                result.add_error(
+                    f"{label}: UI重複 {bldg} — {display[0]} {display[1]}m² "
+                    f"{display[2]}万 {display[3] or '?'}階 が{n}件表示される"
+                )
+    except Exception:
+        pass
 
     return result
 
