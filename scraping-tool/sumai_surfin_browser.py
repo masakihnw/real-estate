@@ -558,7 +558,7 @@ def extract_shinchiku_custom_simulation(
         }
     """
     try:
-        page.goto(url, wait_until="networkidle", timeout=NAV_TIMEOUT)
+        page.goto(url, wait_until="domcontentloaded", timeout=60_000)
         time.sleep(PAGE_DELAY)
 
         # ── Step 1: 「10年後予測詳細を見る」ボタンをクリック ──
