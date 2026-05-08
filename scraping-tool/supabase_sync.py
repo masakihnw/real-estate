@@ -76,15 +76,20 @@ def _batch_upsert(client, table: str, rows: list[dict], on_conflict: str) -> int
     for i in range(0, len(rows), BATCH_SIZE):
         batch = [_sanitize_value(row) for row in rows[i:i + BATCH_SIZE]]
         try:
-            resp = client.table(table).upsert(batch, on_conflict=on_conflict).execute()
-            total += len(resp.data) if resp.data else 0
+            resp = (client.table(table)
+                    .upsert(batch, on_conflict=on_conflict, returning="minimal",
+                            count="exact")
+                    .execute())
+            total += resp.count if resp.count else len(batch)
         except Exception as e:
             logger.warning("[supabase] バッチ upsert 失敗 (%s, %d行): %s — 1行ずつリトライ",
                            table, len(batch), e)
             for row in batch:
                 try:
-                    resp = client.table(table).upsert(row, on_conflict=on_conflict).execute()
-                    total += 1 if resp.data else 0
+                    (client.table(table)
+                     .upsert(row, on_conflict=on_conflict, returning="minimal")
+                     .execute())
+                    total += 1
                 except Exception as row_err:
                     logger.error("[supabase] 行 upsert 失敗 (%s): %s — row_keys=%s",
                                  table, row_err,
@@ -205,7 +210,9 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         best_key, best_id, _ = candidates[0]
 
         # best を新しい identity_key に更新
-        client.table("listings").update({"identity_key": ik}).eq("id", best_id).execute()
+        (client.table("listings")
+         .update({"identity_key": ik}, returning="minimal")
+         .eq("id", best_id).execute())
         existing_listings.pop(best_key, None)
         existing_listings[ik] = best_id
         all_db_listings.pop(best_key, None)
@@ -281,9 +288,10 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         # None 値を除去 (Supabase は NULL として扱う)
         listing_row = {k: v for k, v in _sanitize_value(listing_row).items() if v is not None}
 
-        # listings テーブルに upsert
+        # listings テーブルに upsert（レスポンスは id のみに限定）
         resp = (client.table("listings")
                 .upsert(listing_row, on_conflict="identity_key")
+                .select("id")
                 .execute())
         if not resp.data:
             continue
@@ -329,7 +337,8 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
 
         # source upsert
         (client.table("listing_sources")
-         .upsert(source_row, on_conflict="listing_id,source")
+         .upsert(source_row, on_conflict="listing_id,source",
+                 returning="minimal")
          .execute())
 
         if price_changed:
@@ -377,7 +386,8 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             src_row = existing_sources[listing_id]
             if src_row.get("is_active"):
                 (client.table("listing_sources")
-                 .update({"is_active": False, "last_seen_at": _now_iso()})
+                 .update({"is_active": False, "last_seen_at": _now_iso()},
+                         returning="minimal")
                  .eq("id", src_row["id"])
                  .execute())
                 # 全ソースが inactive なら listing も inactive に
@@ -388,7 +398,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                                 .execute())
                 if active_count.count == 0:
                     (client.table("listings")
-                     .update({"is_active": False})
+                     .update({"is_active": False}, returning="minimal")
                      .eq("id", listing_id)
                      .execute())
                 client.table("listing_events").insert({
@@ -548,7 +558,9 @@ def _sync_transactions(client, tx_path: str) -> int:
             "building_group_count": metadata.get("building_group_count", 0),
             "scope": metadata.get("scope", ""),
         }
-        client.table("transaction_metadata").upsert(_sanitize_value(meta_row), on_conflict="id").execute()
+        (client.table("transaction_metadata")
+         .upsert(_sanitize_value(meta_row), on_conflict="id", returning="minimal")
+         .execute())
 
     return tx_count
 
