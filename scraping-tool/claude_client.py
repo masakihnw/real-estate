@@ -121,22 +121,26 @@ class ClaudeClient:
             )
 
     def send_messages(
-        self, requests: list[BatchRequest], use_batch: bool = True
+        self, requests: list[BatchRequest], use_batch: bool = True,
+        poll_timeout_minutes: int = 20,
     ) -> list[BatchResult]:
         """
         メッセージを送信。
         use_batch=True: Batch API（非同期、50%オフ）
         use_batch=False: 同期 Messages API（テスト・少量用）
+        poll_timeout_minutes: Batch API ポーリングのタイムアウト（デフォルト20分）
         """
         if not requests:
             return []
 
         if use_batch and len(requests) >= 100:
-            return self._send_batch(requests)
+            return self._send_batch(requests, poll_timeout_minutes=poll_timeout_minutes)
         else:
             return self._send_sync(requests)
 
-    def _send_batch(self, requests: list[BatchRequest]) -> list[BatchResult]:
+    def _send_batch(
+        self, requests: list[BatchRequest], poll_timeout_minutes: int = 20,
+    ) -> list[BatchResult]:
         """Batch API で非同期送信 → ポーリング → 結果取得。"""
         batch_requests = []
         for req in requests:
@@ -168,15 +172,15 @@ class ClaudeClient:
         batch_id = batch.id
         logger.info("Batch ID: %s, status: %s", batch_id, batch.processing_status)
 
-        results = self._poll_batch(batch_id, timeout_minutes=60)
+        results = self._poll_batch(batch_id, timeout_minutes=poll_timeout_minutes)
         succeeded = sum(1 for r in results if not r.error)
         if not succeeded:
             logger.warning("Batch 結果なし → 同期 API フォールバック (%d件)", len(requests))
             results = self._send_sync(requests)
         return results
 
-    def _poll_batch(self, batch_id: str, timeout_minutes: int = 60) -> list[BatchResult]:
-        """バッチの完了をポーリング。"""
+    def _poll_batch(self, batch_id: str, timeout_minutes: int = 20) -> list[BatchResult]:
+        """バッチの完了をポーリング。タイムアウト時は部分結果を返す。"""
         deadline = time.time() + timeout_minutes * 60
         poll_interval = 10
 
@@ -193,8 +197,8 @@ class ClaudeClient:
                 logger.info("Batch 完了: %s", batch_id)
                 return self._retrieve_batch_results(batch_id)
             elif status in ("canceling", "canceled", "expired"):
-                logger.error("Batch 異常終了: %s (status=%s)", batch_id, status)
-                return []
+                logger.warning("Batch 異常終了: %s (status=%s) — 部分結果を取得", batch_id, status)
+                return self._retrieve_batch_results(batch_id)
 
             counts = batch.request_counts
             logger.info(
@@ -204,13 +208,17 @@ class ClaudeClient:
             time.sleep(poll_interval)
             poll_interval = min(poll_interval * 1.5, 30)
 
-        logger.warning("Batch タイムアウト (%d分): %s", timeout_minutes, batch_id)
+        logger.warning("Batch タイムアウト (%d分): %s — 部分結果を取得してキャンセル", timeout_minutes, batch_id)
+        partial = self._retrieve_batch_results(batch_id)
         try:
             self._client.messages.batches.cancel(batch_id)
             logger.info("Batch キャンセル送信: %s", batch_id)
         except Exception as e:
             logger.warning("Batch キャンセル失敗: %s", e)
-        return []
+        if partial:
+            succeeded = sum(1 for r in partial if not r.error)
+            logger.info("部分結果: %d/%d 件取得", succeeded, len(partial))
+        return partial
 
     def _retrieve_batch_results(self, batch_id: str) -> list[BatchResult]:
         """バ��チ結果を取得。"""
