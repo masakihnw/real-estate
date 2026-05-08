@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import math
 import re
 import signal
 import sys
@@ -1683,19 +1684,24 @@ def _finalize_radar_data(listing: dict, property_type: str = "chuko") -> None:
                 # 旧形式: {"labels": [...], "values": [...]} → named-key に変換
                 for lbl, val in zip(parsed["labels"], parsed["values"]):
                     key = RADAR_LABEL_TO_KEY.get(lbl)
-                    if key and isinstance(val, (int, float)):
+                    if key and isinstance(val, (int, float)) and math.isfinite(val):
                         ios_data[key] = float(val)
             else:
                 # 既に named-key 形式（新旧キー両方に対応）
                 for k in ("oki_price_m2", "build_age", "favorites",
                           "walk_min", "appreciation_rate", "total_units"):
-                    if k in parsed and isinstance(parsed[k], (int, float)):
-                        ios_data[k] = float(parsed[k])
+                    v = parsed.get(k)
+                    if v is not None and isinstance(v, (int, float)) and math.isfinite(v):
+                        ios_data[k] = float(v)
                 # 旧キーの互換変換
                 if "asset_value" in parsed and "appreciation_rate" not in ios_data:
-                    ios_data["appreciation_rate"] = float(parsed["asset_value"])
+                    v = parsed["asset_value"]
+                    if isinstance(v, (int, float)) and math.isfinite(v):
+                        ios_data["appreciation_rate"] = float(v)
                 if "access_count" in parsed and "oki_price_m2" not in ios_data:
-                    ios_data["oki_price_m2"] = float(parsed["access_count"])
+                    v = parsed["access_count"]
+                    if isinstance(v, (int, float)) and math.isfinite(v):
+                        ios_data["oki_price_m2"] = float(v)
 
     # 2) ss_* フィールドから不足軸を補完（中古のみ — 中古固有のフィールドで推定）
     if property_type == "chuko":
