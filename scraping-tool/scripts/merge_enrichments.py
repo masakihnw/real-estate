@@ -50,6 +50,18 @@ ENRICHER_EXACT: dict[str, set[str]] = {
     },
     "sumai_surfin": {"address"},
     "geocode_hazard": {"latitude", "longitude"},
+    "claude_text": {"extracted_features"},
+    "claude_dedup": {"dedup_confidence", "dedup_reasoning", "dedup_candidates"},
+    "claude_image": {"image_categories", "best_thumbnail_url"},
+    "investment": {
+        "price_fairness_score", "resale_liquidity_score", "listing_score",
+        "competing_listings_count", "investment_summary", "highlight_badge",
+    },
+    "ai_recommendation": {
+        "ai_recommendation_score", "ai_recommendation_summary",
+        "ai_recommendation_flags", "ai_recommendation_action",
+        "key_strengths", "key_risks",
+    },
 }
 
 
