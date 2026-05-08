@@ -10463,17 +10463,17 @@
           "min_price_man": 9080,
           "max_price_man": 11000
         },
-        "北区": {
-          "count": 14,
-          "avg_price_man": 10570,
-          "min_price_man": 9480,
-          "max_price_man": 11480
-        },
         "江戸川区": {
           "count": 14,
           "avg_price_man": 9917,
           "min_price_man": 9180,
           "max_price_man": 11500
+        },
+        "北区": {
+          "count": 14,
+          "avg_price_man": 10570,
+          "min_price_man": 9480,
+          "max_price_man": 11480
         },
         "台東区": {
           "count": 12,
