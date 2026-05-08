@@ -110,12 +110,18 @@ _LOGIN_MARKERS = _MARKER_ENV.split(",") if _MARKER_ENV else [
 
 def _check_login_success(session: requests.Session, resp: requests.Response) -> bool:
     """複数のシグナルでログイン状態を判定する。"""
+    if "/login" in resp.url:
+        return False
+
     for marker in _LOGIN_MARKERS:
         if marker and marker in resp.text:
             return True
 
-    www_cookies = [c.name for c in session.cookies if "sumai-surfin" in c.domain]
-    if len(www_cookies) >= 2:
+    www_session = any(
+        c.name == "sssid" and "www" in c.domain
+        for c in session.cookies
+    )
+    if www_session:
         member_resp = _request_with_retry(
             session, "GET", f"{BASE_URL}/member/", allow_redirects=False,
         )
@@ -225,24 +231,32 @@ def login(session: requests.Session, user: str, password: str) -> bool:
         # ── Step 3: OAuth SSO フローで www 側セッションを確立 ──
         # www.sumai-surfin.com/member/ → account の /auth/authorize
         # → auth code → www の /member/auth/code.php → セッション Cookie 設定
-        sso_resp = _request_with_retry(
-            session, "GET", f"{BASE_URL}/member/", allow_redirects=True,
-        )
-        if sso_resp is None:
-            logger.error("住まいサーフィン: SSO フロー失敗（/member/ にアクセスできません）")
+        # CI 環境では SSO リダイレクトが間欠的にログインページに戻るため、
+        # ディレイ付きで最大3回リトライする
+        sso_endpoints = [
+            f"{BASE_URL}/member/",
+            "https://account.sumai-surfin.com/mypage",
+            f"{BASE_URL}/search/",
+        ]
+        last_sso_resp = None
+        for attempt, sso_url in enumerate(sso_endpoints):
+            if attempt > 0:
+                time.sleep(2)
+            sso_resp = _request_with_retry(
+                session, "GET", sso_url, allow_redirects=True,
+            )
+            if sso_resp is None:
+                continue
+            last_sso_resp = sso_resp
+            if _check_login_success(session, sso_resp):
+                logger.info(f"住まいサーフィン: ログイン成功（{sso_url} で確認）")
+                return True
+
+        if last_sso_resp is None:
+            logger.error("住まいサーフィン: SSO フロー失敗（全エンドポイントにアクセスできません）")
             return False
 
-        if _check_login_success(session, sso_resp):
-            logger.info("住まいサーフィン: ログイン成功")
-            return True
-
-        # フォールバック: 検索ページでも確認
-        check_resp = _request_with_retry(session, "GET", f"{BASE_URL}/search/", allow_redirects=True)
-        if check_resp and _check_login_success(session, check_resp):
-            logger.info("住まいサーフィン: ログイン成功（検索ページで確認）")
-            return True
-
-        _log_login_diagnostics(session, sso_resp)
+        _log_login_diagnostics(session, last_sso_resp)
         return False
 
     except Exception as e:
