@@ -224,6 +224,8 @@ def extract_chuko_price_judgments(page: "Page", url: str) -> Optional[list[dict]
             ])
             if not judge_btn:
                 logger.info(f"  [Browser] 割安判定ボタンが見つかりません: {url}")
+                _diagnose_page(page, url,
+                               ["割安", "判定", "割高", "usedprice"])
                 return None
             judge_btn.click(force=True)
         else:
@@ -250,6 +252,8 @@ def extract_chuko_price_judgments(page: "Page", url: str) -> Optional[list[dict]
 
         if not result_text:
             logger.info(f"  [Browser] 判定結果が表示されません: {url}")
+            _diagnose_page(page, url,
+                           ["割安", "判定", "割高", "usedprice"])
             return None
 
         # ── 全住戸の情報を収集（スワイパーのナビゲーション） ──
@@ -894,7 +898,8 @@ def _diagnose_page(page: "Page", url: str, keywords: list[str]) -> None:
     try:
         info = page.evaluate("""(keywords) => {
             const found = [];
-            const els = document.querySelectorAll('a, button, [role="button"]');
+            const els = document.querySelectorAll(
+                'a, button, span, div, [role="button"], [onclick]');
             for (const el of els) {
                 const text = (el.textContent || '').trim();
                 for (const kw of keywords) {
@@ -917,11 +922,28 @@ def _diagnose_page(page: "Page", url: str, keywords: list[str]) -> None:
                 }
                 if (found.length >= 10) break;
             }
+            const ids = ['js-usedprice-judge-exec',
+                         'js-usedprice-judge-result-text',
+                         'js-usedprice-judge-result'];
+            const idCheck = {};
+            for (const id of ids) {
+                const el = document.getElementById(id);
+                if (el) {
+                    const style = window.getComputedStyle(el);
+                    idCheck[id] = {
+                        tag: el.tagName.toLowerCase(),
+                        display: style.display,
+                        visibility: style.visibility,
+                        text: (el.textContent || '').substring(0, 80),
+                    };
+                }
+            }
             return {
                 title: document.title,
                 bodyLen: document.body.innerHTML.length,
                 url: location.href,
                 elements: found,
+                idCheck: idCheck,
             };
         }""", keywords)
 
@@ -937,6 +959,11 @@ def _diagnose_page(page: "Page", url: str, keywords: list[str]) -> None:
                     f"text={el['text'][:60]}")
         else:
             logger.warning("[DIAG] キーワードに一致するクリック可能要素なし")
+        for eid, einfo in info.get("idCheck", {}).items():
+            logger.warning(
+                f"[DIAG]  #{eid}: <{einfo['tag']}> "
+                f"display={einfo['display']} vis={einfo['visibility']} "
+                f"text={einfo['text'][:60]}")
     except Exception as e:
         logger.warning(f"[DIAG] 診断エラー: {e}")
 
@@ -1111,9 +1138,36 @@ def browser_enrich_listings(
         enriched_count = 0
         error_count = 0
 
-        # ── 新築: プリフライトチェック ──
-        # CI環境（海外IP）ではページ構造が異なりボタン検出に失敗するため、
-        # 最初の1件でチェックし、失敗なら全件スキップ（HTTP enricher のデータで運用）
+        # ── プリフライトチェック ──
+        # CI環境（海外IP）ではページ構造が異なりボタン検出に失敗することがある。
+        # 最初の1件でチェックし、失敗なら全件スキップして時間を無駄にしない。
+        if property_type == "chuko" and targets:
+            preflight_url = targets[0][1]["ss_sumai_surfin_url"]
+            logger.info(f"中古プリフライトチェック: {preflight_url}")
+            try:
+                page.goto(preflight_url, wait_until="domcontentloaded", timeout=60_000)
+                time.sleep(4)
+                has_btn = page.evaluate(
+                    "!!document.querySelector('#js-usedprice-judge-exec')")
+                if not has_btn:
+                    fallback_btn = _find_clickable(page, [
+                        ':text("販売価格が割安か判定する")',
+                        'a:has-text("販売価格が割安か判定")',
+                    ])
+                    if not fallback_btn:
+                        logger.warning(
+                            f"中古ブラウザ enrichment スキップ: "
+                            f"割安判定ボタンが検出できません（{len(targets)}件）。")
+                        _diagnose_page(page, preflight_url,
+                                       ["割安", "判定", "割高", "usedprice"])
+                        _save_json(listings, output_path_p)
+                        return
+                logger.info("中古プリフライトチェック: OK（ボタン検出成功）")
+            except Exception as e:
+                logger.warning(f"中古プリフライトチェック失敗: {e}")
+                _save_json(listings, output_path_p)
+                return
+
         if property_type != "chuko" and targets:
             preflight_url = targets[0][1]["ss_sumai_surfin_url"]
             logger.info(f"新築プリフライトチェック: {preflight_url}")

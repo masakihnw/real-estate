@@ -288,14 +288,17 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         # None 値を除去 (Supabase は NULL として扱う)
         listing_row = {k: v for k, v in _sanitize_value(listing_row).items() if v is not None}
 
-        # listings テーブルに upsert（レスポンスは id のみに限定）
-        resp = (client.table("listings")
-                .upsert(listing_row, on_conflict="identity_key")
-                .select("id")
-                .execute())
-        if not resp.data:
+        # listings テーブルに upsert（レスポンスなし）+ 別クエリで id 取得
+        (client.table("listings")
+         .upsert(listing_row, on_conflict="identity_key", returning="minimal")
+         .execute())
+        id_resp = (client.table("listings")
+                   .select("id")
+                   .eq("identity_key", ik)
+                   .execute())
+        if not id_resp.data:
             continue
-        listing_id = resp.data[0]["id"]
+        listing_id = id_resp.data[0]["id"]
 
         # listing_sources テーブルに upsert
         source_row = {
