@@ -10,6 +10,25 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$SCRIPT_DIR"
 
+# SIGTERM 受信時に子プロセスを停止し Phase 3 マージを実行してから終了
+_cleanup_and_merge() {
+    echo "SIGTERM 受信: 子プロセスを停止しマージを実行します..." >&2
+    # 子プロセスに SIGTERM を転送して部分結果をフラッシュさせる
+    for pid in $PIDS; do
+        kill -TERM "$pid" 2>/dev/null || true
+    done
+    sleep 3
+    if [ -n "$ENRICHED_FILES" ] && [ -n "$INPUT" ]; then
+        echo "--- SIGTERM: 緊急マージ実行 ---" >&2
+        python3 scripts/merge_enrichments.py \
+            --base "$INPUT" \
+            --enriched $ENRICHED_FILES \
+            --output "$INPUT" 2>/dev/null || true
+    fi
+    exit 0
+}
+trap _cleanup_and_merge SIGTERM
+
 # ──────────────────────────── 引数パース ────────────────────────────
 
 PROPERTY_TYPE=""
@@ -200,8 +219,11 @@ if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "sumai" ]; then
             --input "$WORK_DIR/track_ss.json" \
             --output "$WORK_DIR/track_ss.json" \
             --property-type "$PROPERTY_TYPE" \
-            --max-time 65 \
-            $BROWSER_FLAG || true
+            --max-time 40 \
+            $BROWSER_FLAG &
+        _PY_PID=$!
+        trap "kill -TERM $_PY_PID 2>/dev/null; wait $_PY_PID 2>/dev/null" SIGTERM
+        wait $_PY_PID 2>/dev/null || true
         echo "[TIMING] sumai_surfin: $(( ($(date +%s) - _t) ))s" >&2
     ) &
     PIDS="$PIDS $!"
@@ -256,10 +278,12 @@ except Exception as e:
             _t=$(date +%s)
             python3 claude_dedup.py \
                 --input "$WORK_DIR/track_cl.json" \
-                --output "$WORK_DIR/track_cl.json" || true
+                --output "$WORK_DIR/track_cl.json" \
+                --max-time 15 || true
             python3 claude_text_enricher.py \
                 --input "$WORK_DIR/track_cl.json" \
-                --output "$WORK_DIR/track_cl.json" || true
+                --output "$WORK_DIR/track_cl.json" \
+                --max-time 30 || true
             echo "[TIMING] claude_dedup+text: $(( ($(date +%s) - _t) ))s" >&2
         ) &
         PIDS="$PIDS $!"
@@ -271,7 +295,8 @@ except Exception as e:
             _t=$(date +%s)
             python3 claude_image_analyzer.py \
                 --input "$WORK_DIR/track_ci.json" \
-                --output "$WORK_DIR/track_ci.json" || true
+                --output "$WORK_DIR/track_ci.json" \
+                --max-time 50 || true
             echo "[TIMING] claude_image: $(( ($(date +%s) - _t) ))s" >&2
         ) &
         PIDS="$PIDS $!"

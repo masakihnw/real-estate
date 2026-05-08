@@ -18,6 +18,7 @@ import argparse
 import json
 import os
 import re
+import signal
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -1918,58 +1919,90 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
 
     # 3) ThreadPoolExecutor で並列処理（max_workers=3、各ワーカー内で DELAY を維持）
     timed_out = False
+    _shutdown_requested = False
+
+    def _flush_partial(path: Path) -> None:
+        """中間結果を原子的に書き込む（SIGTERM/タイムアウト時のデータロス防止）。"""
+        try:
+            tmp = path.with_suffix(".json.tmp")
+            with open(tmp, "w", encoding="utf-8") as fp:
+                json.dump(listings, fp, ensure_ascii=False, indent=2)
+            tmp.replace(path)
+        except Exception as exc:
+            logger.warning(f"中間フラッシュ失敗: {exc}")
+
+    prev_sigterm = signal.getsignal(signal.SIGTERM)
+
+    def _handle_sigterm(signum: int, frame: object) -> None:
+        nonlocal _shutdown_requested
+        _shutdown_requested = True
+        logger.warning("SIGTERM 受信: 安全にシャットダウンします")
+
+    signal.signal(signal.SIGTERM, _handle_sigterm)
+
     idx_to_listing = {idx: lst for idx, lst in to_enrich}
-    with ThreadPoolExecutor(max_workers=3) as executor:
-        futures = {executor.submit(_enrich_one, idx, lst): idx for idx, lst in to_enrich}
-        processed = 0
-        for future in as_completed(futures):
-            if deadline and time.time() > deadline:
-                timed_out = True
-                logger.warning(f"住まいサーフィン: 時間切れ（{max_time_min}分）— 残りをキャンセル")
-                executor.shutdown(wait=False, cancel_futures=True)
-                break
-            idx = futures[future]
-            listing = idx_to_listing[idx]
-            try:
-                status, data = future.result()
-                if status == "login_failed":
-                    continue
-                if status == "not_found":
-                    not_found_count += 1
-                elif status == "ok" and data:
-                    if any(k.startswith("ss_") and k != "ss_sumai_surfin_url" and k != "ss_lookup_status" for k in data):
-                        listing["ss_lookup_status"] = "found"
-                        enriched_count += 1
-                        parts = []
-                        if data.get("ss_profit_pct") is not None:
-                            parts.append(f"儲かる確率: {data['ss_profit_pct']}%")
-                        if data.get("ss_appreciation_rate") is not None:
-                            parts.append(f"値上がり率: {data['ss_appreciation_rate']}%")
-                        if data.get("ss_value_judgment"):
-                            parts.append(f"判定: {data['ss_value_judgment']}")
-                        if data.get("ss_past_market_trends"):
-                            parts.append("相場推移✓")
-                        if data.get("ss_favorite_count") is not None:
-                            parts.append(f"お気に入り: {data['ss_favorite_count']}点")
-                        if data.get("ss_surrounding_properties"):
-                            parts.append("周辺相場✓")
-                        if data.get("ss_radar_data"):
-                            parts.append("レーダー✓")
-                        if data.get("ss_sim_best_5yr") is not None:
-                            parts.append("シミュレーション✓")
-                        if data.get("ss_loan_balance_5yr") is not None:
-                            parts.append("ローン残高✓")
-                        if data.get("ss_forecast_change_rate") is not None:
-                            parts.append(f"変動率: {data['ss_forecast_change_rate']:+.1f}%")
-                        logger.debug(f"  ✓ {listing.get('name', '')} — {', '.join(parts) or 'URL取得'}")
-                    else:
-                        listing["ss_lookup_status"] = "no_data"
-                        no_data_count += 1
-                processed += 1
-                if processed > 0 and processed % 20 == 0:
-                    logger.info(f"  住まいサーフィン進捗: {processed}/{target_count}件処理済 (成功: {enriched_count})")
-            except Exception as e:
-                logger.error(f"  住まいサーフィン: エラー ({listing.get('name', '?')}): {e}")
+    try:
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {executor.submit(_enrich_one, idx, lst): idx for idx, lst in to_enrich}
+            processed = 0
+            for future in as_completed(futures):
+                if _shutdown_requested or (deadline and time.time() > deadline):
+                    timed_out = True
+                    reason = "SIGTERM" if _shutdown_requested else f"時間切れ（{max_time_min}分）"
+                    logger.warning(f"住まいサーフィン: {reason} — 残りをキャンセル")
+                    executor.shutdown(wait=False, cancel_futures=True)
+                    break
+                idx = futures[future]
+                listing = idx_to_listing[idx]
+                try:
+                    status, data = future.result()
+                    if status == "login_failed":
+                        logger.error("ログイン失敗: 処理を中止します")
+                        executor.shutdown(wait=False, cancel_futures=True)
+                        timed_out = True
+                        break
+                    if status == "not_found":
+                        not_found_count += 1
+                    elif status == "ok" and data:
+                        if any(k.startswith("ss_") and k != "ss_sumai_surfin_url" and k != "ss_lookup_status" for k in data):
+                            listing["ss_lookup_status"] = "found"
+                            enriched_count += 1
+                            parts = []
+                            if data.get("ss_profit_pct") is not None:
+                                parts.append(f"儲かる確率: {data['ss_profit_pct']}%")
+                            if data.get("ss_appreciation_rate") is not None:
+                                parts.append(f"値上がり率: {data['ss_appreciation_rate']}%")
+                            if data.get("ss_value_judgment"):
+                                parts.append(f"判定: {data['ss_value_judgment']}")
+                            if data.get("ss_past_market_trends"):
+                                parts.append("相場推移✓")
+                            if data.get("ss_favorite_count") is not None:
+                                parts.append(f"お気に入り: {data['ss_favorite_count']}点")
+                            if data.get("ss_surrounding_properties"):
+                                parts.append("周辺相場✓")
+                            if data.get("ss_radar_data"):
+                                parts.append("レーダー✓")
+                            if data.get("ss_sim_best_5yr") is not None:
+                                parts.append("シミュレーション✓")
+                            if data.get("ss_loan_balance_5yr") is not None:
+                                parts.append("ローン残高✓")
+                            if data.get("ss_forecast_change_rate") is not None:
+                                parts.append(f"変動率: {data['ss_forecast_change_rate']:+.1f}%")
+                            logger.debug(f"  ✓ {listing.get('name', '')} — {', '.join(parts) or 'URL取得'}")
+                        else:
+                            listing["ss_lookup_status"] = "no_data"
+                            no_data_count += 1
+                    processed += 1
+                    if processed > 0 and processed % 20 == 0:
+                        logger.info(f"  住まいサーフィン進捗: {processed}/{target_count}件処理済 (成功: {enriched_count})")
+                        _flush_partial(output_path)
+                except Exception as e:
+                    processed += 1
+                    logger.error(f"  住まいサーフィン: エラー ({listing.get('name', '?')}): {e}")
+    finally:
+        signal.signal(signal.SIGTERM, prev_sigterm)
+        logger.info(f"中間結果をフラッシュ: {enriched_count}件成功分を保存")
+        _flush_partial(output_path)
 
     # キャッシュ保存
     save_cache(cache)
