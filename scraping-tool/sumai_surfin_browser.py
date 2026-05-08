@@ -66,6 +66,56 @@ DEFAULT_SIM_DOWN_PAYMENT = 0   # 万円
 
 # ──────────────────────────── ログイン ────────────────────────────
 
+_MARKER_ENV = os.environ.get("SUMAI_LOGIN_MARKER", "")
+_LOGIN_MARKERS = _MARKER_ENV.split(",") if _MARKER_ENV else [
+    "ログアウト", "logout", "signout", "マイページ", "会員情報",
+]
+
+
+def _check_browser_login(page: "Page") -> bool:
+    """複数のシグナルでブラウザのログイン状態を判定する。"""
+    content = page.content()
+
+    for marker in _LOGIN_MARKERS:
+        if marker and marker in content:
+            return True
+
+    try:
+        logout_link = page.locator('a[href*="logout"], a[href*="signout"]')
+        if logout_link.count() > 0:
+            return True
+    except Exception:
+        pass
+
+    try:
+        cookies = page.context.cookies()
+        sumai_cookies = [c for c in cookies if "sumai-surfin" in c.get("domain", "")]
+        if len(sumai_cookies) >= 2:
+            return True
+    except Exception:
+        pass
+
+    return False
+
+
+def _log_browser_login_diagnostics(page: "Page") -> None:
+    """ブラウザログイン失敗時の診断ログを出力する。"""
+    try:
+        cookies = page.context.cookies()
+        cookie_info = [f"{c.get('domain')}:{c.get('name')}" for c in cookies]
+        content = page.content()
+        logger.error("ブラウザログイン: 失敗（全シグナル不一致）")
+        logger.info(f"  → Cookies: {cookie_info}")
+        logger.info(f"  → 最終 URL: {page.url}")
+        snippet = content[:500].replace("\n", " ")
+        logger.debug(f"  → HTML冒頭: {snippet}")
+        for kw in ("エラー", "パスワード", "不正", "ログインできません"):
+            if kw in content:
+                logger.warning(f"  → 認証エラー検出: HTML に '{kw}' が含まれています")
+    except Exception as e:
+        logger.error(f"ブラウザログイン: 診断ログ取得失敗: {e}")
+
+
 def browser_login(page: "Page", user: str, password: str) -> bool:
     """Playwright でブラウザログインを行う。
 
@@ -116,24 +166,21 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
         page.goto(f"{BASE_URL}/member/", wait_until="networkidle", timeout=NAV_TIMEOUT)
         time.sleep(2)
 
-        # ── 成功判定 ──
-        content = page.content()
-        if "ログアウト" in content or "mypage" in page.url:
+        # ── マルチシグナル成功判定 ──
+        if _check_browser_login(page):
             logger.info("ブラウザログイン: 成功")
             return True
 
         # フォールバック: account ドメインのマイページで確認
         page.goto("https://account.sumai-surfin.com/mypage", wait_until="networkidle", timeout=NAV_TIMEOUT)
         time.sleep(1)
-        content = page.content()
-        if "ログアウト" in content or "マイページ" in content:
+        if _check_browser_login(page):
             logger.info("ブラウザログイン: 成功（account ドメインで確認）")
-            # www ドメインに戻してセッションを確立
             page.goto(f"{BASE_URL}/member/", wait_until="networkidle", timeout=NAV_TIMEOUT)
             time.sleep(1)
             return True
 
-        logger.error("ブラウザログイン: 失敗（ログアウトリンクが見つかりません）")
+        _log_browser_login_diagnostics(page)
         return False
 
     except Exception as e:
