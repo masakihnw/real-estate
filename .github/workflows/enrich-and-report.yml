@@ -233,6 +233,7 @@ jobs:
           path: |
             scraping-tool/results/latest.json
             scraping-tool/data/sumai_surfin_cache.json
+            scraping-tool/data/browser_debug/
           retention-days: 1
           if-no-files-found: warn
 
@@ -450,6 +451,7 @@ jobs:
             scraping-tool/data/floor_plan_storage_manifest.json
             scraping-tool/data/station_cache.json
             scraping-tool/data/reverse_geocode_cache.json
+            scraping-tool/data/browser_debug/
           retention-days: 1
           if-no-files-found: warn
 
