@@ -37,6 +37,13 @@ def _sanitize_value(obj: object) -> object:
     if isinstance(obj, str):
         s = obj.replace("\x00", "")
         s = s.encode("utf-8", errors="surrogatepass").decode("utf-8", errors="replace")
+        if s and s[0] in ("{", "["):
+            try:
+                parsed = json.loads(s)
+                sanitized = _sanitize_value(parsed)
+                s = json.dumps(sanitized, ensure_ascii=False, allow_nan=False)
+            except (json.JSONDecodeError, ValueError):
+                pass
         if len(s.encode("utf-8")) > MAX_STRING_BYTES:
             encoded = s.encode("utf-8")[:MAX_STRING_BYTES]
             s = encoded.decode("utf-8", errors="ignore")
