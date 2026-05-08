@@ -604,18 +604,24 @@ def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None
             sources_in_batch.setdefault(src, []).append(item)
 
         for source, items in sources_in_batch.items():
-            summary = _sync_source_listings(client, items, source, "chuko")
-            logger.info(
-                "[supabase] %s(中古): new=%d updated=%d removed=%d unchanged=%d reappeared=%d",
-                source, summary["new"], summary["updated"], summary["removed"],
-                summary["unchanged"], summary["reappeared"],
-            )
+            try:
+                summary = _sync_source_listings(client, items, source, "chuko")
+                logger.info(
+                    "[supabase] %s(中古): new=%d updated=%d removed=%d unchanged=%d reappeared=%d",
+                    source, summary["new"], summary["updated"], summary["removed"],
+                    summary["unchanged"], summary["reappeared"],
+                )
+            except Exception as e:
+                logger.error("[supabase] %s(中古) listings 同期失敗: %s", source, e)
 
         if skip_enrichments:
             logger.info("[supabase] enrichments(中古): スキップ（dual-write モード）")
         else:
-            enriched = _sync_enrichments(client, chuko)
-            logger.info("[supabase] enrichments(中古): %d 件同期", enriched)
+            try:
+                enriched = _sync_enrichments(client, chuko)
+                logger.info("[supabase] enrichments(中古): %d 件同期", enriched)
+            except Exception as e:
+                logger.error("[supabase] enrichments(中古) 同期失敗: %s", e)
     else:
         logger.info("[supabase] latest.json が空（スキップ）")
 
@@ -629,18 +635,24 @@ def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None
             sources_in_batch.setdefault(src, []).append(item)
 
         for source, items in sources_in_batch.items():
-            summary = _sync_source_listings(client, items, source, "shinchiku")
-            logger.info(
-                "[supabase] %s(新築): new=%d updated=%d removed=%d unchanged=%d reappeared=%d",
-                source, summary["new"], summary["updated"], summary["removed"],
-                summary["unchanged"], summary["reappeared"],
-            )
+            try:
+                summary = _sync_source_listings(client, items, source, "shinchiku")
+                logger.info(
+                    "[supabase] %s(新築): new=%d updated=%d removed=%d unchanged=%d reappeared=%d",
+                    source, summary["new"], summary["updated"], summary["removed"],
+                    summary["unchanged"], summary["reappeared"],
+                )
+            except Exception as e:
+                logger.error("[supabase] %s(新築) listings 同期失敗: %s", source, e)
 
         if skip_enrichments:
             logger.info("[supabase] enrichments(新築): スキップ（dual-write モード）")
         else:
-            enriched = _sync_enrichments(client, shinchiku)
-            logger.info("[supabase] enrichments(新築): %d 件同期", enriched)
+            try:
+                enriched = _sync_enrichments(client, shinchiku)
+                logger.info("[supabase] enrichments(新築): %d 件同期", enriched)
+            except Exception as e:
+                logger.error("[supabase] enrichments(新築) 同期失敗: %s", e)
     else:
         logger.info("[supabase] latest_shinchiku.json が空（スキップ）")
 
@@ -666,7 +678,10 @@ def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None
     # トランザクション同期
     tx_path = output_path / "transactions.json"
     if tx_path.exists():
-        tx_count = _sync_transactions(client, str(tx_path))
-        logger.info("[supabase] transactions: %d 件同期", tx_count)
+        try:
+            tx_count = _sync_transactions(client, str(tx_path))
+            logger.info("[supabase] transactions: %d 件同期", tx_count)
+        except Exception as e:
+            logger.error("[supabase] transactions 同期失敗: %s", e)
 
     logger.info("[supabase] 同期完了")
