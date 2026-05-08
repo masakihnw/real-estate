@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from pathlib import Path
 from typing import Any, Optional
 
@@ -65,7 +66,9 @@ def _build_image_content(url: str) -> list[dict]:
     ]
 
 
-def analyze_listing_images(listings: list[dict]) -> list[dict]:
+def analyze_listing_images(
+    listings: list[dict], max_time_min: int = 0,
+) -> list[dict]:
     """全物件の画像を分析し、分類結果を付与する。"""
     from claude_client import ClaudeClient, BatchRequest, DEFAULT_MODEL
 
@@ -73,11 +76,16 @@ def analyze_listing_images(listings: list[dict]) -> list[dict]:
         logger.warning("ANTHROPIC_API_KEY 未設定: 画像分析スキップ")
         return listings
 
+    deadline = time.time() + max_time_min * 60 if max_time_min > 0 else None
     client = ClaudeClient()
     requests: list[BatchRequest] = []
     request_map: list[tuple[int, int]] = []  # (listing_idx, image_idx)
 
     for li, listing in enumerate(listings):
+        if deadline and time.time() > deadline:
+            logger.warning("画像分析: 時間切れ（%d分）— リクエスト構築を中断", max_time_min)
+            break
+
         images = listing.get("suumo_images") or []
         for ii, img in enumerate(images):
             url = img.get("url", "")
@@ -113,9 +121,10 @@ def analyze_listing_images(listings: list[dict]) -> list[dict]:
         _apply_best_thumbnails(listings)
         return listings
 
-    logger.info("画像分析: %d枚を送信（キャッシュ外）", len(requests))
+    poll_timeout = max(5, max_time_min - 2) if max_time_min > 0 else 15
+    logger.info("画像分析: %d枚を送信 (poll_timeout=%d分)", len(requests), poll_timeout)
 
-    all_results = client.send_messages(requests)
+    all_results = client.send_messages(requests, poll_timeout_minutes=poll_timeout)
 
     for br in all_results:
         parts = br.custom_id.split("_")
@@ -200,12 +209,14 @@ def main():
     parser = argparse.ArgumentParser(description="Claude 画像分析")
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--max-time", type=int, default=0,
+                        help="最大実行時間（分）。0=無制限")
     args = parser.parse_args()
 
     with open(args.input, encoding="utf-8") as f:
         listings = json.load(f)
 
-    listings = analyze_listing_images(listings)
+    listings = analyze_listing_images(listings, max_time_min=args.max_time)
 
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
