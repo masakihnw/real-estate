@@ -288,6 +288,12 @@ def main():
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, [
+        "price_fairness_score", "resale_liquidity_score", "listing_score",
+        "competing_listings_count", "investment_summary", "highlight_badge",
+    ], "investment")
+
     scored = sum(1 for r in listings if r.get("listing_score") is not None)
     logger.info(f"投資スコア付与完了: {scored}/{len(listings)}件")
 

@@ -383,6 +383,9 @@ def main() -> None:
 
     logger.info(f"保存: {output_path}")
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["hazard_info", "latitude", "longitude"], "hazard")
+
 
 if __name__ == "__main__":
     main()

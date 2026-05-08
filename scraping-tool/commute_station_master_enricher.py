@@ -510,6 +510,9 @@ def main() -> None:
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["commute_info_v2"], "commute_station_master")
+
     logger.info(json.dumps(result, ensure_ascii=False))
 
 

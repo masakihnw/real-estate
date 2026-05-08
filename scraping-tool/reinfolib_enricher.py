@@ -811,6 +811,9 @@ def main() -> None:
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["reinfolib_market_data"], "reinfolib")
+
     print(
         f"不動産情報ライブラリ enrichment 完了: {count}/{len(listings)} 件に相場データを付与",
         file=sys.stderr,

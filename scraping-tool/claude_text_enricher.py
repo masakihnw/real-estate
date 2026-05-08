@@ -165,6 +165,9 @@ def main():
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["extracted_features"], "claude_text")
+
 
 if __name__ == "__main__":
     main()
