@@ -49,6 +49,7 @@ USER_AGENT = (
 )
 
 DELAY = max(REQUEST_DELAY_SEC, 3.0)
+CIRCUIT_BREAKER_THRESHOLD = 5
 
 
 def _normalize_name(name: str) -> str:
@@ -131,6 +132,9 @@ def search_building(
             if building_id:
                 return f"{BASE_URL}/mansion/{building_id}.html"
 
+    except (requests.ConnectionError, requests.Timeout) as e:
+        logger.warning(f"  検索接続エラー: {name} — {e}")
+        raise
     except (requests.RequestException, ValueError) as e:
         logger.warning(f"  検索例外: {name} — {e}")
 
@@ -382,6 +386,7 @@ def enrich_listings(
     enriched = 0
     skipped = 0
     timed_out = 0
+    consecutive_errors = 0
     total = len(listings)
 
     for i, listing in enumerate(listings):
@@ -401,13 +406,29 @@ def enrich_listings(
             )
             break
 
-        data = enrich_single(session, name, cache)
+        if consecutive_errors >= CIRCUIT_BREAKER_THRESHOLD:
+            timed_out = total - i
+            logger.warning(
+                "サーキットブレーカー発動: 連続%d回の接続エラー — 残り%d件をスキップ",
+                consecutive_errors, timed_out,
+            )
+            break
+
+        try:
+            data = enrich_single(session, name, cache)
+        except (requests.ConnectionError, requests.Timeout) as e:
+            consecutive_errors += 1
+            logger.warning("  [%d/%d] %s: 接続エラー (%d/%d): %s",
+                           i + 1, total, name, consecutive_errors,
+                           CIRCUIT_BREAKER_THRESHOLD, e)
+            continue
 
         if data:
             listing["mansion_review_data"] = json.dumps(
                 data, ensure_ascii=False
             )
             enriched += 1
+            consecutive_errors = 0
             print(
                 f"  [{i + 1}/{total}] {name}: 取得成功",
                 file=sys.stderr,
