@@ -25,6 +25,9 @@ JST = timezone(timedelta(hours=9))
 BATCH_SIZE = 500
 
 
+MAX_STRING_BYTES = 10_000
+
+
 def _sanitize_value(obj: object) -> object:
     """Recursively sanitize values for PostgreSQL/PostgREST compatibility."""
     if isinstance(obj, float):
@@ -32,7 +35,12 @@ def _sanitize_value(obj: object) -> object:
             return None
         return obj
     if isinstance(obj, str):
-        return obj.replace("\x00", "") if "\x00" in obj else obj
+        s = obj.replace("\x00", "")
+        s = s.encode("utf-8", errors="surrogatepass").decode("utf-8", errors="replace")
+        if len(s.encode("utf-8")) > MAX_STRING_BYTES:
+            encoded = s.encode("utf-8")[:MAX_STRING_BYTES]
+            s = encoded.decode("utf-8", errors="ignore")
+        return s
     if isinstance(obj, dict):
         return {k: _sanitize_value(v) for k, v in obj.items()}
     if isinstance(obj, list):
@@ -54,12 +62,24 @@ def _load_json(path: str) -> list[dict]:
 
 
 def _batch_upsert(client, table: str, rows: list[dict], on_conflict: str) -> int:
-    """バッチ upsert。BATCH_SIZE ごとに分割して送信。"""
+    """バッチ upsert。BATCH_SIZE ごとに分割して送信。失敗バッチは1行ずつリトライ。"""
     total = 0
     for i in range(0, len(rows), BATCH_SIZE):
         batch = [_sanitize_value(row) for row in rows[i:i + BATCH_SIZE]]
-        resp = client.table(table).upsert(batch, on_conflict=on_conflict).execute()
-        total += len(resp.data) if resp.data else 0
+        try:
+            resp = client.table(table).upsert(batch, on_conflict=on_conflict).execute()
+            total += len(resp.data) if resp.data else 0
+        except Exception as e:
+            logger.warning("[supabase] バッチ upsert 失敗 (%s, %d行): %s — 1行ずつリトライ",
+                           table, len(batch), e)
+            for row in batch:
+                try:
+                    resp = client.table(table).upsert(row, on_conflict=on_conflict).execute()
+                    total += 1 if resp.data else 0
+                except Exception as row_err:
+                    logger.error("[supabase] 行 upsert 失敗 (%s): %s — row_keys=%s",
+                                 table, row_err,
+                                 list(row.keys())[:5])
     return total
 
 
