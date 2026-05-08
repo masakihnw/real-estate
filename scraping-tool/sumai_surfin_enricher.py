@@ -2009,6 +2009,19 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(output_path)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, [
+        "ss_lookup_status", "ss_profit_pct", "ss_oki_price_70m2", "ss_m2_discount",
+        "ss_value_judgment", "ss_station_rank", "ss_ward_rank", "ss_sumai_surfin_url",
+        "ss_appreciation_rate", "ss_favorite_count", "ss_purchase_judgment",
+        "ss_radar_data", "ss_past_market_trends", "ss_surrounding_properties",
+        "ss_price_judgments", "ss_sim_best_5yr", "ss_sim_best_10yr",
+        "ss_sim_standard_5yr", "ss_sim_standard_10yr", "ss_sim_worst_5yr",
+        "ss_sim_worst_10yr", "ss_loan_balance_5yr", "ss_loan_balance_10yr",
+        "ss_sim_base_price", "ss_new_m2_price", "ss_forecast_m2_price",
+        "ss_forecast_change_rate",
+    ], "sumai_surfin")
+
     print(f"住まいサーフィン enrichment 完了: スキップ: {skip_count}件, enrichment対象: {target_count}件 — "
           f"成功: {enriched_count}, 未発見: {not_found_count}, データなし: {no_data_count}", file=sys.stderr)
 

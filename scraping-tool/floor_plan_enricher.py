@@ -262,6 +262,9 @@ def main() -> None:
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(output_path)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["floor_plan_images"], "floor_plan")
+
     print(
         f"HOME'S 間取り図: {enriched}件に付与（HTML新規取得{fetched}件）",
         file=sys.stderr,

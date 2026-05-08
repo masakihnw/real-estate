@@ -426,6 +426,9 @@ def enrich_listings(
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["mansion_review_data"], "mansion_review")
+
     timeout_msg = f", タイムアウト: {timed_out}" if timed_out else ""
     print(
         f"\nマンションレビュー enrichment 完了: "

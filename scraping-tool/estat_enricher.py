@@ -146,6 +146,9 @@ def main() -> None:
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["estat_population_data"], "estat")
+
     print(
         f"e-Stat 人口動態 enrichment 完了: {count}/{len(listings)} 件に人口データを付与",
         file=sys.stderr,

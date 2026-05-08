@@ -708,6 +708,9 @@ def main() -> None:
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["commute_info"], "commute_gmaps")
+
     print(
         f"[commute_gmaps] enrichment 完了: {updated}/{len(listings)} 件に Google Maps 通勤時間を付与",
         file=sys.stderr,

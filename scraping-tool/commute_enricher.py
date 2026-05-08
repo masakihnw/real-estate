@@ -232,6 +232,9 @@ def main() -> None:
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["commute_info"], "commute")
+
     print(
         f"通勤時間 enrichment 完了: {count}/{len(listings)} 件に通勤情報を付与",
         file=sys.stderr,

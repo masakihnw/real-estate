@@ -210,6 +210,9 @@ def main():
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
 
+    from enrichment_writer import write_enrichments
+    write_enrichments(listings, ["image_categories", "best_thumbnail_url"], "claude_image")
+
 
 if __name__ == "__main__":
     main()
