@@ -59,6 +59,12 @@ for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_
     fi
 done
 
+# claude_cache.db は SQLite なので JSON マージではなくコピーで復元
+if [ -f "enriched-chuko-claude/data/claude_cache.db" ]; then
+    cp "enriched-chuko-claude/data/claude_cache.db" "data/claude_cache.db"
+    echo "claude_cache.db を復元" >&2
+fi
+
 # ──────────────────────────── 成果物の配置 ────────────────────────────
 
 echo "--- 成果物配置 ---" >&2
@@ -172,13 +178,27 @@ fi
 # ── Step 3: USE_SUPABASE_EXPORT 時は Supabase から enriched データで上書き ──
 if [ "${USE_SUPABASE_EXPORT:-}" = "1" ] && [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
     echo "Supabase export モード: listings_feed から latest.json を上書き" >&2
+
+    # export 前の merge 結果を保存（Claude フィールド補完用）
+    cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/latest_preexport.json" 2>/dev/null || true
+
     if python3 scripts/export_supabase_snapshot.py \
         --output "${OUTPUT_DIR}/latest.json" \
         --property-type chuko; then
         echo "Supabase export (中古) 成功" >&2
+        # export で欠落した enrichment フィールドを merge 結果から補完
+        if [ -f "${OUTPUT_DIR}/latest_preexport.json" ]; then
+            python3 scripts/merge_enrichments.py \
+                --base "${OUTPUT_DIR}/latest.json" \
+                --enriched "${OUTPUT_DIR}/latest_preexport.json" \
+                --output "${OUTPUT_DIR}/latest.json" \
+                && echo "Supabase export 後の enrichment 補完完了" >&2 \
+                || echo "enrichment 補完失敗（Supabase export 結果をそのまま使用）" >&2
+        fi
     else
         echo "Supabase export (中古) 失敗: JSON merge 結果をそのまま使用" >&2
     fi
+    rm -f "${OUTPUT_DIR}/latest_preexport.json"
 
     if python3 scripts/export_supabase_snapshot.py \
         --output "${OUTPUT_DIR}/latest_shinchiku.json" \

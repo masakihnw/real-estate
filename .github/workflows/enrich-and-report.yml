@@ -651,6 +651,7 @@ jobs:
             scraping-tool/data/first_seen_at.json \
             scraping-tool/data/listings.db \
             scraping-tool/data/mansion_review_cache.json \
+            scraping-tool/data/claude_cache.db \
             2>/dev/null || true
           [ -d scraping-tool/results/risk_geojson ] && git add scraping-tool/results/risk_geojson/
 
