@@ -72,9 +72,24 @@ _LOGIN_MARKERS = _MARKER_ENV.split(",") if _MARKER_ENV else [
 ]
 
 
+_NOT_LOGGED_IN_MARKERS = [
+    'p-gNavi_item_sub-btn -signin',
+    'p-gNavi_item_sub-btn -login',
+    'href="/regist/?ssurl=header"',
+]
+
+
 def _check_browser_login(page: "Page") -> bool:
-    """複数のシグナルでブラウザのログイン状態を判定する。"""
+    """複数のシグナルでブラウザのログイン状態を判定する。
+
+    未ログイン時にのみ表示される「会員登録」「ログイン」ナビリンクを
+    ネガティブマーカーとして優先チェックし、クッキー数の誤判定を防ぐ。
+    """
     content = page.content()
+
+    for neg in _NOT_LOGGED_IN_MARKERS:
+        if neg in content:
+            return False
 
     for marker in _LOGIN_MARKERS:
         if marker and marker in content:
@@ -83,14 +98,6 @@ def _check_browser_login(page: "Page") -> bool:
     try:
         logout_link = page.locator('a[href*="logout"], a[href*="signout"]')
         if logout_link.count() > 0:
-            return True
-    except Exception:
-        pass
-
-    try:
-        cookies = page.context.cookies()
-        sumai_cookies = [c for c in cookies if "sumai-surfin" in c.get("domain", "")]
-        if len(sumai_cookies) >= 2:
             return True
     except Exception:
         pass
@@ -162,21 +169,27 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
 
         time.sleep(2)
 
-        # ── SSO 確立: /member/ にアクセス ──
-        page.goto(f"{BASE_URL}/member/", wait_until="networkidle", timeout=NAV_TIMEOUT)
-        time.sleep(2)
+        logger.info(f"ブラウザログイン: フォーム送信後 URL = {page.url}")
+        try:
+            cookies = page.context.cookies()
+            domains = sorted(set(c.get("domain", "") for c in cookies))
+            logger.info(f"ブラウザログイン: クッキードメイン = {domains}")
+        except Exception:
+            pass
 
-        # ── マルチシグナル成功判定 ──
-        if _check_browser_login(page):
-            logger.info("ブラウザログイン: 成功")
-            return True
-
-        # フォールバック: /search/ で確認
-        page.goto(f"{BASE_URL}/search/", wait_until="networkidle", timeout=NAV_TIMEOUT)
-        time.sleep(1)
-        if _check_browser_login(page):
-            logger.info("ブラウザログイン: 成功（/search/ で確認）")
-            return True
+        # ── SSO 確立: 複数のページで検証 ──
+        sso_pages = [
+            (f"{BASE_URL}/member/", "/member/"),
+            (f"{BASE_URL}/search/", "/search/"),
+            (f"{BASE_URL}/re/25847/", "/re/25847/ (物件ページ)"),
+        ]
+        for sso_url, label in sso_pages:
+            page.goto(sso_url, wait_until="networkidle", timeout=NAV_TIMEOUT)
+            time.sleep(2)
+            if _check_browser_login(page):
+                logger.info(f"ブラウザログイン: 成功（{label} で確認）")
+                return True
+            logger.info(f"ブラウザログイン: {label} で未ログイン状態 (URL={page.url})")
 
         _log_browser_login_diagnostics(page)
         return False
@@ -1145,6 +1158,15 @@ def browser_enrich_listings(
             try:
                 page.goto(preflight_url, wait_until="domcontentloaded", timeout=60_000)
                 time.sleep(4)
+                if not _check_browser_login(page):
+                    logger.warning(
+                        f"中古ブラウザ enrichment スキップ: "
+                        f"物件ページで未ログイン状態（{len(targets)}件）。"
+                        f"セッションが維持されていません。")
+                    _diagnose_page(page, preflight_url,
+                                   ["割安", "判定", "割高", "ログイン"])
+                    _save_json(listings, output_path_p)
+                    return
                 has_btn = page.evaluate(
                     "!!document.querySelector('#js-usedprice-judge-exec')")
                 if not has_btn:
@@ -1160,7 +1182,7 @@ def browser_enrich_listings(
                                        ["割安", "判定", "割高", "usedprice"])
                         _save_json(listings, output_path_p)
                         return
-                logger.info("中古プリフライトチェック: OK（ボタン検出成功）")
+                logger.info("中古プリフライトチェック: OK（ログイン確認 + ボタン検出成功）")
             except Exception as e:
                 logger.warning(f"中古プリフライトチェック失敗: {e}")
                 _save_json(listings, output_path_p)
@@ -1172,6 +1194,15 @@ def browser_enrich_listings(
             try:
                 page.goto(preflight_url, wait_until="domcontentloaded", timeout=60_000)
                 time.sleep(PAGE_DELAY)
+                if not _check_browser_login(page):
+                    logger.warning(
+                        f"新築ブラウザ enrichment スキップ: "
+                        f"物件ページで未ログイン状態（{len(targets)}件）。"
+                        f"セッションが維持されていません。")
+                    _diagnose_page(page, preflight_url,
+                                   ["予測", "10年後", "ログイン"])
+                    _save_json(listings, output_path_p)
+                    return
                 preflight_btn = _find_clickable(page, [
                     'button:has-text("10年後予測詳細を見る")',
                     'a:has-text("10年後予測詳細を見る")',
