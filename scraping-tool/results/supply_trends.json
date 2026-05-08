@@ -10529,17 +10529,17 @@
           "min_price_man": 9890,
           "max_price_man": 10780
         },
-        "渋谷区": {
-          "count": 2,
-          "avg_price_man": 11180,
-          "min_price_man": 10980,
-          "max_price_man": 11380
-        },
         "文京区": {
           "count": 2,
           "avg_price_man": 10040,
           "min_price_man": 9680,
           "max_price_man": 10400
+        },
+        "渋谷区": {
+          "count": 2,
+          "avg_price_man": 11180,
+          "min_price_man": 10980,
+          "max_price_man": 11380
         }
       }
     }
