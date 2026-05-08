@@ -183,7 +183,7 @@ def main() -> None:
     logger.info(format_report(report))
 
     if report.has_alerts:
-        webhook_url = os.environ.get("SLACK_WEBHOOK_URL", "")
+        webhook_url = os.environ.get("SLACK_ALERT_WEBHOOK_URL") or os.environ.get("SLACK_WEBHOOK_URL", "")
         if webhook_url:
             msg = format_slack_alert(report)
             send_slack_message(webhook_url, msg)
