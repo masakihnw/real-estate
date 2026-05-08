@@ -179,7 +179,7 @@ if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "core" ]; then
             python3 commute_gmaps_enricher.py \
                 --input "$WORK_DIR/track_gm.json" \
                 --output "$WORK_DIR/track_gm.json" \
-                --workers 2 || true
+                --workers 3 || true
         else
             echo "commute_gmaps: Playwright 未検出（スキップ）" >&2
         fi

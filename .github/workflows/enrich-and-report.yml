@@ -413,6 +413,7 @@ jobs:
           SUMAI_USER: ${{ secrets.SUMAI_USER }}
           SUMAI_PASS: ${{ secrets.SUMAI_PASS }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           if [ -f results/latest_shinchiku.json ]; then
             chmod +x scripts/run_enrich.sh

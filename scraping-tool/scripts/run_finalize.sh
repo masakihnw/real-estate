@@ -96,9 +96,37 @@ if [ -n "$CHUKO_SOURCES" ]; then
     echo "中古: ${CHUKO_SOURCES} をマージ完了" >&2
 else
     echo "警告: enriched-chuko の成果物が1つも見つかりません（前回データを維持）" >&2
-    for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion; do
+    for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude; do
         ls -R "${job_dir}/" 2>/dev/null || echo "  ${job_dir}/ ディレクトリ自体が存在しません" >&2
     done
+fi
+
+# 欠落 artifact の検出と通知
+MISSING_ARTIFACTS=""
+for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude; do
+    found=false
+    for candidate in "${job_dir}/latest.json" "${job_dir}/results/latest.json"; do
+        if [ -f "$candidate" ]; then
+            found=true
+            break
+        fi
+    done
+    if [ "$found" = false ]; then
+        MISSING_ARTIFACTS="${MISSING_ARTIFACTS} ${job_dir}"
+    fi
+done
+if [ -n "$MISSING_ARTIFACTS" ]; then
+    echo "警告: 欠落 artifact:${MISSING_ARTIFACTS}" >&2
+    if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+        MISSING_ARTIFACTS_LIST="${MISSING_ARTIFACTS}" python3 -c "
+import os, sys
+sys.path.insert(0, '.')
+from slack_notify import send_slack_message
+missing = os.environ.get('MISSING_ARTIFACTS_LIST', '')
+msg = f':warning: *Enrichment artifact 欠落*\n欠落:{missing}\n一部 enricher が失敗した可能性があります。'
+send_slack_message(os.environ['SLACK_WEBHOOK_URL'], msg)
+" 2>/dev/null || true
+    fi
 fi
 
 # enriched-shinchiku の latest_shinchiku.json を配置
@@ -300,6 +328,18 @@ if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
     cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous_slack.json"
     echo "previous_slack.json を更新しました" >&2
 fi
+
+# ──────────────────────────── enrichment カバレッジ監視 ────────────────────────────
+
+echo "--- enrichment カバレッジ監視 ---" >&2
+
+HEALTH_ARGS="--current ${OUTPUT_DIR}/latest.json"
+if [ -f "${OUTPUT_DIR}/previous.json" ]; then
+    HEALTH_ARGS="${HEALTH_ARGS} --previous ${OUTPUT_DIR}/previous.json"
+fi
+
+python3 scripts/check_enrichment_health.py $HEALTH_ARGS \
+    || echo "enrichment カバレッジに問題が検出されました（続行）" >&2
 
 # ──────────────────────────── ログアップロード ────────────────────────────
 
