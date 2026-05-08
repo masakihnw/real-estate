@@ -65,58 +65,44 @@ echo "--- 成果物配置 ---" >&2
 
 cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
 
-CHUKO_EXPORT_OK=false
-if [ "${USE_SUPABASE_EXPORT:-}" = "1" ] && [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
-    echo "Supabase export モード: listings_feed から latest.json を生成" >&2
-    if python3 scripts/export_supabase_snapshot.py \
-        --output "${OUTPUT_DIR}/latest.json" \
-        --property-type chuko; then
-        CHUKO_EXPORT_OK=true
-    else
-        echo "Supabase export (中古) 失敗: JSON merge にフォールバック" >&2
+# ── Step 1: 常に JSON merge で latest.json を生成（フォールバック + listings 同期のベース） ──
+
+CHUKO_SOURCES=""
+for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude; do
+    for candidate in "${job_dir}/latest.json" "${job_dir}/results/latest.json"; do
+        if [ -f "$candidate" ]; then
+            CHUKO_SOURCES="${CHUKO_SOURCES} $candidate"
+            echo "  中古ソース発見: $candidate" >&2
+            break
+        fi
+    done
+done
+
+if [ -n "$CHUKO_SOURCES" ]; then
+    BASE=""
+    for candidate in "scrape-results/latest_raw.json" "results/latest_raw.json"; do
+        if [ -f "$candidate" ]; then
+            BASE="$candidate"
+            break
+        fi
+    done
+    if [ -z "$BASE" ]; then
+        BASE="${OUTPUT_DIR}/latest.json"
     fi
+
+    python3 scripts/merge_enrichments.py \
+        --base "$BASE" \
+        --enriched $CHUKO_SOURCES \
+        --output "${OUTPUT_DIR}/latest.json"
+    echo "中古: ${CHUKO_SOURCES} をマージ完了" >&2
+else
+    echo "警告: enriched-chuko の成果物が1つも見つかりません（前回データを維持）" >&2
+    for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude; do
+        ls -R "${job_dir}/" 2>/dev/null || echo "  ${job_dir}/ ディレクトリ自体が存在しません" >&2
+    done
 fi
 
-if [ "$CHUKO_EXPORT_OK" = false ]; then
-    # 従来フロー: enriched artifact をフィールドレベルマージ
-    CHUKO_SOURCES=""
-    for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude; do
-        for candidate in "${job_dir}/latest.json" "${job_dir}/results/latest.json"; do
-            if [ -f "$candidate" ]; then
-                CHUKO_SOURCES="${CHUKO_SOURCES} $candidate"
-                echo "  中古ソース発見: $candidate" >&2
-                break
-            fi
-        done
-    done
-
-    if [ -n "$CHUKO_SOURCES" ]; then
-        BASE=""
-        for candidate in "scrape-results/latest_raw.json" "results/latest_raw.json"; do
-            if [ -f "$candidate" ]; then
-                BASE="$candidate"
-                break
-            fi
-        done
-        if [ -z "$BASE" ]; then
-            BASE="${OUTPUT_DIR}/latest.json"
-        fi
-
-        python3 scripts/merge_enrichments.py \
-            --base "$BASE" \
-            --enriched $CHUKO_SOURCES \
-            --output "${OUTPUT_DIR}/latest.json"
-        echo "中古: ${CHUKO_SOURCES} をマージ完了" >&2
-    else
-        echo "警告: enriched-chuko の成果物が1つも見つかりません（前回データを維持）" >&2
-        for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude; do
-            ls -R "${job_dir}/" 2>/dev/null || echo "  ${job_dir}/ ディレクトリ自体が存在しません" >&2
-        done
-    fi
-fi  # end CHUKO_EXPORT_OK = false
-
-# 欠落 artifact の検出と通知（JSON merge モード時のみ）
-if [ "$CHUKO_EXPORT_OK" = false ]; then
+# 欠落 artifact の検出と通知
 MISSING_ARTIFACTS=""
 for job_dir in enriched-chuko-core enriched-chuko-sumai enriched-chuko-mansion enriched-chuko-claude; do
     found=false
@@ -143,30 +129,63 @@ send_slack_message(os.environ['SLACK_WEBHOOK_URL'], msg)
 " 2>/dev/null || true
     fi
 fi
-fi  # end artifact check (JSON merge mode only)
 
 # enriched-shinchiku の latest_shinchiku.json を配置
 cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/previous_shinchiku.json" 2>/dev/null || true
 
-if [ "${USE_SUPABASE_EXPORT:-}" = "1" ] && [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
-    python3 scripts/export_supabase_snapshot.py \
-        --output "${OUTPUT_DIR}/latest_shinchiku.json" \
-        --property-type shinchiku \
-        || echo "Supabase export (新築) 失敗（前回データを維持）" >&2
+SHINCHIKU_ENRICHED=""
+for candidate in "enriched-shinchiku/latest_shinchiku.json" "enriched-shinchiku/results/latest_shinchiku.json"; do
+    if [ -f "$candidate" ]; then
+        SHINCHIKU_ENRICHED="$candidate"
+        break
+    fi
+done
+if [ -n "$SHINCHIKU_ENRICHED" ]; then
+    cp "$SHINCHIKU_ENRICHED" "${OUTPUT_DIR}/latest_shinchiku.json"
+    echo "新築: enriched データを配置 (from ${SHINCHIKU_ENRICHED})" >&2
 else
-    SHINCHIKU_ENRICHED=""
-    for candidate in "enriched-shinchiku/latest_shinchiku.json" "enriched-shinchiku/results/latest_shinchiku.json"; do
-        if [ -f "$candidate" ]; then
-            SHINCHIKU_ENRICHED="$candidate"
-            break
-        fi
-    done
-    if [ -n "$SHINCHIKU_ENRICHED" ]; then
-        cp "$SHINCHIKU_ENRICHED" "${OUTPUT_DIR}/latest_shinchiku.json"
-        echo "新築: enriched データを配置 (from ${SHINCHIKU_ENRICHED})" >&2
+    echo "警告: enriched-shinchiku の latest_shinchiku.json が見つかりません（前回データを維持）" >&2
+    ls -R enriched-shinchiku/ 2>/dev/null || echo "  enriched-shinchiku/ ディレクトリ自体が存在しません" >&2
+fi
+
+# ── Step 2: Supabase listings 事前同期（USE_SUPABASE_EXPORT 時） ──
+# JSON merge 結果をもとに listings テーブルを更新してから export する
+# SUPABASE_PRESYNC=1: listings のみ同期（enrichments はスキップ、後で最終同期で書き込む）
+if [ "${USE_SUPABASE_EXPORT:-}" = "1" ] && [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
+    echo "--- Supabase listings 事前同期 ---" >&2
+    _t_presync=$(date +%s)
+    PRESYNC_OK=true
+    SUPABASE_PRESYNC=1 python3 scripts/sync_db.py --output-dir "${OUTPUT_DIR}" \
+        || { PRESYNC_OK=false; echo "Supabase listings 事前同期失敗（続行）" >&2; }
+    echo "[TIMING] supabase_presync: $(( ($(date +%s) - _t_presync) ))s" >&2
+    if [ "$PRESYNC_OK" = false ] && [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+        python3 -c "
+import os, sys
+sys.path.insert(0, '.')
+from slack_notify import send_slack_message
+send_slack_message(os.environ['SLACK_WEBHOOK_URL'],
+    ':warning: *Supabase listings 事前同期失敗*\nSupabase export の結果に新規物件が含まれない可能性があります。')
+" 2>/dev/null || true
+    fi
+fi
+
+# ── Step 3: USE_SUPABASE_EXPORT 時は Supabase から enriched データで上書き ──
+if [ "${USE_SUPABASE_EXPORT:-}" = "1" ] && [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
+    echo "Supabase export モード: listings_feed から latest.json を上書き" >&2
+    if python3 scripts/export_supabase_snapshot.py \
+        --output "${OUTPUT_DIR}/latest.json" \
+        --property-type chuko; then
+        echo "Supabase export (中古) 成功" >&2
     else
-        echo "警告: enriched-shinchiku の latest_shinchiku.json が見つかりません（前回データを維持）" >&2
-        ls -R enriched-shinchiku/ 2>/dev/null || echo "  enriched-shinchiku/ ディレクトリ自体が存在しません" >&2
+        echo "Supabase export (中古) 失敗: JSON merge 結果をそのまま使用" >&2
+    fi
+
+    if python3 scripts/export_supabase_snapshot.py \
+        --output "${OUTPUT_DIR}/latest_shinchiku.json" \
+        --property-type shinchiku; then
+        echo "Supabase export (新築) 成功" >&2
+    else
+        echo "Supabase export (新築) 失敗: JSON merge 結果をそのまま使用" >&2
     fi
 fi
 

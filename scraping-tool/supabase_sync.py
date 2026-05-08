@@ -544,8 +544,12 @@ def _sync_transactions(client, tx_path: str) -> int:
     return tx_count
 
 
-def sync_to_supabase(output_dir: str) -> None:
-    """メインエントリ: latest.json / latest_shinchiku.json を Supabase に同期する。"""
+def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None:
+    """メインエントリ: latest.json / latest_shinchiku.json を Supabase に同期する。
+
+    skip_enrichments=True の場合、listings/sources/events のみ同期し
+    enrichments テーブルへの書き込みをスキップする（dual-write 運用時用）。
+    """
     client = get_client()
     if client is None:
         logger.info("Supabase クライアント未初期化: 同期スキップ")
@@ -570,8 +574,11 @@ def sync_to_supabase(output_dir: str) -> None:
                 summary["unchanged"], summary["reappeared"],
             )
 
-        enriched = _sync_enrichments(client, chuko)
-        logger.info("[supabase] enrichments(中古): %d 件同期", enriched)
+        if skip_enrichments:
+            logger.info("[supabase] enrichments(中古): スキップ（dual-write モード）")
+        else:
+            enriched = _sync_enrichments(client, chuko)
+            logger.info("[supabase] enrichments(中古): %d 件同期", enriched)
     else:
         logger.info("[supabase] latest.json が空（スキップ）")
 
@@ -592,8 +599,11 @@ def sync_to_supabase(output_dir: str) -> None:
                 summary["unchanged"], summary["reappeared"],
             )
 
-        enriched = _sync_enrichments(client, shinchiku)
-        logger.info("[supabase] enrichments(新築): %d 件同期", enriched)
+        if skip_enrichments:
+            logger.info("[supabase] enrichments(新築): スキップ（dual-write モード）")
+        else:
+            enriched = _sync_enrichments(client, shinchiku)
+            logger.info("[supabase] enrichments(新築): %d 件同期", enriched)
     else:
         logger.info("[supabase] latest_shinchiku.json が空（スキップ）")
 
