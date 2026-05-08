@@ -131,12 +131,17 @@ def main():
 
     conn.close()
 
-    # Supabase 並行同期（未設定時は自動スキップ）
-    try:
-        from supabase_sync import sync_to_supabase
-        sync_to_supabase(str(output_dir))
-    except Exception as e:
-        print(f"[sync_db] Supabase 同期失敗（非致命的）: {e}", file=sys.stderr)
+    # Supabase 並行同期
+    # USE_SUPABASE_EXPORT=1 時は enricher が直接書き込み済みのためスキップ
+    import os
+    if os.environ.get("USE_SUPABASE_EXPORT") == "1":
+        print("[sync_db] USE_SUPABASE_EXPORT=1: Supabase 同期スキップ（dual-write 済み）", file=sys.stderr)
+    else:
+        try:
+            from supabase_sync import sync_to_supabase
+            sync_to_supabase(str(output_dir))
+        except Exception as e:
+            print(f"[sync_db] Supabase 同期失敗（非致命的）: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":
