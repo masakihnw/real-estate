@@ -449,13 +449,26 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
     all_iks = list({identity_key_str(item) for item in listings if identity_key_str(item)})
     for i in range(0, len(all_iks), 100):
         chunk = all_iks[i:i + 100]
-        resp = (client.table("listings")
-                .select("id, identity_key")
-                .in_("identity_key", chunk)
-                .execute())
-        if resp.data:
-            for row in resp.data:
-                ik_to_id[row["identity_key"]] = row["id"]
+        try:
+            resp = (client.table("listings")
+                    .select("id, identity_key")
+                    .in_("identity_key", chunk)
+                    .execute())
+            if resp.data:
+                for row in resp.data:
+                    ik_to_id[row["identity_key"]] = row["id"]
+        except Exception as e:
+            logger.error("[supabase] listing_id 解決エラー (chunk %d): %s", i, e)
+            for ik in chunk:
+                try:
+                    resp = (client.table("listings")
+                            .select("id, identity_key")
+                            .eq("identity_key", ik)
+                            .execute())
+                    if resp.data:
+                        ik_to_id[resp.data[0]["identity_key"]] = resp.data[0]["id"]
+                except Exception as row_err:
+                    logger.debug("[supabase] per-row fallback 失敗 (ik=%s): %s", ik[:40], row_err)
 
     for item in listings:
         ik = identity_key_str(item)

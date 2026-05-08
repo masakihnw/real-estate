@@ -235,7 +235,6 @@ def login(session: requests.Session, user: str, password: str) -> bool:
         # ディレイ付きで最大3回リトライする
         sso_endpoints = [
             f"{BASE_URL}/member/",
-            "https://account.sumai-surfin.com/mypage",
             f"{BASE_URL}/search/",
         ]
         last_sso_resp = None

@@ -171,13 +171,11 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
             logger.info("ブラウザログイン: 成功")
             return True
 
-        # フォールバック: account ドメインのマイページで確認
-        page.goto("https://account.sumai-surfin.com/mypage", wait_until="networkidle", timeout=NAV_TIMEOUT)
+        # フォールバック: /search/ で確認
+        page.goto(f"{BASE_URL}/search/", wait_until="networkidle", timeout=NAV_TIMEOUT)
         time.sleep(1)
         if _check_browser_login(page):
-            logger.info("ブラウザログイン: 成功（account ドメインで確認）")
-            page.goto(f"{BASE_URL}/member/", wait_until="networkidle", timeout=NAV_TIMEOUT)
-            time.sleep(1)
+            logger.info("ブラウザログイン: 成功（/search/ で確認）")
             return True
 
         _log_browser_login_diagnostics(page)
