@@ -222,11 +222,11 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         for old_key, old_id, _ in candidates[1:]:
             if old_id == best_id:
                 continue
-            client.table("listing_sources").delete().eq("listing_id", old_id).execute()
-            client.table("enrichments").delete().eq("listing_id", old_id).execute()
-            client.table("price_history").delete().eq("listing_id", old_id).execute()
-            client.table("listing_events").delete().eq("listing_id", old_id).execute()
-            client.table("listings").delete().eq("id", old_id).execute()
+            client.table("listing_sources").delete(returning="minimal").eq("listing_id", old_id).execute()
+            client.table("enrichments").delete(returning="minimal").eq("listing_id", old_id).execute()
+            client.table("price_history").delete(returning="minimal").eq("listing_id", old_id).execute()
+            client.table("listing_events").delete(returning="minimal").eq("listing_id", old_id).execute()
+            client.table("listings").delete(returning="minimal").eq("id", old_id).execute()
             _deleted_ids.add(old_id)
             existing_listings.pop(old_key, None)
             all_db_listings.pop(old_key, None)
@@ -327,14 +327,14 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                     "listing_id": listing_id,
                     "source": source,
                     "price_man": new_price,
-                }).execute()
+                }, returning="minimal").execute()
                 client.table("listing_events").insert({
                     "listing_id": listing_id,
                     "source": source,
                     "event_type": "price_changed",
                     "old_value": str(old_price),
                     "new_value": str(new_price),
-                }).execute()
+                }, returning="minimal").execute()
                 summary["updated"] += 1
                 price_changed = True
 
@@ -352,34 +352,34 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                     "listing_id": listing_id,
                     "source": source,
                     "event_type": "reappeared",
-                }).execute()
+                }, returning="minimal").execute()
                 summary["reappeared"] += 1
             else:
                 client.table("listing_events").insert({
                     "listing_id": listing_id,
                     "source": source,
                     "event_type": "appeared",
-                }).execute()
+                }, returning="minimal").execute()
                 summary["new"] += 1
             if new_price is not None:
                 client.table("price_history").insert({
                     "listing_id": listing_id,
                     "source": source,
                     "price_man": new_price,
-                }).execute()
+                }, returning="minimal").execute()
         elif listing_id not in existing_sources:
             client.table("listing_events").insert({
                 "listing_id": listing_id,
                 "source": source,
                 "event_type": "appeared",
-            }).execute()
+            }, returning="minimal").execute()
             summary["new"] += 1
             if new_price is not None:
                 client.table("price_history").insert({
                     "listing_id": listing_id,
                     "source": source,
                     "price_man": new_price,
-                }).execute()
+                }, returning="minimal").execute()
         else:
             summary["unchanged"] += 1
 
@@ -408,7 +408,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                     "listing_id": listing_id,
                     "source": source,
                     "event_type": "removed",
-                }).execute()
+                }, returning="minimal").execute()
                 summary["removed"] += 1
 
     return summary
