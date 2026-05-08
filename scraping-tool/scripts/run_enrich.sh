@@ -289,18 +289,21 @@ except Exception as e:
         PIDS="$PIDS $!"
         ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_cl.json"
 
-        # Track CL2: claude_image_analyzer (独立、画像処理は重いため分離)
-        cp "$INPUT" "$WORK_DIR/track_ci.json"
-        (
-            _t=$(date +%s)
-            python3 claude_image_analyzer.py \
-                --input "$WORK_DIR/track_ci.json" \
-                --output "$WORK_DIR/track_ci.json" \
-                --max-time 50 || true
-            echo "[TIMING] claude_image: $(( ($(date +%s) - _t) ))s" >&2
-        ) &
-        PIDS="$PIDS $!"
-        ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_ci.json"
+        # Track CL2: claude_image_analyzer — 無効化（コスト削減）
+        # 間取り図はスクレイパーの alt 属性ベースで判別済みのため、
+        # 画像カテゴリ分類・サムネイル選定は一旦不要と判断。
+        # 再有効化する場合はこのブロックのコメントを外す。
+        # cp "$INPUT" "$WORK_DIR/track_ci.json"
+        # (
+        #     _t=$(date +%s)
+        #     python3 claude_image_analyzer.py \
+        #         --input "$WORK_DIR/track_ci.json" \
+        #         --output "$WORK_DIR/track_ci.json" \
+        #         --max-time 50 || true
+        #     echo "[TIMING] claude_image: $(( ($(date +%s) - _t) ))s" >&2
+        # ) &
+        # PIDS="$PIDS $!"
+        # ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_ci.json"
     else
         echo "claude: ANTHROPIC_API_KEY 未設定（スキップ）" >&2
     fi
