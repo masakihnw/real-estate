@@ -297,6 +297,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             "repair_reserve_fund": item.get("repair_reserve_fund"),
             "listing_agent": item.get("listing_agent"),
             "is_motodzuke": item.get("is_motodzuke"),
+            "price_max_man": item.get("price_max_man"),
             "last_seen_at": _now_iso(),
             "is_active": True,
         }

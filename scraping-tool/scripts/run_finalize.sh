@@ -200,13 +200,23 @@ if [ "${USE_SUPABASE_EXPORT:-}" = "1" ] && [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}"
     fi
     rm -f "${OUTPUT_DIR}/latest_preexport.json"
 
+    cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/latest_shinchiku_preexport.json" 2>/dev/null || true
     if python3 scripts/export_supabase_snapshot.py \
         --output "${OUTPUT_DIR}/latest_shinchiku.json" \
         --property-type shinchiku; then
         echo "Supabase export (新築) 成功" >&2
+        if [ -f "${OUTPUT_DIR}/latest_shinchiku_preexport.json" ]; then
+            python3 scripts/merge_enrichments.py \
+                --base "${OUTPUT_DIR}/latest_shinchiku.json" \
+                --enriched "${OUTPUT_DIR}/latest_shinchiku_preexport.json" \
+                --output "${OUTPUT_DIR}/latest_shinchiku.json" \
+                && echo "Supabase export 後の enrichment 補完(新築)完了" >&2 \
+                || echo "enrichment 補完(新築)失敗（Supabase export 結果をそのまま使用）" >&2
+        fi
     else
         echo "Supabase export (新築) 失敗: JSON merge 結果をそのまま使用" >&2
     fi
+    rm -f "${OUTPUT_DIR}/latest_shinchiku_preexport.json"
 fi
 
 # transactions
