@@ -131,32 +131,53 @@ def embed(json_path: Path) -> int:
         return 0
 
     embedded_count = 0
+    invalid_cache_keys: list[str] = []
     for listing in listings:
         address = (listing.get("address") or "").strip()
         if not address:
             continue
-        # 既に座標がある場合はスキップ（スクレイパーやアプリ側で設定済み）
         if listing.get("latitude") is not None and listing.get("longitude") is not None:
             continue
-        # ss_address（住まいサーフィンの詳細住所）があれば優先的にキャッシュ照合
         ss_address = (listing.get("ss_address") or "").strip()
         coord = None
+        matched_key = None
         if ss_address:
             for candidate in _address_candidates(ss_address):
                 coord = cache.get(candidate)
                 if coord:
+                    matched_key = candidate
                     break
-        # ss_address で見つからなければ元の address でも試行
         if not coord:
             for candidate in _address_candidates(address):
                 coord = cache.get(candidate)
                 if coord:
+                    matched_key = candidate
                     break
         if coord:
             lat, lon = coord
+            if not (35.50 <= lat <= 35.90 and 139.50 <= lon <= 140.00):
+                logger.warning("座標が東京圏外: %s → (%.4f, %.4f) — キャッシュから除去",
+                               address[:30], lat, lon)
+                if matched_key:
+                    invalid_cache_keys.append(matched_key)
+                continue
             listing["latitude"] = lat
             listing["longitude"] = lon
             embedded_count += 1
+
+    if invalid_cache_keys and CACHE_PATH.exists():
+        try:
+            with open(CACHE_PATH, encoding="utf-8") as f:
+                raw_cache = json.load(f)
+            for key in invalid_cache_keys:
+                raw_cache.pop(key, None)
+            tmp_cache = CACHE_PATH.with_suffix(".json.tmp")
+            with open(tmp_cache, "w", encoding="utf-8") as f:
+                json.dump(raw_cache, f, ensure_ascii=False, indent=2)
+            tmp_cache.replace(CACHE_PATH)
+            logger.info("不正座標 %d件をキャッシュから除去", len(invalid_cache_keys))
+        except Exception as e:
+            logger.warning("キャッシュクリーンアップ失敗: %s", e)
 
     # 原子的書き込み
     tmp_path = json_path.with_suffix(".json.tmp")
