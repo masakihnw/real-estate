@@ -32,7 +32,7 @@ class CreditError(Exception):
 
 def _is_credit_error(exc: Exception) -> bool:
     msg = str(exc).lower()
-    return "credit balance" in msg or "payment required" in msg
+    return "credit balance" in msg or "payment required" in msg or "usage limits" in msg
 
 _CACHE_SCHEMA = """
 CREATE TABLE IF NOT EXISTS claude_cache (

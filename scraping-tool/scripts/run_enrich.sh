@@ -264,11 +264,11 @@ try:
     c = Anthropic(api_key=os.environ['ANTHROPIC_API_KEY'])
     c.messages.create(model='claude-haiku-4-5-20251001', max_tokens=1, messages=[{'role':'user','content':'ping'}])
 except Exception as e:
-    if 'credit balance' in str(e).lower() or 'payment required' in str(e).lower():
+    if 'credit balance' in str(e).lower() or 'payment required' in str(e).lower() or 'usage limits' in str(e).lower():
         print(str(e), file=sys.stderr)
         sys.exit(1)
 " 2>&1; then
-            echo "::error::Claude API クレジット不足 — enrichment をスキップできません" >&2
+            echo "::error::Claude API 利用不可（クレジット不足または利用上限到達）" >&2
             exit 1
         fi
 
