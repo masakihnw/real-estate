@@ -59,8 +59,8 @@ def _resolve_listing_ids(
         return {}
 
     ik_to_id: dict[str, int] = {}
-    for i in range(0, len(all_iks), 100):
-        chunk = all_iks[i : i + 100]
+    for i in range(0, len(all_iks), 20):
+        chunk = all_iks[i : i + 20]
         try:
             resp = (
                 client.table("listings")

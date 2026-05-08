@@ -447,8 +447,9 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
     # identity_key → listing_id のマッピングをバッチ取得
     ik_to_id: dict[str, int] = {}
     all_iks = list({identity_key_str(item) for item in listings if identity_key_str(item)})
-    for i in range(0, len(all_iks), 100):
-        chunk = all_iks[i:i + 100]
+    # identity_key は日本語を含むためURL-encode後1件150B超 → 100件で20KB超えPostgREST制限
+    for i in range(0, len(all_iks), 20):
+        chunk = all_iks[i:i + 20]
         try:
             resp = (client.table("listings")
                     .select("id, identity_key")
