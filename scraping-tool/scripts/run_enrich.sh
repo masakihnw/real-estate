@@ -266,7 +266,7 @@ if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "claude" ]; then
             python3 claude_dedup.py \
                 --input "$WORK_DIR/track_cl.json" \
                 --output "$WORK_DIR/track_cl.json" \
-                --max-time 15 || true
+                --max-time 30 || true
             python3 claude_text_enricher.py \
                 --input "$WORK_DIR/track_cl.json" \
                 --output "$WORK_DIR/track_cl.json" \
