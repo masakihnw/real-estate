@@ -10395,10 +10395,10 @@
     {
       "date": "2026-05-08",
       "total_listings": 334,
-      "new_count": 3,
+      "new_count": 4,
       "removed_count": 0,
-      "updated_count": 1,
-      "price_changed_count": 0,
+      "updated_count": 15,
+      "price_changed_count": 1,
       "avg_price_man": 10385,
       "median_price_man": 10480,
       "price_distribution": {
