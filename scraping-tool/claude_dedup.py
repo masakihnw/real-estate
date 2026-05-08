@@ -122,7 +122,7 @@ def judge_dedup_pairs(
     candidates: list[DedupCandidate], max_time_min: int = 0,
 ) -> list[DedupResult]:
     """Claude API で候補ペアを判定。"""
-    from claude_client import ClaudeClient, BatchRequest, DEFAULT_MODEL
+    from claude_client import ClaudeClient, BatchRequest, CreditError, DEFAULT_MODEL
 
     if not candidates:
         return []
@@ -165,7 +165,11 @@ def judge_dedup_pairs(
         poll_timeout = max(5, max_time_min - 2) if max_time_min > 0 else 15
         logger.info("Claude API 送信: %d件（キャッシュヒット: %d件, poll_timeout=%d分）",
                      len(requests), len(candidates) - len(requests), poll_timeout)
-        batch_results = client.send_messages(requests, poll_timeout_minutes=poll_timeout)
+        try:
+            batch_results = client.send_messages(requests, poll_timeout_minutes=poll_timeout)
+        except CreditError:
+            logger.warning("クレジット不足: 名寄せをスキップします")
+            batch_results = []
 
         for br in batch_results:
             idx_str = br.custom_id.replace("dedup_", "")

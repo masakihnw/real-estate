@@ -278,13 +278,15 @@ python3 scripts/finalize_helpers.py inject-investment --output-dir "${OUTPUT_DIR
 
 # ──────────────────────────── Claude 投資サマリー生成 ────────────────────────────
 
-if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+if [ -n "${ANTHROPIC_API_KEY:-}" ] && [ ! -f "data/.claude_credit_exhausted" ]; then
     echo "--- Claude 投資サマリー生成 ---" >&2
     _t=$(date +%s)
     python3 claude_investment_summarizer.py \
         --input "${OUTPUT_DIR}/latest.json" \
         --output "${OUTPUT_DIR}/latest.json" || echo "Claude サマリー生成失敗（続行）" >&2
     echo "[TIMING] claude_investment_summary: $(( ($(date +%s) - _t) ))s" >&2
+elif [ -f "data/.claude_credit_exhausted" ]; then
+    echo "Claude API クレジット不足: 投資サマリー生成をスキップ" >&2
 fi
 
 # ──────────────────────────── SQLite DB + Supabase 同期 ────────────────────────────
@@ -455,6 +457,9 @@ fi
 
 echo "--- キャッシュクリーンアップ ---" >&2
 python3 scripts/cache_manager.py --stats --cleanup || echo "キャッシュクリーンアップ失敗（続行）" >&2
+
+# クレジット不足フラグのクリーンアップ
+rm -f data/.claude_credit_exhausted
 
 echo "=== Finalize 完了 ===" >&2
 echo "レポート: $REPORT" >&2

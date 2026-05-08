@@ -88,7 +88,7 @@ def enrich_text_features(
     listings: list[dict], max_time_min: int = 0,
 ) -> list[dict]:
     """物件説明文から構造化データを抽出。"""
-    from claude_client import ClaudeClient, BatchRequest, DEFAULT_MODEL
+    from claude_client import ClaudeClient, BatchRequest, CreditError, DEFAULT_MODEL
 
     if not ClaudeClient.is_available():
         logger.warning("ANTHROPIC_API_KEY 未設定: テキスト抽出スキップ")
@@ -132,7 +132,11 @@ def enrich_text_features(
 
     poll_timeout = max(5, max_time_min - 2) if max_time_min > 0 else 15
     logger.info("テキスト抽出: %d件を送信 (poll_timeout=%d分)", len(requests), poll_timeout)
-    batch_results = client.send_messages(requests, poll_timeout_minutes=poll_timeout)
+    try:
+        batch_results = client.send_messages(requests, poll_timeout_minutes=poll_timeout)
+    except CreditError:
+        logger.warning("クレジット不足: テキスト抽出をスキップします")
+        return listings
 
     success_count = 0
     for br in batch_results:
