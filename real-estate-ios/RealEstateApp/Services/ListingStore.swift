@@ -172,18 +172,10 @@ final class ListingStore {
         // アノテーション（いいね・コメント）を取得してマージ
         // 両ソースが304（データ変更なし）の場合はスキップ
         if !bothNotModified {
-            if useSupabase {
-                await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
-                await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
-                    Task { @MainActor in
-                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
-                    }
-                }
-            } else {
-                await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
-                    Task { @MainActor in
-                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
-                    }
+            await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
+            await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                Task { @MainActor in
+                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
                 }
             }
         }
@@ -530,18 +522,10 @@ final class ListingStore {
             }
 
             // アノテーション同期（Supabase 初回はローカルデータを push してから pull）
-            if useSupabase {
-                await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
-                await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
-                    Task { @MainActor in
-                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
-                    }
-                }
-            } else {
-                await FirebaseSyncService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
-                    Task { @MainActor in
-                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
-                    }
+            await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
+            await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                Task { @MainActor in
+                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
                 }
             }
 
