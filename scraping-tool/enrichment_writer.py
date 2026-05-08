@@ -144,10 +144,15 @@ def write_enrichments(
         try:
             resp = (
                 client.table("enrichments")
-                .upsert(batch, on_conflict="listing_id")
+                .upsert(
+                    batch,
+                    on_conflict="listing_id",
+                    returning="minimal",
+                    count="exact",
+                )
                 .execute()
             )
-            total += len(resp.data) if resp.data else 0
+            total += resp.count if resp.count else len(batch)
         except Exception as e:
             logger.error(f"[{enricher_name}] Supabase upsert エラー: {e}")
 
