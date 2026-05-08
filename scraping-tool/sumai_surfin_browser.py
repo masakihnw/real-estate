@@ -124,72 +124,47 @@ def _log_browser_login_diagnostics(page: "Page") -> None:
 
 
 def browser_login(page: "Page", user: str, password: str) -> bool:
-    """Playwright でブラウザログインを行う。
+    """HTTP enricher のセッションクッキーをブラウザに注入してログインする。
 
-    Returns:
-        True: ログイン成功
-        False: ログイン失敗
+    ブラウザのフォーム送信は HeadlessChrome 検知でブロックされるため、
+    requests ベースの HTTP enricher でログインし、取得したクッキーを
+    Playwright のブラウザコンテキストに注入する方式を使う。
     """
     try:
-        page.goto(LOGIN_URL, wait_until="networkidle", timeout=NAV_TIMEOUT)
-        time.sleep(1)
+        from sumai_surfin_enricher import login as http_login, _create_session
 
-        # ── ユーザー名・パスワード入力 ──
-        username_input = page.locator('#fe-login_name')
-        password_input = page.locator('#fe-login_password')
-
-        # id でヒットしない場合は name で探す
-        if username_input.count() == 0:
-            username_input = page.locator('input[name="login_name"]').first
-        if password_input.count() == 0:
-            password_input = page.locator('input[name="login_password"]').first
-
-        if username_input.count() == 0 or password_input.count() == 0:
-            logger.info("ブラウザログイン: 入力フィールドが見つかりません")
+        session = _create_session()
+        if not http_login(session, user, password):
+            logger.error("ブラウザログイン: HTTP セッション取得失敗")
             return False
 
-        # type() でキー入力をシミュレート（fill() だとイベント発火しない場合がある）
-        username_input.click()
-        username_input.type(user, delay=30)
-        time.sleep(0.3)
-        password_input.click()
-        password_input.type(password, delay=30)
-        time.sleep(0.3)
+        pw_cookies = []
+        for c in session.cookies:
+            domain = c.domain.lstrip(".")
+            pw_cookies.append({
+                "name": c.name,
+                "value": c.value,
+                "domain": c.domain,
+                "path": c.path or "/",
+                "secure": c.secure,
+                "httpOnly": bool(getattr(c, "_rest", {}).get("HttpOnly")),
+            })
 
-        # ── ログインボタンをクリック ──
-        # フォームの <a onclick="document.login_form.submit()"> を優先的に使用
-        login_link = page.locator('a[onclick*="login_form.submit"]')
-        if login_link.count() > 0 and login_link.is_visible():
-            with page.expect_navigation(timeout=NAV_TIMEOUT):
-                login_link.click()
-        else:
-            # フォールバック: JavaScript でフォームを直接送信
-            with page.expect_navigation(timeout=NAV_TIMEOUT):
-                page.evaluate("document.login_form.submit()")
+        page.context.add_cookies(pw_cookies)
+        logger.info(f"ブラウザログイン: {len(pw_cookies)}個のクッキーを注入")
 
+        page.goto(f"{BASE_URL}/member/", wait_until="networkidle", timeout=NAV_TIMEOUT)
         time.sleep(2)
 
-        logger.info(f"ブラウザログイン: フォーム送信後 URL = {page.url}")
-        try:
-            cookies = page.context.cookies()
-            domains = sorted(set(c.get("domain", "") for c in cookies))
-            logger.info(f"ブラウザログイン: クッキードメイン = {domains}")
-        except Exception:
-            pass
+        if _check_browser_login(page):
+            logger.info("ブラウザログイン: 成功（クッキー注入方式）")
+            return True
 
-        # ── SSO 確立: 複数のページで検証 ──
-        sso_pages = [
-            (f"{BASE_URL}/member/", "/member/"),
-            (f"{BASE_URL}/search/", "/search/"),
-            (f"{BASE_URL}/re/25847/", "/re/25847/ (物件ページ)"),
-        ]
-        for sso_url, label in sso_pages:
-            page.goto(sso_url, wait_until="networkidle", timeout=NAV_TIMEOUT)
-            time.sleep(2)
-            if _check_browser_login(page):
-                logger.info(f"ブラウザログイン: 成功（{label} で確認）")
-                return True
-            logger.info(f"ブラウザログイン: {label} で未ログイン状態 (URL={page.url})")
+        page.goto(f"{BASE_URL}/search/", wait_until="networkidle", timeout=NAV_TIMEOUT)
+        time.sleep(1)
+        if _check_browser_login(page):
+            logger.info("ブラウザログイン: 成功（クッキー注入方式, /search/ で確認）")
+            return True
 
         _log_browser_login_diagnostics(page)
         return False
