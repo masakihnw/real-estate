@@ -43058,7 +43058,7 @@
       "latitude": 35.7073477,
       "longitude": 139.6832315,
       "building_group_id": "131140120-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "東中野桜山レジデンス"
     },
     {
       "id": "tx-12a4a047a167",
@@ -43978,7 +43978,7 @@
       "latitude": 35.7073477,
       "longitude": 139.6832315,
       "building_group_id": "131140120-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "東中野桜山レジデンス"
     },
     {
       "id": "tx-2832fdc7d401",
@@ -43998,7 +43998,7 @@
       "latitude": 35.7073477,
       "longitude": 139.6832315,
       "building_group_id": "131140120-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "東中野桜山レジデンス"
     },
     {
       "id": "tx-780e3f87483c",
@@ -44338,7 +44338,7 @@
       "latitude": 35.7073477,
       "longitude": 139.6832315,
       "building_group_id": "131140120-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "東中野桜山レジデンス"
     },
     {
       "id": "tx-4b4b51485af6",
@@ -44478,7 +44478,7 @@
       "latitude": 35.7073477,
       "longitude": 139.6832315,
       "building_group_id": "131140120-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "東中野桜山レジデンス"
     },
     {
       "id": "tx-98059765179d",
@@ -44518,7 +44518,7 @@
       "latitude": 35.7073477,
       "longitude": 139.6832315,
       "building_group_id": "131140120-2013-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "東中野桜山レジデンス"
     },
     {
       "id": "tx-63cff4e9de3f",
@@ -49878,7 +49878,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023-RC",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
     },
     {
       "id": "tx-b7709691f3ba",
@@ -49898,7 +49898,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
     },
     {
       "id": "tx-696de48610a1",
@@ -49918,7 +49918,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023-RC",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
     },
     {
       "id": "tx-f6172bc89b6c",
@@ -50138,7 +50138,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023-RC",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
     },
     {
       "id": "tx-849d3d997237",
@@ -50158,7 +50158,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023-RC",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
     },
     {
       "id": "tx-ea673f5d713d",
@@ -65372,7 +65372,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "東中野桜山レジデンス"
     },
     {
       "group_id": "131140120-2013-RC",
@@ -65395,7 +65395,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "東中野桜山レジデンス"
     },
     {
       "group_id": "131140120-2015-RC",
@@ -68217,7 +68217,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
     },
     {
       "group_id": "131190130-2023-RC",
@@ -68243,7 +68243,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
     },
     {
       "group_id": "131190130-2025-SRC",
@@ -69196,7 +69196,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-08T06:29:06",
+    "updated_at": "2026-05-08T08:36:26",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
