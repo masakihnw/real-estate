@@ -271,6 +271,10 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             "is_new": item.get("is_new", False),
             "is_new_building": item.get("is_new_building", False),
             "first_seen_at": item.get("first_seen_at"),
+            "first_seen_source": item.get("first_seen_source"),
+            "geocode_confidence": item.get("geocode_confidence"),
+            "geocode_fixed": item.get("geocode_fixed"),
+            "alt_urls": item.get("alt_urls"),
         }
         # None 値を除去 (Supabase は NULL として扱う)
         listing_row = {k: v for k, v in _sanitize_value(listing_row).items() if v is not None}
@@ -418,6 +422,7 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
         "ai_recommendation_score", "ai_recommendation_summary",
         "ai_recommendation_flags", "ai_recommendation_action",
         "near_miss", "near_miss_reasons",
+        "is_cheapest_in_building", "competing_price_range",
     ]
 
     count = 0
