@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -117,13 +118,16 @@ def find_dedup_candidates(listings: list[dict]) -> list[DedupCandidate]:
     return candidates
 
 
-def judge_dedup_pairs(candidates: list[DedupCandidate]) -> list[DedupResult]:
+def judge_dedup_pairs(
+    candidates: list[DedupCandidate], max_time_min: int = 0,
+) -> list[DedupResult]:
     """Claude API で候補ペアを判定。"""
     from claude_client import ClaudeClient, BatchRequest, DEFAULT_MODEL
 
     if not candidates:
         return []
 
+    deadline = time.time() + max_time_min * 60 if max_time_min > 0 else None
     client = ClaudeClient()
     requests = []
     uncached_indices = []
@@ -131,6 +135,9 @@ def judge_dedup_pairs(candidates: list[DedupCandidate]) -> list[DedupResult]:
     results: list[Optional[DedupResult]] = [None] * len(candidates)
 
     for i, cand in enumerate(candidates):
+        if deadline and time.time() > deadline:
+            logger.warning("名寄せ: 時間切れ（%d分）— リクエスト構築を中断", max_time_min)
+            break
         cache_input = {
             "a": _listing_summary(cand.listing_a),
             "b": _listing_summary(cand.listing_b),
@@ -155,8 +162,10 @@ def judge_dedup_pairs(candidates: list[DedupCandidate]) -> list[DedupResult]:
             uncached_indices.append(i)
 
     if requests:
-        logger.info("Claude API 送信: %d件（キャッシュヒット: %d件）", len(requests), len(candidates) - len(requests))
-        batch_results = client.send_messages(requests)
+        poll_timeout = max(5, max_time_min - 2) if max_time_min > 0 else 15
+        logger.info("Claude API 送信: %d件（キャッシュヒット: %d件, poll_timeout=%d分）",
+                     len(requests), len(candidates) - len(requests), poll_timeout)
+        batch_results = client.send_messages(requests, poll_timeout_minutes=poll_timeout)
 
         for br in batch_results:
             idx_str = br.custom_id.replace("dedup_", "")
@@ -267,6 +276,8 @@ def main():
     parser = argparse.ArgumentParser(description="Claude セマンティック名寄せ")
     parser.add_argument("--input", required=True, help="入力 JSON ファイル")
     parser.add_argument("--output", required=True, help="出力 JSON ファイル")
+    parser.add_argument("--max-time", type=int, default=0,
+                        help="最大実行時間（分）。0=無制限")
     args = parser.parse_args()
 
     with open(args.input, encoding="utf-8") as f:
@@ -276,7 +287,7 @@ def main():
     candidates = find_dedup_candidates(listings)
 
     if candidates:
-        results = judge_dedup_pairs(candidates)
+        results = judge_dedup_pairs(candidates, max_time_min=args.max_time)
         listings = apply_dedup_results(listings, results)
         logger.info("名寄せ完了: %d件 → %d件", original_count, len(listings))
     else:
