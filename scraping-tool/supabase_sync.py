@@ -285,8 +285,12 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             "geocode_fixed": item.get("geocode_fixed"),
             "alt_urls": item.get("alt_urls"),
         }
-        # None 値を除去 (Supabase は NULL として扱う)
-        listing_row = {k: v for k, v in _sanitize_value(listing_row).items() if v is not None}
+        REAL_COLUMNS = {"area_m2", "area_max_m2", "balcony_area_m2", "latitude", "longitude"}
+        listing_row = {
+            k: v
+            for k, v in _sanitize_value(listing_row).items()
+            if v is not None or k in REAL_COLUMNS
+        }
 
         # listings テーブルに upsert（レスポンスなし）+ 別クエリで id 取得
         (client.table("listings")
