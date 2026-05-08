@@ -29,6 +29,8 @@ def _sanitize_value(obj: object) -> object:
             return None
         return obj
     if isinstance(obj, str):
+        if obj.strip().lower() in ("nan", "infinity", "-infinity", "inf", "-inf"):
+            return None
         s = obj.replace("\x00", "")
         if s and s[0] in ("{", "["):
             try:
@@ -71,6 +73,18 @@ def _resolve_listing_ids(
                     ik_to_id[row["identity_key"]] = row["id"]
         except Exception as e:
             logger.error(f"listing_id 解決エラー (chunk {i}): {e}")
+            for ik in chunk:
+                try:
+                    resp = (
+                        client.table("listings")
+                        .select("id, identity_key")
+                        .eq("identity_key", ik)
+                        .execute()
+                    )
+                    if resp.data:
+                        ik_to_id[resp.data[0]["identity_key"]] = resp.data[0]["id"]
+                except Exception as row_err:
+                    logger.debug(f"per-row fallback 失敗 (ik={ik[:40]}): {row_err}")
     return ik_to_id
 
 

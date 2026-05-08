@@ -35,6 +35,8 @@ def _sanitize_value(obj: object) -> object:
             return None
         return obj
     if isinstance(obj, str):
+        if obj.strip().lower() in ("nan", "infinity", "-infinity", "inf", "-inf"):
+            return None
         s = obj.replace("\x00", "")
         s = s.encode("utf-8", errors="surrogatepass").decode("utf-8", errors="replace")
         if s and s[0] in ("{", "["):

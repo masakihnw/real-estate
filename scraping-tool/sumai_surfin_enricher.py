@@ -102,6 +102,42 @@ def _request_with_retry(session: requests.Session, method: str, url: str, **kwar
     return resp
 
 
+_MARKER_ENV = os.environ.get("SUMAI_LOGIN_MARKER", "")
+_LOGIN_MARKERS = _MARKER_ENV.split(",") if _MARKER_ENV else [
+    "ログアウト", "logout", "signout", "マイページ", "会員情報",
+]
+
+
+def _check_login_success(session: requests.Session, resp: requests.Response) -> bool:
+    """複数のシグナルでログイン状態を判定する。"""
+    for marker in _LOGIN_MARKERS:
+        if marker and marker in resp.text:
+            return True
+
+    www_cookies = [c.name for c in session.cookies if "sumai-surfin" in c.domain]
+    if len(www_cookies) >= 2:
+        member_resp = _request_with_retry(
+            session, "GET", f"{BASE_URL}/member/", allow_redirects=False,
+        )
+        if member_resp and member_resp.status_code == 200:
+            return True
+
+    return False
+
+
+def _log_login_diagnostics(session: requests.Session, resp: requests.Response) -> None:
+    """ログイン失敗時の診断ログを出力する。"""
+    cookie_names = [f"{c.domain}:{c.name}" for c in session.cookies]
+    logger.error("住まいサーフィン: ログイン失敗（全シグナル不一致）")
+    logger.info(f"  → Cookies: {cookie_names}")
+    logger.info(f"  → 最終 URL: {resp.url}, status: {resp.status_code}")
+    snippet = resp.text[:500].replace("\n", " ")
+    logger.debug(f"  → HTML冒頭: {snippet}")
+    for kw in ("エラー", "パスワード", "不正", "ログインできません"):
+        if kw in resp.text:
+            logger.warning(f"  → 認証エラー検出: HTML に '{kw}' が含まれています")
+
+
 def login(session: requests.Session, user: str, password: str) -> bool:
     """住まいサーフィンにログインし、セッション Cookie を取得する。
 
@@ -196,19 +232,17 @@ def login(session: requests.Session, user: str, password: str) -> bool:
             logger.error("住まいサーフィン: SSO フロー失敗（/member/ にアクセスできません）")
             return False
 
-        if "ログアウト" in sso_resp.text or "mypage" in sso_resp.url:
+        if _check_login_success(session, sso_resp):
             logger.info("住まいサーフィン: ログイン成功")
             return True
 
-        # フォールバック: 検索ページでログイン状態を確認
+        # フォールバック: 検索ページでも確認
         check_resp = _request_with_retry(session, "GET", f"{BASE_URL}/search/", allow_redirects=True)
-        if check_resp and "ログアウト" in check_resp.text:
+        if check_resp and _check_login_success(session, check_resp):
             logger.info("住まいサーフィン: ログイン成功（検索ページで確認）")
             return True
 
-        logger.error("住まいサーフィン: ログイン失敗（SSO 後にログアウトリンクが見つかりません）")
-        logger.info(f"  → ssan Cookie: {ssan_present}, total cookies: {len(session.cookies)}")
-        logger.info(f"  → SSO URL: {sso_resp.url}")
+        _log_login_diagnostics(session, sso_resp)
         return False
 
     except Exception as e:
