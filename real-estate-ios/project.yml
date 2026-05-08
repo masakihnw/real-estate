@@ -22,7 +22,7 @@ settings:
     TARGETED_DEVICE_FAMILY: "1,2"        # iPhone + iPad
     SUPPORTS_MACCATALYST: "YES"
     DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER: "NO"
-    CURRENT_PROJECT_VERSION: "722"
+    CURRENT_PROJECT_VERSION: "723"
     MARKETING_VERSION: "1.0.0"
 
 targets:
@@ -49,6 +49,7 @@ targets:
       path: RealEstateApp/Info.plist
       properties:
         CFBundleDisplayName: "物件情報"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationCategoryType: "public.app-category.lifestyle"
@@ -106,6 +107,7 @@ targets:
       path: RealEstateWidget/Info.plist
       properties:
         CFBundleDisplayName: "物件情報ウィジェット"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         ITSAppUsesNonExemptEncryption: false
         NSExtension:
