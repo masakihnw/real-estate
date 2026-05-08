@@ -7,6 +7,7 @@ SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 未設定時は自動スキップ。
 """
 from __future__ import annotations
 
+import json
 import math
 import sys
 from pathlib import Path
@@ -19,6 +20,7 @@ from supabase_client import get_client
 logger = get_logger(__name__)
 
 BATCH_SIZE = 500
+MAX_STRING_BYTES = 10_000
 
 
 def _sanitize_value(obj: object) -> object:
@@ -27,7 +29,17 @@ def _sanitize_value(obj: object) -> object:
             return None
         return obj
     if isinstance(obj, str):
-        return obj.replace("\x00", "") if "\x00" in obj else obj
+        s = obj.replace("\x00", "")
+        if s and s[0] in ("{", "["):
+            try:
+                parsed = json.loads(s)
+                sanitized = _sanitize_value(parsed)
+                s = json.dumps(sanitized, ensure_ascii=False, allow_nan=False)
+            except (json.JSONDecodeError, ValueError):
+                pass
+        if len(s.encode("utf-8")) > MAX_STRING_BYTES:
+            s = s.encode("utf-8")[:MAX_STRING_BYTES].decode("utf-8", errors="ignore")
+        return s
     if isinstance(obj, dict):
         return {k: _sanitize_value(v) for k, v in obj.items()}
     if isinstance(obj, list):

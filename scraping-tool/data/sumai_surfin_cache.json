@@ -1111,5 +1111,688 @@
   "オープンレジデンス中野桃園町": "https://www.sumai-surfin.com/re/11807/",
   "アージョ文京千駄木": "https://www.sumai-surfin.com/re/27829/",
   "オープンレジデンス祐天寺": "https://www.sumai-surfin.com/re/47239/",
-  "アトラスシティ千歳烏山グランスイート": "https://www.sumai-surfin.com/re/47504/"
+  "アトラスシティ千歳烏山グランスイート": "https://www.sumai-surfin.com/re/47504/",
+  "晴海アイランドトリトンスクエアビュータワー": "https://www.sumai-surfin.com/re/20198/",
+  "晴海アイランドトリトンスクエアビュータワー__inline": {
+    "appreciation_rate": 52.2,
+    "oki_price_70m2": 9870
+  },
+  "ザ晴海レジデンス": "https://www.sumai-surfin.com/re/10896/",
+  "ザ晴海レジデンス__inline": {
+    "appreciation_rate": 110.5,
+    "oki_price_70m2": 9310
+  },
+  "東京ミッドベイ勝どき": "https://www.sumai-surfin.com/re/25847/",
+  "東京ミッドベイ勝どき__inline": {
+    "appreciation_rate": 105.0,
+    "oki_price_70m2": 9450
+  },
+  "ベイサイドタワー晴海": "https://www.sumai-surfin.com/re/41692/",
+  "ベイサイドタワー晴海__inline": {
+    "appreciation_rate": 74.7,
+    "oki_price_70m2": 13230
+  },
+  "ライオンズ築地リバーノート": "https://www.sumai-surfin.com/re/8307/",
+  "ライオンズ築地リバーノート__inline": {
+    "appreciation_rate": 67.9,
+    "oki_price_70m2": 11760
+  },
+  "グレーシア勝どき": "https://www.sumai-surfin.com/re/29983/",
+  "グレーシア勝どき__inline": {
+    "appreciation_rate": 89.8,
+    "oki_price_70m2": 10430
+  },
+  "クレストシティレジデンス": "https://www.sumai-surfin.com/re/3036/",
+  "クレストシティレジデンス__inline": {
+    "appreciation_rate": 54.3,
+    "oki_price_70m2": 9170
+  },
+  "アスコットパーク東京八丁堀": "https://www.sumai-surfin.com/re/25461/",
+  "アスコットパーク東京八丁堀__inline": {
+    "appreciation_rate": 103.1,
+    "oki_price_70m2": 11340
+  },
+  "パークホームズ南麻布ザレジデンス": "https://www.sumai-surfin.com/re/28057/",
+  "パークホームズ南麻布ザレジデンス__inline": {
+    "appreciation_rate": 116.9,
+    "oki_price_70m2": 13020
+  },
+  "リビオ笹塚": "https://www.sumai-surfin.com/re/32264/",
+  "リビオ笹塚__inline": {
+    "appreciation_rate": 37.1,
+    "oki_price_70m2": 10640
+  },
+  "アトラス押上桜花テラス": "https://www.sumai-surfin.com/re/38304/",
+  "アトラス押上桜花テラス__inline": {
+    "appreciation_rate": 69.8,
+    "oki_price_70m2": 9800
+  },
+  "アデニウム墨田本所": "https://www.sumai-surfin.com/re/31351/",
+  "アデニウム墨田本所__inline": {
+    "appreciation_rate": 75.0,
+    "oki_price_70m2": 8750
+  },
+  "アトラスタワー曳舟": "https://www.sumai-surfin.com/re/30409/",
+  "アトラスタワー曳舟__inline": {
+    "appreciation_rate": 92.9,
+    "oki_price_70m2": 10290
+  },
+  "ローレルコート新宿タワー": "https://www.sumai-surfin.com/re/11796/",
+  "ローレルコート新宿タワー__inline": {
+    "appreciation_rate": 96.8,
+    "oki_price_70m2": 10500
+  },
+  "東新宿レジデンシャルタワー": "https://www.sumai-surfin.com/re/18329/",
+  "東新宿レジデンシャルタワー__inline": {
+    "appreciation_rate": 78.0,
+    "oki_price_70m2": 10010
+  },
+  "パークタワー西新宿エムズポート": "https://www.sumai-surfin.com/re/28205/",
+  "パークタワー西新宿エムズポート__inline": {
+    "appreciation_rate": 125.3,
+    "oki_price_70m2": 12460
+  },
+  "クレアホームズ新宿百人町": "https://www.sumai-surfin.com/re/28495/",
+  "クレアホームズ新宿百人町__inline": {
+    "appreciation_rate": 115.8,
+    "oki_price_70m2": 10290
+  },
+  "落合シティタワー": "https://www.sumai-surfin.com/re/18149/",
+  "落合シティタワー__inline": {
+    "appreciation_rate": 69.9,
+    "oki_price_70m2": 9310
+  },
+  "新宿アインスタワー": "https://www.sumai-surfin.com/re/1449/",
+  "新宿アインスタワー__inline": {
+    "appreciation_rate": 120.8,
+    "oki_price_70m2": 11060
+  },
+  "プレシス田端ノワール": "https://www.sumai-surfin.com/re/40669/",
+  "プレシス田端ノワール__inline": {
+    "appreciation_rate": 54.9,
+    "oki_price_70m2": 7770
+  },
+  "日暮里アインスタワー": "https://www.sumai-surfin.com/re/1501/",
+  "日暮里アインスタワー__inline": {
+    "appreciation_rate": 109.9,
+    "oki_price_70m2": 8820
+  },
+  "イニシア千住曙町": "https://www.sumai-surfin.com/re/5263/",
+  "イニシア千住曙町__inline": {
+    "appreciation_rate": 74.4,
+    "oki_price_70m2": 6720
+  },
+  "パークホームズ北千住アドーア": "https://www.sumai-surfin.com/re/40499/",
+  "パークホームズ北千住アドーア__inline": {
+    "appreciation_rate": 67.7,
+    "oki_price_70m2": 11760
+  },
+  "パークホームズ綾瀬ステーションプレミア": "https://www.sumai-surfin.com/re/25775/",
+  "パークホームズ綾瀬ステーションプレミア__inline": {
+    "appreciation_rate": 68.0,
+    "oki_price_70m2": 7630
+  },
+  "シティハウス綾瀬": "https://www.sumai-surfin.com/re/44906/",
+  "シティハウス綾瀬__inline": {
+    "appreciation_rate": 20.4,
+    "oki_price_70m2": 7910
+  },
+  "aquavistaアクアヴィスタ": "https://www.sumai-surfin.com/re/30584/",
+  "aquavistaアクアヴィスタ__inline": {
+    "appreciation_rate": 78.4,
+    "oki_price_70m2": 6860
+  },
+  "アトラスタワー北千住": "https://www.sumai-surfin.com/re/79/",
+  "アトラスタワー北千住__inline": {
+    "appreciation_rate": 124.3,
+    "oki_price_70m2": 9730
+  },
+  "クレヴィア浅草": "https://www.sumai-surfin.com/re/39759/",
+  "クレヴィア浅草__inline": {
+    "appreciation_rate": 67.5,
+    "oki_price_70m2": 9380
+  },
+  "ランドール浅草": "https://www.sumai-surfin.com/re/3764/",
+  "ランドール浅草__inline": {
+    "appreciation_rate": 96.9,
+    "oki_price_70m2": 7700
+  },
+  "ライオンズシティ東京根岸": "https://www.sumai-surfin.com/re/3670/",
+  "ライオンズシティ東京根岸__inline": {
+    "appreciation_rate": 80.3,
+    "oki_price_70m2": 7280
+  },
+  "東京ビューマークス": "https://www.sumai-surfin.com/re/13560/",
+  "東京ビューマークス__inline": {
+    "appreciation_rate": 121.4,
+    "oki_price_70m2": 7140
+  },
+  "浅草タワー": "https://www.sumai-surfin.com/re/12176/",
+  "浅草タワー__inline": {
+    "appreciation_rate": 114.6,
+    "oki_price_70m2": 11620
+  },
+  "ブリリア上野": "https://www.sumai-surfin.com/re/49800/",
+  "ブリリア上野__inline": {
+    "appreciation_rate": 59.0,
+    "oki_price_70m2": 15470
+  },
+  "グローベルザシティ上野入谷": "https://www.sumai-surfin.com/re/26961/",
+  "グローベルザシティ上野入谷__inline": {
+    "appreciation_rate": 107.1,
+    "oki_price_70m2": 8540
+  },
+  "パークタワー東京イースト": "https://www.sumai-surfin.com/re/818/",
+  "パークタワー東京イースト__inline": {
+    "appreciation_rate": 83.2,
+    "oki_price_70m2": 7350
+  },
+  "東京グランファースト": "https://www.sumai-surfin.com/re/4065/",
+  "東京グランファースト__inline": {
+    "appreciation_rate": 77.1,
+    "oki_price_70m2": 7210
+  },
+  "グランヒルズtokyoイースト": "https://www.sumai-surfin.com/re/15284/",
+  "グランヒルズtokyoイースト__inline": {
+    "appreciation_rate": 69.8,
+    "oki_price_70m2": 7000
+  },
+  "ザガーデンズ西葛西": "https://www.sumai-surfin.com/re/30689/",
+  "ザガーデンズ西葛西__inline": {
+    "appreciation_rate": 68.8,
+    "oki_price_70m2": 8400
+  },
+  "レジデントプレイス西葛西": "https://www.sumai-surfin.com/re/30441/",
+  "レジデントプレイス西葛西__inline": {
+    "appreciation_rate": 60.0,
+    "oki_price_70m2": 7770
+  },
+  "ゼルクハウス船堀": "https://www.sumai-surfin.com/re/28686/",
+  "ゼルクハウス船堀__inline": {
+    "appreciation_rate": 63.8,
+    "oki_price_70m2": 6860
+  },
+  "アルファグランデ小岩スカイファースト": "https://www.sumai-surfin.com/re/30684/",
+  "アルファグランデ小岩スカイファースト__inline": {
+    "appreciation_rate": 96.2,
+    "oki_price_70m2": 9310
+  },
+  "クレストフォルム大井町サウステラス": "https://www.sumai-surfin.com/re/32095/",
+  "クレストフォルム大井町サウステラス__inline": {
+    "appreciation_rate": 53.1,
+    "oki_price_70m2": 9100
+  },
+  "ラグナタワー": "https://www.sumai-surfin.com/re/1236/",
+  "ラグナタワー__inline": {
+    "appreciation_rate": 94.7,
+    "oki_price_70m2": 8750
+  },
+  "品川イーストシティタワー": "https://www.sumai-surfin.com/re/39299/",
+  "品川イーストシティタワー__inline": {
+    "appreciation_rate": 71.9,
+    "oki_price_70m2": 12040
+  },
+  "プライムパークス品川シーサイドザレジデンス": "https://www.sumai-surfin.com/re/40115/",
+  "プライムパークス品川シーサイドザレジデンス__inline": {
+    "appreciation_rate": 78.7,
+    "oki_price_70m2": 10640
+  },
+  "シティハウス東大井": "https://www.sumai-surfin.com/re/5125/",
+  "シティハウス東大井__inline": {
+    "appreciation_rate": 75.8,
+    "oki_price_70m2": 9100
+  },
+  "ルフォン南品川": "https://www.sumai-surfin.com/re/30139/",
+  "ルフォン南品川__inline": {
+    "appreciation_rate": 86.7,
+    "oki_price_70m2": 9800
+  },
+  "オーベルグランディオ品川勝島": "https://www.sumai-surfin.com/re/32624/",
+  "オーベルグランディオ品川勝島__inline": {
+    "appreciation_rate": 87.1,
+    "oki_price_70m2": 8260
+  },
+  "パークハウス大森リルウイング": "https://www.sumai-surfin.com/re/3631/",
+  "パークハウス大森リルウイング__inline": {
+    "appreciation_rate": 121.7,
+    "oki_price_70m2": 8330
+  },
+  "パークスクエア南品川": "https://www.sumai-surfin.com/re/3726/",
+  "パークスクエア南品川__inline": {
+    "appreciation_rate": 79.7,
+    "oki_price_70m2": 8680
+  },
+  "品川シーサイドレジデンス": "https://www.sumai-surfin.com/re/4016/",
+  "品川シーサイドレジデンス__inline": {
+    "appreciation_rate": 102.9,
+    "oki_price_70m2": 8890
+  },
+  "クレストタワー品川シーサイド": "https://www.sumai-surfin.com/re/8859/",
+  "クレストタワー品川シーサイド__inline": {
+    "appreciation_rate": 64.7,
+    "oki_price_70m2": 9800
+  },
+  "ルサンクアイリスタワー": "https://www.sumai-surfin.com/re/1276/",
+  "ルサンクアイリスタワー__inline": {
+    "appreciation_rate": 112.9,
+    "oki_price_70m2": 9030
+  },
+  "リビオ新蒲田": "https://www.sumai-surfin.com/re/4663/",
+  "リビオ新蒲田__inline": {
+    "appreciation_rate": 75.4,
+    "oki_price_70m2": 7980
+  },
+  "アールブラン千鳥町": "https://www.sumai-surfin.com/re/6627/",
+  "アールブラン千鳥町__inline": {
+    "appreciation_rate": 42.3,
+    "oki_price_70m2": 9030
+  },
+  "ザパークハウス西馬込": "https://www.sumai-surfin.com/re/38633/",
+  "ザパークハウス西馬込__inline": {
+    "appreciation_rate": 48.0,
+    "oki_price_70m2": 8540
+  },
+  "プレシス馬込": "https://www.sumai-surfin.com/re/41724/",
+  "プレシス馬込__inline": {
+    "appreciation_rate": 37.7,
+    "oki_price_70m2": 8190
+  },
+  "ブランズシティ久が原": "https://www.sumai-surfin.com/re/38563/",
+  "ブランズシティ久が原__inline": {
+    "appreciation_rate": 49.7,
+    "oki_price_70m2": 9940
+  },
+  "ドレッセ南雪谷": "https://www.sumai-surfin.com/re/31910/",
+  "ドレッセ南雪谷__inline": {
+    "appreciation_rate": 68.7,
+    "oki_price_70m2": 10290
+  },
+  "クレヴィア西馬込": "https://www.sumai-surfin.com/re/45954/",
+  "クレヴィア西馬込__inline": {
+    "appreciation_rate": 12.9,
+    "oki_price_70m2": 10010
+  },
+  "オーベルグランディオ萩中": "https://www.sumai-surfin.com/re/2205/",
+  "オーベルグランディオ萩中__inline": {
+    "appreciation_rate": 95.2,
+    "oki_price_70m2": 7490
+  },
+  "サンクタス森下": "https://www.sumai-surfin.com/re/4021/",
+  "サンクタス森下__inline": {
+    "appreciation_rate": 78.7,
+    "oki_price_70m2": 8540
+  },
+  "ブリリア有明スカイタワーブリリア有明": "https://www.sumai-surfin.com/re/11757/",
+  "ブリリア有明スカイタワーブリリア有明__inline": {
+    "appreciation_rate": 85.4,
+    "oki_price_70m2": 9800
+  },
+  "クレヴィア辰巳": "https://www.sumai-surfin.com/re/28594/",
+  "クレヴィア辰巳__inline": {
+    "appreciation_rate": 86.7,
+    "oki_price_70m2": 7140
+  },
+  "ザパークハウス亀戸": "https://www.sumai-surfin.com/re/49539/",
+  "ザパークハウス亀戸__inline": {
+    "appreciation_rate": 58.6,
+    "oki_price_70m2": 8400
+  },
+  "スターコート豊洲": "https://www.sumai-surfin.com/re/3837/",
+  "スターコート豊洲__inline": {
+    "appreciation_rate": 104.8,
+    "oki_price_70m2": 8400
+  },
+  "クレヴィア南砂": "https://www.sumai-surfin.com/re/30257/",
+  "クレヴィア南砂__inline": {
+    "appreciation_rate": 89.5,
+    "oki_price_70m2": 8190
+  },
+  "ブリリア有明シティタワー": "https://www.sumai-surfin.com/re/29692/",
+  "ブリリア有明シティタワー__inline": {
+    "appreciation_rate": 104.7,
+    "oki_price_70m2": 10850
+  },
+  "ブリリア有明": "https://www.sumai-surfin.com/re/29692/",
+  "ブリリア有明__inline": {
+    "appreciation_rate": 104.7,
+    "oki_price_70m2": 10850
+  },
+  "パークタワー東雲": "https://www.sumai-surfin.com/re/27707/",
+  "パークタワー東雲__inline": {
+    "appreciation_rate": 116.1,
+    "oki_price_70m2": 10150
+  },
+  "東京錦糸町シティタワー": "https://www.sumai-surfin.com/re/18326/",
+  "東京錦糸町シティタワー__inline": {
+    "appreciation_rate": 93.0,
+    "oki_price_70m2": 7490
+  },
+  "キャナルワーフタワーズ": "https://www.sumai-surfin.com/re/8435/",
+  "キャナルワーフタワーズ__inline": {
+    "appreciation_rate": 94.1,
+    "oki_price_70m2": 7770
+  },
+  "グランエスタ": "https://www.sumai-surfin.com/re/16314/",
+  "グランエスタ__inline": {
+    "appreciation_rate": 2.4,
+    "oki_price_70m2": 3220
+  },
+  "レクセルプラザ東陽町": "https://www.sumai-surfin.com/re/3466/",
+  "レクセルプラザ東陽町__inline": {
+    "appreciation_rate": 62.2,
+    "oki_price_70m2": 6790
+  },
+  "テラス東陽町ネクスタワー": "https://www.sumai-surfin.com/re/11264/",
+  "テラス東陽町ネクスタワー__inline": {
+    "appreciation_rate": 66.8,
+    "oki_price_70m2": 8050
+  },
+  "ジオ深川住吉": "https://www.sumai-surfin.com/re/39293/",
+  "ジオ深川住吉__inline": {
+    "appreciation_rate": 70.9,
+    "oki_price_70m2": 10710
+  },
+  "ガーデングラス亀戸": "https://www.sumai-surfin.com/re/27051/",
+  "ガーデングラス亀戸__inline": {
+    "appreciation_rate": 80.2,
+    "oki_price_70m2": 7910
+  },
+  "ブリリア有明スカイタワー": "https://www.sumai-surfin.com/re/11757/",
+  "ブリリア有明スカイタワー__inline": {
+    "appreciation_rate": 85.4,
+    "oki_price_70m2": 9800
+  },
+  "アデニウムコート木場": "https://www.sumai-surfin.com/re/29903/",
+  "アデニウムコート木場__inline": {
+    "appreciation_rate": 81.5,
+    "oki_price_70m2": 8820
+  },
+  "キャナルファーストタワー": "https://www.sumai-surfin.com/re/3853/",
+  "キャナルファーストタワー__inline": {
+    "appreciation_rate": 90.7,
+    "oki_price_70m2": 7770
+  },
+  "シティタワーズ豊洲ザツイン": "https://www.sumai-surfin.com/re/7614/",
+  "シティタワーズ豊洲ザツイン__inline": {
+    "appreciation_rate": 76.5,
+    "oki_price_70m2": 10710
+  },
+  "シティテラス東陽町": "https://www.sumai-surfin.com/re/32650/",
+  "シティテラス東陽町__inline": {
+    "appreciation_rate": 60.4,
+    "oki_price_70m2": 10430
+  },
+  "ウエルタワー深川": "https://www.sumai-surfin.com/re/13678/",
+  "ウエルタワー深川__inline": {
+    "appreciation_rate": 113.2,
+    "oki_price_70m2": 8890
+  },
+  "wコンフォートタワーズ": "https://www.sumai-surfin.com/re/30/",
+  "wコンフォートタワーズ__inline": {
+    "appreciation_rate": 143.9,
+    "oki_price_70m2": 7910
+  },
+  "イーストゲートスクエア": "https://www.sumai-surfin.com/re/27914/",
+  "イーストゲートスクエア__inline": {
+    "appreciation_rate": 94.0,
+    "oki_price_70m2": 9520
+  },
+  "オリゾンマーレ": "https://www.sumai-surfin.com/re/202/",
+  "オリゾンマーレ__inline": {
+    "appreciation_rate": 102.8,
+    "oki_price_70m2": 8260
+  },
+  "thetoyosutower": "https://www.sumai-surfin.com/re/5010/",
+  "thetoyosutower__inline": {
+    "appreciation_rate": 90.1,
+    "oki_price_70m2": 11200
+  },
+  "ザパークハウス上鷺宮": "https://www.sumai-surfin.com/re/31154/",
+  "ザパークハウス上鷺宮__inline": {
+    "appreciation_rate": 67.1,
+    "oki_price_70m2": 9660
+  },
+  "クレストフォルム中野弥生町": "https://www.sumai-surfin.com/re/7071/",
+  "クレストフォルム中野弥生町__inline": {
+    "appreciation_rate": 52.7,
+    "oki_price_70m2": 9030
+  },
+  "ディアマークスキャピタルタワー": "https://www.sumai-surfin.com/re/16364/",
+  "ディアマークスキャピタルタワー__inline": {
+    "appreciation_rate": 92.2,
+    "oki_price_70m2": 9240
+  },
+  "ジオ石神井公園": "https://www.sumai-surfin.com/re/46404/",
+  "ジオ石神井公園__inline": {
+    "appreciation_rate": 20.0,
+    "oki_price_70m2": 10500
+  },
+  "石神井公園ピアレス": "https://www.sumai-surfin.com/re/14517/",
+  "石神井公園ピアレス__inline": {
+    "appreciation_rate": 93.2,
+    "oki_price_70m2": 9450
+  },
+  "プラウドタワー石神井公園": "https://www.sumai-surfin.com/re/12546/",
+  "プラウドタワー石神井公園__inline": {
+    "appreciation_rate": 78.3,
+    "oki_price_70m2": 10780
+  },
+  "ローレルコート石神井公園": "https://www.sumai-surfin.com/re/41208/",
+  "ローレルコート石神井公園__inline": {
+    "appreciation_rate": 32.9,
+    "oki_price_70m2": 7630
+  },
+  "ルフォンリブレ赤羽": "https://www.sumai-surfin.com/re/43076/",
+  "ルフォンリブレ赤羽__inline": {
+    "appreciation_rate": 34.3,
+    "oki_price_70m2": 10430
+  },
+  "パークタワー滝野川": "https://www.sumai-surfin.com/re/27658/",
+  "パークタワー滝野川__inline": {
+    "appreciation_rate": 92.0,
+    "oki_price_70m2": 9520
+  },
+  "ダイアパレス飛鳥山": "https://www.sumai-surfin.com/re/3043/",
+  "ダイアパレス飛鳥山__inline": {
+    "appreciation_rate": 54.9,
+    "oki_price_70m2": 7280
+  },
+  "蘆花公園ザレジデンスフォレストコート": "https://www.sumai-surfin.com/re/39372/",
+  "蘆花公園ザレジデンスフォレストコート__inline": {
+    "appreciation_rate": 47.6,
+    "oki_price_70m2": 9660
+  },
+  "エルザ世田谷": "https://www.sumai-surfin.com/re/2444/",
+  "エルザ世田谷__inline": {
+    "appreciation_rate": 66.5,
+    "oki_price_70m2": 8540
+  },
+  "ザパークハウス尾山台": "https://www.sumai-surfin.com/re/39081/",
+  "ザパークハウス尾山台__inline": {
+    "appreciation_rate": 52.2,
+    "oki_price_70m2": 13090
+  },
+  "グランスイート二子玉川スタイルフォート": "https://www.sumai-surfin.com/re/11545/",
+  "グランスイート二子玉川スタイルフォート__inline": {
+    "appreciation_rate": 83.3,
+    "oki_price_70m2": 10780
+  },
+  "ザパークハウス弦巻": "https://www.sumai-surfin.com/re/26708/",
+  "ザパークハウス弦巻__inline": {
+    "appreciation_rate": 76.9,
+    "oki_price_70m2": 10710
+  },
+  "theパームス世田谷桜": "https://www.sumai-surfin.com/re/4270/",
+  "theパームス世田谷桜__inline": {
+    "appreciation_rate": 66.9,
+    "oki_price_70m2": 8680
+  },
+  "ピアースコード等々力": "https://www.sumai-surfin.com/re/3706/",
+  "ピアースコード等々力__inline": {
+    "appreciation_rate": 53.0,
+    "oki_price_70m2": 9940
+  },
+  "ジオ世田谷松原": "https://www.sumai-surfin.com/re/41558/",
+  "ジオ世田谷松原__inline": {
+    "appreciation_rate": 54.0,
+    "oki_price_70m2": 11480
+  },
+  "パークハウス世田谷松原": "https://www.sumai-surfin.com/re/4432/",
+  "パークハウス世田谷松原__inline": {
+    "appreciation_rate": 51.4,
+    "oki_price_70m2": 9170
+  },
+  "シティハウス世田谷桜丘": "https://www.sumai-surfin.com/re/8227/",
+  "シティハウス世田谷桜丘__inline": {
+    "appreciation_rate": 57.8,
+    "oki_price_70m2": 9240
+  },
+  "世田谷喜多見ザテラス": "https://www.sumai-surfin.com/re/44041/",
+  "世田谷喜多見ザテラス__inline": {
+    "appreciation_rate": 27.7,
+    "oki_price_70m2": 9870
+  },
+  "アトラス荻窪": "https://www.sumai-surfin.com/re/42421/",
+  "アトラス荻窪__inline": {
+    "appreciation_rate": 65.2,
+    "oki_price_70m2": 13440
+  },
+  "パークホームズ阿佐ヶ谷サウス": "https://www.sumai-surfin.com/re/25916/",
+  "パークホームズ阿佐ヶ谷サウス__inline": {
+    "appreciation_rate": 88.5,
+    "oki_price_70m2": 10430
+  },
+  "ブリリア西荻窪": "https://www.sumai-surfin.com/re/27208/",
+  "ブリリア西荻窪__inline": {
+    "appreciation_rate": 71.2,
+    "oki_price_70m2": 10150
+  },
+  "クレストラフィーネ板橋本町": "https://www.sumai-surfin.com/re/43288/",
+  "クレストラフィーネ板橋本町__inline": {
+    "appreciation_rate": 34.2,
+    "oki_price_70m2": 8400
+  },
+  "パークホームズ成増マークレジデンス": "https://www.sumai-surfin.com/re/10063/",
+  "パークホームズ成増マークレジデンス__inline": {
+    "appreciation_rate": 65.7,
+    "oki_price_70m2": 7770
+  },
+  "ブリリアときわ台ソライエレジデンス": "https://www.sumai-surfin.com/re/30103/",
+  "ブリリアときわ台ソライエレジデンス__inline": {
+    "appreciation_rate": 67.1,
+    "oki_price_70m2": 7560
+  },
+  "グランシティラピュタタワー": "https://www.sumai-surfin.com/re/13745/",
+  "グランシティラピュタタワー__inline": {
+    "appreciation_rate": 57.8,
+    "oki_price_70m2": 7840
+  },
+  "プレミスト大山": "https://www.sumai-surfin.com/re/26503/",
+  "プレミスト大山__inline": {
+    "appreciation_rate": 82.9,
+    "oki_price_70m2": 8330
+  },
+  "パークタワー板橋": "https://www.sumai-surfin.com/re/30127/",
+  "パークタワー板橋__inline": {
+    "appreciation_rate": 83.1,
+    "oki_price_70m2": 9310
+  },
+  "アトラス雑司が谷": "https://www.sumai-surfin.com/re/11467/",
+  "アトラス雑司が谷__inline": {
+    "appreciation_rate": 68.3,
+    "oki_price_70m2": 9520
+  },
+  "tokyoシティトリエ": "https://www.sumai-surfin.com/re/1588/",
+  "tokyoシティトリエ__inline": {
+    "appreciation_rate": 135.1,
+    "oki_price_70m2": 8540
+  },
+  "シティタワー池袋": "https://www.sumai-surfin.com/re/46743/",
+  "シティタワー池袋__inline": {
+    "appreciation_rate": 97.0,
+    "oki_price_70m2": 10920
+  },
+  "シティタワー池袋ウエストゲート": "https://www.sumai-surfin.com/re/9901/",
+  "シティタワー池袋ウエストゲート__inline": {
+    "appreciation_rate": 97.0,
+    "oki_price_70m2": 10920
+  },
+  "オープンレジデンシア目白フロントコート": "https://www.sumai-surfin.com/re/42745/",
+  "オープンレジデンシア目白フロントコート__inline": {
+    "appreciation_rate": 46.9,
+    "oki_price_70m2": 13930
+  },
+  "リストレジデンス池袋": "https://www.sumai-surfin.com/re/29959/",
+  "リストレジデンス池袋__inline": {
+    "appreciation_rate": 83.2,
+    "oki_price_70m2": 10780
+  },
+  "アーデル大塚cスクエア": "https://www.sumai-surfin.com/re/3854/",
+  "アーデル大塚cスクエア__inline": {
+    "appreciation_rate": 81.0,
+    "oki_price_70m2": 8260
+  },
+  "シティハウス南大塚テラス": "https://www.sumai-surfin.com/re/45016/",
+  "シティハウス南大塚テラス__inline": {
+    "appreciation_rate": 49.9,
+    "oki_price_70m2": 14070
+  },
+  "パークホームズ南大塚": "https://www.sumai-surfin.com/re/26319/",
+  "パークホームズ南大塚__inline": {
+    "appreciation_rate": 87.8,
+    "oki_price_70m2": 10780
+  },
+  "グローリオタワー巣鴨": "https://www.sumai-surfin.com/re/3732/",
+  "グローリオタワー巣鴨__inline": {
+    "appreciation_rate": 92.0,
+    "oki_price_70m2": 8750
+  },
+  "プレミスト西池袋": "https://www.sumai-surfin.com/re/27417/",
+  "プレミスト西池袋__inline": {
+    "appreciation_rate": 91.4,
+    "oki_price_70m2": 11130
+  },
+  "プレシス田端ブラン": "https://www.sumai-surfin.com/re/40668/",
+  "プレシス田端ブラン__inline": {
+    "appreciation_rate": 46.9,
+    "oki_price_70m2": 7980
+  },
+  "アトラスシティ千歳烏山グランスイート杜ノ棟": "https://www.sumai-surfin.com/re/47493/",
+  "オープンレジデンシア中野新井コート": null,
+  "ワールドシティタワーズブリーズタワー": null,
+  "アールブラン大井町ミュゼ": "https://www.sumai-surfin.com/re/2206/",
+  "アールブラン大井町ミュゼ__inline": {
+    "appreciation_rate": 107.7,
+    "oki_price_70m2": 10640
+  },
+  "プレシス上野公園": "https://www.sumai-surfin.com/re/27539/",
+  "プレシス上野公園__inline": {
+    "appreciation_rate": 76.7,
+    "oki_price_70m2": 9660
+  },
+  "セイガステージ荻窪": "https://www.sumai-surfin.com/re/27898/",
+  "セイガステージ荻窪__inline": {
+    "appreciation_rate": 88.4,
+    "oki_price_70m2": 9590
+  },
+  "パークハウス上北沢スクエアテラス": "https://www.sumai-surfin.com/re/3509/",
+  "パークハウス上北沢スクエアテラス__inline": {
+    "appreciation_rate": 57.8,
+    "oki_price_70m2": 8540
+  },
+  "カーサフェリス阿佐ヶ谷テラス": "https://www.sumai-surfin.com/re/4951/",
+  "カーサフェリス阿佐ヶ谷テラス__inline": {
+    "appreciation_rate": 58.1,
+    "oki_price_70m2": 10220
+  },
+  "シティインデックス洗足": "https://www.sumai-surfin.com/re/30644/",
+  "シティインデックス洗足__inline": {
+    "appreciation_rate": 74.3,
+    "oki_price_70m2": 11760
+  },
+  "ブランズ富士見ヶ丘": "https://www.sumai-surfin.com/re/31899/",
+  "ブランズ富士見ヶ丘__inline": {
+    "appreciation_rate": 55.8,
+    "oki_price_70m2": 8960
+  }
 }
