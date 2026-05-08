@@ -22,6 +22,7 @@ from logger import get_logger
 logger = get_logger(__name__)
 
 DEFAULT_CACHE_DB = str(Path(__file__).resolve().parent / "data" / "claude_cache.db")
+_CREDIT_EXHAUSTED_FLAG = Path(__file__).resolve().parent / "data" / ".claude_credit_exhausted"
 DEFAULT_MODEL = "claude-haiku-4-5-20251001"
 SONNET_MODEL = "claude-sonnet-4-20250514"
 
@@ -133,7 +134,11 @@ class ClaudeClient:
         if not requests:
             return []
 
-        if use_batch and len(requests) >= 100:
+        if self.is_credit_exhausted():
+            logger.warning("クレジット不足フラグ検出: %d 件のリクエストをスキップ", len(requests))
+            return []
+
+        if use_batch and len(requests) >= 5:
             return self._send_batch(requests, poll_timeout_minutes=poll_timeout_minutes)
         else:
             return self._send_sync(requests)
@@ -165,6 +170,7 @@ class ClaudeClient:
             batch = self._client.messages.batches.create(requests=batch_requests)
         except Exception as e:
             if _is_credit_error(e):
+                self.mark_credit_exhausted()
                 raise CreditError(str(e)) from e
             logger.warning("Batch API 作成失敗 → 同期 API フォールバック (%d件): %s", len(requests), e)
             return self._send_sync(requests)
@@ -276,7 +282,9 @@ class ClaudeClient:
                     break
                 except Exception as e:
                     if _is_credit_error(e):
-                        raise CreditError(str(e)) from e
+                        self.mark_credit_exhausted()
+                        logger.warning("クレジット不足（同期API）: %d件処理済み、残り中断", len(results))
+                        return results
                     if attempt < 2:
                         wait = 2 ** (attempt + 1)
                         logger.warning("API エラー（リトライ %d/%d, %ds待機）: %s", attempt + 1, 3, wait, e)
@@ -321,6 +329,32 @@ class ClaudeClient:
         data_str = json.dumps(input_data, sort_keys=True, ensure_ascii=False)
         h = hashlib.sha256(data_str.encode()).hexdigest()[:16]
         return f"{module}:{h}"
+
+    @staticmethod
+    def mark_credit_exhausted() -> None:
+        """クレジット不足フラグを作成。以降の全 Claude API 呼び出しをスキップさせる。"""
+        _CREDIT_EXHAUSTED_FLAG.parent.mkdir(parents=True, exist_ok=True)
+        _CREDIT_EXHAUSTED_FLAG.touch()
+        logger.warning("クレジット不足フラグを作成: %s", _CREDIT_EXHAUSTED_FLAG)
+
+    @staticmethod
+    def is_credit_exhausted() -> bool:
+        """クレジット不足フラグの存在チェック。24時間経過で自動リセット。"""
+        if not _CREDIT_EXHAUSTED_FLAG.exists():
+            return False
+        age = time.time() - _CREDIT_EXHAUSTED_FLAG.stat().st_mtime
+        if age > 86400:
+            _CREDIT_EXHAUSTED_FLAG.unlink(missing_ok=True)
+            logger.info("クレジットフラグ TTL 切れ（24h）: 自動削除")
+            return False
+        return True
+
+    @staticmethod
+    def clear_credit_flag() -> None:
+        """クレジット不足フラグを削除。"""
+        if _CREDIT_EXHAUSTED_FLAG.exists():
+            _CREDIT_EXHAUSTED_FLAG.unlink()
+            logger.info("クレジット不足フラグを削除")
 
     @staticmethod
     def is_available() -> bool:

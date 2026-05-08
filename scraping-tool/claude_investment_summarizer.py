@@ -156,6 +156,17 @@ JSON形式で回答:
 - action: 具体的な次のアクション（指値金額、確認すべき資料、見送り理由等）"""
 
 
+def _listing_stable_key(listing: dict) -> str:
+    """キャッシュキー用の安定ハッシュ。派生スコアの変動でキャッシュミスしない。"""
+    fields = json.dumps({
+        "name": listing.get("name"), "price_man": listing.get("price_man"),
+        "area_m2": listing.get("area_m2"), "layout": listing.get("layout"),
+        "built_year": listing.get("built_year"), "walk_min": listing.get("walk_min"),
+        "address": listing.get("address"),
+    }, sort_keys=True)
+    return hashlib.sha256(fields.encode()).hexdigest()[:16]
+
+
 def _build_score_context(listing: dict) -> str:
     """物件のスコア情報を整理してテキスト化。"""
     parts = []
@@ -266,7 +277,7 @@ def _build_score_context(listing: dict) -> str:
 
 def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = False) -> list[dict]:
     """有望物件に購入推奨度を生成。"""
-    from claude_client import ClaudeClient, BatchRequest, SONNET_MODEL
+    from claude_client import ClaudeClient, BatchRequest, CreditError, DEFAULT_MODEL
 
     if not ClaudeClient.is_available():
         logger.warning("ANTHROPIC_API_KEY 未設定: 推奨度生成スキップ")
@@ -302,7 +313,10 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
         context = _build_score_context(listing)
         user_message = f"## 買い手プロファイル\n{buyer_context}\n\n## 物件情報\n{context}"
 
-        cache_key_data = {"buyer_hash": int(hashlib.sha256(buyer_context.encode()).hexdigest()[:8], 16), "context": context[:800]}
+        cache_key_data = {
+            "buyer_hash": int(hashlib.sha256(buyer_context.encode()).hexdigest()[:8], 16),
+            "listing_key": _listing_stable_key(listing),
+        }
         cached = client.get_cached("ai_recommendation", cache_key_data)
         if cached:
             listing["ai_recommendation_score"] = cached.get("score")
@@ -320,8 +334,8 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
             custom_id=f"recommendation_{i}",
             messages=[{"role": "user", "content": user_message}],
             system=SYSTEM_PROMPT,
-            model=SONNET_MODEL,
-            max_tokens=640,
+            model=DEFAULT_MODEL,
+            max_tokens=400,
         ))
         request_indices.append(i)
 
@@ -329,8 +343,12 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
         logger.info("推奨度生成: 全てキャッシュ済み")
         return listings
 
-    logger.info("推奨度生成: %d件を送信 (model=%s)", len(requests), SONNET_MODEL)
-    batch_results = client.send_messages(requests)
+    logger.info("推奨度生成: %d件を送信 (model=%s)", len(requests), DEFAULT_MODEL)
+    try:
+        batch_results = client.send_messages(requests)
+    except CreditError:
+        logger.warning("クレジット不足: 推奨度生成をスキップします")
+        return listings
 
     success_count = 0
     for br in batch_results:
@@ -360,9 +378,11 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
             listings[i]["key_strengths"] = [f for f in parsed.get("flags", []) if "◎" in f or "堅い" in f or "良" in f]
             listings[i]["key_risks"] = [f for f in parsed.get("flags", []) if "リスク" in f or "懸念" in f or "不足" in f]
 
-            context = _build_score_context(listings[i])
-            client.set_cached("ai_recommendation", {"buyer_hash": int(hashlib.sha256(buyer_context.encode()).hexdigest()[:8], 16), "context": context[:800]}, parsed,
-                              model=SONNET_MODEL,
+            client.set_cached("ai_recommendation", {
+                "buyer_hash": int(hashlib.sha256(buyer_context.encode()).hexdigest()[:8], 16),
+                "listing_key": _listing_stable_key(listings[i]),
+            }, parsed,
+                              model=DEFAULT_MODEL,
                               input_tokens=br.input_tokens,
                               output_tokens=br.output_tokens)
             success_count += 1
