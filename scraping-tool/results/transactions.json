@@ -1,6 +1,106 @@
 {
   "transactions": [
     {
+      "id": "tx-7a79cf145809",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cc97c6bab835",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c340de84d863",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfab263a1aa0",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-623a7c0c1b95",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2012-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-156048362089",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -20974,9 +21074,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6974192,
-      "longitude": 139.784685,
+      "estimated_walk_min": 8,
+      "latitude": 35.6973915,
+      "longitude": 139.7863101,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -33378,7 +33478,7 @@
       "latitude": 35.6485139,
       "longitude": 139.8119175,
       "building_group_id": "131080290-2012-RC",
-      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
+      "estimated_building_name": "クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
     },
     {
       "id": "tx-62fdc6645b5e",
@@ -39798,7 +39898,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-33ba1cb163a8",
@@ -40818,7 +40918,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-44c2ed3a9960",
@@ -40958,7 +41058,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-cd9d4b46471f",
@@ -41138,7 +41238,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-af4d4355ea5c",
@@ -41358,7 +41458,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-144639cfaf05",
@@ -41618,7 +41718,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-868a89150172",
@@ -42298,7 +42398,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9d2ecf8648b7",
@@ -42318,7 +42418,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-24619ecb0933",
@@ -50795,8 +50895,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373437,
-      "longitude": 139.6544918,
+      "latitude": 35.737877,
+      "longitude": 139.6540818,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -51502,6 +51602,55 @@
     }
   ],
   "building_groups": [
+    {
+      "group_id": "131010010-2007-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 4,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1646154,
+      "periods": [
+        "2021Q3",
+        "2021Q4",
+        "2022Q1",
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131010010-2012-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1833333,
+      "periods": [
+        "2025Q4"
+      ],
+      "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
     {
       "group_id": "131020010-2012-RC",
       "prefecture": "東京都",
@@ -57662,9 +57811,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6974192,
-      "longitude": 139.784685,
+      "estimated_walk_min": 8,
+      "latitude": 35.6973915,
+      "longitude": 139.7863101,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -60437,7 +60586,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "バンベールルフォン辰巳 / クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
+      "estimated_building_name": "クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
     },
     {
       "group_id": "131080300-2016-RC",
@@ -64145,7 +64294,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120460-2011-RC",
@@ -68705,8 +68854,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373437,
-      "longitude": 139.6544918,
+      "latitude": 35.737877,
+      "longitude": 139.6540818,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -69196,7 +69345,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-08T00:58:23",
+    "updated_at": "2026-05-08T03:49:08",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -69233,8 +69382,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 2575,
-    "building_group_count": 719,
+    "transaction_count": 2580,
+    "building_group_count": 721,
     "scope": "東京23区"
   }
 }
