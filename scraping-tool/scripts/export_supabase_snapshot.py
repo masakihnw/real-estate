@@ -108,6 +108,18 @@ def main() -> None:
         logger.error("エクスポート対象が0件です — Supabase の接続またはビューを確認してください")
         sys.exit(1)
 
+    enrichment_check_fields = ["hazard_info", "commute_info", "ss_lookup_status"]
+    for field in enrichment_check_fields:
+        filled = sum(1 for r in listings if r.get(field) is not None)
+        pct = filled / len(listings) * 100
+        logger.info(f"enrichment 充足率: {field} = {filled}/{len(listings)} ({pct:.0f}%)")
+        if pct < 10:
+            logger.error(
+                f"enrichments テーブルのデータが不十分です ({field}: {pct:.0f}%%) "
+                f"— dual-write が未実行の可能性があります。JSON merge にフォールバックします。"
+            )
+            sys.exit(1)
+
     flat = [_flatten_listing(row) for row in listings]
 
     output_path = Path(args.output)
