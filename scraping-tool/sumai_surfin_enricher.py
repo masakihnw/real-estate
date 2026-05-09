@@ -21,6 +21,7 @@ import math
 import re
 import signal
 import sys
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -76,6 +77,55 @@ def _create_session() -> requests.Session:
         "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
     })
     return s
+
+
+# ──────────────────────────── ワーカー永続セッション ────────────────────────────
+
+_worker_sessions: dict[int, requests.Session] = {}
+_worker_session_ts: dict[int, float] = {}
+_worker_lock = threading.Lock()
+_SESSION_TTL = 300
+
+
+def _is_session_valid(session: requests.Session) -> bool:
+    try:
+        resp = session.get(f"{BASE_URL}/member/", timeout=10, allow_redirects=False)
+        if resp.status_code in (301, 302, 303, 307):
+            return "login" not in resp.headers.get("Location", "")
+        return resp.status_code == 200
+    except Exception:
+        return False
+
+
+def _get_worker_session(user: str, password: str) -> Optional[requests.Session]:
+    tid = threading.get_ident()
+    with _worker_lock:
+        session = _worker_sessions.get(tid)
+        ts = _worker_session_ts.get(tid, 0)
+
+    if session is not None:
+        if (time.time() - ts) < _SESSION_TTL:
+            return session
+        if _is_session_valid(session):
+            with _worker_lock:
+                _worker_session_ts[tid] = time.time()
+            return session
+        logger.info(f"Worker {tid}: セッション期限切れ、再ログインします")
+
+    new_session = _create_session()
+    if not login(new_session, user, password):
+        return None
+    with _worker_lock:
+        _worker_sessions[tid] = new_session
+        _worker_session_ts[tid] = time.time()
+    return new_session
+
+
+def _invalidate_worker_session() -> None:
+    tid = threading.get_ident()
+    with _worker_lock:
+        _worker_sessions.pop(tid, None)
+        _worker_session_ts.pop(tid, None)
 
 
 def _request_with_retry(session: requests.Session, method: str, url: str, **kwargs) -> Optional[requests.Response]:
@@ -1947,19 +1997,42 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         name = listing.get("name", "")
         user = os.environ.get("SUMAI_USER", "")
         password = os.environ.get("SUMAI_PASS", "")
-        worker_session = _create_session()
-        if not user or not password or not login(worker_session, user, password):
+        if not user or not password:
             return "login_failed", None
-        prop_url = search_property(worker_session, name, cache)
-        if not prop_url:
-            listing["ss_lookup_status"] = "not_found"
-            return "not_found", None
+
+        data: dict = {}
         clean_name = _normalize_name(name)
         inline_data = cache.get(clean_name + "__inline", {})
-        if property_type == "chuko":
-            data = parse_chuko_page(worker_session, prop_url)
-        else:
-            data = parse_shinchiku_page(worker_session, prop_url)
+
+        for attempt in range(2):
+            worker_session = _get_worker_session(user, password)
+            if worker_session is None:
+                return "login_failed", None
+
+            prop_url = search_property(worker_session, name, cache)
+            if not prop_url:
+                if attempt == 0:
+                    _invalidate_worker_session()
+                    time.sleep(2)
+                    continue
+                listing["ss_lookup_status"] = "not_found"
+                return "not_found", None
+
+            if property_type == "chuko":
+                data = parse_chuko_page(worker_session, prop_url)
+            else:
+                data = parse_shinchiku_page(worker_session, prop_url)
+
+            if data and len(data) > 1:
+                break
+            _invalidate_worker_session()
+            if attempt == 0:
+                time.sleep(2)
+
+        if not data or len(data) <= 1:
+            listing["ss_lookup_status"] = "parse_failed"
+            return "parse_failed", None
+
         if inline_data.get("oki_price_70m2") is not None:
             data["ss_oki_price_70m2"] = inline_data["oki_price_70m2"]
         if "ss_appreciation_rate" not in data and inline_data.get("appreciation_rate"):
@@ -2054,6 +2127,9 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                     logger.error(f"  住まいサーフィン: エラー ({listing.get('name', '?')}): {e}")
     finally:
         signal.signal(signal.SIGTERM, prev_sigterm)
+        with _worker_lock:
+            _worker_sessions.clear()
+            _worker_session_ts.clear()
         logger.info(f"中間結果をフラッシュ: {enriched_count}件成功分を保存")
         _flush_partial(output_path)
 

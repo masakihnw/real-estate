@@ -133,9 +133,19 @@ def browser_login(page: "Page", user: str, password: str) -> bool:
     try:
         from sumai_surfin_enricher import login as http_login, _create_session
 
-        session = _create_session()
-        if not http_login(session, user, password):
-            logger.error("ブラウザログイン: HTTP セッション取得失敗")
+        session = None
+        for attempt in range(3):
+            session = _create_session()
+            if http_login(session, user, password):
+                break
+            session = None
+            if attempt < 2:
+                wait = 5 * (attempt + 1)
+                logger.info(f"ブラウザログイン: HTTP リトライ {attempt + 1}/3（{wait}秒待機）")
+                time.sleep(wait)
+
+        if session is None:
+            logger.error("ブラウザログイン: HTTP セッション取得失敗（3回リトライ後）")
             return False
 
         pw_cookies = []
