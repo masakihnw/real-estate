@@ -1,6 +1,106 @@
 {
   "transactions": [
     {
+      "id": "tx-7a79cf145809",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cc97c6bab835",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c340de84d863",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfab263a1aa0",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-623a7c0c1b95",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2012-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-156048362089",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -12398,7 +12498,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "id": "tx-71fa2791833e",
@@ -14438,7 +14538,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "id": "tx-e4a8675c485e",
@@ -20975,8 +21075,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "両国",
       "estimated_walk_min": 8,
-      "latitude": 35.6973612,
-      "longitude": 139.7863818,
+      "latitude": 35.6973915,
+      "longitude": 139.7863101,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -21958,7 +22058,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9ba69b0d8be8",
@@ -22058,7 +22158,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-eed22ff727c4",
@@ -22318,7 +22418,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e96c86d59ce2",
@@ -22778,7 +22878,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c6323d260e6c",
@@ -24158,7 +24258,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-123a5d710b12",
@@ -24298,7 +24398,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b90b167ab0f9",
@@ -24318,7 +24418,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e8704b35d188",
@@ -24338,7 +24438,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d71bcfd2d4d3",
@@ -24358,7 +24458,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a9e417c45f48",
@@ -24378,7 +24478,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7f021a25215c",
@@ -24398,7 +24498,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-625b691041d5",
@@ -25478,7 +25578,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6bec4af62e38",
@@ -25498,7 +25598,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-61e30c50953e",
@@ -25658,7 +25758,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d81689865de2",
@@ -26598,7 +26698,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-849728cb992b",
@@ -26678,7 +26778,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6475ac5d50a3",
@@ -26758,7 +26858,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f6dcde4f5225",
@@ -26778,7 +26878,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d984ebfe72e5",
@@ -27358,7 +27458,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b155423c7b5b",
@@ -27378,7 +27478,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fcb569f54dcb",
@@ -27418,7 +27518,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2f8c6111931e",
@@ -27458,7 +27558,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2020-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ac5b0e6a1646",
@@ -28458,7 +28558,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4a4f6e1f9f36",
@@ -28498,7 +28598,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5b8b2c426215",
@@ -29218,7 +29318,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0ce211b5e5fd",
@@ -29238,7 +29338,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ac2e2d088b4c",
@@ -29298,7 +29398,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b0a59cb6f933",
@@ -29318,7 +29418,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-19c4cdc2ff6e",
@@ -30498,7 +30598,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-67423a52c307",
@@ -30518,7 +30618,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-257df624772e",
@@ -30558,7 +30658,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ba1b1e10aafa",
@@ -30758,7 +30858,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-06208486c7ae",
@@ -30778,7 +30878,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0d541a8a957f",
@@ -30798,7 +30898,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c90c2c7fed37",
@@ -30818,7 +30918,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f0d4a2c274eb",
@@ -30838,7 +30938,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d0af53d368b4",
@@ -30858,7 +30958,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5c176acc503e",
@@ -30878,7 +30978,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d63065424bf1",
@@ -30898,7 +30998,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2020-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-68df737586e3",
@@ -30938,7 +31038,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-20954edb12ae",
@@ -30998,7 +31098,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d0fcdafb45be",
@@ -31038,7 +31138,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-889835ad0a58",
@@ -31778,7 +31878,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-94218e41641c",
@@ -31878,7 +31978,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fe82bc8ff6e9",
@@ -31918,7 +32018,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2020-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e8e72ff68ef6",
@@ -31938,7 +32038,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2020-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ec37049c8947",
@@ -32578,7 +32678,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b8a1a4b172ae",
@@ -32598,7 +32698,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6a1752b6d079",
@@ -32638,7 +32738,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f089123e8602",
@@ -33398,7 +33498,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-360fc811af80",
@@ -50795,8 +50895,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.737877,
-      "longitude": 139.6540818,
+      "latitude": 35.7373437,
+      "longitude": 139.6544918,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -51418,7 +51518,7 @@
       "latitude": 35.706421,
       "longitude": 139.8425004,
       "building_group_id": "131230370-2025-RC",
-      "estimated_building_name": "プラウドタワー平井"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b0748c6e6204",
@@ -51478,7 +51578,7 @@
       "latitude": 35.706421,
       "longitude": 139.8425004,
       "building_group_id": "131230370-2025-RC",
-      "estimated_building_name": "プラウドタワー平井"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2d64a59356b7",
@@ -51502,6 +51602,55 @@
     }
   ],
   "building_groups": [
+    {
+      "group_id": "131010010-2007-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 4,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1646154,
+      "periods": [
+        "2021Q3",
+        "2021Q4",
+        "2022Q1",
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131010010-2012-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1833333,
+      "periods": [
+        "2025Q4"
+      ],
+      "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
     {
       "group_id": "131020010-2012-RC",
       "prefecture": "東京都",
@@ -54478,7 +54627,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "group_id": "131040540-2007-RC",
@@ -57663,8 +57812,8 @@
       "structure": "RC",
       "nearest_station": "両国",
       "estimated_walk_min": 8,
-      "latitude": 35.6973612,
-      "longitude": 139.7863818,
+      "latitude": 35.6973915,
+      "longitude": 139.7863101,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -59272,7 +59421,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080020-2020-RC",
@@ -59297,7 +59446,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080020-2021-RC",
@@ -68705,8 +68854,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.737877,
-      "longitude": 139.6540818,
+      "latitude": 35.7373437,
+      "longitude": 139.6544918,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -69117,7 +69266,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "プラウドタワー平井"
+      "estimated_building_name": null
     },
     {
       "group_id": "131230380-2013-RC",
@@ -69196,7 +69345,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-09T03:44:13",
+    "updated_at": "2026-05-09T08:51:10",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -69233,8 +69382,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 2575,
-    "building_group_count": 719,
+    "transaction_count": 2580,
+    "building_group_count": 721,
     "scope": "東京23区"
   }
 }
