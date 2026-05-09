@@ -60,7 +60,7 @@ ENRICHER_EXACT: dict[str, set[str]] = {
     "ai_recommendation": {
         "ai_recommendation_score", "ai_recommendation_summary",
         "ai_recommendation_flags", "ai_recommendation_action",
-        "key_strengths", "key_risks",
+        "ai_recommendation_scenarios", "key_strengths", "key_risks",
     },
 }
 
