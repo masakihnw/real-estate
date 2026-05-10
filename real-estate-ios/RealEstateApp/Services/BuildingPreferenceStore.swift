@@ -7,8 +7,8 @@ private let logger = Logger(subsystem: "com.realestate", category: "BuildingPref
 final class BuildingPreferenceStore {
     static let shared = BuildingPreferenceStore()
 
-    private(set) var nopedBuildings: Set<String> = []
-    private(set) var likedBuildings: Set<String> = []
+    private(set) var nopedKeys: Set<String> = []
+    private(set) var likedKeys: Set<String> = []
     private let client = SupabaseClient.shared
 
     private init() {}
@@ -17,77 +17,75 @@ final class BuildingPreferenceStore {
         do {
             let (data, _) = try await client.select(
                 from: "user_building_preferences",
-                columns: "normalized_name,preference"
+                columns: "identity_key,preference"
             )
             let rows = try JSONDecoder().decode([[String: String]].self, from: data)
             var noped = Set<String>()
             var liked = Set<String>()
             for row in rows {
-                guard let name = row["normalized_name"], let pref = row["preference"] else { continue }
+                guard let key = row["identity_key"], let pref = row["preference"] else { continue }
                 switch pref {
-                case "nope": noped.insert(name)
-                case "like": liked.insert(name)
+                case "nope": noped.insert(key)
+                case "like": liked.insert(key)
                 default: break
                 }
             }
-            nopedBuildings = noped
-            likedBuildings = liked
-            logger.info("Building preferences loaded: nope=\(noped.count) like=\(liked.count)")
+            nopedKeys = noped
+            likedKeys = liked
+            logger.info("Preferences loaded: nope=\(noped.count) like=\(liked.count)")
         } catch {
-            logger.error("Building preferences fetch failed: \(error.localizedDescription, privacy: .public)")
+            logger.error("Preferences fetch failed: \(error.localizedDescription, privacy: .public)")
         }
     }
 
-    func setPreference(_ normalizedName: String, preference: Preference) async {
+    func setPreference(_ identityKey: String, preference: Preference) async {
         switch preference {
         case .nope:
-            nopedBuildings.insert(normalizedName)
-            likedBuildings.remove(normalizedName)
+            nopedKeys.insert(identityKey)
+            likedKeys.remove(identityKey)
         case .like:
-            likedBuildings.insert(normalizedName)
-            nopedBuildings.remove(normalizedName)
+            likedKeys.insert(identityKey)
+            nopedKeys.remove(identityKey)
         }
 
         do {
-            let body: [[String: Any]] = [["normalized_name": normalizedName, "preference": preference.rawValue]]
-            _ = try await client.upsert(into: "user_building_preferences", body: body, onConflict: "normalized_name")
-            logger.info("Set \(preference.rawValue, privacy: .public) for \(normalizedName, privacy: .public)")
+            let body: [[String: Any]] = [["identity_key": identityKey, "preference": preference.rawValue]]
+            _ = try await client.upsert(into: "user_building_preferences", body: body, onConflict: "identity_key")
+            logger.info("Set \(preference.rawValue, privacy: .public) for \(identityKey, privacy: .public)")
         } catch {
             switch preference {
             case .nope:
-                nopedBuildings.remove(normalizedName)
+                nopedKeys.remove(identityKey)
             case .like:
-                likedBuildings.remove(normalizedName)
+                likedKeys.remove(identityKey)
             }
             logger.error("Failed to set preference: \(error.localizedDescription, privacy: .public)")
         }
     }
 
-    func removePreference(_ normalizedName: String) async {
-        let wasNoped = nopedBuildings.remove(normalizedName) != nil
-        let wasLiked = likedBuildings.remove(normalizedName) != nil
+    func removePreference(_ identityKey: String) async {
+        let wasNoped = nopedKeys.remove(identityKey) != nil
+        let wasLiked = likedKeys.remove(identityKey) != nil
 
         do {
             try await client.delete(
                 from: "user_building_preferences",
-                filters: [("normalized_name", "eq.\(normalizedName)")]
+                filters: [("identity_key", "eq.\(identityKey)")]
             )
-            logger.info("Removed preference for \(normalizedName, privacy: .public)")
+            logger.info("Removed preference for \(identityKey, privacy: .public)")
         } catch {
-            if wasNoped { nopedBuildings.insert(normalizedName) }
-            if wasLiked { likedBuildings.insert(normalizedName) }
+            if wasNoped { nopedKeys.insert(identityKey) }
+            if wasLiked { likedKeys.insert(identityKey) }
             logger.error("Failed to remove preference: \(error.localizedDescription, privacy: .public)")
         }
     }
 
-    func isNoped(_ normalizedName: String?) -> Bool {
-        guard let name = normalizedName else { return false }
-        return nopedBuildings.contains(name)
+    func isNoped(_ identityKey: String) -> Bool {
+        nopedKeys.contains(identityKey)
     }
 
-    func isLiked(_ normalizedName: String?) -> Bool {
-        guard let name = normalizedName else { return false }
-        return likedBuildings.contains(name)
+    func isLiked(_ identityKey: String) -> Bool {
+        likedKeys.contains(identityKey)
     }
 
     enum Preference: String {

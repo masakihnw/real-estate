@@ -38,10 +38,10 @@ enum PreferenceAnalyzer {
 
     static func analyze(
         allListings: [Listing],
-        likedNames: Set<String>,
-        nopedNames: Set<String>
+        likedKeys: Set<String>,
+        nopedKeys: Set<String>
     ) -> PreferenceProfile {
-        guard likedNames.count >= requiredLikes, nopedNames.count >= requiredNopes else {
+        guard likedKeys.count >= requiredLikes, nopedKeys.count >= requiredNopes else {
             return .inactive
         }
 
@@ -50,11 +50,11 @@ enum PreferenceAnalyzer {
         var candidates: [Listing] = []
 
         for listing in allListings {
-            let name = listing.normalizedName ?? ""
-            if likedNames.contains(name) {
-                if likedReps[name] == nil { likedReps[name] = listing }
-            } else if nopedNames.contains(name) {
-                if nopedReps[name] == nil { nopedReps[name] = listing }
+            let key = listing.identityKey
+            if likedKeys.contains(key) {
+                if likedReps[key] == nil { likedReps[key] = listing }
+            } else if nopedKeys.contains(key) {
+                if nopedReps[key] == nil { nopedReps[key] = listing }
             } else {
                 candidates.append(listing)
             }
@@ -203,21 +203,21 @@ enum PreferenceAnalyzer {
 
     static func buildClaudePrompt(
         allListings: [Listing],
-        likedNames: Set<String>,
-        nopedNames: Set<String>
+        likedKeys: Set<String>,
+        nopedKeys: Set<String>
     ) -> (system: String, user: String)? {
-        guard likedNames.count >= requiredLikes, nopedNames.count >= requiredNopes else {
+        guard likedKeys.count >= requiredLikes, nopedKeys.count >= requiredNopes else {
             return nil
         }
 
         var likedReps: [String: Listing] = [:]
         var nopedReps: [String: Listing] = [:]
         for listing in allListings {
-            let name = listing.normalizedName ?? ""
-            if likedNames.contains(name) {
-                if likedReps[name] == nil { likedReps[name] = listing }
-            } else if nopedNames.contains(name) {
-                if nopedReps[name] == nil { nopedReps[name] = listing }
+            let key = listing.identityKey
+            if likedKeys.contains(key) {
+                if likedReps[key] == nil { likedReps[key] = listing }
+            } else if nopedKeys.contains(key) {
+                if nopedReps[key] == nil { nopedReps[key] = listing }
             }
         }
 

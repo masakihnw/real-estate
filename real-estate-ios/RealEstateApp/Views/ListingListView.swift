@@ -265,12 +265,9 @@ struct ListingListView: View {
     private func computeFilteredAndSorted() -> [Listing] {
         var list = filterStore.filter.apply(to: baseList)
 
-        let noped = BuildingPreferenceStore.shared.nopedBuildings
+        let noped = BuildingPreferenceStore.shared.nopedKeys
         if !noped.isEmpty {
-            list = list.filter { listing in
-                let key = listing.normalizedName ?? listing.name
-                return !noped.contains(key)
-            }
+            list = list.filter { !noped.contains($0.identityKey) }
         }
 
         // テキスト検索（物件名のみ・View専用）
@@ -424,8 +421,8 @@ struct ListingListView: View {
             let prefStore = BuildingPreferenceStore.shared
             var newProfile = PreferenceAnalyzer.analyze(
                 allListings: baseList,
-                likedNames: prefStore.likedBuildings,
-                nopedNames: prefStore.nopedBuildings
+                likedKeys: prefStore.likedKeys,
+                nopedKeys: prefStore.nopedKeys
             )
             newProfile.claudeSummaryLines = preferenceProfile.claudeSummaryLines
             newProfile.claudeSummaryState = preferenceProfile.claudeSummaryState
@@ -436,8 +433,8 @@ struct ListingListView: View {
     @MainActor
     private func requestClaudeSummaryIfNeeded() {
         let prefStore = BuildingPreferenceStore.shared
-        let liked = prefStore.likedBuildings
-        let noped = prefStore.nopedBuildings
+        let liked = prefStore.likedKeys
+        let noped = prefStore.nopedKeys
 
         var hasher = Hasher()
         hasher.combine(liked)
@@ -454,8 +451,8 @@ struct ListingListView: View {
         claudeSummaryTask = Task { @MainActor in
             guard let prompts = PreferenceAnalyzer.buildClaudePrompt(
                 allListings: listings,
-                likedNames: liked,
-                nopedNames: noped
+                likedKeys: liked,
+                nopedKeys: noped
             ) else { return }
 
             do {
@@ -621,11 +618,11 @@ struct ListingListView: View {
             .onChange(of: sortOrder) { _, _ in recomputeFiltered() }
             .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
             .onChange(of: delistFilter) { _, _ in recomputeFiltered() }
-            .onChange(of: BuildingPreferenceStore.shared.nopedBuildings.count) { _, _ in
+            .onChange(of: BuildingPreferenceStore.shared.nopedKeys.count) { _, _ in
                 recomputeFiltered(animated: true)
                 requestClaudeSummaryIfNeeded()
             }
-            .onChange(of: BuildingPreferenceStore.shared.likedBuildings.count) { _, _ in
+            .onChange(of: BuildingPreferenceStore.shared.likedKeys.count) { _, _ in
                 recomputeFiltered()
                 requestClaudeSummaryIfNeeded()
             }
@@ -1105,20 +1102,19 @@ struct ListingListView: View {
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     if !isCompareMode {
                         Button {
-                            let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isLiked(name) {
-                                    await prefStore.removePreference(name)
+                                if prefStore.isLiked(listing.identityKey) {
+                                    await prefStore.removePreference(listing.identityKey)
                                 } else {
                                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                    await prefStore.setPreference(name, preference: .like)
+                                    await prefStore.setPreference(listing.identityKey, preference: .like)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) ? "Like解除" : "Like",
-                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) ? "star.slash" : "star"
+                                BuildingPreferenceStore.shared.isLiked(listing.identityKey) ? "Like解除" : "Like",
+                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.identityKey) ? "star.slash" : "star"
                             )
                         }
                         .tint(.yellow)
@@ -1127,20 +1123,19 @@ struct ListingListView: View {
                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
                     if !isCompareMode {
                         Button {
-                            let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isNoped(name) {
-                                    await prefStore.removePreference(name)
+                                if prefStore.isNoped(listing.identityKey) {
+                                    await prefStore.removePreference(listing.identityKey)
                                 } else {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                    await prefStore.setPreference(name, preference: .nope)
+                                    await prefStore.setPreference(listing.identityKey, preference: .nope)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isNoped(listing.normalizedName ?? listing.name) ? "Nope解除" : "Nope",
-                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.normalizedName ?? listing.name) ? "hand.thumbsup" : "hand.thumbsdown"
+                                BuildingPreferenceStore.shared.isNoped(listing.identityKey) ? "Nope解除" : "Nope",
+                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.identityKey) ? "hand.thumbsup" : "hand.thumbsdown"
                             )
                         }
                         .tint(.orange)
@@ -1156,35 +1151,33 @@ struct ListingListView: View {
                             Label(listing.isLiked ? "いいね解除" : "いいね", systemImage: listing.isLiked ? "heart.slash" : "heart")
                         }
                         Button {
-                            let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isLiked(name) {
-                                    await prefStore.removePreference(name)
+                                if prefStore.isLiked(listing.identityKey) {
+                                    await prefStore.removePreference(listing.identityKey)
                                 } else {
-                                    await prefStore.setPreference(name, preference: .like)
+                                    await prefStore.setPreference(listing.identityKey, preference: .like)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) ? "Like解除" : "Like",
-                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) ? "star.slash" : "star"
+                                BuildingPreferenceStore.shared.isLiked(listing.identityKey) ? "Like解除" : "Like",
+                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.identityKey) ? "star.slash" : "star"
                             )
                         }
                         Button {
-                            let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isNoped(name) {
-                                    await prefStore.removePreference(name)
+                                if prefStore.isNoped(listing.identityKey) {
+                                    await prefStore.removePreference(listing.identityKey)
                                 } else {
-                                    await prefStore.setPreference(name, preference: .nope)
+                                    await prefStore.setPreference(listing.identityKey, preference: .nope)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isNoped(listing.normalizedName ?? listing.name) ? "Nope解除" : "Nope",
-                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.normalizedName ?? listing.name) ? "hand.thumbsup" : "hand.thumbsdown"
+                                BuildingPreferenceStore.shared.isNoped(listing.identityKey) ? "Nope解除" : "Nope",
+                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.identityKey) ? "hand.thumbsup" : "hand.thumbsdown"
                             )
                         }
                         if let url = URL(string: listing.url) {
@@ -1413,7 +1406,7 @@ struct ListingRowView: View {
                         ScoreBadge(grade: grade, value: score)
                     }
 
-                    if BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) {
+                    if BuildingPreferenceStore.shared.isLiked(listing.identityKey) {
                         Image(systemName: "star.fill")
                             .font(.caption)
                             .foregroundStyle(.yellow)
