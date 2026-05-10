@@ -104,6 +104,70 @@ final class SupabaseClient {
         return data
     }
 
+    /// PostgREST UPSERT (POST with Prefer: resolution=merge-duplicates)
+    func upsert(
+        into table: String,
+        body: [[String: Any]],
+        onConflict: String? = nil
+    ) async throws -> Data {
+        var urlString = "\(baseURL)/rest/v1/\(table)"
+        if let conflict = onConflict {
+            urlString += "?on_conflict=\(conflict)"
+        }
+        guard let url = URL(string: urlString) else {
+            throw SupabaseError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("Bearer \(anonKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("return=representation", forHTTPHeaderField: "Prefer")
+        if onConflict != nil {
+            request.addValue("resolution=merge-duplicates", forHTTPHeaderField: "Prefer")
+        }
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            let body = String(data: data, encoding: .utf8) ?? ""
+            let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+            logger.error("Supabase upsert error \(code): \(body, privacy: .public)")
+            throw SupabaseError.httpError(code, body)
+        }
+        return data
+    }
+
+    /// PostgREST DELETE
+    func delete(
+        from table: String,
+        filters: [(String, String)]
+    ) async throws {
+        var urlString = "\(baseURL)/rest/v1/\(table)"
+        if !filters.isEmpty {
+            urlString += "?" + filters.map { "\($0.0)=\($0.1)" }.joined(separator: "&")
+        }
+        guard let url = URL(string: urlString) else {
+            throw SupabaseError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue(anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("Bearer \(anonKey)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            let body = String(data: data, encoding: .utf8) ?? ""
+            let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+            logger.error("Supabase delete error \(code): \(body, privacy: .public)")
+            throw SupabaseError.httpError(code, body)
+        }
+    }
+
     /// Content-Range ヘッダーから総件数を抽出 ("0-99/350" → 350)
     static func parseTotalCount(from response: HTTPURLResponse) -> Int? {
         guard let contentRange = response.value(forHTTPHeaderField: "Content-Range") else {

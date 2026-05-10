@@ -417,6 +417,7 @@ final class ListingStore {
         existing.priceMaxMan = new.priceMaxMan
         existing.areaMaxM2 = new.areaMaxM2
         existing.deliveryDate = new.deliveryDate
+        existing.normalizedName = new.normalizedName
         // 間取り図画像（JSON 由来なので上書き）
         existing.floorPlanImagesJSON = new.floorPlanImagesJSON
         // SUUMO 物件写真（JSON 由来なので上書き）
@@ -506,7 +507,9 @@ final class ListingStore {
     /// Supabase 経由でデータ取得・同期
     private func refreshFromSupabase(modelContext: ModelContext) async {
         do {
+            async let prefFetch: () = BuildingPreferenceStore.shared.fetch()
             let (chukoNew, shinNew) = try await SupabaseListingStore.shared.refresh(modelContext: modelContext)
+            await prefFetch
             let totalNew = chukoNew + shinNew
             lastRefreshHadChanges = totalNew > 0
 

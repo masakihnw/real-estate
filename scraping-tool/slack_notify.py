@@ -24,6 +24,7 @@ from report_utils import (
     google_maps_url,
     identity_key_str,
     load_json,
+    normalize_listing_name,
 )
 
 from logger import get_logger
@@ -344,6 +345,19 @@ def _get_diff_from_supabase(client, current_listings: list[dict]) -> Optional[di
         return None
 
 
+def _get_noped_building_names(client) -> set[str]:
+    """Supabase から nope 済み建物名を取得。"""
+    try:
+        resp = (client.table("user_building_preferences")
+                .select("normalized_name")
+                .eq("preference", "nope")
+                .execute())
+        return {r["normalized_name"] for r in (resp.data or [])}
+    except Exception as e:
+        logger.warning("Nope 建物リスト取得失敗: %s", e)
+        return set()
+
+
 def _update_notification_state(client, channel: str = "slack", expected_last: str | None = None) -> None:
     """通知成功後に last_notified_at を更新する。
     expected_last が指定された場合は CAS: 値が一致する場合のみ更新する。"""
@@ -518,6 +532,13 @@ def main() -> None:
         previous = load_json(fallback_path, missing_ok=True, default=[])
         diff = compare_listings(current, previous) if previous else {}
         logger.info("JSON フォールバックで差分を取得しました")
+
+    # --- Nope 建物を除外 ---
+    noped = _get_noped_building_names(supabase_client) if supabase_client else set()
+    if noped:
+        for key in ("new", "removed"):
+            diff[key] = [r for r in diff.get(key, [])
+                         if normalize_listing_name(r.get("name") or "") not in noped]
 
     # --- 通知判定 ---
     from datetime import datetime, timezone
