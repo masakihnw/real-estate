@@ -383,25 +383,17 @@ fi
 fi  # end HAS_CHANGES
 
 # ──────────────────────────── Slack 通知 ────────────────────────────
-# 毎回実行。前回通知時点のスナップショット (previous_slack.json) と比較し、
-# 差分（新規追加 or 削除）があれば通知する。通知後にスナップショットを更新。
+# Supabase の notification_state / listing_events から差分を取得して通知する。
+# Supabase 未設定時は JSON フォールバック（previous_slack.json）を使用。
+# 通知状態の更新は slack_notify.py 内で Supabase に書き込む。
 
 if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
-    SLACK_PREVIOUS="${OUTPUT_DIR}/previous_slack.json"
-    if [ ! -f "$SLACK_PREVIOUS" ]; then
-        SLACK_PREVIOUS="${OUTPUT_DIR}/previous.json"
-        echo "previous_slack.json が存在しないため previous.json をフォールバックとして使用" >&2
-    fi
-
-    echo "Slack 通知送信中（前回通知からの差分）..." >&2
+    echo "Slack 通知送信中..." >&2
     python3 slack_notify.py \
         "${OUTPUT_DIR}/latest.json" \
-        "$SLACK_PREVIOUS" \
+        "" \
         "$REPORT" \
         || echo "Slack 通知失敗（続行）" >&2
-
-    cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous_slack.json"
-    echo "previous_slack.json を更新しました" >&2
 fi
 
 # ──────────────────────────── enrichment カバレッジ監視 ────────────────────────────

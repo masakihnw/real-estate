@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 スクレイピング結果の差分を取得し、Slackに通知する。
-前回結果（latest.json）と現在結果を比較し、新規追加・削除された物件のみ通知（価格変動は含めない）。
+Supabase の listing_events テーブルから前回通知以降のイベントを取得し、
+新規追加・削除された物件のみ通知（価格変動は含めない）。
+Supabase 未設定時は JSON ファイル比較にフォールバックする。
 """
 
 import json
@@ -20,6 +22,7 @@ from report_utils import (
     format_price,
     format_total_units,
     google_maps_url,
+    identity_key_str,
     load_json,
 )
 
@@ -237,18 +240,149 @@ def _listing_line_slack(r: dict, url: str = "", include_breakdown: bool = True) 
     return line
 
 
+def _get_diff_from_supabase(client, current_listings: list[dict]) -> Optional[dict[str, list]]:
+    """Supabase の listing_events から前回通知以降の差分を取得。
+    compare_listings() と同じ形式 {"new": [...], "removed": [...]} を返す。
+    失敗時は None を返し、呼び出し側で JSON フォールバックする。"""
+    try:
+        state = (client.table("notification_state")
+                 .select("last_notified_at")
+                 .eq("id", "slack")
+                 .execute())
+        if not state.data:
+            logger.info("notification_state にレコードなし — 初回はスキップ（基準時刻を設定します）")
+            _update_notification_state(client, "slack")
+            return {"new": [], "removed": [], "updated": [], "unchanged": current_listings}
+
+        last_at = state.data[0]["last_notified_at"]
+
+        events_data: list[dict] = []
+        offset = 0
+        while True:
+            resp = (client.table("listing_events")
+                    .select("listing_id, event_type, occurred_at")
+                    .gt("occurred_at", last_at)
+                    .in_("event_type", ["appeared", "reappeared", "removed"])
+                    .order("occurred_at")
+                    .range(offset, offset + 999)
+                    .execute())
+            if not resp.data:
+                break
+            events_data.extend(resp.data)
+            if len(resp.data) < 1000:
+                break
+            offset += 1000
+
+        if not events_data:
+            return {"new": [], "removed": [], "updated": [], "unchanged": current_listings, "_last_notified_at": last_at}
+
+        listing_net: dict[int, str] = {}
+        for e in events_data:
+            lid = e["listing_id"]
+            if e["event_type"] in ("appeared", "reappeared"):
+                listing_net[lid] = "new"
+            elif e["event_type"] == "removed":
+                listing_net[lid] = "removed"
+
+        new_ids = [lid for lid, s in listing_net.items() if s == "new"]
+        removed_ids = [lid for lid, s in listing_net.items() if s == "removed"]
+
+        current_by_ik: dict[str, dict] = {}
+        for r in current_listings:
+            ik = identity_key_str(r)
+            if ik:
+                current_by_ik[ik] = r
+
+        new_listings: list[dict] = []
+        if new_ids:
+            for i in range(0, len(new_ids), 100):
+                batch = new_ids[i:i + 100]
+                rows = (client.table("listings")
+                        .select("id, identity_key")
+                        .in_("id", batch)
+                        .execute())
+                for row in (rows.data or []):
+                    matched = current_by_ik.get(row["identity_key"])
+                    if matched:
+                        new_listings.append(matched)
+
+        removed_listings: list[dict] = []
+        if removed_ids:
+            for i in range(0, len(removed_ids), 100):
+                batch = removed_ids[i:i + 100]
+                rows = (client.table("listings")
+                        .select("*")
+                        .in_("id", batch)
+                        .execute())
+                enrich_rows = (client.table("enrichments")
+                               .select("*")
+                               .in_("listing_id", batch)
+                               .execute())
+                enrich_by_id = {r["listing_id"]: r for r in (enrich_rows.data or [])}
+                source_rows = (client.table("listing_sources")
+                               .select("listing_id, source, url, price_man")
+                               .in_("listing_id", batch)
+                               .order("last_seen_at", desc=True)
+                               .execute())
+                source_by_id: dict[int, dict] = {}
+                for s in (source_rows.data or []):
+                    source_by_id.setdefault(s["listing_id"], s)
+                for row in (rows.data or []):
+                    listing = dict(row)
+                    listing.update(enrich_by_id.get(row["id"], {}))
+                    src = source_by_id.get(row["id"], {})
+                    listing.setdefault("price_man", src.get("price_man"))
+                    listing.setdefault("url", src.get("url"))
+                    listing.setdefault("source", src.get("source"))
+                    removed_listings.append(listing)
+
+        logger.info("Supabase diff: new=%d removed=%d (since %s)", len(new_listings), len(removed_listings), last_at)
+        return {"new": new_listings, "removed": removed_listings, "updated": [], "unchanged": [], "_last_notified_at": last_at}
+
+    except Exception as e:
+        logger.warning("Supabase diff 取得失敗（JSON フォールバック）: %s", e)
+        return None
+
+
+def _update_notification_state(client, channel: str = "slack", expected_last: str | None = None) -> None:
+    """通知成功後に last_notified_at を更新する。
+    expected_last が指定された場合は CAS: 値が一致する場合のみ更新する。"""
+    try:
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc).isoformat()
+        if expected_last:
+            result = (client.table("notification_state")
+                      .update({"last_notified_at": now, "updated_at": now})
+                      .eq("id", channel)
+                      .eq("last_notified_at", expected_last)
+                      .execute())
+            if not result.data:
+                logger.warning("notification_state CAS 失敗 — 別プロセスが先に更新済み")
+                return
+        else:
+            client.table("notification_state").upsert(
+                {"id": channel, "last_notified_at": now, "updated_at": now},
+                on_conflict="id",
+            ).execute()
+        logger.info("notification_state.last_notified_at を更新しました")
+    except Exception as e:
+        logger.error("notification_state 更新失敗: %s", e)
+        raise
+
+
 def build_slack_message_from_listings(
     current: list[dict[str, Any]],
     previous: Optional[list[dict[str, Any]]],
     report_url: Optional[str] = None,
     map_url: Optional[str] = None,
+    diff_override: Optional[dict[str, list]] = None,
 ) -> str:
-    """Slack用にメッセージを組み立てる。新規追加・削除のみ表示。資産性B以上の物件のみ。レポート・地図はリンクで提供。"""
-    # 資産性B以上に絞る
+    """Slack用にメッセージを組み立てる。新規追加・削除のみ表示。資産性B以上の物件のみ。
+    diff_override が渡された場合は compare_listings を呼ばずにその diff を使う。"""
     current_a = [r for r in current if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-    diff = compare_listings(current, previous) if previous else {}
+    diff = diff_override if diff_override is not None else (compare_listings(current, previous) if previous else {})
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-    diff_removed_a = [r for r in diff.get("removed", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
+    diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
 
     new_c = len(diff_new_a)
     rem_c = len(diff_removed_a)
@@ -348,42 +482,59 @@ def build_message_from_report(report_path: Path, report_url: Optional[str] = Non
 
 
 def main() -> None:
-    """メイン処理。"""
+    """メイン処理。Supabase 優先、未設定時は JSON フォールバック。"""
     if len(sys.argv) < 2:
         logger.info("使い方: python slack_notify.py <current.json> [previous.json] [report.md]")
         sys.exit(1)
 
     current_path = Path(sys.argv[1])
-    previous_path = Path(sys.argv[2]) if len(sys.argv) > 2 else current_path.parent / "latest.json"
+    previous_path = Path(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2] else None
     report_path = Path(sys.argv[3]) if len(sys.argv) > 3 and sys.argv[3] else None
 
     webhook_url = os.environ.get("SLACK_WEBHOOK_URL")
     if not webhook_url:
         logger.warning("警告: SLACK_WEBHOOK_URL 環境変数が設定されていません（通知をスキップ）")
-        sys.exit(0)  # エラーではなく警告として扱い、ワークフローは続行
+        sys.exit(0)
 
     current = load_json(current_path, missing_ok=True, default=[])
-    previous = load_json(previous_path, missing_ok=True, default=[]) if previous_path else []
 
-    # 通知判定:
-    #   - 新規追加あり → 毎回通知
-    #   - 削除のみ → 朝の回（JST 9:00 = UTC 0）だけ通知
-    #   - 変更なし → スキップ
+    # --- Supabase ベースの差分取得を試行 ---
+    supabase_client = None
+    diff = None
+    try:
+        from supabase_client import get_client
+        supabase_client = get_client()
+    except ImportError:
+        pass
+
+    if supabase_client:
+        diff = _get_diff_from_supabase(supabase_client, current)
+
+    # --- Supabase 失敗時は JSON フォールバック ---
+    if diff is None:
+        fallback_path = previous_path or current_path.parent / "previous_slack.json"
+        if not fallback_path.exists():
+            fallback_path = current_path.parent / "previous.json"
+        previous = load_json(fallback_path, missing_ok=True, default=[])
+        diff = compare_listings(current, previous) if previous else {}
+        logger.info("JSON フォールバックで差分を取得しました")
+
+    # --- 通知判定 ---
     from datetime import datetime, timezone
     current_utc_hour = datetime.now(timezone.utc).hour
-    is_morning = current_utc_hour in (0, 1)  # UTC 0-1 = JST 9-10時台
-    if previous:
-        diff = compare_listings(current, previous)
-        diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-        diff_removed_a = [r for r in diff.get("removed", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
-        if not diff_new_a and not diff_removed_a:
-            logger.warning("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします")
-            sys.exit(0)
-        elif not diff_new_a and diff_removed_a and not is_morning:
-            logger.warning("削除のみの変更 — 朝の回（JST 9:00）まで通知を保留します")
-            sys.exit(0)
+    is_morning = current_utc_hour in (0, 1)
 
-    # CI（GitHub Actions）では GITHUB_REPOSITORY / GITHUB_REF_NAME から正しい URL を組み立てる
+    diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
+    diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
+
+    if not diff_new_a and not diff_removed_a:
+        logger.warning("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします")
+        sys.exit(0)
+    elif not diff_new_a and diff_removed_a and not is_morning:
+        logger.warning("削除のみの変更 — 朝の回（JST 9:00）まで通知を保留します")
+        sys.exit(0)
+
+    # --- URL 組み立て ---
     repo = os.environ.get("GITHUB_REPOSITORY")
     ref = os.environ.get("GITHUB_REF_NAME") or (
         (os.environ.get("GITHUB_REF") or "").replace("refs/heads/", "").replace("refs/tags/", "")
@@ -394,11 +545,15 @@ def main() -> None:
     else:
         report_url = report_url_from_report_path(report_path) if report_path else report_url_from_current_path(current_path)
         map_url = map_url_from_report_url(report_url)
-    # Slack用はMarkdown表を使わない見やすい形式で投稿。長文はチャンク分割し、送り切れるまでリトライする。
-    message = build_slack_message_from_listings(current, previous, report_url, map_url=map_url)
+
+    # --- メッセージ組み立て・送信 ---
+    message = build_slack_message_from_listings(current, None, report_url, map_url=map_url, diff_override=diff)
 
     if send_slack_message_chunked_with_retry(webhook_url, message):
         logger.info("Slack通知を送信しました")
+        last_at = diff.get("_last_notified_at") if diff else None
+        if supabase_client and last_at:
+            _update_notification_state(supabase_client, "slack", expected_last=last_at)
     else:
         logger.error("Slack通知の送信に失敗しました（リトライ後も送信できませんでした）")
         sys.exit(1)
