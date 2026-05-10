@@ -7,6 +7,7 @@ entry point for persisting scraped listings with historical tracking.
 from __future__ import annotations
 
 import logging
+import os
 import sqlite3
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -57,6 +58,7 @@ CREATE TABLE IF NOT EXISTS listing_sources (
     first_seen_at TEXT NOT NULL,
     last_seen_at TEXT NOT NULL,
     is_active BOOLEAN DEFAULT 1,
+    consecutive_misses INTEGER DEFAULT 0,
     UNIQUE(listing_id, source)
 );
 
@@ -151,7 +153,14 @@ def init_db(conn: sqlite3.Connection) -> None:
     """Initialize database schema (CREATE IF NOT EXISTS)."""
     conn.executescript(_SCHEMA_SQL)
     conn.executescript(_INDEX_SQL)
+    _migrate_add_consecutive_misses(conn)
     conn.commit()
+
+
+def _migrate_add_consecutive_misses(conn: sqlite3.Connection) -> None:
+    cols = {row["name"] for row in conn.execute("PRAGMA table_info(listing_sources)").fetchall()}
+    if "consecutive_misses" not in cols:
+        conn.execute("ALTER TABLE listing_sources ADD COLUMN consecutive_misses INTEGER DEFAULT 0")
 
 
 # ---------------------------------------------------------------------------
@@ -235,6 +244,7 @@ def upsert_listing_source(conn: sqlite3.Connection, listing_id: int, source: str
             "is_motodzuke": source_data.get("is_motodzuke"),
             "last_seen_at": now,
             "is_active": 1,
+            "consecutive_misses": 0,
         }
         set_parts = [f"{k} = ?" for k in fields_to_update]
         vals = list(fields_to_update.values())
@@ -248,8 +258,8 @@ def upsert_listing_source(conn: sqlite3.Connection, listing_id: int, source: str
             """INSERT INTO listing_sources
                (listing_id, source, url, price_man, management_fee,
                 repair_reserve_fund, listing_agent, is_motodzuke,
-                first_seen_at, last_seen_at, is_active)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)""",
+                first_seen_at, last_seen_at, is_active, consecutive_misses)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0)""",
             (
                 listing_id, source, source_data.get("url", ""),
                 source_data.get("price_man"), source_data.get("management_fee"),
@@ -282,6 +292,22 @@ def record_event(
            VALUES (?, ?, ?, ?, ?)""",
         (listing_id, source, event_type, old_value, new_value),
     )
+
+
+GRACE_PERIOD_RUNS = int(os.environ.get("GRACE_PERIOD_RUNS", "2"))
+
+
+def _increment_consecutive_misses(conn: sqlite3.Connection, listing_id: int, source: str) -> int:
+    """Increment consecutive_misses for a source and return the new count."""
+    conn.execute(
+        "UPDATE listing_sources SET consecutive_misses = consecutive_misses + 1 WHERE listing_id = ? AND source = ?",
+        (listing_id, source),
+    )
+    row = conn.execute(
+        "SELECT consecutive_misses FROM listing_sources WHERE listing_id = ? AND source = ?",
+        (listing_id, source),
+    ).fetchone()
+    return row["consecutive_misses"] if row else 0
 
 
 def mark_inactive(conn: sqlite3.Connection, listing_id: int, source: str | None = None) -> None:
@@ -525,16 +551,21 @@ def sync_scrape_results(
             (source,),
         ).fetchall()
 
+    grace_pending = 0
     for row in currently_active:
         if row["listing_id"] not in seen_listing_ids:
-            mark_inactive(conn, row["listing_id"], source)
-            record_event(conn, row["listing_id"], source, "removed")
-            summary["removed"] += 1
+            misses = _increment_consecutive_misses(conn, row["listing_id"], source)
+            if misses >= GRACE_PERIOD_RUNS:
+                mark_inactive(conn, row["listing_id"], source)
+                record_event(conn, row["listing_id"], source, "removed")
+                summary["removed"] += 1
+            else:
+                grace_pending += 1
 
     conn.commit()
     logger.info(
-        "sync_scrape_results(%s): new=%d updated=%d removed=%d unchanged=%d reappeared=%d",
+        "sync_scrape_results(%s): new=%d updated=%d removed=%d unchanged=%d reappeared=%d grace_pending=%d",
         source, summary["new"], summary["updated"], summary["removed"],
-        summary["unchanged"], summary["reappeared"],
+        summary["unchanged"], summary["reappeared"], grace_pending,
     )
     return summary
