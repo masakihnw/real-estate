@@ -35,6 +35,7 @@ final class SupabaseAnnotationService {
     private init() {
         if defaults.integer(forKey: pullResetVersionKey) < currentPullResetVersion {
             defaults.removeObject(forKey: lastSyncKey)
+            defaults.removeObject(forKey: didPushLocalKey)
             defaults.set(currentPullResetVersion, forKey: pullResetVersionKey)
         }
     }
