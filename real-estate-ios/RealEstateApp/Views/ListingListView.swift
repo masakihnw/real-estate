@@ -268,8 +268,8 @@ struct ListingListView: View {
         let noped = BuildingPreferenceStore.shared.nopedBuildings
         if !noped.isEmpty {
             list = list.filter { listing in
-                guard let name = listing.normalizedName else { return true }
-                return !noped.contains(name)
+                let key = listing.normalizedName ?? listing.name
+                return !noped.contains(key)
             }
         }
 
@@ -615,7 +615,9 @@ struct ListingListView: View {
             .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
             .onChange(of: delistFilter) { _, _ in recomputeFiltered() }
             .onChange(of: BuildingPreferenceStore.shared.nopedBuildings.count) { _, _ in
-                recomputeFiltered()
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    recomputeFiltered()
+                }
                 requestClaudeSummaryIfNeeded()
             }
             .onChange(of: BuildingPreferenceStore.shared.likedBuildings.count) { _, _ in
@@ -1118,16 +1120,17 @@ struct ListingListView: View {
                             let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isLiked(listing.normalizedName) {
+                                if prefStore.isLiked(name) {
                                     await prefStore.removePreference(name)
                                 } else {
+                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                     await prefStore.setPreference(name, preference: .like)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isLiked(listing.normalizedName) ? "Like解除" : "Like",
-                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.normalizedName) ? "star.slash" : "star"
+                                BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) ? "Like解除" : "Like",
+                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) ? "star.slash" : "star"
                             )
                         }
                         .tint(.yellow)
@@ -1146,16 +1149,17 @@ struct ListingListView: View {
                             let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isNoped(listing.normalizedName) {
+                                if prefStore.isNoped(name) {
                                     await prefStore.removePreference(name)
                                 } else {
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     await prefStore.setPreference(name, preference: .nope)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isNoped(listing.normalizedName) ? "Nope解除" : "Nope",
-                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.normalizedName) ? "hand.thumbsup" : "hand.thumbsdown"
+                                BuildingPreferenceStore.shared.isNoped(listing.normalizedName ?? listing.name) ? "Nope解除" : "Nope",
+                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.normalizedName ?? listing.name) ? "hand.thumbsup" : "hand.thumbsdown"
                             )
                         }
                         .tint(.orange)
@@ -1174,7 +1178,7 @@ struct ListingListView: View {
                             let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isLiked(listing.normalizedName) {
+                                if prefStore.isLiked(name) {
                                     await prefStore.removePreference(name)
                                 } else {
                                     await prefStore.setPreference(name, preference: .like)
@@ -1182,15 +1186,15 @@ struct ListingListView: View {
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isLiked(listing.normalizedName) ? "Like解除" : "Like",
-                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.normalizedName) ? "star.slash" : "star"
+                                BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) ? "Like解除" : "Like",
+                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) ? "star.slash" : "star"
                             )
                         }
                         Button {
                             let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isNoped(listing.normalizedName) {
+                                if prefStore.isNoped(name) {
                                     await prefStore.removePreference(name)
                                 } else {
                                     await prefStore.setPreference(name, preference: .nope)
@@ -1198,8 +1202,8 @@ struct ListingListView: View {
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isNoped(listing.normalizedName) ? "Nope解除" : "Nope",
-                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.normalizedName) ? "hand.thumbsup" : "hand.thumbsdown"
+                                BuildingPreferenceStore.shared.isNoped(listing.normalizedName ?? listing.name) ? "Nope解除" : "Nope",
+                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.normalizedName ?? listing.name) ? "hand.thumbsup" : "hand.thumbsdown"
                             )
                         }
                         if let url = URL(string: listing.url) {
@@ -1426,6 +1430,12 @@ struct ListingRowView: View {
                     if let score = listing.listingScore,
                        let grade = listing.scoreGradeLetter {
                         ScoreBadge(grade: grade, value: score)
+                    }
+
+                    if BuildingPreferenceStore.shared.isLiked(listing.normalizedName ?? listing.name) {
+                        Image(systemName: "star.fill")
+                            .font(.caption)
+                            .foregroundStyle(.yellow)
                     }
 
                     Button(action: onLikeTapped) {
