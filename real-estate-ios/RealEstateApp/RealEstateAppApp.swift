@@ -46,8 +46,6 @@ struct RealEstateAppApp: App {
             }
             Self.deleteSwiftDataStore()
             DiskImageCache.shared.clearAll()
-            UserDefaults.standard.removeObject(forKey: "supabase.annotations.lastSync")
-            UserDefaults.standard.removeObject(forKey: "supabase.annotations.didPushLocal")
             UserDefaults.standard.set(Self.currentSchemaVersion, forKey: Self.schemaVersionKey)
         }
 
@@ -79,17 +77,19 @@ struct RealEstateAppApp: App {
         }
     }()
 
-    /// SwiftData のデフォルトストアファイルを削除する
+    /// SwiftData のデフォルトストアファイルを削除する。
+    /// アノテーション同期キーも合わせてクリアし、次回起動で全件再取得を保証する。
     private static func deleteSwiftDataStore() {
         let base = URL.applicationSupportDirectory
             .appending(path: "default.store")
-        // メインファイル + SQLite WAL/SHM
         let suffixes = ["", "-wal", "-shm"]
         for suffix in suffixes {
             let fileURL = URL(filePath: base.path() + suffix)
             try? FileManager.default.removeItem(at: fileURL)
         }
-        print("[RealEstateApp] SwiftData ストアを削除しました")
+        UserDefaults.standard.removeObject(forKey: "supabase.annotations.lastSync")
+        UserDefaults.standard.removeObject(forKey: "supabase.annotations.didPushLocal")
+        print("[RealEstateApp] SwiftData ストアを削除しました（アノテーション同期キーもクリア）")
     }
 
     init() {
