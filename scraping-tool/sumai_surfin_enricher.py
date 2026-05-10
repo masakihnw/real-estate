@@ -85,6 +85,8 @@ _worker_sessions: dict[int, requests.Session] = {}
 _worker_session_ts: dict[int, float] = {}
 _worker_lock = threading.Lock()
 _SESSION_TTL = 300
+_RATE_LIMIT_COOLDOWN = 600
+_RATE_LIMIT_MAX_RETRIES = 3
 
 
 def _is_session_valid(session: requests.Session) -> bool:
@@ -97,7 +99,8 @@ def _is_session_valid(session: requests.Session) -> bool:
         return False
 
 
-def _get_worker_session(user: str, password: str) -> Optional[requests.Session]:
+def _get_worker_session(user: str, password: str,
+                        deadline: Optional[float] = None) -> Optional[requests.Session]:
     tid = threading.get_ident()
     with _worker_lock:
         session = _worker_sessions.get(tid)
@@ -112,13 +115,23 @@ def _get_worker_session(user: str, password: str) -> Optional[requests.Session]:
             return session
         logger.info(f"Worker {tid}: セッション期限切れ、再ログインします")
 
-    new_session = _create_session()
-    if not login(new_session, user, password):
-        return None
-    with _worker_lock:
-        _worker_sessions[tid] = new_session
-        _worker_session_ts[tid] = time.time()
-    return new_session
+    for attempt in range(_RATE_LIMIT_MAX_RETRIES):
+        new_session = _create_session()
+        if login(new_session, user, password):
+            with _worker_lock:
+                _worker_sessions[tid] = new_session
+                _worker_session_ts[tid] = time.time()
+            return new_session
+        if attempt < _RATE_LIMIT_MAX_RETRIES - 1:
+            if deadline and time.time() + _RATE_LIMIT_COOLDOWN > deadline:
+                logger.warning("レートリミット: クールダウン時間が残り時間を超過、中止します")
+                return None
+            logger.warning(
+                f"レートリミット検出: {_RATE_LIMIT_COOLDOWN // 60}分クールダウン後にリトライします "
+                f"({attempt + 1}/{_RATE_LIMIT_MAX_RETRIES})"
+            )
+            time.sleep(_RATE_LIMIT_COOLDOWN)
+    return None
 
 
 def _invalidate_worker_session() -> None:
@@ -2012,7 +2025,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         inline_data = cache.get(clean_name + "__inline", {})
 
         for attempt in range(2):
-            worker_session = _get_worker_session(user, password)
+            worker_session = _get_worker_session(user, password, deadline=deadline)
             if worker_session is None:
                 return "login_failed", None
 
