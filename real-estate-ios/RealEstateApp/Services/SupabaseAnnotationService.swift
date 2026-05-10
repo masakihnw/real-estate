@@ -30,7 +30,7 @@ final class SupabaseAnnotationService {
     private let pushLocalFormatVersion = 3
 
     private let pullResetVersionKey = "supabase.annotations.pullResetVersion"
-    private let currentPullResetVersion = 2
+    private let currentPullResetVersion = 3
 
     private init() {
         if defaults.integer(forKey: pullResetVersionKey) < currentPullResetVersion {
@@ -181,10 +181,10 @@ final class SupabaseAnnotationService {
             for (identityKey, anns) in annotationsByKey {
                 guard let listing = listingsByKey[identityKey] else { continue }
 
-                // いいね: 全ユーザーのうち一人でも liked なら true
+                // いいね: サーバーが true ならローカルも true にする（false への上書きはしない）
                 let isLikedByAnyone = anns.contains { ($0["is_liked"] as? Bool) == true }
-                if listing.isLiked != isLikedByAnyone {
-                    listing.isLiked = isLikedByAnyone
+                if isLikedByAnyone && !listing.isLiked {
+                    listing.isLiked = true
                 }
 
                 // コメント: 全ユーザーのコメントをマージ

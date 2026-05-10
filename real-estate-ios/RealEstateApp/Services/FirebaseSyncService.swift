@@ -225,8 +225,8 @@ final class FirebaseSyncService {
 
                     guard let listings = docIDToListings[doc.documentID] else { continue }
                     for listing in listings {
-                        if listing.isLiked != isLiked {
-                            listing.isLiked = isLiked
+                        if isLiked && !listing.isLiked {
+                            listing.isLiked = true
                         }
                         // コメント差分検出: 他ユーザーの新規コメントを通知
                         if listing.commentsJSON != finalCommentsJSON {
