@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import logging
 import math
+import os
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -140,7 +141,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     for i in range(0, len(all_listing_ids), 100):
         batch_ids = all_listing_ids[i:i + 100]
         resp = (client.table("listing_sources")
-                .select("id, listing_id, source, price_man, is_active")
+                .select("id, listing_id, source, price_man, is_active, consecutive_misses")
                 .eq("source", source)
                 .in_("listing_id", batch_ids)
                 .execute())
@@ -317,6 +318,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             "price_max_man": item.get("price_max_man"),
             "last_seen_at": _now_iso(),
             "is_active": True,
+            "consecutive_misses": 0,
         }
         source_row = {k: v for k, v in _sanitize_value(source_row).items() if v is not None}
 
@@ -388,16 +390,29 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             summary["unchanged"] += 1
 
     # このソースの active な物件のうち、今回バッチに無かったものを inactive に
+    # Grace period: 連続 N 回欠落するまで削除を保留
+    grace_threshold = int(os.environ.get("GRACE_PERIOD_RUNS", "2"))
+    grace_pending = 0
     for ik, listing_id in existing_listings.items():
         if ik not in seen_identity_keys and listing_id in existing_sources:
             src_row = existing_sources[listing_id]
             if src_row.get("is_active"):
+                new_misses = (src_row.get("consecutive_misses") or 0) + 1
+                if new_misses < grace_threshold:
+                    (client.table("listing_sources")
+                     .update({"consecutive_misses": new_misses},
+                             returning="minimal")
+                     .eq("id", src_row["id"])
+                     .execute())
+                    grace_pending += 1
+                    continue
+
                 (client.table("listing_sources")
-                 .update({"is_active": False, "last_seen_at": _now_iso()},
+                 .update({"is_active": False, "last_seen_at": _now_iso(),
+                          "consecutive_misses": 0},
                          returning="minimal")
                  .eq("id", src_row["id"])
                  .execute())
-                # 全ソースが inactive なら listing も inactive に
                 active_count = (client.table("listing_sources")
                                 .select("id", count="exact")
                                 .eq("listing_id", listing_id)
@@ -415,6 +430,8 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                 }, returning="minimal").execute()
                 summary["removed"] += 1
 
+    if grace_pending:
+        logger.info("grace_pending=%d listings deferred from removal (source=%s)", grace_pending, source)
     return summary
 
 
