@@ -409,11 +409,18 @@ struct ListingListView: View {
 
     /// キャッシュを非同期再計算（onChange / onAppear から呼ぶ）。
     /// 連続する変更（検索入力など）では前回のタスクをキャンセルして最新のみ実行。
-    private func recomputeFiltered() {
+    private func recomputeFiltered(animated: Bool = false) {
         filterTask?.cancel()
         filterTask = Task { @MainActor in
             guard !Task.isCancelled else { return }
-            cachedFiltered = computeFilteredAndSorted()
+            let result = computeFilteredAndSorted()
+            if animated {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    cachedFiltered = result
+                }
+            } else {
+                cachedFiltered = result
+            }
             let prefStore = BuildingPreferenceStore.shared
             var newProfile = PreferenceAnalyzer.analyze(
                 allListings: baseList,
@@ -615,9 +622,7 @@ struct ListingListView: View {
             .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
             .onChange(of: delistFilter) { _, _ in recomputeFiltered() }
             .onChange(of: BuildingPreferenceStore.shared.nopedBuildings.count) { _, _ in
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    recomputeFiltered()
-                }
+                recomputeFiltered(animated: true)
                 requestClaudeSummaryIfNeeded()
             }
             .onChange(of: BuildingPreferenceStore.shared.likedBuildings.count) { _, _ in
@@ -1096,26 +1101,9 @@ struct ListingListView: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel(accessibilityLabel(for: listing))
                 .accessibilityHint(isCompareMode ? "タップで比較に追加・解除" : "タップで詳細。ハートでいいね")
-                // HIG: Swipe Action でクイック操作を提供（比較モード時は無効）
-                .swipeActions(edge: .trailing) {
+                // スワイプ: 右=Like、左=Nope（比較モード時は無効）
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     if !isCompareMode {
-                        Button {
-                            listing.isLiked.toggle()
-                            SaveErrorHandler.shared.save(modelContext, source: "ListingList")
-                            AnnotationRouter.pushLikeState(for: listing)
-                            if listing.isLiked {
-                                SpotlightIndexer.indexListing(listing)
-                            } else {
-                                SpotlightIndexer.deindexListing(url: listing.url)
-                            }
-                        } label: {
-                            Label(
-                                listing.isLiked ? "いいね解除" : "いいね",
-                                systemImage: listing.isLiked ? "heart.slash" : "heart"
-                            )
-                        }
-                        .tint(listing.isLiked ? .gray : .red)
-
                         Button {
                             let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
@@ -1136,15 +1124,8 @@ struct ListingListView: View {
                         .tint(.yellow)
                     }
                 }
-                .swipeActions(edge: .leading) {
+                .swipeActions(edge: .leading, allowsFullSwipe: true) {
                     if !isCompareMode {
-                        Button {
-                            selectedListing = listing
-                        } label: {
-                            Label("詳細", systemImage: "info.circle")
-                        }
-                        .tint(.accentColor)
-
                         Button {
                             let name = listing.normalizedName ?? listing.name
                             let prefStore = BuildingPreferenceStore.shared
