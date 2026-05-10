@@ -30,7 +30,7 @@ final class SupabaseAnnotationService {
     private let pushLocalFormatVersion = 3
 
     private let pullResetVersionKey = "supabase.annotations.pullResetVersion"
-    private let currentPullResetVersion = 3
+    private let currentPullResetVersion = 4
 
     private init() {
         if defaults.integer(forKey: pullResetVersionKey) < currentPullResetVersion {
@@ -176,15 +176,22 @@ final class SupabaseAnnotationService {
             let localListings = try modelContext.fetch(descriptor)
             let listingsByKey = Dictionary(localListings.map { ($0.identityKey, $0) }, uniquingKeysWith: { first, _ in first })
 
+            logger.info("pullAnnotations: \(annotations.count) annotations, \(annotationsByKey.count) unique keys, \(localListings.count) local listings")
+
             let myUserId = currentUserId
+            var likedCount = 0
 
             for (identityKey, anns) in annotationsByKey {
-                guard let listing = listingsByKey[identityKey] else { continue }
+                guard let listing = listingsByKey[identityKey] else {
+                    logger.debug("pullAnnotations: no match for key: \(identityKey, privacy: .public)")
+                    continue
+                }
 
                 // いいね: サーバーが true ならローカルも true にする（false への上書きはしない）
                 let isLikedByAnyone = anns.contains { ($0["is_liked"] as? Bool) == true }
                 if isLikedByAnyone && !listing.isLiked {
                     listing.isLiked = true
+                    likedCount += 1
                 }
 
                 // コメント: 全ユーザーのコメントをマージ
@@ -224,6 +231,7 @@ final class SupabaseAnnotationService {
                 }
             }
 
+            logger.info("pullAnnotations: \(likedCount) listings marked as liked")
             SaveErrorHandler.shared.save(modelContext, source: "SupabaseAnnotation")
             defaults.set(ISO8601DateFormatter().string(from: Date()), forKey: lastSyncKey)
 
