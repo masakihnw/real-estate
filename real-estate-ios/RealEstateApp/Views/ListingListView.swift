@@ -47,6 +47,8 @@ struct ListingListView: View {
     @State private var selectedForDeletion: Set<String> = []
     @State private var showBulkUnlikeConfirm = false
     @State private var preferenceProfile: PreferenceProfile = .inactive
+    @State private var claudeSummaryTask: Task<Void, Never>?
+    @State private var lastClaudeSummaryHash: Int?
 
     /// お気に入りタブの掲載状態フィルタ
     enum DelistFilter: String, CaseIterable {
@@ -413,11 +415,72 @@ struct ListingListView: View {
             guard !Task.isCancelled else { return }
             cachedFiltered = computeFilteredAndSorted()
             let prefStore = BuildingPreferenceStore.shared
-            preferenceProfile = PreferenceAnalyzer.analyze(
+            var newProfile = PreferenceAnalyzer.analyze(
                 allListings: baseList,
                 likedNames: prefStore.likedBuildings,
                 nopedNames: prefStore.nopedBuildings
             )
+            newProfile.claudeSummaryLines = preferenceProfile.claudeSummaryLines
+            newProfile.claudeSummaryState = preferenceProfile.claudeSummaryState
+            preferenceProfile = newProfile
+        }
+    }
+
+    @MainActor
+    private func requestClaudeSummaryIfNeeded() {
+        let prefStore = BuildingPreferenceStore.shared
+        let liked = prefStore.likedBuildings
+        let noped = prefStore.nopedBuildings
+
+        var hasher = Hasher()
+        hasher.combine(liked)
+        hasher.combine(noped)
+        let currentHash = hasher.finalize()
+
+        guard currentHash != lastClaudeSummaryHash else { return }
+        guard preferenceProfile.isActive, ClaudeAPIClient.shared.isAvailable else { return }
+
+        claudeSummaryTask?.cancel()
+        preferenceProfile.claudeSummaryState = .loading
+
+        let listings = baseList
+        claudeSummaryTask = Task { @MainActor in
+            guard let prompts = PreferenceAnalyzer.buildClaudePrompt(
+                allListings: listings,
+                likedNames: liked,
+                nopedNames: noped
+            ) else { return }
+
+            do {
+                let response = try await ClaudeAPIClient.shared.sendMessage(
+                    system: prompts.system,
+                    userContent: prompts.user
+                )
+                guard !Task.isCancelled else {
+                    if preferenceProfile.claudeSummaryState == .loading {
+                        preferenceProfile.claudeSummaryState = .idle
+                    }
+                    return
+                }
+
+                let lines = response
+                    .components(separatedBy: .newlines)
+                    .map { $0.trimmingCharacters(in: .whitespaces) }
+                    .filter { !$0.isEmpty }
+                    .map { line in
+                        line.hasPrefix("・") ? String(line.dropFirst()).trimmingCharacters(in: .whitespaces) : line
+                    }
+
+                preferenceProfile.claudeSummaryLines = lines
+                preferenceProfile.claudeSummaryState = .loaded
+                lastClaudeSummaryHash = currentHash
+            } catch is CancellationError {
+                if preferenceProfile.claudeSummaryState == .loading {
+                    preferenceProfile.claudeSummaryState = .idle
+                }
+            } catch {
+                preferenceProfile.claudeSummaryState = .failed
+            }
         }
     }
 
@@ -551,8 +614,14 @@ struct ListingListView: View {
             .onChange(of: sortOrder) { _, _ in recomputeFiltered() }
             .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
             .onChange(of: delistFilter) { _, _ in recomputeFiltered() }
-            .onChange(of: BuildingPreferenceStore.shared.nopedBuildings.count) { _, _ in recomputeFiltered() }
-            .onChange(of: BuildingPreferenceStore.shared.likedBuildings.count) { _, _ in recomputeFiltered() }
+            .onChange(of: BuildingPreferenceStore.shared.nopedBuildings.count) { _, _ in
+                recomputeFiltered()
+                requestClaudeSummaryIfNeeded()
+            }
+            .onChange(of: BuildingPreferenceStore.shared.likedBuildings.count) { _, _ in
+                recomputeFiltered()
+                requestClaudeSummaryIfNeeded()
+            }
     }
 
     @ViewBuilder
@@ -683,10 +752,25 @@ struct ListingListView: View {
                     .padding(.bottom, 2)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("好みの傾向")
-                        .font(.subheadline.bold())
-                        .foregroundStyle(.secondary)
-                    ForEach(preferenceProfile.summaryLines, id: \.self) { line in
+                    HStack(spacing: 6) {
+                        Text("好みの傾向")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.secondary)
+                        if preferenceProfile.isClaudeSummaryActive {
+                            Text("AI")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(.purple)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 2)
+                                .background(Color.purple.opacity(0.12))
+                                .clipShape(RoundedRectangle(cornerRadius: 4))
+                        }
+                        if preferenceProfile.claudeSummaryState == .loading {
+                            ProgressView()
+                                .scaleEffect(0.7)
+                        }
+                    }
+                    ForEach(preferenceProfile.displaySummaryLines, id: \.self) { line in
                         HStack(alignment: .top, spacing: 4) {
                             Text("・")
                             Text(line)
