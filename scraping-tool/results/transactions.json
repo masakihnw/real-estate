@@ -13778,7 +13778,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2008-RC",
-      "estimated_building_name": "レグノ・セレーノ"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f83fa430cfe9",
@@ -15738,7 +15738,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2008-RC",
-      "estimated_building_name": "レグノ・セレーノ"
+      "estimated_building_name": null
     },
     {
       "id": "tx-220e377cfeed",
@@ -16018,7 +16018,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2008-RC",
-      "estimated_building_name": "レグノ・セレーノ"
+      "estimated_building_name": null
     },
     {
       "id": "tx-00fecd66e41f",
@@ -16118,7 +16118,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2008-RC",
-      "estimated_building_name": "レグノ・セレーノ"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6114fbf8cbc3",
@@ -20858,7 +20858,7 @@
       "latitude": 35.7130782,
       "longitude": 139.7773343,
       "building_group_id": "131060070-2017-RC",
-      "estimated_building_name": "パレステージ上野"
+      "estimated_building_name": null
     },
     {
       "id": "tx-316fc6fb7bbf",
@@ -21918,7 +21918,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-6a573b090d94",
@@ -21958,7 +21958,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9ba69b0d8be8",
@@ -22058,7 +22058,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-eed22ff727c4",
@@ -22238,7 +22238,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-5d5ef1138d40",
@@ -22258,7 +22258,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-e49a27201e91",
@@ -22318,7 +22318,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e96c86d59ce2",
@@ -22558,7 +22558,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-c7f60787b0f0",
@@ -22778,7 +22778,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c6323d260e6c",
@@ -22818,7 +22818,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-124f4e748254",
@@ -24158,7 +24158,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-123a5d710b12",
@@ -24178,7 +24178,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-7ffcd9e31304",
@@ -24198,7 +24198,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-SRC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-d4d31bf99452",
@@ -24218,7 +24218,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-9d22d972e06b",
@@ -24298,7 +24298,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b90b167ab0f9",
@@ -24318,7 +24318,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e8704b35d188",
@@ -24338,7 +24338,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d71bcfd2d4d3",
@@ -24358,7 +24358,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a9e417c45f48",
@@ -24378,7 +24378,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7f021a25215c",
@@ -24398,7 +24398,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-625b691041d5",
@@ -25478,7 +25478,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6bec4af62e38",
@@ -25498,7 +25498,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-61e30c50953e",
@@ -25658,7 +25658,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d81689865de2",
@@ -26458,7 +26458,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-88bd1f6d961d",
@@ -26498,7 +26498,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-b63d3a9649c9",
@@ -26518,7 +26518,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-fe1e2ae5bf06",
@@ -26538,7 +26538,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-e3f29842fd5e",
@@ -26598,7 +26598,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-849728cb992b",
@@ -26658,7 +26658,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-bb42bfeb5a59",
@@ -26678,7 +26678,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6475ac5d50a3",
@@ -26758,7 +26758,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f6dcde4f5225",
@@ -26778,7 +26778,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d984ebfe72e5",
@@ -26798,7 +26798,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-37f0a717c35c",
@@ -27358,7 +27358,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b155423c7b5b",
@@ -27378,7 +27378,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fcb569f54dcb",
@@ -27418,7 +27418,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2f8c6111931e",
@@ -27458,7 +27458,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2020-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ac5b0e6a1646",
@@ -28058,7 +28058,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-a37aa1413c01",
@@ -28138,7 +28138,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-0566bb2d4e30",
@@ -28178,7 +28178,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-61c2b6932421",
@@ -28238,7 +28238,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-b8f09a4b6812",
@@ -28458,7 +28458,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-4a4f6e1f9f36",
@@ -28498,7 +28498,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5b8b2c426215",
@@ -28538,7 +28538,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-4ebcd7923480",
@@ -28978,7 +28978,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-004334cb2c51",
@@ -28998,7 +28998,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-35a3d5815cf0",
@@ -29198,7 +29198,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-4c7c5d37de91",
@@ -29218,7 +29218,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0ce211b5e5fd",
@@ -29238,7 +29238,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ac2e2d088b4c",
@@ -29278,7 +29278,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-eecd2c87954b",
@@ -29298,7 +29298,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b0a59cb6f933",
@@ -29318,7 +29318,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-19c4cdc2ff6e",
@@ -29838,7 +29838,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-b7e6c969fb98",
@@ -29918,7 +29918,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-b13b5f490cda",
@@ -30358,7 +30358,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-44178d7a1465",
@@ -30498,7 +30498,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-67423a52c307",
@@ -30518,7 +30518,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-257df624772e",
@@ -30558,7 +30558,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ba1b1e10aafa",
@@ -30578,7 +30578,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-264e0292cb80",
@@ -30618,7 +30618,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-af202bd52690",
@@ -30758,7 +30758,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-06208486c7ae",
@@ -30778,7 +30778,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0d541a8a957f",
@@ -30798,7 +30798,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c90c2c7fed37",
@@ -30818,7 +30818,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f0d4a2c274eb",
@@ -30838,7 +30838,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d0af53d368b4",
@@ -30858,7 +30858,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5c176acc503e",
@@ -30878,7 +30878,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d63065424bf1",
@@ -30898,7 +30898,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2020-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-68df737586e3",
@@ -30938,7 +30938,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-20954edb12ae",
@@ -30998,7 +30998,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-d0fcdafb45be",
@@ -31038,7 +31038,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-889835ad0a58",
@@ -31158,7 +31158,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2014-RC",
-      "estimated_building_name": "イーストゲートスクエア / クレヴィア住吉"
+      "estimated_building_name": "イーストゲートスクエア"
     },
     {
       "id": "tx-62d95e6c9dae",
@@ -31458,7 +31458,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-2d4d5e9b4e0f",
@@ -31758,7 +31758,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-29edb66ba49e",
@@ -31778,7 +31778,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-94218e41641c",
@@ -31858,7 +31858,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-9abd4946eefb",
@@ -31878,7 +31878,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fe82bc8ff6e9",
@@ -31918,7 +31918,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2020-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-e8e72ff68ef6",
@@ -31938,7 +31938,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2020-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ec37049c8947",
@@ -32258,7 +32258,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-e92238cd07b1",
@@ -32418,7 +32418,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-3f1aef3a8b54",
@@ -32478,7 +32478,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-11a2ef730252",
@@ -32578,7 +32578,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b8a1a4b172ae",
@@ -32598,7 +32598,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6a1752b6d079",
@@ -32618,7 +32618,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-49d593689e05",
@@ -32638,7 +32638,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f089123e8602",
@@ -32658,7 +32658,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-7194d05355a9",
@@ -32738,7 +32738,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2014-RC",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "id": "tx-fae3b8c9d192",
@@ -32798,7 +32798,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2014-RC",
-      "estimated_building_name": "イーストゲートスクエア / クレヴィア住吉"
+      "estimated_building_name": "イーストゲートスクエア"
     },
     {
       "id": "tx-dd85db7b7e24",
@@ -32838,7 +32838,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2012-RC",
-      "estimated_building_name": "ガーデングラス亀戸"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f5f9915b60a7",
@@ -33118,7 +33118,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-dcdfb3fe3d14",
@@ -33138,7 +33138,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-893d144986a1",
@@ -33398,7 +33398,7 @@
       "latitude": 35.6337517,
       "longitude": 139.7902031,
       "building_group_id": "131080020-2019-RC",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "id": "tx-360fc811af80",
@@ -33618,7 +33618,7 @@
       "latitude": 35.6840871,
       "longitude": 139.8171261,
       "building_group_id": "131080080-2014-RC",
-      "estimated_building_name": "イーストゲートスクエア / クレヴィア住吉"
+      "estimated_building_name": "イーストゲートスクエア"
     },
     {
       "id": "tx-169b867f8f88",
@@ -33838,7 +33838,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-a8e1172c8375",
@@ -33938,7 +33938,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2012-RC",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "id": "tx-aa2c0742dc5c",
@@ -46318,7 +46318,7 @@
       "latitude": 35.7010053,
       "longitude": 139.6030934,
       "building_group_id": "131150270-2021-RC",
-      "estimated_building_name": "クレヴィア西荻窪"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b6d923d033e2",
@@ -46678,7 +46678,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-08764562cdaa",
@@ -46778,7 +46778,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-3cfb9be3d553",
@@ -46798,7 +46798,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7a9d52a8e1eb",
@@ -46898,7 +46898,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-40344e8ba01e",
@@ -47018,7 +47018,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-a92f6a7e0462",
@@ -47058,7 +47058,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-cca83fe09669",
@@ -47118,7 +47118,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-838d01e3430d",
@@ -47198,7 +47198,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fc8d469164a0",
@@ -47418,7 +47418,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-28a4ed09c619",
@@ -47478,7 +47478,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-cdb9cc88344b",
@@ -47498,7 +47498,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-541aa558cf82",
@@ -47658,7 +47658,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-45adb7fdb282",
@@ -47698,7 +47698,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-926bf1bbd5f6",
@@ -47718,7 +47718,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ecbb4fbc890b",
@@ -47778,7 +47778,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-b30cd2b69cac",
@@ -47898,7 +47898,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-16ed98c0096a",
@@ -47918,7 +47918,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-f266a9e03ba2",
@@ -47938,7 +47938,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-caaa01b4e9e1",
@@ -48018,7 +48018,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f8d82bd7fdd1",
@@ -48098,7 +48098,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-9c55a953f7e9",
@@ -48118,7 +48118,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-732ceecd205d",
@@ -48138,7 +48138,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-d36e06862f28",
@@ -48158,7 +48158,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-18c2a63f0273",
@@ -48258,7 +48258,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-03c22a95221c",
@@ -48318,7 +48318,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-fbba9f6248ce",
@@ -48358,7 +48358,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-efe66525e322",
@@ -48378,7 +48378,7 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-SRC",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-38c41357b485",
@@ -48538,7 +48538,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-3713889a47e6",
@@ -48558,7 +48558,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-ff57d3746134",
@@ -48578,7 +48578,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "id": "tx-e0d72201efad",
@@ -49098,7 +49098,7 @@
       "latitude": 35.7629881,
       "longitude": 139.7180209,
       "building_group_id": "131170100-2024-RC",
-      "estimated_building_name": "ザ・パークハウス十条"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b824167acd2e",
@@ -49118,7 +49118,7 @@
       "latitude": 35.7629881,
       "longitude": 139.7180209,
       "building_group_id": "131170100-2024-RC",
-      "estimated_building_name": "ザ・パークハウス十条"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6b1c4b563152",
@@ -49138,7 +49138,7 @@
       "latitude": 35.7629881,
       "longitude": 139.7180209,
       "building_group_id": "131170100-2024",
-      "estimated_building_name": "ザ・パークハウス十条"
+      "estimated_building_name": null
     },
     {
       "id": "tx-92cf0d551743",
@@ -49338,7 +49338,7 @@
       "latitude": 35.7629881,
       "longitude": 139.7180209,
       "building_group_id": "131170100-2024-SRC",
-      "estimated_building_name": "ザ・パークハウス十条"
+      "estimated_building_name": null
     },
     {
       "id": "tx-02a2dbb3a94e",
@@ -49358,7 +49358,7 @@
       "latitude": 35.7629881,
       "longitude": 139.7180209,
       "building_group_id": "131170100-2024-RC",
-      "estimated_building_name": "ザ・パークハウス十条"
+      "estimated_building_name": null
     },
     {
       "id": "tx-0ef8342c4c63",
@@ -50418,7 +50418,7 @@
       "latitude": 35.758799,
       "longitude": 139.70469,
       "building_group_id": "131190540-2021-RC",
-      "estimated_building_name": "クレストラフィーネ板橋本町"
+      "estimated_building_name": null
     },
     {
       "id": "tx-80c8a3b2d792",
@@ -51418,7 +51418,7 @@
       "latitude": 35.706421,
       "longitude": 139.8425004,
       "building_group_id": "131230370-2025-RC",
-      "estimated_building_name": "プラウドタワー平井"
+      "estimated_building_name": null
     },
     {
       "id": "tx-b0748c6e6204",
@@ -51458,7 +51458,7 @@
       "latitude": 35.683851,
       "longitude": 139.8642955,
       "building_group_id": "131230380-2013-RC",
-      "estimated_building_name": "ゼルクハウス船堀"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9a5e770d95a6",
@@ -51478,7 +51478,7 @@
       "latitude": 35.706421,
       "longitude": 139.8425004,
       "building_group_id": "131230370-2025-RC",
-      "estimated_building_name": "プラウドタワー平井"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2d64a59356b7",
@@ -54011,7 +54011,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "レグノ・セレーノ"
+      "estimated_building_name": null
     },
     {
       "group_id": "131040330-2012-RC",
@@ -57869,7 +57869,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "パレステージ上野"
+      "estimated_building_name": null
     },
     {
       "group_id": "131060130-2012-RC",
@@ -59210,7 +59210,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "group_id": "131080020-2014-SRC",
@@ -59233,7 +59233,7 @@
         "2022Q4"
       ],
       "latest_period": "2022Q4",
-      "estimated_building_name": "ブリリア有明シティタワー / ブリリア有明シティタワー（Brillia 有明 Ci… / ブリリア有明シティタワー【22階／2LDK／55.9…"
+      "estimated_building_name": "ブリリア有明シティタワー"
     },
     {
       "group_id": "131080020-2019-RC",
@@ -59272,7 +59272,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080020-2020-RC",
@@ -59297,7 +59297,7 @@
         "2025Q2"
       ],
       "latest_period": "2025Q2",
-      "estimated_building_name": "シティタワーズ東京ベイ ウエストタワー"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080020-2021-RC",
@@ -59402,7 +59402,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "イーストゲートスクエア / クレヴィア住吉"
+      "estimated_building_name": "イーストゲートスクエア"
     },
     {
       "group_id": "131080080-2018-RC",
@@ -59618,7 +59618,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ガーデングラス亀戸"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080100-2021-RC",
@@ -60033,7 +60033,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ザ 湾岸タワーレックスガーデン / ザ・湾岸タワーレックスガーデン / ブランズ東雲"
+      "estimated_building_name": "ザ・湾岸タワーレックスガーデン / ブランズ東雲"
     },
     {
       "group_id": "131080180-2014-RC",
@@ -66333,7 +66333,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "クレヴィア西荻窪"
+      "estimated_building_name": null
     },
     {
       "group_id": "131150280-2006-RC",
@@ -66731,7 +66731,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "group_id": "131160020-2011-SRC",
@@ -66754,7 +66754,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プラウドシティ池袋本町"
+      "estimated_building_name": null
     },
     {
       "group_id": "131160040-2006-RC",
@@ -67073,7 +67073,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ブリリアシティ西早稲田 / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 11階"
+      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田 / ブリリアシティ西早稲田 11階"
     },
     {
       "group_id": "131160110-2010-RC",
@@ -67743,7 +67743,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ザ・パークハウス十条"
+      "estimated_building_name": null
     },
     {
       "group_id": "131170100-2024-RC",
@@ -67767,7 +67767,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ザ・パークハウス十条"
+      "estimated_building_name": null
     },
     {
       "group_id": "131170100-2024-SRC",
@@ -67790,7 +67790,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ザ・パークハウス十条"
+      "estimated_building_name": null
     },
     {
       "group_id": "131170120-2023-RC",
@@ -68528,7 +68528,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "クレストラフィーネ板橋本町"
+      "estimated_building_name": null
     },
     {
       "group_id": "131200150-2011-RC",
@@ -69117,7 +69117,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "プラウドタワー平井"
+      "estimated_building_name": null
     },
     {
       "group_id": "131230380-2013-RC",
@@ -69140,7 +69140,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ゼルクハウス船堀"
+      "estimated_building_name": null
     },
     {
       "group_id": "131230450-2015-RC",
@@ -69196,7 +69196,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-10T11:07:19",
+    "updated_at": "2026-05-10T15:11:44",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
