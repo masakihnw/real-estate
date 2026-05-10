@@ -394,41 +394,45 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     grace_threshold = int(os.environ.get("GRACE_PERIOD_RUNS", "2"))
     grace_pending = 0
     for ik, listing_id in existing_listings.items():
-        if ik not in seen_identity_keys and listing_id in existing_sources:
-            src_row = existing_sources[listing_id]
-            if src_row.get("is_active"):
-                new_misses = (src_row.get("consecutive_misses") or 0) + 1
-                if new_misses < grace_threshold:
-                    (client.table("listing_sources")
-                     .update({"consecutive_misses": new_misses},
-                             returning="minimal")
-                     .eq("id", src_row["id"])
-                     .execute())
-                    grace_pending += 1
-                    continue
+        if ik in seen_identity_keys:
+            continue
+        if listing_id not in existing_sources:
+            continue
+        src_row = existing_sources[listing_id]
+        if not src_row.get("is_active"):
+            continue
 
-                (client.table("listing_sources")
-                 .update({"is_active": False, "last_seen_at": _now_iso(),
-                          "consecutive_misses": 0},
-                         returning="minimal")
-                 .eq("id", src_row["id"])
+        new_misses = (src_row.get("consecutive_misses") or 0) + 1
+        if new_misses >= grace_threshold:
+            (client.table("listing_sources")
+             .update({"is_active": False, "last_seen_at": _now_iso(),
+                      "consecutive_misses": 0},
+                     returning="minimal")
+             .eq("id", src_row["id"])
+             .execute())
+            active_count = (client.table("listing_sources")
+                            .select("id", count="exact")
+                            .eq("listing_id", listing_id)
+                            .eq("is_active", True)
+                            .execute())
+            if active_count.count == 0:
+                (client.table("listings")
+                 .update({"is_active": False}, returning="minimal")
+                 .eq("id", listing_id)
                  .execute())
-                active_count = (client.table("listing_sources")
-                                .select("id", count="exact")
-                                .eq("listing_id", listing_id)
-                                .eq("is_active", True)
-                                .execute())
-                if active_count.count == 0:
-                    (client.table("listings")
-                     .update({"is_active": False}, returning="minimal")
-                     .eq("id", listing_id)
-                     .execute())
-                client.table("listing_events").insert({
-                    "listing_id": listing_id,
-                    "source": source,
-                    "event_type": "removed",
-                }, returning="minimal").execute()
-                summary["removed"] += 1
+            client.table("listing_events").insert({
+                "listing_id": listing_id,
+                "source": source,
+                "event_type": "removed",
+            }, returning="minimal").execute()
+            summary["removed"] += 1
+        else:
+            (client.table("listing_sources")
+             .update({"consecutive_misses": new_misses},
+                     returning="minimal")
+             .eq("id", src_row["id"])
+             .execute())
+            grace_pending += 1
 
     if grace_pending:
         logger.info("grace_pending=%d listings deferred from removal (source=%s)", grace_pending, source)

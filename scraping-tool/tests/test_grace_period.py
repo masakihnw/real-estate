@@ -67,6 +67,7 @@ class TestGracePeriod:
 
         src = _get_source_row(self.conn, 1, "suumo")
         assert src["is_active"] == 0
+        assert src["consecutive_misses"] == 0
 
     def test_reappearance_resets_consecutive_misses(self):
         listing = _make_listing()

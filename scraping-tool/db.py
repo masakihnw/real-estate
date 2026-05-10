@@ -556,6 +556,10 @@ def sync_scrape_results(
         if row["listing_id"] not in seen_listing_ids:
             misses = _increment_consecutive_misses(conn, row["listing_id"], source)
             if misses >= GRACE_PERIOD_RUNS:
+                conn.execute(
+                    "UPDATE listing_sources SET consecutive_misses = 0 WHERE listing_id = ? AND source = ?",
+                    (row["listing_id"], source),
+                )
                 mark_inactive(conn, row["listing_id"], source)
                 record_event(conn, row["listing_id"], source, "removed")
                 summary["removed"] += 1
