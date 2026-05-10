@@ -39,34 +39,43 @@ final class BuildingPreferenceStore {
     }
 
     func setPreference(_ normalizedName: String, preference: Preference) async {
+        switch preference {
+        case .nope:
+            nopedBuildings.insert(normalizedName)
+            likedBuildings.remove(normalizedName)
+        case .like:
+            likedBuildings.insert(normalizedName)
+            nopedBuildings.remove(normalizedName)
+        }
+
         do {
             let body: [[String: Any]] = [["normalized_name": normalizedName, "preference": preference.rawValue]]
             _ = try await client.upsert(into: "user_building_preferences", body: body, onConflict: "normalized_name")
-
-            switch preference {
-            case .nope:
-                nopedBuildings.insert(normalizedName)
-                likedBuildings.remove(normalizedName)
-            case .like:
-                likedBuildings.insert(normalizedName)
-                nopedBuildings.remove(normalizedName)
-            }
             logger.info("Set \(preference.rawValue, privacy: .public) for \(normalizedName, privacy: .public)")
         } catch {
+            switch preference {
+            case .nope:
+                nopedBuildings.remove(normalizedName)
+            case .like:
+                likedBuildings.remove(normalizedName)
+            }
             logger.error("Failed to set preference: \(error.localizedDescription, privacy: .public)")
         }
     }
 
     func removePreference(_ normalizedName: String) async {
+        let wasNoped = nopedBuildings.remove(normalizedName) != nil
+        let wasLiked = likedBuildings.remove(normalizedName) != nil
+
         do {
             try await client.delete(
                 from: "user_building_preferences",
                 filters: [("normalized_name", "eq.\(normalizedName)")]
             )
-            nopedBuildings.remove(normalizedName)
-            likedBuildings.remove(normalizedName)
             logger.info("Removed preference for \(normalizedName, privacy: .public)")
         } catch {
+            if wasNoped { nopedBuildings.insert(normalizedName) }
+            if wasLiked { likedBuildings.insert(normalizedName) }
             logger.error("Failed to remove preference: \(error.localizedDescription, privacy: .public)")
         }
     }
