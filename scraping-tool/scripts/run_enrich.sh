@@ -33,20 +33,37 @@ trap _cleanup_and_merge SIGTERM
 
 PROPERTY_TYPE=""
 TRACKS="all"
+EXCLUDE_TRACKS=""
 while [[ $# -gt 0 ]]; do
     case $1 in
         --property-type) PROPERTY_TYPE="$2"; shift 2 ;;
         --tracks) TRACKS="$2"; shift 2 ;;
+        --exclude-tracks) EXCLUDE_TRACKS="$2"; shift 2 ;;
         *) echo "不明な引数: $1" >&2; exit 1 ;;
     esac
 done
 
 if [ -z "$PROPERTY_TYPE" ]; then
-    echo "使い方: run_enrich.sh --property-type chuko|shinchiku [--tracks core|sumai|mansion|all]" >&2
+    echo "使い方: run_enrich.sh --property-type chuko|shinchiku [--tracks core|sumai|mansion|all] [--exclude-tracks sumai]" >&2
     exit 1
 fi
 
-echo "=== Enrich: ${PROPERTY_TYPE} (tracks: ${TRACKS}) ===" >&2
+_should_run_track() {
+    local track="$1"
+    if [ "$TRACKS" != "all" ] && [ "$TRACKS" != "$track" ]; then
+        return 1
+    fi
+    if echo "$EXCLUDE_TRACKS" | grep -qw "$track"; then
+        return 1
+    fi
+    return 0
+}
+
+if [ -n "$EXCLUDE_TRACKS" ]; then
+    echo "=== Enrich: ${PROPERTY_TYPE} (tracks: ${TRACKS}, exclude: ${EXCLUDE_TRACKS}) ===" >&2
+else
+    echo "=== Enrich: ${PROPERTY_TYPE} (tracks: ${TRACKS}) ===" >&2
+fi
 echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
 
 # ──────────────────────────── ファイルパス設定 ────────────────────────────
@@ -108,7 +125,7 @@ PIDS=""
 ENRICHED_FILES=""
 
 # ── core トラック ──
-if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "core" ]; then
+if _should_run_track core; then
 
     # Track PREP: build_units_cache → merge_detail_cache
     cp "$INPUT" "$WORK_DIR/track_uc.json"
@@ -210,7 +227,7 @@ if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "core" ]; then
 fi
 
 # ── sumai トラック ──
-if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "sumai" ]; then
+if _should_run_track sumai; then
 
     cp "$INPUT" "$WORK_DIR/track_ss.json"
     (
@@ -232,7 +249,7 @@ if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "sumai" ]; then
 fi
 
 # ── mansion トラック ──
-if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "mansion" ]; then
+if _should_run_track mansion; then
 
     cp "$INPUT" "$WORK_DIR/track_mr.json"
     (
@@ -253,7 +270,7 @@ if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "mansion" ]; then
 fi
 
 # ── claude トラック ──
-if [ "$TRACKS" = "all" ] || [ "$TRACKS" = "claude" ]; then
+if _should_run_track claude; then
 
     if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
         # 前回のクレジット不足フラグが残っていたらクリア（新しいランで再試行）

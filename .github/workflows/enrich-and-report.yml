@@ -2,8 +2,9 @@ name: Enrich and Report
 
 # WF2: 加工+レポートワークフロー
 # WF1 (Scrape Listings) 完了時に自動起動。
-# 中古 enrichment を3ジョブに分割（core/sumai/mansion）し、
+# 中古 enrichment を core/mansion/claude に分割し、
 # 新築/成約実績と合わせて並列実行。finalize でマージ・レポート生成・コミット。
+# sumai enrichment は enrich-sumai.yml に分離（レートリミット対策）。
 # cancel-in-progress: false — 実行中のジョブは完了まで走り切り、
 # 次の実行はキューで待機（GitHub Actions はキューに1件のみ保持）。
 
@@ -174,70 +175,9 @@ jobs:
           retention-days: 1
           if-no-files-found: warn
 
-  # ──────────────────────────── Job 1b: enrich-chuko-sumai ────────────────────────────
-  enrich-chuko-sumai:
-    needs: check
-    if: needs.check.outputs.has_changes == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 75
-    continue-on-error: true
+  # enrich-chuko-sumai は独立ワークフロー (enrich-sumai.yml) に移動
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-
-      - name: Setup environment
-        uses: ./.github/actions/setup-scraping
-        with:
-          install-playwright: 'true'
-
-      - name: Download scrape results
-        uses: actions/download-artifact@v4
-        with:
-          name: scrape-results
-          run-id: ${{ needs.check.outputs.run_id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: scraping-tool/results/
-
-      - name: Download cache files
-        uses: actions/download-artifact@v4
-        with:
-          name: scrape-caches
-          run-id: ${{ needs.check.outputs.run_id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: scraping-tool/data/
-        continue-on-error: true
-
-      - name: Prepare input
-        working-directory: scraping-tool
-        run: cp results/latest_raw.json results/latest.json
-
-      - name: Run enrichment (sumai track)
-        working-directory: scraping-tool
-        env:
-          SUMAI_USER: ${{ secrets.SUMAI_USER }}
-          SUMAI_PASS: ${{ secrets.SUMAI_PASS }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: |
-          chmod +x scripts/run_enrich.sh
-          ./scripts/run_enrich.sh --property-type chuko --tracks sumai
-
-      - name: Upload enriched results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: enriched-chuko-sumai
-          path: |
-            scraping-tool/results/latest.json
-            scraping-tool/data/sumai_surfin_cache.json
-            scraping-tool/data/browser_debug/
-          retention-days: 1
-          if-no-files-found: warn
-
-  # ──────────────────────────── Job 1c: enrich-chuko-mansion ────────────────────────────
+  # ──────────────────────────── Job 1b: enrich-chuko-mansion ────────────────────────────
   enrich-chuko-mansion:
     needs: check
     if: needs.check.outputs.has_changes == 'true'
@@ -417,11 +357,9 @@ jobs:
             exit 0
           fi
 
-      - name: Run enrichment
+      - name: Run enrichment (sumai は独立ワークフローで実行)
         working-directory: scraping-tool
         env:
-          SUMAI_USER: ${{ secrets.SUMAI_USER }}
-          SUMAI_PASS: ${{ secrets.SUMAI_PASS }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -429,7 +367,7 @@ jobs:
         run: |
           if [ -f results/latest_shinchiku.json ]; then
             chmod +x scripts/run_enrich.sh
-            ./scripts/run_enrich.sh --property-type shinchiku
+            ./scripts/run_enrich.sh --property-type shinchiku --exclude-tracks sumai
           fi
 
       - name: Save commute gmaps cache
@@ -447,11 +385,9 @@ jobs:
           path: |
             scraping-tool/results/latest_shinchiku.json
             scraping-tool/data/geocode_cache.json
-            scraping-tool/data/sumai_surfin_cache.json
             scraping-tool/data/floor_plan_storage_manifest.json
             scraping-tool/data/station_cache.json
             scraping-tool/data/reverse_geocode_cache.json
-            scraping-tool/data/browser_debug/
           retention-days: 1
           if-no-files-found: warn
 
@@ -521,7 +457,7 @@ jobs:
 
   # ──────────────────────────── Job 4: finalize ────────────────────────────
   finalize:
-    needs: [check, enrich-chuko-core, enrich-chuko-sumai, enrich-chuko-mansion, enrich-chuko-claude, enrich-shinchiku, build-transaction-feed]
+    needs: [check, enrich-chuko-core, enrich-chuko-mansion, enrich-chuko-claude, enrich-shinchiku, build-transaction-feed]
     if: "!cancelled() && (needs.check.outputs.has_changes == 'true' || needs.check.outputs.is_slack_time == 'true')"
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -552,12 +488,7 @@ jobs:
           path: scraping-tool/enriched-chuko-core/
         continue-on-error: true
 
-      - name: Download enriched chuko sumai
-        uses: actions/download-artifact@v4
-        with:
-          name: enriched-chuko-sumai
-          path: scraping-tool/enriched-chuko-sumai/
-        continue-on-error: true
+      # enriched-chuko-sumai は独立ワークフローに移動（Supabase 直接書き込み）
 
       - name: Download enriched chuko mansion
         uses: actions/download-artifact@v4

@@ -1,0 +1,167 @@
+name: Enrich Sumai
+
+# 住まいサーフィン enrichment 専用ワークフロー
+# メインの Enrich and Report から分離し、レートリミット回避のため
+# 1ワーカー・5秒間隔で低負荷実行する。
+# Supabase に直接書き込むため、メインパイプラインの finalize に依存しない。
+
+on:
+  workflow_run:
+    workflows: ["Enrich and Report"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: '使用する Scrape Listings の run ID (空欄で最新)'
+        required: false
+        type: string
+
+concurrency:
+  group: enrich-sumai
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    timeout-minutes: 5
+    outputs:
+      run_id: ${{ steps.resolve.outputs.run_id }}
+
+    steps:
+      - name: Resolve scrape run ID
+        id: resolve
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ github.event.inputs.run_id }}" ]; then
+            echo "run_id=${{ github.event.inputs.run_id }}" >> $GITHUB_OUTPUT
+          else
+            LATEST=$(gh run list --workflow=scrape-listings.yml --status=success --limit=1 --json databaseId -q '.[0].databaseId' --repo ${{ github.repository }})
+            if [ -n "$LATEST" ]; then
+              echo "run_id=$LATEST" >> $GITHUB_OUTPUT
+            else
+              echo "::error::成功した Scrape Listings run が見つかりません"
+              exit 1
+            fi
+          fi
+
+  enrich-sumai-chuko:
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-scraping
+        with:
+          install-playwright: 'true'
+
+      - name: Download scrape results
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-results
+          run-id: ${{ needs.resolve.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/results/
+
+      - name: Download cache files
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-caches
+          run-id: ${{ needs.resolve.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/data/
+        continue-on-error: true
+
+      - name: Prepare input
+        working-directory: scraping-tool
+        run: cp results/latest_raw.json results/latest.json
+
+      - name: Run sumai enrichment (chuko)
+        working-directory: scraping-tool
+        env:
+          SUMAI_USER: ${{ secrets.SUMAI_USER }}
+          SUMAI_PASS: ${{ secrets.SUMAI_PASS }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python3 sumai_surfin_enricher.py \
+            --input results/latest.json \
+            --output results/latest.json \
+            --property-type chuko \
+            --workers 1 \
+            --delay 5 \
+            --max-time 55 \
+            --browser
+
+  enrich-sumai-shinchiku:
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-scraping
+        with:
+          install-playwright: 'true'
+
+      - name: Download scrape results
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-results
+          run-id: ${{ needs.resolve.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/results/
+
+      - name: Download cache files
+        uses: actions/download-artifact@v4
+        with:
+          name: scrape-caches
+          run-id: ${{ needs.resolve.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: scraping-tool/data/
+        continue-on-error: true
+
+      - name: Prepare input
+        working-directory: scraping-tool
+        run: |
+          if [ -f results/latest_shinchiku_raw.json ]; then
+            cp results/latest_shinchiku_raw.json results/latest_shinchiku.json
+          else
+            echo "新築データなし: スキップ"
+            exit 0
+          fi
+
+      - name: Run sumai enrichment (shinchiku)
+        working-directory: scraping-tool
+        env:
+          SUMAI_USER: ${{ secrets.SUMAI_USER }}
+          SUMAI_PASS: ${{ secrets.SUMAI_PASS }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -f results/latest_shinchiku.json ]; then
+            python3 sumai_surfin_enricher.py \
+              --input results/latest_shinchiku.json \
+              --output results/latest_shinchiku.json \
+              --property-type shinchiku \
+              --workers 1 \
+              --delay 5 \
+              --max-time 55 \
+              --browser
+          fi

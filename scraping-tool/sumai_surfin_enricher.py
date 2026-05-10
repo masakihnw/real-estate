@@ -1885,13 +1885,20 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
                     property_type: str = "chuko",
                     retry_not_found: bool = False,
                     previous_path: Optional[str] = None,
-                    max_time_min: int = 0) -> None:
+                    max_time_min: int = 0,
+                    max_workers: int = 3,
+                    delay_sec: float = 0) -> None:
     """
     JSON ファイルの各物件に住まいサーフィンの評価データを付加する。
     property_type: "chuko" (中古) or "shinchiku" (新築)
     retry_not_found: True の場合、キャッシュの null エントリをクリアして再検索する
     previous_path: 前回結果 JSON。指定時は変更なし物件の SS データをコピーしてスキップ（インクリメンタル）
+    delay_sec: リクエスト間隔（秒）。0 の場合はデフォルト値を使用
     """
+    global DELAY
+    if delay_sec > 0:
+        DELAY = delay_sec
+        logger.info(f"リクエスト間隔を {delay_sec}秒 に設定")
     output_path = Path(output_path)
 
     with open(input_path, "r", encoding="utf-8") as f:
@@ -2068,7 +2075,7 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
 
     idx_to_listing = {idx: lst for idx, lst in to_enrich}
     try:
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {executor.submit(_enrich_one, idx, lst): idx for idx, lst in to_enrich}
             processed = 0
             for future in as_completed(futures):
@@ -2245,6 +2252,10 @@ def main() -> None:
                          "（名前正規化ロジック改善後に実行）")
     ap.add_argument("--max-time", type=int, default=0,
                     help="最大実行時間（分）。0=無制限")
+    ap.add_argument("--workers", type=int, default=3,
+                    help="並列ワーカー数（デフォルト: 3）")
+    ap.add_argument("--delay", type=float, default=0,
+                    help="リクエスト間隔（秒）。0=デフォルト値（1.5秒）")
     ap.add_argument("--previous", "-p",
                     help="前回の enrichment 結果 JSON。指定時は変更なし物件をスキップ（インクリメンタル）")
     args = ap.parse_args()
@@ -2287,7 +2298,9 @@ def main() -> None:
                         property_type=prop_type,
                         retry_not_found=args.retry_not_found,
                         previous_path=args.previous,
-                        max_time_min=args.max_time)
+                        max_time_min=args.max_time,
+                        max_workers=args.workers,
+                        delay_sec=args.delay)
 
     # ── ブラウザ自動化 enrichment ──
     if args.browser or args.browser_only:
