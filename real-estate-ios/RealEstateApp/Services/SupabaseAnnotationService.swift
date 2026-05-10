@@ -30,7 +30,7 @@ final class SupabaseAnnotationService {
     private let pushLocalFormatVersion = 3
 
     private let pullResetVersionKey = "supabase.annotations.pullResetVersion"
-    private let currentPullResetVersion = 1
+    private let currentPullResetVersion = 2
 
     private init() {
         if defaults.integer(forKey: pullResetVersionKey) < currentPullResetVersion {

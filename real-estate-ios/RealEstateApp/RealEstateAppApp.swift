@@ -46,6 +46,8 @@ struct RealEstateAppApp: App {
             }
             Self.deleteSwiftDataStore()
             DiskImageCache.shared.clearAll()
+            UserDefaults.standard.removeObject(forKey: "supabase.annotations.lastSync")
+            UserDefaults.standard.removeObject(forKey: "supabase.annotations.didPushLocal")
             UserDefaults.standard.set(Self.currentSchemaVersion, forKey: Self.schemaVersionKey)
         }
 
