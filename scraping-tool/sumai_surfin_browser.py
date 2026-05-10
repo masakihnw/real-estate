@@ -123,30 +123,32 @@ def _log_browser_login_diagnostics(page: "Page") -> None:
         logger.error(f"ブラウザログイン: 診断ログ取得失敗: {e}")
 
 
-def browser_login(page: "Page", user: str, password: str) -> bool:
+def browser_login(page: "Page", user: str, password: str,
+                  session: "requests.Session | None" = None) -> bool:
     """HTTP enricher のセッションクッキーをブラウザに注入してログインする。
 
-    ブラウザのフォーム送信は HeadlessChrome 検知でブロックされるため、
-    requests ベースの HTTP enricher でログインし、取得したクッキーを
-    Playwright のブラウザコンテキストに注入する方式を使う。
+    session が渡された場合はそのクッキーをそのまま注入する（再ログイン不要）。
+    渡されなかった場合のみ新規ログインを試行する。
     """
     try:
-        from sumai_surfin_enricher import login as http_login, _create_session
-
-        session = None
-        for attempt in range(3):
-            session = _create_session()
-            if http_login(session, user, password):
-                break
-            session = None
-            if attempt < 2:
-                wait = 5 * (attempt + 1)
-                logger.info(f"ブラウザログイン: HTTP リトライ {attempt + 1}/3（{wait}秒待機）")
-                time.sleep(wait)
-
         if session is None:
-            logger.error("ブラウザログイン: HTTP セッション取得失敗（3回リトライ後）")
-            return False
+            from sumai_surfin_enricher import login as http_login, _create_session
+
+            for attempt in range(3):
+                session = _create_session()
+                if http_login(session, user, password):
+                    break
+                session = None
+                if attempt < 2:
+                    wait = 5 * (attempt + 1)
+                    logger.info(f"ブラウザログイン: HTTP リトライ {attempt + 1}/3（{wait}秒待機）")
+                    time.sleep(wait)
+
+            if session is None:
+                logger.error("ブラウザログイン: HTTP セッション取得失敗（3回リトライ後）")
+                return False
+        else:
+            logger.info("ブラウザログイン: 既存セッションのクッキーを再利用")
 
         pw_cookies = []
         for c in session.cookies:
@@ -1073,6 +1075,7 @@ def browser_enrich_listings(
     sim_term: int = DEFAULT_SIM_TERM,
     sim_down: int = DEFAULT_SIM_DOWN_PAYMENT,
     max_time_min: int = 30,
+    session: "requests.Session | None" = None,
 ) -> None:
     """物件 JSON の各物件にブラウザ自動化でデータを付加する。
 
@@ -1127,7 +1130,7 @@ def browser_enrich_listings(
         page = context.new_page()
 
         # ── ログイン ──
-        if not browser_login(page, user, password):
+        if not browser_login(page, user, password, session=session):
             logger.error("ブラウザ enrichment: ログイン失敗のためスキップ")
             return
 
