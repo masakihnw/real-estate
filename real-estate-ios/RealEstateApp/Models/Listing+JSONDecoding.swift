@@ -43,6 +43,7 @@ struct ListingDTO: Codable {
     var repair_fund_onetime: Int?
     var feature_tags: [String]?
     var list_ward_roman: String?
+    var normalized_name: String?
 
     // 重複集約
     var duplicate_count: Int?
@@ -352,6 +353,7 @@ extension Listing {
             priceMaxMan: dto.price_max_man,
             areaMaxM2: dto.area_max_m2,
             deliveryDate: dto.delivery_date,
+            normalizedName: dto.normalized_name,
             latitude: dto.latitude,
             longitude: dto.longitude,
             hazardInfo: dto.hazard_info,

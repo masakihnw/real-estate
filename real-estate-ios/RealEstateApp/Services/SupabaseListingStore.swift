@@ -267,6 +267,7 @@ final class SupabaseListingStore {
         "hazard_info", "commute_info", "commute_info_v2",
         "reinfolib_market_data", "mansion_review_data", "estat_population_data",
         "ss_radar_data", "ss_past_market_trends", "ss_surrounding_properties", "ss_price_judgments",
+        "extracted_features", "image_categories", "dedup_candidates",
     ]
 
     private static let isoDateFormatter: DateFormatter = {

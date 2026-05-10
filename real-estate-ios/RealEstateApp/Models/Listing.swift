@@ -133,6 +133,9 @@ final class Listing: @unchecked Sendable {
     /// 引渡時期 — 新築のみ（例: "2027年9月上旬予定"）。中古は nil。
     var deliveryDate: String?
 
+    /// 正規化された建物名（Supabase の listings.normalized_name と一致）
+    var normalizedName: String?
+
     /// ジオコーディング済み緯度（キャッシュ用）
     var latitude: Double?
     /// ジオコーディング済み経度（キャッシュ用）
@@ -366,6 +369,7 @@ final class Listing: @unchecked Sendable {
         priceMaxMan: Int? = nil,
         areaMaxM2: Double? = nil,
         deliveryDate: String? = nil,
+        normalizedName: String? = nil,
         latitude: Double? = nil,
         longitude: Double? = nil,
         hazardInfo: String? = nil,
@@ -465,6 +469,7 @@ final class Listing: @unchecked Sendable {
         self.priceMaxMan = priceMaxMan
         self.areaMaxM2 = areaMaxM2
         self.deliveryDate = deliveryDate
+        self.normalizedName = normalizedName
         self.latitude = latitude
         self.longitude = longitude
         self.hazardInfo = hazardInfo

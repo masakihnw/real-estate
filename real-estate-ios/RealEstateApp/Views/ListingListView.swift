@@ -46,6 +46,7 @@ struct ListingListView: View {
     @State private var editMode: EditMode = .inactive
     @State private var selectedForDeletion: Set<String> = []
     @State private var showBulkUnlikeConfirm = false
+    @State private var preferenceProfile: PreferenceProfile = .inactive
 
     /// お気に入りタブの掲載状態フィルタ
     enum DelistFilter: String, CaseIterable {
@@ -262,6 +263,14 @@ struct ListingListView: View {
     private func computeFilteredAndSorted() -> [Listing] {
         var list = filterStore.filter.apply(to: baseList)
 
+        let noped = BuildingPreferenceStore.shared.nopedBuildings
+        if !noped.isEmpty {
+            list = list.filter { listing in
+                guard let name = listing.normalizedName else { return true }
+                return !noped.contains(name)
+            }
+        }
+
         // テキスト検索（物件名のみ・View専用）
         if isSearchActive {
             let query = searchText.lowercased().trimmingCharacters(in: .whitespaces)
@@ -403,6 +412,12 @@ struct ListingListView: View {
         filterTask = Task { @MainActor in
             guard !Task.isCancelled else { return }
             cachedFiltered = computeFilteredAndSorted()
+            let prefStore = BuildingPreferenceStore.shared
+            preferenceProfile = PreferenceAnalyzer.analyze(
+                allListings: baseList,
+                likedNames: prefStore.likedBuildings,
+                nopedNames: prefStore.nopedBuildings
+            )
         }
     }
 
@@ -491,99 +506,13 @@ struct ListingListView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottomTrailing) {
-                Group {
-                if cachedFiltered.isEmpty && !isInitialLoadComplete {
-                    SkeletonLoadingView()
-                } else if favoritesOnly && delistFilter != .all && (baseList.isEmpty || filteredAndSorted.isEmpty) {
-                    VStack(spacing: 0) {
-                        delistChipBar
-                        delistFilterEmptyState
-                    }
-                } else if baseList.isEmpty && !store.isRefreshing {
-                    emptyState
-                    } else if filteredAndSorted.isEmpty && filterStore.filter.isActive {
-                        filterEmptyState
-                    } else {
-                        listContent
-                    }
-                }
-                .navigationTitle(navTitle)
-                .navigationBarTitleDisplayMode(.inline)
-                .searchable(text: $searchText, prompt: "物件名で検索")
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        HStack(spacing: 12) {
-                            Button {
-                                if isCompareMode {
-                                    if comparisonListings.count >= 2 {
-                                        showComparison = true
-                                    } else {
-                                        isCompareMode = false
-                                        comparisonListings = []
-                                    }
-                                } else {
-                                    comparisonListings = []
-                                    isCompareMode = true
-                                }
-                            } label: {
-                                Image(systemName: isCompareMode ? "checkmark.square.fill" : "square")
-                                    .font(.title3)
-                                    .symbolRenderingMode(.hierarchical)
-                                    .overlay(alignment: .topTrailing) {
-                                        if isCompareMode && comparisonListings.count > 0 {
-                                            Text("\(comparisonListings.count)")
-                                                .font(.caption2.weight(.bold))
-                                                .foregroundStyle(.white)
-                                                .frame(width: 16, height: 16)
-                                                .background(Color.red)
-                                                .clipShape(Circle())
-                                                .offset(x: 8, y: -8)
-                                        }
-                                    }
-                            }
-                            .accessibilityLabel(isCompareMode ? "比較モード ON、\(comparisonListings.count)件選択中" : "比較モード")
-                            if favoritesOnly && !filteredAndSorted.isEmpty {
-                                ShareLink(
-                                    item: exportFavoritesCSV(),
-                                    subject: Text("お気に入り物件リスト"),
-                                    preview: SharePreview("お気に入り物件リスト.csv")
-                                ) {
-                                    Image(systemName: "square.and.arrow.up")
-                                }
-                                .accessibilityLabel("エクスポート")
-                            }
-                            if favoritesOnly && !filteredAndSorted.isEmpty {
-                                EditButton()
-                            }
-                        }
-                    }
-                    ToolbarItem(placement: .topBarLeading) {
-                        if isCompareMode {
-                            Button {
-                                showComparison = true
-                            } label: {
-                                Text("比較する")
-                                    .fontWeight(.semibold)
-                            }
-                            .disabled(comparisonListings.count < 2)
-                        } else if store.lastError != nil {
-                            Button {
-                                showErrorAlert = true
-                            } label: {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundStyle(.orange)
-                            }
-                            .accessibilityLabel("エラーあり")
-                        }
-                    }
-                }
-                // フィルタ・並び替えボタン（右下・地図画面と同じ配置）
-                if !baseList.isEmpty {
-                    filterSortOverlayButtons
-                }
-            }
-            // 手動更新は無効化。データ更新はフォアグラウンド復帰時の自動更新（15分間隔）のみ。
+            mainContent
+        }
+    }
+
+    @ViewBuilder
+    private var mainContent: some View {
+        mainZStack
             .fullScreenCover(item: $selectedListing) { listing in
                 let index = cachedFiltered.firstIndex(where: { $0.url == listing.url }) ?? 0
                 ListingDetailPagerView(listings: cachedFiltered, initialIndex: index)
@@ -595,14 +524,65 @@ struct ListingListView: View {
                 ComparisonView(listings: comparisonListings)
             }
             .fullScreenCover(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, availableDirections: availableDirections, availableNumericFields: availableNumericFields, filteredCount: filteredAndSorted.count, showPriceUndecidedToggle: propertyTypeFilter == "shinchiku")
+                ListingFilterSheet(
+                    filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }),
+                    availableLayouts: availableLayouts,
+                    availableWards: availableWards,
+                    availableRouteStations: availableRouteStations,
+                    availableDirections: availableDirections,
+                    availableNumericFields: availableNumericFields,
+                    filteredCount: filteredAndSorted.count,
+                    showPriceUndecidedToggle: propertyTypeFilter == "shinchiku"
+                )
             }
+            .environment(\.editMode, favoritesOnly ? $editMode : .constant(.inactive))
+            .onAppear {
+                recomputeFiltered()
+                if baseList.count > 0 || !store.isRefreshing { isInitialLoadComplete = true }
+            }
+            .onChange(of: store.isRefreshing) { _, isRefreshing in
+                if !isRefreshing { isInitialLoadComplete = true }
+            }
+            .onChange(of: baseList.count) { _, count in
+                if count > 0 { isInitialLoadComplete = true }
+                recomputeFiltered()
+            }
+            .onChange(of: searchText) { _, _ in recomputeFiltered() }
+            .onChange(of: sortOrder) { _, _ in recomputeFiltered() }
+            .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
+            .onChange(of: delistFilter) { _, _ in recomputeFiltered() }
+            .onChange(of: BuildingPreferenceStore.shared.nopedBuildings.count) { _, _ in recomputeFiltered() }
+            .onChange(of: BuildingPreferenceStore.shared.likedBuildings.count) { _, _ in recomputeFiltered() }
+    }
+
+    @ViewBuilder
+    private var mainZStack: some View {
+        ZStack(alignment: .bottomTrailing) {
+            Group {
+                if cachedFiltered.isEmpty && !isInitialLoadComplete {
+                    SkeletonLoadingView()
+                } else if favoritesOnly && delistFilter != .all && (baseList.isEmpty || filteredAndSorted.isEmpty) {
+                    VStack(spacing: 0) {
+                        delistChipBar
+                        delistFilterEmptyState
+                    }
+                } else if baseList.isEmpty && !store.isRefreshing {
+                    emptyState
+                } else if filteredAndSorted.isEmpty && filterStore.filter.isActive {
+                    filterEmptyState
+                } else {
+                    listContent
+                }
+            }
+            .navigationTitle(navTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $searchText, prompt: "物件名で検索")
+            .toolbar { listToolbarContent }
             .alert("データ取得エラー", isPresented: $showErrorAlert) {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(store.lastError ?? "不明なエラーが発生しました。")
             }
-            .environment(\.editMode, favoritesOnly ? $editMode : .constant(.inactive))
             .alert("いいね解除", isPresented: $showBulkUnlikeConfirm) {
                 Button("解除", role: .destructive) {
                     for url in selectedForDeletion {
@@ -619,21 +599,120 @@ struct ListingListView: View {
             } message: {
                 Text("\(selectedForDeletion.count)件の物件のいいねを解除しますか？")
             }
-            .onAppear {
-                recomputeFiltered()
-                if baseList.count > 0 || !store.isRefreshing { isInitialLoadComplete = true }
+            if !baseList.isEmpty {
+                filterSortOverlayButtons
             }
-            .onChange(of: store.isRefreshing) { _, isRefreshing in
-                if !isRefreshing { isInitialLoadComplete = true }
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var listToolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            HStack(spacing: 12) {
+                Button {
+                    if isCompareMode {
+                        if comparisonListings.count >= 2 {
+                            showComparison = true
+                        } else {
+                            isCompareMode = false
+                            comparisonListings = []
+                        }
+                    } else {
+                        comparisonListings = []
+                        isCompareMode = true
+                    }
+                } label: {
+                    Image(systemName: isCompareMode ? "checkmark.square.fill" : "square")
+                        .font(.title3)
+                        .symbolRenderingMode(.hierarchical)
+                        .overlay(alignment: .topTrailing) {
+                            if isCompareMode && comparisonListings.count > 0 {
+                                Text("\(comparisonListings.count)")
+                                    .font(.caption2.weight(.bold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 16, height: 16)
+                                    .background(Color.red)
+                                    .clipShape(Circle())
+                                    .offset(x: 8, y: -8)
+                            }
+                        }
+                }
+                .accessibilityLabel(isCompareMode ? "比較モード ON、\(comparisonListings.count)件選択中" : "比較モード")
+                if favoritesOnly && !filteredAndSorted.isEmpty {
+                    ShareLink(
+                        item: exportFavoritesCSV(),
+                        subject: Text("お気に入り物件リスト"),
+                        preview: SharePreview("お気に入り物件リスト.csv")
+                    ) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .accessibilityLabel("エクスポート")
+                }
+                if favoritesOnly && !filteredAndSorted.isEmpty {
+                    EditButton()
+                }
             }
-            .onChange(of: baseList.count) { _, count in
-                if count > 0 { isInitialLoadComplete = true }
+        }
+        ToolbarItem(placement: .topBarLeading) {
+            if isCompareMode {
+                Button {
+                    showComparison = true
+                } label: {
+                    Text("比較する")
+                        .fontWeight(.semibold)
+                }
+                .disabled(comparisonListings.count < 2)
+            } else if store.lastError != nil {
+                Button {
+                    showErrorAlert = true
+                } label: {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.orange)
+                }
+                .accessibilityLabel("エラーあり")
             }
-            .onChange(of: searchText) { _, _ in recomputeFiltered() }
-            .onChange(of: sortOrder) { _, _ in recomputeFiltered() }
-            .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
-            .onChange(of: delistFilter) { _, _ in recomputeFiltered() }
-            .onChange(of: baseList.count) { _, _ in recomputeFiltered() }
+        }
+    }
+
+    @ViewBuilder
+    private var recommendationSections: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("あなたの好みに近い物件", systemImage: "sparkles")
+                    .font(.headline)
+                    .padding(.bottom, 2)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("好みの傾向")
+                        .font(.subheadline.bold())
+                        .foregroundStyle(.secondary)
+                    ForEach(preferenceProfile.summaryLines, id: \.self) { line in
+                        HStack(alignment: .top, spacing: 4) {
+                            Text("・")
+                            Text(line)
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .padding(.vertical, 4)
+        }
+
+        Section {
+            ForEach(preferenceProfile.recommendations) { rec in
+                ListingRowView(
+                    listing: rec.listing,
+                    onTap: { selectedListing = rec.listing },
+                    onLikeTapped: {
+                        rec.listing.isLiked.toggle()
+                        SaveErrorHandler.shared.save(modelContext, source: "Recommendation")
+                        AnnotationRouter.pushLikeState(for: rec.listing)
+                    }
+                )
+            }
+        } header: {
+            Text("おすすめ物件（\(preferenceProfile.recommendations.count)件）")
         }
     }
 
@@ -835,6 +914,10 @@ struct ListingListView: View {
                     }
                 }
             }
+            if preferenceProfile.isActive && !favoritesOnly {
+                recommendationSections
+            }
+
             if favoritesOnly && editMode == .active {
                 ForEach(cachedFiltered, id: \.url) { listing in
                     HStack {
@@ -946,6 +1029,24 @@ struct ListingListView: View {
                             )
                         }
                         .tint(listing.isLiked ? .gray : .red)
+
+                        Button {
+                            let name = listing.normalizedName ?? listing.name
+                            let prefStore = BuildingPreferenceStore.shared
+                            Task {
+                                if prefStore.isLiked(listing.normalizedName) {
+                                    await prefStore.removePreference(name)
+                                } else {
+                                    await prefStore.setPreference(name, preference: .like)
+                                }
+                            }
+                        } label: {
+                            Label(
+                                BuildingPreferenceStore.shared.isLiked(listing.normalizedName) ? "Like解除" : "Like",
+                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.normalizedName) ? "star.slash" : "star"
+                            )
+                        }
+                        .tint(.yellow)
                     }
                 }
                 .swipeActions(edge: .leading) {
@@ -956,6 +1057,24 @@ struct ListingListView: View {
                             Label("詳細", systemImage: "info.circle")
                         }
                         .tint(.accentColor)
+
+                        Button {
+                            let name = listing.normalizedName ?? listing.name
+                            let prefStore = BuildingPreferenceStore.shared
+                            Task {
+                                if prefStore.isNoped(listing.normalizedName) {
+                                    await prefStore.removePreference(name)
+                                } else {
+                                    await prefStore.setPreference(name, preference: .nope)
+                                }
+                            }
+                        } label: {
+                            Label(
+                                BuildingPreferenceStore.shared.isNoped(listing.normalizedName) ? "Nope解除" : "Nope",
+                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.normalizedName) ? "hand.thumbsup" : "hand.thumbsdown"
+                            )
+                        }
+                        .tint(.orange)
                     }
                 }
                 .contextMenu {
@@ -966,6 +1085,38 @@ struct ListingListView: View {
                             AnnotationRouter.pushLikeState(for: listing)
                         } label: {
                             Label(listing.isLiked ? "いいね解除" : "いいね", systemImage: listing.isLiked ? "heart.slash" : "heart")
+                        }
+                        Button {
+                            let name = listing.normalizedName ?? listing.name
+                            let prefStore = BuildingPreferenceStore.shared
+                            Task {
+                                if prefStore.isLiked(listing.normalizedName) {
+                                    await prefStore.removePreference(name)
+                                } else {
+                                    await prefStore.setPreference(name, preference: .like)
+                                }
+                            }
+                        } label: {
+                            Label(
+                                BuildingPreferenceStore.shared.isLiked(listing.normalizedName) ? "Like解除" : "Like",
+                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.normalizedName) ? "star.slash" : "star"
+                            )
+                        }
+                        Button {
+                            let name = listing.normalizedName ?? listing.name
+                            let prefStore = BuildingPreferenceStore.shared
+                            Task {
+                                if prefStore.isNoped(listing.normalizedName) {
+                                    await prefStore.removePreference(name)
+                                } else {
+                                    await prefStore.setPreference(name, preference: .nope)
+                                }
+                            }
+                        } label: {
+                            Label(
+                                BuildingPreferenceStore.shared.isNoped(listing.normalizedName) ? "Nope解除" : "Nope",
+                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.normalizedName) ? "hand.thumbsup" : "hand.thumbsdown"
+                            )
                         }
                         if let url = URL(string: listing.url) {
                             ShareLink(item: url, subject: Text(listing.name))
