@@ -23,6 +23,7 @@
 		1F72CE93F21F2E14D524D3D9 /* TransactionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5DAB8EDCE8C47645261F77 /* TransactionFilter.swift */; };
 		1F831EA70E43C0800109C454 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D04A0A3D3357841F2D446A36 /* FirebaseFirestore */; };
 		242A17AE57A5070DD5A8680F /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC4ACF084AE947A9DBA4E12 /* ComparisonView.swift */; };
+		26F2B5EFC773A320569DD803 /* NopedListingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336E18AB549B9601A34418DF /* NopedListingsView.swift */; };
 		27560686B331DE043F6A5E92 /* MapTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6454CFFAE2040D4976E28754 /* MapTabView.swift */; };
 		28F22887EDD883FDBE3CF7E7 /* ListingFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9C33FED1E45B0380B14506 /* ListingFilterSheet.swift */; };
 		2D11AB529933918CE0764F4C /* ScrapingConfigMetadata.json in Resources */ = {isa = PBXBuildFile; fileRef = A3C3E97C42AD293A2F0155CC /* ScrapingConfigMetadata.json */; };
@@ -153,6 +154,7 @@
 		2A8462396154DCAD49363D09 /* SimulationChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationChartView.swift; sourceTree = "<group>"; };
 		2BFA3A204AD51A2AC4089B06 /* ListingDetailViewComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingDetailViewComponents.swift; sourceTree = "<group>"; };
 		32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseSyncService.swift; sourceTree = "<group>"; };
+		336E18AB549B9601A34418DF /* NopedListingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NopedListingsView.swift; sourceTree = "<group>"; };
 		36FCB1428ACF923881849CE6 /* PreferenceAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceAnalyzer.swift; sourceTree = "<group>"; };
 		396C1453586517654E863287 /* MortgageTaxBenefitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MortgageTaxBenefitView.swift; sourceTree = "<group>"; };
 		3BF29EF90FA22A62705C9CB6 /* TransactionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailView.swift; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 				8EE6DA3D07E981F3E46C50FC /* MarketDataSectionView.swift */,
 				8D4844FC75E2D807C80E501B /* MonthlyPaymentSimulationView.swift */,
 				396C1453586517654E863287 /* MortgageTaxBenefitView.swift */,
+				336E18AB549B9601A34418DF /* NopedListingsView.swift */,
 				18F421EAE268593C2F547849 /* PhotoSectionView.swift */,
 				A050CCBF6353433066A86B6E /* PopulationSectionView.swift */,
 				55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */,
@@ -560,6 +563,7 @@
 				A525C4CBAA6599D35B521432 /* MonthlyPaymentSimulationView.swift in Sources */,
 				7C9EDA58DB888F9E89FC90A5 /* MortgageTaxBenefitView.swift in Sources */,
 				1D30A4CF74D6451DE51B23CE /* NetworkMonitor.swift in Sources */,
+				26F2B5EFC773A320569DD803 /* NopedListingsView.swift in Sources */,
 				13F2D3B8066ED1C37940E12B /* NotificationScheduleService.swift in Sources */,
 				F47AF2150D0396E4FB91AAE8 /* PDFExporter.swift in Sources */,
 				01AC50EEF3497F0AB63CDE10 /* PhotoSectionView.swift in Sources */,
