@@ -2302,6 +2302,7 @@ def main() -> None:
                 user=user,
                 password=password,
                 max_time_min=browser_max_time,
+                session=session if not args.browser_only else None,
             )
         except ImportError:
             print(
