@@ -24,6 +24,9 @@ Pods/
 *.xcworkspace
 !*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
+# API Secrets
+**/Secrets.swift
+
 # fastlane
 fastlane/report.xml
 fastlane/Preview.html
