@@ -94,6 +94,7 @@
 		E11EB7A8EE84FB1AEDC3D516 /* DedupCandidateCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB51D59D5B1463D599FFFF7F /* DedupCandidateCard.swift */; };
 		E15EBCDC8733B11F8335BE72 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 5F1D26818CB6AB5F58F31BF3 /* GoogleSignIn */; };
 		E44B979E92C4E67D1603AD6E /* ScoreBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D678F2E9A9A7AA57D8DC94 /* ScoreBadge.swift */; };
+		E489DAEC1E5942BEAC8CAC88 /* MyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64D4BF8A72F5CFDD2EC050 /* MyListView.swift */; };
 		E90E0D85B2F8D6947FC40CA2 /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC96D67CAA5AB454825D2D8 /* Listing.swift */; };
 		EA48E6A5AA87F02E06F986C8 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BF7C431D158CB3C8FED573 /* TransactionStore.swift */; };
 		EC934A96DDAED4A671D915A3 /* ScrapingConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D33E9EF2F06718A077B1DAD /* ScrapingConfigService.swift */; };
@@ -213,6 +214,7 @@
 		D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilter.swift; sourceTree = "<group>"; };
 		D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogService.swift; sourceTree = "<group>"; };
 		D771B189D37C2ADF6ADBF6BC /* ExtractedFeaturesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractedFeaturesSection.swift; sourceTree = "<group>"; };
+		DB64D4BF8A72F5CFDD2EC050 /* MyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListView.swift; sourceTree = "<group>"; };
 		E077CAC08921E24541D9707D /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		E36D674DB2C28C1F7083F6F4 /* ClaudeAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeAPIClient.swift; sourceTree = "<group>"; };
@@ -387,6 +389,7 @@
 				8EE6DA3D07E981F3E46C50FC /* MarketDataSectionView.swift */,
 				8D4844FC75E2D807C80E501B /* MonthlyPaymentSimulationView.swift */,
 				396C1453586517654E863287 /* MortgageTaxBenefitView.swift */,
+				DB64D4BF8A72F5CFDD2EC050 /* MyListView.swift */,
 				336E18AB549B9601A34418DF /* NopedListingsView.swift */,
 				18F421EAE268593C2F547849 /* PhotoSectionView.swift */,
 				A050CCBF6353433066A86B6E /* PopulationSectionView.swift */,
@@ -562,6 +565,7 @@
 				9A14A66302216E03F2C22E2D /* MarketDataSectionView.swift in Sources */,
 				A525C4CBAA6599D35B521432 /* MonthlyPaymentSimulationView.swift in Sources */,
 				7C9EDA58DB888F9E89FC90A5 /* MortgageTaxBenefitView.swift in Sources */,
+				E489DAEC1E5942BEAC8CAC88 /* MyListView.swift in Sources */,
 				1D30A4CF74D6451DE51B23CE /* NetworkMonitor.swift in Sources */,
 				26F2B5EFC773A320569DD803 /* NopedListingsView.swift in Sources */,
 				13F2D3B8066ED1C37940E12B /* NotificationScheduleService.swift in Sources */,
@@ -683,7 +687,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 734;
+				CURRENT_PROJECT_VERSION = 735;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -813,7 +817,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 734;
+				CURRENT_PROJECT_VERSION = 735;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_NS_ASSERTIONS = NO;
