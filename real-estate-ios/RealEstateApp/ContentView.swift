@@ -192,7 +192,7 @@ struct ContentView: View {
                 .tabItem { Label("地図", systemImage: "map") }
                 .tag(2)
                 .accessibilityLabel("地図で探す")
-            MyListView()
+            ListingListView(favoritesOnly: true)
                 .tabItem { Label("マイリスト", systemImage: "list.star") }
                 .tag(3)
                 .accessibilityLabel("マイリスト")
@@ -228,7 +228,7 @@ struct ContentView: View {
             case .map:
                 MapTabView()
             case .favorites:
-                MyListView()
+                ListingListView(favoritesOnly: true)
             case .transactions:
                 TransactionTabView()
             case .settings:

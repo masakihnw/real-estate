@@ -50,13 +50,16 @@ struct ListingListView: View {
     @State private var claudeSummaryTask: Task<Void, Never>?
     @State private var lastClaudeSummaryHash: Int?
 
-    /// お気に入りタブの掲載状態フィルタ
+    /// マイリストタブのフィルタ（いいね掲載状態 + Like/Nope 切り替え）
     enum DelistFilter: String, CaseIterable {
         case all = "すべて"
         case active = "掲載中"
         case delisted = "掲載終了"
+        case liked = "Like"
+        case noped = "Nope"
     }
     @State private var delistFilter: DelistFilter = .all
+    @State private var prefListings: [Listing] = []
 
     /// true のとき、いいね済みの物件だけ表示する（お気に入りタブ用）
     let favoritesOnly: Bool
@@ -249,13 +252,19 @@ struct ListingListView: View {
         }
     }
 
-    /// @Query で DB レベルフィルタ済み。お気に入りタブの掲載状態チップのみ追加フィルタ。
+    /// @Query で DB レベルフィルタ済み。マイリストタブのチップで追加フィルタ。
     private var baseList: [Listing] {
         if favoritesOnly {
             switch delistFilter {
             case .all: return Array(listings)
             case .active: return listings.filter { !$0.isDelisted }
             case .delisted: return listings.filter(\.isDelisted)
+            case .liked:
+                let keys = BuildingPreferenceStore.shared.likedKeys
+                return prefListings.filter { keys.contains($0.identityKey) }
+            case .noped:
+                let keys = BuildingPreferenceStore.shared.nopedKeys
+                return prefListings.filter { keys.contains($0.identityKey) }
             }
         }
         return Array(listings)
@@ -265,9 +274,11 @@ struct ListingListView: View {
     private func computeFilteredAndSorted() -> [Listing] {
         var list = filterStore.filter.apply(to: baseList)
 
-        let noped = BuildingPreferenceStore.shared.nopedKeys
-        if !noped.isEmpty {
-            list = list.filter { !noped.contains($0.identityKey) }
+        if delistFilter != .noped && delistFilter != .liked {
+            let noped = BuildingPreferenceStore.shared.nopedKeys
+            if !noped.isEmpty {
+                list = list.filter { !noped.contains($0.identityKey) }
+            }
         }
 
         // テキスト検索（物件名のみ・View専用）
@@ -517,7 +528,7 @@ struct ListingListView: View {
     }
 
     private var navTitle: String {
-        if favoritesOnly { return "お気に入り" }
+        if favoritesOnly { return "マイリスト" }
         switch propertyTypeFilter {
         case "shinchiku": return "新築マンション"
         case "chuko": return "中古マンション"
@@ -617,12 +628,17 @@ struct ListingListView: View {
             .onChange(of: searchText) { _, _ in recomputeFiltered() }
             .onChange(of: sortOrder) { _, _ in recomputeFiltered() }
             .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
-            .onChange(of: delistFilter) { _, _ in recomputeFiltered() }
+            .onChange(of: delistFilter) { _, newFilter in
+                if newFilter == .liked || newFilter == .noped { loadPrefListings() }
+                recomputeFiltered()
+            }
             .onChange(of: BuildingPreferenceStore.shared.nopedKeys.count) { _, _ in
+                if delistFilter == .noped { loadPrefListings() }
                 recomputeFiltered(animated: true)
                 requestClaudeSummaryIfNeeded()
             }
             .onChange(of: BuildingPreferenceStore.shared.likedKeys.count) { _, _ in
+                if delistFilter == .liked { loadPrefListings() }
                 recomputeFiltered()
                 requestClaudeSummaryIfNeeded()
             }
@@ -854,13 +870,13 @@ struct ListingListView: View {
         let isOffline = !networkMonitor.isConnected
         return ContentUnavailableView {
             Label(
-                favoritesOnly ? "お気に入りがありません" : "物件がありません",
+                favoritesOnly ? "マイリストは空です" : "物件がありません",
                 systemImage: favoritesOnly ? "heart.slash" : (isOffline ? "wifi.slash" : "building.2")
             )
         } description: {
             Text(
                 favoritesOnly
-                    ? "物件一覧でハートをタップするとここに表示されます。"
+                    ? "物件一覧でハート(♥)やスワイプ(★/👎)を使うとここに表示されます。"
                     : (isOffline
                         ? "インターネットに接続されていません。\nWi-Fi またはモバイルデータをご確認ください。"
                         : "データは自動的に更新されます。\nうまく表示されない場合は下のボタンをお試しください。")
@@ -931,48 +947,73 @@ struct ListingListView: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// お気に入りタブ用：掲載状態チップフィルタバー
+    /// マイリストタブ用：チップフィルタバー（いいね掲載状態 + Like/Nope）
     private var delistChipBar: some View {
-        HStack(spacing: 8) {
-            ForEach(DelistFilter.allCases, id: \.self) { chip in
-                let isSelected = delistFilter == chip
-                let count: Int = {
-                    let liked = listings.filter(\.isLiked)
-                    switch chip {
-                    case .all: return liked.count
-                    case .active: return liked.filter { !$0.isDelisted }.count
-                    case .delisted: return liked.filter(\.isDelisted).count
-                    }
-                }()
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        delistFilter = chip
-                    }
-                } label: {
-                    HStack(spacing: 4) {
-                        if chip == .delisted {
-                            Image(systemName: "exclamationmark.triangle")
-                                .font(.caption2.weight(.semibold))
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(DelistFilter.allCases, id: \.self) { chip in
+                    let isSelected = delistFilter == chip
+                    let count: Int = {
+                        switch chip {
+                        case .all: return listings.filter(\.isLiked).count
+                        case .active: return listings.filter { $0.isLiked && !$0.isDelisted }.count
+                        case .delisted: return listings.filter { $0.isLiked && $0.isDelisted }.count
+                        case .liked: return BuildingPreferenceStore.shared.likedKeys.count
+                        case .noped: return BuildingPreferenceStore.shared.nopedKeys.count
                         }
-                        Text(chip.rawValue)
-                            .font(.footnote.weight(isSelected ? .semibold : .regular))
-                        Text("\(count)")
-                            .font(.caption2.weight(.medium))
-                            .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
+                    }()
+                    let chipIcon: String? = {
+                        switch chip {
+                        case .delisted: return "exclamationmark.triangle"
+                        case .liked: return "star.fill"
+                        case .noped: return "hand.thumbsdown"
+                        default: return nil
+                        }
+                    }()
+                    let chipColor: Color = {
+                        switch chip {
+                        case .liked: return .yellow
+                        case .noped: return .orange
+                        default: return Color.accentColor
+                        }
+                    }()
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            delistFilter = chip
+                            if (chip == .liked || chip == .noped) && prefListings.isEmpty {
+                                loadPrefListings()
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            if let icon = chipIcon {
+                                Image(systemName: icon)
+                                    .font(.caption2.weight(.semibold))
+                            }
+                            Text(chip.rawValue)
+                                .font(.footnote.weight(isSelected ? .semibold : .regular))
+                            Text("\(count)")
+                                .font(.caption2.weight(.medium))
+                                .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .foregroundStyle(isSelected ? .white : .primary)
+                        .background(isSelected ? chipColor : Color(.systemGray6))
+                        .clipShape(Capsule())
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .foregroundStyle(isSelected ? .white : .primary)
-                    .background(isSelected ? Color.accentColor : Color(.systemGray6))
-                    .clipShape(Capsule())
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(chip.rawValue) \(count)件")
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("\(chip.rawValue) \(count)件")
             }
-            Spacer()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
+    }
+
+    private func loadPrefListings() {
+        let descriptor = FetchDescriptor<Listing>()
+        prefListings = (try? modelContext.fetch(descriptor)) ?? []
     }
 
     private var listContent: some View {
