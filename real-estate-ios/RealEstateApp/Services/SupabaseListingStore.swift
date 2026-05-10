@@ -98,7 +98,7 @@ final class SupabaseListingStore {
                     ("is_active", "eq.true"),
                     ("property_type", "eq.\(propertyType)")
                 ],
-                order: "updated_at.desc",
+                order: "created_at.desc",
                 range: range
             )
 
@@ -180,8 +180,11 @@ final class SupabaseListingStore {
                     ListingStore.shared.updateFromSupabase(same, from: listing)
                 } else {
                     if listing.isNew { newCount += 1 }
-                    if let seen = listing.firstSeenAt,
-                       let parsed = Self.isoDateFormatter.date(from: seen) {
+                    if let createdAt = dto.created_at,
+                       let parsed = ISO8601DateFormatter().date(from: createdAt) {
+                        listing.addedAt = parsed
+                    } else if let seen = listing.firstSeenAt,
+                              let parsed = Self.isoDateFormatter.date(from: seen) {
                         listing.addedAt = parsed
                     } else {
                         listing.addedAt = fetchedAt
