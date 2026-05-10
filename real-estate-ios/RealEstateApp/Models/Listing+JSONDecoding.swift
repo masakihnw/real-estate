@@ -106,6 +106,7 @@ struct ListingDTO: Codable {
     // 投資判断支援データ
     var price_history: [Listing.PriceHistoryEntry]?
     var first_seen_at: String?
+    var created_at: String?
     var price_fairness_score: Int?
     var resale_liquidity_score: Int?
     var competing_listings_count: Int?
