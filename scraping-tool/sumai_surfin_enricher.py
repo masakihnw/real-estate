@@ -85,8 +85,8 @@ _worker_sessions: dict[int, requests.Session] = {}
 _worker_session_ts: dict[int, float] = {}
 _worker_lock = threading.Lock()
 _SESSION_TTL = 300
-_RATE_LIMIT_COOLDOWN = 600
-_RATE_LIMIT_MAX_RETRIES = 3
+_RATE_LIMIT_COOLDOWN = 0
+_RATE_LIMIT_MAX_RETRIES = 1
 
 
 def _is_session_valid(session: requests.Session) -> bool:

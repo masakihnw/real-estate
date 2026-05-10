@@ -4,8 +4,12 @@ name: Enrich Sumai
 # メインの Enrich and Report から分離し、レートリミット回避のため
 # 1ワーカー・5秒間隔で低負荷実行する。
 # Supabase に直接書き込むため、メインパイプラインの finalize に依存しない。
+# 6時間ごとにスケジュール実行し、キャッシュ済み物件をスキップしながら
+# 数回の実行で全件をカバーする。
 
 on:
+  schedule:
+    - cron: '30 0,6,12,18 * * *'
   workflow_run:
     workflows: ["Enrich and Report"]
     types: [completed]
