@@ -161,20 +161,6 @@ struct SettingsView: View {
             } label: {
                 Label("最近見た物件", systemImage: "clock.arrow.circlepath")
             }
-            NavigationLink {
-                NopedListingsView()
-            } label: {
-                Label {
-                    HStack {
-                        Text("Nopeした物件")
-                        Spacer()
-                        Text("\(BuildingPreferenceStore.shared.nopedKeys.count)件")
-                            .foregroundStyle(.secondary)
-                    }
-                } icon: {
-                    Image(systemName: "hand.thumbsdown")
-                }
-            }
             HStack {
                 Text("中古マンション")
                 Spacer()

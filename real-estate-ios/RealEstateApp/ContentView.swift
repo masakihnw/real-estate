@@ -22,7 +22,7 @@ enum SidebarItem: String, CaseIterable, Identifiable {
         case .dashboard:    "概況"
         case .listings:     "物件"
         case .map:          "地図"
-        case .favorites:    "お気に入り"
+        case .favorites:    "マイリスト"
         case .transactions: "成約"
         case .settings:     "設定"
         }
@@ -33,7 +33,7 @@ enum SidebarItem: String, CaseIterable, Identifiable {
         case .dashboard:    "chart.line.uptrend.xyaxis"
         case .listings:     "building.2"
         case .map:          "map"
-        case .favorites:    "heart"
+        case .favorites:    "list.star"
         case .transactions: "chart.bar.doc.horizontal"
         case .settings:     "gearshape"
         }
@@ -192,10 +192,10 @@ struct ContentView: View {
                 .tabItem { Label("地図", systemImage: "map") }
                 .tag(2)
                 .accessibilityLabel("地図で探す")
-            ListingListView(favoritesOnly: true)
-                .tabItem { Label("お気に入り", systemImage: "heart") }
+            MyListView()
+                .tabItem { Label("マイリスト", systemImage: "list.star") }
                 .tag(3)
-                .accessibilityLabel("お気に入り物件")
+                .accessibilityLabel("マイリスト")
             TransactionTabView()
                 .tabItem { Label("成約", systemImage: "chart.bar.doc.horizontal") }
                 .tag(4)
@@ -228,7 +228,7 @@ struct ContentView: View {
             case .map:
                 MapTabView()
             case .favorites:
-                ListingListView(favoritesOnly: true)
+                MyListView()
             case .transactions:
                 TransactionTabView()
             case .settings:
