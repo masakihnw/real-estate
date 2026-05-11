@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     if: >-
       github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
       github.event.workflow_run.conclusion == 'success'
     timeout-minutes: 5
     outputs:
@@ -90,6 +91,13 @@ jobs:
         working-directory: scraping-tool
         run: cp results/latest_raw.json results/latest.json
 
+      - name: Restore previous chuko output
+        uses: actions/cache/restore@v4
+        with:
+          path: scraping-tool/results/.sumai_previous_chuko.json
+          key: sumai-chuko-output-dummy
+          restore-keys: sumai-chuko-output-
+
       - name: Run sumai enrichment (chuko)
         working-directory: scraping-tool
         env:
@@ -98,6 +106,11 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
+          PREV_FLAG=""
+          if [ -f results/.sumai_previous_chuko.json ]; then
+            echo "前回出力あり: インクリメンタルモード"
+            PREV_FLAG="--previous results/.sumai_previous_chuko.json"
+          fi
           python3 sumai_surfin_enricher.py \
             --input results/latest.json \
             --output results/latest.json \
@@ -105,7 +118,20 @@ jobs:
             --workers 1 \
             --delay 5 \
             --max-time 55 \
-            --browser
+            --browser \
+            $PREV_FLAG
+
+      - name: Prepare chuko output for cache
+        working-directory: scraping-tool
+        run: cp results/latest.json results/.sumai_previous_chuko.json
+        if: always()
+
+      - name: Save chuko output for next run
+        uses: actions/cache/save@v4
+        with:
+          path: scraping-tool/results/.sumai_previous_chuko.json
+          key: sumai-chuko-output-${{ github.run_id }}
+        if: always()
 
   enrich-sumai-shinchiku:
     needs: resolve
@@ -151,6 +177,13 @@ jobs:
             exit 0
           fi
 
+      - name: Restore previous shinchiku output
+        uses: actions/cache/restore@v4
+        with:
+          path: scraping-tool/results/.sumai_previous_shinchiku.json
+          key: sumai-shinchiku-output-dummy
+          restore-keys: sumai-shinchiku-output-
+
       - name: Run sumai enrichment (shinchiku)
         working-directory: scraping-tool
         env:
@@ -160,6 +193,11 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           if [ -f results/latest_shinchiku.json ]; then
+            PREV_FLAG=""
+            if [ -f results/.sumai_previous_shinchiku.json ]; then
+              echo "前回出力あり: インクリメンタルモード"
+              PREV_FLAG="--previous results/.sumai_previous_shinchiku.json"
+            fi
             python3 sumai_surfin_enricher.py \
               --input results/latest_shinchiku.json \
               --output results/latest_shinchiku.json \
@@ -167,5 +205,21 @@ jobs:
               --workers 1 \
               --delay 5 \
               --max-time 55 \
-              --browser
+              --browser \
+              $PREV_FLAG
           fi
+
+      - name: Prepare shinchiku output for cache
+        working-directory: scraping-tool
+        run: |
+          if [ -f results/latest_shinchiku.json ]; then
+            cp results/latest_shinchiku.json results/.sumai_previous_shinchiku.json
+          fi
+        if: always()
+
+      - name: Save shinchiku output for next run
+        uses: actions/cache/save@v4
+        with:
+          path: scraping-tool/results/.sumai_previous_shinchiku.json
+          key: sumai-shinchiku-output-${{ github.run_id }}
+        if: always()
