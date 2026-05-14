@@ -460,7 +460,7 @@ jobs:
     needs: [check, enrich-chuko-core, enrich-chuko-mansion, enrich-chuko-claude, enrich-shinchiku, build-transaction-feed]
     if: "!cancelled() && (needs.check.outputs.has_changes == 'true' || needs.check.outputs.is_slack_time == 'true')"
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 75
     permissions:
       contents: write
 
@@ -560,7 +560,26 @@ jobs:
           ./scripts/run_finalize.sh \
             --is-slack-time "${{ needs.check.outputs.is_slack_time }}" \
             --has-changes "${{ needs.check.outputs.has_changes }}" \
-            --date "${{ needs.check.outputs.date }}"
+            --date "${{ needs.check.outputs.date }}" \
+            --skip-maps true
+
+      - name: Build map viewer
+        if: needs.check.outputs.has_changes == 'true'
+        working-directory: scraping-tool
+        timeout-minutes: 15
+        continue-on-error: true
+        run: |
+          SHINCHIKU_FLAG=""
+          if [ -s results/latest_shinchiku.json ]; then
+            SHINCHIKU_FLAG="--shinchiku results/latest_shinchiku.json"
+          fi
+          echo "--- 地図生成 ---" >&2
+          python3 scripts/build_map_viewer.py results/latest.json $SHINCHIKU_FLAG
+          echo "--- geocode キャッシュクリーンアップ ---" >&2
+          python3 scripts/geocode.py || true
+          if [ ! -f results/risk_geojson/building_collapse_risk.geojson ]; then
+            python3 scripts/convert_risk_geojson.py 2>&1 || true
+          fi
 
       - name: Commit and push
         run: |
