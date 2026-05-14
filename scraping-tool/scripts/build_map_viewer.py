@@ -310,7 +310,9 @@ def main() -> None:
     map_data = build_map_data(listings, previous_listings)
     new_count = sum(1 for p in map_data if p.get("is_new"))
     shinchiku_pin_count = sum(1 for p in map_data if p.get("is_shinchiku"))
-    print(f"Geocoded {len(map_data)} locations (skipped {len(listings) - len(map_data)} without coordinates).")
+    from scripts.geocode import _api_call_count, _MAX_API_CALLS
+    skipped = len(listings) - len(map_data)
+    print(f"Geocoded {len(map_data)} locations (skipped {skipped} without coordinates). API calls: {_api_call_count}/{_MAX_API_CALLS}")
     print(f"Pins: {len(map_data) - shinchiku_pin_count} chuko (blue) + {shinchiku_pin_count} shinchiku (green)")
     if new_count:
         print(f"Newly added listings (🆕 badge): {new_count}")

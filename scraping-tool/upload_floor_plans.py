@@ -106,6 +106,10 @@ def _content_type_to_ext(content_type: str) -> str:
 
 def _init_firebase():
     """Firebase Admin SDK を初期化し、Storage bucket を返す。"""
+    if os.environ.get("SKIP_FIREBASE_STORAGE", "").lower() in ("1", "true", "yes"):
+        print("SKIP_FIREBASE_STORAGE=1: Firebase Storage スキップ", file=sys.stderr)
+        return None
+
     json_str = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
     if not json_str or not json_str.strip():
         print(
