@@ -103,13 +103,36 @@ def main() -> None:
         chunk = listing_ids[i:i + 100]
         resp = (
             client.table("listings")
-            .select("id, name, price_man, area_m2, layout, built_year, walk_min, address")
+            .select("id, name, area_m2, layout, built_year, walk_min, address")
             .in_("id", chunk)
             .execute()
         )
         if resp.data:
             for row in resp.data:
                 listing_map[row["id"]] = row
+
+    price_map: dict[int, int | None] = {}
+    for i in range(0, len(listing_ids), 100):
+        chunk = listing_ids[i:i + 100]
+        resp = (
+            client.table("listing_sources")
+            .select("listing_id, price_man")
+            .in_("listing_id", chunk)
+            .eq("is_active", True)
+            .execute()
+        )
+        if resp.data:
+            for row in resp.data:
+                lid = row["listing_id"]
+                p = row.get("price_man")
+                if p is not None:
+                    existing = price_map.get(lid)
+                    if existing is None or p < existing:
+                        price_map[lid] = p
+
+    for lid, price in price_map.items():
+        if lid in listing_map:
+            listing_map[lid]["price_man"] = price
 
     CACHE_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(str(CACHE_DB_PATH))
