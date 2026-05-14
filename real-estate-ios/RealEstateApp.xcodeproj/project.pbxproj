@@ -58,6 +58,7 @@
 		738E226355B87CB2BD6B8020 /* CategorizedImageGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2D3C9C14AA8ACF549EFEA9 /* CategorizedImageGallery.swift */; };
 		7538BC831D6816AEF731DD12 /* BuyerProfileSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EC9F60CCFA3A6629C3754CE /* BuyerProfileSheet.swift */; };
 		761BBD45852C176F31555C67 /* RealEstateWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 01FED85B686F284CE634CDC5 /* RealEstateWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		767C0B0B4070CE4C84C91B27 /* BuyerProfileSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C32C97436B7CC7252692AFE /* BuyerProfileSyncService.swift */; };
 		7750311AA01B0C8728029D8C /* RecentlyViewedListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623D7A7882FFF98A5AEFA57 /* RecentlyViewedListView.swift */; };
 		7C2DC3F1723DF5B611734921 /* TransactionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */; };
 		7C9EDA58DB888F9E89FC90A5 /* MortgageTaxBenefitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C1453586517654E863287 /* MortgageTaxBenefitView.swift */; };
@@ -139,6 +140,7 @@
 		041D952DCAA0B0154969EEA9 /* Secrets.swift.template */ = {isa = PBXFileReference; path = Secrets.swift.template; sourceTree = "<group>"; };
 		06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		09905D8E7A686AD2E4076276 /* BuyerProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyerProfile.swift; sourceTree = "<group>"; };
+		0C32C97436B7CC7252692AFE /* BuyerProfileSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyerProfileSyncService.swift; sourceTree = "<group>"; };
 		0E59A9E4A8BFE0ABFF87EBAE /* RealEstateApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RealEstateApp.entitlements; sourceTree = "<group>"; };
 		18B9F19E6E3E1CFCE1CCEFC8 /* ScrapingLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogView.swift; sourceTree = "<group>"; };
 		18F421EAE268593C2F547849 /* PhotoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSectionView.swift; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 				CD7391AC642FF221BD72EBEB /* AuthService.swift */,
 				438CDAB54F0C420E60FF2E31 /* BackgroundRefreshManager.swift */,
 				96AD33CCD88239C07F583AC5 /* BuildingPreferenceStore.swift */,
+				0C32C97436B7CC7252692AFE /* BuyerProfileSyncService.swift */,
 				E36D674DB2C28C1F7083F6F4 /* ClaudeAPIClient.swift */,
 				4C01B541CE8BDAC3B3E2C7BD /* CommuteTimeService.swift */,
 				32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */,
@@ -531,6 +534,7 @@
 				6B9C6A022981FFA89B5DBC25 /* BuildingPreferenceStore.swift in Sources */,
 				A47DE9D1278F17FC747A523A /* BuyerProfile.swift in Sources */,
 				7538BC831D6816AEF731DD12 /* BuyerProfileSheet.swift in Sources */,
+				767C0B0B4070CE4C84C91B27 /* BuyerProfileSyncService.swift in Sources */,
 				738E226355B87CB2BD6B8020 /* CategorizedImageGallery.swift in Sources */,
 				6A043501A2649B11FF52CDE0 /* ClaudeAPIClient.swift in Sources */,
 				6AC9E38350EA1E689D272877 /* CommuteDestinationSettingsView.swift in Sources */,
@@ -683,7 +687,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 741;
+				CURRENT_PROJECT_VERSION = 742;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -813,7 +817,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 741;
+				CURRENT_PROJECT_VERSION = 742;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_NS_ASSERTIONS = NO;
