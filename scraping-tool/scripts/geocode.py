@@ -226,6 +226,12 @@ def _address_to_nominatim_query_chome(address: str) -> Optional[str]:
 GEOCODE_RETRIES = 3
 GEOCODE_BACKOFF_SEC = 2
 
+# 1回の実行で新規にAPIを叩く回数の上限（環境変数で上書き可能）
+# デフォルト600 = 1.1秒×600 = 約11分（15分タイムアウトに余裕を持って収まる）
+import os as _os
+_MAX_API_CALLS = int(_os.environ.get("GEOCODE_MAX_API_CALLS", "600"))
+_api_call_count = 0
+
 
 def geocode(address: str) -> Optional[Tuple[float, float]]:
     """
@@ -244,6 +250,10 @@ def geocode(address: str) -> Optional[Tuple[float, float]]:
     if not _is_tokyo_23ku_address(key):
         return None
 
+    global _api_call_count
+    if _api_call_count >= _MAX_API_CALLS:
+        return None
+
     # クエリ候補: フル住所 → 丁目明示 → 町名のみ
     queries = []
     queries.append(_address_to_nominatim_query(key, strip_number=False))
@@ -258,26 +268,28 @@ def geocode(address: str) -> Optional[Tuple[float, float]]:
         for attempt in range(GEOCODE_RETRIES):
             try:
                 time.sleep(RATE_LIMIT_SEC)
+                _api_call_count += 1
                 r = requests.get(NOMINATIM_URL, params=params, headers=headers, timeout=10)
                 r.raise_for_status()
                 data = r.json()
                 if data:
                     lat = float(data[0]["lat"])
                     lon = float(data[0]["lon"])
-                    # バリデーション: 東京23区の範囲内かチェック
                     if validate_tokyo_coordinate(key, lat, lon):
                         cache[key] = (lat, lon)
-                        _save_cache(cache)  # writes to disk; cache is _memory_cache, already updated
+                        _save_cache(cache)
                         return (lat, lon)
                     else:
-                        # バリデーション失敗 → 次のクエリ候補を試行
                         break
-                break  # 空結果ならリトライ不要
+                break
             except (requests.RequestException, KeyError, ValueError, TypeError):
                 if attempt < GEOCODE_RETRIES - 1:
                     time.sleep(GEOCODE_BACKOFF_SEC * (attempt + 1))
                 else:
                     break
+        if _api_call_count >= _MAX_API_CALLS:
+            logger.info("geocode API call limit reached (%d calls)", _MAX_API_CALLS)
+            return None
     return None
 
 
