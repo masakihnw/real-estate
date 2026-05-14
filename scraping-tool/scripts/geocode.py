@@ -227,9 +227,10 @@ GEOCODE_RETRIES = 3
 GEOCODE_BACKOFF_SEC = 2
 
 # 1回の実行で新規にAPIを叩く回数の上限（環境変数で上書き可能）
-# デフォルト600 = 1.1秒×600 = 約11分（15分タイムアウトに余裕を持って収まる）
+# デフォルト400 ≈ 1.1秒×400 = 約7.3分（15分タイムアウトに十分な余裕）
+# 各アドレスは最大3クエリ×3リトライ消費するため、実効は少なめに見積もる
 import os as _os
-_MAX_API_CALLS = int(_os.environ.get("GEOCODE_MAX_API_CALLS", "600"))
+_MAX_API_CALLS = int(_os.environ.get("GEOCODE_MAX_API_CALLS", "400"))
 _api_call_count = 0
 
 
