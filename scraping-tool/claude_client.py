@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import time
 from dataclasses import dataclass, field
@@ -57,6 +58,7 @@ class BatchRequest:
     model: str = DEFAULT_MODEL
     max_tokens: int = 1024
     temperature: float = 0.0
+    prefill: str = ""
 
 
 @dataclass
@@ -147,13 +149,17 @@ class ClaudeClient:
         self, requests: list[BatchRequest], poll_timeout_minutes: int = 20,
     ) -> list[BatchResult]:
         """Batch API で非同期送信 → ポーリング → 結果取得。"""
+        prefill_map = {req.custom_id: req.prefill for req in requests if req.prefill}
         batch_requests = []
         for req in requests:
+            messages = req.messages
+            if req.prefill:
+                messages = req.messages + [{"role": "assistant", "content": req.prefill}]
             params: dict[str, Any] = {
                 "model": req.model,
                 "max_tokens": req.max_tokens,
                 "temperature": req.temperature,
-                "messages": req.messages,
+                "messages": messages,
             }
             if req.system:
                 params["system"] = [
@@ -178,14 +184,17 @@ class ClaudeClient:
         batch_id = batch.id
         logger.info("Batch ID: %s, status: %s", batch_id, batch.processing_status)
 
-        results = self._poll_batch(batch_id, timeout_minutes=poll_timeout_minutes)
+        results = self._poll_batch(batch_id, timeout_minutes=poll_timeout_minutes, prefill_map=prefill_map)
         succeeded = sum(1 for r in results if not r.error)
         if not succeeded:
             logger.warning("Batch 結果なし → 同期 API フォールバック (%d件)", len(requests))
             results = self._send_sync(requests)
         return results
 
-    def _poll_batch(self, batch_id: str, timeout_minutes: int = 20) -> list[BatchResult]:
+    def _poll_batch(
+        self, batch_id: str, timeout_minutes: int = 20,
+        prefill_map: Optional[dict[str, str]] = None,
+    ) -> list[BatchResult]:
         """バッチの完了をポーリング。タイムアウト時は部分結果を返す。"""
         deadline = time.time() + timeout_minutes * 60
         poll_interval = 10
@@ -201,10 +210,10 @@ class ClaudeClient:
             status = batch.processing_status
             if status == "ended":
                 logger.info("Batch 完了: %s", batch_id)
-                return self._retrieve_batch_results(batch_id)
+                return self._retrieve_batch_results(batch_id, prefill_map=prefill_map)
             elif status in ("canceling", "canceled", "expired"):
                 logger.warning("Batch 異常終了: %s (status=%s) — 部分結果を取得", batch_id, status)
-                return self._retrieve_batch_results(batch_id)
+                return self._retrieve_batch_results(batch_id, prefill_map=prefill_map)
 
             counts = batch.request_counts
             logger.info(
@@ -215,7 +224,7 @@ class ClaudeClient:
             poll_interval = min(poll_interval * 1.5, 30)
 
         logger.warning("Batch タイムアウト (%d分): %s — 部分結果を取得してキャンセル", timeout_minutes, batch_id)
-        partial = self._retrieve_batch_results(batch_id)
+        partial = self._retrieve_batch_results(batch_id, prefill_map=prefill_map)
         try:
             self._client.messages.batches.cancel(batch_id)
             logger.info("Batch キャンセル送信: %s", batch_id)
@@ -226,8 +235,10 @@ class ClaudeClient:
             logger.info("部分結果: %d/%d 件取得", succeeded, len(partial))
         return partial
 
-    def _retrieve_batch_results(self, batch_id: str) -> list[BatchResult]:
-        """バ��チ結果を取得。"""
+    def _retrieve_batch_results(
+        self, batch_id: str, prefill_map: Optional[dict[str, str]] = None,
+    ) -> list[BatchResult]:
+        """バッチ結果を取得。prefill_map があれば結果にプリペンド。"""
         results = []
         try:
             for result in self._client.messages.batches.results(batch_id):
@@ -238,6 +249,8 @@ class ClaudeClient:
                     for block in msg.content:
                         if block.type == "text":
                             content += block.text
+                    if prefill_map and custom_id in prefill_map:
+                        content = prefill_map[custom_id] + content
                     results.append(BatchResult(
                         custom_id=custom_id,
                         content=content,
@@ -258,11 +271,14 @@ class ClaudeClient:
         for req in requests:
             for attempt in range(3):
                 try:
+                    messages = req.messages
+                    if req.prefill:
+                        messages = req.messages + [{"role": "assistant", "content": req.prefill}]
                     params: dict[str, Any] = {
                         "model": req.model,
                         "max_tokens": req.max_tokens,
                         "temperature": req.temperature,
-                        "messages": req.messages,
+                        "messages": messages,
                     }
                     if req.system:
                         params["system"] = [
@@ -273,6 +289,8 @@ class ClaudeClient:
                     for block in msg.content:
                         if block.type == "text":
                             content += block.text
+                    if req.prefill:
+                        content = req.prefill + content
                     results.append(BatchResult(
                         custom_id=req.custom_id,
                         content=content,
@@ -295,34 +313,43 @@ class ClaudeClient:
         return results
 
     def parse_json_response(self, content: str) -> Optional[dict]:
-        """レスポンスから JSON を抽出。```json ブロックにも対応。"""
+        """レスポンスから JSON を抽出。Markdown混在・```json ブロックにも対応。"""
         content = content.strip()
-        if content.startswith("```"):
-            lines = content.split("\n")
-            json_lines = []
-            inside = False
-            for line in lines:
-                if line.startswith("```") and not inside:
-                    inside = True
-                    continue
-                elif line.startswith("```") and inside:
-                    break
-                elif inside:
-                    json_lines.append(line)
-            content = "\n".join(json_lines)
-
+        m = re.search(r'```(?:json)?\s*\n(.*?)\n```', content, re.DOTALL)
+        if m:
+            content = m.group(1).strip()
         try:
             return json.loads(content)
         except json.JSONDecodeError:
-            start = content.find("{")
-            end = content.rfind("}") + 1
-            if start >= 0 and end > start:
-                try:
-                    return json.loads(content[start:end])
-                except json.JSONDecodeError:
-                    pass
-            logger.warning("JSON パース失��: %.200s", content)
-            return None
+            pass
+        start = content.find("{")
+        if start >= 0:
+            depth = 0
+            in_str = False
+            esc = False
+            for i in range(start, len(content)):
+                c = content[i]
+                if esc:
+                    esc = False
+                    continue
+                if c == '\\' and in_str:
+                    esc = True
+                    continue
+                if c == '"' and not esc:
+                    in_str = not in_str
+                    continue
+                if not in_str:
+                    if c == '{':
+                        depth += 1
+                    elif c == '}':
+                        depth -= 1
+                        if depth == 0:
+                            try:
+                                return json.loads(content[start:i + 1])
+                            except json.JSONDecodeError:
+                                break
+        logger.warning("JSON パース失敗: %.200s", content)
+        return None
 
     @staticmethod
     def _cache_key(module: str, input_data: Any) -> str:
