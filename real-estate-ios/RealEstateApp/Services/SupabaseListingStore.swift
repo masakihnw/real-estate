@@ -75,7 +75,8 @@ final class SupabaseListingStore {
             return 0
         }
 
-        let newCount = syncToDatabase(dtos: dtos, propertyType: propertyType, modelContext: modelContext, isIncremental: lastSync != nil)
+        let likedKeys = await MainActor.run { BuildingPreferenceStore.shared.likedKeys }
+        let newCount = syncToDatabase(dtos: dtos, propertyType: propertyType, modelContext: modelContext, isIncremental: lastSync != nil, likedKeys: likedKeys)
 
         // 同期タイムスタンプを更新 (ISO 8601)
         let now = ISO8601DateFormatter().string(from: Date())
@@ -131,7 +132,7 @@ final class SupabaseListingStore {
     }
 
     /// SwiftData に同期 (既存 ListingStore.syncToDatabase のロジックを流用)
-    private func syncToDatabase(dtos: [ListingDTO], propertyType: String, modelContext: ModelContext, isIncremental: Bool) -> Int {
+    private func syncToDatabase(dtos: [ListingDTO], propertyType: String, modelContext: ModelContext, isIncremental: Bool, likedKeys: Set<String> = []) -> Int {
         // フルフェッチ時: identityKey 変更による不一致に備え自動バックアップ
         if !isIncremental && !UserAnnotationStore.hasBackup {
             UserAnnotationStore.backup(from: modelContext)
@@ -169,6 +170,22 @@ final class SupabaseListingStore {
                         } else {
                             modelContext.delete(existing)
                         }
+                    } else if likedKeys.contains(key) {
+                        listing.isLiked = true
+                        listing.isDelisted = true
+                        if let createdAt = dto.created_at,
+                           let parsed = ISO8601DateFormatter().date(from: createdAt) {
+                            listing.addedAt = parsed
+                        } else if let seen = listing.firstSeenAt,
+                                  let parsed = Self.isoDateFormatter.date(from: seen) {
+                            listing.addedAt = parsed
+                        } else {
+                            listing.addedAt = fetchedAt
+                        }
+                        if hasAnnotationBackup {
+                            UserAnnotationStore.restore(to: listing)
+                        }
+                        modelContext.insert(listing)
                     }
                     continue
                 }
