@@ -5939,5 +5939,68 @@
       "deviation_score": 7
     },
     "cached_at": "2026-05-14T16:40:31.970529"
+  },
+  "シティインデックス洗足": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/602254.html",
+      "deviation_score": 28,
+      "estimated_price_man": 5785,
+      "estimated_tsubo_price_man": 532,
+      "estimated_m2_price_man": 161,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 13,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 49.85,
+          "price_man": 6550,
+          "tsubo_price_man": 424.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T17:15:54.867013"
+  },
+  "エクセレントシティ自由が丘IIイルミナ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/784878.html",
+      "deviation_score": 33,
+      "estimated_price_man": 9595,
+      "estimated_tsubo_price_man": 467,
+      "estimated_m2_price_man": 142,
+      "shinchiku_history_count": 33,
+      "chuko_history_count": 12,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 53.58,
+          "price_man": 6945,
+          "tsubo_price_man": 424.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T17:16:03.413702"
+  },
+  "ブランズ富士見ヶ丘": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/700515.html",
+      "deviation_score": 28,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 23,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 72.34,
+          "price_man": 6683,
+          "tsubo_price_man": 306.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T17:16:11.995634"
   }
 }
