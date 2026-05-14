@@ -148,7 +148,6 @@ jobs:
         working-directory: scraping-tool
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          SKIP_FIREBASE_STORAGE: "1"
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
@@ -362,7 +361,6 @@ jobs:
         working-directory: scraping-tool
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          SKIP_FIREBASE_STORAGE: "1"
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -551,7 +549,6 @@ jobs:
         working-directory: scraping-tool
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          SKIP_FIREBASE_STORAGE: "1"
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_ALERT_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK_URL }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -631,6 +628,18 @@ jobs:
             git rebase --abort 2>/dev/null || true
             git pull --no-rebase -X ours origin ${{ github.ref_name }}
             git push origin HEAD:refs/heads/${{ github.ref_name }}
+          fi
+
+          # stash に残ったキャッシュ更新をコミット（Build map viewer 等の追加分）
+          if git stash pop --quiet 2>/dev/null; then
+            git add --ignore-missing \
+              scraping-tool/data/geocode_cache.json \
+              scraping-tool/data/reverse_geocode_cache.json \
+              2>/dev/null || true
+            if ! git diff --cached --quiet; then
+              git commit -m "chore: update geocode cache"
+              git push origin HEAD:refs/heads/${{ github.ref_name }}
+            fi
           fi
 
       - name: Notify failure to Slack
