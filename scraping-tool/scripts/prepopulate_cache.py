@@ -70,7 +70,6 @@ def main() -> None:
     logger.info("buyer_hash=%d, prompt_version=%s", buyer_hash, PROMPT_VERSION)
 
     select_fields = (
-        "name, price_man, area_m2, layout, built_year, walk_min, address, "
         "ai_recommendation_score, ai_recommendation_summary, "
         "ai_recommendation_flags, ai_recommendation_action, "
         "ai_recommendation_scenarios"
