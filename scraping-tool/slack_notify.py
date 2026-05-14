@@ -285,6 +285,36 @@ def _get_diff_from_supabase(client, current_listings: list[dict]) -> Optional[di
             elif e["event_type"] == "removed":
                 listing_net[lid] = "removed"
 
+        # reappeared クールダウン: 直近 N 日以内に通知済みの再掲載はスキップ
+        cooldown_days = int(os.environ.get("REAPPEAR_COOLDOWN_DAYS", "7"))
+        appeared_this_period = {
+            e["listing_id"] for e in events_data if e["event_type"] == "appeared"
+        }
+        reappeared_ids = list({
+            e["listing_id"] for e in events_data
+            if e["event_type"] == "reappeared"
+            and listing_net.get(e["listing_id"]) == "new"
+            and e["listing_id"] not in appeared_this_period
+        })
+        if reappeared_ids:
+            from datetime import datetime, timedelta, timezone
+            cooldown_since = (datetime.now(timezone.utc) - timedelta(days=cooldown_days)).isoformat()
+            cooled: set[int] = set()
+            for i in range(0, len(reappeared_ids), 100):
+                batch = reappeared_ids[i:i + 100]
+                prior = (client.table("listing_events")
+                         .select("listing_id")
+                         .in_("listing_id", batch)
+                         .in_("event_type", ["appeared", "reappeared"])
+                         .gt("occurred_at", cooldown_since)
+                         .lte("occurred_at", last_at)
+                         .execute())
+                cooled.update(r["listing_id"] for r in (prior.data or []))
+            for lid in cooled:
+                del listing_net[lid]
+            if cooled:
+                logger.info("reappeared cooldown: %d listings suppressed (within %d days)", len(cooled), cooldown_days)
+
         new_ids = [lid for lid, s in listing_net.items() if s == "new"]
         removed_ids = [lid for lid, s in listing_net.items() if s == "removed"]
 
@@ -398,8 +428,20 @@ def build_slack_message_from_listings(
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
 
-    new_c = len(diff_new_a)
-    rem_c = len(diff_removed_a)
+    # 同一マンション内の入れ替えを検出
+    new_by_bldg: dict[str, list[dict]] = {}
+    for r in diff_new_a:
+        bname = normalize_listing_name(r.get("name") or "")
+        new_by_bldg.setdefault(bname, []).append(r)
+    removed_by_bldg: dict[str, list[dict]] = {}
+    for r in diff_removed_a:
+        bname = normalize_listing_name(r.get("name") or "")
+        removed_by_bldg.setdefault(bname, []).append(r)
+    swap_buildings = (set(new_by_bldg) & set(removed_by_bldg)) - {""}
+    swap_new_ids = {id(r) for b in swap_buildings for r in new_by_bldg[b]}
+    swap_removed_ids = {id(r) for b in swap_buildings for r in removed_by_bldg[b]}
+    pure_new = [r for r in diff_new_a if id(r) not in swap_new_ids]
+    pure_removed = [r for r in diff_removed_a if id(r) not in swap_removed_ids]
 
     lines = [
         "🏠 *中古マンション物件情報*（資産性B以上のみ）",
@@ -415,25 +457,49 @@ def build_slack_message_from_listings(
     if report_url or map_url:
         lines.append("")
 
-    # ■ 今回の変更（新規追加・削除のみ）
-    if new_c or rem_c:
+    # ■ 今回の変更
+    if swap_buildings or pure_new or pure_removed:
         lines.append("*■ 今回の変更*")
-        lines.append(f"  🆕 *新規追加*: {new_c}件")
-        lines.append(f"  ❌ *削除*: {rem_c}件")
+        if swap_buildings:
+            lines.append(f"  🔄 *入れ替え*: {len(swap_buildings)}棟")
+        if pure_new:
+            lines.append(f"  🆕 *新規追加*: {len(pure_new)}件")
+        if pure_removed:
+            lines.append(f"  ❌ *削除*: {len(pure_removed)}件")
         lines.append("")
 
-    # 新規追加された物件（全件表示、価格昇順）
-    if diff_new_a:
+    # 同一マンション内の入れ替え
+    if swap_buildings:
+        lines.append("*🔄 同一マンション内の入れ替え*")
+        for bname in sorted(swap_buildings):
+            removed_units = removed_by_bldg[bname]
+            new_units = new_by_bldg[bname]
+            display_name = (new_units[0].get("name") or bname)[:28]
+            rem_parts = []
+            for r in removed_units:
+                fp = r.get("floor_position")
+                p = format_price(r.get("price_man"))
+                rem_parts.append(f"{fp}階 {p}" if fp else p)
+            new_parts = []
+            for r in new_units:
+                fp = r.get("floor_position")
+                p = format_price(r.get("price_man"))
+                new_parts.append(f"{fp}階 {p}" if fp else p)
+            lines.append(f"• {display_name}: {', '.join(rem_parts)} → 削除 / {', '.join(new_parts)} → 新規")
+        lines.append("")
+
+    # 新規追加された物件（入れ替え分を除く、価格昇順）
+    if pure_new:
         lines.append("*🆕 新規追加された物件*")
-        for r in sorted(diff_new_a, key=lambda x: x.get("price_man") or 0):
+        for r in sorted(pure_new, key=lambda x: x.get("price_man") or 0):
             url = r.get("url", "")
             lines.append(_listing_line_slack(r, url))
         lines.append("")
 
-    # 削除された物件（全件表示）。戸数・階数・権利を必ず含める
-    if diff_removed_a:
+    # 削除された物件（入れ替え分を除く）
+    if pure_removed:
         lines.append("*❌ 削除された物件*")
-        for r in diff_removed_a:
+        for r in pure_removed:
             floor_str = format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure"))
             units = format_total_units(r.get("total_units"))
             ownership_str = format_ownership(r.get("ownership"))
