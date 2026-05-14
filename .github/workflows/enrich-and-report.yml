@@ -583,6 +583,7 @@ jobs:
             claude-cache-finalize-
 
       - name: Prepopulate Claude cache from Supabase
+        continue-on-error: true
         working-directory: scraping-tool
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

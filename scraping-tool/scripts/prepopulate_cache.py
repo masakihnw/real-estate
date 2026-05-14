@@ -83,7 +83,7 @@ def main() -> None:
         resp = (
             client.table("enrichments")
             .select(f"listing_id, {select_fields}")
-            .not_("ai_recommendation_score", "is", "null")
+            .filter("ai_recommendation_score", "not.is", "null")
             .range(offset, offset + page_size - 1)
             .execute()
         )
