@@ -633,6 +633,12 @@ jobs:
           DATE="${{ needs.check.outputs.date }}"
           COUNT=$(jq length scraping-tool/results/latest.json 2>/dev/null || echo 0)
 
+          echo "--- cache debug ---"
+          echo "geocode_cache entries: $(python3 -c 'import json; print(len(json.load(open("scraping-tool/data/geocode_cache.json"))))' 2>/dev/null || echo 'N/A')"
+          echo "git status data/:"
+          git status scraping-tool/data/ 2>&1 | head -10
+          echo "---"
+
           git add scraping-tool/results/
           git add --ignore-missing \
             scraping-tool/data/building_units.json \
