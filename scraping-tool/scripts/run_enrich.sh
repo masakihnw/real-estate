@@ -273,8 +273,7 @@ fi
 if _should_run_track claude; then
 
     if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
-        # 前回のクレジット不足フラグが残っていたらクリア（新しいランで再試行）
-        rm -f data/.claude_credit_exhausted
+        # クレジット不足フラグは claude_client.py の24時間TTLに委ねる
 
         # Track CL1: claude_dedup + claude_text_enricher
         cp "$INPUT" "$WORK_DIR/track_cl.json"
