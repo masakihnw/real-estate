@@ -1,6 +1,106 @@
 {
   "transactions": [
     {
+      "id": "tx-7a79cf145809",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cc97c6bab835",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c340de84d863",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfab263a1aa0",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-623a7c0c1b95",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "district_code": "131010010",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "building_group_id": "131010010-2012-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-156048362089",
       "prefecture": "東京都",
       "ward": "中央区",
@@ -20858,7 +20958,7 @@
       "latitude": 35.7130782,
       "longitude": 139.7773343,
       "building_group_id": "131060070-2017-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "パレステージ上野"
     },
     {
       "id": "tx-316fc6fb7bbf",
@@ -20975,8 +21075,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "両国",
       "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "latitude": 35.6973612,
+      "longitude": 139.7863818,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -32838,7 +32938,7 @@
       "latitude": 35.6976987,
       "longitude": 139.827138,
       "building_group_id": "131080100-2012-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "ガーデングラス亀戸"
     },
     {
       "id": "tx-f5f9915b60a7",
@@ -33378,7 +33478,7 @@
       "latitude": 35.6485139,
       "longitude": 139.8119175,
       "building_group_id": "131080290-2012-RC",
-      "estimated_building_name": "クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
+      "estimated_building_name": "クレヴィア辰巳 キャナルステージ / クレヴィア辰巳"
     },
     {
       "id": "tx-62fdc6645b5e",
@@ -40238,7 +40338,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ蘆花公園ヴィラＦ棟"
     },
     {
       "id": "tx-2c772462c365",
@@ -40258,7 +40358,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ蘆花公園ヴィラＦ棟"
     },
     {
       "id": "tx-30b730105f85",
@@ -40838,7 +40938,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ蘆花公園ヴィラＦ棟"
     },
     {
       "id": "tx-04641553f8c0",
@@ -41198,7 +41298,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ蘆花公園ヴィラＦ棟"
     },
     {
       "id": "tx-53f4c06efa7a",
@@ -41378,7 +41478,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ蘆花公園ヴィラＦ棟"
     },
     {
       "id": "tx-e7e8e6bcf87f",
@@ -41838,7 +41938,7 @@
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ蘆花公園ヴィラＦ棟"
     },
     {
       "id": "tx-12bcbad38a20",
@@ -46898,7 +46998,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-40344e8ba01e",
@@ -47058,7 +47158,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-cca83fe09669",
@@ -47418,7 +47518,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-28a4ed09c619",
@@ -47478,7 +47578,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-cdb9cc88344b",
@@ -47658,7 +47758,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-45adb7fdb282",
@@ -47778,7 +47878,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-b30cd2b69cac",
@@ -47898,7 +47998,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-16ed98c0096a",
@@ -47918,7 +48018,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-f266a9e03ba2",
@@ -47938,7 +48038,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-caaa01b4e9e1",
@@ -48098,7 +48198,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-9c55a953f7e9",
@@ -48118,7 +48218,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-732ceecd205d",
@@ -48138,7 +48238,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-d36e06862f28",
@@ -48158,7 +48258,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-18c2a63f0273",
@@ -48258,7 +48358,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-03c22a95221c",
@@ -48318,7 +48418,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-fbba9f6248ce",
@@ -48538,7 +48638,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-3713889a47e6",
@@ -48558,7 +48658,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-ff57d3746134",
@@ -48578,7 +48678,7 @@
       "latitude": 35.7157717,
       "longitude": 139.712324,
       "building_group_id": "131160100-2022-RC",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "id": "tx-e0d72201efad",
@@ -48918,7 +49018,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018-RC",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "id": "tx-5decbe42bd34",
@@ -48958,7 +49058,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018-RC",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "id": "tx-697360111f4d",
@@ -49058,7 +49158,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018-RC",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "id": "tx-405e61d07d21",
@@ -49158,7 +49258,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018-RC",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "id": "tx-7bf5190c4118",
@@ -49178,7 +49278,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018-RC",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "id": "tx-d31f8b078ec6",
@@ -49198,7 +49298,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018-RC",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "id": "tx-68d122bc8cb2",
@@ -49278,7 +49378,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018-RC",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "id": "tx-74cd9eb94993",
@@ -49318,7 +49418,7 @@
       "latitude": 35.7539405,
       "longitude": 139.7374489,
       "building_group_id": "131170080-2018-RC",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "id": "tx-8bdf0a2fbd1d",
@@ -51502,6 +51602,55 @@
     }
   ],
   "building_groups": [
+    {
+      "group_id": "131010010-2007-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 4,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1646154,
+      "periods": [
+        "2021Q3",
+        "2021Q4",
+        "2022Q1",
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131010010-2012-RC",
+      "prefecture": "東京都",
+      "ward": "千代田区",
+      "district": "飯田橋",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "後楽園",
+      "estimated_walk_min": 10,
+      "latitude": 35.7016963,
+      "longitude": 139.7459787,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1833333,
+      "periods": [
+        "2025Q4"
+      ],
+      "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
     {
       "group_id": "131020010-2012-RC",
       "prefecture": "東京都",
@@ -57663,8 +57812,8 @@
       "structure": "RC",
       "nearest_station": "両国",
       "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "latitude": 35.6973612,
+      "longitude": 139.7863818,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -57869,7 +58018,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "パレステージ上野"
     },
     {
       "group_id": "131060130-2012-RC",
@@ -59618,7 +59767,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "ガーデングラス亀戸"
     },
     {
       "group_id": "131080100-2021-RC",
@@ -60437,7 +60586,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "クレヴィア辰巳 / クレヴィア辰巳 キャナルステージ"
+      "estimated_building_name": "クレヴィア辰巳 キャナルステージ / クレヴィア辰巳"
     },
     {
       "group_id": "131080300-2016-RC",
@@ -64429,7 +64578,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "グローリオ蘆花公園ヴィラＦ棟"
     },
     {
       "group_id": "131120580-2016-RC",
@@ -67073,7 +67222,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
+      "estimated_building_name": "ブリリアシティ西早稲田(BrilliaCity西早稲… / ブリリアシティ西早稲田(Brillia City 西… / ブリリアシティ西早稲田"
     },
     {
       "group_id": "131160110-2010-RC",
@@ -67650,7 +67799,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート"
+      "estimated_building_name": "ザ・ガーデンズ東京王子エアリーコート / ウィルローズ王子"
     },
     {
       "group_id": "131170080-2022-RC",
@@ -69196,7 +69345,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-11T10:33:01",
+    "updated_at": "2026-05-14T05:02:03",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -69233,8 +69382,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 2575,
-    "building_group_count": 719,
+    "transaction_count": 2580,
+    "building_group_count": 721,
     "scope": "東京23区"
   }
 }
