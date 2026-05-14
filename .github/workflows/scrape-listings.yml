@@ -137,7 +137,6 @@ jobs:
             scraping-tool/data/shutoken_city_codes.json
             scraping-tool/data/first_seen_at.json
             scraping-tool/data/listings.db
-            scraping-tool/data/claude_cache.db
           retention-days: 1
           if-no-files-found: warn
 

@@ -61,12 +61,6 @@ for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_
     fi
 done
 
-# claude_cache.db は SQLite なので JSON マージではなくコピーで復元
-if [ -f "enriched-chuko-claude/data/claude_cache.db" ]; then
-    cp "enriched-chuko-claude/data/claude_cache.db" "data/claude_cache.db"
-    echo "claude_cache.db を復元" >&2
-fi
-
 # ──────────────────────────── 成果物の配置 ────────────────────────────
 
 echo "--- 成果物配置 ---" >&2
