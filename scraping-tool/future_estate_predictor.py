@@ -53,10 +53,10 @@ PENALTY_INVENTORY_PCT = 0.05
 ZEH_RENOVATION_BONUS_PCT = 0.02
 ZEH_RENOVATION_KEYWORDS = ["ZEH", "省エネ", "断熱", "リノベーション済", "リフォーム済"]
 
-# 含み益率→資産性ランク（10%以上S, 5%以上A, 0%以上B, 未満C）
-IMPLIED_GAIN_RATIO_S = 0.10
-IMPLIED_GAIN_RATIO_A = 0.05
-IMPLIED_GAIN_RATIO_B = 0.0
+# 含み益率→資産性ランク（20%以上S, 12%以上A, 5%以上B, 未満C）
+IMPLIED_GAIN_RATIO_S = 0.20
+IMPLIED_GAIN_RATIO_A = 0.12
+IMPLIED_GAIN_RATIO_B = 0.05
 
 
 DEFAULT_MACRO_SCENARIOS = {
@@ -303,7 +303,12 @@ class FutureEstatePredictor:
             cost_p = self._calculate_cost_price(
                 property_data, scenario, current_valuation, supply_constraint
             )
-            price_10y = max(income_p, cost_p)
+            if income_p > 0 and cost_p > 0:
+                price_10y = income_p * 0.6 + cost_p * 0.4
+            elif income_p > 0:
+                price_10y = income_p
+            else:
+                price_10y = cost_p
             price_10y = self._apply_2026_corrections(price_10y, property_data, ward_name)
             price_10y = max(0, int(round(price_10y)))
             change = (price_10y / current_valuation - 1.0) * 100 if current_valuation else 0

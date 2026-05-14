@@ -442,6 +442,7 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
             system=SYSTEM_PROMPT,
             model=DEFAULT_MODEL,
             max_tokens=2048,
+            prefill="{",
         ))
         request_indices.append(i)
 
