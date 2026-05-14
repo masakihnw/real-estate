@@ -582,6 +582,13 @@ jobs:
           restore-keys: |
             claude-cache-finalize-
 
+      - name: Prepopulate Claude cache from Supabase
+        working-directory: scraping-tool
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/prepopulate_cache.py
+
       - name: Run finalize
         working-directory: scraping-tool
         env:
