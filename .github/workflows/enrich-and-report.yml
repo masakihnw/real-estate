@@ -273,6 +273,14 @@ jobs:
           path: scraping-tool/data/
         continue-on-error: true
 
+      - name: Restore Claude response cache
+        uses: actions/cache/restore@v4
+        with:
+          path: scraping-tool/data/claude_cache.db
+          key: claude-cache-chuko-${{ github.run_id }}
+          restore-keys: |
+            claude-cache-chuko-
+
       - name: Prepare input
         working-directory: scraping-tool
         run: cp results/latest_raw.json results/latest.json
@@ -291,6 +299,13 @@ jobs:
             echo "ANTHROPIC_API_KEY 未設定: スキップ"
           fi
 
+      - name: Save Claude response cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: scraping-tool/data/claude_cache.db
+          key: claude-cache-chuko-${{ github.run_id }}
+
       - name: Upload enriched results
         if: always()
         uses: actions/upload-artifact@v4
@@ -298,7 +313,6 @@ jobs:
           name: enriched-chuko-claude
           path: |
             scraping-tool/results/latest.json
-            scraping-tool/data/claude_cache.db
           retention-days: 1
           if-no-files-found: warn
 
@@ -347,6 +361,14 @@ jobs:
             commute-gmaps-shinchiku-
             commute-gmaps-
 
+      - name: Restore Claude response cache (shinchiku)
+        uses: actions/cache/restore@v4
+        with:
+          path: scraping-tool/data/claude_cache.db
+          key: claude-cache-shinchiku-${{ github.run_id }}
+          restore-keys: |
+            claude-cache-shinchiku-
+
       - name: Prepare input
         working-directory: scraping-tool
         run: |
@@ -376,6 +398,13 @@ jobs:
         with:
           path: scraping-tool/commute_gmaps_cache
           key: commute-gmaps-shinchiku-${{ github.run_id }}
+
+      - name: Save Claude response cache (shinchiku)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: scraping-tool/data/claude_cache.db
+          key: claude-cache-shinchiku-${{ github.run_id }}
 
       - name: Upload enriched results
         if: always()
@@ -544,6 +573,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: scraping-tool/scrape-results/
         continue-on-error: true
+
+      - name: Restore Claude response cache (finalize)
+        uses: actions/cache/restore@v4
+        with:
+          path: scraping-tool/data/claude_cache.db
+          key: claude-cache-finalize-${{ github.run_id }}
+          restore-keys: |
+            claude-cache-finalize-
 
       - name: Run finalize
         working-directory: scraping-tool

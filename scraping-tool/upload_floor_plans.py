@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-間取り図画像を Firebase Storage にアップロードし、listings JSON 内の URL を置き換える。
+間取り図画像を Supabase Storage にアップロードし、listings JSON 内の URL を置き換える。
 
-スクレイピングで取得した SUUMO/HOME'S の画像 URL を Firebase Storage に保存することで、
+スクレイピングで取得した SUUMO/HOME'S の画像 URL を Supabase Storage に保存することで、
 物件が掲載終了した後も間取り図を表示可能にする。
 
 設計:
   - 元 URL の SHA256 ハッシュをファイル名に使い、同一画像の重複アップロードを回避
-  - マニフェスト（data/floor_plan_storage_manifest.json）で元 URL → Firebase URL のマッピングを保持
-  - FIREBASE_SERVICE_ACCOUNT 環境変数が未設定の場合はスキップ（ローカル開発時）
+  - マニフェスト（data/floor_plan_storage_manifest.json）で元 URL → Storage URL のマッピングを保持
+  - SUPABASE_SERVICE_ROLE_KEY 環境変数が未設定の場合はスキップ（ローカル開発時）
   - ThreadPoolExecutor による並列ダウンロード+アップロードで高速化
   - --max-time で最大実行時間を指定し、超過時は未処理分をスキップ
 
@@ -27,10 +27,9 @@ import os
 import sys
 import threading
 import time
-import uuid
 from pathlib import Path
 from typing import Optional
-from urllib.parse import quote, urlparse
+from urllib.parse import urlparse
 
 import requests
 
@@ -38,13 +37,13 @@ from logger import get_logger
 logger = get_logger(__name__)
 
 
-STORAGE_BUCKET = "real-estate-app-5b869.firebasestorage.app"
+SUPABASE_BUCKET_NAME = "listing-images"
+SUPABASE_STORAGE_HOST = "supabase.co/storage"
+FIREBASE_STORAGE_HOST = "firebasestorage.googleapis.com"
 
 ROOT = Path(__file__).resolve().parent
 MANIFEST_DIR = ROOT / "data"
 MANIFEST_PATH = MANIFEST_DIR / "floor_plan_storage_manifest.json"
-
-FIREBASE_STORAGE_HOST = "firebasestorage.googleapis.com"
 
 DOWNLOAD_TIMEOUT_SEC = 30
 MIN_IMAGE_BYTES = 500
@@ -59,7 +58,7 @@ def _url_to_hash(url: str) -> str:
 
 
 def _load_manifest() -> dict[str, str]:
-    """マニフェスト（元URL → Firebase URL のマッピング）を読み込む。"""
+    """マニフェスト（元URL → Storage URL のマッピング）を読み込む。"""
     if not MANIFEST_PATH.exists():
         return {}
     try:
@@ -104,42 +103,17 @@ def _content_type_to_ext(content_type: str) -> str:
     return ext_map.get(content_type, ".jpg")
 
 
-def _init_firebase():
-    """Firebase Admin SDK を初期化し、Storage bucket を返す。"""
-    if os.environ.get("SKIP_FIREBASE_STORAGE", "").lower() in ("1", "true", "yes"):
-        print("SKIP_FIREBASE_STORAGE=1: Firebase Storage スキップ", file=sys.stderr)
+def _init_storage():
+    """Supabase Storage クライアントを初期化。"""
+    from supabase_client import get_client
+    client = get_client()
+    if client is None:
+        print("Supabase クライアントが利用できないためスキップ", file=sys.stderr)
         return None
-
-    json_str = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
-    if not json_str or not json_str.strip():
-        print(
-            "FIREBASE_SERVICE_ACCOUNT が未設定のためスキップ",
-            file=sys.stderr,
-        )
-        return None
-
     try:
-        import firebase_admin
-        from firebase_admin import credentials, storage
-    except ImportError:
-        logger.info("firebase-admin がインストールされていません")
-        return None
-
-    try:
-        cred_dict = json.loads(json_str)
-    except json.JSONDecodeError as e:
-        logger.error(f"FIREBASE_SERVICE_ACCOUNT の JSON パースに失敗: {e}")
-        return None
-
-    try:
-        try:
-            app = firebase_admin.get_app()
-        except ValueError:
-            cred = credentials.Certificate(cred_dict)
-            app = firebase_admin.initialize_app(cred, {"storageBucket": STORAGE_BUCKET})
-        return storage.bucket(name=STORAGE_BUCKET, app=app)
+        return client.storage.from_(SUPABASE_BUCKET_NAME)
     except Exception as e:
-        logger.error(f"Firebase Storage 初期化失敗: {e}")
+        logger.error("Supabase Storage 初期化失敗: %s", e)
         return None
 
 
@@ -166,6 +140,16 @@ def _get_thread_session() -> requests.Session:
     return _thread_local.session
 
 
+def _get_thread_storage():
+    """スレッドローカルな Supabase Storage クライアントを取得（httpx.Client 非スレッドセーフ対策）。"""
+    if not hasattr(_thread_local, "storage"):
+        from supabase import create_client
+        from supabase_client import SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+        client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        _thread_local.storage = client.storage.from_(SUPABASE_BUCKET_NAME)
+    return _thread_local.storage
+
+
 def download_image(
     session: requests.Session, url: str
 ) -> Optional[tuple[bytes, str]]:
@@ -185,20 +169,22 @@ def download_image(
         return None
 
 
-def upload_to_storage(bucket, blob_path: str, data: bytes, content_type: str) -> str:
-    """Firebase Storage にアップロードし、ダウンロード URL を返す。"""
-    blob = bucket.blob(blob_path)
-    blob.upload_from_string(data, content_type=content_type)
-
-    token = str(uuid.uuid4())
-    blob.metadata = {"firebaseStorageDownloadTokens": token}
-    blob.patch()
-
-    download_url = (
-        f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}"
-        f"/o/{quote(blob_path, safe='')}?alt=media&token={token}"
+def upload_to_storage(storage_bucket, blob_path: str, data: bytes, content_type: str) -> str:
+    """Supabase Storage にアップロードし、パブリック URL を返す。"""
+    storage_bucket.upload(
+        path=blob_path,
+        file=data,
+        file_options={"content-type": content_type, "upsert": "true"},
     )
-    return download_url
+    return storage_bucket.get_public_url(blob_path)
+
+
+def _purge_dead_firebase_urls(manifest: dict[str, str]) -> int:
+    """マニフェストから無効な Firebase URL を削除し、再アップロードを強制。"""
+    dead_keys = [k for k, v in manifest.items() if FIREBASE_STORAGE_HOST in v]
+    for k in dead_keys:
+        del manifest[k]
+    return len(dead_keys)
 
 
 def _collect_urls(listings: list[dict]) -> dict[str, str]:
@@ -226,14 +212,13 @@ def _collect_urls(listings: list[dict]) -> dict[str, str]:
 
 
 def _parallel_upload(
-    bucket,
     urls_to_upload: dict[str, str],
     stats: dict[str, int],
     deadline: float | None,
 ) -> dict[str, str]:
     """URL を並列にダウンロード+アップロード。
 
-    Returns: {original_url: firebase_url}
+    Returns: {original_url: storage_url}
     """
     if not urls_to_upload:
         return {}
@@ -262,10 +247,11 @@ def _parallel_upload(
         blob_path = f"{storage_dir}/{_url_to_hash(url)}{ext}"
 
         try:
-            firebase_url = upload_to_storage(bucket, blob_path, data, content_type)
-            return url, firebase_url, "uploaded"
+            thread_storage = _get_thread_storage()
+            storage_url = upload_to_storage(thread_storage, blob_path, data, content_type)
+            return url, storage_url, "uploaded"
         except Exception as e:
-            logger.error(f"  アップロード失敗: {e}")
+            logger.error("  アップロード失敗: %s", e)
             return url, None, "failed"
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
@@ -276,16 +262,16 @@ def _parallel_upload(
 
         for future in concurrent.futures.as_completed(future_map):
             try:
-                url, firebase_url, status = future.result()
+                url, stored_url, status = future.result()
             except Exception:
                 stats["failed"] += 1
                 processed += 1
                 continue
 
             stats[status] += 1
-            if firebase_url:
+            if stored_url:
                 with lock:
-                    results[url] = firebase_url
+                    results[url] = stored_url
             processed += 1
             if processed % 50 == 0:
                 remaining = ""
@@ -299,8 +285,13 @@ def _parallel_upload(
     return results
 
 
+def _is_already_stored(url: str) -> bool:
+    """URL が既に Supabase Storage に格納済みか判定。Firebase URL は死んでいるため対象外。"""
+    return SUPABASE_STORAGE_HOST in url
+
+
 def _apply_urls(listings: list[dict], manifest: dict[str, str]) -> None:
-    """manifest のマッピングを使って listings 内の画像 URL を Firebase Storage URL に置換。"""
+    """manifest のマッピングを使って listings 内の画像 URL を Storage URL に置換。"""
     from rehouse_scraper import _REHOUSE_JUNK_LABELS
 
     for listing in listings:
@@ -311,7 +302,7 @@ def _apply_urls(listings: list[dict], manifest: dict[str, str]) -> None:
         if images and isinstance(images, list):
             listing["floor_plan_images"] = [
                 manifest.get(url, url)
-                if isinstance(url, str) and FIREBASE_STORAGE_HOST not in url
+                if isinstance(url, str) and not _is_already_stored(url)
                 else url
                 for url in images
             ]
@@ -327,7 +318,7 @@ def _apply_urls(listings: list[dict], manifest: dict[str, str]) -> None:
                 orig = img["url"]
                 new_url = (
                     manifest.get(orig, orig)
-                    if isinstance(orig, str) and FIREBASE_STORAGE_HOST not in orig
+                    if isinstance(orig, str) and not _is_already_stored(orig)
                     else orig
                 )
                 new_suumo.append({"url": new_url, "label": img.get("label", "")})
@@ -336,7 +327,7 @@ def _apply_urls(listings: list[dict], manifest: dict[str, str]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="間取り図画像を Firebase Storage にアップロード"
+        description="間取り図画像を Supabase Storage にアップロード"
     )
     parser.add_argument("--input", required=True, help="入力 JSON ファイル")
     parser.add_argument("--output", required=True, help="出力 JSON ファイル")
@@ -352,7 +343,7 @@ def main() -> None:
     output_path = Path(args.output)
 
     if not input_path.exists():
-        logger.info(f"入力ファイルがありません: {input_path}")
+        logger.info("入力ファイルがありません: %s", input_path)
         sys.exit(1)
 
     with open(input_path, "r", encoding="utf-8") as f:
@@ -365,22 +356,25 @@ def main() -> None:
     max_time_sec = args.max_time * 60 if args.max_time > 0 else None
     deadline = time.time() + max_time_sec if max_time_sec else None
 
-    bucket = _init_firebase()
-    if bucket is None:
+    storage = _init_storage()
+    if storage is None:
         print(
-            "Firebase Storage が利用できないため、URL の置き換えをスキップします",
+            "Supabase Storage が利用できないため、URL の置き換えをスキップします",
             file=sys.stderr,
         )
         sys.exit(0)
 
     manifest = _load_manifest()
+    purged = _purge_dead_firebase_urls(manifest)
+    if purged:
+        print(f"  Firebase URL をパージ: {purged}件 → 再アップロード対象", file=sys.stderr)
 
     all_urls = _collect_urls(listings)
 
     stats = {"uploaded": 0, "cached": 0, "failed": 0, "skipped": 0, "timeout": 0}
     to_upload: dict[str, str] = {}
     for url, storage_dir in all_urls.items():
-        if FIREBASE_STORAGE_HOST in url:
+        if _is_already_stored(url):
             stats["skipped"] += 1
         elif url in manifest:
             stats["cached"] += 1
@@ -395,7 +389,7 @@ def main() -> None:
         file=sys.stderr,
     )
 
-    new_mappings = _parallel_upload(bucket, to_upload, stats, deadline)
+    new_mappings = _parallel_upload(to_upload, stats, deadline)
     manifest.update(new_mappings)
 
     _apply_urls(listings, manifest)
