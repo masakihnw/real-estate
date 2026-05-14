@@ -232,7 +232,7 @@ fi
 echo "--- 画像 Storage アップロード ---" >&2
 _t=$(date +%s)
 
-if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
+if [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
     if [ -f "${OUTPUT_DIR}/latest.json" ]; then
         python3 upload_floor_plans.py \
             --input "${OUTPUT_DIR}/latest.json" \
@@ -247,7 +247,7 @@ if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
             --max-time 10 || echo "upload_floor_plans（新築）失敗（続行）" >&2
     fi
 else
-    echo "FIREBASE_SERVICE_ACCOUNT 未設定のためスキップ" >&2
+    echo "SUPABASE_SERVICE_ROLE_KEY 未設定のためスキップ" >&2
 fi
 
 echo "[TIMING] upload_floor_plans: $(( ($(date +%s) - _t) ))s" >&2
