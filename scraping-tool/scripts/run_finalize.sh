@@ -15,12 +15,14 @@ cd "$SCRIPT_DIR"
 
 IS_SLACK_TIME=false
 HAS_CHANGES=true
+SKIP_MAPS=false
 DATE=$(TZ=Asia/Tokyo date +%Y%m%d_%H%M%S)
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --is-slack-time) IS_SLACK_TIME="$2"; shift 2 ;;
         --has-changes) HAS_CHANGES="$2"; shift 2 ;;
+        --skip-maps) SKIP_MAPS="$2"; shift 2 ;;
         --date) DATE="$2"; shift 2 ;;
         *) shift ;;
     esac
@@ -319,31 +321,6 @@ python3 build_supply_trends.py \
     --output "${OUTPUT_DIR}/supply_trends.json" \
     || echo "供給トレンド生成失敗（続行）" >&2
 
-# ──────────────────────────── 地図生成 ────────────────────────────
-
-echo "--- 地図生成 ---" >&2
-_t=$(date +%s)
-
-SHINCHIKU_FLAG=""
-if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    SHINCHIKU_FLAG="--shinchiku ${OUTPUT_DIR}/latest_shinchiku.json"
-fi
-
-python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" $SHINCHIKU_FLAG \
-    || echo "地図生成失敗（続行）" >&2
-echo "[TIMING] build_map_viewer: $(( ($(date +%s) - _t) ))s" >&2
-
-# ジオコーディングキャッシュクリーンアップ
-python3 scripts/geocode.py || true
-
-# 東京都地域危険度 GeoJSON (初回のみ)
-RISK_GEOJSON_DIR="${OUTPUT_DIR}/risk_geojson"
-if [ ! -f "${RISK_GEOJSON_DIR}/building_collapse_risk.geojson" ]; then
-    echo "東京都地域危険度 GeoJSON を生成中（初回のみ）..." >&2
-    python3 scripts/convert_risk_geojson.py 2>&1 \
-        || echo "GeoJSON 変換失敗（続行）" >&2
-fi
-
 # ──────────────────────────── レポート生成 ────────────────────────────
 
 echo "--- レポート生成 ---" >&2
@@ -394,6 +371,31 @@ if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
         "" \
         "$REPORT" \
         || echo "Slack 通知失敗（続行）" >&2
+fi
+
+# ──────────────────────────── 地図生成（ローカル実行時のみ） ────────────────────────────
+# CI では --skip-maps true で呼ばれ、地図は独立ステップで実行される
+
+if [ "$SKIP_MAPS" != "true" ] && [ "$HAS_CHANGES" = "true" ]; then
+    echo "--- 地図生成 ---" >&2
+    _t=$(date +%s)
+
+    SHINCHIKU_FLAG=""
+    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
+        SHINCHIKU_FLAG="--shinchiku ${OUTPUT_DIR}/latest_shinchiku.json"
+    fi
+    python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" $SHINCHIKU_FLAG \
+        || echo "地図生成失敗（続行）" >&2
+
+    echo "--- geocode キャッシュクリーンアップ ---" >&2
+    python3 scripts/geocode.py || true
+
+    if [ ! -f "${OUTPUT_DIR}/risk_geojson/building_collapse_risk.geojson" ]; then
+        pip install geopandas shapely fiona 2>/dev/null || true
+        python3 scripts/convert_risk_geojson.py 2>&1 || true
+    fi
+
+    echo "[TIMING] map_build: $(( ($(date +%s) - _t) ))s" >&2
 fi
 
 # ──────────────────────────── enrichment カバレッジ監視 ────────────────────────────
