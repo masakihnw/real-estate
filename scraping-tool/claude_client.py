@@ -77,13 +77,11 @@ class ClaudeClient:
         self,
         api_key: Optional[str] = None,
         cache_db_path: str = DEFAULT_CACHE_DB,
-        daily_budget_usd: float = 5.0,
     ):
         self._api_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
         if not self._api_key:
             raise ValueError("ANTHROPIC_API_KEY が設定されていません")
 
-        self._daily_budget_usd = daily_budget_usd
         self._cache_db_path = cache_db_path
         self._init_cache_db()
 
@@ -96,6 +94,7 @@ class ClaudeClient:
     def _init_cache_db(self) -> None:
         Path(self._cache_db_path).parent.mkdir(parents=True, exist_ok=True)
         with sqlite3.connect(self._cache_db_path) as conn:
+            conn.execute("PRAGMA journal_mode=WAL")
             conn.executescript(_CACHE_SCHEMA)
 
     def get_cached(self, module: str, input_data: Any) -> Optional[dict]:
