@@ -168,21 +168,17 @@ BEGIN
       RETURN QUERY
         SELECT lf.id, to_jsonb(lf)
         FROM listings_feed lf
+        LEFT JOIN enrichments e ON e.listing_id = lf.id
         WHERE lf.is_active = true
           AND (
-            (lf.listing_score >= COALESCE((p_config->'listing_score_min')::int, 55))
-            OR (lf.ss_profit_pct >= COALESCE((p_config->'ss_profit_pct_min')::int, 50))
-            OR (lf.price_fairness_score >= COALESCE((p_config->'price_fairness_min')::int, 60))
-            OR (lf.ai_recommendation_score IS NOT NULL
-                AND lf.ai_recommendation_flags IS NOT NULL
-                AND EXISTS (
-                  SELECT 1 FROM jsonb_array_elements_text(
-                    COALESCE(p_config->'reanalyze_ranks', '["S","A"]'::jsonb)
-                  ) r WHERE lf.ai_recommendation_flags @> to_jsonb(r.value)
-                ))
+            e.ai_recommendation_score IS NULL
+            OR e.ai_prompt_hash IS DISTINCT FROM (
+              SELECT ap.prompt_hash FROM ai_prompts ap
+              WHERE ap.module = 'investment_summary' AND ap.is_active = true LIMIT 1
+            )
           )
-        ORDER BY lf.listing_score DESC NULLS LAST
-        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 30);
+        ORDER BY lf.created_at DESC
+        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 80);
 
     WHEN 'text_enricher' THEN
       RETURN QUERY
@@ -407,9 +403,9 @@ $tpl_investment$## 買い手プロファイル
 
 '{"type":"object","required":["score","conclusion","flags","scenarios","action"],"properties":{"score":{"type":"integer","minimum":1,"maximum":5},"conclusion":{"type":"string"},"flags":{"type":"array","items":{"type":"string"}},"scenarios":{"type":"array","items":{"type":"object","required":["name","fit","livable_years","exit_simulation","risk"]}},"action":{"type":"string"}}}'::jsonb,
 
-'{"filter":{"listing_score_min":55,"ss_profit_pct_min":50,"price_fairness_min":60},"max_items_per_run":30,"reanalyze_ranks":["S","A"],"max_tokens":2048}'::jsonb,
+'{"max_items_per_run":80,"max_tokens":2048}'::jsonb,
 
-'claude_investment_summarizer.py L143-243 から移植。初期版。'),
+'claude_investment_summarizer.py L143-243 から移植。全アクティブ物件対象（Routine化でコスト0）'),
 
 -- F2. text_enricher
 ('text_enricher', 2, true,

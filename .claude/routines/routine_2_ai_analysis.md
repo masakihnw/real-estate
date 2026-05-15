@@ -29,10 +29,11 @@ SELECT * FROM buyer_profiles LIMIT 1;
 ```
 → 全フィールド（family_composition, household_income, work_style, child_plan, priorities, current_housing, commute_quality, deal_breakers, self_funds, planned_borrowing, interest_type, estimated_rate, repayment_years, monthly_payment_limit, relocation_reason, post_sale_strategy, timeline, risk_tolerance 等）を日本語テキストにフォーマット。
 
-3. 対象物件取得（config の filter を使用）:
+3. 対象物件取得（全アクティブ物件のうち未分析 or プロンプト変更分）:
 ```sql
-SELECT listing_id, listing_data FROM get_listings_for_ai('investment_summary', '<config jsonb>');
+SELECT listing_id, listing_data FROM get_listings_for_ai('investment_summary');
 ```
+→ 最大80件/回。新着順。未分析が0件になるまで毎日の実行で全件カバーする。
 
 4. 各物件を分析: system_prompt をシステムプロンプトとして、user_prompt_template の `{buyer_profile}` にバイヤープロファイル、`{listing_data}` に物件データを埋め込んで分析。JSON で score, conclusion, flags, scenarios, action を生成。
 
