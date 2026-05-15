@@ -255,7 +255,11 @@ BEGIN
 
     WHEN 'image_analyzer' THEN
       RETURN QUERY
-        SELECT lf.id, to_jsonb(lf)
+        SELECT lf.id, jsonb_build_object(
+          'id', lf.id,
+          'name', lf.name,
+          'suumo_images', lf.suumo_images
+        )
         FROM listings_feed lf
         WHERE lf.is_active = true
           AND lf.image_categories IS NULL
@@ -665,3 +669,61 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 COMMENT ON FUNCTION batch_update_commute_from_master IS 'commute_info 未設定の物件に対し、駅マスタから通勤時間を一括更新';
+
+-- ============================================================
+-- K. 不要画像クリーンアップ
+-- ============================================================
+
+-- K1. 単一物件の junk 画像を suumo_images / image_categories から除去
+CREATE OR REPLACE FUNCTION cleanup_junk_images(p_listing_id BIGINT)
+RETURNS INT AS $$
+DECLARE
+  v_junk_urls TEXT[];
+  v_removed INT;
+BEGIN
+  SELECT array_agg(elem->>'url')
+  INTO v_junk_urls
+  FROM enrichments e,
+       jsonb_array_elements(e.image_categories) elem
+  WHERE e.listing_id = p_listing_id
+    AND ((elem->>'is_junk')::boolean = true OR elem->>'category' = 'junk');
+
+  IF v_junk_urls IS NULL OR array_length(v_junk_urls, 1) IS NULL THEN
+    RETURN 0;
+  END IF;
+
+  v_removed := array_length(v_junk_urls, 1);
+
+  UPDATE enrichments SET
+    suumo_images = (
+      SELECT COALESCE(jsonb_agg(img), '[]'::jsonb)
+      FROM jsonb_array_elements(suumo_images) img
+      WHERE img->>'url' != ALL(v_junk_urls)
+    ),
+    image_categories = (
+      SELECT COALESCE(jsonb_agg(cat), '[]'::jsonb)
+      FROM jsonb_array_elements(image_categories) cat
+      WHERE NOT ((cat->>'is_junk')::boolean = true OR cat->>'category' = 'junk')
+    )
+  WHERE listing_id = p_listing_id;
+
+  RETURN v_removed;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION cleanup_junk_images IS '指定物件の junk 画像を suumo_images と image_categories から除去。削除件数を返す';
+
+-- K2. 一括クリーンアップ（image_categories に junk がある全物件を処理）
+CREATE OR REPLACE FUNCTION batch_cleanup_junk_images()
+RETURNS TABLE(listing_id BIGINT, removed_count INT) AS $$
+  SELECT e.listing_id, cleanup_junk_images(e.listing_id)
+  FROM enrichments e
+  WHERE e.image_categories IS NOT NULL
+    AND jsonb_typeof(e.image_categories) = 'array'
+    AND EXISTS (
+      SELECT 1 FROM jsonb_array_elements(e.image_categories) cat
+      WHERE (cat->>'is_junk')::boolean = true OR cat->>'category' = 'junk'
+    );
+$$ LANGUAGE sql SECURITY DEFINER;
+
+COMMENT ON FUNCTION batch_cleanup_junk_images IS 'junk 画像を含む全物件から不要画像を一括除去';
