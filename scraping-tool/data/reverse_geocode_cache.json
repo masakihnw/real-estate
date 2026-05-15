@@ -718,5 +718,13 @@
     "quarter": "",
     "neighbourhood": "板橋四丁目",
     "city_district": ""
+  },
+  "35.659799,139.785546": {
+    "display_name": "晴海一丁目, 晴海, 中央区, 東京都, 104-0053, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "晴海",
+    "neighbourhood": "晴海一丁目",
+    "city_district": ""
   }
 }
