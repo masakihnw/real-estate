@@ -14413,8 +14413,8 @@
       "built_year": 2015,
       "structure": "RC",
       "trade_period": "2021Q2",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "building_group_id": "131040890-2015-RC",
@@ -14698,6 +14698,26 @@
       "latitude": 35.6807273,
       "longitude": 139.7240889,
       "building_group_id": "131040820-2016-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-8039c692cc62",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "district_code": "131040880",
+      "price_man": 9000,
+      "area_m2": 70.0,
+      "m2_price": 1285714,
+      "layout": "3LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "building_group_id": "131040880-2015-RC",
       "estimated_building_name": null
     },
     {
@@ -15601,6 +15621,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-bab39e816521",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "district_code": "131040880",
+      "price_man": 11000,
+      "area_m2": 70.0,
+      "m2_price": 1571429,
+      "layout": "2LDK+S",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2022Q2",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "building_group_id": "131040880-2015-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-1e1a47a92429",
       "prefecture": "東京都",
       "ward": "新宿区",
@@ -15933,8 +15973,8 @@
       "built_year": 2015,
       "structure": "RC",
       "trade_period": "2022Q3",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "building_group_id": "131040890-2015-RC",
@@ -16233,8 +16273,8 @@
       "built_year": 2020,
       "structure": "RC",
       "trade_period": "2022Q4",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "building_group_id": "131040890-2020-RC",
@@ -16498,6 +16538,26 @@
       "latitude": 35.693561,
       "longitude": 139.715184,
       "building_group_id": "131040570-2015-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-3b14abdce4b6",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "district_code": "131040880",
+      "price_man": 10000,
+      "area_m2": 70.0,
+      "m2_price": 1428571,
+      "layout": "2LDK+S",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2023Q1",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "building_group_id": "131040880-2015-RC",
       "estimated_building_name": null
     },
     {
@@ -16833,8 +16893,8 @@
       "built_year": 2015,
       "structure": "RC",
       "trade_period": "2023Q2",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "building_group_id": "131040890-2015-RC",
@@ -17313,8 +17373,8 @@
       "built_year": 2015,
       "structure": "RC",
       "trade_period": "2023Q4",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "building_group_id": "131040890-2015-RC",
@@ -17478,6 +17538,26 @@
       "latitude": 35.6807273,
       "longitude": 139.7240889,
       "building_group_id": "131040820-2006-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-f414966f10d9",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "district_code": "131040880",
+      "price_man": 11000,
+      "area_m2": 70.0,
+      "m2_price": 1571429,
+      "layout": "2LDK+S",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "building_group_id": "131040880-2015-RC",
       "estimated_building_name": null
     },
     {
@@ -18153,8 +18233,8 @@
       "built_year": 2015,
       "structure": "RC",
       "trade_period": "2024Q2",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "building_group_id": "131040890-2015-RC",
@@ -18173,8 +18253,8 @@
       "built_year": 2020,
       "structure": "RC",
       "trade_period": "2024Q2",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "building_group_id": "131040890-2020-RC",
@@ -18341,6 +18421,46 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-adb20e2abc02",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "district_code": "131040880",
+      "price_man": 11000,
+      "area_m2": 80.0,
+      "m2_price": 1375000,
+      "layout": "3LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2024Q3",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "building_group_id": "131040880-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-258e19e0a80a",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "district_code": "131040880",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2024Q3",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "building_group_id": "131040880-2007-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-5c43599b5cac",
       "prefecture": "東京都",
       "ward": "新宿区",
@@ -18438,6 +18558,26 @@
       "latitude": 35.6986892,
       "longitude": 139.7366517,
       "building_group_id": "131040810-2011-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-e5a4deb9ba6f",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "district_code": "131040880",
+      "price_man": 9000,
+      "area_m2": 60.0,
+      "m2_price": 1500000,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "building_group_id": "131040880-2007-RC",
       "estimated_building_name": null
     },
     {
@@ -23634,9 +23774,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "estimated_walk_min": 10,
+      "latitude": 35.6973931,
+      "longitude": 139.7846834,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -36318,7 +36458,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-3df4640ac197",
@@ -36498,7 +36638,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-1ae81d8e04f2",
@@ -36518,7 +36658,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-5dcb9135a5b9",
@@ -36538,7 +36678,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-9835190423af",
@@ -36778,7 +36918,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-c7efe630dcd8",
@@ -36798,7 +36938,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-b60056b9a0ca",
@@ -36818,7 +36958,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-6819afa9f4a6",
@@ -36918,7 +37058,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-5d21ee96607a",
@@ -36938,7 +37078,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-7c6bf5dd4da0",
@@ -36958,7 +37098,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-a2ca97e82fdd",
@@ -37098,7 +37238,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-1c7487cbe3f1",
@@ -37118,7 +37258,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-5e2de86846f5",
@@ -37138,7 +37278,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-1b57fddbdfed",
@@ -37158,7 +37298,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-545eb3e610c2",
@@ -37358,7 +37498,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-faa4fd74e559",
@@ -37478,7 +37618,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-e20059ed5551",
@@ -37498,7 +37638,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-311ed5b24340",
@@ -37518,7 +37658,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-61bc0c0d2ff1",
@@ -37538,7 +37678,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-03bcc149cef8",
@@ -37558,7 +37698,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-6fca5185571f",
@@ -37658,7 +37798,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-edadff33ed99",
@@ -37678,7 +37818,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-ea79e5a0b954",
@@ -37838,7 +37978,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-a478f02fac7b",
@@ -37858,7 +37998,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-5c4587a036d7",
@@ -37878,7 +38018,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-78d3a39635cf",
@@ -37898,7 +38038,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-5e9ac35f50a5",
@@ -37918,7 +38058,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-329f12a68027",
@@ -37938,7 +38078,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-a4df5cd47827",
@@ -37958,7 +38098,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-afb6c98a8929",
@@ -38198,7 +38338,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-2c480b4cd3aa",
@@ -38238,7 +38378,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2020-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-b1d5e2d60e2c",
@@ -38258,7 +38398,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-e899a4fc5f0d",
@@ -38278,7 +38418,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-7676c2f602b3",
@@ -38298,7 +38438,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-73c418211195",
@@ -38338,7 +38478,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-fb6621db01d5",
@@ -38418,7 +38558,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-9cf7c60b43dd",
@@ -38458,7 +38598,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-99bdc6f3e095",
@@ -38518,7 +38658,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-d825210f4f5e",
@@ -38558,7 +38698,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-ac211cd77dfa",
@@ -38658,7 +38798,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-3007f969e537",
@@ -38698,7 +38838,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-5a766ec74372",
@@ -38818,7 +38958,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-ccce395825b5",
@@ -38838,7 +38978,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-aca13ba97927",
@@ -38858,7 +38998,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-d8ca3b041d0b",
@@ -38878,7 +39018,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-72c72e1ae313",
@@ -38898,7 +39038,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-3878c28dc7ce",
@@ -39098,7 +39238,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-9cc3da0c9f14",
@@ -39138,7 +39278,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-ec45702a4cf2",
@@ -39218,7 +39358,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-fa388e1526e0",
@@ -39238,7 +39378,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-eab6e6eabf7d",
@@ -39378,7 +39518,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-517ef4c5d9e8",
@@ -39398,7 +39538,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-5107cf8dc0c4",
@@ -39418,7 +39558,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-efb2b4c99a83",
@@ -39538,7 +39678,7 @@
       "latitude": 35.6172643,
       "longitude": 139.7488637,
       "building_group_id": "131090180-2018-RC",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "id": "tx-90422464b921",
@@ -39913,8 +40053,8 @@
       "built_year": 2011,
       "structure": "RC",
       "trade_period": "2022Q3",
-      "nearest_station": "西小山",
-      "estimated_walk_min": 9,
+      "nearest_station": "洗足",
+      "estimated_walk_min": 1,
       "latitude": 35.6101514,
       "longitude": 139.6941664,
       "building_group_id": "131100100-2011-RC",
@@ -40133,8 +40273,8 @@
       "built_year": 2011,
       "structure": "RC",
       "trade_period": "2023Q2",
-      "nearest_station": "西小山",
-      "estimated_walk_min": 9,
+      "nearest_station": "洗足",
+      "estimated_walk_min": 1,
       "latitude": 35.6101514,
       "longitude": 139.6941664,
       "building_group_id": "131100100-2011-RC",
@@ -40481,6 +40621,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-0690880720ff",
+      "prefecture": "東京都",
+      "ward": "目黒区",
+      "district": "南",
+      "district_code": "131100230",
+      "price_man": 9900,
+      "area_m2": 80.0,
+      "m2_price": 1237500,
+      "layout": "2LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2024Q2",
+      "nearest_station": "洗足",
+      "estimated_walk_min": 9,
+      "latitude": 35.6140788,
+      "longitude": 139.6872945,
+      "building_group_id": "131100230-2007-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-d75173b44416",
       "prefecture": "東京都",
       "ward": "目黒区",
@@ -40493,8 +40653,8 @@
       "built_year": 2011,
       "structure": "RC",
       "trade_period": "2024Q3",
-      "nearest_station": "西小山",
-      "estimated_walk_min": 9,
+      "nearest_station": "洗足",
+      "estimated_walk_min": 1,
       "latitude": 35.6101514,
       "longitude": 139.6941664,
       "building_group_id": "131100100-2011-RC",
@@ -40513,8 +40673,8 @@
       "built_year": 2011,
       "structure": "RC",
       "trade_period": "2024Q4",
-      "nearest_station": "西小山",
-      "estimated_walk_min": 9,
+      "nearest_station": "洗足",
+      "estimated_walk_min": 1,
       "latitude": 35.6101514,
       "longitude": 139.6941664,
       "building_group_id": "131100100-2011-RC",
@@ -40593,8 +40753,8 @@
       "built_year": 2011,
       "structure": "RC",
       "trade_period": "2025Q2",
-      "nearest_station": "西小山",
-      "estimated_walk_min": 9,
+      "nearest_station": "洗足",
+      "estimated_walk_min": 1,
       "latitude": 35.6101514,
       "longitude": 139.6941664,
       "building_group_id": "131100100-2011-RC",
@@ -40901,6 +41061,26 @@
       "estimated_building_name": "ブランズシティ久が原"
     },
     {
+      "id": "tx-88d138686e68",
+      "prefecture": "東京都",
+      "ward": "大田区",
+      "district": "北千束",
+      "district_code": "131110140",
+      "price_man": 9400,
+      "area_m2": 85.0,
+      "m2_price": 1105882,
+      "layout": "2LDK",
+      "built_year": 2010,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "洗足",
+      "estimated_walk_min": 6,
+      "latitude": 35.6085774,
+      "longitude": 139.6893869,
+      "building_group_id": "131110140-2010-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-47a210d7606d",
       "prefecture": "東京都",
       "ward": "大田区",
@@ -40959,6 +41139,26 @@
       "longitude": 139.7298435,
       "building_group_id": "131110040-2008-RC",
       "estimated_building_name": null
+    },
+    {
+      "id": "tx-510ed2ae7aa3",
+      "prefecture": "東京都",
+      "ward": "大田区",
+      "district": "北千束",
+      "district_code": "131110140",
+      "price_man": 9000,
+      "area_m2": 65.0,
+      "m2_price": 1384615,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2025Q1",
+      "nearest_station": "洗足",
+      "estimated_walk_min": 6,
+      "latitude": 35.6085774,
+      "longitude": 139.6893869,
+      "building_group_id": "131110140-2012-RC",
+      "estimated_building_name": "シティインデックス洗足"
     },
     {
       "id": "tx-ef8be6e94f2f",
@@ -41361,6 +41561,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-3e5ed25998da",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "代沢",
+      "district_code": "131120380",
+      "price_man": 11000,
+      "area_m2": 80.0,
+      "m2_price": 1375000,
+      "layout": "2LDK",
+      "built_year": 2014,
+      "structure": "RC",
+      "trade_period": "2021Q2",
+      "nearest_station": "下北沢",
+      "estimated_walk_min": 8,
+      "latitude": 35.6566718,
+      "longitude": 139.6705979,
+      "building_group_id": "131120380-2014-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-5dbb2b4a10a5",
       "prefecture": "東京都",
       "ward": "世田谷区",
@@ -41681,6 +41901,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-d39d7b8475ee",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "代沢",
+      "district_code": "131120380",
+      "price_man": 9500,
+      "area_m2": 70.0,
+      "m2_price": 1357143,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "下北沢",
+      "estimated_walk_min": 8,
+      "latitude": 35.6566718,
+      "longitude": 139.6705979,
+      "building_group_id": "131120380-2013-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-9df3399b11b9",
       "prefecture": "東京都",
       "ward": "世田谷区",
@@ -41801,6 +42041,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-263b1990c3aa",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9900,
+      "area_m2": 85.0,
+      "m2_price": 1164706,
+      "layout": "3LDK",
+      "built_year": 2009,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2009-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-fed4bdc9c7e9",
       "prefecture": "東京都",
       "ward": "世田谷区",
@@ -41853,8 +42113,8 @@
       "built_year": 2016,
       "structure": "RC",
       "trade_period": "2022Q1",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2016-RC",
@@ -42398,7 +42658,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2012-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "id": "tx-a68f773f5ffb",
@@ -42438,7 +42698,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2013-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "id": "tx-2e8ca6cb62cc",
@@ -42518,6 +42778,26 @@
       "latitude": 35.6148068,
       "longitude": 139.6267055,
       "building_group_id": "131120410-2010-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-af90e6ba876a",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9400,
+      "area_m2": 85.0,
+      "m2_price": 1105882,
+      "layout": "3LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2022Q4",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
       "estimated_building_name": null
     },
     {
@@ -42758,7 +43038,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-33ba1cb163a8",
@@ -43038,7 +43318,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2011-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "id": "tx-9abc123d3d7d",
@@ -43273,8 +43553,8 @@
       "built_year": 2009,
       "structure": "RC",
       "trade_period": "2023Q4",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
@@ -43293,11 +43573,71 @@
       "built_year": 2009,
       "structure": "RC",
       "trade_period": "2023Q4",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-12bb98e1cedd",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9200,
+      "area_m2": 85.0,
+      "m2_price": 1082353,
+      "layout": "2LDK+S",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-e87e6628c094",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9500,
+      "area_m2": 75.0,
+      "m2_price": 1266667,
+      "layout": "3LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-d4e97e6cb836",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9900,
+      "area_m2": 85.0,
+      "m2_price": 1164706,
+      "layout": "3LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
       "estimated_building_name": null
     },
     {
@@ -43378,6 +43718,26 @@
       "latitude": 35.6271856,
       "longitude": 139.6358222,
       "building_group_id": "131120600-2012-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-3652e89916e3",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "経堂",
+      "district_code": "131120230",
+      "price_man": 9500,
+      "area_m2": 70.0,
+      "m2_price": 1357143,
+      "layout": "3LDK",
+      "built_year": 2021,
+      "structure": "",
+      "trade_period": "2023Q4",
+      "nearest_station": "経堂",
+      "estimated_walk_min": 1,
+      "latitude": 35.6512791,
+      "longitude": 139.636679,
+      "building_group_id": "131120230-2021",
       "estimated_building_name": null
     },
     {
@@ -43593,8 +43953,8 @@
       "built_year": 2016,
       "structure": "RC",
       "trade_period": "2024Q1",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2016-RC",
@@ -43658,6 +44018,26 @@
       "latitude": 35.6633686,
       "longitude": 139.6492965,
       "building_group_id": "131120560-2011-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-a115c4965a05",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "経堂",
+      "district_code": "131120230",
+      "price_man": 10000,
+      "area_m2": 75.0,
+      "m2_price": 1333333,
+      "layout": "3LDK",
+      "built_year": 2022,
+      "structure": "RC",
+      "trade_period": "2024Q1",
+      "nearest_station": "経堂",
+      "estimated_walk_min": 1,
+      "latitude": 35.6512791,
+      "longitude": 139.636679,
+      "building_group_id": "131120230-2022-RC",
       "estimated_building_name": null
     },
     {
@@ -43918,7 +44298,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7e94dad88043",
@@ -43953,8 +44333,8 @@
       "built_year": 2009,
       "structure": "RC",
       "trade_period": "2024Q2",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
@@ -44018,6 +44398,46 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2014-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-d54a0e170bf5",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 10000,
+      "area_m2": 85.0,
+      "m2_price": 1176471,
+      "layout": "3LDK+S",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2024Q2",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-4e076c822d9e",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9000,
+      "area_m2": 75.0,
+      "m2_price": 1200000,
+      "layout": "2LDK+S",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2024Q2",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
       "estimated_building_name": null
     },
     {
@@ -44098,7 +44518,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-cd9d4b46471f",
@@ -44178,6 +44598,26 @@
       "latitude": 35.6675627,
       "longitude": 139.6320107,
       "building_group_id": "131120290-2015-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-69951d174451",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "経堂",
+      "district_code": "131120230",
+      "price_man": 10000,
+      "area_m2": 75.0,
+      "m2_price": 1333333,
+      "layout": "3LDK",
+      "built_year": 2014,
+      "structure": "RC",
+      "trade_period": "2024Q3",
+      "nearest_station": "経堂",
+      "estimated_walk_min": 1,
+      "latitude": 35.6512791,
+      "longitude": 139.636679,
+      "building_group_id": "131120230-2014-RC",
       "estimated_building_name": null
     },
     {
@@ -44278,6 +44718,46 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2013-RC",
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
+    },
+    {
+      "id": "tx-3e6e5ca7bc95",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9500,
+      "area_m2": 80.0,
+      "m2_price": 1187500,
+      "layout": "3LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2024Q3",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-bfbd2e6bffe0",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9000,
+      "area_m2": 85.0,
+      "m2_price": 1058824,
+      "layout": "2LDK+S",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2024Q3",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
       "estimated_building_name": null
     },
     {
@@ -44338,7 +44818,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-af4d4355ea5c",
@@ -44433,8 +44913,8 @@
       "built_year": 2009,
       "structure": "RC",
       "trade_period": "2024Q4",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
@@ -44461,6 +44941,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-104e0757ba1e",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "経堂",
+      "district_code": "131120230",
+      "price_man": 11000,
+      "area_m2": 75.0,
+      "m2_price": 1466667,
+      "layout": "3LDK",
+      "built_year": 2014,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "経堂",
+      "estimated_walk_min": 1,
+      "latitude": 35.6512791,
+      "longitude": 139.636679,
+      "building_group_id": "131120230-2014-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-d81706006e65",
       "prefecture": "東京都",
       "ward": "世田谷区",
@@ -44478,6 +44978,46 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2006-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-3705a309f050",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9000,
+      "area_m2": 75.0,
+      "m2_price": 1200000,
+      "layout": "3LDK",
+      "built_year": 2010,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2010-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-b90b3563b8d0",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "代沢",
+      "district_code": "131120380",
+      "price_man": 11000,
+      "area_m2": 75.0,
+      "m2_price": 1466667,
+      "layout": "3LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "下北沢",
+      "estimated_walk_min": 8,
+      "latitude": 35.6566718,
+      "longitude": 139.6705979,
+      "building_group_id": "131120380-2013-RC",
       "estimated_building_name": null
     },
     {
@@ -44598,7 +45138,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-7ba617262c75",
@@ -44653,8 +45193,8 @@
       "built_year": 2009,
       "structure": "RC",
       "trade_period": "2025Q1",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
@@ -44759,6 +45299,66 @@
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011-RC",
       "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+    },
+    {
+      "id": "tx-12f2eb7a5469",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9600,
+      "area_m2": 85.0,
+      "m2_price": 1129412,
+      "layout": "3LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2025Q1",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-80cd32452b77",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9600,
+      "area_m2": 80.0,
+      "m2_price": 1200000,
+      "layout": "3LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2025Q1",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-8fed9bf76232",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 11000,
+      "area_m2": 75.0,
+      "m2_price": 1466667,
+      "layout": "3LDK+S",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2025Q1",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
     },
     {
       "id": "tx-119cb84726d1",
@@ -44898,7 +45498,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-2576d5eb792d",
@@ -44981,6 +45581,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-cb1756c57926",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "給田",
+      "district_code": "131120220",
+      "price_man": 9500,
+      "area_m2": 80.0,
+      "m2_price": 1187500,
+      "layout": "3LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2025Q2",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6681356,
+      "longitude": 139.5921635,
+      "building_group_id": "131120220-2015-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-868a89150172",
       "prefecture": "東京都",
       "ward": "世田谷区",
@@ -45039,6 +45659,26 @@
       "longitude": 139.6218325,
       "building_group_id": "131120550-2011-RC",
       "estimated_building_name": "【オークプレイス世田谷船橋】ペット可 ３LDK＋WI…"
+    },
+    {
+      "id": "tx-14da4f7d9e42",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 11000,
+      "area_m2": 75.0,
+      "m2_price": 1466667,
+      "layout": "3LDK+S",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2025Q2",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
     },
     {
       "id": "tx-2cc3a9188b91",
@@ -45158,7 +45798,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2013-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "id": "tx-2d2967c228ae",
@@ -45173,8 +45813,8 @@
       "built_year": 2009,
       "structure": "RC",
       "trade_period": "2025Q3",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2009-RC",
@@ -45193,11 +45833,31 @@
       "built_year": 2025,
       "structure": "RC",
       "trade_period": "2025Q3",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2025-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-71220710a419",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "経堂",
+      "district_code": "131120230",
+      "price_man": 11000,
+      "area_m2": 75.0,
+      "m2_price": 1466667,
+      "layout": "3LDK",
+      "built_year": 2022,
+      "structure": "RC",
+      "trade_period": "2025Q3",
+      "nearest_station": "経堂",
+      "estimated_walk_min": 1,
+      "latitude": 35.6512791,
+      "longitude": 139.636679,
+      "building_group_id": "131120230-2022-RC",
       "estimated_building_name": null
     },
     {
@@ -45278,6 +45938,66 @@
       "latitude": 35.6539857,
       "longitude": 139.6218325,
       "building_group_id": "131120550-2014-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-88cffcc6f200",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9000,
+      "area_m2": 70.0,
+      "m2_price": 1285714,
+      "layout": "2LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2025Q3",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-054e4091dcd6",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9500,
+      "area_m2": 75.0,
+      "m2_price": 1266667,
+      "layout": "3LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2025Q3",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-a080d3cf94e7",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 10000,
+      "area_m2": 80.0,
+      "m2_price": 1250000,
+      "layout": "3LDK",
+      "built_year": 2018,
+      "structure": "RC",
+      "trade_period": "2025Q3",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2018-RC",
       "estimated_building_name": null
     },
     {
@@ -45438,7 +46158,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2012-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "id": "tx-f7dbf6ffb9b3",
@@ -45573,11 +46293,31 @@
       "built_year": 2016,
       "structure": "RC",
       "trade_period": "2025Q4",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "building_group_id": "131120580-2016-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-9903f4792890",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "給田",
+      "district_code": "131120220",
+      "price_man": 11000,
+      "area_m2": 75.0,
+      "m2_price": 1466667,
+      "layout": "3LDK",
+      "built_year": 2025,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6681356,
+      "longitude": 139.5921635,
+      "building_group_id": "131120220-2025-RC",
       "estimated_building_name": null
     },
     {
@@ -45618,6 +46358,26 @@
       "latitude": 35.6587353,
       "longitude": 139.6595305,
       "building_group_id": "131120400-2018-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-605de6b482a1",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "district_code": "131120100",
+      "price_man": 9300,
+      "area_m2": 75.0,
+      "m2_price": 1240000,
+      "layout": "3LDK",
+      "built_year": 2010,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "building_group_id": "131120100-2010-RC",
       "estimated_building_name": null
     },
     {
@@ -45698,7 +46458,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2013-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "id": "tx-a1752a4cf5a7",
@@ -45718,7 +46478,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-9d2ecf8648b7",
@@ -45738,7 +46498,7 @@
       "latitude": 35.6365215,
       "longitude": 139.6483471,
       "building_group_id": "131120460-2010-RC",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "id": "tx-24619ecb0933",
@@ -59544,14 +60304,64 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131040880-2007-RC",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "transaction_count": 3,
+      "price_range_man": [
+        9000,
+        11000
+      ],
+      "avg_m2_price": 1569444,
+      "periods": [
+        "2024Q3",
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131040880-2015-RC",
+      "prefecture": "東京都",
+      "ward": "新宿区",
+      "district": "四谷",
+      "built_year": 2015,
+      "structure": "RC",
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 2,
+      "latitude": 35.6861404,
+      "longitude": 139.7286558,
+      "transaction_count": 4,
+      "price_range_man": [
+        9000,
+        11000
+      ],
+      "avg_m2_price": 1464286,
+      "periods": [
+        "2021Q3",
+        "2022Q2",
+        "2023Q1",
+        "2023Q4"
+      ],
+      "latest_period": "2023Q4",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131040890-2015-RC",
       "prefecture": "東京都",
       "ward": "新宿区",
       "district": "若葉",
       "built_year": 2015,
       "structure": "RC",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "transaction_count": 5,
@@ -59577,8 +60387,8 @@
       "district": "若葉",
       "built_year": 2020,
       "structure": "RC",
-      "nearest_station": "信濃町",
-      "estimated_walk_min": 8,
+      "nearest_station": "四ツ谷",
+      "estimated_walk_min": 6,
       "latitude": 35.6840521,
       "longitude": 139.726107,
       "transaction_count": 2,
@@ -61589,9 +62399,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "estimated_walk_min": 10,
+      "latitude": 35.6973931,
+      "longitude": 139.7846834,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -65754,7 +66564,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "group_id": "131090180-2019",
@@ -65777,7 +66587,7 @@
         "2023Q1"
       ],
       "latest_period": "2023Q1",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "group_id": "131090180-2019-RC",
@@ -65813,7 +66623,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "group_id": "131090180-2020-RC",
@@ -65836,7 +66646,7 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
-      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー 27階"
+      "estimated_building_name": "プライムパークス品川シーサイドザ・タワー"
     },
     {
       "group_id": "131090240-2012-RC",
@@ -66060,8 +66870,8 @@
       "district": "洗足",
       "built_year": 2011,
       "structure": "RC",
-      "nearest_station": "西小山",
-      "estimated_walk_min": 9,
+      "nearest_station": "洗足",
+      "estimated_walk_min": 1,
       "latitude": 35.6101514,
       "longitude": 139.6941664,
       "transaction_count": 5,
@@ -66289,6 +67099,29 @@
         "2022Q2"
       ],
       "latest_period": "2022Q2",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131100230-2007-RC",
+      "prefecture": "東京都",
+      "ward": "目黒区",
+      "district": "南",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "洗足",
+      "estimated_walk_min": 9,
+      "latitude": 35.6140788,
+      "longitude": 139.6872945,
+      "transaction_count": 1,
+      "price_range_man": [
+        9900,
+        9900
+      ],
+      "avg_m2_price": 1237500,
+      "periods": [
+        "2024Q2"
+      ],
+      "latest_period": "2024Q2",
       "estimated_building_name": null
     },
     {
@@ -66909,6 +67742,52 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131110140-2010-RC",
+      "prefecture": "東京都",
+      "ward": "大田区",
+      "district": "北千束",
+      "built_year": 2010,
+      "structure": "RC",
+      "nearest_station": "洗足",
+      "estimated_walk_min": 6,
+      "latitude": 35.6085774,
+      "longitude": 139.6893869,
+      "transaction_count": 1,
+      "price_range_man": [
+        9400,
+        9400
+      ],
+      "avg_m2_price": 1105882,
+      "periods": [
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131110140-2012-RC",
+      "prefecture": "東京都",
+      "ward": "大田区",
+      "district": "北千束",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "洗足",
+      "estimated_walk_min": 6,
+      "latitude": 35.6085774,
+      "longitude": 139.6893869,
+      "transaction_count": 1,
+      "price_range_man": [
+        9000,
+        9000
+      ],
+      "avg_m2_price": 1384615,
+      "periods": [
+        "2025Q1"
+      ],
+      "latest_period": "2025Q1",
+      "estimated_building_name": "シティインデックス洗足"
+    },
+    {
       "group_id": "131110250-2017-RC",
       "prefecture": "東京都",
       "ward": "大田区",
@@ -67166,6 +68045,82 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131120100-2009-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "built_year": 2009,
+      "structure": "RC",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "transaction_count": 1,
+      "price_range_man": [
+        9900,
+        9900
+      ],
+      "avg_m2_price": 1164706,
+      "periods": [
+        "2022Q1"
+      ],
+      "latest_period": "2022Q1",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131120100-2010-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "built_year": 2010,
+      "structure": "RC",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "transaction_count": 2,
+      "price_range_man": [
+        9000,
+        9300
+      ],
+      "avg_m2_price": 1220000,
+      "periods": [
+        "2024Q4",
+        "2025Q4"
+      ],
+      "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131120100-2018-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "粕谷",
+      "built_year": 2018,
+      "structure": "RC",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6628538,
+      "longitude": 139.6075808,
+      "transaction_count": 15,
+      "price_range_man": [
+        9000,
+        11000
+      ],
+      "avg_m2_price": 1220502,
+      "periods": [
+        "2022Q4",
+        "2023Q4",
+        "2024Q2",
+        "2024Q3",
+        "2025Q1",
+        "2025Q2",
+        "2025Q3"
+      ],
+      "latest_period": "2025Q3",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131120120-2006-RC",
       "prefecture": "東京都",
       "ward": "世田谷区",
@@ -67358,6 +68313,123 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131120220-2015-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "給田",
+      "built_year": 2015,
+      "structure": "RC",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6681356,
+      "longitude": 139.5921635,
+      "transaction_count": 1,
+      "price_range_man": [
+        9500,
+        9500
+      ],
+      "avg_m2_price": 1187500,
+      "periods": [
+        "2025Q2"
+      ],
+      "latest_period": "2025Q2",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131120220-2025-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "給田",
+      "built_year": 2025,
+      "structure": "RC",
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 10,
+      "latitude": 35.6681356,
+      "longitude": 139.5921635,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1466667,
+      "periods": [
+        "2025Q4"
+      ],
+      "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131120230-2014-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "経堂",
+      "built_year": 2014,
+      "structure": "RC",
+      "nearest_station": "経堂",
+      "estimated_walk_min": 1,
+      "latitude": 35.6512791,
+      "longitude": 139.636679,
+      "transaction_count": 2,
+      "price_range_man": [
+        10000,
+        11000
+      ],
+      "avg_m2_price": 1400000,
+      "periods": [
+        "2024Q3",
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131120230-2021",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "経堂",
+      "built_year": 2021,
+      "structure": "",
+      "nearest_station": "経堂",
+      "estimated_walk_min": 1,
+      "latitude": 35.6512791,
+      "longitude": 139.636679,
+      "transaction_count": 1,
+      "price_range_man": [
+        9500,
+        9500
+      ],
+      "avg_m2_price": 1357143,
+      "periods": [
+        "2023Q4"
+      ],
+      "latest_period": "2023Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131120230-2022-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "経堂",
+      "built_year": 2022,
+      "structure": "RC",
+      "nearest_station": "経堂",
+      "estimated_walk_min": 1,
+      "latitude": 35.6512791,
+      "longitude": 139.636679,
+      "transaction_count": 2,
+      "price_range_man": [
+        10000,
+        11000
+      ],
+      "avg_m2_price": 1400000,
+      "periods": [
+        "2024Q1",
+        "2025Q3"
+      ],
+      "latest_period": "2025Q3",
       "estimated_building_name": null
     },
     {
@@ -67858,6 +68930,53 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131120380-2013-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "代沢",
+      "built_year": 2013,
+      "structure": "RC",
+      "nearest_station": "下北沢",
+      "estimated_walk_min": 8,
+      "latitude": 35.6566718,
+      "longitude": 139.6705979,
+      "transaction_count": 2,
+      "price_range_man": [
+        9500,
+        11000
+      ],
+      "avg_m2_price": 1411905,
+      "periods": [
+        "2021Q4",
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131120380-2014-RC",
+      "prefecture": "東京都",
+      "ward": "世田谷区",
+      "district": "代沢",
+      "built_year": 2014,
+      "structure": "RC",
+      "nearest_station": "下北沢",
+      "estimated_walk_min": 8,
+      "latitude": 35.6566718,
+      "longitude": 139.6705979,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1375000,
+      "periods": [
+        "2021Q2"
+      ],
+      "latest_period": "2021Q2",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131120400-2006-RC",
       "prefecture": "東京都",
       "ward": "世田谷区",
@@ -68247,7 +69366,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": null
     },
     {
       "group_id": "131120460-2011-RC",
@@ -68270,7 +69389,7 @@
         "2023Q2"
       ],
       "latest_period": "2023Q2",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "group_id": "131120460-2012-RC",
@@ -68294,7 +69413,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ザ・パークハウス弦巻"
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "group_id": "131120460-2013-RC",
@@ -68320,7 +69439,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "◆ザ・パークハウス弦巻◆"
     },
     {
       "group_id": "131120460-2014-RC",
@@ -68635,8 +69754,8 @@
       "district": "南烏山",
       "built_year": 2009,
       "structure": "RC",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "transaction_count": 6,
@@ -68662,8 +69781,8 @@
       "district": "南烏山",
       "built_year": 2016,
       "structure": "RC",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "transaction_count": 3,
@@ -68687,8 +69806,8 @@
       "district": "南烏山",
       "built_year": 2025,
       "structure": "RC",
-      "nearest_station": "芦花公園",
-      "estimated_walk_min": 9,
+      "nearest_station": "千歳烏山",
+      "estimated_walk_min": 1,
       "latitude": 35.6689793,
       "longitude": 139.6007466,
       "transaction_count": 1,
@@ -73108,7 +74227,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-15T09:42:23",
+    "updated_at": "2026-05-15T12:15:08",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -73145,8 +74264,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 2715,
-    "building_group_count": 765,
+    "transaction_count": 2753,
+    "building_group_count": 780,
     "scope": "東京23区"
   }
 }
