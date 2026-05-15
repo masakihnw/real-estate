@@ -179,7 +179,24 @@ BEGIN
   CASE p_module
     WHEN 'investment_summary' THEN
       RETURN QUERY
-        SELECT lf.id, to_jsonb(lf)
+        SELECT lf.id, jsonb_build_object(
+          'id', lf.id, 'name', lf.name, 'address', lf.address,
+          'layout', lf.layout, 'area_m2', lf.area_m2, 'built_year', lf.built_year,
+          'floor_position', lf.floor_position, 'floor_total', lf.floor_total,
+          'total_units', lf.total_units, 'ownership', lf.ownership,
+          'management_fee', lf.management_fee, 'repair_reserve_fund', lf.repair_reserve_fund,
+          'direction', lf.direction, 'parking', lf.parking,
+          'station_line', lf.station_line, 'walk_min', lf.walk_min,
+          'price_man', lf.price_man, 'feature_tags', lf.feature_tags,
+          'ss_profit_pct', lf.ss_profit_pct, 'ss_m2_discount', lf.ss_m2_discount,
+          'ss_value_judgment', lf.ss_value_judgment, 'ss_purchase_judgment', lf.ss_purchase_judgment,
+          'commute_info', lf.commute_info, 'commute_info_v2', lf.commute_info_v2,
+          'hazard_info', lf.hazard_info,
+          'listing_score', lf.listing_score, 'price_fairness_score', lf.price_fairness_score,
+          'resale_liquidity_score', lf.resale_liquidity_score,
+          'extracted_features', lf.extracted_features,
+          'key_strengths', lf.key_strengths, 'key_risks', lf.key_risks
+        )
         FROM listings_feed lf
         LEFT JOIN enrichments e ON e.listing_id = lf.id
         WHERE lf.is_active = true
@@ -195,7 +212,17 @@ BEGIN
 
     WHEN 'text_enricher' THEN
       RETURN QUERY
-        SELECT lf.id, to_jsonb(lf)
+        SELECT lf.id, jsonb_build_object(
+          'id', lf.id, 'name', lf.name, 'address', lf.address,
+          'layout', lf.layout, 'area_m2', lf.area_m2, 'built_year', lf.built_year,
+          'floor_position', lf.floor_position, 'floor_total', lf.floor_total,
+          'total_units', lf.total_units, 'ownership', lf.ownership,
+          'management_fee', lf.management_fee, 'repair_reserve_fund', lf.repair_reserve_fund,
+          'direction', lf.direction, 'parking', lf.parking,
+          'station_line', lf.station_line, 'walk_min', lf.walk_min,
+          'price_man', lf.price_man, 'feature_tags', lf.feature_tags,
+          'key_strengths', lf.key_strengths, 'key_risks', lf.key_risks
+        )
         FROM listings_feed lf
         LEFT JOIN enrichments e ON e.listing_id = lf.id
         WHERE lf.is_active = true
@@ -280,7 +307,24 @@ BEGIN
     WHEN 'ai_scoring' THEN
       RETURN QUERY
         SELECT DISTINCT ON (COALESCE(NULLIF(lf.normalized_name, ''), lf.id::text))
-          lf.id, to_jsonb(lf)
+          lf.id, jsonb_build_object(
+          'id', lf.id, 'name', lf.name, 'address', lf.address,
+          'layout', lf.layout, 'area_m2', lf.area_m2, 'built_year', lf.built_year,
+          'floor_position', lf.floor_position, 'floor_total', lf.floor_total,
+          'total_units', lf.total_units, 'ownership', lf.ownership,
+          'management_fee', lf.management_fee, 'repair_reserve_fund', lf.repair_reserve_fund,
+          'direction', lf.direction, 'parking', lf.parking,
+          'station_line', lf.station_line, 'walk_min', lf.walk_min,
+          'price_man', lf.price_man, 'feature_tags', lf.feature_tags,
+          'ss_profit_pct', lf.ss_profit_pct, 'ss_m2_discount', lf.ss_m2_discount,
+          'ss_value_judgment', lf.ss_value_judgment, 'ss_purchase_judgment', lf.ss_purchase_judgment,
+          'commute_info', lf.commute_info, 'commute_info_v2', lf.commute_info_v2,
+          'hazard_info', lf.hazard_info,
+          'listing_score', lf.listing_score, 'price_fairness_score', lf.price_fairness_score,
+          'resale_liquidity_score', lf.resale_liquidity_score,
+          'extracted_features', lf.extracted_features,
+          'key_strengths', lf.key_strengths, 'key_risks', lf.key_risks
+        )
         FROM listings_feed lf
         LEFT JOIN enrichments e ON e.listing_id = lf.id
         WHERE lf.is_active = true
