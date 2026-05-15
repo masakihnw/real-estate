@@ -77,7 +77,7 @@ struct ListingDetailView: View {
                     // ④ AI購入推奨度 / 投資サマリー
                     InvestmentSummaryCard(listing: listing)
 
-                    // ④-b 投資スコア・価格変動・掲載状況
+                    // ④-b 総合スコア・価格変動・掲載状況
                     if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
                         Divider()
                         investmentScoreSection
@@ -1221,13 +1221,13 @@ struct ListingDetailView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - 投資スコアセクション
+    // MARK: - 総合スコアセクション
 
     @ViewBuilder
     private var investmentScoreSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             // セクションヘッダー
-            Label("投資スコア", systemImage: "chart.line.uptrend.xyaxis")
+            Label("総合スコア", systemImage: "chart.line.uptrend.xyaxis")
                 .font(.headline)
 
             // スコアカード

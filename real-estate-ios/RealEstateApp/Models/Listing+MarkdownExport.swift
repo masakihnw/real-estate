@@ -215,7 +215,7 @@ extension Listing {
             }
 
             if listingScore != nil {
-                md += "\n### アプリ内投資スコア\n\n"
+                md += "\n### アプリ内総合スコア\n\n"
                 md += "当アプリが独自に算出した総合スコアです。以下の要素を重み付けして合算しています。\n\n"
 
                 if let score = listingScore { md += "- **総合スコア**: \(score)/100\n\n" }
