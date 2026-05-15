@@ -1363,13 +1363,15 @@ struct ListingDetailView: View {
     }
 
     private func scoreColor(_ score: Int) -> Color {
+        let grade: String
         switch score {
-        case 80...: return .green
-        case 65..<80: return .blue
-        case 50..<65: return .orange
-        case 35..<50: return .gray
-        default: return .red
+        case 80...: grade = "S"
+        case 65..<80: grade = "A"
+        case 50..<65: grade = "B"
+        case 35..<50: grade = "C"
+        default: grade = "D"
         }
+        return DesignSystem.scoreColor(for: grade)
     }
 
     // MARK: - 価格変動チャート

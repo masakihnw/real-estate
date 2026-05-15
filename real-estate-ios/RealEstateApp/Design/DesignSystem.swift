@@ -52,8 +52,8 @@ enum DesignSystem {
     static let scoreS = Color(red: 1.0, green: 0.7, blue: 0.0)
     static let scoreA = Color(red: 0.0, green: 0.478, blue: 1.0)
     static let scoreB = Color(red: 0.204, green: 0.78, blue: 0.349)
-    static let scoreC = Color(red: 0.557, green: 0.557, blue: 0.576)
-    static let scoreD = Color.red
+    static let scoreC = Color(red: 0.95, green: 0.55, blue: 0.15)
+    static let scoreD = Color(red: 0.557, green: 0.557, blue: 0.576)
 
     static func scoreColor(for grade: String) -> Color {
         switch grade {

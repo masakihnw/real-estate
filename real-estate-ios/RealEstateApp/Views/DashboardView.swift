@@ -33,8 +33,7 @@ struct DashboardView: View {
     @State private var selectedListing: Listing?
     @State private var quickFilter: DashboardQuickFilter?
     @State private var preferenceProfile: PreferenceProfile = .inactive
-    @State private var claudeSummaryTask: Task<Void, Never>?
-    @State private var lastClaudeSummaryHash: Int?
+    @State private var preferenceSummaryTask: Task<Void, Never>?
 
     var body: some View {
         NavigationStack {
@@ -63,6 +62,7 @@ struct DashboardView: View {
                 )
             }
             .onAppear { updatePreferenceProfile() }
+            .onDisappear { preferenceSummaryTask?.cancel() }
             .onChange(of: BuildingPreferenceStore.shared.likedKeys.count) { _, _ in
                 updatePreferenceProfile()
             }
@@ -446,55 +446,38 @@ struct DashboardView: View {
         newProfile.claudeSummaryLines = preferenceProfile.claudeSummaryLines
         newProfile.claudeSummaryState = preferenceProfile.claudeSummaryState
         preferenceProfile = newProfile
-        requestClaudeSummaryIfNeeded()
+        fetchPreferenceSummaryFromDB()
     }
 
     @MainActor
-    private func requestClaudeSummaryIfNeeded() {
-        let prefStore = BuildingPreferenceStore.shared
-        let liked = prefStore.likedKeys
-        let noped = prefStore.nopedKeys
+    private func fetchPreferenceSummaryFromDB() {
+        guard preferenceProfile.isActive else { return }
+        guard preferenceProfile.claudeSummaryState != .loaded else { return }
 
-        var hasher = Hasher()
-        hasher.combine(liked)
-        hasher.combine(noped)
-        let currentHash = hasher.finalize()
-        guard currentHash != lastClaudeSummaryHash else { return }
-        guard preferenceProfile.isActive, ClaudeAPIClient.shared.isAvailable else { return }
-
-        claudeSummaryTask?.cancel()
+        preferenceSummaryTask?.cancel()
         preferenceProfile.claudeSummaryState = .loading
 
-        let listings = Array(activeListings)
-        claudeSummaryTask = Task { @MainActor in
-            guard let prompts = PreferenceAnalyzer.buildClaudePrompt(
-                allListings: listings,
-                likedKeys: liked,
-                nopedKeys: noped
-            ) else { return }
-
+        preferenceSummaryTask = Task { @MainActor in
             do {
-                let response = try await ClaudeAPIClient.shared.sendMessage(
-                    system: prompts.system,
-                    userContent: prompts.user
+                let (data, _) = try await SupabaseClient.shared.select(
+                    from: "buyer_preference_summaries",
+                    columns: "summary_lines",
+                    filters: [("user_id", "eq.default")],
+                    range: 0...0
                 )
-                guard !Task.isCancelled else {
-                    if preferenceProfile.claudeSummaryState == .loading {
-                        preferenceProfile.claudeSummaryState = .idle
-                    }
-                    return
-                }
-                let lines = response.components(separatedBy: "\n")
-                    .map { $0.trimmingCharacters(in: .whitespaces) }
-                    .filter { !$0.isEmpty }
-                lastClaudeSummaryHash = currentHash
-                preferenceProfile.claudeSummaryLines = lines
-                preferenceProfile.claudeSummaryState = .loaded
-            } catch {
-                if preferenceProfile.claudeSummaryState == .loading {
+                guard !Task.isCancelled else { return }
+
+                struct SummaryRow: Decodable { let summary_lines: [String] }
+                let rows = try JSONDecoder().decode([SummaryRow].self, from: data)
+
+                if let row = rows.first, !row.summary_lines.isEmpty {
+                    preferenceProfile.claudeSummaryLines = row.summary_lines
+                    preferenceProfile.claudeSummaryState = .loaded
+                } else {
                     preferenceProfile.claudeSummaryState = .idle
                 }
-                preferenceProfile.claudeSummaryState = .failed
+            } catch {
+                preferenceProfile.claudeSummaryState = .idle
             }
         }
     }
