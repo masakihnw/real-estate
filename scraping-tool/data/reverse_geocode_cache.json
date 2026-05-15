@@ -614,5 +614,45 @@
     "quarter": "高円寺南",
     "neighbourhood": "高円寺南二丁目",
     "city_district": ""
+  },
+  "35.652721,139.778590": {
+    "display_name": "日比谷豊洲埠頭東雲町線, 晴海四丁目, 晴海, 中央区, 東京都, 104-0053, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "晴海",
+    "neighbourhood": "晴海四丁目",
+    "city_district": ""
+  },
+  "35.659523,139.786164": {
+    "display_name": "晴海一丁目, 晴海, 中央区, 東京都, 104-0053, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "晴海",
+    "neighbourhood": "晴海一丁目",
+    "city_district": ""
+  },
+  "35.700211,139.689422": {
+    "display_name": "北新宿二丁目, 北新宿, 新宿区, 東京都, 169-0074, 日本",
+    "city": "新宿区",
+    "suburb": "",
+    "quarter": "北新宿",
+    "neighbourhood": "北新宿二丁目",
+    "city_district": ""
+  },
+  "35.701616,139.694754": {
+    "display_name": "北新宿一丁目, 北新宿, 新宿区, 東京都, 169-0074, 日本",
+    "city": "新宿区",
+    "suburb": "",
+    "quarter": "北新宿",
+    "neighbourhood": "北新宿一丁目",
+    "city_district": ""
+  },
+  "35.753022,139.743573": {
+    "display_name": "堀船一丁目, 堀船, 北区, 東京都, 114-0004, 日本",
+    "city": "北区",
+    "suburb": "",
+    "quarter": "堀船",
+    "neighbourhood": "堀船一丁目",
+    "city_district": ""
   }
 }
