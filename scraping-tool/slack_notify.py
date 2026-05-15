@@ -561,6 +561,53 @@ def build_message_from_report(report_path: Path, report_url: Optional[str] = Non
     return content
 
 
+def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
+    """notification_drafts テーブルから pending ドラフトを読み出して Slack 送信。
+    Returns (sent_count, failed_count)."""
+    try:
+        result = client.rpc("get_pending_notification_drafts", {"p_channel": "slack"}).execute()
+        drafts = result.data or []
+    except Exception as e:
+        logger.warning("notification_drafts 読み出し失敗（テーブル未作成 or RPC 未定義の可能性）: %s", e)
+        return 0, 0
+
+    sent = 0
+    failed = 0
+    for draft in drafts:
+        draft_id = draft["id"]
+        ntype = draft["notification_type"]
+        msg = draft.get("message_text") or ""
+
+        if not msg.strip():
+            try:
+                client.rpc("mark_notification_sent", {"p_id": draft_id, "p_status": "skipped"}).execute()
+            except Exception:
+                pass
+            continue
+
+        ok = send_slack_message_chunked_with_retry(webhook_url, msg)
+        try:
+            if ok:
+                client.rpc("mark_notification_sent", {"p_id": draft_id, "p_status": "sent"}).execute()
+                sent += 1
+                logger.info("notification_draft 送信完了: id=%d type=%s", draft_id, ntype)
+            else:
+                client.rpc("mark_notification_sent", {
+                    "p_id": draft_id,
+                    "p_status": "failed",
+                    "p_error": "Slack webhook send failed after retries",
+                }).execute()
+                failed += 1
+                logger.error("notification_draft 送信失敗: id=%d type=%s", draft_id, ntype)
+        except Exception as e:
+            logger.error("notification_draft ステータス更新失敗: %s", e)
+            failed += 1
+
+    if sent > 0 or failed > 0:
+        logger.info("notification_drafts: %d 送信, %d 失敗", sent, failed)
+    return sent, failed
+
+
 def main() -> None:
     """メイン処理。Supabase 優先、未設定時は JSON フォールバック。"""
     if len(sys.argv) < 2:
@@ -615,9 +662,13 @@ def main() -> None:
     diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
 
     if not diff_new_a and not diff_removed_a:
+        if supabase_client:
+            _send_notification_drafts(supabase_client, webhook_url)
         logger.warning("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします")
         sys.exit(0)
     elif not diff_new_a and diff_removed_a and not is_morning:
+        if supabase_client:
+            _send_notification_drafts(supabase_client, webhook_url)
         logger.warning("削除のみの変更 — 朝の回（JST 9:00）まで通知を保留します")
         sys.exit(0)
 
@@ -644,6 +695,9 @@ def main() -> None:
     else:
         logger.error("Slack通知の送信に失敗しました（リトライ後も送信できませんでした）")
         sys.exit(1)
+
+    if supabase_client:
+        _send_notification_drafts(supabase_client, webhook_url)
 
 
 if __name__ == "__main__":

@@ -159,12 +159,75 @@ DO UPDATE SET
 
 ---
 
+## Step 4: 通知ドラフト生成
+
+Routine は Slack に直接投稿しない。代わりに `notification_drafts` テーブルに下書きを保存し、
+GHA の `slack_notify.py` がボット名義で送信する。
+
+### Step 4a: Daily Brief 通知
+
+Step 3 のバイヤーピック結果を Slack 向けに整形:
+
+1. Step 3 で生成した `recommended_listings` と `summary_text` を使い、以下構成のメッセージを生成:
+   - 「🤖 *AI デイリーブリーフ*（{日付}）」ヘッダー
+   - サマリーテキスト（3-5文）
+   - おすすめ TOP 5: 物件名・価格・間取り・推薦理由（各1-2文）
+   - マーケットインサイト（2-3文）
+   - ※ 既存の slack_notify.py が送る新規/削除通知と重複しないよう、「AI の推薦理由」に焦点
+
+2. 保存:
+```sql
+SELECT upsert_notification_draft(
+  'slack',
+  'daily_brief',
+  '<整形済みメッセージ>',
+  '{"listing_ids": [123, 456], "top_score": 5}'::jsonb
+);
+```
+
+### Step 4b: Price Alert 通知
+
+直近24時間の有意な価格変動を検出:
+```sql
+SELECT * FROM get_significant_price_changes(now() - interval '24 hours', 5.0);
+```
+
+- 結果1件以上: 「💰 *価格変動アラート*」+ 各物件の旧価格→新価格（-X%）をメッセージ化して保存:
+```sql
+SELECT upsert_notification_draft('slack', 'price_alert', '<メッセージ>', '<metadata>'::jsonb);
+```
+
+- 結果0件: スキップとして記録:
+```sql
+SELECT skip_notification_draft('slack', 'price_alert');
+```
+
+### Step 4c: New Highlight 通知
+
+直近24時間の高スコア新着物件:
+```sql
+SELECT * FROM get_high_score_new_listings(now() - interval '24 hours', 4);
+```
+
+- 結果1件以上: 「✨ *注目の新着物件*」+ 物件名・エリア・価格・AI推薦理由をメッセージ化して保存:
+```sql
+SELECT upsert_notification_draft('slack', 'new_highlight', '<メッセージ>', '<metadata>'::jsonb);
+```
+
+- 結果0件:
+```sql
+SELECT skip_notification_draft('slack', 'new_highlight');
+```
+
+---
+
 ## 完了レポート
 
 各ステップの処理件数をまとめて報告:
 - investment_summary: X件処理（スコア分布: 5=X件, 4=X件, 3=X件, 2=X件, 1=X件）
 - image_analyzer: X件処理（総画像Y枚、junk Z枚削除済み）
 - buyer_picks: おすすめX件抽出、サマリー生成完了
+- notification_drafts: daily_brief=pending/skipped, price_alert=pending/skipped, new_highlight=pending/skipped
 
 各ステップの全物件処理結果を以下のテーブル形式で記録:
 ```
@@ -180,4 +243,5 @@ DO UPDATE SET
 - **サブエージェント委任禁止**: 全ステップの処理はメインエージェントのコンテキストで実行すること。サブエージェント（Agent ツール）への委任は禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む
+- Step 4 のエラーは他のステップの結果に影響しない
 - 日本語で回答すること
