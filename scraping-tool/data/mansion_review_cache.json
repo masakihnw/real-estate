@@ -6002,5 +6002,53 @@
       ]
     },
     "cached_at": "2026-05-14T17:16:11.995634"
+  },
+  "104m2超の生活空間": {
+    "data": null,
+    "cached_at": "2026-05-15T04:06:18.080954"
+  },
+  "オープンレジデンシア中野新井コート2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1436601.html",
+      "deviation_score": 23,
+      "estimated_price_man": 6837,
+      "estimated_tsubo_price_man": 492,
+      "estimated_m2_price_man": 149,
+      "shinchiku_history_count": 23,
+      "chuko_history_count": 10,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 55.7,
+          "price_man": 8277,
+          "tsubo_price_man": 490.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-15T04:06:26.779117"
+  },
+  "オープンレジデンシア中野新井コート": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1436601.html",
+      "deviation_score": 23,
+      "estimated_price_man": 6837,
+      "estimated_tsubo_price_man": 492,
+      "estimated_m2_price_man": 149,
+      "shinchiku_history_count": 23,
+      "chuko_history_count": 10,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 55.7,
+          "price_man": 8277,
+          "tsubo_price_man": 490.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-15T04:06:26.779117"
   }
 }
