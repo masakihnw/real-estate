@@ -144,6 +144,19 @@ BEGIN
       ai_calculated_at = now()
     WHERE listing_id = p_listing_id;
 
+  ELSIF p_module = 'ai_scoring' THEN
+    UPDATE enrichments SET
+      listing_score = (p_result->>'listing_score')::INT,
+      price_fairness_score = (p_result->>'price_fairness_score')::INT,
+      ai_listing_score = (p_result->>'listing_score')::INT,
+      ai_price_fairness_score = (p_result->>'price_fairness_score')::INT,
+      ai_source = p_source,
+      ai_model = p_model,
+      ai_prompt_hash = p_prompt_hash,
+      ai_prompt_version = p_prompt_version,
+      ai_calculated_at = now()
+    WHERE listing_id = p_listing_id;
+
   ELSE
     RAISE EXCEPTION 'Unknown module: %', p_module;
   END IF;
