@@ -130,11 +130,18 @@ SELECT * FROM batch_update_commute_from_master(100);
 - ai_scoring: X件処理（平均スコア XX）
 - commute: X件処理（マスタヒット Y件、推定 Z件、未登録 W駅）
 
-エラーがあればエラー内容も報告。
+各ステップの全物件処理結果を以下のテーブル形式で記録:
+```
+| # | listing_id | name | status | score | error |
+```
+- status: ok / error
+- score: ai_scoring の場合は listing_score、text_enricher の場合は省略可
+- error: エラーがあればエラー内容
 
 ---
 
 ## 共通ルール
+- **サブエージェント委任禁止**: 全ステップの処理はメインエージェントのコンテキストで実行すること。サブエージェント（Agent ツール）への委任は禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む
 - 日本語で回答すること
