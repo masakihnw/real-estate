@@ -21074,9 +21074,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 8,
-      "latitude": 35.697411,
-      "longitude": 139.7862521,
+      "estimated_walk_min": 10,
+      "latitude": 35.6973931,
+      "longitude": 139.7846834,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -57811,9 +57811,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 8,
-      "latitude": 35.697411,
-      "longitude": 139.7862521,
+      "estimated_walk_min": 10,
+      "latitude": 35.6973931,
+      "longitude": 139.7846834,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -69345,7 +69345,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-14T17:36:38",
+    "updated_at": "2026-05-15T00:17:23",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
