@@ -163,69 +163,125 @@ CREATE OR REPLACE FUNCTION get_listings_for_ai(
   listing_data JSONB
 ) AS $$
 BEGIN
-  IF p_module = 'investment_summary' THEN
-    RETURN QUERY
-    SELECT l.id, to_jsonb(lf.*) AS listing_data
-    FROM listings l
-    JOIN listings_feed lf ON lf.id = l.id
-    LEFT JOIN enrichments e ON e.listing_id = l.id
-    WHERE l.is_active = true
-      AND (
-        e.ai_recommendation_score IS NULL
-        OR (e.ai_prompt_hash IS DISTINCT FROM (p_config->>'current_prompt_hash'))
-      )
-      AND (
-        coalesce((lf.listing_score)::int, 0) >= coalesce((p_config->'filter'->>'listing_score_min')::int, 55)
-        OR coalesce((lf.ss_profit_pct)::float, 0) >= coalesce((p_config->'filter'->>'ss_profit_pct_min')::float, 50)
-        OR coalesce((lf.price_fairness_score)::float, 0) >= coalesce((p_config->'filter'->>'price_fairness_min')::float, 60)
-      )
-    ORDER BY l.updated_at DESC
-    LIMIT coalesce((p_config->>'max_items_per_run')::int, 30);
+  CASE p_module
+    WHEN 'investment_summary' THEN
+      RETURN QUERY
+        SELECT lf.id, to_jsonb(lf)
+        FROM listings_feed lf
+        WHERE lf.is_active = true
+          AND (
+            (lf.listing_score >= COALESCE((p_config->'listing_score_min')::int, 55))
+            OR (lf.ss_profit_pct >= COALESCE((p_config->'ss_profit_pct_min')::int, 50))
+            OR (lf.price_fairness_score >= COALESCE((p_config->'price_fairness_min')::int, 60))
+            OR (lf.ai_recommendation_score IS NOT NULL
+                AND lf.ai_recommendation_flags IS NOT NULL
+                AND EXISTS (
+                  SELECT 1 FROM jsonb_array_elements_text(
+                    COALESCE(p_config->'reanalyze_ranks', '["S","A"]'::jsonb)
+                  ) r WHERE lf.ai_recommendation_flags @> to_jsonb(r.value)
+                ))
+          )
+        ORDER BY lf.listing_score DESC NULLS LAST
+        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 30);
 
-  ELSIF p_module = 'text_enricher' THEN
-    RETURN QUERY
-    SELECT l.id, to_jsonb(lf.*) AS listing_data
-    FROM listings l
-    JOIN listings_feed lf ON lf.id = l.id
-    LEFT JOIN enrichments e ON e.listing_id = l.id
-    WHERE l.is_active = true
-      AND e.extracted_features IS NULL
-      AND (l.remarks IS NOT NULL OR l.description IS NOT NULL)
-    ORDER BY l.updated_at DESC
-    LIMIT coalesce((p_config->>'max_items_per_run')::int, 50);
+    WHEN 'text_enricher' THEN
+      RETURN QUERY
+        SELECT lf.id, to_jsonb(lf)
+        FROM listings_feed lf
+        LEFT JOIN enrichments e ON e.listing_id = lf.id
+        WHERE lf.is_active = true
+          AND lf.feature_tags IS NOT NULL
+          AND (
+            lf.extracted_features IS NULL
+            OR e.ai_prompt_hash IS DISTINCT FROM (
+              SELECT ap.prompt_hash FROM ai_prompts ap
+              WHERE ap.module = 'text_enricher' AND ap.is_active = true LIMIT 1
+            )
+          )
+        ORDER BY lf.created_at DESC
+        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 50);
 
-  ELSIF p_module = 'image_analyzer' THEN
-    RETURN QUERY
-    SELECT l.id, to_jsonb(lf.*) AS listing_data
-    FROM listings l
-    JOIN listings_feed lf ON lf.id = l.id
-    LEFT JOIN enrichments e ON e.listing_id = l.id
-    WHERE l.is_active = true
-      AND e.image_categories IS NULL
-      AND l.suumo_images IS NOT NULL
-      AND jsonb_array_length(l.suumo_images) > 0
-    ORDER BY l.updated_at DESC
-    LIMIT coalesce((p_config->>'max_items_per_run')::int, 20);
+    WHEN 'dedup' THEN
+      RETURN QUERY
+        SELECT l.id::bigint AS listing_id,
+          jsonb_build_object(
+            'id', l.id,
+            'name', l.name,
+            'normalized_name', l.normalized_name,
+            'identity_key', l.identity_key,
+            'address', l.address,
+            'layout', l.layout,
+            'area_m2', l.area_m2,
+            'floor_position', l.floor_position,
+            'floor_total', l.floor_total,
+            'built_year', l.built_year,
+            'total_units', l.total_units,
+            'station_line', l.station_line,
+            'walk_min', l.walk_min,
+            'duplicate_count', l.duplicate_count,
+            'source', l.first_seen_source,
+            'price_man', (SELECT ls.price_man FROM listing_sources ls WHERE ls.listing_id = l.id AND ls.is_active = true ORDER BY ls.price_man DESC NULLS LAST LIMIT 1),
+            'group_key', COALESCE(NULLIF(l.normalized_name, ''), l.address),
+            'group_members', (
+              SELECT jsonb_agg(jsonb_build_object(
+                'id', l2.id,
+                'name', l2.name,
+                'normalized_name', l2.normalized_name,
+                'layout', l2.layout,
+                'area_m2', l2.area_m2,
+                'floor_position', l2.floor_position,
+                'floor_total', l2.floor_total,
+                'built_year', l2.built_year,
+                'total_units', l2.total_units,
+                'source', l2.first_seen_source,
+                'price_man', (SELECT ls2.price_man FROM listing_sources ls2 WHERE ls2.listing_id = l2.id AND ls2.is_active = true ORDER BY ls2.price_man DESC NULLS LAST LIMIT 1)
+              ))
+              FROM listings l2
+              WHERE l2.is_active = true
+                AND l2.id != l.id
+                AND (
+                  (l2.normalized_name = l.normalized_name AND l.normalized_name != '' AND l.normalized_name IS NOT NULL)
+                  OR (l2.floor_total = l.floor_total AND l2.total_units = l.total_units AND l2.address LIKE '%' || SUBSTRING(l.address FROM '[^0-9]{2,}[0-9]+') || '%' AND l.floor_total IS NOT NULL)
+                )
+            )
+          ) AS listing_data
+        FROM listings l
+        JOIN enrichments e ON e.listing_id = l.id
+        WHERE l.is_active = true
+          AND l.duplicate_count > 1
+          AND e.dedup_confidence IS NULL
+        ORDER BY l.created_at DESC
+        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 30);
 
-  ELSIF p_module = 'commute' THEN
-    RETURN QUERY
-    SELECT l.id, to_jsonb(lf.*) AS listing_data
-    FROM listings l
-    JOIN listings_feed lf ON lf.id = l.id
-    LEFT JOIN enrichments e ON e.listing_id = l.id
-    WHERE l.is_active = true
-      AND l.ss_address IS NOT NULL
-      AND (
-        e.commute_info IS NULL
-        OR NOT (e.commute_info ? 'playground' AND e.commute_info->'playground'->>'source' IN ('gmaps', 'yahoo_transit'))
-        OR NOT (e.commute_info ? 'm3career' AND e.commute_info->'m3career'->>'source' IN ('gmaps', 'yahoo_transit'))
-      )
-    ORDER BY l.updated_at DESC
-    LIMIT coalesce((p_config->>'max_items_per_run')::int, 20);
+    WHEN 'image_analyzer' THEN
+      RETURN QUERY
+        SELECT lf.id, to_jsonb(lf)
+        FROM listings_feed lf
+        WHERE lf.is_active = true
+          AND lf.image_categories IS NULL
+          AND lf.suumo_images IS NOT NULL
+          AND jsonb_array_length(lf.suumo_images) > 0
+        ORDER BY lf.created_at DESC
+        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 20);
 
-  ELSE
-    RAISE EXCEPTION 'Unknown module: %', p_module;
-  END IF;
+    WHEN 'ai_scoring' THEN
+      RETURN QUERY
+        SELECT DISTINCT ON (COALESCE(NULLIF(lf.normalized_name, ''), lf.id::text))
+          lf.id, to_jsonb(lf)
+        FROM listings_feed lf
+        LEFT JOIN enrichments e ON e.listing_id = lf.id
+        WHERE lf.is_active = true
+          AND (e.ai_listing_score IS NULL
+               OR e.ai_prompt_hash IS DISTINCT FROM (
+                 SELECT ap.prompt_hash FROM ai_prompts ap
+                 WHERE ap.module = 'ai_scoring' AND ap.is_active = true LIMIT 1
+               ))
+        ORDER BY COALESCE(NULLIF(lf.normalized_name, ''), lf.id::text), lf.listing_score DESC NULLS LAST
+        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 40);
+
+    ELSE
+      RETURN;
+  END CASE;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -352,29 +408,30 @@ $tpl_investment$## 買い手プロファイル
 'claude_investment_summarizer.py L143-243 から移植。初期版。'),
 
 -- F2. text_enricher
-('text_enricher', 1, true,
+('text_enricher', 2, true,
 $sys_text$あなたは不動産物件情報の構造化抽出エキスパートです。
-物件の説明文・特徴タグから、投資判断に重要な情報を抽出してください。
+物件の特徴タグ・基本情報から、投資判断に重要な情報を抽出してください。
 
 JSON形式で回答:
 {
   "renovation_history": "2023年フルリノベーション済（キッチン・浴室・床暖房新設）",
   "management_quality": "管理良好",
   "equipment_highlights": ["食洗機", "床暖房", "ディスポーザー", "宅配ボックス"],
-  "seller_motivation": "転勤",
+  "seller_motivation": null,
   "negative_factors": ["1階", "北向き"],
   "notable_points": "角部屋・両面バルコニー"
 }
 
 各フィールドの説明:
-- renovation_history: リノベーション・リフォームの内容と時期。なければ null
-- management_quality: 管理状態の評価（"管理優良"/"管理良好"/"管理普通"/"管理注意"/"不明"）
-- equipment_highlights: 投資価値を高める設備（一般的なもの（エアコン等）は除外）
-- seller_motivation: 売却理由の推測（"転勤"/"住み替え"/"相続"/"投資売却"/"不明"）。明示されていなければ null
-- negative_factors: 価格に影響するマイナス要因。なければ空配列
-- notable_points: その他の注目ポイント。なければ null
+- renovation_history: リノベーション・リフォームの内容と時期。feature_tags から推測できる場合のみ。なければ null
+- management_quality: 管理状態の評価（"管理優良"/"管理良好"/"管理普通"/"管理注意"/"不明"）。feature_tags や修繕積立金額から推定
+- equipment_highlights: 投資価値を高める設備（feature_tags から抽出。一般的なもの（エアコン等）は除外）
+- seller_motivation: 売却理由の推測。feature_tags からは通常判断できないため null が多い
+- negative_factors: 価格に影響するマイナス要因（低層階、北向き、駅遠等）。なければ空配列
+- notable_points: その他の注目ポイント（角部屋、共用施設充実等）。なければ null
 
-情報がない場合は null や空配列を返してください。推測で埋めないでください。$sys_text$,
+情報がない場合は null や空配列を返してください。推測で埋めないでください。
+feature_tags は SUUMO の物件特徴タグ配列です。ここから設備・環境・管理に関する情報を読み取ってください。$sys_text$,
 
 $tpl_text$物件名: {name}
 住所: {address}
@@ -385,15 +442,16 @@ $tpl_text$物件名: {name}
 総戸数: {total_units}戸
 管理費: {management_fee}円/月
 修繕積立金: {repair_reserve_fund}円/月
-特徴タグ: {feature_tags}
-備考: {remarks}
-設備: {equipment}$tpl_text$,
+権利形態: {ownership}
+向き: {direction}
+駐車場: {parking}
+特徴タグ: {feature_tags}$tpl_text$,
 
 '{"type":"object","properties":{"renovation_history":{"type":["string","null"]},"management_quality":{"type":"string","enum":["管理優良","管理良好","管理普通","管理注意","不明"]},"equipment_highlights":{"type":"array","items":{"type":"string"}},"seller_motivation":{"type":["string","null"]},"negative_factors":{"type":"array","items":{"type":"string"}},"notable_points":{"type":["string","null"]}}}'::jsonb,
 
-'{"max_items_per_run":50,"max_tokens":512,"min_text_length":50}'::jsonb,
+'{"max_items_per_run":50,"max_tokens":512}'::jsonb,
 
-'claude_text_enricher.py L26-47 から移植。初期版。'),
+'v2: listings_feed に合わせてテンプレート修正。remarks/equipment → ownership/direction/parking'),
 
 -- F3. dedup
 ('dedup', 1, true,
@@ -494,3 +552,116 @@ CREATE POLICY "ai_prompts_read" ON ai_prompts
 
 CREATE POLICY "ai_prompts_service_write" ON ai_prompts
   FOR ALL USING (auth.role() = 'service_role');
+
+-- ============================================================
+-- H. 通勤時間マスタテーブル
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS station_commute_times (
+  id SERIAL PRIMARY KEY,
+  station_name TEXT NOT NULL,
+  office TEXT NOT NULL,
+  scenario TEXT NOT NULL DEFAULT 'wkday0900',
+  duration_min INT NOT NULL,
+  duration_min_min INT,
+  duration_min_max INT,
+  transfers INT,
+  route_summary TEXT,
+  source TEXT NOT NULL DEFAULT 'manual_google_maps',
+  confidence TEXT NOT NULL DEFAULT 'verified',
+  verified_at TIMESTAMPTZ DEFAULT now(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (station_name, office, scenario)
+);
+
+COMMENT ON TABLE station_commute_times IS '駅別通勤時間マスタ。playground / m3career オフィスへの通勤時間を管理';
+COMMENT ON COLUMN station_commute_times.office IS 'playground | m3career';
+COMMENT ON COLUMN station_commute_times.scenario IS 'wkday0900 = 平日9時着想定';
+COMMENT ON COLUMN station_commute_times.confidence IS 'verified = 手動調査済, estimated = 近隣駅から推定';
+
+-- I. station_line テキストから駅名を抽出する関数
+CREATE OR REPLACE FUNCTION extract_station_name(p_station_line TEXT)
+RETURNS TEXT AS $$
+  SELECT COALESCE(
+    (regexp_match(p_station_line, '「([^」]+)」'))[1],
+    (regexp_match(p_station_line, '\s([^\s「」/]+)駅'))[1],
+    (regexp_match(p_station_line, '/([^\s]+)\s'))[1]
+  );
+$$ LANGUAGE sql IMMUTABLE;
+
+COMMENT ON FUNCTION extract_station_name IS 'station_line テキストから駅名を抽出。3パターン対応: 「括弧」, スペース+駅suffix, /スラッシュ';
+
+-- J. 通勤時間一括更新 RPC
+CREATE OR REPLACE FUNCTION batch_update_commute_from_master(p_limit INT DEFAULT 100)
+RETURNS TABLE(listing_id BIGINT, station_name TEXT, status TEXT) AS $$
+DECLARE
+  r RECORD;
+  v_station TEXT;
+  v_pg_min INT;
+  v_m3_min INT;
+  v_pg_conf TEXT;
+  v_m3_conf TEXT;
+  v_walk INT;
+BEGIN
+  FOR r IN
+    SELECT l.id, l.station_line, l.walk_min
+    FROM listings l
+    JOIN enrichments e ON e.listing_id = l.id
+    WHERE e.commute_info IS NULL
+      AND l.station_line IS NOT NULL
+    ORDER BY l.id DESC
+    LIMIT p_limit
+  LOOP
+    v_station := extract_station_name(r.station_line);
+
+    IF v_station IS NULL THEN
+      listing_id := r.id;
+      station_name := NULL;
+      status := 'parse_failed';
+      RETURN NEXT;
+      CONTINUE;
+    END IF;
+
+    SELECT s.duration_min, s.confidence INTO v_pg_min, v_pg_conf
+    FROM station_commute_times s
+    WHERE s.station_name = v_station AND s.office = 'playground' AND s.scenario = 'wkday0900';
+
+    SELECT s.duration_min INTO v_m3_min
+    FROM station_commute_times s
+    WHERE s.station_name = v_station AND s.office = 'm3career' AND s.scenario = 'wkday0900';
+
+    IF v_pg_min IS NULL OR v_m3_min IS NULL THEN
+      listing_id := r.id;
+      station_name := v_station;
+      status := 'not_in_master';
+      RETURN NEXT;
+      CONTINUE;
+    END IF;
+
+    v_walk := COALESCE(r.walk_min, 0);
+
+    UPDATE enrichments SET commute_info = jsonb_build_object(
+      'playground', jsonb_build_object(
+        'duration_min', v_pg_min, 'walk_min', v_walk,
+        'transfers', NULL, 'route_summary', NULL,
+        'source', 'station_master', 'confidence', v_pg_conf
+      ),
+      'm3career', jsonb_build_object(
+        'duration_min', v_m3_min, 'walk_min', v_walk,
+        'transfers', NULL, 'route_summary', NULL,
+        'source', 'station_master', 'confidence', v_pg_conf
+      ),
+      'total_playground_min', v_walk + v_pg_min,
+      'total_m3career_min', v_walk + v_m3_min,
+      'updated_at', now()::text
+    ) WHERE enrichments.listing_id = r.id;
+
+    listing_id := r.id;
+    station_name := v_station;
+    status := 'updated';
+    RETURN NEXT;
+  END LOOP;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION batch_update_commute_from_master IS 'commute_info 未設定の物件に対し、駅マスタから通勤時間を一括更新';

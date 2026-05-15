@@ -28,7 +28,14 @@ SELECT * FROM get_active_prompt('dedup');
 SELECT listing_id, listing_data FROM get_listings_for_ai('dedup');
 ```
 
-3. 各ペアについて system_prompt に従い分析。user_prompt_template のプレースホルダーに物件A/Bの情報を埋め込む。
+→ listing_data には物件の基本情報に加え、`group_members` 配列が含まれる。
+`group_members` は同一マンション内の候補物件リスト（normalized_name 一致 or 住所+階数+総戸数一致）。
+
+3. **ペア比較の方法**: listing_data の物件（親）と `group_members` 内の各物件（候補）を1対1で比較する。
+   - 親物件の情報: listing_data のトップレベルフィールド（name, normalized_name, layout, area_m2, floor_position 等）
+   - 候補物件の情報: `group_members` 配列内の各オブジェクト
+   - `group_members` が null または空配列の場合はスキップ
+   - 各ペアについて system_prompt に従い分析。user_prompt_template の物件A に親物件、物件B に候補物件を埋め込む
 
 4. 結果書き戻し:
 ```sql
@@ -51,7 +58,12 @@ SELECT * FROM get_active_prompt('text_enricher');
 SELECT listing_id, listing_data FROM get_listings_for_ai('text_enricher');
 ```
 
-3. 各物件について system_prompt に従い分析。user_prompt_template のプレースホルダー（{name}, {address}, {layout}, {area_m2}, {built_year}, {floor_position}, {floor_total}, {total_units}, {management_fee}, {repair_reserve_fund}, {feature_tags}, {remarks}, {equipment}）に listing_data のフィールドを埋め込む。値が null の場合は「不明」と記載。
+→ `feature_tags IS NOT NULL` のアクティブ物件のみ返される。feature_tags が空の物件は対象外。
+
+3. 各物件について system_prompt に従い分析。user_prompt_template のプレースホルダーに listing_data のフィールドを埋め込む。
+   - listings_feed に存在するフィールド: name, address, layout, area_m2, built_year, floor_position, floor_total, total_units, management_fee, repair_reserve_fund, feature_tags, key_strengths, key_risks, ownership, direction, parking 等
+   - **注意**: `remarks` や `equipment` は listings_feed に存在しない。テンプレートに含まれていても null として扱う
+   - 値が null の場合は「不明」と記載
 
 4. 結果書き戻し:
 ```sql
@@ -74,6 +86,9 @@ SELECT * FROM get_active_prompt('ai_scoring');
 SELECT listing_id, listing_data FROM get_listings_for_ai('ai_scoring');
 ```
 
+→ 同一 normalized_name の物件は DISTINCT ON で重複排除済み（同一マンションの複数ページを何度もスコアリングしない）。
+→ ai_prompt_hash が変更されていない物件もスキップされる。
+
 3. 各物件について system_prompt に従い、listing_data 全体を渡して listing_score (0-100) と price_fairness_score (0-100) を算出。定量データ（価格、面積、築年、駅距離、ハザード等）と定性データ（テキスト特徴、設備、管理状態）の両方を考慮する。
 
 4. 結果書き戻し:
@@ -85,40 +100,23 @@ SELECT upsert_ai_enrichment(<listing_id>::bigint, 'ai_scoring', '<結果JSON>'::
 
 ---
 
-## Step 4: 通勤時間更新（Yahoo Transit）
+## Step 4: 通勤時間更新（マスタ参照方式）
 
-1. 対象取得:
+**方針**: `station_commute_times` マスタテーブル（330駅+）と `batch_update_commute_from_master()` RPC を使い、物件の最寄り駅から2オフィスへの通勤時間を一括更新する。API/WebFetch は使用しない。
+
+1. バッチ更新の実行:
 ```sql
-SELECT l.id, l.name, l.address, ls.station_name, ls.station_line, ls.walk_min
-FROM listings l
-JOIN listing_sources ls ON ls.listing_id = l.id
-LEFT JOIN enrichments e ON e.listing_id = l.id
-WHERE l.is_active = true
-  AND (e.commute_info IS NULL OR NOT (e.commute_info ? 'yahoo_transit'))
-ORDER BY l.created_at DESC
-LIMIT 20;
+SELECT * FROM batch_update_commute_from_master(100);
 ```
 
-2. 各物件の最寄り駅から2つのオフィスへの通勤時間を WebFetch で取得:
-   - playground（半蔵門駅）: `https://transit.yahoo.co.jp/search/result?from={最寄り駅}&to=半蔵門&type=1&ticket=ic&expkind=1&ws=3&s=0`
-   - m3career（神谷町駅）: `https://transit.yahoo.co.jp/search/result?from={最寄り駅}&to=神谷町&type=1&ticket=ic&expkind=1&ws=3&s=0`
+→ 結果は `(listing_id, station_name, status)` の配列。status は `updated`, `not_in_master`, `parse_failed` のいずれか。
 
-3. HTML から所要時間・乗り換え回数・運賃・ルート概要をパース。
+2. `not_in_master` の駅がある場合:
+   - 同一路線の隣接駅データをマスタから探して推定値を INSERT し、再度バッチ実行
+   - 推定値は `source = 'estimated_from_nearby'`, `confidence = 'estimated'` で記録
+   - 推定が難しい駅はリストとして報告（Cowork での手動補完用）
 
-4. 結果書き戻し:
-```sql
-UPDATE enrichments SET
-  commute_info = jsonb_build_object(
-    'yahoo_transit', jsonb_build_object(
-      'playground', jsonb_build_object('duration_min', X, 'transfers', Y, 'fare_ic', Z, 'route_summary', '...', 'walk_min', W),
-      'm3career', jsonb_build_object('duration_min', X, 'transfers', Y, 'fare_ic', Z, 'route_summary', '...', 'walk_min', W)
-    ),
-    'total_playground_min', <walk+duration>,
-    'total_m3career_min', <walk+duration>,
-    'updated_at', now()::text
-  )
-WHERE listing_id = <id>;
-```
+3. 結果が0件になるまで繰り返す（1回あたり最大100件）。
 
 対象がなければスキップ。
 
@@ -130,7 +128,7 @@ WHERE listing_id = <id>;
 - dedup: X件処理（auto-merge Y件、flag Z件）
 - text_enricher: X件処理
 - ai_scoring: X件処理（平均スコア XX）
-- commute: X件処理
+- commute: X件処理（マスタヒット Y件、推定 Z件、未登録 W駅）
 
 エラーがあればエラー内容も報告。
 
