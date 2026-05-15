@@ -392,17 +392,9 @@ if [ "$SKIP_MAPS" != "true" ] && [ "$HAS_CHANGES" = "true" ]; then
     echo "[TIMING] map_build: $(( ($(date +%s) - _t) ))s" >&2
 fi
 
-# ──────────────────────────── enrichment カバレッジ監視 ────────────────────────────
-
-echo "--- enrichment カバレッジ監視 ---" >&2
-
-HEALTH_ARGS="--current ${OUTPUT_DIR}/latest.json"
-if [ -f "${OUTPUT_DIR}/previous.json" ]; then
-    HEALTH_ARGS="${HEALTH_ARGS} --previous ${OUTPUT_DIR}/previous.json"
-fi
-
-python3 scripts/check_enrichment_health.py $HEALTH_ARGS \
-    || echo "enrichment カバレッジに問題が検出されました（続行）" >&2
+# ──────────────────────────── enrichment カバレッジ監視（無効化） ────────────────────────────
+# Slack アラートのノイズが多いためスキップ
+echo "--- enrichment カバレッジ監視: スキップ ---" >&2
 
 # ──────────────────────────── ログアップロード ────────────────────────────
 
