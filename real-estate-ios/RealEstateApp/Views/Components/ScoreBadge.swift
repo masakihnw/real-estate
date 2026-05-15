@@ -13,6 +13,10 @@ struct ScoreBadge: View {
 
     var body: some View {
         HStack(spacing: 4) {
+            if isAIAnalyzed {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 10))
+            }
             Text(grade)
                 .font(.system(size: 13, weight: .bold, design: .rounded))
             Text("\(value)")
@@ -25,12 +29,6 @@ struct ScoreBadge: View {
             Capsule()
                 .fill(DesignSystem.scoreColor(for: grade))
         )
-        .overlay {
-            if isAIAnalyzed {
-                Capsule()
-                    .strokeBorder(DesignSystem.aiAccent, lineWidth: 1.5)
-            }
-        }
     }
 }
 

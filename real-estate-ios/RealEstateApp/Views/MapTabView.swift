@@ -616,11 +616,11 @@ struct HazardMapView: UIViewRepresentable {
         static func scoreColor(_ score: Int?) -> UIColor {
             guard let score else { return .systemBlue }
             switch score {
-            case 80...: return .systemGreen
-            case 65..<80: return .systemBlue
-            case 50..<65: return .systemOrange
-            case 35..<50: return .systemGray
-            default: return .systemRed
+            case 80...: return UIColor(DesignSystem.scoreS)
+            case 65..<80: return UIColor(DesignSystem.scoreA)
+            case 50..<65: return UIColor(DesignSystem.scoreB)
+            case 35..<50: return UIColor(DesignSystem.scoreC)
+            default: return UIColor(DesignSystem.scoreD)
             }
         }
 
