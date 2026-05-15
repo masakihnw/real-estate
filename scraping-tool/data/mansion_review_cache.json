@@ -6164,5 +6164,27 @@
       ]
     },
     "cached_at": "2026-05-15T09:22:20.420498"
+  },
+  "◆ザ・パークハウス弦巻◆": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/717130.html",
+      "deviation_score": 0,
+      "estimated_price_man": 11978,
+      "estimated_tsubo_price_man": 522,
+      "estimated_m2_price_man": 158,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 31,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 73.67,
+          "price_man": 8147,
+          "tsubo_price_man": 367.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:29:28.850194"
   }
 }

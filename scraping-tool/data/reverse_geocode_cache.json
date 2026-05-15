@@ -710,5 +710,13 @@
     "quarter": "港南",
     "neighbourhood": "港南四丁目",
     "city_district": ""
+  },
+  "35.750511,139.715258": {
+    "display_name": "板橋四丁目, 板橋, 板橋区, 東京都, 173-0004, 日本",
+    "city": "板橋区",
+    "suburb": "板橋",
+    "quarter": "",
+    "neighbourhood": "板橋四丁目",
+    "city_district": ""
   }
 }
