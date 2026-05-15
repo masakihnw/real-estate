@@ -69,60 +69,101 @@ SELECT upsert_ai_enrichment(<listing_id>::bigint, 'investment_summary', '<結果
 
 ---
 
-## Step 2: 画像分析 & 不要画像クリーンアップ
+## Step 2: 画像分類（Edge Function）
 
-**方針**: Supabase Storage URL は Vision でアクセスできないため、suumo_images の `label` フィールドを使ったラベルベース分類を行う。分類後、不要画像は DB から削除する。
+画像分類と junk 削除は Edge Function `classify-images` がサーバーサイドで一括処理する。
+Routine は WebFetch で Edge Function を呼び出し、レスポンスの処理件数を完了レポートに記録するだけでよい。
 
-### Step 2a: 画像分類
+### 呼び出し
 
-1. プロンプト取得:
-```sql
-SELECT * FROM get_active_prompt('image_analyzer');
+WebFetch ツールで以下の HTTP POST を送信:
+
+- **URL**: `https://dzhcumdmzskkvusynmyw.supabase.co/functions/v1/classify-images`
+- **Method**: POST
+- **Headers**: `Content-Type: application/json`
+- **Body**: `{"batch_size": 200}`
+
+### レスポンス例
+
+```json
+{
+  "processed": 150,
+  "succeeded": 148,
+  "errors": 2,
+  "total_images": 3200,
+  "total_junk": 450,
+  "junk_removed": 420
+}
 ```
 
-2. 対象取得:
+### 完了判定
+
+- `processed > 0`: 正常完了。`processed`, `total_images`, `junk_removed` を完了レポートに記録
+- `processed == 0`: 未分類物件なし。スキップして Step 2.5 へ
+- エラーレスポンス（HTTP 500）: エラー内容を完了レポートに記録し、Step 2.5 へ進む（他のステップには影響しない）
+
+---
+
+## Step 2.5: 好みの傾向分析
+
+ユーザーの「いいね」「パス」データから購入傾向を AI で要約し、`buyer_preference_summaries` テーブルに保存する。iOS アプリのダッシュボード「好みの傾向」欄で表示される。
+
+1. いいね/見送りデータ取得:
 ```sql
-SELECT listing_id, listing_data FROM get_listings_for_ai('image_analyzer');
+SELECT ubp.identity_key, ubp.preference,
+       lf.name, lf.price_man, lf.area_m2, lf.layout, lf.walk_min,
+       lf.built_year, lf.address, lf.direction, lf.station_line,
+       lf.floor, lf.total_units
+FROM user_building_preferences ubp
+JOIN listings_feed lf ON lf.identity_key = ubp.identity_key
+ORDER BY ubp.preference, ubp.created_at DESC;
 ```
 
-→ listing_data には `id`, `name`, `suumo_images` のみが含まれる（軽量ペイロード）。
+2. 変更検知: 取得した全行の `identity_key + preference` を結合しハッシュ化。既存の `buyer_preference_summaries.preference_hash` と比較し、同一ならスキップ。
 
-3. 各物件の `suumo_images` 配列（`{url, label}` の配列）から `label` を読み取り、以下のマッピングで分類:
+3. いいね5件以上 かつ パス5件以上の場合のみ分析実行。未満の場合はスキップ。
 
-| label パターン | category | is_junk |
-|---|---|---|
-| 間取図、間取り | floor_plan | false |
-| 外観、エントランス | exterior | false |
-| 室内、リビング、居室、キッチン、ダイニング、和室、洋室、LDK、DK | interior | false |
-| 浴室、バス、トイレ、洗面、水回り、脱衣 | water | false |
-| 眺望、バルコニー、ベランダ、展望 | view | false |
-| 共用部、エントランスホール、中庭、ロビー、ジム、ラウンジ | common_area | false |
-| 周辺、公園、学校、スーパー、商業、駅前 | surroundings | false |
-| 上記いずれにも該当しない or 明らかに広告・バナー・ロゴ・アイコン | junk | true |
+4. 以下のシステムプロンプトで AI 分析:
 
-- quality_score と thumbnail_score は label から推定:
-  - 外観全体・明るいリビング → thumbnail_score 高 (0.8-0.9)
-  - 間取り図 → quality_score 高だが thumbnail_score 低 (0.2-0.3)
-  - クローゼット内部・設備アップ → 両方中程度 (0.4-0.6)
-- brief_description は label をそのまま使用
+**システムプロンプト:**
+```
+あなたは不動産購入のアドバイザーです。
+ユーザーがマンション物件を「いいね」「パス」に分類した結果から、
+購入希望の傾向を自然な日本語で要約してください。
 
-4. 物件ごとに全画像結果を配列にまとめて書き戻し:
-```sql
-SELECT upsert_ai_enrichment(<listing_id>::bigint, 'image_analyzer', '<画像結果配列>'::jsonb, 'claude-sonnet-4-6', '<prompt_hash>', <version>, 'routine');
+出力ルール:
+- 3〜5行の箇条書き（各行「・」で始める）
+- 統計データと具体的な物件例を組み合わせて、読みやすく解説する
+- 数値は日本の不動産慣習に従う（万円、㎡、徒歩○分、築○年）
+- ユーザーの好みの特徴だけでなく、避けている傾向にも言及する
+- 最後に1行、全体的な好みの傾向を一文でまとめる
+- 丁寧すぎない自然な文体（です・ます調）
+- 出力は箇条書きのテキストのみ。JSON不要
 ```
 
-### Step 2b: 不要画像の削除
+**ユーザープロンプト:** いいね/パスそれぞれの物件リスト（名前、価格、面積、間取り、駅距離、築年数、住所、方角）を含める。
 
-**重要**: Step 2a の全物件の upsert_ai_enrichment が完了したことを確認してから実行すること。
-
-分類完了後、junk 画像を DB から一括削除:
+5. 結果を保存:
 ```sql
-SELECT * FROM batch_cleanup_junk_images();
+INSERT INTO buyer_preference_summaries (user_id, summary_lines, liked_count, noped_count, preference_hash, ai_model, ai_calculated_at)
+VALUES (
+  'default',
+  ARRAY['・行1', '・行2', '・行3']::text[],
+  <liked_count>,
+  <noped_count>,
+  '<hash>',
+  'claude-sonnet-4-6',
+  now()
+)
+ON CONFLICT (user_id)
+DO UPDATE SET
+  summary_lines = EXCLUDED.summary_lines,
+  liked_count = EXCLUDED.liked_count,
+  noped_count = EXCLUDED.noped_count,
+  preference_hash = EXCLUDED.preference_hash,
+  ai_model = EXCLUDED.ai_model,
+  ai_calculated_at = now();
 ```
-
-→ `is_junk = true` または `category = 'junk'` の画像を `suumo_images` と `image_categories` の両方から除去。結果は `(listing_id, removed_count)` の配列。
-
-対象がなければスキップして Step 3 へ。
 
 ---
 
