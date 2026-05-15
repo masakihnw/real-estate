@@ -9,8 +9,9 @@
 
 ## 概要
 
-データパイプラインの健全性を監視し、問題があれば `notification_drafts` 経由で Slack アラートを送信する。
-GHA の `slack_notify.py` がボット名義で送信する（Routine は Slack MCP を使用しない）。
+データパイプラインの健全性を監視し、結果を `health_check_logs` テーブルに保存する。
+Routine 1/2 が `get_latest_health_check()` で参照し、問題があれば自律的に修正アクションを取る。
+**Slack 通知は行わない**（DB 保存のみ）。
 
 Supabase project_id: `dzhcumdmzskkvusynmyw`
 全ての SQL は Supabase MCP の `execute_sql` で実行すること。
@@ -42,6 +43,15 @@ SELECT * FROM health_check_enrichment_coverage();
 
 最低基準未満のフィールドがあれば「⚠️」としてレポートに記録。基準以上なら「✅」。
 
+結果を以下の構造で保持:
+```json
+{
+  "listing_score": {"total": 100, "non_null": 95, "pct": 95.0, "threshold": 70, "ok": true},
+  "ai_recommendation_score": {"total": 100, "non_null": 42, "pct": 42.0, "threshold": 50, "ok": false},
+  ...
+}
+```
+
 ---
 
 ## Step 2: パイプライン鮮度
@@ -57,6 +67,17 @@ SELECT * FROM health_check_pipeline_freshness();
 - `never_ai_analyzed`: 5件以上なら警告
 - `no_enrichment_48h`: 1件以上なら警告
 
+結果を以下の構造で保持:
+```json
+{
+  "new_listings_24h": {"value": 5, "detail": "...", "ok": true},
+  "ai_analyzed_24h": {"value": 3, "detail": "...", "ok": true},
+  "stale_ai_7d": {"value": 2, "detail": "...", "ok": true},
+  "never_ai_analyzed": {"value": 0, "detail": "...", "ok": true},
+  "no_enrichment_48h": {"value": 0, "detail": "...", "ok": true}
+}
+```
+
 ---
 
 ## Step 3: データ品質
@@ -70,6 +91,15 @@ SELECT * FROM health_check_data_quality();
 - `images_no_categories`: 画像あり + カテゴリなし → Routine 2 Step 2 の対象漏れ
 - `duplicate_active`: 重複アクティブ → Routine 1 dedup の対象漏れ
 
+結果を以下の構造で保持:
+```json
+{
+  "score_mismatch_ls_no_ai": {"count": 3, "detail": "...", "ok": false},
+  "images_no_categories": {"count": 0, "detail": "...", "ok": true},
+  "duplicate_active": {"count": 0, "detail": "...", "ok": true}
+}
+```
+
 ---
 
 ## Step 4: アノマリ検出
@@ -78,51 +108,45 @@ SELECT * FROM health_check_data_quality();
 SELECT * FROM health_check_anomaly_detection();
 ```
 
+結果を以下の構造で保持:
+```json
+{
+  "active_count_drop": {"value": 150, "threshold": 120, "is_alert": false, "detail": "..."},
+  "score_contradiction": {"value": 0, "threshold": 0, "is_alert": false, "detail": "..."}
+}
+```
+
 `is_alert = true` の項目を重点報告。
 
 ---
 
-## Step 5: 通知ドラフト生成
+## Step 5: health_check_logs 保存
 
-全ステップの結果を統合し、Slack 向けメッセージを作成。
+全ステップの結果を統合し、`health_check_logs` に保存する。
 
-### アラートなし（全正常）の場合:
+アラート一覧を集約:
+- Step 1 で基準未満のフィールド名
+- Step 2 で警告条件に該当したメトリクス
+- Step 3 で count > 0 のチェック項目
+- Step 4 で is_alert = true の項目
 
 ```sql
-SELECT skip_notification_draft('slack', 'health_report');
-```
-
-### アラートありの場合:
-
-メッセージ構成:
-```
-🔍 *パイプラインヘルスレポート*（{日付}）
-
-■ カバレッジ（アクティブ {total_active} 件）
-  ✅ listing_score: 97.4% (基準70%)
-  ⚠️ ai_recommendation_score: 42.1% (基準50%)
-  ...（基準未満のみ ⚠️、それ以外は ✅）
-
-■ パイプライン鮮度
-  新着24h: {n}件 | AI分析24h: {n}件
-  ⚠️ AI未分析: {n}件（5件以上で警告）
-  
-■ データ品質
-  ✅ 重複アクティブ: 0件
-  ⚠️ スコア不整合: {n}件
-
-■ アノマリ
-  ✅ 異常なし
-```
-
-保存:
-```sql
-SELECT upsert_notification_draft(
-  'slack',
-  'health_report',
-  '<整形済みメッセージ>',
-  '{"alerts": ["ai_recommendation_score below threshold"], "alert_count": 1}'::jsonb
+SELECT upsert_health_check_log(
+  '<coverage JSON>'::jsonb,
+  '<freshness JSON>'::jsonb,
+  '<data_quality JSON>'::jsonb,
+  '<anomalies JSON>'::jsonb,
+  <alert_count>,
+  '<alerts配列 JSON>'::jsonb
 );
+```
+
+alerts 配列の例:
+```json
+[
+  {"source": "coverage", "field": "ai_recommendation_score", "message": "42.0% < 基準50%"},
+  {"source": "data_quality", "check": "score_mismatch_ls_no_ai", "message": "3件のスコア不整合"}
+]
 ```
 
 ---
@@ -134,13 +158,14 @@ SELECT upsert_notification_draft(
 - パイプライン鮮度: 新着X件、AI分析Y件、陳腐化Z件
 - データ品質: 不整合X件
 - アノマリ: X件検出
-- 通知ドラフト: {status} で保存
+- health_check_logs: 保存完了（alert_count: X）
 
 ---
 
 ## 共通ルール
 - **サブエージェント委任禁止**: 全ステップの処理はメインエージェントのコンテキストで実行すること
 - ヘルスチェックの失敗は他のチェックをブロックしない
-- 全チェック完了後に1つのサマリー通知ドラフトを生成する
+- 全チェック完了後に1つの health_check_logs レコードを保存する
 - 対象が0件のチェックも「0件」として報告する（スキップしない）
+- **Slack 通知は行わない** — 結果は DB 保存のみ。Routine 1/2 が参照して自律修正する
 - 日本語で回答すること

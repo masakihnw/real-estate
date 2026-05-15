@@ -16,6 +16,29 @@ Supabase project_id: `dzhcumdmzskkvusynmyw`
 
 ---
 
+## Step 0: ヘルスチェック参照（自律修正）
+
+直近のヘルスチェック結果を確認し、Routine 2 の処理に影響するアラートがあれば対応する。
+
+```sql
+SELECT * FROM get_latest_health_check();
+```
+
+**確認項目と対応**:
+
+| alerts.source | 該当チェック | 対応アクション |
+|---|---|---|
+| `data_quality` / `score_mismatch_ls_no_ai` | listing_score有だが AI推薦スコア無 | Step 1 で該当物件が処理対象に含まれるか確認。含まれていなければ手動で追加検討 |
+| `data_quality` / `images_no_categories` | 画像ありだがカテゴリなし | Step 2 で該当物件が処理対象に含まれるか確認 |
+| `coverage` / `ai_recommendation_score` 基準未満 | AI推薦スコアのカバレッジ不足 | Step 1 の処理件数上限（80件）を意識し、未分析物件を優先 |
+| `coverage` / `image_categories` 基準未満 | 画像カテゴリのカバレッジ不足 | Step 2 の処理で改善を確認 |
+| `freshness` / `never_ai_analyzed` | アクティブだがAI未分析 | Step 1 で処理されるべき物件。対象取得 RPC が返す件数と照合 |
+
+- check_date が2日以上前の場合、Routine 3 が未実行の可能性があるため警告を報告（処理は続行）
+- 結果が0件（Routine 3 未実行）の場合はスキップして Step 1 へ進む
+
+---
+
 ## Step 1: 投資レコメンデーション
 
 1. プロンプト取得:

@@ -16,6 +16,28 @@ Supabase project_id: `dzhcumdmzskkvusynmyw`
 
 ---
 
+## Step 0: ヘルスチェック参照（自律修正）
+
+直近のヘルスチェック結果を確認し、Routine 1 の処理に影響するアラートがあれば対応する。
+
+```sql
+SELECT * FROM get_latest_health_check();
+```
+
+**確認項目と対応**:
+
+| alerts.source | 該当チェック | 対応アクション |
+|---|---|---|
+| `data_quality` / `duplicate_active` | 重複アクティブ物件あり | Step 1 の dedup で優先的に処理されるため、件数を意識して確認 |
+| `freshness` / `no_enrichment_48h` | 48h以上エンリッチメントなし | Step 2-4 で該当物件が処理されるよう注視 |
+| `freshness` / `stale_ai_7d` | AI分析が7日以上古い | Step 3 で再スコアリング対象に含まれているか確認 |
+| `coverage` / 基準未満フィールド | エンリッチメント不足 | 該当 Step で処理漏れがないか確認 |
+
+- check_date が2日以上前の場合、Routine 3 が未実行の可能性があるため警告を報告（処理は続行）
+- 結果が0件（Routine 3 未実行）の場合はスキップして Step 1 へ進む
+
+---
+
 ## Step 1: セマンティック重複排除
 
 1. プロンプト取得:
