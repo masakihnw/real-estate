@@ -56,9 +56,11 @@ SELECT * FROM buyer_profiles LIMIT 1;
 ```sql
 SELECT listing_id, listing_data FROM get_listings_for_ai('investment_summary');
 ```
-→ 最大80件/回。新着順。未分析が0件になるまで毎日の実行で全件カバーする。
+→ 最大20件/回。新着順。未分析が0件になるまで毎日の実行で全件カバーする。
 
-4. 各物件を分析: system_prompt をシステムプロンプトとして、user_prompt_template の `{buyer_profile}` にバイヤープロファイル、`{listing_data}` に物件データを埋め込んで分析。JSON で score, conclusion, flags, scenarios, action を生成。
+4. 各物件を **1件ずつ AI 分析**: system_prompt をシステムプロンプトとして、user_prompt_template の `{buyer_profile}` にバイヤープロファイル、`{listing_data}` に物件データを埋め込んで分析。JSON で score, conclusion, flags, scenarios, action を生成。
+
+   **⚠️ 重要**: 各物件は必ず system_prompt を使って1件ずつ AI で分析すること。Python スクリプト、ルールベース処理、一括バッチ処理は**禁止**。get_listings_for_ai の結果が大きくファイルに保存された場合でも、ファイルから読み込んで1件ずつ AI 分析を行うこと。
 
 5. 結果書き戻し:
 ```sql
@@ -264,6 +266,8 @@ SELECT skip_notification_draft('slack', 'new_highlight');
 
 ## 共通ルール
 - **サブエージェント委任禁止**: 全ステップの処理はメインエージェントのコンテキストで実行すること。サブエージェント（Agent ツール）への委任は禁止
+- **AI 分析必須**: 各物件は必ず system_prompt を使って AI で分析すること。Python スクリプトやルールベース処理は禁止
+- **Step 4 必須**: Step 1〜3 完了後、必ず Step 4（通知ドラフト生成）を実行すること。Step 4a, 4b, 4c の全てを実行し、該当なしの場合は skip_notification_draft を呼ぶこと。Step 4 をスキップすると Slack 通知が送信されないため、絶対にスキップ禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む
 - Step 4 のエラーは他のステップの結果に影響しない

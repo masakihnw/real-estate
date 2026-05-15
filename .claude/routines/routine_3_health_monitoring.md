@@ -28,18 +28,18 @@ SELECT * FROM health_check_enrichment_coverage();
 
 **最低基準**:
 
-| フィールド | 基準 |
-|---|---|
-| listing_score | 70% |
-| ai_recommendation_score | 50% |
-| commute_info | 60% |
-| hazard_info | 50% |
-| price_fairness_score | 50% |
-| ai_listing_score | 40% |
-| ai_price_fairness_score | 40% |
-| extracted_features | 30% |
-| image_categories | 30% |
-| ss_lookup_status | 30% |
+| フィールド | 基準 | 備考 |
+|---|---|---|
+| listing_score | 70% | |
+| ai_recommendation_score | 50% | |
+| commute_info | 60% | |
+| hazard_info | 35% | ハザードデータソース依存 |
+| price_fairness_score | 20% | sumai surfin カバレッジ依存 |
+| ai_listing_score | 10% | Routine 2 で漸増中（2週間後に見直し） |
+| ai_price_fairness_score | 10% | Routine 2 で漸増中（2週間後に見直し） |
+| extracted_features | 30% | |
+| image_categories | 30% | |
+| ss_lookup_status | 30% | |
 
 最低基準未満のフィールドがあれば「⚠️」としてレポートに記録。基準以上なら「✅」。
 

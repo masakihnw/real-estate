@@ -170,12 +170,23 @@ COMMENT ON FUNCTION upsert_ai_enrichment IS 'Routine から AI 分析結果を i
 -- E. Routine 用: 対象物件取得 RPC
 CREATE OR REPLACE FUNCTION get_listings_for_ai(
   p_module TEXT,
-  p_config JSONB DEFAULT '{}'
+  p_config JSONB DEFAULT NULL
 ) RETURNS TABLE (
   listing_id BIGINT,
   listing_data JSONB
 ) AS $$
+DECLARE
+  v_config JSONB;
 BEGIN
+  IF p_config IS NULL OR p_config = '{}'::jsonb THEN
+    SELECT ap.config INTO v_config
+    FROM ai_prompts ap
+    WHERE ap.module = p_module AND ap.is_active = true
+    LIMIT 1;
+    v_config := COALESCE(v_config, '{}'::jsonb);
+  ELSE
+    v_config := p_config;
+  END IF;
   CASE p_module
     WHEN 'investment_summary' THEN
       RETURN QUERY
@@ -208,7 +219,7 @@ BEGIN
             )
           )
         ORDER BY lf.created_at DESC
-        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 80);
+        LIMIT COALESCE((v_config->>'max_items_per_run')::int, 20);
 
     WHEN 'text_enricher' THEN
       RETURN QUERY
@@ -235,7 +246,7 @@ BEGIN
             )
           )
         ORDER BY lf.created_at DESC
-        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 50);
+        LIMIT COALESCE((v_config->>'max_items_per_run')::int, 50);
 
     WHEN 'dedup' THEN
       RETURN QUERY
@@ -287,7 +298,7 @@ BEGIN
           AND l.duplicate_count > 1
           AND e.dedup_confidence IS NULL
         ORDER BY l.created_at DESC
-        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 30);
+        LIMIT COALESCE((v_config->>'max_items_per_run')::int, 30);
 
     WHEN 'image_analyzer' THEN
       RETURN QUERY
@@ -302,7 +313,7 @@ BEGIN
           AND lf.suumo_images IS NOT NULL
           AND jsonb_array_length(lf.suumo_images) > 0
         ORDER BY lf.created_at DESC
-        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 20);
+        LIMIT COALESCE((v_config->>'max_items_per_run')::int, 100);
 
     WHEN 'ai_scoring' THEN
       RETURN QUERY
@@ -334,7 +345,7 @@ BEGIN
                  WHERE ap.module = 'ai_scoring' AND ap.is_active = true LIMIT 1
                ))
         ORDER BY COALESCE(NULLIF(lf.normalized_name, ''), lf.id::text), lf.listing_score DESC NULLS LAST
-        LIMIT COALESCE((p_config->>'max_items_per_run')::int, 40);
+        LIMIT COALESCE((v_config->>'max_items_per_run')::int, 40);
 
     ELSE
       RETURN;
@@ -672,6 +683,13 @@ BEGIN
     v_station := extract_station_name(r.station_line);
 
     IF v_station IS NULL THEN
+      UPDATE enrichments SET commute_info = jsonb_build_object(
+        'error', 'parse_failed',
+        'reason', 'station_line contains no station name',
+        'station_line_raw', r.station_line,
+        'updated_at', now()::text
+      ) WHERE enrichments.listing_id = r.id;
+
       listing_id := r.id;
       station_name := NULL;
       status := 'parse_failed';
