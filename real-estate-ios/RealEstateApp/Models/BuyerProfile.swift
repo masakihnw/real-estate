@@ -2,7 +2,8 @@
 //  BuyerProfile.swift
 //  RealEstateApp
 //
-//  AI 相談プロンプトに含める「買い手条件」。UserDefaults に永続化する。
+//  AI 相談プロンプトに含める「買い手条件」。
+//  UserDefaults にローカルキャッシュし、Supabase と同期する。
 //
 
 import Foundation
@@ -23,13 +24,21 @@ struct BuyerProfile: Codable, Equatable {
     var priorities: String
     var currentHousing: String
 
-    // ライフスタイル希望
     var neighborhoodPreference: String
     var schoolPriority: String
     var commuteQuality: String
     var weekendLifestyle: String
     var communityPreference: String
     var dealBreakers: String
+
+    var lifeScenarios: [[String: String]]
+    var budgetScenarios: [[String: String]]
+    var preferredAreas: [String]
+    var mustHaveFeatures: [String]
+    var timeline: String
+    var riskTolerance: String
+
+    var updatedAt: Date
 
     enum InterestType: String, Codable, CaseIterable {
         case variable = "変動"
@@ -45,6 +54,8 @@ struct BuyerProfile: Codable, Equatable {
     var isEmpty: Bool {
         familyComposition.isEmpty && householdIncome.isEmpty && selfFunds.isEmpty
     }
+
+    // MARK: - Markdown export
 
     func toMarkdownSection() -> String {
         guard !isEmpty else { return "" }
@@ -65,6 +76,8 @@ struct BuyerProfile: Codable, Equatable {
         if !relocationReason.isEmpty { md += "| 住み替え理由 | \(relocationReason) |\n" }
         md += "| 売却後の方針 | \(postSaleStrategy.rawValue) |\n"
         if !priorities.isEmpty { md += "| 重視する点 | \(priorities) |\n" }
+        if !timeline.isEmpty { md += "| 購入時期 | \(timeline) |\n" }
+        if !riskTolerance.isEmpty { md += "| リスク許容度 | \(riskTolerance) |\n" }
 
         let lifestyleFields: [(String, String)] = [
             ("街の雰囲気の好み", neighborhoodPreference),
@@ -82,10 +95,28 @@ struct BuyerProfile: Codable, Equatable {
                 md += "| \(label) | \(value) |\n"
             }
         }
+
+        if !preferredAreas.isEmpty {
+            md += "\n### 希望エリア\n\n\(preferredAreas.joined(separator: "、"))\n"
+        }
+        if !mustHaveFeatures.isEmpty {
+            md += "\n### 必須設備\n\n\(mustHaveFeatures.joined(separator: "、"))\n"
+        }
+
+        if !lifeScenarios.isEmpty {
+            md += "\n### ライフシナリオ\n\n"
+            for scenario in lifeScenarios {
+                let name = scenario["name"] ?? ""
+                let desc = scenario["description"] ?? ""
+                if !name.isEmpty { md += "- **\(name)**: \(desc)\n" }
+            }
+        }
+
         return md
     }
 
-    /// 初回起動時のデフォルト値（ユーザー情報プリセット済み）
+    // MARK: - Presets
+
     static let preset = BuyerProfile(
         familyComposition: "夫（1997年生まれ）・妻（1996年生まれ）、子どもなし",
         householdIncome: "（金額）",
@@ -106,7 +137,21 @@ struct BuyerProfile: Codable, Equatable {
         commuteQuality: "夫：乗換1回以内で30分圏内、座れるとなお良い。妻：新幹線駅アクセスも考慮",
         weekendLifestyle: "公園や子連れスポットが徒歩圏内にほしい",
         communityPreference: "同世代のファミリー世帯が多いエリアが理想",
-        dealBreakers: "ハザード高リスク、1階、北向きのみ、総戸数20戸以下"
+        dealBreakers: "ハザード高リスク、1階、北向きのみ、総戸数20戸以下",
+        lifeScenarios: [
+            ["name": "子ども2人（同性）で8年居住", "description": "部屋分け不要で3LDKで十分。8年後に売却。"],
+            ["name": "子ども3人で10年居住", "description": "4LDKか広い3LDK必須。10年後売却、2軒目は郊外戸建ても視野。"],
+        ],
+        budgetScenarios: [
+            ["name": "金利1.5%", "monthly_payment": "（金額）円", "feasible": "賃金調整で対応可"],
+            ["name": "金利2.0%", "monthly_payment": "（金額）円", "feasible": "賃金調整で対応可"],
+            ["name": "金利2.5%以上", "monthly_payment": "31万円超", "feasible": "テールリスク"],
+        ],
+        preferredAreas: [],
+        mustHaveFeatures: [],
+        timeline: "1年以内",
+        riskTolerance: "中程度",
+        updatedAt: Date()
     )
 
     static let empty = BuyerProfile(
@@ -129,12 +174,20 @@ struct BuyerProfile: Codable, Equatable {
         commuteQuality: "",
         weekendLifestyle: "",
         communityPreference: "",
-        dealBreakers: ""
+        dealBreakers: "",
+        lifeScenarios: [],
+        budgetScenarios: [],
+        preferredAreas: [],
+        mustHaveFeatures: [],
+        timeline: "",
+        riskTolerance: "",
+        updatedAt: Date()
     )
 
     // MARK: - UserDefaults 永続化
 
     private static let key = "buyer_profile_v1"
+    private static let updatedAtKey = "buyer_profile_updated_at"
 
     static func load() -> BuyerProfile {
         guard let data = UserDefaults.standard.data(forKey: key),
@@ -145,8 +198,92 @@ struct BuyerProfile: Codable, Equatable {
     }
 
     func save() {
-        guard let data = try? JSONEncoder().encode(self) else { return }
+        var copy = self
+        copy.updatedAt = Date()
+        guard let data = try? JSONEncoder().encode(copy) else { return }
         UserDefaults.standard.set(data, forKey: Self.key)
+    }
+
+    // MARK: - Supabase 変換
+
+    func toSupabaseJSON() -> [String: Any] {
+        var json: [String: Any] = [
+            "family_composition": familyComposition,
+            "household_income": householdIncome,
+            "self_funds": selfFunds,
+            "planned_borrowing": plannedBorrowing,
+            "interest_type": interestType.rawValue,
+            "estimated_rate": estimatedRate,
+            "repayment_years": repaymentYears,
+            "monthly_payment_limit": monthlyPaymentLimit,
+            "work_style": workStyle,
+            "child_plan": childPlan,
+            "relocation_reason": relocationReason,
+            "post_sale_strategy": postSaleStrategy.rawValue,
+            "priorities": priorities,
+            "current_housing": currentHousing,
+            "neighborhood_preference": neighborhoodPreference,
+            "school_priority": schoolPriority,
+            "commute_quality": commuteQuality,
+            "weekend_lifestyle": weekendLifestyle,
+            "community_preference": communityPreference,
+            "deal_breakers": dealBreakers,
+            "timeline": timeline,
+            "risk_tolerance": riskTolerance,
+        ]
+
+        if !lifeScenarios.isEmpty {
+            json["life_scenarios"] = lifeScenarios
+        }
+        if !budgetScenarios.isEmpty {
+            json["budget_scenarios"] = budgetScenarios
+        }
+        if !preferredAreas.isEmpty {
+            json["preferred_areas"] = preferredAreas
+        }
+        if !mustHaveFeatures.isEmpty {
+            json["must_have_features"] = mustHaveFeatures
+        }
+
+        return json
+    }
+
+    static func from(supabaseJSON json: [String: Any]) -> BuyerProfile {
+        let interestType = InterestType(rawValue: json["interest_type"] as? String ?? "変動") ?? .variable
+        let postSale = PostSaleStrategy(rawValue: json["post_sale_strategy"] as? String ?? "売却前提") ?? .sellOnly
+
+        let updatedStr = json["updated_at"] as? String ?? ""
+        let updatedAt = ISO8601DateFormatter().date(from: updatedStr) ?? Date.distantPast
+
+        return BuyerProfile(
+            familyComposition: json["family_composition"] as? String ?? "",
+            householdIncome: json["household_income"] as? String ?? "",
+            selfFunds: json["self_funds"] as? String ?? "",
+            plannedBorrowing: json["planned_borrowing"] as? String ?? "",
+            interestType: interestType,
+            estimatedRate: json["estimated_rate"] as? String ?? "",
+            repaymentYears: json["repayment_years"] as? String ?? "",
+            monthlyPaymentLimit: json["monthly_payment_limit"] as? String ?? "",
+            workStyle: json["work_style"] as? String ?? "",
+            childPlan: json["child_plan"] as? String ?? "",
+            relocationReason: json["relocation_reason"] as? String ?? "",
+            postSaleStrategy: postSale,
+            priorities: json["priorities"] as? String ?? "",
+            currentHousing: json["current_housing"] as? String ?? "",
+            neighborhoodPreference: json["neighborhood_preference"] as? String ?? "",
+            schoolPriority: json["school_priority"] as? String ?? "",
+            commuteQuality: json["commute_quality"] as? String ?? "",
+            weekendLifestyle: json["weekend_lifestyle"] as? String ?? "",
+            communityPreference: json["community_preference"] as? String ?? "",
+            dealBreakers: json["deal_breakers"] as? String ?? "",
+            lifeScenarios: json["life_scenarios"] as? [[String: String]] ?? [],
+            budgetScenarios: json["budget_scenarios"] as? [[String: String]] ?? [],
+            preferredAreas: json["preferred_areas"] as? [String] ?? [],
+            mustHaveFeatures: json["must_have_features"] as? [String] ?? [],
+            timeline: json["timeline"] as? String ?? "",
+            riskTolerance: json["risk_tolerance"] as? String ?? "",
+            updatedAt: updatedAt
+        )
     }
 }
 
@@ -175,5 +312,12 @@ extension BuyerProfile {
         weekendLifestyle = try c.decodeIfPresent(String.self, forKey: .weekendLifestyle) ?? ""
         communityPreference = try c.decodeIfPresent(String.self, forKey: .communityPreference) ?? ""
         dealBreakers = try c.decodeIfPresent(String.self, forKey: .dealBreakers) ?? ""
+        lifeScenarios = try c.decodeIfPresent([[String: String]].self, forKey: .lifeScenarios) ?? []
+        budgetScenarios = try c.decodeIfPresent([[String: String]].self, forKey: .budgetScenarios) ?? []
+        preferredAreas = try c.decodeIfPresent([String].self, forKey: .preferredAreas) ?? []
+        mustHaveFeatures = try c.decodeIfPresent([String].self, forKey: .mustHaveFeatures) ?? []
+        timeline = try c.decodeIfPresent(String.self, forKey: .timeline) ?? ""
+        riskTolerance = try c.decodeIfPresent(String.self, forKey: .riskTolerance) ?? ""
+        updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt) ?? Date()
     }
 }

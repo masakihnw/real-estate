@@ -34,7 +34,7 @@ from config import (
 )
 from parse_utils import parse_price_range, parse_area_range, parse_walk_min_best, parse_total_units, parse_floor_total_lenient, parse_ownership, parse_ownership_from_text, layout_range_ok
 from report_utils import clean_listing_name
-from scraper_common import create_session, is_waf_challenge, load_station_passengers, station_passengers_ok, line_ok, is_tokyo_23_by_address
+from scraper_common import create_session, is_waf_challenge, load_station_passengers, station_passengers_ok, line_ok, is_tokyo_23_by_address, get_effective_area_min_m2
 
 from logger import get_logger
 logger = get_logger(__name__)
@@ -513,7 +513,8 @@ def apply_conditions(listings: list[HomesShinchikuListing]) -> list[HomesShinchi
             if price_hi < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN:
                 continue
         area_hi = r.area_max_m2 or r.area_m2
-        if area_hi is not None and area_hi < AREA_MIN_M2:
+        effective_area_min = get_effective_area_min_m2(r.address)
+        if area_hi is not None and area_hi < effective_area_min:
             continue
         if AREA_MAX_M2 is not None and r.area_m2 is not None and r.area_m2 > AREA_MAX_M2:
             continue

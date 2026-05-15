@@ -144,9 +144,10 @@ private struct RootView: View {
                 // 認証済み + アクセス許可 → メイン画面
                 ContentView()
                     .task {
-                        // Firestore からアノテーションを取得
                         let context = sharedModelContainer.mainContext
-                        await syncService.pullAnnotations(modelContext: context)
+                        async let annotations: () = syncService.pullAnnotations(modelContext: context)
+                        async let profile: () = BuyerProfileSyncService.shared.syncOnLaunch()
+                        _ = await (annotations, profile)
                     }
                     .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                         BackgroundRefreshManager.shared.scheduleNextRefresh()

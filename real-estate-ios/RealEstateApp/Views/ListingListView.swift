@@ -46,10 +46,6 @@ struct ListingListView: View {
     @State private var editMode: EditMode = .inactive
     @State private var selectedForDeletion: Set<String> = []
     @State private var showBulkUnlikeConfirm = false
-    @State private var preferenceProfile: PreferenceProfile = .inactive
-    @State private var claudeSummaryTask: Task<Void, Never>?
-    @State private var lastClaudeSummaryHash: Int?
-
     /// マイリストタブのフィルタ（いいね掲載状態 + Like/Nope 切り替え）
     enum DelistFilter: String, CaseIterable {
         case all = "すべて"
@@ -429,73 +425,6 @@ struct ListingListView: View {
             } else {
                 cachedFiltered = result
             }
-            let prefStore = BuildingPreferenceStore.shared
-            var newProfile = PreferenceAnalyzer.analyze(
-                allListings: baseList,
-                likedKeys: prefStore.likedKeys,
-                nopedKeys: prefStore.nopedKeys
-            )
-            newProfile.claudeSummaryLines = preferenceProfile.claudeSummaryLines
-            newProfile.claudeSummaryState = preferenceProfile.claudeSummaryState
-            preferenceProfile = newProfile
-        }
-    }
-
-    @MainActor
-    private func requestClaudeSummaryIfNeeded() {
-        let prefStore = BuildingPreferenceStore.shared
-        let liked = prefStore.likedKeys
-        let noped = prefStore.nopedKeys
-
-        var hasher = Hasher()
-        hasher.combine(liked)
-        hasher.combine(noped)
-        let currentHash = hasher.finalize()
-
-        guard currentHash != lastClaudeSummaryHash else { return }
-        guard preferenceProfile.isActive, ClaudeAPIClient.shared.isAvailable else { return }
-
-        claudeSummaryTask?.cancel()
-        preferenceProfile.claudeSummaryState = .loading
-
-        let listings = baseList
-        claudeSummaryTask = Task { @MainActor in
-            guard let prompts = PreferenceAnalyzer.buildClaudePrompt(
-                allListings: listings,
-                likedKeys: liked,
-                nopedKeys: noped
-            ) else { return }
-
-            do {
-                let response = try await ClaudeAPIClient.shared.sendMessage(
-                    system: prompts.system,
-                    userContent: prompts.user
-                )
-                guard !Task.isCancelled else {
-                    if preferenceProfile.claudeSummaryState == .loading {
-                        preferenceProfile.claudeSummaryState = .idle
-                    }
-                    return
-                }
-
-                let lines = response
-                    .components(separatedBy: .newlines)
-                    .map { $0.trimmingCharacters(in: .whitespaces) }
-                    .filter { !$0.isEmpty }
-                    .map { line in
-                        line.hasPrefix("・") ? String(line.dropFirst()).trimmingCharacters(in: .whitespaces) : line
-                    }
-
-                preferenceProfile.claudeSummaryLines = lines
-                preferenceProfile.claudeSummaryState = .loaded
-                lastClaudeSummaryHash = currentHash
-            } catch is CancellationError {
-                if preferenceProfile.claudeSummaryState == .loading {
-                    preferenceProfile.claudeSummaryState = .idle
-                }
-            } catch {
-                preferenceProfile.claudeSummaryState = .failed
-            }
         }
     }
 
@@ -635,12 +564,10 @@ struct ListingListView: View {
             .onChange(of: BuildingPreferenceStore.shared.nopedKeys.count) { _, _ in
                 if delistFilter == .noped { loadPrefListings() }
                 recomputeFiltered(animated: true)
-                requestClaudeSummaryIfNeeded()
             }
             .onChange(of: BuildingPreferenceStore.shared.likedKeys.count) { _, _ in
                 if delistFilter == .liked { loadPrefListings() }
                 recomputeFiltered()
-                requestClaudeSummaryIfNeeded()
             }
     }
 
@@ -760,63 +687,6 @@ struct ListingListView: View {
                 }
                 .accessibilityLabel("エラーあり")
             }
-        }
-    }
-
-    @ViewBuilder
-    private var recommendationSections: some View {
-        Section {
-            VStack(alignment: .leading, spacing: 8) {
-                Label("あなたの好みに近い物件", systemImage: "sparkles")
-                    .font(.headline)
-                    .padding(.bottom, 2)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        Text("好みの傾向")
-                            .font(.subheadline.bold())
-                            .foregroundStyle(.secondary)
-                        if preferenceProfile.isClaudeSummaryActive {
-                            Text("AI")
-                                .font(.caption2.weight(.bold))
-                                .foregroundStyle(.purple)
-                                .padding(.horizontal, 5)
-                                .padding(.vertical, 2)
-                                .background(Color.purple.opacity(0.12))
-                                .clipShape(RoundedRectangle(cornerRadius: 4))
-                        }
-                        if preferenceProfile.claudeSummaryState == .loading {
-                            ProgressView()
-                                .scaleEffect(0.7)
-                        }
-                    }
-                    ForEach(preferenceProfile.displaySummaryLines, id: \.self) { line in
-                        HStack(alignment: .top, spacing: 4) {
-                            Text("・")
-                            Text(line)
-                        }
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    }
-                }
-            }
-            .padding(.vertical, 4)
-        }
-
-        Section {
-            ForEach(preferenceProfile.recommendations) { rec in
-                ListingRowView(
-                    listing: rec.listing,
-                    onTap: { selectedListing = rec.listing },
-                    onLikeTapped: {
-                        rec.listing.isLiked.toggle()
-                        SaveErrorHandler.shared.save(modelContext, source: "Recommendation")
-                        AnnotationRouter.pushLikeState(for: rec.listing)
-                    }
-                )
-            }
-        } header: {
-            Text("おすすめ物件（\(preferenceProfile.recommendations.count)件）")
         }
     }
 
@@ -1043,10 +913,6 @@ struct ListingListView: View {
                     }
                 }
             }
-            if preferenceProfile.isActive && !favoritesOnly {
-                recommendationSections
-            }
-
             if favoritesOnly && editMode == .active {
                 ForEach(cachedFiltered, id: \.url) { listing in
                     HStack {

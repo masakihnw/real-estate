@@ -6,7 +6,7 @@
 - 初回ヒアリングの希望条件: ../docs/initial-consultation.md
 
 【対象エリア】東京23区（路線・駅の指定なし）。
-駅徒歩10分以内。築20年以内・専有55㎡以上（上限なし）・総戸数30戸以上。価格9,000万〜1億1,500万円。
+駅徒歩10分以内。築20年以内・専有60㎡以上（都心3区・湾岸は55㎡）・総戸数30戸以上。価格9,000万〜1億1,500万円。
 """
 
 from __future__ import annotations
@@ -94,7 +94,7 @@ def _fallback_metadata() -> _MetadataDoc:
         "defaults": {
             "priceMinMan": 9000,
             "priceMaxMan": 11500,
-            "areaMinM2": 55,
+            "areaMinM2": 60,
             "areaMaxM2": None,
             "walkMinMax": 10,
             "builtYearMinOffsetYears": 20,
@@ -191,7 +191,7 @@ PRICE_MIN_MAN = _to_int(_DEFAULTS.get("priceMinMan"), 9000)
 PRICE_MAX_MAN = _to_int(_DEFAULTS.get("priceMaxMan"), 11500)
 
 # 専有面積（㎡）
-AREA_MIN_M2 = _to_int(_DEFAULTS.get("areaMinM2"), 55)
+AREA_MIN_M2 = _to_int(_DEFAULTS.get("areaMinM2"), 60)
 AREA_MAX_M2 = _to_optional_int(_DEFAULTS.get("areaMaxM2"))
 
 # 間取り

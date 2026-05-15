@@ -32,6 +32,9 @@ struct DashboardView: View {
     @Query(filter: #Predicate<Listing> { $0.isLiked == true }) private var favoriteListings: [Listing]
     @State private var selectedListing: Listing?
     @State private var quickFilter: DashboardQuickFilter?
+    @State private var preferenceProfile: PreferenceProfile = .inactive
+    @State private var claudeSummaryTask: Task<Void, Never>?
+    @State private var lastClaudeSummaryHash: Int?
 
     var body: some View {
         NavigationStack {
@@ -39,6 +42,9 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     searchOverviewSection
                     quickFiltersSection
+                    if preferenceProfile.isActive {
+                        recommendationSection
+                    }
                     aiInsightsSection
                     scoreDistributionSection
                     priceMoversSection
@@ -55,6 +61,13 @@ struct DashboardView: View {
                     filter: filter,
                     listings: filteredListings(for: filter)
                 )
+            }
+            .onAppear { updatePreferenceProfile() }
+            .onChange(of: BuildingPreferenceStore.shared.likedKeys.count) { _, _ in
+                updatePreferenceProfile()
+            }
+            .onChange(of: BuildingPreferenceStore.shared.nopedKeys.count) { _, _ in
+                updatePreferenceProfile()
             }
         }
     }
@@ -330,6 +343,158 @@ struct DashboardView: View {
                 }
                 .padding(14)
                 .listingGlassBackground()
+            }
+        }
+    }
+
+    // MARK: - おすすめ物件 (Preference-Based Recommendations)
+
+    private var recommendationSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                Label("あなたの好みに近い物件", systemImage: "sparkles")
+                    .font(.headline)
+                if preferenceProfile.isClaudeSummaryActive {
+                    Text("AI")
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(.purple)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(Color.purple.opacity(0.12))
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                }
+                if preferenceProfile.claudeSummaryState == .loading {
+                    ProgressView()
+                        .scaleEffect(0.7)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("好みの傾向")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+                ForEach(preferenceProfile.displaySummaryLines, id: \.self) { line in
+                    HStack(alignment: .top, spacing: 4) {
+                        Text("・")
+                        Text(line)
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+            }
+
+            VStack(spacing: 8) {
+                ForEach(preferenceProfile.recommendations) { rec in
+                    Button { selectedListing = rec.listing } label: {
+                        HStack(spacing: 10) {
+                            if let thumbURL = rec.listing.thumbnailURL {
+                                AsyncImage(url: thumbURL) { image in
+                                    image.resizable().scaledToFill()
+                                } placeholder: {
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(Color(.systemGray5))
+                                }
+                                .frame(width: 44, height: 44)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(rec.listing.name)
+                                    .font(.caption.weight(.medium))
+                                    .lineLimit(1)
+                                HStack(spacing: 6) {
+                                    Text(rec.listing.priceDisplayCompact)
+                                        .font(.caption2)
+                                        .foregroundStyle(.blue)
+                                    Text(rec.listing.layout ?? "")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                    Text(rec.listing.areaDisplay)
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            Spacer()
+                            if let grade = rec.listing.scoreGradeLetter {
+                                Text(grade)
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 24, height: 24)
+                                    .background(DesignSystem.scoreColor(for: grade))
+                                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                            }
+                            Image(systemName: "chevron.right")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(14)
+            .listingGlassBackground()
+        }
+    }
+
+    @MainActor
+    private func updatePreferenceProfile() {
+        let prefStore = BuildingPreferenceStore.shared
+        var newProfile = PreferenceAnalyzer.analyze(
+            allListings: activeListings,
+            likedKeys: prefStore.likedKeys,
+            nopedKeys: prefStore.nopedKeys
+        )
+        newProfile.claudeSummaryLines = preferenceProfile.claudeSummaryLines
+        newProfile.claudeSummaryState = preferenceProfile.claudeSummaryState
+        preferenceProfile = newProfile
+        requestClaudeSummaryIfNeeded()
+    }
+
+    @MainActor
+    private func requestClaudeSummaryIfNeeded() {
+        let prefStore = BuildingPreferenceStore.shared
+        let liked = prefStore.likedKeys
+        let noped = prefStore.nopedKeys
+
+        var hasher = Hasher()
+        hasher.combine(liked)
+        hasher.combine(noped)
+        let currentHash = hasher.finalize()
+        guard currentHash != lastClaudeSummaryHash else { return }
+        guard preferenceProfile.isActive, ClaudeAPIClient.shared.isAvailable else { return }
+
+        claudeSummaryTask?.cancel()
+        preferenceProfile.claudeSummaryState = .loading
+
+        let listings = Array(activeListings)
+        claudeSummaryTask = Task { @MainActor in
+            guard let prompts = PreferenceAnalyzer.buildClaudePrompt(
+                allListings: listings,
+                likedKeys: liked,
+                nopedKeys: noped
+            ) else { return }
+
+            do {
+                let response = try await ClaudeAPIClient.shared.sendMessage(
+                    system: prompts.system,
+                    userContent: prompts.user
+                )
+                guard !Task.isCancelled else {
+                    if preferenceProfile.claudeSummaryState == .loading {
+                        preferenceProfile.claudeSummaryState = .idle
+                    }
+                    return
+                }
+                let lines = response.components(separatedBy: "\n")
+                    .map { $0.trimmingCharacters(in: .whitespaces) }
+                    .filter { !$0.isEmpty }
+                lastClaudeSummaryHash = currentHash
+                preferenceProfile.claudeSummaryLines = lines
+                preferenceProfile.claudeSummaryState = .loaded
+            } catch {
+                if preferenceProfile.claudeSummaryState == .loading {
+                    preferenceProfile.claudeSummaryState = .idle
+                }
+                preferenceProfile.claudeSummaryState = .failed
             }
         }
     }

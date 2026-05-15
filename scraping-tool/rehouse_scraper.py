@@ -50,6 +50,8 @@ from scraper_common import (
     station_passengers_ok,
     line_ok,
     is_tokyo_23_by_address,
+    get_effective_area_min_m2,
+    AREA_MIN_M2_FETCH,
 )
 
 from logger import get_logger
@@ -270,7 +272,8 @@ def apply_conditions(listings: list[RehouseListing]) -> list[RehouseListing]:
             continue
         if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
             continue
-        if r.area_m2 is not None and (r.area_m2 < AREA_MIN_M2 or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
+        effective_area_min = get_effective_area_min_m2(r.address)
+        if r.area_m2 is not None and (r.area_m2 < effective_area_min or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
             continue
         if not layout_ok(r.layout):
             continue
@@ -290,7 +293,7 @@ def _scrape_ward(ward_code: str, apply_filter: bool,
     session = create_session()
     results: list[RehouseListing] = []
     price_min = PRICE_MIN_MAN if PRICE_MIN_MAN else 0
-    area_min = int(AREA_MIN_M2) if AREA_MIN_M2 else 0
+    area_min = int(AREA_MIN_M2_FETCH) if AREA_MIN_M2_FETCH else 0
     pages_no_pass = 0
 
     for page in range(1, MAX_PAGES_PER_WARD + 1):

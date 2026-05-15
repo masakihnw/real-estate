@@ -64,11 +64,14 @@ final class SupabaseListingStore {
             defaults.removeObject(forKey: syncKey)
         }
 
-        let dtos: [ListingDTO]
+        var dtos: [ListingDTO]
         if let lastSync = lastSync {
             dtos = try await fetchIncremental(propertyType: propertyType, since: lastSync)
         } else {
             dtos = try await fetchAll(propertyType: propertyType)
+            let likedInactive = try await fetchLikedInactiveListings()
+                .filter { $0.property_type == propertyType }
+            dtos.append(contentsOf: likedInactive)
         }
 
         if dtos.isEmpty {
@@ -117,6 +120,14 @@ final class SupabaseListingStore {
 
         logger.info("Supabase fetchAll(\(propertyType, privacy: .public)): \(allDTOs.count) 件取得")
         return allDTOs
+    }
+
+    /// Like済み非アクティブ物件を取得
+    private func fetchLikedInactiveListings() async throws -> [ListingDTO] {
+        let data = try await client.rpc("get_liked_inactive_listings")
+        let dtos = try Self.decodeDTOs(from: data)
+        logger.info("Supabase liked inactive: \(dtos.count) 件取得")
+        return dtos
     }
 
     /// 差分取得 (since timestamp)

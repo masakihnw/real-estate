@@ -51,6 +51,7 @@ from scraper_common import (
     station_passengers_ok,
     line_ok,
     is_tokyo_23_by_address,
+    get_effective_area_min_m2,
 )
 
 from logger import get_logger
@@ -356,7 +357,8 @@ def apply_conditions(listings: list[SuumoShinchikuListing]) -> list[SuumoShinchi
 
         # 面積: 帯の上限が条件以上か。
         area_hi = r.area_max_m2 or r.area_m2
-        if area_hi is not None and area_hi < AREA_MIN_M2:
+        effective_area_min = get_effective_area_min_m2(r.address)
+        if area_hi is not None and area_hi < effective_area_min:
             continue
         if AREA_MAX_M2 is not None and r.area_m2 is not None and r.area_m2 > AREA_MAX_M2:
             continue
