@@ -186,8 +186,8 @@ final class CommuteTimeService {
 
             let info = listing.parsedCommuteInfo
 
-            // Google Maps スクレイピングで取得済みの物件は MKDirections で再計算しない
-            if info.hasGmapsData { return false }
+            // 信頼ソース（gmaps/yahoo_transit）で取得済みの物件は MKDirections で再計算しない
+            if info.hasReliableData { return false }
 
             // 座標更新時（オフィス移転など）は全件再計算
             if forceAll { return true }

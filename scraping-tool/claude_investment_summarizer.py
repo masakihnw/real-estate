@@ -35,11 +35,31 @@ REANALYZE_ASSET_RANKS = {"S", "A"}
 _BUYER_PROFILE_PATH = Path(__file__).resolve().parent / "config" / "buyer_profile.json"
 
 
-def _load_buyer_profile() -> dict:
+def _load_buyer_profile_from_supabase(user_id: str = "default") -> Optional[dict]:
+    try:
+        import supabase_client
+        client = supabase_client.get_client()
+        if client is None:
+            return None
+        resp = client.rpc("get_buyer_profile", {"p_user_id": user_id}).execute()
+        if resp.data and len(resp.data) > 0:
+            logger.info("Supabase から buyer_profile を取得 (user_id=%s)", user_id)
+            return resp.data[0]
+    except Exception as e:
+        logger.warning("Supabase buyer_profile 取得失敗 (フォールバック使用): %s", e)
+    return None
+
+
+def _load_buyer_profile(user_id: str = "default") -> dict:
+    profile = _load_buyer_profile_from_supabase(user_id)
+    if profile is not None:
+        return profile
+
     if not _BUYER_PROFILE_PATH.exists():
         logger.warning("buyer_profile.json が見つかりません: %s", _BUYER_PROFILE_PATH)
         return {}
     try:
+        logger.info("ローカル buyer_profile.json からフォールバック読み込み")
         return json.loads(_BUYER_PROFILE_PATH.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as e:
         logger.warning("buyer_profile.json 読み込みエラー: %s", e)
@@ -53,6 +73,7 @@ def _format_buyer_profile(profile: dict) -> str:
     field_labels = {
         "family_composition": "家族構成",
         "household_income": "世帯年収",
+        "self_funds": "自己資金",
         "child_plan": "子ども計画",
         "work_style": "働き方・勤務地",
         "priorities": "重視する点",
@@ -63,16 +84,42 @@ def _format_buyer_profile(profile: dict) -> str:
         "community_preference": "コミュニティ希望",
         "deal_breakers": "絶対NG条件",
         "planned_borrowing": "借入予定",
+        "interest_type": "金利タイプ",
         "estimated_rate": "想定金利",
         "repayment_years": "返済期間",
         "monthly_payment_limit": "月額上限",
+        "current_housing": "現在の住居",
         "relocation_reason": "住み替え理由",
         "post_sale_strategy": "出口方針",
+        "timeline": "購入時期目安",
+        "risk_tolerance": "リスク許容度",
     }
     for key, label in field_labels.items():
         val = profile.get(key, "")
         if val:
             lines.append(f"- {label}: {val}")
+
+    for jsonb_key, label in [
+        ("preferred_areas", "希望エリア"),
+        ("must_have_features", "必須設備"),
+    ]:
+        arr = profile.get(jsonb_key)
+        if arr and isinstance(arr, list):
+            lines.append(f"- {label}: {', '.join(str(v) for v in arr)}")
+
+    for jsonb_key, label in [
+        ("life_scenarios", "ライフシナリオ"),
+        ("budget_scenarios", "予算シナリオ"),
+    ]:
+        scenarios = profile.get(jsonb_key)
+        if scenarios and isinstance(scenarios, list):
+            lines.append(f"- {label}:")
+            for s in scenarios:
+                if isinstance(s, dict):
+                    parts = [f"{k}: {v}" for k, v in s.items() if v]
+                    lines.append(f"  - {' / '.join(parts)}")
+                else:
+                    lines.append(f"  - {s}")
     return "\n".join(lines)
 
 

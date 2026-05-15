@@ -460,10 +460,10 @@ final class ListingStore {
         if let lat = new.latitude { existing.latitude = lat }
         if let lon = new.longitude { existing.longitude = lon }
         // 通勤時間: Google Maps データ (source: "gmaps") は常に取り込む。
-        // 非 gmaps のパイプラインデータは既存データがない or フォールバック概算の場合のみ。
+        // 信頼ソースのパイプラインデータは常に優先。それ以外は既存データがない or フォールバック概算の場合のみ。
         if let pipelineCommute = new.commuteInfoJSON {
             let pipelineInfo = Listing._parseCommuteInfo(pipelineCommute)
-            if pipelineInfo.hasAnyGmapsData {
+            if pipelineInfo.hasAnyReliableData {
                 existing.commuteInfoJSON = pipelineCommute
             } else if existing.commuteInfoJSON == nil {
                 existing.commuteInfoJSON = pipelineCommute
@@ -507,9 +507,8 @@ final class ListingStore {
     /// Supabase 経由でデータ取得・同期
     private func refreshFromSupabase(modelContext: ModelContext) async {
         do {
-            async let prefFetch: () = BuildingPreferenceStore.shared.fetch()
+            await BuildingPreferenceStore.shared.fetch()
             let (chukoNew, shinNew) = try await SupabaseListingStore.shared.refresh(modelContext: modelContext)
-            await prefFetch
             let totalNew = chukoNew + shinNew
             lastRefreshHadChanges = totalNew > 0
 

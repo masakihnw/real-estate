@@ -54,6 +54,8 @@ from scraper_common import (
     load_station_passengers,
     station_passengers_ok,
     line_ok,
+    get_effective_area_min_m2,
+    AREA_MIN_M2_FETCH,
 )
 from report_utils import clean_listing_name
 
@@ -829,7 +831,8 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
             continue
         if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
             continue
-        if r.area_m2 is not None and (r.area_m2 < AREA_MIN_M2 or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
+        effective_area_min = get_effective_area_min_m2(r.address)
+        if r.area_m2 is not None and (r.area_m2 < effective_area_min or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
             continue
         if not layout_ok(r.layout):
             continue
@@ -971,7 +974,7 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
     """
     limit = max_pages if max_pages and max_pages > 0 else SUUMO_MAX_PAGES_SAFETY
 
-    mb = _snap_mb(AREA_MIN_M2) if apply_filter else None
+    mb = _snap_mb(AREA_MIN_M2_FETCH) if apply_filter else None
     et = _snap_et(WALK_MIN_MAX) if apply_filter else None
 
     if apply_filter:

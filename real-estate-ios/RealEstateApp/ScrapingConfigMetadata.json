@@ -3,7 +3,7 @@
   "defaults": {
     "priceMinMan": 9000,
     "priceMaxMan": 11500,
-    "areaMinM2": 55,
+    "areaMinM2": 60,
     "areaMaxM2": null,
     "walkMinMax": 10,
     "builtYearMinOffsetYears": 20,

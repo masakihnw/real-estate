@@ -1755,8 +1755,8 @@ struct ListingDetailView: View {
                 .fontWeight(.bold)
                 .foregroundStyle(Color.accentColor)
 
-            // Playground（gmaps 優先）
-            if let pg = commute.playground, pg.isGmaps {
+            // Playground（信頼ソース優先）
+            if let pg = commute.playground, pg.isReliableSource {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
                 } label: {
@@ -1809,8 +1809,8 @@ struct ListingDetailView: View {
                 .accessibilityLabel("Playground株式会社への通勤経路を Google Maps で開く")
             }
 
-            // エムスリーキャリア（gmaps 優先）
-            if let m3 = commute.m3career, m3.isGmaps {
+            // エムスリーキャリア（信頼ソース優先）
+            if let m3 = commute.m3career, m3.isReliableSource {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
                 } label: {
@@ -1902,8 +1902,8 @@ struct ListingDetailView: View {
 
             // 注釈（データソースに応じて表示を切替）
             VStack(alignment: .leading, spacing: 2) {
-                if commute.hasAnyGmapsData {
-                    Text("※ Google Maps の経路検索に基づく自動計算です")
+                if commute.hasAnyReliableData {
+                    Text("※ 経路検索サービスに基づく自動計算です")
                     Text("※ 平日朝 9:00 到着での最適経路")
                 } else if commuteV2?.hasAnyOffice == true {
                     Text("※ Station Master に基づく平日朝の代表値です")

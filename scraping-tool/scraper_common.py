@@ -148,6 +148,30 @@ def is_tokyo_23_by_address(address: str) -> bool:
     return any(ward in address for ward in TOKYO_23_WARDS)
 
 
+# ──────────────────────────── 面積下限の例外エリア ────────────────────────────
+
+TOSHIN_3_WARDS: frozenset[str] = frozenset({"港区", "中央区", "千代田区"})
+
+WATERFRONT_ADDRESS_KEYWORDS: tuple[str, ...] = (
+    "豊洲", "勝どき", "晴海", "月島", "有明", "東雲",
+)
+
+_AREA_MIN_M2_EXCEPTION = 55
+AREA_MIN_M2_FETCH = _AREA_MIN_M2_EXCEPTION
+
+
+def get_effective_area_min_m2(address: str) -> int:
+    from config import AREA_MIN_M2
+
+    if not address:
+        return AREA_MIN_M2
+    if any(ward in address for ward in TOSHIN_3_WARDS):
+        return _AREA_MIN_M2_EXCEPTION
+    if any(kw in address for kw in WATERFRONT_ADDRESS_KEYWORDS):
+        return _AREA_MIN_M2_EXCEPTION
+    return AREA_MIN_M2
+
+
 # ──────────────────────────── ステルスブラウザ ────────────────────────────
 
 _STEALTH_INIT_SCRIPT = """

@@ -2223,8 +2223,8 @@ final class Listing: @unchecked Sendable {
             let ciV2 = parsedCommuteInfoV2
             var times: [Int] = []
             var parts: [String] = []
-            // gmaps 優先、v2 フォールバック
-            if let pg = ci.playground, pg.isGmaps {
+            // 信頼ソース優先、v2 フォールバック
+            if let pg = ci.playground, pg.isReliableSource {
                 times.append(pg.minutes)
                 parts.append("Playground \(pg.minutes)分")
             } else if let pgV2 = ciV2?.offices.playground {
@@ -2234,7 +2234,7 @@ final class Listing: @unchecked Sendable {
                 times.append(pg.minutes)
                 parts.append("Playground \(pg.minutes)分")
             }
-            if let m3 = ci.m3career, m3.isGmaps {
+            if let m3 = ci.m3career, m3.isReliableSource {
                 times.append(m3.minutes)
                 parts.append("M3Career \(m3.minutes)分")
             } else if let m3V2 = ciV2?.offices.m3career {
@@ -2338,9 +2338,9 @@ final class Listing: @unchecked Sendable {
         return false
     }
 
-    /// 一覧表示用: Playground 通勤時間（gmaps 優先）
+    /// 一覧表示用: Playground 通勤時間（信頼ソース優先）
     var commutePlaygroundDisplay: String? {
-        if let pg = parsedCommuteInfo.playground, pg.isGmaps {
+        if let pg = parsedCommuteInfo.playground, pg.isReliableSource {
             return "\(pg.minutes)分"
         }
         if let pg = parsedCommuteInfoV2?.offices.playground {
@@ -2350,9 +2350,9 @@ final class Listing: @unchecked Sendable {
         return "\(pg.minutes)分"
     }
 
-    /// 一覧表示用: M3Career 通勤時間（gmaps 優先）
+    /// 一覧表示用: M3Career 通勤時間（信頼ソース優先）
     var commuteM3CareerDisplay: String? {
-        if let m3 = parsedCommuteInfo.m3career, m3.isGmaps {
+        if let m3 = parsedCommuteInfo.m3career, m3.isReliableSource {
             return "\(m3.minutes)分"
         }
         if let m3 = parsedCommuteInfoV2?.offices.m3career {
@@ -2979,12 +2979,20 @@ struct CommuteData: Codable {
         (playground?.isFallbackEstimate ?? false) || (m3career?.isFallbackEstimate ?? false)
     }
 
-    /// 両方の目的地が Google Maps データを持つか
+    /// 両方の目的地が信頼ソースのデータを持つか
+    var hasReliableData: Bool {
+        (playground?.isReliableSource ?? false) && (m3career?.isReliableSource ?? false)
+    }
+
+    /// いずれかの目的地が信頼ソースのデータを持つか
+    var hasAnyReliableData: Bool {
+        (playground?.isReliableSource ?? false) || (m3career?.isReliableSource ?? false)
+    }
+
     var hasGmapsData: Bool {
         (playground?.isGmaps ?? false) && (m3career?.isGmaps ?? false)
     }
 
-    /// いずれかの目的地が Google Maps データを持つか
     var hasAnyGmapsData: Bool {
         (playground?.isGmaps ?? false) || (m3career?.isGmaps ?? false)
     }
@@ -3008,7 +3016,11 @@ struct CommuteDestination: Codable {
         summary.contains("経路情報取得不可")
     }
 
-    /// Google Maps スクレイピングで取得したデータかどうか
+    /// 信頼性の高い外部経路検索で取得したデータか（gmaps or yahoo_transit）
+    var isReliableSource: Bool {
+        source == "gmaps" || source == "yahoo_transit"
+    }
+
     var isGmaps: Bool {
         source == "gmaps"
     }

@@ -45,6 +45,7 @@ from scraper_common import (
     station_passengers_ok,
     line_ok,
     is_tokyo_23_by_address,
+    get_effective_area_min_m2,
 )
 
 from logger import get_logger
@@ -703,7 +704,8 @@ def apply_conditions(listings: list[SteponListing]) -> list[SteponListing]:
             continue
         if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
             continue
-        if r.area_m2 is not None and (r.area_m2 < AREA_MIN_M2 or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
+        effective_area_min = get_effective_area_min_m2(r.address)
+        if r.area_m2 is not None and (r.area_m2 < effective_area_min or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
             continue
         if not layout_ok(r.layout):
             continue
