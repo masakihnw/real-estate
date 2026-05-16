@@ -34825,7 +34825,7 @@
         "label": "その他現地"
       },
       {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F893%2F20774893%2F20774893_0063.jpg&w=1200&h=900",
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F893%2F20774893%2F20774893_0068.jpg&w=1200&h=900",
         "label": "現地外観写真"
       },
       {
@@ -51813,7 +51813,7 @@
         "label": "バルコニー"
       },
       {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F854%2F20525854%2F20525854_0002.jpg&w=1200&h=900",
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F854%2F20525854%2F20525854_0041.jpg&w=1200&h=900",
         "label": "幼稚園・保育園"
       },
       {
@@ -57826,6 +57826,9 @@
       "バイク置場",
       "浄水器"
     ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F172%2F20836172%2F20836172_0006.jpg&w=1200&h=900"
+    ],
     "suumo_images": [
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F172%2F20836172%2F20836172_0001.jpg&w=1200&h=900",
@@ -59452,5 +59455,18 @@
         "label": "現地外観写真"
       }
     ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20860787/": {
+    "total_units": 227,
+    "floor_position": 1,
+    "floor_total": 10,
+    "floor_structure": "RC10階建",
+    "ownership": "所有権",
+    "management_fee": 11400,
+    "repair_reserve_fund": 5810,
+    "balcony_area_m2": 12.4,
+    "parking": "空無",
+    "zoning": "１種住居、工業",
+    "delivery_date": "相談"
   }
 }
