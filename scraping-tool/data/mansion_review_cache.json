@@ -6319,5 +6319,27 @@
       ]
     },
     "cached_at": "2026-05-16T10:48:34.490587"
+  },
+  "グランイーグル蒲田ネオスト": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/15878.html",
+      "deviation_score": 0,
+      "estimated_price_man": 8067,
+      "estimated_tsubo_price_man": 411,
+      "estimated_m2_price_man": 125,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 33,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 65.89,
+          "price_man": 5564,
+          "tsubo_price_man": 280.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-16T14:54:06.159935"
   }
 }
