@@ -69,38 +69,60 @@ SELECT upsert_ai_enrichment(<listing_id>::bigint, 'investment_summary', '<結果
 
 ---
 
-## Step 2: 画像分類（Edge Function）
+## Step 2: 画像分析 & 不要画像クリーンアップ
 
-画像分類と junk 削除は Edge Function `classify-images` がサーバーサイドで一括処理する。
-Routine は WebFetch で Edge Function を呼び出し、レスポンスの処理件数を完了レポートに記録するだけでよい。
+**方針**: Supabase Storage URL は Vision でアクセスできないため、suumo_images の `label` フィールドを使ったラベルベース分類を行う。分類後、不要画像は DB から削除する。
 
-### 呼び出し
+### Step 2a: 画像分類
 
-WebFetch ツールで以下の HTTP POST を送信:
-
-- **URL**: `https://dzhcumdmzskkvusynmyw.supabase.co/functions/v1/classify-images`
-- **Method**: POST
-- **Headers**: `Content-Type: application/json`
-- **Body**: `{"batch_size": 200}`
-
-### レスポンス例
-
-```json
-{
-  "processed": 150,
-  "succeeded": 148,
-  "errors": 2,
-  "total_images": 3200,
-  "total_junk": 450,
-  "junk_removed": 420
-}
+1. プロンプト取得:
+```sql
+SELECT * FROM get_active_prompt('image_analyzer');
 ```
 
-### 完了判定
+2. 対象取得:
+```sql
+SELECT listing_id, listing_data FROM get_listings_for_ai('image_analyzer');
+```
 
-- `processed > 0`: 正常完了。`processed`, `total_images`, `junk_removed` を完了レポートに記録
-- `processed == 0`: 未分類物件なし。スキップして Step 2.5 へ
-- エラーレスポンス（HTTP 500）: エラー内容を完了レポートに記録し、Step 2.5 へ進む（他のステップには影響しない）
+→ listing_data には `id`, `name`, `suumo_images` のみが含まれる（軽量ペイロード）。
+
+3. 各物件の `suumo_images` 配列（`{url, label}` の配列）から `label` を読み取り、以下のマッピングで分類:
+
+| label パターン | category | is_junk |
+|---|---|---|
+| 間取図、間取り | floor_plan | false |
+| 外観、エントランス | exterior | false |
+| 室内、リビング、居室、キッチン、ダイニング、和室、洋室、LDK、DK | interior | false |
+| 浴室、バス、トイレ、洗面、水回り、脱衣 | water | false |
+| 眺望、バルコニー、ベランダ、展望 | view | false |
+| 共用部、エントランスホール、中庭、ロビー、ジム、ラウンジ | common_area | false |
+| 周辺、公園、学校、スーパー、商業、駅前 | surroundings | false |
+| 上記いずれにも該当しない or 明らかに広告・バナー・ロゴ・アイコン | junk | true |
+
+- quality_score と thumbnail_score は label から推定:
+  - 外観全体・明るいリビング → thumbnail_score 高 (0.8-0.9)
+  - 間取り図 → quality_score 高だが thumbnail_score 低 (0.2-0.3)
+  - クローゼット内部・設備アップ → 両方中程度 (0.4-0.6)
+- brief_description は label をそのまま使用
+
+4. 物件ごとに全画像結果を配列にまとめて書き戻し:
+```sql
+SELECT upsert_ai_enrichment(<listing_id>::bigint, 'image_analyzer', '<画像結果配列>'::jsonb, 'claude-sonnet-4-6', '<prompt_hash>', <version>, 'routine');
+```
+
+### Step 2b: 不要画像の削除
+
+**重要**: Step 2a の全物件の upsert_ai_enrichment が完了したことを確認してから実行すること。
+
+分類完了後、junk 画像を DB から一括削除:
+```sql
+SELECT * FROM batch_cleanup_junk_images();
+```
+
+→ `is_junk = true` または `category = 'junk'` の画像を `suumo_images` と `image_categories` の両方から除去。結果は `(listing_id, removed_count)` の配列。
+
+対象がなければスキップして Step 2.5 へ。
 
 ---
 
