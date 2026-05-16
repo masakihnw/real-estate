@@ -6278,5 +6278,46 @@
   "ボヌール小岩": {
     "data": null,
     "cached_at": "2026-05-16T08:38:15.604756"
+  },
+  "パークホームズ十条10階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1972021.html",
+      "deviation_score": 27,
+      "estimated_price_man": 11599,
+      "estimated_tsubo_price_man": 512,
+      "estimated_m2_price_man": 155,
+      "shinchiku_history_count": 27,
+      "chuko_history_count": 4,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 71.07,
+          "price_man": 10860,
+          "tsubo_price_man": 508.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:31:39.008836"
+  },
+  "シアンズテラス下高井戸": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16594.html",
+      "deviation_score": 22,
+      "shinchiku_history_count": 22,
+      "chuko_history_count": 10,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 72.67,
+          "price_man": 6124,
+          "tsubo_price_man": 280.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-16T10:48:34.490587"
   }
 }
