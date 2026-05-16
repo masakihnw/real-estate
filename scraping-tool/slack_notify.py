@@ -561,6 +561,21 @@ def build_message_from_report(report_path: Path, report_url: Optional[str] = Non
     return content
 
 
+def _pop_morning_digest(client: Any) -> tuple[str, int | None]:
+    """pending の new_listing_digest ドラフトを取得して返す。
+    Returns (message_text, draft_id) or ("", None)."""
+    try:
+        result = client.rpc("get_pending_notification_drafts", {"p_channel": "slack"}).execute()
+        for draft in (result.data or []):
+            if draft["notification_type"] == "new_listing_digest":
+                msg = (draft.get("message_text") or "").strip()
+                if msg:
+                    return msg, draft["id"]
+    except Exception as e:
+        logger.warning("new_listing_digest 取得失敗: %s", e)
+    return "", None
+
+
 def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
     """notification_drafts テーブルから pending ドラフトを読み出して Slack 送信。
     Returns (sent_count, failed_count)."""
@@ -572,6 +587,7 @@ def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
         return 0, 0
 
     SKIP_TYPES = {"health_report", "daily_brief"}
+    HANDLED_ELSEWHERE = {"new_listing_digest"}
 
     sent = 0
     failed = 0
@@ -585,6 +601,9 @@ def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
                 client.rpc("mark_notification_sent", {"p_id": draft_id, "p_status": "skipped"}).execute()
             except Exception:
                 pass
+            continue
+
+        if ntype in HANDLED_ELSEWHERE:
             continue
 
         if not msg.strip():
@@ -670,7 +689,13 @@ def main() -> None:
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
 
-    if not diff_new_a and not diff_removed_a:
+    # 朝の回は AI ダイジェスト単独でも送信する
+    has_morning_digest = False
+    if is_morning and supabase_client:
+        digest_preview, _ = _pop_morning_digest(supabase_client)
+        has_morning_digest = bool(digest_preview)
+
+    if not diff_new_a and not diff_removed_a and not has_morning_digest:
         if supabase_client:
             _send_notification_drafts(supabase_client, webhook_url)
         logger.warning("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします")
@@ -696,11 +721,24 @@ def main() -> None:
     # --- メッセージ組み立て・送信 ---
     message = build_slack_message_from_listings(current, None, report_url, map_url=map_url, diff_override=diff)
 
+    # 朝の回: Routine 2 が生成した AI ダイジェストを本文末尾に統合
+    digest_draft_id = None
+    if is_morning and supabase_client:
+        digest_text, digest_draft_id = _pop_morning_digest(supabase_client)
+        if digest_text:
+            message = message + "\n\n" + digest_text
+
     if send_slack_message_chunked_with_retry(webhook_url, message):
         logger.info("Slack通知を送信しました")
         last_at = diff.get("_last_notified_at") if diff else None
         if supabase_client and last_at:
             _update_notification_state(supabase_client, "slack", expected_last=last_at)
+        if digest_draft_id and supabase_client:
+            try:
+                supabase_client.rpc("mark_notification_sent", {"p_id": digest_draft_id, "p_status": "sent"}).execute()
+                logger.info("new_listing_digest (id=%d) を朝通知に統合送信しました", digest_draft_id)
+            except Exception as e:
+                logger.warning("new_listing_digest ステータス更新失敗: %s", e)
     else:
         logger.error("Slack通知の送信に失敗しました（リトライ後も送信できませんでした）")
         sys.exit(1)
