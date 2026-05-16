@@ -6230,5 +6230,53 @@
       ]
     },
     "cached_at": "2026-05-16T03:28:59.528777"
+  },
+  "東京シティトリエ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/12635.html",
+      "deviation_score": 19,
+      "estimated_price_man": 9679,
+      "estimated_tsubo_price_man": 525,
+      "estimated_m2_price_man": 159,
+      "shinchiku_history_count": 191,
+      "chuko_history_count": 144,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 10,
+          "layout": "",
+          "area_m2": 70.52,
+          "price_man": 6344,
+          "tsubo_price_man": 298.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-16T08:38:03.905671"
+  },
+  "パークホームズ町屋": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/537802.html",
+      "deviation_score": 69,
+      "estimated_price_man": 8136,
+      "estimated_tsubo_price_man": 396,
+      "estimated_m2_price_man": 120,
+      "shinchiku_history_count": 69,
+      "chuko_history_count": 16,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 65.34,
+          "price_man": 6139,
+          "tsubo_price_man": 310.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-16T08:38:12.275406"
+  },
+  "ボヌール小岩": {
+    "data": null,
+    "cached_at": "2026-05-16T08:38:15.604756"
   }
 }
