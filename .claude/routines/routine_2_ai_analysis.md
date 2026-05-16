@@ -230,35 +230,28 @@ DO UPDATE SET
 Routine は Slack に直接投稿しない。代わりに `notification_drafts` テーブルに下書きを保存し、
 GHA の `slack_notify.py` がボット名義で送信する。
 
-### Step 4a: Daily Brief 通知
+### Step 4a: Daily Brief — スキップ（アプリ表示のみ）
 
-Step 3 のバイヤーピック結果を Slack 向けに整形:
+Daily Brief はアプリ（ダッシュボード）で確認するため、Slack 通知はスキップする。
 
-1. Step 3 で生成した `recommended_listings` と `summary_text` を使い、以下構成のメッセージを生成:
-   - 「🤖 *AI デイリーブリーフ*（{日付}）」ヘッダー
-   - サマリーテキスト（3-5文）
-   - おすすめ TOP 5: 物件名・価格・間取り・推薦理由（各1-2文）
-   - マーケットインサイト（2-3文）
-   - ※ 既存の slack_notify.py が送る新規/削除通知と重複しないよう、「AI の推薦理由」に焦点
-
-2. 保存:
 ```sql
-SELECT upsert_notification_draft(
-  'slack',
-  'daily_brief',
-  '<整形済みメッセージ>',
-  '{"listing_ids": [123, 456], "top_score": 5}'::jsonb
-);
+SELECT skip_notification_draft('slack', 'daily_brief');
 ```
 
-### Step 4b: Price Alert 通知
+### Step 4b: Price Alert — お気に入り物件のみ
 
-直近24時間の有意な価格変動を検出:
+直近24時間の有意な価格変動を、お気に入り物件に限定して検出:
+
 ```sql
-SELECT * FROM get_significant_price_changes(now() - interval '24 hours', 5.0);
+SELECT pc.*
+FROM get_significant_price_changes(now() - interval '24 hours', 5.0) pc
+JOIN user_building_preferences ubp ON ubp.identity_key = (
+  SELECT lf.identity_key FROM listings_feed lf WHERE lf.id = pc.listing_id
+)
+WHERE ubp.preference = 'like';
 ```
 
-- 結果1件以上: 「💰 *価格変動アラート*」+ 各物件の旧価格→新価格（-X%）をメッセージ化して保存:
+- 結果1件以上: 「💰 *お気に入り物件 価格変動*」+ 各物件の旧価格→新価格（-X%）＋ AI の一言コメント（投資観点で値下げの意味を解説）をメッセージ化して保存:
 ```sql
 SELECT upsert_notification_draft('slack', 'price_alert', '<メッセージ>', '<metadata>'::jsonb);
 ```
@@ -268,21 +261,40 @@ SELECT upsert_notification_draft('slack', 'price_alert', '<メッセージ>', '<
 SELECT skip_notification_draft('slack', 'price_alert');
 ```
 
-### Step 4c: New Highlight 通知
+### Step 4c: 新着 AI ダイジェスト
 
-直近24時間の高スコア新着物件:
+直近24時間の新着物件を AI が分析し、バイヤー視点でキュレーションした日次ダイジェストを生成する。GHA の raw 新着通知（1日4回）とは別に、1日1回の AI 視点サマリーとして送信される。
+
+1. 直近24時間の新着物件を取得:
 ```sql
-SELECT * FROM get_high_score_new_listings(now() - interval '24 hours', 4);
+SELECT lf.id, lf.name, lf.address, lf.layout, lf.area_m2, lf.price_man,
+       lf.walk_min, lf.station_line, lf.built_year, lf.ownership,
+       lf.listing_score, lf.price_fairness_score,
+       e.ai_listing_score, e.ai_recommendation_score, e.ai_recommendation_summary
+FROM listings_feed lf
+LEFT JOIN enrichments e ON e.listing_id = lf.id
+WHERE lf.is_active = true
+  AND lf.first_seen_at >= now() - interval '24 hours'
+ORDER BY COALESCE(e.ai_listing_score, lf.listing_score, 0) DESC;
 ```
 
-- 結果1件以上: 「✨ *注目の新着物件*」+ 物件名・エリア・価格・AI推薦理由をメッセージ化して保存:
+2. バイヤープロファイルと照合し、新着物件を AI で以下のように分類・コメント:
+
+   **メッセージ構成**:
+   - 「🏠 *新着 AI ダイジェスト*（{日付}・{件数}件）」ヘッダー
+   - 🔥 **必見**（バイヤー条件に合致 + AI スコア4以上）: 物件名・価格・間取り＋ なぜ必見なのか1-2文。お気に入り済み物件との比較があれば言及
+   - 👀 **要チェック**（一部条件合致 or AI スコア3）: 物件名・価格・1行コメント
+   - 📊 **マーケットメモ**: 「今週の○○エリアは新着X件。先週比+Y件」等、エリア動向を1-2文
+   - 該当0件の場合: 「本日の新着で特筆すべき物件はありませんでした」
+
+3. 保存:
 ```sql
-SELECT upsert_notification_draft('slack', 'new_highlight', '<メッセージ>', '<metadata>'::jsonb);
+SELECT upsert_notification_draft('slack', 'new_listing_digest', '<メッセージ>', '<metadata>'::jsonb);
 ```
 
-- 結果0件:
+- 新着0件の場合:
 ```sql
-SELECT skip_notification_draft('slack', 'new_highlight');
+SELECT skip_notification_draft('slack', 'new_listing_digest');
 ```
 
 ---
@@ -293,7 +305,7 @@ SELECT skip_notification_draft('slack', 'new_highlight');
 - investment_summary: X件処理（スコア分布: 5=X件, 4=X件, 3=X件, 2=X件, 1=X件）
 - image_analyzer: X件処理（総画像Y枚、junk Z枚削除済み）
 - buyer_picks: おすすめX件抽出、サマリー生成完了
-- notification_drafts: daily_brief=pending/skipped, price_alert=pending/skipped, new_highlight=pending/skipped
+- notification_drafts: daily_brief=skipped（アプリのみ）, price_alert=pending/skipped（お気に入りのみ）, new_listing_digest=pending/skipped
 
 各ステップの全物件処理結果を以下のテーブル形式で記録:
 ```

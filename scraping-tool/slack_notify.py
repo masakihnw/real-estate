@@ -571,12 +571,21 @@ def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
         logger.warning("notification_drafts 読み出し失敗（テーブル未作成 or RPC 未定義の可能性）: %s", e)
         return 0, 0
 
+    SKIP_TYPES = {"health_report", "daily_brief"}
+
     sent = 0
     failed = 0
     for draft in drafts:
         draft_id = draft["id"]
         ntype = draft["notification_type"]
         msg = draft.get("message_text") or ""
+
+        if ntype in SKIP_TYPES:
+            try:
+                client.rpc("mark_notification_sent", {"p_id": draft_id, "p_status": "skipped"}).execute()
+            except Exception:
+                pass
+            continue
 
         if not msg.strip():
             try:
