@@ -6341,5 +6341,27 @@
       ]
     },
     "cached_at": "2026-05-16T14:54:06.159935"
+  },
+  "ザ・パークハウス板橋大山大楠ノ杜": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1419695.html",
+      "deviation_score": 18,
+      "estimated_price_man": 11866,
+      "estimated_tsubo_price_man": 524,
+      "estimated_m2_price_man": 159,
+      "shinchiku_history_count": 185,
+      "chuko_history_count": 45,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 75.48,
+          "price_man": 11322,
+          "tsubo_price_man": 493.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-17T04:03:03.403526"
   }
 }
