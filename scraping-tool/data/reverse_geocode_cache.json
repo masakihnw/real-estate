@@ -726,5 +726,21 @@
     "quarter": "晴海",
     "neighbourhood": "晴海一丁目",
     "city_district": ""
+  },
+  "35.615006,139.656116": {
+    "display_name": "等々力七丁目, 等々力, 世田谷区, 東京都, 158-0081, 日本",
+    "city": "世田谷区",
+    "suburb": "",
+    "quarter": "等々力",
+    "neighbourhood": "等々力七丁目",
+    "city_district": ""
+  },
+  "35.608484,139.654117": {
+    "display_name": "等々力五丁目, 等々力, 世田谷区, 東京都, 158-0086, 日本",
+    "city": "世田谷区",
+    "suburb": "",
+    "quarter": "等々力",
+    "neighbourhood": "等々力五丁目",
+    "city_district": ""
   }
 }
