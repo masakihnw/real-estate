@@ -33,10 +33,10 @@
       "built_year": 2007,
       "structure": "RC",
       "trade_period": "2021Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -53,10 +53,10 @@
       "built_year": 2007,
       "structure": "RC",
       "trade_period": "2021Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -73,10 +73,10 @@
       "built_year": 2007,
       "structure": "RC",
       "trade_period": "2022Q1",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -93,10 +93,10 @@
       "built_year": 2007,
       "structure": "RC",
       "trade_period": "2022Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -113,10 +113,10 @@
       "built_year": 2012,
       "structure": "RC",
       "trade_period": "2025Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2012-RC",
       "estimated_building_name": null
     },
@@ -17038,7 +17038,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2008-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "レグノ・セレーノ"
     },
     {
       "id": "tx-f83fa430cfe9",
@@ -19038,7 +19038,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2008-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "レグノ・セレーノ"
     },
     {
       "id": "tx-220e377cfeed",
@@ -19258,7 +19258,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2008-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "レグノ・セレーノ"
     },
     {
       "id": "tx-00fecd66e41f",
@@ -19338,7 +19338,7 @@
       "latitude": 35.7026486,
       "longitude": 139.6912278,
       "building_group_id": "131040330-2008-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "レグノ・セレーノ"
     },
     {
       "id": "tx-6114fbf8cbc3",
@@ -23774,9 +23774,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "estimated_walk_min": 10,
+      "latitude": 35.6973931,
+      "longitude": 139.7846834,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -30858,7 +30858,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f354b6b572ea",
@@ -30958,7 +30958,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-bab47ce523a9",
@@ -31058,7 +31058,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-381faf1f3260",
@@ -31718,7 +31718,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c2aae44c9c03",
@@ -31738,7 +31738,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-55b7d801b1e7",
@@ -31758,7 +31758,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-89f0802dbdf4",
@@ -31838,7 +31838,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-8aee01fe0eae",
@@ -31858,7 +31858,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-857aad3787c6",
@@ -31878,7 +31878,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-934bdc1cd2c3",
@@ -32638,7 +32638,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ea891a61123f",
@@ -32718,7 +32718,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-f5f0ae9f55ab",
@@ -33078,7 +33078,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-855fd6fa0ab8",
@@ -33118,7 +33118,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-ef6479d370e2",
@@ -33158,7 +33158,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-69944cb2a66d",
@@ -33338,7 +33338,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-cd759d33c91b",
@@ -33358,7 +33358,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-94afe998cc1a",
@@ -33678,7 +33678,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-54e741083ba6",
@@ -33958,7 +33958,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-c996e1abc8d3",
@@ -34078,7 +34078,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-dee7ab4ebb6a",
@@ -34098,7 +34098,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-65833b3bdc1b",
@@ -34118,7 +34118,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-27e41ab66920",
@@ -34778,7 +34778,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-fa918382c6de",
@@ -35358,7 +35358,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-06194fe03595",
@@ -35438,7 +35438,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-dff03972766c",
@@ -35458,7 +35458,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-6a8ec00a24c1",
@@ -35538,7 +35538,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-5999c5716b08",
@@ -35558,7 +35558,7 @@
       "latitude": 35.6441411,
       "longitude": 139.8022923,
       "building_group_id": "131080180-2020-RC",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "id": "tx-03b2dc10c44c",
@@ -50561,6 +50561,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-1d88f054700e",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "district_code": "131160070",
+      "price_man": 9200,
+      "area_m2": 115.0,
+      "m2_price": 800000,
+      "layout": "3LDK",
+      "built_year": 2009,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "building_group_id": "131160070-2009-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-1ac637abb4d9",
       "prefecture": "東京都",
       "ward": "豊島区",
@@ -50598,6 +50618,26 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cf7df9c308ac",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 9000,
+      "area_m2": 75.0,
+      "m2_price": 1200000,
+      "layout": "3LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2012-RC",
       "estimated_building_name": null
     },
     {
@@ -50798,6 +50838,26 @@
       "latitude": 35.7247203,
       "longitude": 139.7147332,
       "building_group_id": "131160170-2015-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-d45b8f92d052",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "district_code": "131160070",
+      "price_man": 9400,
+      "area_m2": 70.0,
+      "m2_price": 1342857,
+      "layout": "3LDK",
+      "built_year": 2009,
+      "structure": "SRC",
+      "trade_period": "2022Q4",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "building_group_id": "131160070-2009-SRC",
       "estimated_building_name": null
     },
     {
@@ -51181,6 +51241,66 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-24a7101e3371",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 9400,
+      "area_m2": 70.0,
+      "m2_price": 1342857,
+      "layout": "3LDK",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2024Q1",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2017-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-920be80a0e91",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 9400,
+      "area_m2": 70.0,
+      "m2_price": 1342857,
+      "layout": "2LDK+S",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2024Q1",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2017-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-a69551a2a168",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "district_code": "131160070",
+      "price_man": 9200,
+      "area_m2": 75.0,
+      "m2_price": 1226667,
+      "layout": "3LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2024Q1",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "building_group_id": "131160070-2013-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-54e8a58c4a9a",
       "prefecture": "東京都",
       "ward": "豊島区",
@@ -51318,6 +51438,66 @@
       "latitude": 35.7422596,
       "longitude": 139.7126929,
       "building_group_id": "131160020-2011-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-4a8a7413099c",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 9200,
+      "area_m2": 70.0,
+      "m2_price": 1314286,
+      "layout": "2LDK+S",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2024Q2",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2017-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-6ec081f5be47",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 9900,
+      "area_m2": 70.0,
+      "m2_price": 1414286,
+      "layout": "3LDK",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2024Q2",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2017-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-1e07edcf2deb",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 9900,
+      "area_m2": 65.0,
+      "m2_price": 1523077,
+      "layout": "2LDK+S",
+      "built_year": 2019,
+      "structure": "RC",
+      "trade_period": "2024Q2",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2019-RC",
       "estimated_building_name": null
     },
     {
@@ -51621,6 +51801,86 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-eb5b73425272",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 11000,
+      "area_m2": 75.0,
+      "m2_price": 1466667,
+      "layout": "3LDK",
+      "built_year": 2007,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-c920c454ec27",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 11000,
+      "area_m2": 70.0,
+      "m2_price": 1571429,
+      "layout": "2LDK+S",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2017-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-f3859234df19",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "district_code": "131160070",
+      "price_man": 9700,
+      "area_m2": 75.0,
+      "m2_price": 1293333,
+      "layout": "3LDK",
+      "built_year": 2013,
+      "structure": "",
+      "trade_period": "2024Q4",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "building_group_id": "131160070-2013",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-f42371228b8f",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "district_code": "131160070",
+      "price_man": 9000,
+      "area_m2": 75.0,
+      "m2_price": 1200000,
+      "layout": "3LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "building_group_id": "131160070-2013-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-d03a4af93672",
       "prefecture": "東京都",
       "ward": "豊島区",
@@ -51738,6 +51998,46 @@
       "latitude": 35.7311425,
       "longitude": 139.7089439,
       "building_group_id": "131160010-2015-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-dccd776f1f91",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "3LDK",
+      "built_year": 2019,
+      "structure": "RC",
+      "trade_period": "2025Q1",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2019-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-f7656685bdb4",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "district_code": "131160050",
+      "price_man": 9800,
+      "area_m2": 60.0,
+      "m2_price": 1633333,
+      "layout": "2LDK",
+      "built_year": 2019,
+      "structure": "RC",
+      "trade_period": "2025Q1",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "building_group_id": "131160050-2019-RC",
       "estimated_building_name": null
     },
     {
@@ -52061,6 +52361,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-0f752fd1744f",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "district_code": "131160070",
+      "price_man": 10000,
+      "area_m2": 75.0,
+      "m2_price": 1333333,
+      "layout": "3LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2025Q3",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "building_group_id": "131160070-2013-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-38c41357b485",
       "prefecture": "東京都",
       "ward": "豊島区",
@@ -52259,6 +52579,46 @@
       "longitude": 139.7028671,
       "building_group_id": "131160200-2021-RC",
       "estimated_building_name": null
+    },
+    {
+      "id": "tx-67f9ecd8c80b",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "district_code": "131160070",
+      "price_man": 11000,
+      "area_m2": 70.0,
+      "m2_price": 1571429,
+      "layout": "2LDK",
+      "built_year": 2006,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "building_group_id": "131160070-2006-RC",
+      "estimated_building_name": "グローリオタワー巣鴨"
+    },
+    {
+      "id": "tx-8446292eb7ad",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "district_code": "131160070",
+      "price_man": 9500,
+      "area_m2": 70.0,
+      "m2_price": 1357143,
+      "layout": "2LDK",
+      "built_year": 2006,
+      "structure": "RC",
+      "trade_period": "2025Q4",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "building_group_id": "131160070-2006-RC",
+      "estimated_building_name": "グローリオタワー巣鴨"
     },
     {
       "id": "tx-1ba20ae9d7db",
@@ -53478,7 +53838,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023-RC",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館 / ザ・パークハウス板橋大山大楠ノ杜"
     },
     {
       "id": "tx-b7709691f3ba",
@@ -53498,7 +53858,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館 / ザ・パークハウス板橋大山大楠ノ杜"
     },
     {
       "id": "tx-696de48610a1",
@@ -53518,7 +53878,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023-RC",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館 / ザ・パークハウス板橋大山大楠ノ杜"
     },
     {
       "id": "tx-f6172bc89b6c",
@@ -53718,7 +54078,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023-RC",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館 / ザ・パークハウス板橋大山大楠ノ杜"
     },
     {
       "id": "tx-849d3d997237",
@@ -53738,7 +54098,7 @@
       "latitude": 35.7485391,
       "longitude": 139.6997333,
       "building_group_id": "131190130-2023-RC",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館 / ザ・パークハウス板橋大山大楠ノ杜"
     },
     {
       "id": "tx-9b65fdbffc99",
@@ -54355,8 +54715,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.737877,
+      "longitude": 139.6540818,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -55069,10 +55429,10 @@
       "district": "飯田橋",
       "built_year": 2007,
       "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "transaction_count": 4,
       "price_range_man": [
         9800,
@@ -55095,10 +55455,10 @@
       "district": "飯田橋",
       "built_year": 2012,
       "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "transaction_count": 1,
       "price_range_man": [
         11000,
@@ -58739,7 +59099,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "レグノ・セレーノ"
     },
     {
       "group_id": "131040330-2012-RC",
@@ -62399,9 +62759,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 8,
-      "latitude": 35.6973915,
-      "longitude": 139.7863101,
+      "estimated_walk_min": 10,
+      "latitude": 35.6973931,
+      "longitude": 139.7846834,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -64754,7 +65114,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "プラウドシティ東雲キャナルマークス"
+      "estimated_building_name": null
     },
     {
       "group_id": "131080190-2006-RC",
@@ -71932,6 +72292,101 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131160050-2007-RC",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "built_year": 2007,
+      "structure": "RC",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1466667,
+      "periods": [
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131160050-2012-RC",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "transaction_count": 1,
+      "price_range_man": [
+        9000,
+        9000
+      ],
+      "avg_m2_price": 1200000,
+      "periods": [
+        "2021Q4"
+      ],
+      "latest_period": "2021Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131160050-2017-RC",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "built_year": 2017,
+      "structure": "RC",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "transaction_count": 5,
+      "price_range_man": [
+        9200,
+        11000
+      ],
+      "avg_m2_price": 1397143,
+      "periods": [
+        "2024Q1",
+        "2024Q2",
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131160050-2019-RC",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "北大塚",
+      "built_year": 2019,
+      "structure": "RC",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 3,
+      "latitude": 35.7339779,
+      "longitude": 139.7292492,
+      "transaction_count": 3,
+      "price_range_man": [
+        9800,
+        11000
+      ],
+      "avg_m2_price": 1616239,
+      "periods": [
+        "2024Q2",
+        "2025Q1"
+      ],
+      "latest_period": "2025Q1",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131160060-2006-RC",
       "prefecture": "東京都",
       "ward": "豊島区",
@@ -72114,6 +72569,123 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131160070-2006-RC",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "built_year": 2006,
+      "structure": "RC",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "transaction_count": 2,
+      "price_range_man": [
+        9500,
+        11000
+      ],
+      "avg_m2_price": 1464286,
+      "periods": [
+        "2025Q4"
+      ],
+      "latest_period": "2025Q4",
+      "estimated_building_name": "グローリオタワー巣鴨"
+    },
+    {
+      "group_id": "131160070-2009-RC",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "built_year": 2009,
+      "structure": "RC",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "transaction_count": 1,
+      "price_range_man": [
+        9200,
+        9200
+      ],
+      "avg_m2_price": 800000,
+      "periods": [
+        "2021Q3"
+      ],
+      "latest_period": "2021Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131160070-2009-SRC",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "built_year": 2009,
+      "structure": "SRC",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "transaction_count": 1,
+      "price_range_man": [
+        9400,
+        9400
+      ],
+      "avg_m2_price": 1342857,
+      "periods": [
+        "2022Q4"
+      ],
+      "latest_period": "2022Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131160070-2013",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "built_year": 2013,
+      "structure": "",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "transaction_count": 1,
+      "price_range_man": [
+        9700,
+        9700
+      ],
+      "avg_m2_price": 1293333,
+      "periods": [
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131160070-2013-RC",
+      "prefecture": "東京都",
+      "ward": "豊島区",
+      "district": "巣鴨",
+      "built_year": 2013,
+      "structure": "RC",
+      "nearest_station": "巣鴨新田",
+      "estimated_walk_min": 8,
+      "latitude": 35.7364837,
+      "longitude": 139.7344705,
+      "transaction_count": 3,
+      "price_range_man": [
+        9000,
+        10000
+      ],
+      "avg_m2_price": 1253333,
+      "periods": [
+        "2024Q1",
+        "2024Q4",
+        "2025Q3"
+      ],
+      "latest_period": "2025Q3",
       "estimated_building_name": null
     },
     {
@@ -73272,7 +73844,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館 / ザ・パークハウス板橋大山大楠ノ杜"
     },
     {
       "group_id": "131190130-2023-RC",
@@ -73298,7 +73870,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館"
+      "estimated_building_name": "ザ・パークハウス板橋大山大楠ノ杜楠館 / ザ・パークハウス板橋大山大楠ノ杜"
     },
     {
       "group_id": "131190140-2018-RC",
@@ -73736,8 +74308,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.737877,
+      "longitude": 139.6540818,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -74227,7 +74799,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-16T15:15:17",
+    "updated_at": "2026-05-17T04:24:49",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -74264,8 +74836,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 2753,
-    "building_group_count": 780,
+    "transaction_count": 2771,
+    "building_group_count": 789,
     "scope": "東京23区"
   }
 }
