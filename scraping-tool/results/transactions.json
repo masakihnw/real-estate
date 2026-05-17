@@ -23774,9 +23774,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6973931,
-      "longitude": 139.7846834,
+      "estimated_walk_min": 8,
+      "latitude": 35.6973612,
+      "longitude": 139.7863818,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -54715,8 +54715,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.737877,
-      "longitude": 139.6540818,
+      "latitude": 35.7373912,
+      "longitude": 139.6544824,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -62759,9 +62759,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6973931,
-      "longitude": 139.7846834,
+      "estimated_walk_min": 8,
+      "latitude": 35.6973612,
+      "longitude": 139.7863818,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -74308,8 +74308,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.737877,
-      "longitude": 139.6540818,
+      "latitude": 35.7373912,
+      "longitude": 139.6544824,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -74799,7 +74799,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-17T04:24:49",
+    "updated_at": "2026-05-17T09:13:52",
     "periods_covered": [
       "2021Q2",
       "2021Q3",

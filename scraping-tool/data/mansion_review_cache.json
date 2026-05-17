@@ -6363,5 +6363,49 @@
       ]
     },
     "cached_at": "2026-05-17T04:03:03.403526"
+  },
+  "オープンレジデンス三軒茶屋N棟": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/42971.html",
+      "deviation_score": 35,
+      "estimated_price_man": 8695,
+      "estimated_tsubo_price_man": 436,
+      "estimated_m2_price_man": 132,
+      "shinchiku_history_count": 35,
+      "chuko_history_count": 35,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 67.28,
+          "price_man": 5634,
+          "tsubo_price_man": 281.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-17T08:54:43.613958"
+  },
+  "オープンレジデンス三軒茶屋": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/42971.html",
+      "deviation_score": 35,
+      "estimated_price_man": 8695,
+      "estimated_tsubo_price_man": 436,
+      "estimated_m2_price_man": 132,
+      "shinchiku_history_count": 35,
+      "chuko_history_count": 35,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 67.28,
+          "price_man": 5634,
+          "tsubo_price_man": 281.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-17T08:54:43.613958"
   }
 }
