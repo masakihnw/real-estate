@@ -6407,5 +6407,65 @@
       ]
     },
     "cached_at": "2026-05-17T08:54:43.613958"
+  },
+  "オープンレジデンシア千川2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1424346.html",
+      "deviation_score": 46,
+      "estimated_price_man": 8577,
+      "estimated_tsubo_price_man": 516,
+      "estimated_m2_price_man": 156,
+      "shinchiku_history_count": 46,
+      "chuko_history_count": 17,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 58.7,
+          "price_man": 8444,
+          "tsubo_price_man": 480.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:35:37.736917"
+  },
+  "ライオンズヴィアーレ荏原中延4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16317.html",
+      "deviation_score": 18,
+      "shinchiku_history_count": 18,
+      "chuko_history_count": 16,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 61.14,
+          "price_man": 5711,
+          "tsubo_price_man": 310.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-17T14:57:59.287952"
+  },
+  "ライオンズヴィアーレ荏原中延": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16317.html",
+      "deviation_score": 18,
+      "shinchiku_history_count": 18,
+      "chuko_history_count": 16,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 61.14,
+          "price_man": 5711,
+          "tsubo_price_man": 310.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-17T14:57:59.287952"
   }
 }
