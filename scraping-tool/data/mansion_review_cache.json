@@ -6489,5 +6489,28 @@
       ]
     },
     "cached_at": "2026-05-18T04:15:49.799394"
+  },
+  "BrilliaCity西早稻田": {
+    "data": null,
+    "cached_at": "2026-05-18T10:37:42.695473"
+  },
+  "グローリオ東新宿": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/194819.html",
+      "deviation_score": 0,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 37,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 47.64,
+          "price_man": 4850,
+          "tsubo_price_man": 342.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-18T10:37:51.184934"
   }
 }
