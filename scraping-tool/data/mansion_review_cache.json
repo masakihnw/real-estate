@@ -6467,5 +6467,27 @@
       ]
     },
     "cached_at": "2026-05-17T14:57:59.287952"
+  },
+  "ブリリア品川中延": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16920.html",
+      "deviation_score": 16,
+      "estimated_price_man": 12968,
+      "estimated_tsubo_price_man": 604,
+      "estimated_m2_price_man": 183,
+      "shinchiku_history_count": 166,
+      "chuko_history_count": 79,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 73.88,
+          "price_man": 7527,
+          "tsubo_price_man": 337.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-18T04:15:49.799394"
   }
 }

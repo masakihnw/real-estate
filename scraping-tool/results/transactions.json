@@ -33,10 +33,10 @@
       "built_year": 2007,
       "structure": "RC",
       "trade_period": "2021Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -53,10 +53,10 @@
       "built_year": 2007,
       "structure": "RC",
       "trade_period": "2021Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -73,10 +73,10 @@
       "built_year": 2007,
       "structure": "RC",
       "trade_period": "2022Q1",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -93,10 +93,10 @@
       "built_year": 2007,
       "structure": "RC",
       "trade_period": "2022Q3",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2007-RC",
       "estimated_building_name": null
     },
@@ -113,10 +113,10 @@
       "built_year": 2012,
       "structure": "RC",
       "trade_period": "2025Q4",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "building_group_id": "131010010-2012-RC",
       "estimated_building_name": null
     },
@@ -42938,7 +42938,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-478ae53979a2",
@@ -43858,7 +43858,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-e87e6628c094",
@@ -43878,7 +43878,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-d4e97e6cb836",
@@ -43898,7 +43898,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-30b730105f85",
@@ -44718,7 +44718,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-4e076c822d9e",
@@ -44738,7 +44738,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-89475d736ee3",
@@ -45038,7 +45038,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-bfbd2e6bffe0",
@@ -45058,7 +45058,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-755dd2a5a1dc",
@@ -45738,7 +45738,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-80cd32452b77",
@@ -45758,7 +45758,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-8fed9bf76232",
@@ -45778,7 +45778,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-119cb84726d1",
@@ -46178,7 +46178,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-2cc3a9188b91",
@@ -46558,7 +46558,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-054e4091dcd6",
@@ -46578,7 +46578,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-a080d3cf94e7",
@@ -46598,7 +46598,7 @@
       "latitude": 35.6628538,
       "longitude": 139.6075808,
       "building_group_id": "131120100-2018-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "id": "tx-1791b73a7843",
@@ -47281,6 +47281,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-11e36777440e",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿西",
+      "district_code": "131130050",
+      "price_man": 11000,
+      "area_m2": 80.0,
+      "m2_price": 1375000,
+      "layout": "3LDK",
+      "built_year": 2016,
+      "structure": "RC",
+      "trade_period": "2021Q2",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 3,
+      "latitude": 35.6483517,
+      "longitude": 139.7065258,
+      "building_group_id": "131130050-2016-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-b8ede17987ca",
       "prefecture": "東京都",
       "ward": "渋谷区",
@@ -47341,6 +47361,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-9b0edbc6a6be",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "district_code": "131130040",
+      "price_man": 11000,
+      "area_m2": 80.0,
+      "m2_price": 1375000,
+      "layout": "3LDK",
+      "built_year": 2016,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "building_group_id": "131130040-2016-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-d258b6c33a03",
       "prefecture": "東京都",
       "ward": "渋谷区",
@@ -47378,6 +47418,66 @@
       "latitude": 35.6812658,
       "longitude": 139.7113311,
       "building_group_id": "131130170-2013-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-af683529f8d7",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿西",
+      "district_code": "131130050",
+      "price_man": 10000,
+      "area_m2": 60.0,
+      "m2_price": 1666667,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "",
+      "trade_period": "2021Q3",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 3,
+      "latitude": 35.6483517,
+      "longitude": 139.7065258,
+      "building_group_id": "131130050-2013",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-719211eb786c",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "district_code": "131130040",
+      "price_man": 11000,
+      "area_m2": 70.0,
+      "m2_price": 1571429,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "building_group_id": "131130040-2013-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-e81193f23d4e",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿南",
+      "district_code": "131130060",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2016,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 2,
+      "latitude": 35.6445234,
+      "longitude": 139.7080973,
+      "building_group_id": "131130060-2016-RC",
       "estimated_building_name": null
     },
     {
@@ -47541,6 +47641,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-2b041e5109e1",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿南",
+      "district_code": "131130060",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2022Q3",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 2,
+      "latitude": 35.6445234,
+      "longitude": 139.7080973,
+      "building_group_id": "131130060-2012-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-e378e6feaf5b",
       "prefecture": "東京都",
       "ward": "渋谷区",
@@ -47618,6 +47738,26 @@
       "latitude": 35.6841449,
       "longitude": 139.6806558,
       "building_group_id": "131130280-2019-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-01c45647c62a",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "district_code": "131130040",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2022Q4",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "building_group_id": "131130040-2015-RC",
       "estimated_building_name": null
     },
     {
@@ -47701,6 +47841,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-fd80766db2e6",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "東",
+      "district_code": "131130260",
+      "price_man": 9300,
+      "area_m2": 60.0,
+      "m2_price": 1550000,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2023Q2",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 10,
+      "latitude": 35.6531376,
+      "longitude": 139.7114585,
+      "building_group_id": "131130260-2013-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-645ea9b66ca1",
       "prefecture": "東京都",
       "ward": "渋谷区",
@@ -47718,6 +47878,46 @@
       "latitude": 35.6841449,
       "longitude": 139.6806558,
       "building_group_id": "131130280-2019-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-e0ea7ab3e43c",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "district_code": "131130040",
+      "price_man": 10000,
+      "area_m2": 60.0,
+      "m2_price": 1666667,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2023Q2",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "building_group_id": "131130040-2013-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-fe53bd3f3970",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "district_code": "131130040",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2023Q2",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "building_group_id": "131130040-2015-RC",
       "estimated_building_name": null
     },
     {
@@ -47841,6 +48041,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-f5082ca0205d",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "東",
+      "district_code": "131130260",
+      "price_man": 9300,
+      "area_m2": 60.0,
+      "m2_price": 1550000,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2024Q2",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 10,
+      "latitude": 35.6531376,
+      "longitude": 139.7114585,
+      "building_group_id": "131130260-2013-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-a2958bf37311",
       "prefecture": "東京都",
       "ward": "渋谷区",
@@ -47878,6 +48098,26 @@
       "latitude": 35.6692039,
       "longitude": 139.7072847,
       "building_group_id": "131130140-2009-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-ff2e35e289aa",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "district_code": "131130040",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "building_group_id": "131130040-2015-RC",
       "estimated_building_name": null
     },
     {
@@ -55475,8 +55715,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.737877,
+      "longitude": 139.6540818,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -55758,7 +55998,7 @@
       "latitude": 35.7695843,
       "longitude": 139.8706926,
       "building_group_id": "131220040-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "id": "tx-13f4e1bd3ccc",
@@ -55798,7 +56038,7 @@
       "latitude": 35.7695843,
       "longitude": 139.8706926,
       "building_group_id": "131220040-2021-RC",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "id": "tx-7db9aec2bc19",
@@ -55858,7 +56098,7 @@
       "latitude": 35.7695843,
       "longitude": 139.8706926,
       "building_group_id": "131220040-2021",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "id": "tx-5766b9b680cd",
@@ -56189,10 +56429,10 @@
       "district": "飯田橋",
       "built_year": 2007,
       "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "transaction_count": 4,
       "price_range_man": [
         9800,
@@ -56215,10 +56455,10 @@
       "district": "飯田橋",
       "built_year": 2012,
       "structure": "RC",
-      "nearest_station": "後楽園",
-      "estimated_walk_min": 10,
-      "latitude": 35.7016963,
-      "longitude": 139.7459787,
+      "nearest_station": "牛込神楽坂",
+      "estimated_walk_min": 9,
+      "latitude": 35.7015405,
+      "longitude": 139.7436346,
       "transaction_count": 1,
       "price_range_man": [
         11000,
@@ -69354,7 +69594,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "蘆花公園ザ・レジデンスフォレストコート"
     },
     {
       "group_id": "131120120-2006-RC",
@@ -71541,6 +71781,170 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131130040-2013-RC",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "built_year": 2013,
+      "structure": "RC",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "transaction_count": 2,
+      "price_range_man": [
+        10000,
+        11000
+      ],
+      "avg_m2_price": 1619048,
+      "periods": [
+        "2021Q4",
+        "2023Q2"
+      ],
+      "latest_period": "2023Q2",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131130040-2015-RC",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "built_year": 2015,
+      "structure": "RC",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "transaction_count": 3,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1739316,
+      "periods": [
+        "2022Q4",
+        "2023Q2",
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131130040-2016-RC",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿",
+      "built_year": 2016,
+      "structure": "RC",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 1,
+      "latitude": 35.64696,
+      "longitude": 139.7086658,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1375000,
+      "periods": [
+        "2021Q3"
+      ],
+      "latest_period": "2021Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131130050-2013",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿西",
+      "built_year": 2013,
+      "structure": "",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 3,
+      "latitude": 35.6483517,
+      "longitude": 139.7065258,
+      "transaction_count": 1,
+      "price_range_man": [
+        10000,
+        10000
+      ],
+      "avg_m2_price": 1666667,
+      "periods": [
+        "2021Q3"
+      ],
+      "latest_period": "2021Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131130050-2016-RC",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿西",
+      "built_year": 2016,
+      "structure": "RC",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 3,
+      "latitude": 35.6483517,
+      "longitude": 139.7065258,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1375000,
+      "periods": [
+        "2021Q2"
+      ],
+      "latest_period": "2021Q2",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131130060-2012-RC",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿南",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 2,
+      "latitude": 35.6445234,
+      "longitude": 139.7080973,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1833333,
+      "periods": [
+        "2022Q3"
+      ],
+      "latest_period": "2022Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131130060-2016-RC",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "恵比寿南",
+      "built_year": 2016,
+      "structure": "RC",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 2,
+      "latitude": 35.6445234,
+      "longitude": 139.7080973,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1692308,
+      "periods": [
+        "2021Q4"
+      ],
+      "latest_period": "2021Q4",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131130140-2009-RC",
       "prefecture": "東京都",
       "ward": "渋谷区",
@@ -71738,6 +72142,30 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131130260-2013-RC",
+      "prefecture": "東京都",
+      "ward": "渋谷区",
+      "district": "東",
+      "built_year": 2013,
+      "structure": "RC",
+      "nearest_station": "恵比寿",
+      "estimated_walk_min": 10,
+      "latitude": 35.6531376,
+      "longitude": 139.7114585,
+      "transaction_count": 2,
+      "price_range_man": [
+        9300,
+        9300
+      ],
+      "avg_m2_price": 1550000,
+      "periods": [
+        "2023Q2",
+        "2024Q2"
+      ],
+      "latest_period": "2024Q2",
       "estimated_building_name": null
     },
     {
@@ -75501,8 +75929,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.737877,
+      "longitude": 139.6540818,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -75772,7 +76200,7 @@
         "2025Q4"
       ],
       "latest_period": "2025Q4",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "group_id": "131220040-2021-RC",
@@ -75795,7 +76223,7 @@
         "2025Q3"
       ],
       "latest_period": "2025Q3",
-      "estimated_building_name": null
+      "estimated_building_name": "プラウドタワー金町"
     },
     {
       "group_id": "131220110-2022-RC",
@@ -75992,7 +76420,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-17T15:16:59",
+    "updated_at": "2026-05-18T04:36:46",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -76029,8 +76457,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 2809,
-    "building_group_count": 807,
+    "transaction_count": 2821,
+    "building_group_count": 815,
     "scope": "東京23区"
   }
 }
