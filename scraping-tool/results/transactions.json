@@ -15518,7 +15518,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "id": "tx-71fa2791833e",
@@ -17778,7 +17778,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "id": "tx-e4a8675c485e",
@@ -23774,9 +23774,9 @@
       "structure": "RC",
       "trade_period": "2025Q4",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6973931,
-      "longitude": 139.7846834,
+      "estimated_walk_min": 8,
+      "latitude": 35.697411,
+      "longitude": 139.7862521,
       "building_group_id": "131060030-2015-RC",
       "estimated_building_name": null
     },
@@ -36541,6 +36541,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-27ad1eaaa1b7",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "district_code": "131090100",
+      "price_man": 11000,
+      "area_m2": 85.0,
+      "m2_price": 1294118,
+      "layout": "3LDK",
+      "built_year": 2019,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "building_group_id": "131090100-2019-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-adda7e6094a6",
       "prefecture": "東京都",
       "ward": "品川区",
@@ -36858,6 +36878,26 @@
       "latitude": 35.6001214,
       "longitude": 139.730032,
       "building_group_id": "131090020-2019-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-f0e17572659a",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "district_code": "131090100",
+      "price_man": 9600,
+      "area_m2": 80.0,
+      "m2_price": 1200000,
+      "layout": "2LDK",
+      "built_year": 2016,
+      "structure": "RC",
+      "trade_period": "2022Q2",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "building_group_id": "131090100-2016-RC",
       "estimated_building_name": null
     },
     {
@@ -37561,6 +37601,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-92aeca14b5be",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "西中延",
+      "district_code": "131090140",
+      "price_man": 9700,
+      "area_m2": 75.0,
+      "m2_price": 1293333,
+      "layout": "3LDK",
+      "built_year": 2010,
+      "structure": "RC",
+      "trade_period": "2023Q3",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 10,
+      "latitude": 35.6109509,
+      "longitude": 139.7074815,
+      "building_group_id": "131090140-2010-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-be4bf37ac41f",
       "prefecture": "東京都",
       "ward": "品川区",
@@ -37741,6 +37801,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-19438e82b5bd",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "西中延",
+      "district_code": "131090140",
+      "price_man": 9900,
+      "area_m2": 75.0,
+      "m2_price": 1320000,
+      "layout": "3LDK",
+      "built_year": 2010,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 10,
+      "latitude": 35.6109509,
+      "longitude": 139.7074815,
+      "building_group_id": "131090140-2010-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-965bea08d410",
       "prefecture": "東京都",
       "ward": "品川区",
@@ -37838,6 +37918,26 @@
       "latitude": 35.6223469,
       "longitude": 139.7393068,
       "building_group_id": "131090060-2006-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-656d6cac921b",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "district_code": "131090100",
+      "price_man": 9400,
+      "area_m2": 75.0,
+      "m2_price": 1253333,
+      "layout": "3LDK",
+      "built_year": 2011,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "building_group_id": "131090100-2011-RC",
       "estimated_building_name": null
     },
     {
@@ -38521,6 +38621,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-2cd15b60d008",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "district_code": "131090100",
+      "price_man": 9200,
+      "area_m2": 75.0,
+      "m2_price": 1226667,
+      "layout": "3LDK",
+      "built_year": 2009,
+      "structure": "RC",
+      "trade_period": "2024Q3",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "building_group_id": "131090100-2009-RC",
+      "estimated_building_name": "ブリリア品川中延"
+    },
+    {
       "id": "tx-f158d0918111",
       "prefecture": "東京都",
       "ward": "品川区",
@@ -38721,6 +38841,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-0e38be0f5ad7",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "district_code": "131090100",
+      "price_man": 9000,
+      "area_m2": 70.0,
+      "m2_price": 1285714,
+      "layout": "3LDK",
+      "built_year": 2019,
+      "structure": "RC",
+      "trade_period": "2024Q4",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "building_group_id": "131090100-2019-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-178291907039",
       "prefecture": "東京都",
       "ward": "品川区",
@@ -38898,6 +39038,26 @@
       "latitude": 35.6001214,
       "longitude": 139.730032,
       "building_group_id": "131090020-2007-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-0062dda54348",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "district_code": "131090100",
+      "price_man": 10000,
+      "area_m2": 70.0,
+      "m2_price": 1428571,
+      "layout": "3LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2025Q1",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "building_group_id": "131090100-2012-RC",
       "estimated_building_name": null
     },
     {
@@ -39379,6 +39539,66 @@
       "longitude": 139.7488637,
       "building_group_id": "131090180-2019-RC",
       "estimated_building_name": null
+    },
+    {
+      "id": "tx-5d9a8e6ee193",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "東中延",
+      "district_code": "131090190",
+      "price_man": 9500,
+      "area_m2": 65.0,
+      "m2_price": 1461538,
+      "layout": "2LDK",
+      "built_year": 2022,
+      "structure": "RC",
+      "trade_period": "2025Q2",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 10,
+      "latitude": 35.6093122,
+      "longitude": 139.7131263,
+      "building_group_id": "131090190-2022-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-8d5ea85e0d87",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "district_code": "131090100",
+      "price_man": 9900,
+      "area_m2": 65.0,
+      "m2_price": 1523077,
+      "layout": "3LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2025Q3",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "building_group_id": "131090100-2015-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-fe0c98231f6e",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "district_code": "131090100",
+      "price_man": 9600,
+      "area_m2": 75.0,
+      "m2_price": 1280000,
+      "layout": "3LDK",
+      "built_year": 2008,
+      "structure": "RC",
+      "trade_period": "2025Q3",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "building_group_id": "131090100-2008-RC",
+      "estimated_building_name": "ブリリア品川中延"
     },
     {
       "id": "tx-eab6e6eabf7d",
@@ -55715,8 +55935,8 @@
       "trade_period": "2025Q4",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.737877,
+      "longitude": 139.6540818,
       "building_group_id": "131200350-2019-RC",
       "estimated_building_name": null
     },
@@ -60565,7 +60785,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場"
+      "estimated_building_name": "THEパームス高田馬場四丁目 / ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "group_id": "131040510-2010-RC",
@@ -63759,9 +63979,9 @@
       "built_year": 2015,
       "structure": "RC",
       "nearest_station": "両国",
-      "estimated_walk_min": 10,
-      "latitude": 35.6973931,
-      "longitude": 139.7846834,
+      "estimated_walk_min": 8,
+      "latitude": 35.697411,
+      "longitude": 139.7862521,
       "transaction_count": 1,
       "price_range_man": [
         9900,
@@ -67691,6 +67911,192 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131090100-2008-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "built_year": 2008,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "transaction_count": 1,
+      "price_range_man": [
+        9600,
+        9600
+      ],
+      "avg_m2_price": 1280000,
+      "periods": [
+        "2025Q3"
+      ],
+      "latest_period": "2025Q3",
+      "estimated_building_name": "ブリリア品川中延"
+    },
+    {
+      "group_id": "131090100-2009-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "built_year": 2009,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "transaction_count": 1,
+      "price_range_man": [
+        9200,
+        9200
+      ],
+      "avg_m2_price": 1226667,
+      "periods": [
+        "2024Q3"
+      ],
+      "latest_period": "2024Q3",
+      "estimated_building_name": "ブリリア品川中延"
+    },
+    {
+      "group_id": "131090100-2011-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "built_year": 2011,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "transaction_count": 1,
+      "price_range_man": [
+        9400,
+        9400
+      ],
+      "avg_m2_price": 1253333,
+      "periods": [
+        "2023Q4"
+      ],
+      "latest_period": "2023Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131090100-2012-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "transaction_count": 1,
+      "price_range_man": [
+        10000,
+        10000
+      ],
+      "avg_m2_price": 1428571,
+      "periods": [
+        "2025Q1"
+      ],
+      "latest_period": "2025Q1",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131090100-2015-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "built_year": 2015,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "transaction_count": 1,
+      "price_range_man": [
+        9900,
+        9900
+      ],
+      "avg_m2_price": 1523077,
+      "periods": [
+        "2025Q3"
+      ],
+      "latest_period": "2025Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131090100-2016-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "built_year": 2016,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "transaction_count": 1,
+      "price_range_man": [
+        9600,
+        9600
+      ],
+      "avg_m2_price": 1200000,
+      "periods": [
+        "2022Q2"
+      ],
+      "latest_period": "2022Q2",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131090100-2019-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "中延",
+      "built_year": 2019,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 6,
+      "latitude": 35.6058608,
+      "longitude": 139.7127721,
+      "transaction_count": 2,
+      "price_range_man": [
+        9000,
+        11000
+      ],
+      "avg_m2_price": 1289916,
+      "periods": [
+        "2021Q3",
+        "2024Q4"
+      ],
+      "latest_period": "2024Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131090140-2010-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "西中延",
+      "built_year": 2010,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 10,
+      "latitude": 35.6109509,
+      "longitude": 139.7074815,
+      "transaction_count": 2,
+      "price_range_man": [
+        9700,
+        9900
+      ],
+      "avg_m2_price": 1306666,
+      "periods": [
+        "2023Q3",
+        "2023Q4"
+      ],
+      "latest_period": "2023Q4",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131090160-2008-RC",
       "prefecture": "東京都",
       "ward": "品川区",
@@ -68006,6 +68412,29 @@
         "2024Q2"
       ],
       "latest_period": "2024Q2",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131090190-2022-RC",
+      "prefecture": "東京都",
+      "ward": "品川区",
+      "district": "東中延",
+      "built_year": 2022,
+      "structure": "RC",
+      "nearest_station": "荏原町",
+      "estimated_walk_min": 10,
+      "latitude": 35.6093122,
+      "longitude": 139.7131263,
+      "transaction_count": 1,
+      "price_range_man": [
+        9500,
+        9500
+      ],
+      "avg_m2_price": 1461538,
+      "periods": [
+        "2025Q2"
+      ],
+      "latest_period": "2025Q2",
       "estimated_building_name": null
     },
     {
@@ -75929,8 +76358,8 @@
       "structure": "RC",
       "nearest_station": "練馬",
       "estimated_walk_min": 3,
-      "latitude": 35.7373912,
-      "longitude": 139.6544824,
+      "latitude": 35.737877,
+      "longitude": 139.6540818,
       "transaction_count": 1,
       "price_range_man": [
         10000,
@@ -76420,7 +76849,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-18T10:57:01",
+    "updated_at": "2026-05-18T17:15:33",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -76457,8 +76886,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 2821,
-    "building_group_count": 815,
+    "transaction_count": 2832,
+    "building_group_count": 824,
     "scope": "東京23区"
   }
 }

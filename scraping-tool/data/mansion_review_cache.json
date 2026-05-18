@@ -6512,5 +6512,49 @@
       ]
     },
     "cached_at": "2026-05-18T10:37:51.184934"
+  },
+  "オークプレイス豊洲5階5階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/536509.html",
+      "deviation_score": 16,
+      "estimated_price_man": 10945,
+      "estimated_tsubo_price_man": 496,
+      "estimated_m2_price_man": 150,
+      "shinchiku_history_count": 168,
+      "chuko_history_count": 94,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 71.89,
+          "price_man": 6456,
+          "tsubo_price_man": 298.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-18T16:56:26.194344"
+  },
+  "オークプレイス豊洲": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/536509.html",
+      "deviation_score": 16,
+      "estimated_price_man": 10945,
+      "estimated_tsubo_price_man": 496,
+      "estimated_m2_price_man": 150,
+      "shinchiku_history_count": 168,
+      "chuko_history_count": 94,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 71.89,
+          "price_man": 6456,
+          "tsubo_price_man": 298.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-18T16:56:26.194344"
   }
 }
