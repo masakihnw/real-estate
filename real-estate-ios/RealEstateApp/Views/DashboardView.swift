@@ -489,7 +489,7 @@ struct DashboardView: View {
     }
 
     private var newListingsCount: Int {
-        activeListings.filter(\.isAddedToday).count
+        activeListings.filter(\.isRecentlyAdded).count
     }
 
     private var priceDecreasedCount: Int {
@@ -515,7 +515,7 @@ struct DashboardView: View {
     private func filteredListings(for filter: DashboardQuickFilter) -> [Listing] {
         switch filter {
         case .newToday:
-            return activeListings.filter(\.isAddedToday)
+            return activeListings.filter(\.isRecentlyAdded)
                 .sorted { $0.addedAt > $1.addedAt }
         case .priceDecreased:
             return priceDecreasedListings

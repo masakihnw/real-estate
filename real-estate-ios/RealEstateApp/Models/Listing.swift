@@ -66,6 +66,8 @@ final class Listing: @unchecked Sendable {
     var isNew: Bool
     /// 新着かつ同一マンション名の物件が前回データに存在しない＝まったく新しいマンション（false なら既存マンションの別部屋）
     var isNewBuilding: Bool
+    /// 掲載終了後に再掲載された物件
+    var isRelisted: Bool
 
     /// 最終閲覧日時（物件詳細画面を開いた日時。最近見た物件一覧用）
     var viewedAt: Date?
@@ -362,6 +364,7 @@ final class Listing: @unchecked Sendable {
         isDelisted: Bool = false,
         isNew: Bool = false,
         isNewBuilding: Bool = false,
+        isRelisted: Bool = false,
         viewedAt: Date? = nil,
         checklistJSON: String? = nil,
         propertyType: String = "chuko",
@@ -462,6 +465,7 @@ final class Listing: @unchecked Sendable {
         self.isDelisted = isDelisted
         self.isNew = isNew
         self.isNewBuilding = isNewBuilding
+        self.isRelisted = isRelisted
         self.viewedAt = viewedAt
         self.checklistJSON = checklistJSON
         self.propertyType = propertyType
@@ -1192,6 +1196,11 @@ final class Listing: @unchecked Sendable {
     /// addedAt が今日の日付かどうか（New バッジ表示用）
     var isAddedToday: Bool {
         Calendar.current.isDateInToday(addedAt)
+    }
+
+    /// addedAt から2日以内かどうか（New/別部屋バッジ表示用）
+    var isRecentlyAdded: Bool {
+        addedAt > Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date.distantPast
     }
 
     /// 住まいサーフィンの詳細住所（ss_address）があればそちらを優先、なければ元の住所

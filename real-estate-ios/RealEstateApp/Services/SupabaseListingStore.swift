@@ -160,6 +160,7 @@ final class SupabaseListingStore {
             for e in existing {
                 e.isNew = false
                 e.isNewBuilding = false
+                e.isRelisted = false
             }
 
             var newCount = 0
@@ -204,7 +205,11 @@ final class SupabaseListingStore {
                 incomingKeys.insert(key)
 
                 if let same = existingByKey[key] {
-                    if same.isDelisted { same.isDelisted = false }
+                    if same.isDelisted {
+                        same.isDelisted = false
+                        same.isRelisted = true
+                        same.addedAt = fetchedAt
+                    }
                     ListingStore.shared.updateFromSupabase(same, from: listing)
                 } else {
                     if listing.isNew { newCount += 1 }
