@@ -35939,12 +35939,12 @@
         "label": "玄関"
       },
       {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F856%2F20713856%2F20713856_0031.jpg&w=1200&h=900",
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F856%2F20713856%2F20713856_0038.jpg&w=1200&h=900",
         "label": "バルコニー"
       },
       {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F856%2F20713856%2F20713856_0032.jpg&w=1200&h=900",
-        "label": "その他"
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F856%2F20713856%2F20713856_0039.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F856%2F20713856%2F20713856_0033.jpg&w=1200&h=900",
@@ -35975,7 +35975,7 @@
         "label": "その他共用部"
       },
       {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F856%2F20713856%2F20713856_0020.jpg&w=1200&h=900",
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F856%2F20713856%2F20713856_0040.jpg&w=1200&h=900",
         "label": "駐車場"
       }
     ]
@@ -54847,15 +54847,17 @@
     "total_units": 182,
     "floor_position": 26,
     "floor_total": 28,
-    "floor_structure": "RC28階建",
+    "floor_structure": "RC28階地下1階建",
     "ownership": "所有権",
     "management_fee": 26100,
     "repair_reserve_fund": 34710,
     "balcony_area_m2": 29.36,
+    "parking": "敷地内（1万4000円～2万円／月）",
     "zoning": "工業",
     "delivery_date": "即引渡可",
     "feature_tags": [
       "即引渡可",
+      "２沿線以上利用可",
       "山が見える",
       "システムキッチン",
       "浴室乾燥機",
@@ -54873,6 +54875,7 @@
       "通風良好",
       "全居室フローリング",
       "眺望良好",
+      "ウォークインクローゼット",
       "天井高２．５ｍ以上",
       "全居室６畳以上",
       "シューズインクローク",
