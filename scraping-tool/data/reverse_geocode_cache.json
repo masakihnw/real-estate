@@ -750,5 +750,29 @@
     "quarter": "竜泉",
     "neighbourhood": "竜泉三丁目",
     "city_district": ""
+  },
+  "35.641733,139.778425": {
+    "display_name": "豊洲六丁目, 豊洲, 江東区, 東京都, 135-0061, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "豊洲",
+    "neighbourhood": "豊洲六丁目",
+    "city_district": ""
+  },
+  "35.646939,139.788011": {
+    "display_name": "豊洲有明線, 豊洲六丁目, 豊洲, 江東区, 東京都, 135-0061, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "豊洲",
+    "neighbourhood": "豊洲六丁目",
+    "city_district": ""
+  },
+  "35.713409,139.608665": {
+    "display_name": "桃井二丁目, 桃井, 杉並区, 東京都, 167-0034, 日本",
+    "city": "杉並区",
+    "suburb": "",
+    "quarter": "桃井",
+    "neighbourhood": "桃井二丁目",
+    "city_district": ""
   }
 }
