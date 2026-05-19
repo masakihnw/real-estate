@@ -278,14 +278,17 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             "longitude": item.get("longitude"),
             "feature_tags": item.get("feature_tags"),
             "is_active": True,
-            "is_new": item.get("is_new", False),
-            "is_new_building": item.get("is_new_building", False),
             "first_seen_at": item.get("first_seen_at"),
             "first_seen_source": item.get("first_seen_source"),
             "geocode_confidence": item.get("geocode_confidence"),
             "geocode_fixed": item.get("geocode_fixed"),
             "alt_urls": item.get("alt_urls"),
         }
+        if item.get("is_new"):
+            listing_row["is_new"] = True
+        if item.get("is_new_building"):
+            listing_row["is_new_building"] = True
+
         REAL_COLUMNS = {"area_m2", "area_max_m2", "balcony_area_m2", "latitude", "longitude"}
         listing_row = {
             k: v
