@@ -377,13 +377,19 @@ def _get_diff_from_supabase(client, current_listings: list[dict]) -> Optional[di
 
 
 def _get_noped_building_names(client) -> set[str]:
-    """Supabase から nope 済み建物名を取得。"""
+    """Supabase から nope 済み建物名を取得。identity_key の先頭セグメントを正規化して返す。"""
     try:
         resp = (client.table("user_building_preferences")
-                .select("normalized_name")
+                .select("identity_key")
                 .eq("preference", "nope")
                 .execute())
-        return {r["normalized_name"] for r in (resp.data or [])}
+        names: set[str] = set()
+        for r in (resp.data or []):
+            key = r.get("identity_key") or ""
+            building = key.split("|", 1)[0].strip()
+            if building:
+                names.add(normalize_listing_name(building))
+        return names
     except Exception as e:
         logger.warning("Nope 建物リスト取得失敗: %s", e)
         return set()
