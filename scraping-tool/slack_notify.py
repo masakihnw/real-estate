@@ -682,28 +682,24 @@ def main() -> None:
                          if normalize_listing_name(r.get("name") or "") not in noped]
 
     # --- 通知判定 ---
-    from datetime import datetime, timezone
-    current_utc_hour = datetime.now(timezone.utc).hour
-    is_morning = current_utc_hour in (0, 1)
-
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
 
-    # 朝の回は AI ダイジェスト単独でも送信する
-    has_morning_digest = False
-    if is_morning and supabase_client:
+    # pending な AI ダイジェストがあれば、この回で統合送信する（1日1回、最初の GHA が拾う）
+    has_pending_digest = False
+    if supabase_client:
         digest_preview, _ = _pop_morning_digest(supabase_client)
-        has_morning_digest = bool(digest_preview)
+        has_pending_digest = bool(digest_preview)
 
-    if not diff_new_a and not diff_removed_a and not has_morning_digest:
+    if not diff_new_a and not diff_removed_a and not has_pending_digest:
         if supabase_client:
             _send_notification_drafts(supabase_client, webhook_url)
         logger.warning("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします")
         sys.exit(0)
-    elif not diff_new_a and diff_removed_a and not is_morning:
+    elif not diff_new_a and diff_removed_a and not has_pending_digest:
         if supabase_client:
             _send_notification_drafts(supabase_client, webhook_url)
-        logger.warning("削除のみの変更 — 朝の回（JST 9:00）まで通知を保留します")
+        logger.warning("削除のみの変更 — AI ダイジェストもなし、通知を保留します")
         sys.exit(0)
 
     # --- URL 組み立て ---
@@ -721,9 +717,9 @@ def main() -> None:
     # --- メッセージ組み立て・送信 ---
     message = build_slack_message_from_listings(current, None, report_url, map_url=map_url, diff_override=diff)
 
-    # 朝の回: Routine 2 が生成した AI ダイジェストを本文末尾に統合
+    # pending な AI ダイジェストを本文末尾に統合（Routine 2 が1日1回生成）
     digest_draft_id = None
-    if is_morning and supabase_client:
+    if supabase_client:
         digest_text, digest_draft_id = _pop_morning_digest(supabase_client)
         if digest_text:
             message = message + "\n\n" + digest_text
