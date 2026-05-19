@@ -562,15 +562,24 @@ def build_message_from_report(report_path: Path, report_url: Optional[str] = Non
 
 
 def _pop_morning_digest(client: Any) -> tuple[str, int | None]:
-    """pending の new_listing_digest ドラフトを取得して返す。
-    Returns (message_text, draft_id) or ("", None)."""
+    """最新の pending new_listing_digest を1件返し、古い pending は skipped にする。"""
     try:
         result = client.rpc("get_pending_notification_drafts", {"p_channel": "slack"}).execute()
-        for draft in (result.data or []):
-            if draft["notification_type"] == "new_listing_digest":
+        digests = [d for d in (result.data or []) if d["notification_type"] == "new_listing_digest"]
+        digests.sort(key=lambda d: d.get("draft_date", ""), reverse=True)
+        latest_msg, latest_id = "", None
+        for i, draft in enumerate(digests):
+            if i == 0:
                 msg = (draft.get("message_text") or "").strip()
                 if msg:
-                    return msg, draft["id"]
+                    latest_msg, latest_id = msg, draft["id"]
+                    continue
+            try:
+                client.rpc("mark_notification_sent", {"p_id": draft["id"], "p_status": "skipped"}).execute()
+                logger.info("古い new_listing_digest (id=%d, date=%s) を skipped", draft["id"], draft.get("draft_date"))
+            except Exception:
+                pass
+        return latest_msg, latest_id
     except Exception as e:
         logger.warning("new_listing_digest 取得失敗: %s", e)
     return "", None
