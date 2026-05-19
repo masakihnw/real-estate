@@ -22,7 +22,7 @@ settings:
     TARGETED_DEVICE_FAMILY: "1,2"        # iPhone + iPad
     SUPPORTS_MACCATALYST: "YES"
     DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER: "NO"
-    CURRENT_PROJECT_VERSION: "748"
+    CURRENT_PROJECT_VERSION: "749"
     MARKETING_VERSION: "1.0.0"
 
 targets:
@@ -99,6 +99,23 @@ targets:
         Release:
           APS_ENVIRONMENT: production
 
+  RealEstateAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: RealEstateAppTests
+        excludes:
+          - "**/.DS_Store"
+    dependencies:
+      - target: RealEstateApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hanawa.realestate.app.tests
+        DEVELOPMENT_TEAM: YRP5KV2X62
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: "YES"
+        SWIFT_OBJC_BRIDGING_HEADER: "RealEstateApp/RealEstateApp-Bridging-Header.h"
+
   RealEstateWidget:
     type: app-extension
     platform: iOS
@@ -129,3 +146,20 @@ targets:
         CODE_SIGN_STYLE: Automatic
         SWIFT_VERSION: "5.9"
         SUPPORTS_MACCATALYST: "YES"
+
+schemes:
+  RealEstateApp:
+    build:
+      targets:
+        RealEstateApp: all
+        RealEstateAppTests: [test]
+    test:
+      targets:
+        - RealEstateAppTests
+  RealEstateAppTests:
+    build:
+      targets:
+        RealEstateAppTests: all
+    test:
+      targets:
+        - RealEstateAppTests
