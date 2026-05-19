@@ -110,6 +110,7 @@ SELECT listing_id, listing_data FROM get_listings_for_ai('ai_scoring');
 
 → 同一 normalized_name の物件は DISTINCT ON で重複排除済み（同一マンションの複数ページを何度もスコアリングしない）。
 → ai_prompt_hash が変更されていない物件もスキップされる。
+→ ただし高スコア物件（ai_listing_score >= rescore_min_score、デフォルト65 = Grade A/S）は rescore_interval（デフォルト1日）経過で自動的に再分析対象になる。これにより環境変化（バイヤープロファイル・市況・通勤情報等）が推奨度に反映される。
 
 3. 各物件について system_prompt に従い、listing_data 全体を渡して総合適合スコア listing_score (0-100) と price_fairness_score (0-100) を算出。system_prompt にはバイヤープロファイル（家族構成・予算・通勤・間取り要件等）が組み込まれており、「この家族にとっての適合度」を6軸（通勤・予算・間取り・立地・建物品質・資産性）で評価する。結果は listing_score に直接書き込まれ iOS アプリのソート順に反映される。
 
