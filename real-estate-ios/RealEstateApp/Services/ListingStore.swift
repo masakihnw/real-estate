@@ -194,7 +194,7 @@ final class ListingStore {
             let active = listings.filter { !$0.isDelisted }
             WidgetDataProvider.update(
                 totalListings: active.count,
-                newListings: active.filter { $0.isAddedToday }.count,
+                newListings: active.filter { $0.isRecentlyAdded }.count,
                 likedCount: listings.filter { $0.isLiked }.count,
                 priceChanges: 0,
                 likedSummaries: listings.filter { $0.isLiked }.prefix(5).map { ($0.name, $0.priceMan, nil) }
@@ -289,6 +289,7 @@ final class ListingStore {
                     for e in newOnes {
                         e.isNew = false
                         e.isNewBuilding = false
+                        e.isRelisted = false
                     }
                     try modelContext.save()
                 }
@@ -311,6 +312,7 @@ final class ListingStore {
                 for e in existing {
                     e.isNew = false
                     e.isNewBuilding = false
+                    e.isRelisted = false
                 }
 
                 var newCount = 0
@@ -325,8 +327,11 @@ final class ListingStore {
                     incomingKeys.insert(key)
 
                     if let same = existingByKey[key] {
-                        // 再掲載された物件の掲載終了フラグを解除
-                        if same.isDelisted { same.isDelisted = false }
+                        if same.isDelisted {
+                            same.isDelisted = false
+                            same.isRelisted = true
+                            same.addedAt = fetchedAt
+                        }
                         update(same, from: listing)
                     } else {
                         // listing.isNew は DTO の is_new（サーバーサイド判定）を引き継いでいる

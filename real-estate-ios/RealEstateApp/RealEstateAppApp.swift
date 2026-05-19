@@ -8,9 +8,13 @@
 import SwiftUI
 import SwiftData
 import FirebaseCore
+import FirebaseCrashlytics
 import FirebaseMessaging
 import GoogleSignIn
 import CoreSpotlight
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "App")
 
 @main
 struct RealEstateAppApp: App {
@@ -21,7 +25,7 @@ struct RealEstateAppApp: App {
     // Listing モデルのストアドプロパティを追加・削除・型変更した場合はインクリメントする。
     // 旧バージョンの DB は自動削除され、サーバーからデータを再取得する。
     // VersionedSchema を使わない簡易マイグレーション方式。
-    private static let currentSchemaVersion = 16  // v16: addedAt パース修正（created_at マイクロ秒対応）
+    private static let currentSchemaVersion = 17  // v17: isRelisted 追加、バッジ定義変更
     private static let schemaVersionKey = "realestate.schemaVersion"
 
     var sharedModelContainer: ModelContainer = {
@@ -34,12 +38,9 @@ struct RealEstateAppApp: App {
         // 明示的にバージョンを管理してクリーンスタートを保証する。
         let savedVersion = UserDefaults.standard.integer(forKey: Self.schemaVersionKey)
         if savedVersion < Self.currentSchemaVersion {
-            // ユーザーデータ（いいね・コメント・メモ・チェックリスト）をバックアップしてから削除
-            // バックアップは旧スキーマの ModelContainer から取得する
             if savedVersion > 0 {
-                // 旧スキーマ用の一時コンテナを作成してユーザーデータを救出
                 let diskConfig = ModelConfiguration(isStoredInMemoryOnly: false)
-                if let oldContainer = try? ModelContainer(for: schema, configurations: [diskConfig]) {
+                if let oldContainer = Self.createContainerSafely(for: schema, configurations: [diskConfig]) {
                     let ctx = ModelContext(oldContainer)
                     UserAnnotationStore.backup(from: ctx)
                 }
@@ -51,31 +52,50 @@ struct RealEstateAppApp: App {
 
         // ディスクへの永続化を試みる
         let diskConfig = ModelConfiguration(isStoredInMemoryOnly: false)
+        if let container = Self.createContainerSafely(for: schema, configurations: [diskConfig]) {
+            return container
+        }
+
+        // NSException またはエラー — DB を削除してリトライ
+        logger.warning("ModelContainer 作成失敗、DB を削除してリトライします")
+        Self.deleteSwiftDataStore()
+        if let container = Self.createContainerSafely(for: schema, configurations: [diskConfig]) {
+            return container
+        }
+
+        // ディスクが使えない — インメモリにフォールバック
+        logger.warning("リトライも失敗、インメモリにフォールバック")
+        let memoryConfig = ModelConfiguration(isStoredInMemoryOnly: true)
+        if let container = Self.createContainerSafely(for: schema, configurations: [memoryConfig]) {
+            return container
+        }
+
+        fatalError("""
+            [RealEstateApp] データベースの初期化に失敗しました。
+            アプリを再インストールするか、ストレージの空き容量を確認してください。
+            """)
+    }()
+
+    /// NSException を含むすべての例外を安全に捕捉して ModelContainer を生成する。
+    private static func createContainerSafely(
+        for schema: Schema,
+        configurations: [ModelConfiguration]
+    ) -> ModelContainer? {
+        var container: ModelContainer?
         do {
-            return try ModelContainer(for: schema, configurations: [diskConfig])
-        } catch {
-            // マイグレーション失敗の可能性 — DB を削除してリトライ
-            print("[RealEstateApp] 警告: ModelContainer 作成失敗、DB を削除してリトライします: \(error.localizedDescription)")
-            Self.deleteSwiftDataStore()
-            do {
-                return try ModelContainer(for: schema, configurations: [diskConfig])
-            } catch {
-                // ディスクが完全に使えない場合はインメモリにフォールバック
-                print("[RealEstateApp] 警告: リトライも失敗、インメモリにフォールバック: \(error.localizedDescription)")
-                let memoryConfig = ModelConfiguration(isStoredInMemoryOnly: true)
+            try ObjCExceptionCatcher.perform {
                 do {
-                    return try ModelContainer(for: schema, configurations: [memoryConfig])
+                    container = try ModelContainer(for: schema, configurations: configurations)
                 } catch {
-                    // インメモリ作成も失敗 = システムレベルの異常（メモリ不足等）
-                    fatalError("""
-                        [RealEstateApp] データベースの初期化に失敗しました。
-                        エラー: \(error.localizedDescription)
-                        アプリを再インストールするか、ストレージの空き容量を確認してください。
-                        """)
+                    logger.error("ModelContainer Swift エラー: \(error.localizedDescription)")
                 }
             }
+        } catch {
+            logger.error("ModelContainer NSException: \(error.localizedDescription)")
+            Crashlytics.crashlytics().record(error: error)
         }
-    }()
+        return container
+    }
 
     /// SwiftData のデフォルトストアファイルを削除する。
     /// アノテーション同期キーも合わせてクリアし、次回起動で全件再取得を保証する。
@@ -93,10 +113,9 @@ struct RealEstateAppApp: App {
     }
 
     init() {
-        // Firebase 初期化（GoogleService-Info.plist がバンドルに必要）
         FirebaseApp.configure()
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
 
-        // BGAppRefreshTask 用に共有 ModelContainer を設定してからハンドラ登録
         BackgroundRefreshManager.shared.configure(modelContainer: sharedModelContainer)
         BackgroundRefreshManager.shared.registerTask()
     }
@@ -145,9 +164,20 @@ private struct RootView: View {
                 ContentView()
                     .task {
                         let context = sharedModelContainer.mainContext
-                        async let annotations: () = syncService.pullAnnotations(modelContext: context)
-                        async let profile: () = BuyerProfileSyncService.shared.syncOnLaunch()
-                        _ = await (annotations, profile)
+                        await withTaskGroup(of: Void.self) { group in
+                            group.addTask { await syncService.pullAnnotations(modelContext: context) }
+                            group.addTask { await BuyerProfileSyncService.shared.syncOnLaunch() }
+                            group.addTask {
+                                try? await Task.sleep(for: .seconds(15))
+                                logger.warning("起動時同期がタイムアウト（15秒）")
+                            }
+                            // 最初の2つが完了するか、タイムアウトしたら次へ
+                            var completed = 0
+                            for await _ in group {
+                                completed += 1
+                                if completed >= 2 { group.cancelAll(); break }
+                            }
+                        }
                     }
                     .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                         BackgroundRefreshManager.shared.scheduleNextRefresh()
