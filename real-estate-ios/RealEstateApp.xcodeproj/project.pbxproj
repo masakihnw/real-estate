@@ -65,6 +65,7 @@
 		7E0A1949C419EF89EFE1FA1B /* RealEstateWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE01C15EC3F109E628A5EF7 /* RealEstateWidget.swift */; };
 		812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */; };
 		81C95C9E5465F0DB3B10143A /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2B439F060EE0745A8D2196 /* TransactionListView.swift */; };
+		8CC7F9CA5DB41240343C6588 /* ObjCExceptionCatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = B5945F9FF2AF3675E525F384 /* ObjCExceptionCatcher.m */; };
 		8EE4894DFCD5C7C657DD928E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E93033C63E637E6276CAC6 /* ContentView.swift */; };
 		948D0660EF2CF57D6812BC9F /* ScrapingLogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */; };
 		9565CB22F8F354C845B24ACF /* ScrapingConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C320640BB97A0C9698B93CCE /* ScrapingConfigView.swift */; };
@@ -83,6 +84,7 @@
 		B60E9F83EC85E4223D691998 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDC862D4D8B290913A0CD40 /* WidgetDataProvider.swift */; };
 		BB733BB9BB4EF0FEC253805F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */; };
 		BC1486C2315DA9543B052649 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E077CAC08921E24541D9707D /* SupabaseClient.swift */; };
+		BFF7FCB33574604999724D9A /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 5F1D26818CB6AB5F58F31BF3 /* GoogleSignIn */; };
 		C0E762D91A03E361EA0FEC5F /* SaveErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD3E9BA23AEB1C1A566EF4D /* SaveErrorHandler.swift */; };
 		CC96986E6F49533736E0051D /* PropertyListingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */; };
 		D02597AD698F8E60CF1F11D4 /* WalkthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1FD6AB10F203FC324097D8 /* WalkthroughView.swift */; };
@@ -91,7 +93,7 @@
 		D8C9244D891E76AED4B99536 /* UserAnnotationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC3A219B7AF772D1DADDF0E /* UserAnnotationStore.swift */; };
 		DB0AB520BA62A5369467B414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97732299FBD4E61C33F84F0E /* Assets.xcassets */; };
 		E11EB7A8EE84FB1AEDC3D516 /* DedupCandidateCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB51D59D5B1463D599FFFF7F /* DedupCandidateCard.swift */; };
-		E15EBCDC8733B11F8335BE72 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 5F1D26818CB6AB5F58F31BF3 /* GoogleSignIn */; };
+		E15EBCDC8733B11F8335BE72 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 96D8E1E5670D1D2FC22E2471 /* FirebaseCrashlytics */; };
 		E44B979E92C4E67D1603AD6E /* ScoreBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D678F2E9A9A7AA57D8DC94 /* ScoreBadge.swift */; };
 		E90E0D85B2F8D6947FC40CA2 /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC96D67CAA5AB454825D2D8 /* Listing.swift */; };
 		EA48E6A5AA87F02E06F986C8 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BF7C431D158CB3C8FED573 /* TransactionStore.swift */; };
@@ -190,6 +192,7 @@
 		96AD33CCD88239C07F583AC5 /* BuildingPreferenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingPreferenceStore.swift; sourceTree = "<group>"; };
 		97732299FBD4E61C33F84F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97A7F9C6F1B590BF3BCF62B3 /* SpotlightIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexer.swift; sourceTree = "<group>"; };
+		9D24DDA49A6C284E6D1B4625 /* RealEstateApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RealEstateApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		9EC9F60CCFA3A6629C3754CE /* BuyerProfileSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyerProfileSheet.swift; sourceTree = "<group>"; };
 		9EE01C15EC3F109E628A5EF7 /* RealEstateWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealEstateWidget.swift; sourceTree = "<group>"; };
 		A050CCBF6353433066A86B6E /* PopulationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopulationSectionView.swift; sourceTree = "<group>"; };
@@ -197,6 +200,7 @@
 		A3C3E97C42AD293A2F0155CC /* ScrapingConfigMetadata.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScrapingConfigMetadata.json; sourceTree = "<group>"; };
 		A94333B46786557992552519 /* RadarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarChartView.swift; sourceTree = "<group>"; };
 		AFD3E9BA23AEB1C1A566EF4D /* SaveErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveErrorHandler.swift; sourceTree = "<group>"; };
+		B5945F9FF2AF3675E525F384 /* ObjCExceptionCatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionCatcher.m; sourceTree = "<group>"; };
 		B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStorageService.swift; sourceTree = "<group>"; };
 		BB1F3E61F3E266258775A797 /* SupabaseListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseListingStore.swift; sourceTree = "<group>"; };
 		BB2B439F060EE0745A8D2196 /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
@@ -224,6 +228,7 @@
 		F23A017D97120BDC7E28BEB8 /* AnnotationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationRouter.swift; sourceTree = "<group>"; };
 		F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FD2D3C9C14AA8ACF549EFEA9 /* CategorizedImageGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorizedImageGallery.swift; sourceTree = "<group>"; };
+		FD48CB4F9C32BEAC827C54E2 /* ObjCExceptionCatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCExceptionCatcher.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,7 +240,8 @@
 				1F831EA70E43C0800109C454 /* FirebaseFirestore in Frameworks */,
 				64926D72AB7CE11BD647EE11 /* FirebaseMessaging in Frameworks */,
 				08302B487BC34805D033B4ED /* FirebaseStorage in Frameworks */,
-				E15EBCDC8733B11F8335BE72 /* GoogleSignIn in Frameworks */,
+				E15EBCDC8733B11F8335BE72 /* FirebaseCrashlytics in Frameworks */,
+				BFF7FCB33574604999724D9A /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +297,15 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		398F4D2B0CC618A894D5663D /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				FD48CB4F9C32BEAC827C54E2 /* ObjCExceptionCatcher.h */,
+				B5945F9FF2AF3675E525F384 /* ObjCExceptionCatcher.m */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		4E3979663DE8D06893B25146 /* RealEstateApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -298,12 +313,14 @@
 				03E93033C63E637E6276CAC6 /* ContentView.swift */,
 				F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */,
 				1FD386389CA29A884559D46A /* Info.plist */,
+				9D24DDA49A6C284E6D1B4625 /* RealEstateApp-Bridging-Header.h */,
 				0E59A9E4A8BFE0ABFF87EBAE /* RealEstateApp.entitlements */,
 				0291B37863ADE9217F18FD55 /* RealEstateAppApp.swift */,
 				A3C3E97C42AD293A2F0155CC /* ScrapingConfigMetadata.json */,
 				B087965F67803A574830879E /* Design */,
 				1769CCFA8E82FCCDD7C60F40 /* Models */,
 				0E6260D0E25FB6D8289AF9C1 /* Services */,
+				398F4D2B0CC618A894D5663D /* Utilities */,
 				F73FF62B4B31ECEE5E10E9CD /* Views */,
 			);
 			path = RealEstateApp;
@@ -430,6 +447,7 @@
 				D04A0A3D3357841F2D446A36 /* FirebaseFirestore */,
 				9F468C9C4D49EF296C8F4478 /* FirebaseMessaging */,
 				463ED4D07DE39B4BA2486230 /* FirebaseStorage */,
+				96D8E1E5670D1D2FC22E2471 /* FirebaseCrashlytics */,
 				5F1D26818CB6AB5F58F31BF3 /* GoogleSignIn */,
 			);
 			productName = RealEstateApp;
@@ -558,6 +576,7 @@
 				1D30A4CF74D6451DE51B23CE /* NetworkMonitor.swift in Sources */,
 				26F2B5EFC773A320569DD803 /* NopedListingsView.swift in Sources */,
 				13F2D3B8066ED1C37940E12B /* NotificationScheduleService.swift in Sources */,
+				8CC7F9CA5DB41240343C6588 /* ObjCExceptionCatcher.m in Sources */,
 				F47AF2150D0396E4FB91AAE8 /* PDFExporter.swift in Sources */,
 				01AC50EEF3497F0AB63CDE10 /* PhotoSectionView.swift in Sources */,
 				812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */,
@@ -675,7 +694,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 746;
+				CURRENT_PROJECT_VERSION = 747;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -726,6 +745,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hanawa.realestate.app;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RealEstateApp/RealEstateApp-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -747,6 +767,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hanawa.realestate.app;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RealEstateApp/RealEstateApp-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -805,7 +826,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 746;
+				CURRENT_PROJECT_VERSION = 747;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -893,6 +914,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1AD7A8512D0C59E5EC4A918B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		96D8E1E5670D1D2FC22E2471 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F99C1729A50AEF5AD6680EF3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		9F468C9C4D49EF296C8F4478 /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
