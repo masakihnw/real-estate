@@ -253,7 +253,7 @@ struct BuyerProfile: Codable, Equatable {
         let postSale = PostSaleStrategy(rawValue: json["post_sale_strategy"] as? String ?? "売却前提") ?? .sellOnly
 
         let updatedStr = json["updated_at"] as? String ?? ""
-        let updatedAt = ISO8601DateFormatter().date(from: updatedStr) ?? Date.distantPast
+        let updatedAt = SupabaseListingStore.parseSupabaseTimestamp(updatedStr) ?? Date.distantPast
 
         return BuyerProfile(
             familyComposition: json["family_composition"] as? String ?? "",

@@ -185,7 +185,7 @@ final class SupabaseListingStore {
                         listing.isLiked = true
                         listing.isDelisted = true
                         if let createdAt = dto.created_at,
-                           let parsed = ISO8601DateFormatter().date(from: createdAt) {
+                           let parsed = Self.parseSupabaseTimestamp(createdAt) {
                             listing.addedAt = parsed
                         } else if let seen = listing.firstSeenAt,
                                   let parsed = Self.isoDateFormatter.date(from: seen) {
@@ -209,7 +209,7 @@ final class SupabaseListingStore {
                 } else {
                     if listing.isNew { newCount += 1 }
                     if let createdAt = dto.created_at,
-                       let parsed = ISO8601DateFormatter().date(from: createdAt) {
+                       let parsed = Self.parseSupabaseTimestamp(createdAt) {
                         listing.addedAt = parsed
                     } else if let seen = listing.firstSeenAt,
                               let parsed = Self.isoDateFormatter.date(from: seen) {
@@ -307,4 +307,15 @@ final class SupabaseListingStore {
         f.locale = Locale(identifier: "en_US_POSIX")
         return f
     }()
+
+    private static let supabaseTimestampFormatter: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return f
+    }()
+
+    static func parseSupabaseTimestamp(_ str: String) -> Date? {
+        supabaseTimestampFormatter.date(from: str)
+            ?? ISO8601DateFormatter().date(from: str)
+    }
 }
