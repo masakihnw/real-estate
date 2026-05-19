@@ -151,6 +151,148 @@ alerts 配列の例:
 
 ---
 
+## Step 6: パイプライン課題検出 & トラッキング
+
+Step 1-5 の結果と追加クエリを使い、`pipeline_issues` テーブルに課題を upsert する。
+
+### 6a: 追加チェック
+
+Step 1-5 で既に取得済みの情報に加え、以下を追加クエリ:
+
+```sql
+-- notification_drafts が24h以上 pending
+SELECT id, notification_type, draft_date, created_at
+FROM notification_drafts
+WHERE status = 'pending'
+  AND created_at < now() - interval '24 hours';
+```
+
+```sql
+-- buyer_preference_summaries の鮮度
+SELECT user_id,
+       EXTRACT(DAY FROM now() - ai_calculated_at) AS days_stale
+FROM buyer_preference_summaries
+WHERE user_id = 'default';
+```
+
+### 6b: 課題検出ルール
+
+以下のルールに従い、該当する課題を `upsert_pipeline_issue()` で登録:
+
+| issue_key | 検出条件 | severity | fix_type | category |
+|---|---|---|---|---|
+| `notification_drafts_stuck` | 6a で pending が1件以上 | critical | auto_fixable | notification |
+| `scraping_no_new` | Step 2 の `new_listings_24h` = 0 | critical | manual | pipeline |
+| `never_ai_analyzed` | Step 2 の `never_ai_analyzed` ≥ 10 | high | monitoring_only | data_quality |
+| `enrichment_coverage_drop` | 前回 health_check の同フィールド coverage_pct との差が10pp以上低下 | high | manual | data_quality |
+| `score_mismatch` | Step 3 の `score_mismatch_ls_no_ai` ≥ 50 | medium | monitoring_only | data_quality |
+| `buyer_prefs_stale` | 6a で days_stale ≥ 7 | low | auto_fixable | data_quality |
+| `log_files_large` | ローカルの `.claude/routines/logs/` 内ファイルが 100KB 超 | low | auto_fixable | maintenance |
+
+各 issue の `description` には現在値・傾向・推定解消時期を含める。
+`suggested_fix` には Claude Code で実行可能な修正指示を含める。
+
+例:
+```sql
+SELECT upsert_pipeline_issue(
+  'notification_drafts_stuck',
+  'critical',
+  'notification',
+  '通知ドラフト未送信',
+  '3件の new_listing_digest が48h以上 pending（5/16, 5/17, 5/18分）',
+  '{"stuck_count": 3, "oldest_date": "2026-05-16"}'::jsonb,
+  'notification_drafts テーブルの pending レコードを再送信して',
+  'auto_fixable'
+);
+```
+
+### 6c: 自動解決
+
+今回検出された issue_key のリストを配列にまとめ、それ以外の open issue を自動解決:
+
+```sql
+SELECT auto_resolve_stale_issues(ARRAY['notification_drafts_stuck', 'never_ai_analyzed', ...]::text[]);
+```
+
+---
+
+## Step 7: Slack 健全性レポート（Claude Code コピペ用プロンプト形式）
+
+open issue が1件以上ある場合のみ実行。0件の場合はスキップ。
+
+1. open issue を取得:
+```sql
+SELECT * FROM get_open_pipeline_issues();
+```
+
+2. 以下のフォーマットで Slack メッセージを生成:
+
+```
+🔧 *パイプライン健全性レポート*（{日付}）
+open issue: {件数}件（🔴{critical数} 🟡{high数} 🔵{medium数} 🟢{low数}）
+
+---
+
+以下を Claude Code にコピペしてください:
+
+` ` `
+パイプラインの以下の問題を修正して:
+
+1. 🔴 {title}（{severity} / {fix_type}）
+   {description}
+   → {suggested_fix}
+
+2. 🟡 {title}（{severity} / {fix_type}）
+   {description}
+   → {suggested_fix}
+
+...
+` ` `
+```
+
+※ コードブロック内の ` ` ` は実際にはバッククォート3つ連続（Slack のコードブロック記法）
+
+**severity アイコンマッピング**:
+- critical → 🔴
+- high → 🟡
+- medium → 🔵
+- low → 🟢
+
+**fix_type による suggested_fix 表示**:
+- `auto_fixable`: 具体的な修正アクションを記載
+- `manual`: 「原因を調査して修正方針を提案して」
+- `monitoring_only`: 「対応不要、経過観察」
+
+3. notification_drafts に保存:
+```sql
+SELECT upsert_notification_draft(
+  'slack',
+  'pipeline_health_report',
+  '<上記メッセージ>',
+  '{"issue_count": N, "critical": X, "high": Y}'::jsonb
+);
+```
+
+4. open issue が0件の場合:
+```sql
+SELECT skip_notification_draft('slack', 'pipeline_health_report');
+```
+
+---
+
+## Step 8: ログローテーション
+
+`.claude/routines/logs/` ディレクトリ内の各ログファイルについて、末尾200行のみ残し古い部分を削除する。
+
+対象ファイル:
+- `routine_1_data_prep_log.md`
+- `routine_2_ai_analysis_log.md`
+- `routine_3_health_monitoring_log.md`
+
+ローテーション方法: 各ファイルの行数を確認し、200行超の場合は末尾200行のみ保持する。
+
+---
+
 ## 完了レポート
 
 各チェックの結果サマリーを報告:
@@ -159,6 +301,9 @@ alerts 配列の例:
 - データ品質: 不整合X件
 - アノマリ: X件検出
 - health_check_logs: 保存完了（alert_count: X）
+- pipeline_issues: open X件（critical: X, high: X, medium: X, low: X）、自動解決 X件
+- notification_drafts: pipeline_health_report = pending/skipped
+- ログローテーション: X件のファイルを切り詰め
 
 ---
 
@@ -167,5 +312,5 @@ alerts 配列の例:
 - ヘルスチェックの失敗は他のチェックをブロックしない
 - 全チェック完了後に1つの health_check_logs レコードを保存する
 - 対象が0件のチェックも「0件」として報告する（スキップしない）
-- **Slack 通知は行わない** — 結果は DB 保存のみ。Routine 1/2 が参照して自律修正する。`upsert_notification_draft` や `notification_drafts` テーブルへの書き込みは**禁止**（書き込むと GHA が Slack に送信してしまうため）
+- **Step 7 の Slack 通知のみ例外**: pipeline_health_report を notification_drafts に保存し、GHA の slack_notify.py が送信する
 - 日本語で回答すること

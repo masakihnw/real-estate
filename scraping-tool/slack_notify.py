@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 スクレイピング結果の差分を取得し、Slackに通知する。
 Supabase の listing_events テーブルから前回通知以降のイベントを取得し、
@@ -596,7 +597,7 @@ def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
         return 0, 0
 
     SKIP_TYPES = {"health_report", "daily_brief"}
-    HANDLED_ELSEWHERE = {"new_listing_digest"}
+    HANDLED_ELSEWHERE_FRESH = {"new_listing_digest"}
 
     sent = 0
     failed = 0
@@ -612,8 +613,17 @@ def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
                 pass
             continue
 
-        if ntype in HANDLED_ELSEWHERE:
-            continue
+        if ntype in HANDLED_ELSEWHERE_FRESH:
+            draft_date_str = draft.get("draft_date") or ""
+            try:
+                from datetime import date
+                d = date.fromisoformat(str(draft_date_str))
+                is_stale = d < date.today()
+            except (ValueError, TypeError):
+                is_stale = False
+            if not is_stale:
+                continue
+            logger.info("new_listing_digest (id=%d, date=%s) が翌日以降もpending — フォールバック送信", draft_id, draft_date_str)
 
         if not msg.strip():
             try:
