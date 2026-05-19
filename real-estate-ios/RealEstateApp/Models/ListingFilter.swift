@@ -341,7 +341,7 @@ struct ListingFilter: Equatable, Codable {
             }
         }
         return routeMap.keys.sorted().map { route in
-            RouteStations(routeName: route, stationNames: routeMap[route]!.sorted())
+            RouteStations(routeName: route, stationNames: (routeMap[route] ?? []).sorted())
         }
     }
 

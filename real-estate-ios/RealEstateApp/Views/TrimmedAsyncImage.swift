@@ -11,7 +11,8 @@ final class DiskImageCache: @unchecked Sendable {
     private let queue = DispatchQueue(label: "diskImageCache", qos: .utility)
 
     private init() {
-        let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
         cacheDir = caches.appendingPathComponent("ImageCache", isDirectory: true)
         try? FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
     }

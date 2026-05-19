@@ -277,9 +277,7 @@ final class CommuteTimeService {
         // Playground への経路
         if let pgResult = await Self.calculateRoute(from: origin, to: _RouteCoordinates.playground, destinationName: _RouteCoordinates.playgroundName) {
             // ダウングレード防止: 既存がパイプライン/MKDirections の正規経路で、新結果がフォールバック概算の場合は上書きしない
-            let existingIsBetter = commuteData.playground != nil
-                && !commuteData.playground!.isFallbackEstimate
-                && pgResult.isFallbackEstimate
+            let existingIsBetter = commuteData.playground.map { !$0.isFallbackEstimate && pgResult.isFallbackEstimate } ?? false
             if !existingIsBetter {
                 commuteData.playground = pgResult
             }
@@ -287,9 +285,7 @@ final class CommuteTimeService {
 
         // エムスリーキャリアへの経路
         if let m3Result = await Self.calculateRoute(from: origin, to: _RouteCoordinates.m3career, destinationName: _RouteCoordinates.m3careerName) {
-            let existingIsBetter = commuteData.m3career != nil
-                && !commuteData.m3career!.isFallbackEstimate
-                && m3Result.isFallbackEstimate
+            let existingIsBetter = commuteData.m3career.map { !$0.isFallbackEstimate && m3Result.isFallbackEstimate } ?? false
             if !existingIsBetter {
                 commuteData.m3career = m3Result
             }

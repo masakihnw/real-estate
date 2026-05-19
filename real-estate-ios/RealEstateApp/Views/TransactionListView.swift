@@ -28,8 +28,8 @@ struct TransactionListView: View {
             let key = record.buildingGroupId ?? record.txId
             groups[key, default: []].append(record)
         }
-        return groups.map { (groupId, records) in
-            let sample = records.first!
+        return groups.compactMap { (groupId, records) -> (groupId: String, label: String, estimatedName: String?, records: [TransactionRecord])? in
+            guard let sample = records.first else { return nil }
             let estimatedName = records.compactMap(\.estimatedBuildingName).first
             let label = estimatedName ?? "\(sample.ward)\(sample.district)　\(sample.builtYear)年築"
             return (groupId: groupId, label: label, estimatedName: estimatedName, records: records.sorted { $0.tradePeriod > $1.tradePeriod })
@@ -113,13 +113,14 @@ struct TransactionListView: View {
         .listStyle(.insetGrouped)
     }
 
+    @ViewBuilder
     private func groupHeaderView(group: (groupId: String, label: String, estimatedName: String?, records: [TransactionRecord])) -> some View {
-        let sample = group.records.first!
+        if let sample = group.records.first {
         let prices = group.records.map(\.priceMan)
         let avgM2 = group.records.map(\.m2Price).reduce(0, +) / max(group.records.count, 1)
         let isExpanded = expandedGroups.contains(group.groupId)
 
-        return VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Image(systemName: "building.2.fill")
                     .foregroundStyle(.purple)
@@ -169,6 +170,7 @@ struct TransactionListView: View {
             }
         }
         .padding(.vertical, 4)
+        }
     }
 
     private func transactionRow(_ record: TransactionRecord) -> some View {
