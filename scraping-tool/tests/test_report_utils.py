@@ -6,7 +6,9 @@ import pytest
 from pathlib import Path
 
 from report_utils import (
+    _is_feature_tag,
     _normalize_address_for_key,
+    clean_listing_name,
     compare_listings,
     format_area,
     format_floor,
@@ -16,6 +18,7 @@ from report_utils import (
     google_maps_link,
     google_maps_url,
     identity_key,
+    identity_key_str,
     listing_key,
     normalize_listing_name,
 )
@@ -38,6 +41,88 @@ def test_normalize_listing_name_spaces():
     assert normalize_listing_name(b) == normalize_listing_name(c)
     assert " " not in normalize_listing_name(a)
     assert "　" not in normalize_listing_name(a)
+
+
+def test_normalize_name_bracket_with_feature_tags():
+    """【建物名】feature×feature×feature → 建物名"""
+    assert normalize_listing_name("【クレヴィア住吉】ペット可×南向き×2015年築") == "クレヴィア住吉"
+
+
+def test_normalize_name_bracket_with_partial_features():
+    """【...】の後に建物名+特徴が混在 → 建物名部分が残る"""
+    result = normalize_listing_name("【売主物件】パークホームズ 南向き")
+    assert "パークホームズ" in result
+
+
+def test_normalize_name_multiply_sign_in_name():
+    """×が物件名の一部として使われている場合は保持"""
+    result = normalize_listing_name("Aタワー×Bタワー")
+    assert "×" in result
+
+
+def test_normalize_name_goshitsu_suffix():
+    """号室 suffix is stripped"""
+    assert normalize_listing_name("クレヴィア住吉601号室") == "クレヴィア住吉"
+
+
+def test_normalize_name_goshitsu_same_as_base():
+    """号室付きと基本名は同一 normalized_name"""
+    a = normalize_listing_name("クレヴィア住吉601号室")
+    b = normalize_listing_name("クレヴィア住吉")
+    assert a == b
+
+
+def test_normalize_name_chome_suffix():
+    """丁目 suffix is stripped"""
+    a = normalize_listing_name("THEパームス高田馬場四丁目")
+    b = normalize_listing_name("THEパームス高田馬場")
+    assert a == b
+
+
+def test_normalize_name_star_separated():
+    """☆以降の広告テキストは除去される"""
+    a = normalize_listing_name("東中野桜山レジデンス☆5路線3駅利用可能☆三菱地所レ…")
+    b = normalize_listing_name("東中野桜山レジデンス")
+    assert a == b
+
+
+def test_normalize_name_year_built_tag():
+    """2015年築 is recognized as a feature tag"""
+    assert _is_feature_tag("2015年築")
+
+
+# --- clean_listing_name ---
+
+
+def test_clean_listing_name_compound_feature_tags():
+    """×区切りの複合特徴タグは物件名ではない → 空"""
+    assert clean_listing_name("ペット可×南向き×2015年築") == ""
+
+
+def test_clean_listing_name_year_built():
+    """単独の年築タグは物件名ではない → 空"""
+    assert clean_listing_name("2015年築") == ""
+
+
+def test_clean_listing_name_normal_name():
+    """通常の物件名はそのまま返る"""
+    assert clean_listing_name("クレヴィア住吉") == "クレヴィア住吉"
+
+
+# --- identity_key_str: area_m2 formatting ---
+
+
+def test_identity_key_str_area_float_int_consistent():
+    """area_m2 70.0 (float) と 70 (int) で同一 identity_key_str"""
+    r1 = _listing(area_m2=70.0)
+    r2 = _listing(area_m2=70)
+    assert identity_key_str(r1) == identity_key_str(r2)
+
+
+def test_identity_key_str_area_decimal_preserved():
+    """area_m2 69.66 の小数部は保持"""
+    r = _listing(area_m2=69.66)
+    assert "69.66" in identity_key_str(r)
 
 
 # --- identity_key vs listing_key ---

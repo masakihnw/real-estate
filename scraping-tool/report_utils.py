@@ -66,7 +66,9 @@ def normalize_listing_name(name: str) -> str:
         return ""
     if s in ("見学予約", "noimage"):
         return ""
-    # 【...】を除去
+    # 【...】を除去（中身を退避: 残りが全て特徴タグなら建物名として使う）
+    _bracket_match = re.search(r"【([^】]+)】", s)
+    _bracket_name = _bracket_match.group(1).strip() if _bracket_match else None
     s = re.sub(r"【[^】]*】", "", s)
     # ◆NAME◆ → NAME（先頭◆で囲まれた物件名を抽出）
     m = re.match(r"^◆([^◆]+)◆\s*$", s)
@@ -82,6 +84,8 @@ def normalize_listing_name(name: str) -> str:
     # 末尾の広告文句
     s = re.sub(r"ペット飼育可能.*$", "", s)
     s = re.sub(r"[♪！!☆★]+$", "", s)
+    # ☆以降を除去（広告テキスト）
+    s = re.sub(r"☆.*$", "", s)
     # 括弧内の別名表記を除去
     s = re.sub(r"[（(][^）)]*[）)]", "", s)
     s = re.sub(r"[（(][^）)]*$", "", s)
@@ -93,6 +97,10 @@ def normalize_listing_name(name: str) -> str:
     # 階数の除去
     s = re.sub(r"\s*\d+[Ff]$", "", s)
     s = re.sub(r"\s*(?:地下)?\d+階.*$", "", s)
+    # 号室の除去
+    s = re.sub(r"\s*\d+号室$", "", s)
+    # 末尾の丁目番地を除去
+    s = re.sub(r"[一二三四五六七八九十\d]+丁目$", "", s)
     # PROJECT + 説明文の除去
     s = re.sub(r"\s+PROJECT\s+.*$", "", s, flags=re.IGNORECASE)
     # 不動産説明文の除去
@@ -119,11 +127,27 @@ def normalize_listing_name(name: str) -> str:
     # SUUMO 掲載データの既知の誤字を補正
     for typo, correct in _KNOWN_NAME_TYPOS:
         s = s.replace(typo, correct)
+    # ×区切りの特徴タグを除去（「ペット可×南向き×2015年築」等）
+    if s and "×" in s:
+        segments = [seg.strip() for seg in s.split("×") if seg.strip()]
+        if segments and all(_is_feature_tag(seg) for seg in segments):
+            s = ""
     # デベロッパー接頭辞を除去（クロスサイトでの表記揺れ吸収）
     for prefix in _DEVELOPER_PREFIXES:
         if s.startswith(prefix):
             s = s[len(prefix):]
             break
+    # 【】内の建物名をフォールバック: 残りが空で括弧内に名前があればそれを使う
+    if not s and _bracket_name:
+        s = _bracket_name
+        s = re.sub(r"\s+", "", s)
+        s = s.replace("・", "")
+        for typo, correct in _KNOWN_NAME_TYPOS:
+            s = s.replace(typo, correct)
+        for prefix in _DEVELOPER_PREFIXES:
+            if s.startswith(prefix):
+                s = s[len(prefix):]
+                break
     return s
 
 
@@ -172,6 +196,7 @@ _NOT_A_NAME_PATTERNS: list[re.Pattern] = [
     re.compile(r"^駐[車輪]場.*(?:あり|付き?)$"),
     re.compile(r"^(?:値下げ|価格(?:変更|改定))$"),
     re.compile(r"^(?:フル)?リノベーション$"),
+    re.compile(r"^\d{4}年築$"),
 ]
 
 
@@ -203,6 +228,11 @@ def clean_listing_name(name: str) -> str:
     # 物件の条件・特徴タグは物件名ではない → 空
     if _is_feature_tag(s):
         return ""
+    # ×区切りの複合特徴タグも物件名ではない → 空
+    if "×" in s:
+        segments = [seg.strip() for seg in s.split("×") if seg.strip()]
+        if segments and all(_is_feature_tag(seg) for seg in segments):
+            return ""
     # 先頭のプレフィックスを除去（順序重要: 長い方から先に試す）
     s = re.sub(r"^新築マンション\s*", "", s).strip()
     s = re.sub(r"^マンション未入居\s*", "", s).strip()
@@ -397,9 +427,17 @@ def fuzzy_identity_match(a: dict, b: dict, threshold: float = 0.8) -> bool:
     return _name_similarity(name_a, name_b) >= threshold
 
 
+def _format_key_element(x: object) -> str:
+    if x is None:
+        return "None"
+    if isinstance(x, float):
+        return f"{x:g}"
+    return str(x)
+
+
 def identity_key_str(r: dict) -> str:
     """identity_key のタプルをパイプ区切り文字列に変換する。DB/JSONキー用。"""
-    return "|".join(str(x) for x in identity_key(r))
+    return "|".join(_format_key_element(x) for x in identity_key(r))
 
 
 def inject_is_new(
@@ -674,7 +712,7 @@ def inject_price_history(
 
 def _key_str(r: dict) -> str:
     """identity_key のタプルを JSON キー用文字列に変換する。"""
-    return "|".join(str(x) for x in identity_key(r))
+    return identity_key_str(r)
 
 
 def inject_first_seen_at(
