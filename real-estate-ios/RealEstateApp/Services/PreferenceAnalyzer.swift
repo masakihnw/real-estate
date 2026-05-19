@@ -244,7 +244,21 @@ enum PreferenceAnalyzer {
             scored.append((listing, normalized))
         }
 
-        return scored
+        var bestByBuilding: [String: (Listing, Double)] = [:]
+        var ungrouped: [(Listing, Double)] = []
+        for entry in scored {
+            let name = entry.0.normalizedName?.trimmingCharacters(in: .whitespaces) ?? ""
+            if name.isEmpty {
+                ungrouped.append(entry)
+            } else if let existing = bestByBuilding[name] {
+                if entry.1 > existing.1 { bestByBuilding[name] = entry }
+            } else {
+                bestByBuilding[name] = entry
+            }
+        }
+        let deduplicated = Array(bestByBuilding.values) + ungrouped
+
+        return deduplicated
             .sorted { $0.1 > $1.1 }
             .prefix(recommendationCount)
             .map { PreferenceProfile.RecommendedListing(listing: $0.0, score: $0.1) }
