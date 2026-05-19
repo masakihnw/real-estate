@@ -22,7 +22,7 @@ settings:
     TARGETED_DEVICE_FAMILY: "1,2"        # iPhone + iPad
     SUPPORTS_MACCATALYST: "YES"
     DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER: "NO"
-    CURRENT_PROJECT_VERSION: "746"
+    CURRENT_PROJECT_VERSION: "747"
     MARKETING_VERSION: "1.0.0"
 
 targets:
@@ -42,6 +42,8 @@ targets:
         product: FirebaseMessaging
       - package: Firebase
         product: FirebaseStorage
+      - package: Firebase
+        product: FirebaseCrashlytics
       - package: GoogleSignIn
         product: GoogleSignIn
       - target: RealEstateWidget
@@ -90,6 +92,7 @@ targets:
         DEVELOPMENT_TEAM: YRP5KV2X62
         CODE_SIGN_STYLE: Automatic
         SWIFT_EMIT_LOC_STRINGS: "YES"
+        SWIFT_OBJC_BRIDGING_HEADER: "RealEstateApp/RealEstateApp-Bridging-Header.h"
       configs:
         Debug:
           APS_ENVIRONMENT: development
