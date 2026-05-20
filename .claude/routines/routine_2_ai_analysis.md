@@ -1,9 +1,10 @@
 # ルーティン②: AI 分析 & バイヤーピック
 
-- **スケジュール**: 毎日 JST 4:00
+- **スケジュール**: 毎日 JST 4:00 / 12:00 / 20:00（3回/日） — cron: `0 4,12,20 * * *`
 - **MCP**: Supabase（必須）
-- **所要時間目安**: 20-40分
-- **前提**: 不動産データ準備 & スコアリングが先に完了していること
+- **所要時間目安**: 20-40分/回
+- **前提**: JST 4:00 の回は不動産データ準備 & スコアリングが先に完了していること。12:00・20:00 の回は前提なし
+- **バックログ解消後**: 未分析物件が0件に収束したら 12:00 の回を廃止し 2回/日（4:00・20:00）に縮小する
 
 ---
 
@@ -323,19 +324,65 @@ SELECT skip_notification_draft('slack', 'new_listing_digest');
 
 ## 完了レポート
 
-各ステップの処理件数をまとめて報告:
-- investment_summary: X件処理（スコア分布: 5=X件, 4=X件, 3=X件, 2=X件, 1=X件）
-- image_analyzer: X件処理（総画像Y枚、junk Z枚削除済み）
-- buyer_picks: おすすめX件抽出、サマリー生成完了
-- notification_drafts: daily_brief=skipped（アプリのみ）, price_alert=pending/skipped（お気に入りのみ）, new_listing_digest=pending/skipped
+全ステップ完了後、以下のテンプレートに値を埋めた**マークダウンブロック**をチャットに出力する。
+ユーザーはこの出力をそのままログファイルにコピペするため、**余計なテキストを前後に付けず、テンプレート通りの出力のみ**を行うこと。
 
-各ステップの全物件処理結果を以下のテーブル形式で記録:
-```
-| # | listing_id | name | status | score | error |
-```
-- status: ok / error
-- score: investment_summary の場合は recommendation_score
-- error: エラーがあればエラー内容
+````markdown
+## {YYYY-MM-DD HH:MM} - ルーティン② 完了レポート
+
+### 実行サマリー
+
+| ステップ | 処理件数 | ステータス |
+|---|---|---|
+| Step 1: investment_summary | X件（5=X/4=X/3=X/2=X/1=X） | ✅/スキップ |
+| Step 2: image_analyzer | X件（junk Y枚削除） | ✅/スキップ |
+| Step 2.5: 好み傾向分析 | — | ✅/スキップ |
+| Step 3: buyer_picks | X件抽出 | ✅/スキップ |
+| Step 4a: daily_brief | — | skipped |
+| Step 4b: price_alert | X件 | pending/skipped |
+| Step 4c: new_listing_digest | X件中必見Y件 | pending/skipped |
+
+### Step 1 詳細（上位5件）
+
+| # | listing_id | name | score |
+|---|---|---|---|
+| 1 | XXXXX | 物件名 | X |
+| ... | | | |
+
+### Step 3: buyer_picks 筆頭
+- {筆頭物件名と推薦理由1行}
+
+### アラート
+- {アラート内容。なければ「なし」}
+
+### エラー
+- {エラー内容。なければ「なし」}
+````
+
+---
+
+## ログ記録ルール
+
+ログファイル `.claude/routines/logs/routine_2_ai_analysis_log.md` には **完了レポートのみ** を追記する。
+
+**記録する内容**:
+- 日付ヘッダー（`## YYYY-MM-DD HH:MM JST`）
+- 各ステップの処理件数サマリー（テーブル形式）
+- エラーがあった場合はエラー内容（1行）
+- 完了レポートセクション全体で **50行以内**
+
+**記録してはいけない内容**:
+- MCP ツール出力の RAW JSON（`<untrusted-data>` タグ等）
+- AI の内部思考・推論プロセス（英語テキスト含む）
+- Python スクリプトのソースコード
+- SQL クエリの全文（結果のみ要約で記録）
+- ルーティン定義（プロンプト仕様書）
+- 内部ファイルパス（`/root/.claude/...` 等）
+- バイヤープロファイル（個人情報: 年収、勤務先住所、家族計画等）
+- 物件データの全件一覧・分析テキスト全文（件数と上位3件のみ記録）
+- INSERT/UPDATE SQL の全文（保存完了の旨のみ記録）
+
+**ログの先頭にルーティン定義を含めないこと**。定義は `routine_2_ai_analysis.md` に存在するため重複記載は禁止。
 
 ---
 
