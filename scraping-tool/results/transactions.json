@@ -10261,6 +10261,106 @@
       "estimated_building_name": "パークホームズ月島二丁目"
     },
     {
+      "id": "tx-0b126b240613",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 10000,
+      "area_m2": 60.0,
+      "m2_price": 1666667,
+      "layout": "2LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2021Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2015-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-798c1cb35a6e",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 9800,
+      "area_m2": 60.0,
+      "m2_price": 1633333,
+      "layout": "2LDK+S",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2021Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2017-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-3a1fd282ebcf",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 10000,
+      "area_m2": 60.0,
+      "m2_price": 1666667,
+      "layout": "2LDK",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2021Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2017-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-15777d0f9d35",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2021Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2015-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-cb80e2e874ac",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 10000,
+      "area_m2": 65.0,
+      "m2_price": 1538462,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2021Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2013-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-220a89db93a8",
       "prefecture": "東京都",
       "ward": "港区",
@@ -10621,6 +10721,46 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-e89ddeeba985",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2015-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-41c300a20a6f",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 9600,
+      "area_m2": 60.0,
+      "m2_price": 1600000,
+      "layout": "2LDK",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2021Q3",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2017-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-6a06f7e5663d",
       "prefecture": "東京都",
       "ward": "港区",
@@ -10719,6 +10859,26 @@
       "longitude": 139.728716,
       "building_group_id": "131030270-2013-RC",
       "estimated_building_name": "パークホームズ南麻布ザレジデンス"
+    },
+    {
+      "id": "tx-0c25a8d2105c",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2015,
+      "structure": "RC",
+      "trade_period": "2021Q4",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2015-RC",
+      "estimated_building_name": null
     },
     {
       "id": "tx-4fe91582958c",
@@ -11181,6 +11341,66 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-4c040be9eec2",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2012-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-026041a3ce11",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2013-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-5038f39ea9ad",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 10000,
+      "area_m2": 65.0,
+      "m2_price": 1538462,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2022Q1",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2013-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-ad75de11773b",
       "prefecture": "東京都",
       "ward": "港区",
@@ -11601,6 +11821,46 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-2472c19e5680",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 10000,
+      "area_m2": 60.0,
+      "m2_price": 1666667,
+      "layout": "2LDK",
+      "built_year": 2014,
+      "structure": "RC",
+      "trade_period": "2022Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2014-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-d27130f5f5f3",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 9300,
+      "area_m2": 70.0,
+      "m2_price": 1328571,
+      "layout": "2LDK",
+      "built_year": 2014,
+      "structure": "RC",
+      "trade_period": "2022Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2014-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-f58671336c03",
       "prefecture": "東京都",
       "ward": "港区",
@@ -11961,6 +12221,46 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-d0a3f7de0f60",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 9400,
+      "area_m2": 60.0,
+      "m2_price": 1566667,
+      "layout": "2LDK",
+      "built_year": 2010,
+      "structure": "RC",
+      "trade_period": "2022Q4",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2010-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-5b6c599b3d6e",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2019,
+      "structure": "RC",
+      "trade_period": "2022Q4",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2019-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-e5abd5d129f1",
       "prefecture": "東京都",
       "ward": "港区",
@@ -12098,6 +12398,26 @@
       "latitude": 35.6442553,
       "longitude": 139.7498802,
       "building_group_id": "131030110-2006-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-d72cafabfebe",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2023Q1",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2017-RC",
       "estimated_building_name": null
     },
     {
@@ -12401,6 +12721,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-5cf19fd93379",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 9600,
+      "area_m2": 60.0,
+      "m2_price": 1600000,
+      "layout": "2LDK",
+      "built_year": 2014,
+      "structure": "RC",
+      "trade_period": "2023Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2014-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-87a471a1a660",
       "prefecture": "東京都",
       "ward": "港区",
@@ -12418,6 +12758,26 @@
       "latitude": 35.6301291,
       "longitude": 139.7507521,
       "building_group_id": "131030090-2014-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-424adbe28c37",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 10000,
+      "area_m2": 60.0,
+      "m2_price": 1666667,
+      "layout": "2LDK",
+      "built_year": 2017,
+      "structure": "RC",
+      "trade_period": "2023Q2",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2017-RC",
       "estimated_building_name": null
     },
     {
@@ -12701,6 +13061,26 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-66a1ca5fd429",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 9000,
+      "area_m2": 60.0,
+      "m2_price": 1500000,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2023Q3",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2012-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-e488df3a1e25",
       "prefecture": "東京都",
       "ward": "港区",
@@ -12779,6 +13159,26 @@
       "longitude": 139.7507521,
       "building_group_id": "131030090-2006-RC",
       "estimated_building_name": "ワールドシティタワーズ"
+    },
+    {
+      "id": "tx-d4680e6cc4f5",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 11000,
+      "area_m2": 65.0,
+      "m2_price": 1692308,
+      "layout": "2LDK",
+      "built_year": 2013,
+      "structure": "RC",
+      "trade_period": "2023Q3",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2013-RC",
+      "estimated_building_name": null
     },
     {
       "id": "tx-5ced4f46a948",
@@ -13161,6 +13561,46 @@
       "estimated_building_name": null
     },
     {
+      "id": "tx-6d968f2e2d1b",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "district_code": "131030140",
+      "price_man": 9800,
+      "area_m2": 65.0,
+      "m2_price": 1507692,
+      "layout": "2LDK",
+      "built_year": 2009,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "building_group_id": "131030140-2009-RC",
+      "estimated_building_name": null
+    },
+    {
+      "id": "tx-3034c1df09c8",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 9100,
+      "area_m2": 70.0,
+      "m2_price": 1300000,
+      "layout": "2LDK",
+      "built_year": 2008,
+      "structure": "RC",
+      "trade_period": "2023Q4",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2008-RC",
+      "estimated_building_name": null
+    },
+    {
       "id": "tx-97eeb9d6cf9b",
       "prefecture": "東京都",
       "ward": "港区",
@@ -13259,6 +13699,26 @@
       "longitude": 139.728716,
       "building_group_id": "131030270-2012-RC",
       "estimated_building_name": "パークホームズ南麻布ザレジデンス"
+    },
+    {
+      "id": "tx-98634061cac3",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "district_code": "131030180",
+      "price_man": 11000,
+      "area_m2": 60.0,
+      "m2_price": 1833333,
+      "layout": "2LDK",
+      "built_year": 2012,
+      "structure": "RC",
+      "trade_period": "2024Q1",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "building_group_id": "131030180-2012-RC",
+      "estimated_building_name": null
     },
     {
       "id": "tx-02bac689ecdb",
@@ -15518,7 +15978,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "id": "tx-71fa2791833e",
@@ -17778,7 +18238,7 @@
       "latitude": 35.7127361,
       "longitude": 139.7039724,
       "building_group_id": "131040500-2013-RC",
-      "estimated_building_name": "ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "id": "tx-e4a8675c485e",
@@ -59597,6 +60057,268 @@
       "estimated_building_name": null
     },
     {
+      "group_id": "131030140-2009-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "built_year": 2009,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "transaction_count": 1,
+      "price_range_man": [
+        9800,
+        9800
+      ],
+      "avg_m2_price": 1507692,
+      "periods": [
+        "2023Q4"
+      ],
+      "latest_period": "2023Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030140-2012-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1833333,
+      "periods": [
+        "2022Q1"
+      ],
+      "latest_period": "2022Q1",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030140-2013-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "built_year": 2013,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "transaction_count": 2,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1692308,
+      "periods": [
+        "2022Q1",
+        "2023Q3"
+      ],
+      "latest_period": "2023Q3",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030140-2015-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "built_year": 2015,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "transaction_count": 4,
+      "price_range_man": [
+        10000,
+        11000
+      ],
+      "avg_m2_price": 1791666,
+      "periods": [
+        "2021Q2",
+        "2021Q3",
+        "2021Q4"
+      ],
+      "latest_period": "2021Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030140-2017-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "白金",
+      "built_year": 2017,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 8,
+      "latitude": 35.6438973,
+      "longitude": 139.7277018,
+      "transaction_count": 5,
+      "price_range_man": [
+        9600,
+        11000
+      ],
+      "avg_m2_price": 1680000,
+      "periods": [
+        "2021Q2",
+        "2021Q3",
+        "2023Q1",
+        "2023Q2"
+      ],
+      "latest_period": "2023Q2",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030180-2008-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "built_year": 2008,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "transaction_count": 1,
+      "price_range_man": [
+        9100,
+        9100
+      ],
+      "avg_m2_price": 1300000,
+      "periods": [
+        "2023Q4"
+      ],
+      "latest_period": "2023Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030180-2010-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "built_year": 2010,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "transaction_count": 1,
+      "price_range_man": [
+        9400,
+        9400
+      ],
+      "avg_m2_price": 1566667,
+      "periods": [
+        "2022Q4"
+      ],
+      "latest_period": "2022Q4",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030180-2012-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "built_year": 2012,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "transaction_count": 2,
+      "price_range_man": [
+        9000,
+        11000
+      ],
+      "avg_m2_price": 1666666,
+      "periods": [
+        "2023Q3",
+        "2024Q1"
+      ],
+      "latest_period": "2024Q1",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030180-2013-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "built_year": 2013,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "transaction_count": 2,
+      "price_range_man": [
+        10000,
+        10000
+      ],
+      "avg_m2_price": 1538462,
+      "periods": [
+        "2021Q2",
+        "2022Q1"
+      ],
+      "latest_period": "2022Q1",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030180-2014-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "built_year": 2014,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "transaction_count": 3,
+      "price_range_man": [
+        9300,
+        10000
+      ],
+      "avg_m2_price": 1531746,
+      "periods": [
+        "2022Q2",
+        "2023Q2"
+      ],
+      "latest_period": "2023Q2",
+      "estimated_building_name": null
+    },
+    {
+      "group_id": "131030180-2019-RC",
+      "prefecture": "東京都",
+      "ward": "港区",
+      "district": "高輪",
+      "built_year": 2019,
+      "structure": "RC",
+      "nearest_station": "白金高輪",
+      "estimated_walk_min": 10,
+      "latitude": 35.6349739,
+      "longitude": 139.7357164,
+      "transaction_count": 1,
+      "price_range_man": [
+        11000,
+        11000
+      ],
+      "avg_m2_price": 1833333,
+      "periods": [
+        "2022Q4"
+      ],
+      "latest_period": "2022Q4",
+      "estimated_building_name": null
+    },
+    {
       "group_id": "131030230-2018-RC",
       "prefecture": "東京都",
       "ward": "港区",
@@ -60785,7 +61507,7 @@
         "2024Q1"
       ],
       "latest_period": "2024Q1",
-      "estimated_building_name": "ＴＨＥパームス高田馬場"
+      "estimated_building_name": "ＴＨＥパームス高田馬場 / ＴＨＥパームス高田馬場 2階"
     },
     {
       "group_id": "131040510-2010-RC",
@@ -76849,7 +77571,7 @@
     }
   ],
   "metadata": {
-    "updated_at": "2026-05-20T04:29:57",
+    "updated_at": "2026-05-20T10:27:42",
     "periods_covered": [
       "2021Q2",
       "2021Q3",
@@ -76886,8 +77608,8 @@
       "built_year_min": 2006,
       "walk_min_max": 10
     },
-    "transaction_count": 2832,
-    "building_group_count": 824,
+    "transaction_count": 2855,
+    "building_group_count": 835,
     "scope": "東京23区"
   }
 }
