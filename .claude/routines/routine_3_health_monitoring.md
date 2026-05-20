@@ -295,15 +295,81 @@ SELECT skip_notification_draft('slack', 'pipeline_health_report');
 
 ## 完了レポート
 
-各チェックの結果サマリーを報告:
-- カバレッジ: 全X項目中 Y項目が基準未満
-- パイプライン鮮度: 新着X件、AI分析Y件、陳腐化Z件
-- データ品質: 不整合X件
-- アノマリ: X件検出
-- health_check_logs: 保存完了（alert_count: X）
-- pipeline_issues: open X件（critical: X, high: X, medium: X, low: X）、自動解決 X件
-- notification_drafts: pipeline_health_report = pending/skipped
-- ログローテーション: X件のファイルを切り詰め
+全ステップ完了後、以下のテンプレートに値を埋めた**マークダウンブロック**をチャットに出力する。
+ユーザーはこの出力をそのままログファイルにコピペするため、**余計なテキストを前後に付けず、テンプレート通りの出力のみ**を行うこと。
+
+````markdown
+## {YYYY-MM-DD HH:MM} JST - ルーティン③ 実行ログ
+
+### Step 1: エンリッチメントカバレッジ（全X項目中Y項目基準未満）
+
+| フィールド | カバレッジ | 基準 | 判定 |
+|---|---|---|---|
+| listing_score | XX.XX% | 70% | ✅/⚠️ |
+| ai_recommendation_score | XX.XX% | 50% | ✅/⚠️ |
+| commute_info | XX.XX% | 60% | ✅/⚠️ |
+| hazard_info | XX.XX% | 35% | ✅/⚠️ |
+| price_fairness_score | XX.XX% | 20% | ✅/⚠️ |
+| ai_listing_score | XX.XX% | 10% | ✅/⚠️ |
+| ai_price_fairness_score | XX.XX% | 10% | ✅/⚠️ |
+| extracted_features | XX.XX% | 30% | ✅/⚠️ |
+| image_categories | XX.XX% | 30% | ✅/⚠️ |
+| ss_lookup_status | XX.XX% | 30% | ✅/⚠️ |
+
+### Step 2: パイプライン鮮度
+- new_listings_24h: X件 ✅/⚠️
+- ai_analyzed_24h: X件 ✅/⚠️
+- stale_ai_7d: X件 ✅/⚠️
+- never_ai_analyzed: X件 ✅/⚠️
+- no_enrichment_48h: X件 ✅/⚠️
+
+### Step 3: データ品質
+- score_mismatch_ls_no_ai: X件 ✅/⚠️
+- images_no_categories: X件 ✅/⚠️
+- duplicate_active: X件 ✅/⚠️
+
+### Step 4: アノマリ検出
+- active_count_drop: X件 ✅/⚠️
+- score_contradiction: X件 ✅/⚠️
+
+### Step 5: health_check_logs 保存
+- ID: X、alert_count: X
+
+### Step 6: pipeline_issues
+- upsert: {issue_key一覧}
+- 自動解決: X件
+
+### Step 7: notification_drafts
+- pipeline_health_report = pending/skipped（ID: X）
+
+### Step 8: ログローテーション
+- routine_1: X→Y行
+- routine_2: X→Y行
+- routine_3: X→Y行
+````
+
+---
+
+## ログ記録ルール
+
+ログファイル `.claude/routines/logs/routine_3_health_monitoring_log.md` には **完了レポートのみ** を追記する。
+
+**記録する内容**:
+- 日付ヘッダー（`## YYYY-MM-DD HH:MM JST`）
+- Step 1〜8 の結果サマリー（各ステップ2〜5行）
+- 完了レポートセクション全体で **50行以内**
+
+**記録してはいけない内容**:
+- MCP ツール出力の RAW JSON（`<untrusted-data>` タグ等）
+- AI の内部思考・推論プロセス（英語テキスト含む）
+- SQL クエリの全文（結果のみ要約で記録）
+- ルーティン定義（プロンプト仕様書）
+- 内部ファイルパス（`/root/.claude/...` 等）
+- バイヤープロファイル（個人情報）
+- git push / GitHub MCP のリトライログ全文（結果1行のみ記録）
+- 他のルーティンのログ内容（push_files のリクエストボディ等）
+
+**ログの先頭にルーティン定義を含めないこと**。定義は `routine_3_health_monitoring.md` に存在するため重複記載は禁止。
 
 ---
 
