@@ -592,6 +592,11 @@ def _pop_morning_digest(client: Any) -> tuple[str, int | None]:
     return "", None
 
 
+WEBHOOK_OVERRIDES: dict[str, str] = {
+    "pipeline_health_report": "SLACK_HEALTH_WEBHOOK_URL",
+}
+
+
 def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
     """notification_drafts テーブルから pending ドラフトを読み出して Slack 送信。
     Returns (sent_count, failed_count)."""
@@ -638,7 +643,12 @@ def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
                 pass
             continue
 
-        ok = send_slack_message_chunked_with_retry(webhook_url, msg)
+        target_url = webhook_url
+        override_env = WEBHOOK_OVERRIDES.get(ntype)
+        if override_env:
+            target_url = os.environ.get(override_env) or webhook_url
+
+        ok = send_slack_message_chunked_with_retry(target_url, msg)
         try:
             if ok:
                 client.rpc("mark_notification_sent", {"p_id": draft_id, "p_status": "sent"}).execute()
