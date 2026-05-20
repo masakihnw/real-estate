@@ -6648,5 +6648,35 @@
       ]
     },
     "cached_at": "2026-05-19T10:17:12.179661"
+  },
+  "西戸山タワーホウムズサウスタワー": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11320.html",
+      "deviation_score": 0,
+      "estimated_price_man": 11638,
+      "estimated_tsubo_price_man": 448,
+      "estimated_m2_price_man": 136,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 370,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 12,
+          "layout": "",
+          "area_m2": 78.61,
+          "price_man": 7677,
+          "tsubo_price_man": 321.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-20T04:08:43.552558"
+  },
+  "南東向きテラス40.95平米ある3LDK住戸": {
+    "data": null,
+    "cached_at": "2026-05-20T04:08:47.004363"
+  },
+  "南東向きテラス40.95平米ある": {
+    "data": null,
+    "cached_at": "2026-05-20T04:08:47.004363"
   }
 }
