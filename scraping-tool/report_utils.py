@@ -66,6 +66,9 @@ def normalize_listing_name(name: str) -> str:
         return ""
     if s in ("見学予約", "noimage"):
         return ""
+    # SUUMOページタイトルは物件名ではない
+    if re.search(r"物件一覧", s):
+        return ""
     # 【...】を除去（中身を退避: 残りが全て特徴タグなら建物名として使う）
     _bracket_match = re.search(r"【([^】]+)】", s)
     _bracket_name = _bracket_match.group(1).strip() if _bracket_match else None
@@ -112,6 +115,7 @@ def normalize_listing_name(name: str) -> str:
         "", s
     )
     # プレフィックス除去
+    s = re.sub(r"^新規分譲\s*", "", s).strip()
     s = re.sub(r"^新築マンション\s*", "", s).strip()
     s = re.sub(r"^マンション未入居\s*", "", s).strip()
     s = re.sub(r"^マンション\s*", "", s).strip()
@@ -132,6 +136,17 @@ def normalize_listing_name(name: str) -> str:
         segments = [seg.strip() for seg in s.split("×") if seg.strip()]
         if segments and all(_is_feature_tag(seg) for seg in segments):
             s = ""
+    # 特徴タグで始まる説明文は物件名ではない（「ペット可3LDK+WI…」等）
+    if s and _bracket_name:
+        for tag in sorted(_NOT_A_NAME_EXACT, key=len, reverse=True):
+            if s.startswith(tag):
+                s = ""
+                break
+    # 「南東向きテラス40.95平米ある3LDK住戸」等の純粋な説明文を検出
+    if s and re.match(
+        r"^[東西南北]+向き?.+\d+\.?\d*平米.+\d[LDK]+住戸$", s
+    ):
+        s = ""
     # デベロッパー接頭辞を除去（クロスサイトでの表記揺れ吸収）
     for prefix in _DEVELOPER_PREFIXES:
         if s.startswith(prefix):

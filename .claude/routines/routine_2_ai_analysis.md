@@ -1,6 +1,6 @@
 # ルーティン②: AI 分析 & バイヤーピック
 
-- **スケジュール**: 毎日 JST 4:00 / 12:00 / 20:00（3回/日） — cron: `0 4,12,20 * * *`
+- **スケジュール**: 毎日 JST 5:00（1回/日）
 - **MCP**: Supabase（必須）
 - **所要時間目安**: 20-40分/回
 - **前提**: JST 4:00 の回は不動産データ準備 & スコアリングが先に完了していること。12:00・20:00 の回は前提なし
@@ -136,7 +136,7 @@ SELECT * FROM batch_cleanup_junk_images();
 SELECT ubp.identity_key, ubp.preference,
        lf.name, lf.price_man, lf.area_m2, lf.layout, lf.walk_min,
        lf.built_year, lf.address, lf.direction, lf.station_line,
-       lf.floor, lf.total_units
+       lf.floor_position, lf.total_units
 FROM user_building_preferences ubp
 JOIN listings_feed lf ON lf.identity_key = ubp.identity_key
 ORDER BY ubp.preference, ubp.created_at DESC;
@@ -297,7 +297,7 @@ SELECT lf.id, lf.name, lf.address, lf.layout, lf.area_m2, lf.price_man,
 FROM listings_feed lf
 LEFT JOIN enrichments e ON e.listing_id = lf.id
 WHERE lf.is_active = true
-  AND lf.first_seen_at >= now() - interval '24 hours'
+  AND lf.first_seen_at::timestamptz >= now() - interval '24 hours'
 ORDER BY COALESCE(e.ai_listing_score, lf.listing_score, 0) DESC;
 ```
 
@@ -374,7 +374,7 @@ SELECT skip_notification_draft('slack', 'new_listing_digest');
 
 ## 共通ルール
 - **サブエージェント委任禁止**: 全ステップの処理はメインエージェントのコンテキストで実行すること。サブエージェント（Agent ツール）への委任は禁止
-- **AI 分析必須**: 各物件は必ず system_prompt を使って AI で分析すること。Python スクリプトやルールベース処理は禁止
+- **AI 分析必須**: 各物件は必ず get_active_prompt() で取得した system_prompt を使って1件ずつ AI で分析すること。Python スクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignore パターンは**禁止**
 - **Step 4 必須**: Step 1〜3 完了後、必ず Step 4（通知ドラフト生成）を実行すること。Step 4a, 4b, 4c の全てを実行し、該当なしの場合は skip_notification_draft を呼ぶこと。Step 4 をスキップすると Slack 通知が送信されないため、絶対にスキップ禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む
