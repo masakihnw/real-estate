@@ -774,5 +774,21 @@
     "quarter": "桃井",
     "neighbourhood": "桃井二丁目",
     "city_district": ""
+  },
+  "35.658009,139.751514": {
+    "display_name": "芝公園一丁目, 芝公園, 港区, 東京都, 105-8511, 日本",
+    "city": "港区",
+    "suburb": "",
+    "quarter": "芝公園",
+    "neighbourhood": "芝公園一丁目",
+    "city_district": ""
+  },
+  "35.646787,139.741431": {
+    "display_name": "桜田通り, 三田四丁目, 三田, 港区, 東京都, 108-0073, 日本",
+    "city": "港区",
+    "suburb": "",
+    "quarter": "三田",
+    "neighbourhood": "三田四丁目",
+    "city_district": ""
   }
 }
