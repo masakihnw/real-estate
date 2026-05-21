@@ -814,5 +814,93 @@
     "quarter": "東中野",
     "neighbourhood": "東中野五丁目",
     "city_district": ""
+  },
+  "35.660441,139.782678": {
+    "display_name": "月島四丁目, 月島, 中央区, 東京都, 104-0052, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "月島",
+    "neighbourhood": "月島四丁目",
+    "city_district": ""
+  },
+  "35.664645,139.784564": {
+    "display_name": "佃大橋通り, 月島一丁目, 月島, 中央区, 東京都, 104-0052, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "月島",
+    "neighbourhood": "月島一丁目",
+    "city_district": ""
+  },
+  "35.668796,139.786583": {
+    "display_name": "佃二丁目, 佃, 中央区, 東京都, 104-0051, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "佃",
+    "neighbourhood": "佃二丁目",
+    "city_district": ""
+  },
+  "35.666085,139.784806": {
+    "display_name": "佃仲通り, 佃二丁目, 佃, 中央区, 東京都, 104-0051, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "佃",
+    "neighbourhood": "佃二丁目",
+    "city_district": ""
+  },
+  "35.694543,139.702710": {
+    "display_name": "歌舞伎町一丁目, 歌舞伎町, 新宿区, 東京都, 160-0021, 日本",
+    "city": "新宿区",
+    "suburb": "",
+    "quarter": "歌舞伎町",
+    "neighbourhood": "歌舞伎町一丁目",
+    "city_district": ""
+  },
+  "35.731534,139.772566": {
+    "display_name": "西日暮里二丁目, 西日暮里, 荒川区, 東京都, 116-0013, 日本",
+    "city": "荒川区",
+    "suburb": "",
+    "quarter": "西日暮里",
+    "neighbourhood": "西日暮里二丁目",
+    "city_district": ""
+  },
+  "35.695362,139.841711": {
+    "display_name": "亀戸九丁目, 亀戸, 江東区, 東京都, 136-0071, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "亀戸",
+    "neighbourhood": "亀戸九丁目",
+    "city_district": ""
+  },
+  "35.646313,139.668725": {
+    "display_name": "太子堂四丁目, 太子堂, 世田谷区, 東京都, 154-0004, 日本",
+    "city": "世田谷区",
+    "suburb": "",
+    "quarter": "太子堂",
+    "neighbourhood": "太子堂四丁目",
+    "city_district": ""
+  },
+  "35.649989,139.631713": {
+    "display_name": "経堂三丁目, 経堂, 世田谷区, 東京都, 156-8799, 日本",
+    "city": "世田谷区",
+    "suburb": "",
+    "quarter": "経堂",
+    "neighbourhood": "経堂三丁目",
+    "city_district": ""
+  },
+  "35.734883,139.660294": {
+    "display_name": "目白通り, 豊玉北, 練馬区, 東京都, 176-0011, 日本",
+    "city": "練馬区",
+    "suburb": "",
+    "quarter": "豊玉北",
+    "neighbourhood": "",
+    "city_district": ""
+  },
+  "35.736503,139.652367": {
+    "display_name": "豊玉北, 練馬区, 東京都, 176-0012, 日本",
+    "city": "練馬区",
+    "suburb": "",
+    "quarter": "豊玉北",
+    "neighbourhood": "",
+    "city_district": ""
   }
 }
