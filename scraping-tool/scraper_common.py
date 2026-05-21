@@ -22,6 +22,8 @@ from config import (
     ALLOWED_LINE_KEYWORDS,
     ALLOWED_STATIONS,
     TOKYO_23_WARDS,
+    LOWER_TIER_PRICE_MAX_MAN,
+    LOWER_TIER_STATIONS,
 )
 
 from logger import get_logger
@@ -93,6 +95,36 @@ def station_passengers_ok(station_line: str, passengers_map: dict[str, int]) -> 
     if passengers is None:
         return True  # データにない駅は通過（取りこぼし防止）
     return passengers >= STATION_PASSENGERS_MIN
+
+
+# ──────────────────────────── 下位ティア駅フィルタ ────────────────────────────
+
+
+def _normalize_station_name(name: str) -> str:
+    """駅名を正規化: 「駅」除去、ヶ→ケ 統一。"""
+    s = name.strip().replace("駅", "")
+    return s.replace("ヶ", "ケ")
+
+
+_LOWER_TIER_STATIONS_NORMALIZED: frozenset[str] = frozenset(
+    _normalize_station_name(s) for s in LOWER_TIER_STATIONS
+)
+
+
+def lower_tier_station_ok(station_line: str, price_man: Optional[int]) -> bool:
+    """下位ティア（PRICE_MIN_MAN 〜 LOWER_TIER_PRICE_MAX_MAN）の駅制限チェック。
+
+    price_man が None または LOWER_TIER_PRICE_MAX_MAN 以上なら無条件で通過。
+    price_man が下位ティアの場合、最寄駅が LOWER_TIER_STATIONS に含まれる必要がある。
+    station_line が空の場合は取りこぼし防止のため通過。
+    """
+    if price_man is None or price_man >= LOWER_TIER_PRICE_MAX_MAN:
+        return True
+    name = station_name_from_line(station_line or "")
+    if not name:
+        return True
+    normalized = _normalize_station_name(name)
+    return normalized in _LOWER_TIER_STATIONS_NORMALIZED
 
 
 # ──────────────────────────── 路線・駅フィルタ ────────────────────────────
