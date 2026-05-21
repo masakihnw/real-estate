@@ -9,7 +9,7 @@
 駅徒歩10分以内。築20年以内・専有60㎡以上（都心3区・湾岸は55㎡）・総戸数30戸以上。
 
 【価格ティア】
-- 上位ティア（9,000万〜1億1,500万円）: 東京23区全域
+- 上位ティア（9,000万〜1億2,000万円）: 東京23区全域
 - 下位ティア（7,500万〜9,000万円）: 都心近接の指定駅のみ
 """
 
@@ -97,7 +97,7 @@ def _fallback_metadata() -> _MetadataDoc:
         "schemaVersion": 1,
         "defaults": {
             "priceMinMan": 7500,
-            "priceMaxMan": 11500,
+            "priceMaxMan": 12000,
             "areaMinM2": 60,
             "areaMaxM2": None,
             "walkMinMax": 10,
