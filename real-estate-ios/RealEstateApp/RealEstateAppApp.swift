@@ -25,45 +25,68 @@ struct RealEstateAppApp: App {
     // Listing モデルのストアドプロパティを追加・削除・型変更した場合はインクリメントする。
     // 旧バージョンの DB は自動削除され、サーバーからデータを再取得する。
     // VersionedSchema を使わない簡易マイグレーション方式。
-    private static let currentSchemaVersion = 17  // v17: isRelisted 追加、バッジ定義変更
+    private static let currentSchemaVersion = 21  // v21: 明示 URL でストア配置
     private static let schemaVersionKey = "realestate.schemaVersion"
+    private static let appGroupID = "group.com.hanawa.realestate"
+
+    private static var storeURL: URL {
+        URL.applicationSupportDirectory.appending(path: "RealEstateApp.store")
+    }
+
+    private static var storeDirectories: [URL] {
+        var dirs = [URL.applicationSupportDirectory]
+        if let groupURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupID
+        ) {
+            dirs.append(groupURL.appending(path: "Library/Application Support"))
+        }
+        return dirs
+    }
+
+    private static func ensureStoreDirectoriesExist() {
+        let fm = FileManager.default
+        for dir in storeDirectories {
+            try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
+        }
+    }
+
+    static var isInMemoryFallback = false
+    static var containerDiagnostics = ""
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([Listing.self, TransactionRecord.self])
 
-        // スキーマバージョンが古い場合、既存の DB ファイルを削除して再作成する。
-        // SwiftData の自動軽量マイグレーションは Optional プロパティ追加には対応するが、
-        // 大量プロパティ (50+) の大きなモデルに繰り返し変更を加えると
-        // Objective-C レベルの例外（NSException）でクラッシュすることがあるため、
-        // 明示的にバージョンを管理してクリーンスタートを保証する。
+        Self.ensureStoreDirectoriesExist()
+        Self.containerDiagnostics += "dirs: \(storeDirectories.map { $0.path() })\n"
+
         let savedVersion = UserDefaults.standard.integer(forKey: Self.schemaVersionKey)
+        Self.containerDiagnostics += "schema: saved=\(savedVersion) current=\(currentSchemaVersion)\n"
         if savedVersion < Self.currentSchemaVersion {
-            if savedVersion > 0 {
-                let diskConfig = ModelConfiguration(isStoredInMemoryOnly: false)
-                if let oldContainer = Self.createContainerSafely(for: schema, configurations: [diskConfig]) {
-                    let ctx = ModelContext(oldContainer)
-                    UserAnnotationStore.backup(from: ctx)
-                }
-            }
             Self.deleteSwiftDataStore()
             DiskImageCache.shared.clearAll()
             UserDefaults.standard.set(Self.currentSchemaVersion, forKey: Self.schemaVersionKey)
+            Self.containerDiagnostics += "store deleted & version updated\n"
         }
 
-        // ディスクへの永続化を試みる
-        let diskConfig = ModelConfiguration(isStoredInMemoryOnly: false)
+        let diskConfig = ModelConfiguration(url: storeURL)
+        Self.containerDiagnostics += "storeURL: \(storeURL.path())\n"
         if let container = Self.createContainerSafely(for: schema, configurations: [diskConfig]) {
+            Self.containerDiagnostics += "disk OK\n"
             return container
         }
 
-        // NSException またはエラー — DB を削除してリトライ
+        Self.containerDiagnostics += "disk FAIL: \(lastContainerError)\nretrying\n"
         logger.warning("ModelContainer 作成失敗、DB を削除してリトライします")
         Self.deleteSwiftDataStore()
-        if let container = Self.createContainerSafely(for: schema, configurations: [diskConfig]) {
+        Self.ensureStoreDirectoriesExist()
+        let retryConfig = ModelConfiguration(url: storeURL)
+        if let container = Self.createContainerSafely(for: schema, configurations: [retryConfig]) {
+            Self.containerDiagnostics += "disk OK (retry)\n"
             return container
         }
 
-        // ディスクが使えない — インメモリにフォールバック
+        Self.containerDiagnostics += "retry FAIL: \(lastContainerError)\nIN-MEMORY FALLBACK\n"
+        Self.isInMemoryFallback = true
         logger.warning("リトライも失敗、インメモリにフォールバック")
         let memoryConfig = ModelConfiguration(isStoredInMemoryOnly: true)
         if let container = Self.createContainerSafely(for: schema, configurations: [memoryConfig]) {
@@ -76,7 +99,8 @@ struct RealEstateAppApp: App {
             """)
     }()
 
-    /// NSException を含むすべての例外を安全に捕捉して ModelContainer を生成する。
+    private static var lastContainerError = ""
+
     private static func createContainerSafely(
         for schema: Schema,
         configurations: [ModelConfiguration]
@@ -87,29 +111,32 @@ struct RealEstateAppApp: App {
                 do {
                     container = try ModelContainer(for: schema, configurations: configurations)
                 } catch {
+                    lastContainerError = String(describing: error)
                     logger.error("ModelContainer Swift エラー: \(error.localizedDescription)")
                 }
             }
         } catch {
+            lastContainerError = "NSException: \(String(describing: error))"
             logger.error("ModelContainer NSException: \(error.localizedDescription)")
             Crashlytics.crashlytics().record(error: error)
         }
         return container
     }
 
-    /// SwiftData のデフォルトストアファイルを削除する。
-    /// アノテーション同期キーも合わせてクリアし、次回起動で全件再取得を保証する。
     private static func deleteSwiftDataStore() {
-        let base = URL.applicationSupportDirectory
-            .appending(path: "default.store")
         let suffixes = ["", "-wal", "-shm"]
-        for suffix in suffixes {
-            let fileURL = URL(filePath: base.path() + suffix)
-            try? FileManager.default.removeItem(at: fileURL)
+        let storeNames = ["default.store", "RealEstateApp.store"]
+        for dir in storeDirectories {
+            for name in storeNames {
+                let base = dir.appending(path: name)
+                for suffix in suffixes {
+                    let fileURL = URL(filePath: base.path() + suffix)
+                    try? FileManager.default.removeItem(at: fileURL)
+                }
+            }
         }
         UserDefaults.standard.removeObject(forKey: "supabase.annotations.lastSync")
         UserDefaults.standard.removeObject(forKey: "supabase.annotations.didPushLocal")
-        print("[RealEstateApp] SwiftData ストアを削除しました（アノテーション同期キーもクリア）")
     }
 
     init() {

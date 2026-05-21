@@ -293,8 +293,25 @@ final class SupabaseListingStore {
             jsonArray[i] = row
         }
 
-        let processedData = try JSONSerialization.data(withJSONObject: jsonArray)
-        return try JSONDecoder().decode([ListingDTO].self, from: processedData)
+        let decoder = JSONDecoder()
+        var dtos: [ListingDTO] = []
+        for (i, row) in jsonArray.enumerated() {
+            do {
+                let rowData = try JSONSerialization.data(withJSONObject: row)
+                let dto = try decoder.decode(ListingDTO.self, from: rowData)
+                dtos.append(dto)
+            } catch {
+                if dtos.isEmpty && i < 3 {
+                    let name = (row["name"] as? String) ?? "unknown"
+                    logger.error("DTO decode失敗 row[\(i)] \(name, privacy: .public): \(String(describing: error), privacy: .public)")
+                }
+            }
+        }
+        if dtos.isEmpty && !jsonArray.isEmpty {
+            let sampleRow = try JSONSerialization.data(withJSONObject: jsonArray[0])
+            return [try decoder.decode(ListingDTO.self, from: sampleRow)]
+        }
+        return dtos
     }
 
     // MARK: - Constants
