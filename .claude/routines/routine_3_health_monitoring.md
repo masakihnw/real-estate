@@ -102,6 +102,72 @@ SELECT * FROM health_check_data_quality();
 
 ---
 
+## Step 3.5: AI品質スイープ（セーフティネット）
+
+ルーティン①で漏れた品質問題を検出するセーフティネット。
+修正は行わず、検出のみ。問題があれば `pipeline_issues` に登録し、次回ルーティン①で修正される。
+
+1. 以下のクエリで「怪しい」物件を最大20件取得:
+```sql
+SELECT l.id, l.name, l.normalized_name, l.address, l.layout,
+       l.area_m2, l.floor_position, l.built_year,
+       ls.source, ls.price_man
+FROM listings l
+JOIN listing_sources ls ON l.id = ls.listing_id AND ls.is_active
+WHERE l.is_active = true
+AND (
+  -- 名前にプロモーション文言が残っている可能性
+  l.name ~ '[×【】◆★☆]'
+  -- normalized_name にダッシュバリアントあり（英数字隣接のカタカナ長音）
+  OR l.normalized_name ~ '[ー–—](?=[A-Za-z0-9])'
+  OR l.normalized_name ~ '(?<=[A-Za-z0-9])[ー–—]'
+  -- normalized_name が短すぎる/長すぎる
+  OR LENGTH(l.normalized_name) <= 3
+  OR LENGTH(l.normalized_name) >= 40
+)
+ORDER BY l.created_at DESC
+LIMIT 20;
+```
+
+2. 取得した物件についてAI判定:
+   a. **物件名品質**: `name` にプロモーション文言が混入していないか？
+   b. **表記揺れ重複**: 同一住所・同一面積の別名物件が存在しないか？
+   c. **異常データ**: normalized_name が明らかに物件名でないもの
+
+3. 問題発見時は `pipeline_issues` に登録:
+   ```sql
+   SELECT upsert_pipeline_issue(
+     '<issue_key>',
+     '<severity>',
+     'data_quality',
+     '<title>',
+     '<description>',
+     '<metadata>'::jsonb,
+     '<suggested_fix>',
+     'auto_fixable'
+   );
+   ```
+
+   issue_key の命名規則:
+   - 表記揺れ重複: `fuzzy_dedup_missed_{id_a}_{id_b}`
+   - プロモーション文言: `promotional_name_{id}`
+
+結果を以下の構造で保持:
+```json
+{
+  "checked_count": 5,
+  "issues_found": 2,
+  "issues": [
+    {"type": "promotional_name", "listing_id": 123, "detail": "..."},
+    {"type": "fuzzy_dedup_missed", "listing_ids": [456, 789], "detail": "..."}
+  ]
+}
+```
+
+対象が0件なら「品質問題なし」と記録してスキップ。
+
+---
+
 ## Step 4: アノマリ検出
 
 ```sql
@@ -128,6 +194,7 @@ SELECT * FROM health_check_anomaly_detection();
 - Step 1 で基準未満のフィールド名
 - Step 2 で警告条件に該当したメトリクス
 - Step 3 で count > 0 のチェック項目
+- Step 3.5 で issues_found > 0 の場合
 - Step 4 で is_alert = true の項目
 
 ```sql
@@ -188,6 +255,8 @@ WHERE user_id = 'default';
 | `score_mismatch` | Step 3 の `score_mismatch_ls_no_ai` ≥ 50 | medium | monitoring_only | data_quality |
 | `buyer_prefs_stale` | 6a で days_stale ≥ 7 | low | auto_fixable | data_quality |
 | `log_files_large` | ローカルの `.claude/routines/logs/` 内ファイルが 100KB 超 | low | auto_fixable | maintenance |
+| `fuzzy_dedup_missed` | Step 3.5 で表記揺れ重複を検出 | high | auto_fixable | data_quality |
+| `promotional_name` | Step 3.5 で name にプロモーション文言残存 | medium | auto_fixable | data_quality |
 
 各 issue の `description` には現在値・傾向・推定解消時期を含める。
 `suggested_fix` には Claude Code で実行可能な修正指示を含める。
@@ -314,6 +383,9 @@ SELECT skip_notification_draft('slack', 'pipeline_health_report');
 - score_mismatch_ls_no_ai: X件 ✅/⚠️
 - images_no_categories: X件 ✅/⚠️
 - duplicate_active: X件 ✅/⚠️
+
+### Step 3.5: AI品質スイープ
+- checked: X件、issues: X件 ✅/⚠️
 
 ### Step 4: アノマリ検出
 - active_count_drop: X件 ✅/⚠️

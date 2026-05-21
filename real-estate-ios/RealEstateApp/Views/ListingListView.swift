@@ -963,7 +963,7 @@ struct ListingListView: View {
                     }
                     ListingRowView(
                         listing: listing,
-                        siblings: group.units,
+                        siblings: group.units.filter { !$0.isDelisted },
                         onTap: {
                             if isCompareMode {
                                 if let idx = comparisonListings.firstIndex(where: { $0.url == listing.url }) {

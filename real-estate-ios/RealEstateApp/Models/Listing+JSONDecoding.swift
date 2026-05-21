@@ -175,12 +175,22 @@ extension Listing {
         var s = name.precomposedStringWithCompatibilityMapping
             .trimmingCharacters(in: .whitespaces)
 
+        // 英数字に隣接するダッシュバリアントをASCIIハイフンに統一（Cースクエア → C-スクエア）
+        s = s.replacingOccurrences(of: #"[ー－‐–—](?=[A-Za-z0-9])"#, with: "-", options: .regularExpression)
+        s = s.replacingOccurrences(of: #"(?<=[A-Za-z0-9])[ー－‐–—]"#, with: "-", options: .regularExpression)
+
         // 「掲載物件X件」「見学予約」のようなものは物件名ではない
         if s.range(of: #"^掲載物件\d+件$"#, options: .regularExpression) != nil { return "" }
         if s == "見学予約" || s == "noimage" { return "" }
 
         // ── 広告装飾の除去 ──
         // 【...】を除去（【弊社限定取扱物件】、【売主物件】、【VECS】等）
+        // フォールバック用に bracket 内テキストを保存
+        let bracketContent: String? = {
+            guard let match = s.range(of: #"【([^】]+)】"#, options: .regularExpression) else { return nil }
+            let full = String(s[match])
+            return String(full.dropFirst().dropLast())
+        }()
         s = s.replacingOccurrences(of: #"【[^】]*】"#, with: "", options: .regularExpression)
         // ◆NAME◆ → NAME（先頭◆で囲まれた物件名を抽出）
         if s.hasPrefix("◆"), s.hasSuffix("◆") {
@@ -260,7 +270,15 @@ extension Listing {
         // 連続スペースを正規化
         s = s.replacingOccurrences(of: #"\s{2,}"#, with: " ", options: .regularExpression)
 
-        return s.trimmingCharacters(in: .whitespaces)
+        s = s.trimmingCharacters(in: .whitespaces)
+
+        // フォールバック: クリーニング後が空 or feature tag のみの場合、bracket 内テキストを使用
+        if (s.isEmpty || Self.isFeatureTagsOnly(s)), let fallback = bracketContent {
+            let cleaned = fallback.replacingOccurrences(of: #"\s+"#, with: "", options: .regularExpression)
+            if !cleaned.isEmpty { return cleaned }
+        }
+
+        return s
     }
 
     /// 末尾の英語サブネームを除去する（GRAN WARD TERRACE, activewing 等）。
@@ -283,6 +301,16 @@ extension Listing {
         if alphaOnly.allSatisfy({ romanChars.contains($0) }) { return s }
         // 末尾の英語部分を除去
         return String(s[...s.index(before: lastCJK.upperBound)])
+    }
+
+    /// ×区切りの feature tag のみで構成されているかを判定
+    static func isFeatureTagsOnly(_ s: String) -> Bool {
+        let parts = s.components(separatedBy: "×").map { $0.trimmingCharacters(in: .whitespaces) }
+        guard parts.count >= 2 else { return false }
+        let tagPattern = #"^(ペット(可|飼育可|相談)|南向き?|北向き?|東向き?|西向き?|南東向き?|南西向き?|北東向き?|北西向き?|駅徒歩\d+分|徒歩\d+分|\d+年築|角部屋|リフォーム済み?|リノベーション|オートロック|宅配ボックス|食器洗浄?乾燥機|床暖房|バルコニー|ルーフバルコニー|追い焚き|浴室乾燥機|2階以上|最上階|管理人常駐|エレベーター|フローリング|システムキッチン|IHクッキングヒーター|都市ガス|オール電化|\d+[LDKRSldkrs]+|新築|\d+m2?|\d+万円?)$"#
+        return parts.allSatisfy { part in
+            part.range(of: tagPattern, options: .regularExpression) != nil
+        }
     }
 
     static func from(dto: ListingDTO, fetchedAt: Date = .now) -> Listing? {

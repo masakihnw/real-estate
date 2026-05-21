@@ -94,6 +94,12 @@ AND (
   OR l.normalized_name ~ '\d+(\.\d+)?平米'
   OR l.normalized_name ~ 'LDK住戸$'
   OR LENGTH(l.normalized_name) <= 2
+  -- name にプロモーション文言（×区切りタグ等）が含まれ、normalized_name と大きく異なる
+  OR (
+    l.name ~ '[×【】]'
+    AND l.name != l.normalized_name
+    AND LENGTH(l.name) > LENGTH(l.normalized_name) + 10
+  )
 )
 ORDER BY l.created_at DESC
 LIMIT 30;
@@ -104,6 +110,7 @@ LIMIT 30;
    - **name** と **normalized_name** は正当な日本のマンション・物件名か？
    - 説明文・特徴タグ・ページタイトルが物件名になっていないか？
    - 同一住所・同一スペックの正しい名前のレコードが既に存在しないか？
+   - **`name` にプロモーション文言（ペット可×南向き等の×区切りタグ、【】内の修飾語）が含まれ、`normalized_name` と大きく異なる場合**: `name` を `normalized_name` の値で上書きする（`UPDATE listings SET name = normalized_name WHERE id = <id>`）
 
 3. 判定結果に応じたアクション:
 
@@ -134,6 +141,84 @@ LIMIT 30;
            '{"listing_id": <id>, "name": "<name>", "normalized_name": "<normalized_name>"}'::jsonb,
            NOW())
    ON CONFLICT DO NOTHING;
+   ```
+
+対象が0件ならスキップして Step 0.7 へ。
+
+---
+
+## Step 0.7: AI ファジー重複検出
+
+既存の Step 1（セマンティック重複排除）は `normalized_name` 完全一致で候補を絞り込むため、
+ダッシュバリアント（ー vs -）や微妙な表記揺れを見逃す。
+このステップではより広い候補をAIに判定させ、即座に修正する。
+
+1. 候補ペア取得:
+```sql
+SELECT l1.id AS id_a, l2.id AS id_b,
+       l1.name AS name_a, l2.name AS name_b,
+       l1.normalized_name AS norm_a, l2.normalized_name AS norm_b,
+       l1.layout AS layout_a, l2.layout AS layout_b,
+       l1.area_m2 AS area_a, l2.area_m2 AS area_b,
+       l1.floor_position AS floor_a, l2.floor_position AS floor_b,
+       l1.built_year AS built_a, l2.built_year AS built_b,
+       l1.address AS addr_a, l2.address AS addr_b,
+       (SELECT ls.price_man FROM listing_sources ls WHERE ls.listing_id = l1.id AND ls.is_active ORDER BY ls.last_seen_at DESC LIMIT 1) AS price_a,
+       (SELECT ls.price_man FROM listing_sources ls WHERE ls.listing_id = l2.id AND ls.is_active ORDER BY ls.last_seen_at DESC LIMIT 1) AS price_b
+FROM listings l1
+JOIN listings l2
+  ON l1.id < l2.id
+  AND l1.is_active AND l2.is_active
+  AND l1.layout = l2.layout
+  AND ABS(l1.area_m2 - l2.area_m2) <= 3
+  AND l1.built_year = l2.built_year
+  AND l1.normalized_name != l2.normalized_name
+  AND (
+    -- ダッシュ系文字を統一して比較
+    TRANSLATE(l1.normalized_name, 'ー－‐–—', '-----')
+      = TRANSLATE(l2.normalized_name, 'ー－‐–—', '-----')
+    -- または住所の区が一致し、総戸数も一致（名前が違うが同一建物の可能性）
+    OR (
+      l1.total_units = l2.total_units
+      AND l1.total_units IS NOT NULL
+      AND SUBSTRING(l1.address FROM '.+?区') = SUBSTRING(l2.address FROM '.+?区')
+      AND LENGTH(l1.normalized_name) > 3
+      AND LENGTH(l2.normalized_name) > 3
+    )
+  )
+LIMIT 20;
+```
+
+2. 各ペアについてAI（自分自身）で判定する。以下の観点で分析:
+
+   - **名前の比較**: 表記揺れか？（ダッシュの種類違い、全角/半角、スペース有無、タワー名の有無）
+   - **スペック比較**: 面積・階数・築年・住所が一致または近似するか？
+   - **価格比較**: 価格差が20%以内か？
+
+   判定結果:
+   | 結果 | 条件 | アクション |
+   |------|------|-----------|
+   | `merge` | 同一物件（同じ部屋） | 古い方 or enrichment 少ない方を `is_active = false` に。元の方の `alt_urls` に URL を追加 |
+   | `same_building` | 同一マンション別部屋 | `normalized_name` を統一（より正式な方に合わせる） |
+   | `different` | 別物件 | スキップ |
+
+3. `merge` 判定の場合:
+   ```sql
+   -- マージ先に alt_sources 追加（enrichments 側）
+   UPDATE enrichments
+   SET alt_sources = COALESCE(alt_sources, '[]'::jsonb) || jsonb_build_array(jsonb_build_object(
+     'source', (SELECT ls.source FROM listing_sources ls WHERE ls.listing_id = <remove_id> AND ls.is_active LIMIT 1),
+     'url', (SELECT ls.url FROM listing_sources ls WHERE ls.listing_id = <remove_id> AND ls.is_active LIMIT 1)
+   ))
+   WHERE listing_id = <keep_id>;
+   
+   -- マージ元を非アクティブ化
+   UPDATE listings SET is_active = false WHERE id = <remove_id>;
+   ```
+
+4. `same_building` 判定の場合:
+   ```sql
+   UPDATE listings SET normalized_name = '<統一名>' WHERE id IN (<id_a>, <id_b>);
    ```
 
 対象が0件ならスキップして Step 1 へ。
@@ -266,6 +351,7 @@ SELECT * FROM batch_update_commute_from_master(100);
 |---|---|---|
 | Step 0: ヘルスチェック | — | ✅/⚠️ |
 | Step 0.5: データ品質 | 自動削除X件、AI検証Y件（修正Z件、削除W件） | ✅/スキップ |
+| Step 0.7: ファジー重複 | X件検出（merge Y件、統一Z件） | ✅/スキップ |
 | Step 1: 重複排除 | X件（merge Y件、flag Z件） | ✅/スキップ |
 | Step 2: テキスト特徴抽出 | X件 | ✅/スキップ |
 | Step 3: AIスコアリング | X件（平均XX点） | ✅/スキップ |
