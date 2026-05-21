@@ -902,5 +902,13 @@
     "quarter": "豊玉北",
     "neighbourhood": "",
     "city_district": ""
+  },
+  "35.664570,139.784766": {
+    "display_name": "佃大橋通り, 佃二丁目, 佃, 中央区, 東京都, 104-0051, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "佃",
+    "neighbourhood": "佃二丁目",
+    "city_district": ""
   }
 }
