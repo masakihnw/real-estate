@@ -50,6 +50,7 @@ from scraper_common import (
     load_station_passengers,
     station_passengers_ok,
     line_ok,
+    lower_tier_station_ok,
     is_tokyo_23_by_address,
     get_effective_area_min_m2,
 )
@@ -353,6 +354,8 @@ def apply_conditions(listings: list[SuumoShinchikuListing]) -> list[SuumoShinchi
             price_hi = r.price_max_man or r.price_man
             # レンジが重なるか: [price_man, price_hi] ∩ [PRICE_MIN_MAN, PRICE_MAX_MAN]
             if price_hi < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN:
+                continue
+            if not lower_tier_station_ok(r.station_line, price_hi):
                 continue
 
         # 面積: 帯の上限が条件以上か。

@@ -43,6 +43,7 @@ from scraper_common import (
     load_station_passengers,
     station_passengers_ok,
     line_ok,
+    lower_tier_station_ok,
     is_tokyo_23_by_address,
     get_effective_area_min_m2,
 )
@@ -278,6 +279,8 @@ def apply_conditions(listings: list[NomucomListing]) -> list[NomucomListing]:
         if not station_passengers_ok(r.station_line, passengers_map):
             continue
         if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
+            continue
+        if not lower_tier_station_ok(r.station_line, r.price_man):
             continue
         effective_area_min = get_effective_area_min_m2(r.address)
         if r.area_m2 is not None and (r.area_m2 < effective_area_min or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
