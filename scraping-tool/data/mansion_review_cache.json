@@ -8088,5 +8088,49 @@
       ]
     },
     "cached_at": "2026-05-21T02:59:18.049093"
+  },
+  "デュオシティ西日暮里ステーシア13階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/2281113.html",
+      "deviation_score": 0,
+      "estimated_price_man": 8205,
+      "estimated_tsubo_price_man": 485,
+      "estimated_m2_price_man": 147,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 55.27,
+          "price_man": 8180,
+          "tsubo_price_man": 490.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-21T16:50:19.815908"
+  },
+  "デュオシティ西日暮里ステーシア": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/2281113.html",
+      "deviation_score": 0,
+      "estimated_price_man": 8205,
+      "estimated_tsubo_price_man": 485,
+      "estimated_m2_price_man": 147,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 55.27,
+          "price_man": 8180,
+          "tsubo_price_man": 490.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-21T16:50:19.815908"
   }
 }
