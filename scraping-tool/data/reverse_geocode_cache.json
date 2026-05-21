@@ -790,5 +790,29 @@
     "quarter": "三田",
     "neighbourhood": "三田四丁目",
     "city_district": ""
+  },
+  "35.710158,139.715388": {
+    "display_name": "西早稲田三丁目, 西早稲田, 新宿区, 東京都, 169-0051, 日本",
+    "city": "新宿区",
+    "suburb": "",
+    "quarter": "西早稲田",
+    "neighbourhood": "西早稲田三丁目",
+    "city_district": ""
+  },
+  "35.707174,139.665643": {
+    "display_name": "中野通り, 中野五丁目, 中野, 中野区, 東京都, 164-8512, 日本",
+    "city": "中野区",
+    "suburb": "",
+    "quarter": "中野",
+    "neighbourhood": "中野五丁目",
+    "city_district": ""
+  },
+  "35.708777,139.689714": {
+    "display_name": "東中野五丁目, 東中野, 上落合, 中野区, 東京都, 161-0034, 日本",
+    "city": "中野区",
+    "suburb": "上落合",
+    "quarter": "東中野",
+    "neighbourhood": "東中野五丁目",
+    "city_district": ""
   }
 }
