@@ -124,8 +124,16 @@ struct DashboardView: View {
 
     private var aiInsightsSection: some View {
         let topListings = chukoListings
-            .filter { $0.highlightBadge != nil && $0.investmentSummary != nil && ($0.aiRecommendationScore ?? 0) >= 4 }
+            .filter { !$0.isDelisted && $0.highlightBadge != nil && $0.investmentSummary != nil && ($0.aiRecommendationScore ?? 0) >= 4 }
             .sorted { ($0.listingScore ?? 0) > ($1.listingScore ?? 0) }
+            .reduce(into: (seen: Set<String>(), result: [Listing]())) { acc, listing in
+                let key = listing.buildingGroupKey
+                if !acc.seen.contains(key) {
+                    acc.seen.insert(key)
+                    acc.result.append(listing)
+                }
+            }
+            .result
             .prefix(3)
 
         let dedupCount = chukoListings.filter { !$0.parsedDedupCandidates.isEmpty }.count
