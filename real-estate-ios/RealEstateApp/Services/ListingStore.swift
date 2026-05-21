@@ -543,8 +543,25 @@ final class ListingStore {
                 }
             }
         } catch {
+            let detail: String
+            if let decodingError = error as? DecodingError {
+                switch decodingError {
+                case .typeMismatch(let type, let ctx):
+                    detail = "型不一致: \(type) at \(ctx.codingPath.map(\.stringValue).joined(separator: "."))"
+                case .valueNotFound(let type, let ctx):
+                    detail = "値なし: \(type) at \(ctx.codingPath.map(\.stringValue).joined(separator: "."))"
+                case .keyNotFound(let key, _):
+                    detail = "キーなし: \(key.stringValue)"
+                case .dataCorrupted(let ctx):
+                    detail = "データ破損: \(ctx.debugDescription)"
+                @unknown default:
+                    detail = error.localizedDescription
+                }
+            } else {
+                detail = String(describing: error)
+            }
             await MainActor.run {
-                lastError = error.localizedDescription
+                lastError = detail
                 isRefreshing = false
             }
         }

@@ -423,6 +423,19 @@ struct SettingsView: View {
 
     // MARK: - このアプリについて
 
+    @State private var showDiagnostics = false
+    @State private var diagnosticsCopied = false
+
+    private var diagnosticsText: String {
+        [
+            "version: \(appVersion) (\(buildNumber))",
+            "store: \(RealEstateAppApp.isInMemoryFallback ? "IN-MEMORY" : "disk")",
+            "lastError: \(store.lastError ?? "none")",
+            "lastFetched: \(store.lastFetchedAt?.formatted(.iso8601) ?? "nil")",
+            RealEstateAppApp.containerDiagnostics,
+        ].joined(separator: "\n")
+    }
+
     @ViewBuilder
     private var aboutSection: some View {
         Section {
@@ -441,6 +454,32 @@ struct SettingsView: View {
                 Text("バージョン")
                 Spacer()
                 Text("\(appVersion) (\(buildNumber))")
+            }
+            Button {
+                showDiagnostics.toggle()
+            } label: {
+                Label("診断情報", systemImage: "wrench.and.screwdriver")
+            }
+            if showDiagnostics {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(diagnosticsText)
+                        .font(.caption2.monospaced())
+                        .foregroundStyle(.secondary)
+                    Button {
+                        UIPasteboard.general.string = diagnosticsText
+                        diagnosticsCopied = true
+                        Task {
+                            try? await Task.sleep(for: .seconds(2))
+                            diagnosticsCopied = false
+                        }
+                    } label: {
+                        Label(
+                            diagnosticsCopied ? "コピーしました" : "クリップボードにコピー",
+                            systemImage: diagnosticsCopied ? "checkmark" : "doc.on.doc"
+                        )
+                        .font(.caption)
+                    }
+                }
             }
         } header: {
             Text("このアプリについて")

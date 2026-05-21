@@ -767,20 +767,33 @@ struct ListingListView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .bottom) {
-            if !favoritesOnly && store.isRefreshing {
-                HStack(spacing: 8) {
-                    ProgressView()
-                    Text("更新中…")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+            VStack(spacing: 8) {
+                if !favoritesOnly && store.isRefreshing {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                        Text("更新中…")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(.regularMaterial, in: Capsule())
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .animation(.easeInOut, value: store.isRefreshing)
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(.regularMaterial, in: Capsule())
-                .padding(.bottom, 40)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .animation(.easeInOut, value: store.isRefreshing)
+                if !favoritesOnly, let errMsg = store.lastError {
+                    Text(errMsg)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(3)
+                        .padding(8)
+                        .onTapGesture {
+                            UIPasteboard.general.string = errMsg
+                        }
+                }
             }
+            .padding(.bottom, 40)
         }
         .accessibilityElement(children: .combine)
     }
