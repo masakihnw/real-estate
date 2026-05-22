@@ -8180,5 +8180,27 @@
       ]
     },
     "cached_at": "2026-05-22T04:19:28.207745"
+  },
+  "メインステージ蒲田V": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/42043.html",
+      "deviation_score": 90,
+      "estimated_price_man": 2381,
+      "estimated_tsubo_price_man": 375,
+      "estimated_m2_price_man": 114,
+      "shinchiku_history_count": 90,
+      "chuko_history_count": 20,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 31.56,
+          "price_man": 2867,
+          "tsubo_price_man": 298.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-22T16:24:11.101032"
   }
 }

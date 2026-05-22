@@ -918,5 +918,13 @@
     "quarter": "月島",
     "neighbourhood": "月島一丁目",
     "city_district": ""
+  },
+  "35.666375,139.785257": {
+    "display_name": "佃大通り, 佃二丁目, 佃, 中央区, 東京都, 104-0051, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "佃",
+    "neighbourhood": "佃二丁目",
+    "city_district": ""
   }
 }
