@@ -8132,5 +8132,53 @@
       ]
     },
     "cached_at": "2026-05-21T16:50:19.815908"
+  },
+  "晴海アイランドトリトンスクエアビュータワー1号棟": {
+    "data": null,
+    "cached_at": "2026-05-14T16:09:16.857184"
+  },
+  "プラウドシティ方南町": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1932059.html",
+      "deviation_score": 20,
+      "estimated_price_man": 11116,
+      "estimated_tsubo_price_man": 557,
+      "estimated_m2_price_man": 169,
+      "shinchiku_history_count": 208,
+      "chuko_history_count": 16,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 65.81,
+          "price_man": 10280,
+          "tsubo_price_man": 519.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-22T04:19:19.622835"
+  },
+  "プラウド住吉": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1386072.html",
+      "deviation_score": 96,
+      "estimated_price_man": 9198,
+      "estimated_tsubo_price_man": 507,
+      "estimated_m2_price_man": 154,
+      "shinchiku_history_count": 96,
+      "chuko_history_count": 26,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 63.79,
+          "price_man": 7343,
+          "tsubo_price_man": 380.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-22T04:19:28.207745"
   }
 }

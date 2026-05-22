@@ -69690,5 +69690,70 @@
         "label": "その他"
       }
     ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20466402/": {
+    "total_units": 624,
+    "floor_position": 20,
+    "floor_total": 50,
+    "floor_structure": "SRC50階地下2階建",
+    "ownership": "所有権",
+    "management_fee": 13490,
+    "repair_reserve_fund": 24730,
+    "balcony_area_m2": 10.0,
+    "zoning": "無指定",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "陽当り良好",
+      "高層階",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "ＴＶモニタ付インターホン",
+      "眺望良好",
+      "南西向き",
+      "ペット相談",
+      "エレベーター",
+      "宅配ボックス",
+      "周辺交通量少なめ",
+      "整備された歩道"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0003.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0006.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0004.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0008.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0005.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0007.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F402%2F20466402%2F20466402_0009.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      }
+    ]
   }
 }
