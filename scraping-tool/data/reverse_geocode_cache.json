@@ -934,5 +934,21 @@
     "quarter": "竜泉",
     "neighbourhood": "竜泉三丁目",
     "city_district": ""
+  },
+  "35.656753,139.741306": {
+    "display_name": "東麻布二丁目, 東麻布, 港区, 東京都, 106-0044, 日本",
+    "city": "港区",
+    "suburb": "",
+    "quarter": "東麻布",
+    "neighbourhood": "東麻布二丁目",
+    "city_district": ""
+  },
+  "35.655497,139.741156": {
+    "display_name": "環状三号線, 東麻布一丁目, 東麻布, 港区, 東京都, 106-0044, 日本",
+    "city": "港区",
+    "suburb": "",
+    "quarter": "東麻布",
+    "neighbourhood": "東麻布一丁目",
+    "city_district": ""
   }
 }
