@@ -8202,5 +8202,49 @@
       ]
     },
     "cached_at": "2026-05-22T16:24:11.101032"
+  },
+  "デュフレベース南麻布": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/534302.html",
+      "deviation_score": 18,
+      "estimated_price_man": 12324,
+      "estimated_tsubo_price_man": 658,
+      "estimated_m2_price_man": 199,
+      "shinchiku_history_count": 18,
+      "chuko_history_count": 59,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 66.39,
+          "price_man": 10270,
+          "tsubo_price_man": 515.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-23T03:57:04.537543"
+  },
+  "マストレジデンス世田谷": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/754684.html",
+      "deviation_score": 41,
+      "estimated_price_man": 11113,
+      "estimated_tsubo_price_man": 541,
+      "estimated_m2_price_man": 164,
+      "shinchiku_history_count": 41,
+      "chuko_history_count": 28,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 67.18,
+          "price_man": 9247,
+          "tsubo_price_man": 454.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-23T03:57:13.261043"
   }
 }
