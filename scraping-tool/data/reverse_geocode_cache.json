@@ -950,5 +950,29 @@
     "quarter": "東麻布",
     "neighbourhood": "東麻布一丁目",
     "city_district": ""
+  },
+  "35.655303,139.741163": {
+    "display_name": "環状三号線, 東麻布一丁目, 東麻布, 港区, 東京都, 106-0044, 日本",
+    "city": "港区",
+    "suburb": "",
+    "quarter": "東麻布",
+    "neighbourhood": "東麻布一丁目",
+    "city_district": ""
+  },
+  "35.688119,139.621147": {
+    "display_name": "高井戸東四丁目, 高井戸東, 杉並区, 東京都, 168-0072, 日本",
+    "city": "杉並区",
+    "suburb": "",
+    "quarter": "高井戸東",
+    "neighbourhood": "高井戸東四丁目",
+    "city_district": ""
+  },
+  "35.681329,139.629271": {
+    "display_name": "浜田山三丁目, 浜田山, 杉並区, 東京都, 168-0065, 日本",
+    "city": "杉並区",
+    "suburb": "",
+    "quarter": "浜田山",
+    "neighbourhood": "浜田山三丁目",
+    "city_district": ""
   }
 }
