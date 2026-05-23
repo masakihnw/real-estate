@@ -71152,5 +71152,62 @@
         "label": "こんなパンフレットが届きます"
       }
     ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20871024/": {
+    "total_units": 28,
+    "floor_position": 4,
+    "floor_total": 8,
+    "floor_structure": "SRC8階建",
+    "ownership": "所有権",
+    "management_fee": 12200,
+    "repair_reserve_fund": 17520,
+    "balcony_area_m2": 14.36,
+    "zoning": "無指定",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "エレベーター"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0001.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0003.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0004.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0008.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0007.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0010.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0005.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0009.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F024%2F20871024%2F20871024_0006.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      }
+    ]
   }
 }
