@@ -8268,5 +8268,141 @@
       ]
     },
     "cached_at": "2026-05-23T08:55:10.877270"
+  },
+  "ブリリア久が原": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/766307.html",
+      "deviation_score": 35,
+      "estimated_price_man": 8492,
+      "estimated_tsubo_price_man": 390,
+      "estimated_m2_price_man": 118,
+      "shinchiku_history_count": 35,
+      "chuko_history_count": 9,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 74.66,
+          "price_man": 8016,
+          "tsubo_price_man": 355.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-24T04:13:27.925422"
+  },
+  "ガーデンテラス馬込プレミアム": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/781486.html",
+      "deviation_score": 11,
+      "estimated_price_man": 9009,
+      "estimated_tsubo_price_man": 473,
+      "estimated_m2_price_man": 144,
+      "shinchiku_history_count": 11,
+      "chuko_history_count": 26,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 59.65,
+          "price_man": 7008,
+          "tsubo_price_man": 384.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-24T04:13:36.482279"
+  },
+  "パークタワー東雲29階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/535018.html",
+      "deviation_score": 58,
+      "estimated_price_man": 11902,
+      "estimated_tsubo_price_man": 646,
+      "estimated_m2_price_man": 196,
+      "shinchiku_history_count": 585,
+      "chuko_history_count": 480,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 26,
+          "layout": "",
+          "area_m2": 69.69,
+          "price_man": 8175,
+          "tsubo_price_man": 388.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:20:14.741823"
+  },
+  "パークタワー東雲6階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/535018.html",
+      "deviation_score": 58,
+      "estimated_price_man": 11902,
+      "estimated_tsubo_price_man": 646,
+      "estimated_m2_price_man": 196,
+      "shinchiku_history_count": 585,
+      "chuko_history_count": 480,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 26,
+          "layout": "",
+          "area_m2": 69.69,
+          "price_man": 8175,
+          "tsubo_price_man": 388.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:20:14.741823"
+  },
+  "マストレジデンス世田谷代田2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/754684.html",
+      "deviation_score": 41,
+      "estimated_price_man": 10780,
+      "estimated_tsubo_price_man": 540,
+      "estimated_m2_price_man": 164,
+      "shinchiku_history_count": 41,
+      "chuko_history_count": 28,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 67.18,
+          "price_man": 9247,
+          "tsubo_price_man": 454.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:28:43.129793"
+  },
+  "リストレジデンス西日暮里壱番館": {
+    "data": null,
+    "cached_at": "2026-05-24T04:13:44.603528"
+  },
+  "ヴェレーナグラン北赤羽マスタープレイス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1630122.html",
+      "deviation_score": 25,
+      "estimated_price_man": 8616,
+      "estimated_tsubo_price_man": 419,
+      "estimated_m2_price_man": 127,
+      "shinchiku_history_count": 253,
+      "chuko_history_count": 2,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 13,
+          "layout": "",
+          "area_m2": 70.22,
+          "price_man": 9039,
+          "tsubo_price_man": 426.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-24T04:13:53.100681"
   }
 }
