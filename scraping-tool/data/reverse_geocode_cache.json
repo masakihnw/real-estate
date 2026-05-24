@@ -982,5 +982,29 @@
     "quarter": "",
     "neighbourhood": "豊町六丁目",
     "city_district": ""
+  },
+  "35.742883,139.720364": {
+    "display_name": "滝野川七丁目, 滝野川, 北区, 東京都, 114-0023, 日本",
+    "city": "北区",
+    "suburb": "",
+    "quarter": "滝野川",
+    "neighbourhood": "滝野川七丁目",
+    "city_district": ""
+  },
+  "35.748534,139.734477": {
+    "display_name": "明治通り, 滝野川一丁目, 滝野川, 北区, 東京都, 114-0023, 日本",
+    "city": "北区",
+    "suburb": "",
+    "quarter": "滝野川",
+    "neighbourhood": "滝野川一丁目",
+    "city_district": ""
+  },
+  "35.625342,139.713046": {
+    "display_name": "西五反田五丁目, 西五反田, 品川区, 東京都, 141-0031, 日本",
+    "city": "品川区",
+    "suburb": "",
+    "quarter": "西五反田",
+    "neighbourhood": "西五反田五丁目",
+    "city_district": ""
   }
 }
