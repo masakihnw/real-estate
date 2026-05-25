@@ -8404,5 +8404,101 @@
       ]
     },
     "cached_at": "2026-05-24T04:13:53.100681"
+  },
+  "トキアス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17824.html",
+      "deviation_score": 62,
+      "estimated_price_man": 8594,
+      "estimated_tsubo_price_man": 379,
+      "estimated_m2_price_man": 115,
+      "shinchiku_history_count": 620,
+      "chuko_history_count": 216,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 9,
+          "layout": "",
+          "area_m2": 84.31,
+          "price_man": 5500,
+          "tsubo_price_man": 217.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-25T10:43:29.546447"
+  },
+  "蘆花公園ザ・レジデンスフォレストコート☆リフォー...": {
+    "data": null,
+    "cached_at": "2026-05-25T10:43:33.282028"
+  },
+  "ワールドシティタワーズ24階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/35716.html",
+      "deviation_score": 86,
+      "estimated_price_man": 19527,
+      "estimated_tsubo_price_man": 751,
+      "estimated_m2_price_man": 228,
+      "shinchiku_history_count": 868,
+      "chuko_history_count": 2253,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 22,
+          "layout": "",
+          "area_m2": 78.82,
+          "price_man": 11169,
+          "tsubo_price_man": 460.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:02:49.030278"
+  },
+  "プラウドタシティ東雲キャナルマークス": {
+    "data": null,
+    "cached_at": "2026-05-25T10:43:36.663348"
+  },
+  "シティテラス赤羽THEEAST": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1633618.html",
+      "deviation_score": 30,
+      "estimated_price_man": 10977,
+      "estimated_tsubo_price_man": 512,
+      "estimated_m2_price_man": 155,
+      "shinchiku_history_count": 300,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 68.38,
+          "price_man": 9853,
+          "tsubo_price_man": 476.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-25T10:43:46.327596"
+  },
+  "シティテラス赤羽THE": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1633618.html",
+      "deviation_score": 30,
+      "estimated_price_man": 10977,
+      "estimated_tsubo_price_man": 512,
+      "estimated_m2_price_man": 155,
+      "shinchiku_history_count": 300,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 68.38,
+          "price_man": 9853,
+          "tsubo_price_man": 476.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-25T10:43:46.327596"
   }
 }
