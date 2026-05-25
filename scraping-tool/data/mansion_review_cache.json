@@ -8500,5 +8500,27 @@
       ]
     },
     "cached_at": "2026-05-25T10:43:46.327596"
+  },
+  "プライムパークス品川シーサイドザ・タワー19階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/756352.html",
+      "deviation_score": 81,
+      "estimated_price_man": 12100,
+      "estimated_tsubo_price_man": 715,
+      "estimated_m2_price_man": 217,
+      "shinchiku_history_count": 817,
+      "chuko_history_count": 366,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 16,
+          "layout": "",
+          "area_m2": 68.2,
+          "price_man": 9999,
+          "tsubo_price_man": 479.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:14:18.557711"
   }
 }
