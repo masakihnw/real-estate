@@ -1006,5 +1006,21 @@
     "quarter": "西五反田",
     "neighbourhood": "西五反田五丁目",
     "city_district": ""
+  },
+  "35.685185,139.661804": {
+    "display_name": "弥生町六丁目, 弥生町, 中野区, 東京都, 164-0013, 日本",
+    "city": "中野区",
+    "suburb": "",
+    "quarter": "弥生町",
+    "neighbourhood": "弥生町六丁目",
+    "city_district": ""
+  },
+  "35.690849,139.675520": {
+    "display_name": "弥生町二丁目, 弥生町, 中野区, 東京都, 164-0013, 日本",
+    "city": "中野区",
+    "suburb": "",
+    "quarter": "弥生町",
+    "neighbourhood": "弥生町二丁目",
+    "city_district": ""
   }
 }
