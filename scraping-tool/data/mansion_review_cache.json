@@ -8522,5 +8522,71 @@
       ]
     },
     "cached_at": "2026-05-14T16:14:18.557711"
+  },
+  "レコシティ・プライム": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/18407.html",
+      "deviation_score": 15,
+      "estimated_price_man": 6944,
+      "estimated_tsubo_price_man": 284,
+      "estimated_m2_price_man": 86,
+      "shinchiku_history_count": 150,
+      "chuko_history_count": 78,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 82.42,
+          "price_man": 5422,
+          "tsubo_price_man": 216.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-26T04:11:35.276275"
+  },
+  "サンウッド品川天王洲タワー": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17446.html",
+      "deviation_score": 12,
+      "estimated_price_man": 9498,
+      "estimated_tsubo_price_man": 542,
+      "estimated_m2_price_man": 164,
+      "shinchiku_history_count": 129,
+      "chuko_history_count": 186,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 13,
+          "layout": "",
+          "area_m2": 57.19,
+          "price_man": 5352,
+          "tsubo_price_man": 310.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-26T04:11:45.011685"
+  },
+  "パークタワー東雲28階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/535018.html",
+      "deviation_score": 58,
+      "estimated_price_man": 11902,
+      "estimated_tsubo_price_man": 646,
+      "estimated_m2_price_man": 196,
+      "shinchiku_history_count": 585,
+      "chuko_history_count": 480,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 26,
+          "layout": "",
+          "area_m2": 69.69,
+          "price_man": 8175,
+          "tsubo_price_man": 388.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-14T16:20:14.741823"
   }
 }
