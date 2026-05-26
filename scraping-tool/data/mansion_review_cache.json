@@ -8588,5 +8588,27 @@
       ]
     },
     "cached_at": "2026-05-14T16:20:14.741823"
+  },
+  "パークホームズ中野": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43361.html",
+      "deviation_score": 50,
+      "estimated_price_man": 14009,
+      "estimated_tsubo_price_man": 692,
+      "estimated_m2_price_man": 210,
+      "shinchiku_history_count": 50,
+      "chuko_history_count": 14,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 68.93,
+          "price_man": 9979,
+          "tsubo_price_man": 481.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-26T17:20:33.267884"
   }
 }
