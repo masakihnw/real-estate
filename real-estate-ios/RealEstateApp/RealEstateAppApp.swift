@@ -25,7 +25,7 @@ struct RealEstateAppApp: App {
     // Listing モデルのストアドプロパティを追加・削除・型変更した場合はインクリメントする。
     // 旧バージョンの DB は自動削除され、サーバーからデータを再取得する。
     // VersionedSchema を使わない簡易マイグレーション方式。
-    private static let currentSchemaVersion = 21  // v21: 明示 URL でストア配置
+    private static let currentSchemaVersion = 22  // v22: enrichmentFetchedAt 追加 (2層データ取得)
     private static let schemaVersionKey = "realestate.schemaVersion"
     private static let appGroupID = "group.com.hanawa.realestate"
 

@@ -327,6 +327,9 @@ final class Listing: @unchecked Sendable {
     /// AI推奨の次のアクション
     var aiRecommendationAction: String?
 
+    /// enrichment データの最終取得日時（nil = 未取得、詳細画面でレイジーロード要）
+    var enrichmentFetchedAt: Date?
+
     init(
         source: String? = nil,
         url: String,

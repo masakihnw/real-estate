@@ -2,8 +2,11 @@
 //  SupabaseListingStore.swift
 //  RealEstateApp
 //
-//  Supabase REST API (listings_feed view) から物件データを取得し、
-//  既存の ListingStore.syncToDatabase() と同じ方式で SwiftData に同期する。
+//  Supabase REST API から物件データを取得し SwiftData に同期する。
+//
+//  2層データ取得:
+//    - リスト/マップ同期: listings_feed_light (コアフィールドのみ、高速)
+//    - 詳細画面: get_listing_detail RPC (全 enrichment、レイジーロード)
 //
 //  差分同期: lastSyncTimestamp 以降に updated_at が変わった物件のみ取得。
 //  初回: 全件取得 (100件/ページのページネーション)。
@@ -88,7 +91,7 @@ final class SupabaseListingStore {
         return newCount
     }
 
-    /// 全件取得 (ページネーション)
+    /// 全件取得 (ページネーション) — 軽量ビューを使用
     private func fetchAll(propertyType: String) async throws -> [ListingDTO] {
         var allDTOs: [ListingDTO] = []
         var offset = 0
@@ -96,7 +99,7 @@ final class SupabaseListingStore {
         while true {
             let range = offset...(offset + pageSize - 1)
             let (data, response) = try await client.select(
-                from: "listings_feed",
+                from: "listings_feed_light",
                 columns: "*",
                 filters: [
                     ("is_active", "eq.true"),
@@ -130,10 +133,10 @@ final class SupabaseListingStore {
         return dtos
     }
 
-    /// 差分取得 (since timestamp)
+    /// 差分取得 (since timestamp) — 軽量ビューを使用
     private func fetchIncremental(propertyType: String, since: String) async throws -> [ListingDTO] {
         let params: [String: Any] = ["since_ts": since]
-        let data = try await client.rpc("get_listings_since", params: params)
+        let data = try await client.rpc("get_listings_since_light", params: params)
 
         var dtos = try Self.decodeDTOs(from: data)
         dtos = dtos.filter { $0.property_type == propertyType }
@@ -247,6 +250,64 @@ final class SupabaseListingStore {
         } catch {
             logger.error("Supabase syncToDatabase 失敗 (\(propertyType, privacy: .public)): \(error.localizedDescription, privacy: .public)")
             return 0
+        }
+    }
+
+    // MARK: - Detail Lazy Loading
+
+    /// 個別物件の全 enrichment データを取得し SwiftData に反映する。
+    /// 詳細画面を開いた際にレイジーロードで呼ばれる。
+    func fetchDetail(identityKey: String, modelContext: ModelContext) async throws {
+        let params: [String: Any] = ["p_identity_key": identityKey]
+        let data = try await client.rpc("get_listing_detail", params: params)
+        let dtos = try Self.decodeDTOs(from: data)
+
+        guard let dto = dtos.first,
+              let incoming = Listing.from(dto: dto, fetchedAt: Date()) else {
+            logger.warning("get_listing_detail: \(identityKey, privacy: .public) のデータなし")
+            return
+        }
+
+        let predicate = #Predicate<Listing> { $0.identityKey == identityKey }
+        let descriptor = FetchDescriptor<Listing>(predicate: predicate)
+        guard let existing = try modelContext.fetch(descriptor).first else {
+            logger.warning("fetchDetail: ローカルに \(identityKey, privacy: .public) が存在しない")
+            return
+        }
+
+        Self.updateEnrichmentFields(existing, from: incoming)
+        existing.enrichmentFetchedAt = Date()
+        try modelContext.save()
+
+        logger.info("fetchDetail: \(identityKey, privacy: .public) の enrichment を取得・保存")
+    }
+
+    /// enrichment JSONB フィールドのみを更新する（軽量同期で nil だったフィールドを埋める）
+    static func updateEnrichmentFields(_ existing: Listing, from new: Listing) {
+        existing.floorPlanImagesJSON = new.floorPlanImagesJSON ?? existing.floorPlanImagesJSON
+        existing.suumoImagesJSON = new.suumoImagesJSON ?? existing.suumoImagesJSON
+        existing.hazardInfo = new.hazardInfo ?? existing.hazardInfo
+        existing.ssRadarData = new.ssRadarData ?? existing.ssRadarData
+        existing.ssPastMarketTrends = new.ssPastMarketTrends ?? existing.ssPastMarketTrends
+        existing.ssSurroundingProperties = new.ssSurroundingProperties ?? existing.ssSurroundingProperties
+        existing.ssPriceJudgments = new.ssPriceJudgments ?? existing.ssPriceJudgments
+        existing.reinfolibMarketData = new.reinfolibMarketData ?? existing.reinfolibMarketData
+        existing.mansionReviewData = new.mansionReviewData ?? existing.mansionReviewData
+        existing.estatPopulationData = new.estatPopulationData ?? existing.estatPopulationData
+        existing.investmentSummary = new.investmentSummary ?? existing.investmentSummary
+        existing.extractedFeaturesJSON = new.extractedFeaturesJSON ?? existing.extractedFeaturesJSON
+        existing.imageCategoriesJSON = new.imageCategoriesJSON ?? existing.imageCategoriesJSON
+        existing.dedupCandidatesJSON = new.dedupCandidatesJSON ?? existing.dedupCandidatesJSON
+        existing.altSourcesJSON = new.altSourcesJSON ?? existing.altSourcesJSON
+        existing.priceHistoryJSON = new.priceHistoryJSON ?? existing.priceHistoryJSON
+        existing.aiRecommendationSummary = new.aiRecommendationSummary ?? existing.aiRecommendationSummary
+        existing.aiRecommendationFlagsJSON = new.aiRecommendationFlagsJSON ?? existing.aiRecommendationFlagsJSON
+        existing.aiRecommendationAction = new.aiRecommendationAction ?? existing.aiRecommendationAction
+        if let pipelineCommute = new.commuteInfoJSON {
+            existing.commuteInfoJSON = pipelineCommute
+        }
+        if let pipelineCommuteV2 = new.commuteInfoV2JSON {
+            existing.commuteInfoV2JSON = pipelineCommuteV2
         }
     }
 
