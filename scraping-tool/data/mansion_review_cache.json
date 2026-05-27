@@ -8610,5 +8610,27 @@
       ]
     },
     "cached_at": "2026-05-26T17:20:33.267884"
+  },
+  "パークホームズ雪が谷大塚": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/603633.html",
+      "deviation_score": 51,
+      "estimated_price_man": 10087,
+      "estimated_tsubo_price_man": 434,
+      "estimated_m2_price_man": 132,
+      "shinchiku_history_count": 51,
+      "chuko_history_count": 17,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 73.59,
+          "price_man": 8222,
+          "tsubo_price_man": 369.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-27T04:31:15.895661"
   }
 }
