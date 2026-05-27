@@ -10,6 +10,7 @@ import SwiftData
 import Charts
 import SafariServices
 import UIKit
+import OSLog
 
 struct ListingDetailView: View {
     @Environment(\.dismiss) private var dismiss
@@ -45,6 +46,8 @@ struct ListingDetailView: View {
     @State private var similarListings: [Listing] = []
     /// 遅延フェッチ: 近隣成約事例（.task で非同期ロード）
     @State private var nearbyTransactions: [TransactionRecord] = []
+    /// enrichment データのロード状態
+    @State private var isLoadingEnrichment = false
 
     var body: some View {
         NavigationStack {
@@ -218,6 +221,7 @@ struct ListingDetailView: View {
                     try? modelContext.save()
                 }
                 .task {
+                    await loadEnrichmentIfNeeded()
                     similarListings = fetchSimilarListings()
                     nearbyTransactions = fetchNearbyTransactions()
                 }
@@ -282,6 +286,21 @@ struct ListingDetailView: View {
     }
 
     // MARK: - 類似物件レコメンド（遅延フェッチ）
+
+    private func loadEnrichmentIfNeeded() async {
+        guard listing.enrichmentFetchedAt == nil else { return }
+        isLoadingEnrichment = true
+        defer { isLoadingEnrichment = false }
+        do {
+            try await SupabaseListingStore.shared.fetchDetail(
+                identityKey: listing.identityKey,
+                modelContext: modelContext
+            )
+        } catch {
+            Logger(subsystem: "com.realestate", category: "ListingDetail")
+                .warning("enrichment ロード失敗: \(error.localizedDescription, privacy: .public)")
+        }
+    }
 
     private func fetchSimilarListings() -> [Listing] {
         let wardName = Listing.extractWardFromAddress(listing.address ?? "")

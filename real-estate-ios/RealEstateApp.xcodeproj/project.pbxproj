@@ -36,6 +36,7 @@
 		3C0C85E8D02626AAF025D23C /* RealEstateWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9248D45A75DF9E59DA0339C2 /* RealEstateWidgetBundle.swift */; };
 		40DF74731EC151634BB58B77 /* ExtractedFeaturesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D771B189D37C2ADF6ADBF6BC /* ExtractedFeaturesSection.swift */; };
 		41B090E076423A0A468A44E3 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3890AAC58D1F45D703CF33 /* DesignSystem.swift */; };
+		428C60F9C0A7CB14E9E564FC /* TwoTierDataFetchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222917DF2E4D4FA9E3A479D0 /* TwoTierDataFetchTests.swift */; };
 		4C925176E13ED9B8CD72E5F1 /* Listing+MarkdownExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C62989FA6BAC697E31F00 /* Listing+MarkdownExport.swift */; };
 		53FF9A8B95799973E365DDE3 /* AnnotationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23A017D97120BDC7E28BEB8 /* AnnotationRouter.swift */; };
 		545A5B35F60F922A0D525D03 /* BankComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580EA895EE4AEC8F233E3680 /* BankComparisonView.swift */; };
@@ -164,6 +165,7 @@
 		1FAAA7CF5DD9B1840536F3B4 /* Listing+JSONDecoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Listing+JSONDecoding.swift"; sourceTree = "<group>"; };
 		1FD386389CA29A884559D46A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		20D678F2E9A9A7AA57D8DC94 /* ScoreBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBadge.swift; sourceTree = "<group>"; };
+		222917DF2E4D4FA9E3A479D0 /* TwoTierDataFetchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoTierDataFetchTests.swift; sourceTree = "<group>"; };
 		256866F0A410C0ED41438357 /* RenovationEstimateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenovationEstimateView.swift; sourceTree = "<group>"; };
 		26C6D0D2EC190261EE2AC889 /* CommuteDestinationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteDestinationSettingsView.swift; sourceTree = "<group>"; };
 		283EFC574DD3B5C822974FB1 /* RealEstateApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RealEstateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -361,6 +363,7 @@
 				5EA46AB133285E0879FD489A /* ObjCExceptionCatcherTests.swift */,
 				C5F03A4E08C66625F3F387BC /* PreferenceAnalyzerDedupTests.swift */,
 				E225D64919DFC75724F76C8E /* SupabaseTimestampParserTests.swift */,
+				222917DF2E4D4FA9E3A479D0 /* TwoTierDataFetchTests.swift */,
 			);
 			path = RealEstateAppTests;
 			sourceTree = "<group>";
@@ -696,6 +699,7 @@
 				7A83656CEEE34ECB47866C3C /* ObjCExceptionCatcherTests.swift in Sources */,
 				03D1425DC3D9AB03512F6844 /* PreferenceAnalyzerDedupTests.swift in Sources */,
 				6BD16BC33232D68E79F5B194 /* SupabaseTimestampParserTests.swift in Sources */,
+				428C60F9C0A7CB14E9E564FC /* TwoTierDataFetchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

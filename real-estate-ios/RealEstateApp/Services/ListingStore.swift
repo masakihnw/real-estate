@@ -423,49 +423,66 @@ final class ListingStore {
         existing.areaMaxM2 = new.areaMaxM2
         existing.deliveryDate = new.deliveryDate
         existing.normalizedName = new.normalizedName
-        // 間取り図画像（JSON 由来なので上書き）
-        existing.floorPlanImagesJSON = new.floorPlanImagesJSON
-        // SUUMO 物件写真（JSON 由来なので上書き）
-        existing.suumoImagesJSON = new.suumoImagesJSON
-        // ハザード情報（JSON 由来なので上書き）
-        existing.hazardInfo = new.hazardInfo
-        // 住まいサーフィン評価データ（JSON 由来なので上書き）
-        existing.ssLookupStatus = new.ssLookupStatus
-        existing.ssProfitPct = new.ssProfitPct
-        existing.ssOkiPrice70m2 = new.ssOkiPrice70m2
-        existing.ssM2Discount = new.ssM2Discount
-        existing.ssValueJudgment = new.ssValueJudgment
-        existing.ssStationRank = new.ssStationRank
-        existing.ssWardRank = new.ssWardRank
-        existing.ssSumaiSurfinURL = new.ssSumaiSurfinURL
-        existing.ssAppreciationRate = new.ssAppreciationRate
-        existing.ssFavoriteCount = new.ssFavoriteCount
-        existing.ssPurchaseJudgment = new.ssPurchaseJudgment
-        existing.ssRadarData = new.ssRadarData
-        existing.ssSimBest5yr = new.ssSimBest5yr
-        existing.ssSimBest10yr = new.ssSimBest10yr
-        existing.ssSimStandard5yr = new.ssSimStandard5yr
-        existing.ssSimStandard10yr = new.ssSimStandard10yr
-        existing.ssSimWorst5yr = new.ssSimWorst5yr
-        existing.ssSimWorst10yr = new.ssSimWorst10yr
-        existing.ssLoanBalance5yr = new.ssLoanBalance5yr
-        existing.ssLoanBalance10yr = new.ssLoanBalance10yr
-        existing.ssNewM2Price = new.ssNewM2Price
-        existing.ssForecastM2Price = new.ssForecastM2Price
-        existing.ssForecastChangeRate = new.ssForecastChangeRate
-        existing.ssPastMarketTrends = new.ssPastMarketTrends
-        existing.ssSurroundingProperties = new.ssSurroundingProperties
-        existing.ssPriceJudgments = new.ssPriceJudgments
-        existing.ssSimBasePrice = new.ssSimBasePrice
-        // 不動産情報ライブラリ相場データ・人口動態データ（パイプライン側で付与）
-        existing.reinfolibMarketData = new.reinfolibMarketData
-        existing.mansionReviewData = new.mansionReviewData
-        existing.estatPopulationData = new.estatPopulationData
+        // 住まいサーフィンスカラー値（軽量ビューに含まれるので常に更新）
+        existing.ssLookupStatus = new.ssLookupStatus ?? existing.ssLookupStatus
+        existing.ssProfitPct = new.ssProfitPct ?? existing.ssProfitPct
+        existing.ssOkiPrice70m2 = new.ssOkiPrice70m2 ?? existing.ssOkiPrice70m2
+        existing.ssM2Discount = new.ssM2Discount ?? existing.ssM2Discount
+        existing.ssValueJudgment = new.ssValueJudgment ?? existing.ssValueJudgment
+        existing.ssStationRank = new.ssStationRank ?? existing.ssStationRank
+        existing.ssWardRank = new.ssWardRank ?? existing.ssWardRank
+        existing.ssSumaiSurfinURL = new.ssSumaiSurfinURL ?? existing.ssSumaiSurfinURL
+        existing.ssAppreciationRate = new.ssAppreciationRate ?? existing.ssAppreciationRate
+        existing.ssFavoriteCount = new.ssFavoriteCount ?? existing.ssFavoriteCount
+        existing.ssPurchaseJudgment = new.ssPurchaseJudgment ?? existing.ssPurchaseJudgment
+        existing.ssSimBest5yr = new.ssSimBest5yr ?? existing.ssSimBest5yr
+        existing.ssSimBest10yr = new.ssSimBest10yr ?? existing.ssSimBest10yr
+        existing.ssSimStandard5yr = new.ssSimStandard5yr ?? existing.ssSimStandard5yr
+        existing.ssSimStandard10yr = new.ssSimStandard10yr ?? existing.ssSimStandard10yr
+        existing.ssSimWorst5yr = new.ssSimWorst5yr ?? existing.ssSimWorst5yr
+        existing.ssSimWorst10yr = new.ssSimWorst10yr ?? existing.ssSimWorst10yr
+        existing.ssLoanBalance5yr = new.ssLoanBalance5yr ?? existing.ssLoanBalance5yr
+        existing.ssLoanBalance10yr = new.ssLoanBalance10yr ?? existing.ssLoanBalance10yr
+        existing.ssNewM2Price = new.ssNewM2Price ?? existing.ssNewM2Price
+        existing.ssForecastM2Price = new.ssForecastM2Price ?? existing.ssForecastM2Price
+        existing.ssForecastChangeRate = new.ssForecastChangeRate ?? existing.ssForecastChangeRate
+        existing.ssSimBasePrice = new.ssSimBasePrice ?? existing.ssSimBasePrice
         // JSON から座標が提供されていれば更新（パイプライン側ジオコーディングの反映）
         if let lat = new.latitude { existing.latitude = lat }
         if let lon = new.longitude { existing.longitude = lon }
-        // 通勤時間: Google Maps データ (source: "gmaps") は常に取り込む。
-        // 信頼ソースのパイプラインデータは常に優先。それ以外は既存データがない or フォールバック概算の場合のみ。
+        // 投資判断支援スカラー値（軽量ビューに含まれる）
+        existing.firstSeenAt = new.firstSeenAt ?? existing.firstSeenAt
+        existing.priceFairnessScore = new.priceFairnessScore ?? existing.priceFairnessScore
+        existing.resaleLiquidityScore = new.resaleLiquidityScore ?? existing.resaleLiquidityScore
+        existing.competingListingsCount = new.competingListingsCount ?? existing.competingListingsCount
+        existing.listingScore = new.listingScore ?? existing.listingScore
+        existing.highlightBadge = new.highlightBadge ?? existing.highlightBadge
+        existing.bestThumbnailURL = new.bestThumbnailURL ?? existing.bestThumbnailURL
+        existing.dedupConfidence = new.dedupConfidence ?? existing.dedupConfidence
+        existing.keyStrengthsJSON = new.keyStrengthsJSON ?? existing.keyStrengthsJSON
+        existing.keyRisksJSON = new.keyRisksJSON ?? existing.keyRisksJSON
+        existing.aiRecommendationScore = new.aiRecommendationScore ?? existing.aiRecommendationScore
+        // Enrichment JSONB フィールド（軽量ビューに含まれない → nil なら既存値を保持）
+        existing.floorPlanImagesJSON = new.floorPlanImagesJSON ?? existing.floorPlanImagesJSON
+        existing.suumoImagesJSON = new.suumoImagesJSON ?? existing.suumoImagesJSON
+        existing.hazardInfo = new.hazardInfo ?? existing.hazardInfo
+        existing.ssRadarData = new.ssRadarData ?? existing.ssRadarData
+        existing.ssPastMarketTrends = new.ssPastMarketTrends ?? existing.ssPastMarketTrends
+        existing.ssSurroundingProperties = new.ssSurroundingProperties ?? existing.ssSurroundingProperties
+        existing.ssPriceJudgments = new.ssPriceJudgments ?? existing.ssPriceJudgments
+        existing.reinfolibMarketData = new.reinfolibMarketData ?? existing.reinfolibMarketData
+        existing.mansionReviewData = new.mansionReviewData ?? existing.mansionReviewData
+        existing.estatPopulationData = new.estatPopulationData ?? existing.estatPopulationData
+        existing.priceHistoryJSON = new.priceHistoryJSON ?? existing.priceHistoryJSON
+        existing.altSourcesJSON = new.altSourcesJSON ?? existing.altSourcesJSON
+        existing.investmentSummary = new.investmentSummary ?? existing.investmentSummary
+        existing.extractedFeaturesJSON = new.extractedFeaturesJSON ?? existing.extractedFeaturesJSON
+        existing.imageCategoriesJSON = new.imageCategoriesJSON ?? existing.imageCategoriesJSON
+        existing.dedupCandidatesJSON = new.dedupCandidatesJSON ?? existing.dedupCandidatesJSON
+        existing.aiRecommendationSummary = new.aiRecommendationSummary ?? existing.aiRecommendationSummary
+        existing.aiRecommendationFlagsJSON = new.aiRecommendationFlagsJSON ?? existing.aiRecommendationFlagsJSON
+        existing.aiRecommendationAction = new.aiRecommendationAction ?? existing.aiRecommendationAction
+        // 通勤時間（パイプラインデータがあれば更新、なければ既存を保持）
         if let pipelineCommute = new.commuteInfoJSON {
             let pipelineInfo = Listing._parseCommuteInfo(pipelineCommute)
             if pipelineInfo.hasAnyReliableData {
@@ -479,29 +496,6 @@ final class ListingStore {
         if let pipelineCommuteV2 = new.commuteInfoV2JSON {
             existing.commuteInfoV2JSON = pipelineCommuteV2
         }
-        // 投資判断支援データ
-        existing.priceHistoryJSON = new.priceHistoryJSON
-        existing.firstSeenAt = new.firstSeenAt
-        existing.priceFairnessScore = new.priceFairnessScore
-        existing.resaleLiquidityScore = new.resaleLiquidityScore
-        existing.competingListingsCount = new.competingListingsCount
-        existing.listingScore = new.listingScore
-        existing.altSourcesJSON = new.altSourcesJSON
-        // Claude AI Enrichment
-        existing.investmentSummary = new.investmentSummary
-        existing.highlightBadge = new.highlightBadge
-        existing.bestThumbnailURL = new.bestThumbnailURL
-        existing.extractedFeaturesJSON = new.extractedFeaturesJSON
-        existing.imageCategoriesJSON = new.imageCategoriesJSON
-        existing.dedupConfidence = new.dedupConfidence
-        existing.dedupCandidatesJSON = new.dedupCandidatesJSON
-        existing.keyStrengthsJSON = new.keyStrengthsJSON
-        existing.keyRisksJSON = new.keyRisksJSON
-        existing.aiRecommendationScore = new.aiRecommendationScore
-        existing.aiRecommendationSummary = new.aiRecommendationSummary
-        existing.aiRecommendationFlagsJSON = new.aiRecommendationFlagsJSON
-        existing.aiRecommendationAction = new.aiRecommendationAction
-        // existing.memo, existing.isLiked, existing.isNew, existing.isNewBuilding, existing.commentsJSON, existing.photosJSON, existing.addedAt はそのまま（ユーザー・同期管理データ）
     }
 
     /// SupabaseListingStore から呼ばれる public 版 update（同じロジック）
