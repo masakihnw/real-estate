@@ -8684,5 +8684,68 @@
       ]
     },
     "cached_at": "2026-05-28T04:15:44.709298"
+  },
+  "ブランズ東中野プレシアス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/534883.html",
+      "deviation_score": 33,
+      "estimated_price_man": 9083,
+      "estimated_tsubo_price_man": 470,
+      "estimated_m2_price_man": 142,
+      "shinchiku_history_count": 33,
+      "chuko_history_count": 44,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 64.67,
+          "price_man": 7373,
+          "tsubo_price_man": 378.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T10:37:43.598510"
+  },
+  "荻窪5丁目": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/12045.html",
+      "deviation_score": 0,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 82.67,
+          "price_man": 6813,
+          "tsubo_price_man": 273.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T10:37:51.984709"
+  },
+  "オープンレジデンシア阿佐ヶ谷": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/602759.html",
+      "deviation_score": 24,
+      "estimated_price_man": 6859,
+      "estimated_tsubo_price_man": 329,
+      "estimated_m2_price_man": 100,
+      "shinchiku_history_count": 24,
+      "chuko_history_count": 20,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 71.24,
+          "price_man": 6803,
+          "tsubo_price_man": 316.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T10:38:00.374074"
   }
 }
