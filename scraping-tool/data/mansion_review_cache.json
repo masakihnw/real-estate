@@ -8632,5 +8632,57 @@
       ]
     },
     "cached_at": "2026-05-27T04:31:15.895661"
+  },
+  "ワールドシティタワーズブリーズタワーズ24階": {
+    "data": null,
+    "cached_at": "2026-05-28T04:15:35.065468"
+  },
+  "ワールドシティタワーズブリーズタワーズ": {
+    "data": null,
+    "cached_at": "2026-05-28T04:15:35.065468"
+  },
+  "クレヴィア新宿中落合WEST": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1639694.html",
+      "deviation_score": 0,
+      "estimated_price_man": 12966,
+      "estimated_tsubo_price_man": 572,
+      "estimated_m2_price_man": 173,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 28,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 73.48,
+          "price_man": 13296,
+          "tsubo_price_man": 597.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T04:15:44.709298"
+  },
+  "クレヴィア新宿中落合": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1639694.html",
+      "deviation_score": 0,
+      "estimated_price_man": 12966,
+      "estimated_tsubo_price_man": 572,
+      "estimated_m2_price_man": 173,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 28,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 73.48,
+          "price_man": 13296,
+          "tsubo_price_man": 597.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T04:15:44.709298"
   }
 }
