@@ -1030,5 +1030,13 @@
     "quarter": "南麻布",
     "neighbourhood": "南麻布三丁目",
     "city_district": ""
+  },
+  "35.707331,139.683273": {
+    "display_name": "首都高速中央環状線, 東中野四丁目, 東中野, 上落合, 中野区, 東京都, 164-0012, 日本",
+    "city": "中野区",
+    "suburb": "上落合",
+    "quarter": "東中野",
+    "neighbourhood": "東中野四丁目",
+    "city_district": ""
   }
 }
