@@ -1879,23 +1879,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/753891.html",
       "deviation_score": 31,
-      "estimated_price_man": 5753,
-      "estimated_tsubo_price_man": 443,
-      "estimated_m2_price_man": 134,
+      "estimated_price_man": 8742,
+      "estimated_tsubo_price_man": 467,
+      "estimated_m2_price_man": 142,
       "shinchiku_history_count": 31,
-      "chuko_history_count": 35,
+      "chuko_history_count": 36,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 54.4,
-          "price_man": 5887,
-          "tsubo_price_man": 360.0
+          "area_m2": 54.58,
+          "price_man": 5976,
+          "tsubo_price_man": 364.0
         }
       ]
     },
-    "cached_at": "2026-05-14T16:13:28.376381"
+    "cached_at": "2026-05-29T17:19:00.705804"
   },
   "ブリリアタワー品川シーサイド": {
     "data": {
@@ -8814,5 +8814,27 @@
       ]
     },
     "cached_at": "2026-05-29T10:32:08.253044"
+  },
+  "クレストフォルム大井町サウステラス1階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/753891.html",
+      "deviation_score": 31,
+      "estimated_price_man": 8742,
+      "estimated_tsubo_price_man": 467,
+      "estimated_m2_price_man": 142,
+      "shinchiku_history_count": 31,
+      "chuko_history_count": 36,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 54.58,
+          "price_man": 5976,
+          "tsubo_price_man": 364.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-29T17:19:00.705804"
   }
 }
