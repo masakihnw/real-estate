@@ -4028,23 +4028,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1641839.html",
       "deviation_score": 0,
-      "estimated_price_man": 6795,
-      "estimated_tsubo_price_man": 511,
-      "estimated_m2_price_man": 155,
+      "estimated_price_man": 8082,
+      "estimated_tsubo_price_man": 514,
+      "estimated_m2_price_man": 156,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 54,
+      "chuko_history_count": 55,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 63.58,
-          "price_man": 9669,
-          "tsubo_price_man": 502.0
+          "area_m2": 63.56,
+          "price_man": 9675,
+          "tsubo_price_man": 503.0
         }
       ]
     },
-    "cached_at": "2026-05-14T16:28:21.887542"
+    "cached_at": "2026-05-29T04:16:38.742282"
   },
   "【オープンレジデンシア下北沢】憧れの下北沢に住む未来...": {
     "data": null,
@@ -5679,23 +5679,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1641839.html",
       "deviation_score": 0,
-      "estimated_price_man": 6795,
-      "estimated_tsubo_price_man": 511,
-      "estimated_m2_price_man": 155,
+      "estimated_price_man": 8082,
+      "estimated_tsubo_price_man": 514,
+      "estimated_m2_price_man": 156,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 54,
+      "chuko_history_count": 55,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 63.58,
-          "price_man": 9669,
-          "tsubo_price_man": 502.0
+          "area_m2": 63.56,
+          "price_man": 9675,
+          "tsubo_price_man": 503.0
         }
       ]
     },
-    "cached_at": "2026-05-14T16:28:21.887542"
+    "cached_at": "2026-05-29T04:16:38.742282"
   },
   "ワールドシティタワーズブリーズタワー24階": {
     "data": {
@@ -8769,5 +8769,28 @@
       ]
     },
     "cached_at": "2026-05-28T17:45:18.613327"
+  },
+  "ナイスシティアリーナ西日暮里8階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/39260.html",
+      "deviation_score": 87,
+      "shinchiku_history_count": 87,
+      "chuko_history_count": 49,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 64.69,
+          "price_man": 4637,
+          "tsubo_price_man": 237.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-21T02:53:04.773787"
+  },
+  "蘆花公園ザ・レジテンスフォレスコート": {
+    "data": null,
+    "cached_at": "2026-05-29T04:16:42.074355"
   }
 }

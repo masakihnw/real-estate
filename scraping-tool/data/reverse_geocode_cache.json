@@ -1038,5 +1038,21 @@
     "quarter": "東中野",
     "neighbourhood": "東中野四丁目",
     "city_district": ""
+  },
+  "35.718588,139.791572": {
+    "display_name": "千束一丁目, 千束, 台東区, 東京都, 111-0031, 日本",
+    "city": "台東区",
+    "suburb": "",
+    "quarter": "千束",
+    "neighbourhood": "千束一丁目",
+    "city_district": ""
+  },
+  "35.718410,139.792417": {
+    "display_name": "千束一丁目, 千束, 台東区, 東京都, 111-0031, 日本",
+    "city": "台東区",
+    "suburb": "",
+    "quarter": "千束",
+    "neighbourhood": "千束一丁目",
+    "city_district": ""
   }
 }
