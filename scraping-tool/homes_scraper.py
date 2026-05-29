@@ -371,11 +371,12 @@ def _extract_card_listings(soup: BeautifulSoup, base_url: str) -> list[HomesList
                 container = None
                 break
             text = container.get_text() or ""
-            # 所在地と価格の両方を含むブロックを探す
-            if "所在地" in text or ("万円" in text and ("m²" in text or "㎡" in text)):
-                # テーブルが含まれるか、またはカード情報がある
+            if "所在地" in text and ("万円" in text or "m²" in text or "㎡" in text):
                 if container.find("table") or container.find(["dt", "th"]):
-                    break
+                    mansion_links = container.find_all("a", href=re.compile(r"/mansion/b-\d+/?$"))
+                    distinct_hrefs = {a.get("href", "").split("?")[0].rstrip("/") for a in mansion_links}
+                    if len(distinct_hrefs) <= 3:
+                        break
         if container is None:
             continue
         seen_urls.add(url)
@@ -409,12 +410,11 @@ def _extract_card_listings(soup: BeautifulSoup, base_url: str) -> list[HomesList
                         if label in (th.get_text() or ""):
                             if i < len(tds):
                                 return (tds[i].get_text(strip=True) or "").strip()
-            # dt/dd フォールバック
-            dt = container.find(["dt", "th"], string=re.compile(re.escape(label)))
-            if dt:
-                sibling = dt.find_next_sibling(["dd", "td"])
-                if sibling:
-                    return (sibling.get_text(strip=True) or "").strip()
+            for dt in container.find_all(["dt", "th"]):
+                if label in (dt.get_text() or ""):
+                    sibling = dt.find_next_sibling(["dd", "td"])
+                    if sibling:
+                        return (sibling.get_text(strip=True) or "").strip()
             return ""
 
         address = _table_value("所在地")
@@ -445,7 +445,7 @@ def _extract_card_listings(soup: BeautifulSoup, base_url: str) -> list[HomesList
         if area_m2 is None:
             area_m2 = parse_area_m2(text)
 
-        if not name and not url:
+        if not name or not url:
             continue
 
         # 管理費・修繕積立金

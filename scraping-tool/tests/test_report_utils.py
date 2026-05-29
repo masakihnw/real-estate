@@ -109,6 +109,25 @@ def test_clean_listing_name_normal_name():
     assert clean_listing_name("クレヴィア住吉") == "クレヴィア住吉"
 
 
+def test_clean_listing_name_page_title():
+    """ページタイトル文言（物件一覧）は物件名ではない → 空"""
+    assert clean_listing_name("東京都の新築マンション・分譲マンション物件一覧") == ""
+
+
+def test_clean_listing_name_page_title_partial():
+    """物件一覧を含む文字列は全て弾く"""
+    assert clean_listing_name("中古マンション物件一覧") == ""
+
+
+def test_clean_listing_name_button_text():
+    """UIボタン文言は物件名ではない → 空"""
+    assert clean_listing_name("見学予約") == ""
+    assert clean_listing_name("資料請求") == ""
+    assert clean_listing_name("お気に入り") == ""
+    assert clean_listing_name("詳細を見る") == ""
+    assert clean_listing_name("noimage") == ""
+
+
 # --- identity_key_str: area_m2 formatting ---
 
 

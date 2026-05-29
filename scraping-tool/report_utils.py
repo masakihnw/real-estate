@@ -240,6 +240,12 @@ def clean_listing_name(name: str) -> str:
     # 「掲載物件X件」のようなものは物件名ではない → 空
     if re.match(r"^掲載物件\d+件$", s):
         return ""
+    # ページタイトル・ナビゲーション文言は物件名ではない → 空
+    if re.search(r"物件一覧", s):
+        return ""
+    # UIボタン・ラベル文言は物件名ではない → 空
+    if s in ("見学予約", "noimage", "資料請求", "お気に入り", "詳細を見る"):
+        return ""
     # 物件の条件・特徴タグは物件名ではない → 空
     if _is_feature_tag(s):
         return ""
