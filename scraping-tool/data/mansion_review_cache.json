@@ -6081,89 +6081,89 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1642691.html",
       "deviation_score": 61,
-      "estimated_price_man": 9430,
-      "estimated_tsubo_price_man": 473,
-      "estimated_m2_price_man": 143,
+      "estimated_price_man": 9408,
+      "estimated_tsubo_price_man": 458,
+      "estimated_m2_price_man": 139,
       "shinchiku_history_count": 61,
-      "chuko_history_count": 3,
+      "chuko_history_count": 4,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 2,
+          "floor": 1,
           "layout": "",
-          "area_m2": 68.3,
-          "price_man": 9680,
-          "tsubo_price_man": 469.0
+          "area_m2": 68.23,
+          "price_man": 9730,
+          "tsubo_price_man": 472.0
         }
       ]
     },
-    "cached_at": "2026-05-15T09:22:08.759740"
+    "cached_at": "2026-05-29T10:32:16.371824"
   },
   "パークホームズ吉祥寺北ザ・ガーデン": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1642691.html",
       "deviation_score": 61,
-      "estimated_price_man": 9430,
-      "estimated_tsubo_price_man": 473,
-      "estimated_m2_price_man": 143,
+      "estimated_price_man": 9408,
+      "estimated_tsubo_price_man": 458,
+      "estimated_m2_price_man": 139,
       "shinchiku_history_count": 61,
-      "chuko_history_count": 3,
+      "chuko_history_count": 4,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 2,
+          "floor": 1,
           "layout": "",
-          "area_m2": 68.3,
-          "price_man": 9680,
-          "tsubo_price_man": 469.0
+          "area_m2": 68.23,
+          "price_man": 9730,
+          "tsubo_price_man": 472.0
         }
       ]
     },
-    "cached_at": "2026-05-15T09:22:08.759740"
+    "cached_at": "2026-05-29T10:32:16.371824"
   },
   "ブリリア有明スカイタワーBrillia有明SkyTower22階": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42053.html",
       "deviation_score": 10,
-      "estimated_price_man": 12088,
-      "estimated_tsubo_price_man": 615,
+      "estimated_price_man": 11297,
+      "estimated_tsubo_price_man": 613,
       "estimated_m2_price_man": 186,
       "shinchiku_history_count": 1041,
-      "chuko_history_count": 979,
+      "chuko_history_count": 982,
       "sales_history": [
         {
           "end_date": "",
           "floor": 17,
           "layout": "",
-          "area_m2": 65.33,
-          "price_man": 6934,
-          "tsubo_price_man": 352.0
+          "area_m2": 65.31,
+          "price_man": 6946,
+          "tsubo_price_man": 353.0
         }
       ]
     },
-    "cached_at": "2026-05-15T09:22:20.420498"
+    "cached_at": "2026-05-29T10:32:28.585649"
   },
   "ブリリア有明スカイタワーBrillia有明SkyTower": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42053.html",
       "deviation_score": 10,
-      "estimated_price_man": 12088,
-      "estimated_tsubo_price_man": 615,
+      "estimated_price_man": 11297,
+      "estimated_tsubo_price_man": 613,
       "estimated_m2_price_man": 186,
       "shinchiku_history_count": 1041,
-      "chuko_history_count": 979,
+      "chuko_history_count": 982,
       "sales_history": [
         {
           "end_date": "",
           "floor": 17,
           "layout": "",
-          "area_m2": 65.33,
-          "price_man": 6934,
-          "tsubo_price_man": 352.0
+          "area_m2": 65.31,
+          "price_man": 6946,
+          "tsubo_price_man": 353.0
         }
       ]
     },
-    "cached_at": "2026-05-15T09:22:20.420498"
+    "cached_at": "2026-05-29T10:32:28.585649"
   },
   "◆ザ・パークハウス弦巻◆": {
     "data": {
@@ -8792,5 +8792,27 @@
   "蘆花公園ザ・レジテンスフォレスコート": {
     "data": null,
     "cached_at": "2026-05-29T04:16:42.074355"
+  },
+  "プラウドシティ越中島ブライトテラス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/2178145.html",
+      "deviation_score": 0,
+      "estimated_price_man": 14237,
+      "estimated_tsubo_price_man": 561,
+      "estimated_m2_price_man": 170,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 10,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 76.31,
+          "price_man": 12794,
+          "tsubo_price_man": 554.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-29T10:32:08.253044"
   }
 }
