@@ -6324,23 +6324,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/15878.html",
       "deviation_score": 0,
-      "estimated_price_man": 8067,
-      "estimated_tsubo_price_man": 411,
-      "estimated_m2_price_man": 125,
+      "estimated_price_man": 8678,
+      "estimated_tsubo_price_man": 422,
+      "estimated_m2_price_man": 128,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 33,
+      "chuko_history_count": 34,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 65.89,
-          "price_man": 5564,
-          "tsubo_price_man": 280.0
+          "area_m2": 65.79,
+          "price_man": 5677,
+          "tsubo_price_man": 286.0
         }
       ]
     },
-    "cached_at": "2026-05-16T14:54:06.159935"
+    "cached_at": "2026-05-30T15:15:14.958742"
   },
   "ザ・パークハウス板橋大山大楠ノ杜": {
     "data": {
@@ -8966,5 +8966,27 @@
       ]
     },
     "cached_at": "2026-05-30T11:20:31.886067"
+  },
+  "ブリリア有明スカイタワー14階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/42053.html",
+      "deviation_score": 10,
+      "estimated_price_man": 11667,
+      "estimated_tsubo_price_man": 613,
+      "estimated_m2_price_man": 186,
+      "shinchiku_history_count": 1041,
+      "chuko_history_count": 982,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 17,
+          "layout": "",
+          "area_m2": 65.31,
+          "price_man": 6946,
+          "tsubo_price_man": 353.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T17:49:19.879992"
   }
 }
