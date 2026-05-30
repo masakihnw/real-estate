@@ -6306,19 +6306,19 @@
       "building_url": "https://www.mansion-review.jp/mansion/16594.html",
       "deviation_score": 22,
       "shinchiku_history_count": 22,
-      "chuko_history_count": 10,
+      "chuko_history_count": 11,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 72.67,
-          "price_man": 6124,
-          "tsubo_price_man": 280.0
+          "area_m2": 72.44,
+          "price_man": 6474,
+          "tsubo_price_man": 297.0
         }
       ]
     },
-    "cached_at": "2026-05-16T10:48:34.490587"
+    "cached_at": "2026-05-30T11:20:23.529707"
   },
   "グランイーグル蒲田ネオスト": {
     "data": {
@@ -8944,5 +8944,27 @@
       ]
     },
     "cached_at": "2026-05-30T09:06:43.286340"
+  },
+  "ヴィークステージ北千住ウエストレジデンス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/742727.html",
+      "deviation_score": 0,
+      "estimated_price_man": 9055,
+      "estimated_tsubo_price_man": 405,
+      "estimated_m2_price_man": 123,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 5,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 9,
+          "layout": "",
+          "area_m2": 74.6,
+          "price_man": 9300,
+          "tsubo_price_man": 404.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-30T11:20:31.886067"
   }
 }
