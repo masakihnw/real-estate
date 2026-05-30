@@ -1062,5 +1062,21 @@
     "quarter": "西浅草",
     "neighbourhood": "西浅草一丁目",
     "city_district": ""
+  },
+  "35.703807,139.691500": {
+    "display_name": "北新宿三丁目, 北新宿, 新宿区, 東京都, 169-0074, 日本",
+    "city": "新宿区",
+    "suburb": "",
+    "quarter": "北新宿",
+    "neighbourhood": "北新宿三丁目",
+    "city_district": ""
+  },
+  "35.701952,139.691699": {
+    "display_name": "北新宿三丁目, 北新宿, 新宿区, 東京都, 169-0074, 日本",
+    "city": "新宿区",
+    "suburb": "",
+    "quarter": "北新宿",
+    "neighbourhood": "北新宿三丁目",
+    "city_district": ""
   }
 }

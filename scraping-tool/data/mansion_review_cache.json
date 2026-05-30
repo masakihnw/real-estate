@@ -6191,45 +6191,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16404.html",
       "deviation_score": 43,
-      "estimated_price_man": 14187,
-      "estimated_tsubo_price_man": 398,
-      "estimated_m2_price_man": 121,
+      "estimated_price_man": 9153,
+      "estimated_tsubo_price_man": 415,
+      "estimated_m2_price_man": 126,
       "shinchiku_history_count": 434,
-      "chuko_history_count": 235,
+      "chuko_history_count": 237,
       "sales_history": [
         {
           "end_date": "",
           "floor": 13,
           "layout": "",
-          "area_m2": 78.72,
-          "price_man": 5888,
-          "tsubo_price_man": 248.0
+          "area_m2": 78.7,
+          "price_man": 5938,
+          "tsubo_price_man": 250.0
         }
       ]
     },
-    "cached_at": "2026-05-16T03:28:50.432678"
+    "cached_at": "2026-05-30T04:02:30.155738"
   },
   "プラウド杉並方南町": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1387781.html",
       "deviation_score": 87,
-      "estimated_price_man": 10463,
-      "estimated_tsubo_price_man": 481,
-      "estimated_m2_price_man": 146,
+      "estimated_price_man": 11499,
+      "estimated_tsubo_price_man": 494,
+      "estimated_m2_price_man": 150,
       "shinchiku_history_count": 87,
-      "chuko_history_count": 26,
+      "chuko_history_count": 27,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 69.28,
-          "price_man": 9275,
-          "tsubo_price_man": 443.0
+          "area_m2": 69.1,
+          "price_man": 9338,
+          "tsubo_price_man": 447.0
         }
       ]
     },
-    "cached_at": "2026-05-16T03:28:59.528777"
+    "cached_at": "2026-05-30T04:02:39.382329"
   },
   "東京シティトリエ": {
     "data": {
@@ -8836,5 +8836,65 @@
       ]
     },
     "cached_at": "2026-05-29T17:19:00.705804"
+  },
+  "【売主掲載】東京ビューマークス": {
+    "data": null,
+    "cached_at": "2026-05-30T04:02:17.495420"
+  },
+  "売主掲載東京ビューマークス": {
+    "data": null,
+    "cached_at": "2026-05-30T04:02:17.495420"
+  },
+  "【ルーフバルコニー付き住戸】AQUAVISTA...": {
+    "data": null,
+    "cached_at": "2026-05-30T04:02:21.186735"
+  },
+  "ルーフバルコニー付き住戸AQUAVISTA...": {
+    "data": null,
+    "cached_at": "2026-05-30T04:02:21.186735"
+  },
+  "クレヴィア辰巳12階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/535923.html",
+      "deviation_score": 12,
+      "estimated_price_man": 9729,
+      "estimated_tsubo_price_man": 441,
+      "estimated_m2_price_man": 134,
+      "shinchiku_history_count": 124,
+      "chuko_history_count": 83,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 71.33,
+          "price_man": 5626,
+          "tsubo_price_man": 262.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T17:44:38.001201"
+  },
+  "世田谷千歳台ガーデン&レジデンス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/603632.html",
+      "deviation_score": 10,
+      "estimated_price_man": 8756,
+      "estimated_tsubo_price_man": 392,
+      "estimated_m2_price_man": 119,
+      "shinchiku_history_count": 102,
+      "chuko_history_count": 39,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 75.53,
+          "price_man": 7089,
+          "tsubo_price_man": 312.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-30T04:02:47.968700"
   }
 }
