@@ -1157,11 +1157,11 @@
   },
   "【リフォーム物件♪南向き住戸】東京ビューマークス": {
     "data": null,
-    "cached_at": "2026-05-14T16:08:28.790037"
+    "cached_at": "2026-05-30T09:06:12.656821"
   },
   "リフォーム物件♪南向き住戸東京ビューマークス": {
     "data": null,
-    "cached_at": "2026-05-14T16:08:28.790037"
+    "cached_at": "2026-05-30T09:06:12.656821"
   },
   "Brillia上野松が谷": {
     "data": {
@@ -6235,23 +6235,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/12635.html",
       "deviation_score": 19,
-      "estimated_price_man": 9679,
-      "estimated_tsubo_price_man": 525,
+      "estimated_price_man": 11603,
+      "estimated_tsubo_price_man": 526,
       "estimated_m2_price_man": 159,
       "shinchiku_history_count": 191,
-      "chuko_history_count": 144,
+      "chuko_history_count": 145,
       "sales_history": [
         {
           "end_date": "",
           "floor": 10,
           "layout": "",
-          "area_m2": 70.52,
-          "price_man": 6344,
-          "tsubo_price_man": 298.0
+          "area_m2": 70.47,
+          "price_man": 6369,
+          "tsubo_price_man": 300.0
         }
       ]
     },
-    "cached_at": "2026-05-16T08:38:03.905671"
+    "cached_at": "2026-05-30T09:06:34.666829"
   },
   "パークホームズ町屋": {
     "data": {
@@ -6277,7 +6277,7 @@
   },
   "ボヌール小岩": {
     "data": null,
-    "cached_at": "2026-05-16T08:38:15.604756"
+    "cached_at": "2026-05-30T09:06:46.545986"
   },
   "パークホームズ十条10階": {
     "data": {
@@ -8896,5 +8896,53 @@
       ]
     },
     "cached_at": "2026-05-30T04:02:47.968700"
+  },
+  "ブランズシティ品川勝島": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/603238.html",
+      "deviation_score": 33,
+      "estimated_price_man": 11991,
+      "estimated_tsubo_price_man": 461,
+      "estimated_m2_price_man": 140,
+      "shinchiku_history_count": 335,
+      "chuko_history_count": 124,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 10,
+          "layout": "",
+          "area_m2": 77.17,
+          "price_man": 6475,
+          "tsubo_price_man": 279.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-30T09:06:21.638145"
+  },
+  "40.95平米あるテラス付きの南東向き住戸": {
+    "data": null,
+    "cached_at": "2026-05-30T09:06:25.021131"
+  },
+  "コスモ田端ビューフォルム": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/18638.html",
+      "deviation_score": 42,
+      "estimated_price_man": 8641,
+      "estimated_tsubo_price_man": 341,
+      "estimated_m2_price_man": 103,
+      "shinchiku_history_count": 42,
+      "chuko_history_count": 29,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 9,
+          "layout": "",
+          "area_m2": 76.22,
+          "price_man": 5546,
+          "tsubo_price_man": 241.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-30T09:06:43.286340"
   }
 }
