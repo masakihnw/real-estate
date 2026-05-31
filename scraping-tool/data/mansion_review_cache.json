@@ -6346,23 +6346,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1419695.html",
       "deviation_score": 18,
-      "estimated_price_man": 11866,
+      "estimated_price_man": 12665,
       "estimated_tsubo_price_man": 524,
       "estimated_m2_price_man": 159,
       "shinchiku_history_count": 185,
-      "chuko_history_count": 45,
+      "chuko_history_count": 47,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 75.48,
-          "price_man": 11322,
-          "tsubo_price_man": 493.0
+          "area_m2": 75.47,
+          "price_man": 11340,
+          "tsubo_price_man": 494.0
         }
       ]
     },
-    "cached_at": "2026-05-17T04:03:03.403526"
+    "cached_at": "2026-05-31T04:33:19.519966"
   },
   "オープンレジデンス三軒茶屋N棟": {
     "data": {
@@ -8988,5 +8988,27 @@
       ]
     },
     "cached_at": "2026-05-28T17:49:19.879992"
+  },
+  "クレヴィア新宿中落合EAST": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1639694.html",
+      "deviation_score": 0,
+      "estimated_price_man": 12966,
+      "estimated_tsubo_price_man": 572,
+      "estimated_m2_price_man": 173,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 28,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 73.48,
+          "price_man": 13296,
+          "tsubo_price_man": 597.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T04:15:44.709298"
   }
 }
