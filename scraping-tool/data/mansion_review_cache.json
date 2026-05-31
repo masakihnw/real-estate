@@ -9054,5 +9054,27 @@
       ]
     },
     "cached_at": "2026-05-28T17:43:59.758324"
+  },
+  "ブランズ練馬中村北": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1409736.html",
+      "deviation_score": 32,
+      "estimated_price_man": 7653,
+      "estimated_tsubo_price_man": 367,
+      "estimated_m2_price_man": 111,
+      "shinchiku_history_count": 32,
+      "chuko_history_count": 13,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 75.0,
+          "price_man": 7966,
+          "tsubo_price_man": 354.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-31T15:19:13.299719"
   }
 }
