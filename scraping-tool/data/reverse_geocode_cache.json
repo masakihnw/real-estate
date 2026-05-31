@@ -1086,5 +1086,13 @@
     "quarter": "有明",
     "neighbourhood": "有明三丁目",
     "city_district": ""
+  },
+  "35.718756,139.683245": {
+    "display_name": "中落合四丁目, 中落合, 新宿区, 東京都, 161-0032, 日本",
+    "city": "新宿区",
+    "suburb": "中落合",
+    "quarter": "",
+    "neighbourhood": "中落合四丁目",
+    "city_district": ""
   }
 }

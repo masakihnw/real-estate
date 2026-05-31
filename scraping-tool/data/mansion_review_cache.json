@@ -6368,45 +6368,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42971.html",
       "deviation_score": 35,
-      "estimated_price_man": 8695,
-      "estimated_tsubo_price_man": 436,
-      "estimated_m2_price_man": 132,
+      "estimated_price_man": 8673,
+      "estimated_tsubo_price_man": 422,
+      "estimated_m2_price_man": 128,
       "shinchiku_history_count": 35,
-      "chuko_history_count": 35,
+      "chuko_history_count": 36,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 67.28,
-          "price_man": 5634,
-          "tsubo_price_man": 281.0
+          "area_m2": 67.73,
+          "price_man": 5750,
+          "tsubo_price_man": 283.0
         }
       ]
     },
-    "cached_at": "2026-05-17T08:54:43.613958"
+    "cached_at": "2026-05-31T09:23:43.792749"
   },
   "オープンレジデンス三軒茶屋": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42971.html",
       "deviation_score": 35,
-      "estimated_price_man": 8695,
-      "estimated_tsubo_price_man": 436,
-      "estimated_m2_price_man": 132,
+      "estimated_price_man": 8673,
+      "estimated_tsubo_price_man": 422,
+      "estimated_m2_price_man": 128,
       "shinchiku_history_count": 35,
-      "chuko_history_count": 35,
+      "chuko_history_count": 36,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 67.28,
-          "price_man": 5634,
-          "tsubo_price_man": 281.0
+          "area_m2": 67.73,
+          "price_man": 5750,
+          "tsubo_price_man": 283.0
         }
       ]
     },
-    "cached_at": "2026-05-17T08:54:43.613958"
+    "cached_at": "2026-05-31T09:23:43.792749"
   },
   "オープンレジデンシア千川2階": {
     "data": {
@@ -9010,5 +9010,27 @@
       ]
     },
     "cached_at": "2026-05-28T04:15:44.709298"
+  },
+  "ガレリアグランデ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17532.html",
+      "deviation_score": 26,
+      "estimated_price_man": 13727,
+      "estimated_tsubo_price_man": 598,
+      "estimated_m2_price_man": 181,
+      "shinchiku_history_count": 263,
+      "chuko_history_count": 621,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 16,
+          "layout": "",
+          "area_m2": 77.06,
+          "price_man": 6981,
+          "tsubo_price_man": 296.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-31T09:23:55.473588"
   }
 }
