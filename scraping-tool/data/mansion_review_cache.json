@@ -6492,26 +6492,29 @@
   },
   "BrilliaCity西早稻田": {
     "data": null,
-    "cached_at": "2026-05-18T10:37:42.695473"
+    "cached_at": "2026-06-01T12:13:42.478133"
   },
   "グローリオ東新宿": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/194819.html",
       "deviation_score": 0,
+      "estimated_price_man": 4916,
+      "estimated_tsubo_price_man": 542,
+      "estimated_m2_price_man": 164,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 37,
+      "chuko_history_count": 38,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 6,
+          "floor": 5,
           "layout": "",
-          "area_m2": 47.64,
-          "price_man": 4850,
-          "tsubo_price_man": 342.0
+          "area_m2": 48.07,
+          "price_man": 5025,
+          "tsubo_price_man": 349.0
         }
       ]
     },
-    "cached_at": "2026-05-18T10:37:51.184934"
+    "cached_at": "2026-06-01T12:13:29.772795"
   },
   "オークプレイス豊洲5階5階": {
     "data": {
@@ -9120,5 +9123,90 @@
       ]
     },
     "cached_at": "2026-06-01T04:44:11.168897"
+  },
+  "プレシス市谷台町坂": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/602283.html",
+      "deviation_score": 45,
+      "shinchiku_history_count": 45,
+      "chuko_history_count": 35,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 64.13,
+          "price_man": 7346,
+          "tsubo_price_man": 380.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-01T12:13:21.198790"
+  },
+  "Brillia板橋大山": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/534753.html",
+      "deviation_score": 42,
+      "estimated_price_man": 8569,
+      "estimated_tsubo_price_man": 436,
+      "estimated_m2_price_man": 132,
+      "shinchiku_history_count": 42,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 9,
+          "layout": "",
+          "area_m2": 67.24,
+          "price_man": 6482,
+          "tsubo_price_man": 319.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-01T12:13:38.473656"
+  },
+  "パークホームズ練馬豊島園ステーションプレミア": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1412539.html",
+      "deviation_score": 23,
+      "estimated_price_man": 9533,
+      "estimated_tsubo_price_man": 464,
+      "estimated_m2_price_man": 141,
+      "shinchiku_history_count": 23,
+      "chuko_history_count": 8,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 10,
+          "layout": "",
+          "area_m2": 69.06,
+          "price_man": 8858,
+          "tsubo_price_man": 425.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-01T12:13:50.536322"
+  },
+  "ヴィークコート世田谷代田": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/42061.html",
+      "deviation_score": 16,
+      "estimated_price_man": 11141,
+      "estimated_tsubo_price_man": 505,
+      "estimated_m2_price_man": 153,
+      "shinchiku_history_count": 16,
+      "chuko_history_count": 31,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 66.52,
+          "price_man": 6571,
+          "tsubo_price_man": 329.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-01T12:13:59.414439"
   }
 }
