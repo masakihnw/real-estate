@@ -23,7 +23,7 @@ final class BackgroundRefreshManager {
     /// アプリ起動時に configure(modelContainer:) で設定される共有コンテナ。
     /// バックグラウンドタスクとメインアプリで同一の ModelContainer を使用し、
     /// データの整合性を保つ。
-    private var modelContainer: ModelContainer?
+    private(set) var modelContainer: ModelContainer?
 
     private init() {}
 
