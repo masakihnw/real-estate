@@ -9076,5 +9076,49 @@
       ]
     },
     "cached_at": "2026-05-31T15:19:13.299719"
+  },
+  "ブリリア有明スカイタワー(Brillia有明SkyT...": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/42053.html",
+      "deviation_score": 10,
+      "estimated_price_man": 11113,
+      "estimated_tsubo_price_man": 613,
+      "estimated_m2_price_man": 186,
+      "shinchiku_history_count": 1041,
+      "chuko_history_count": 982,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 17,
+          "layout": "",
+          "area_m2": 65.31,
+          "price_man": 6946,
+          "tsubo_price_man": 353.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-01T04:44:00.228837"
+  },
+  "東京フロントコート": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13417.html",
+      "deviation_score": 98,
+      "estimated_price_man": 14032,
+      "estimated_tsubo_price_man": 528,
+      "estimated_m2_price_man": 160,
+      "shinchiku_history_count": 981,
+      "chuko_history_count": 469,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 10,
+          "layout": "",
+          "area_m2": 82.99,
+          "price_man": 6894,
+          "tsubo_price_man": 275.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-01T04:44:11.168897"
   }
 }

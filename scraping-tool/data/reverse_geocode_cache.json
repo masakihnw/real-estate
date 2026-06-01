@@ -1102,5 +1102,45 @@
     "quarter": "千束",
     "neighbourhood": "千束一丁目",
     "city_district": ""
+  },
+  "35.614953,139.749135": {
+    "display_name": "東品川三丁目, 東品川, 品川区, 東京都, 140-0002, 日本",
+    "city": "品川区",
+    "suburb": "東品川",
+    "quarter": "",
+    "neighbourhood": "東品川三丁目",
+    "city_district": ""
+  },
+  "35.640440,139.796245": {
+    "display_name": "東雲二丁目, 東雲, 江東区, 東京都, 135-0062, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "東雲",
+    "neighbourhood": "東雲二丁目",
+    "city_district": ""
+  },
+  "35.634556,139.793256": {
+    "display_name": "豊洲有明線, 有明三丁目, 有明, 江東区, 東京都, 135-0063, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "有明",
+    "neighbourhood": "有明三丁目",
+    "city_district": ""
+  },
+  "35.650142,139.793118": {
+    "display_name": "豊洲六丁目, 豊洲, 江東区, 東京都, 135-0061, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "豊洲",
+    "neighbourhood": "豊洲六丁目",
+    "city_district": ""
+  },
+  "35.655081,139.796250": {
+    "display_name": "晴海通り, 豊洲三丁目, 豊洲, 江東区, 東京都, 135-0061, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "豊洲",
+    "neighbourhood": "豊洲三丁目",
+    "city_district": ""
   }
 }
