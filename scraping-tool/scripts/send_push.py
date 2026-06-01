@@ -134,6 +134,71 @@ def send_topic_push(
     return False
 
 
+def send_silent_push(
+    project_id: str,
+    access_token: str,
+    topic: str,
+    max_retries: int = 3,
+) -> bool:
+    """サイレントプッシュを送信し、iOS アプリのバックグラウンド同期をトリガーする。"""
+    url = FCM_SEND_URL.format(project_id=project_id)
+
+    message = {
+        "message": {
+            "topic": topic,
+            "data": {
+                "type": "sync",
+                "timestamp": str(int(time.time())),
+            },
+            "apns": {
+                "headers": {
+                    "apns-priority": "5",
+                    "apns-push-type": "background",
+                },
+                "payload": {
+                    "aps": {
+                        "content-available": 1,
+                    }
+                },
+            },
+        }
+    }
+
+    for attempt in range(max_retries):
+        try:
+            resp = requests.post(
+                url,
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json",
+                },
+                json=message,
+                timeout=30,
+            )
+
+            if resp.status_code == 200:
+                logger.info("サイレントプッシュ送信成功（バックグラウンド同期トリガー）")
+                return True
+            elif resp.status_code in (500, 502, 503) and attempt < max_retries - 1:
+                wait = 2 ** (attempt + 1)
+                logger.error(f"サイレントプッシュ送信失敗 ({resp.status_code})、{wait}秒後にリトライ ({attempt + 1}/{max_retries})")
+                time.sleep(wait)
+                continue
+            else:
+                logger.error(f"サイレントプッシュ送信失敗: {resp.status_code} {resp.text}")
+                return False
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+            if attempt < max_retries - 1:
+                wait = 2 ** (attempt + 1)
+                logger.error(f"サイレントプッシュ送信エラー: {e}、{wait}秒後にリトライ ({attempt + 1}/{max_retries})")
+                time.sleep(wait)
+            else:
+                logger.error(f"サイレントプッシュ送信失敗（リトライ上限）: {e}")
+                return False
+
+    return False
+
+
 def _detect_price_changes(listings: list[dict], today: str) -> dict:
     """直近の価格変動を検出する。"""
     decreases = []
@@ -196,12 +261,6 @@ def main() -> None:
             price_changes["decreases"] = detected["decreases"]
             price_changes["increases"] = detected["increases"]
 
-    total = args.new_count + args.shinchiku_count
-    has_price_changes = bool(price_changes["decreases"] or price_changes["increases"])
-    if total <= 0 and not has_price_changes:
-        logger.warning("新着・価格変動なし、通知をスキップ")
-        return
-
     # サービスアカウント JSON
     sa_json = os.environ.get("FIREBASE_SERVICE_ACCOUNT", "")
     if not sa_json:
@@ -226,6 +285,15 @@ def main() -> None:
         access_token = get_access_token(service_account)
     except Exception as e:
         logger.error(f"アクセストークン取得失敗: {e}")
+        return
+
+    # サイレントプッシュは常に送信（バックグラウンド同期トリガー）
+    send_silent_push(project_id, access_token, "new_listings")
+
+    total = args.new_count + args.shinchiku_count
+    has_price_changes = bool(price_changes["decreases"] or price_changes["increases"])
+    if total <= 0 and not has_price_changes:
+        logger.warning("新着・価格変動なし、可視通知をスキップ")
         return
 
     # 通知メッセージ組み立て

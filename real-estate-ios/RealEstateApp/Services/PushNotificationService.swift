@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftData
 import UIKit
 import UserNotifications
 import FirebaseMessaging
@@ -54,6 +55,42 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFailToRegisterForRemoteNotificationsWithError error: Error
     ) {
         print("[Push] APNs 登録失敗: \(error.localizedDescription)")
+    }
+
+    /// サイレントプッシュ受信 — バックグラウンドで diff sync を実行
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        guard let type = userInfo["type"] as? String, type == "sync" else {
+            completionHandler(.noData)
+            return
+        }
+
+        guard let container = BackgroundRefreshManager.shared.modelContainer else {
+            print("[SilentPush] ModelContainer 未設定")
+            completionHandler(.failed)
+            return
+        }
+
+        print("[SilentPush] バックグラウンド同期を開始")
+        Task {
+            let context = ModelContext(container)
+            do {
+                let (chukoNew, shinNew) = try await SupabaseListingStore.shared.refresh(modelContext: context)
+                let total = chukoNew + shinNew
+                print("[SilentPush] 同期完了: 中古 \(chukoNew)件, 新築 \(shinNew)件")
+                if total > 0 {
+                    NotificationScheduleService.shared.accumulateAndReschedule(newCount: total)
+                }
+                await ListingStore.shared.markFetched()
+                completionHandler(total > 0 ? .newData : .noData)
+            } catch {
+                print("[SilentPush] 同期失敗: \(error.localizedDescription)")
+                completionHandler(.failed)
+            }
+        }
     }
 }
 

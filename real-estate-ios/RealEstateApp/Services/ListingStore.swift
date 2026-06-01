@@ -86,6 +86,15 @@ final class ListingStore {
         lastFetchedAt = defaults.object(forKey: lastFetchedKey) as? Date
     }
 
+    /// サイレントプッシュ等の外部同期完了後に lastFetchedAt を更新し、
+    /// フォアグラウンド復帰時の重複リフレッシュを防ぐ。
+    @MainActor
+    func markFetched() {
+        let now = Date()
+        lastFetchedAt = now
+        defaults.set(now, forKey: lastFetchedKey)
+    }
+
     /// 中古・新築の両方を取得し、SwiftData に反映。新規があればローカル通知を発火。
     /// ETag チェックにより、サーバー上のデータが未変更ならダウンロードをスキップする。
     func refresh(modelContext: ModelContext) async {
