@@ -142,10 +142,8 @@ def normalize_listing_name(name: str) -> str:
             if s.startswith(tag):
                 s = ""
                 break
-    # 「南東向きテラス40.95平米ある3LDK住戸」等の純粋な説明文を検出
-    if s and re.match(
-        r"^[東西南北]+向き?.+\d+\.?\d*平米.+\d[LDK]+住戸$", s
-    ):
+    # 純粋な説明文を検出（物件名ではない）
+    if s and _is_description_text(s):
         s = ""
     # デベロッパー接頭辞を除去（クロスサイトでの表記揺れ吸収）
     for prefix in _DEVELOPER_PREFIXES:
@@ -225,6 +223,23 @@ def _is_feature_tag(s: str) -> bool:
     return False
 
 
+def _is_description_text(s: str) -> bool:
+    """物件の説明文であり建物名ではないテキストかを判定する。
+    面積・方角・間取り・住戸等の属性のみで構成された文字列を検出する。"""
+    if not s:
+        return False
+    # 方角+面積+間取り+住戸（「南東向きテラス40.95平米ある3LDK住戸」等）
+    if re.match(r"^[東西南北]+向き?.+\d+\.?\d*平米.+\d[LDK]+住戸$", s):
+        return True
+    # 面積を含み住戸で終わる（「40.95平米あるテラス付きの南東向き住戸」等）
+    if re.search(r"\d+\.?\d*平米", s) and s.endswith("住戸"):
+        return True
+    # 面積で始まる（「40.95平米ある〜」等）
+    if re.match(r"^\d+\.?\d*平米", s):
+        return True
+    return False
+
+
 def clean_listing_name(name: str) -> str:
     """スクレイピングで取得した物件名のノイズを除去して物件名だけにする。
     - 先頭の「新築マンション」「マンション」「マンション未入居」を除去
@@ -278,6 +293,9 @@ def clean_listing_name(name: str) -> str:
         return ""
     # 路線・駅・徒歩情報しかない場合は物件名ではない → 空
     if re.match(r"^.*線.*駅.*徒歩\s*\d+\s*分.*$", s):
+        return ""
+    # 物件の説明文は物件名ではない → 空
+    if _is_description_text(re.sub(r"\s+", "", s)):
         return ""
     return s
 
