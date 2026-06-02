@@ -151,6 +151,9 @@ LIMIT 30;
 
 既存の Step 1（セマンティック重複排除）は `normalized_name` 完全一致で候補を絞り込むため、
 ダッシュバリアント（ー vs -）や微妙な表記揺れを見逃す。
+また、英語↔カタカナの表記差（`BrilliaCity西早稲田` vs `ブリリアシティ西早稲田`）、
+三点リーダーの残存（`AQUAVISTA...`）、間取り表記揺れ（`2SLDK` vs `2LDK+S`）等により
+同一マンション・同一部屋が別物件として扱われ、Slack通知で誤った「入れ替え」として報告される。
 このステップではより広い候補をAIに判定させ、即座に修正する。
 
 1. 候補ペア取得:
@@ -169,31 +172,44 @@ FROM listings l1
 JOIN listings l2
   ON l1.id < l2.id
   AND l1.is_active AND l2.is_active
-  AND l1.layout = l2.layout
-  AND ABS(l1.area_m2 - l2.area_m2) <= 3
   AND l1.built_year = l2.built_year
   AND l1.normalized_name != l2.normalized_name
   AND (
-    -- ダッシュ系文字を統一して比較
-    TRANSLATE(l1.normalized_name, 'ー－‐–—', '-----')
-      = TRANSLATE(l2.normalized_name, 'ー－‐–—', '-----')
-    -- または住所の区が一致し、総戸数も一致（名前が違うが同一建物の可能性）
+    -- (A) ダッシュ系文字を統一して比較（同一間取り・近似面積が前提）
+    (
+      l1.layout = l2.layout
+      AND ABS(l1.area_m2 - l2.area_m2) <= 3
+      AND TRANSLATE(l1.normalized_name, 'ー－‐–—', '-----')
+        = TRANSLATE(l2.normalized_name, 'ー－‐–—', '-----')
+    )
+    -- (B) 住所の区が一致し、総戸数も一致（名前が違うが同一建物の可能性）
     OR (
-      l1.total_units = l2.total_units
+      l1.layout = l2.layout
+      AND ABS(l1.area_m2 - l2.area_m2) <= 3
+      AND l1.total_units = l2.total_units
       AND l1.total_units IS NOT NULL
       AND SUBSTRING(l1.address FROM '.+?区') = SUBSTRING(l2.address FROM '.+?区')
       AND LENGTH(l1.normalized_name) > 3
       AND LENGTH(l2.normalized_name) > 3
     )
+    -- (C) 住所丁目+築年が一致（英語↔カタカナ等、名前の表記体系が異なるケース）
+    -- 間取り・面積の制約を緩和し、同一建物の別表記を広く拾う
+    OR (
+      SUBSTRING(l1.address FROM '.+?[区市].+?\d+') = SUBSTRING(l2.address FROM '.+?[区市].+?\d+')
+      AND LENGTH(SUBSTRING(l1.address FROM '.+?[区市].+?\d+')) > 3
+      AND LENGTH(l1.normalized_name) > 3
+      AND LENGTH(l2.normalized_name) > 3
+    )
   )
-LIMIT 20;
+LIMIT 30;
 ```
 
 2. 各ペアについてAI（自分自身）で判定する。以下の観点で分析:
 
-   - **名前の比較**: 表記揺れか？（ダッシュの種類違い、全角/半角、スペース有無、タワー名の有無）
+   - **名前の比較**: 表記揺れか？（ダッシュの種類違い、全角/半角、スペース有無、タワー名の有無、**英語↔カタカナ変換**、三点リーダー・装飾文字の残存、副名やカタカナ読みの付加）
    - **スペック比較**: 面積・階数・築年・住所が一致または近似するか？
    - **価格比較**: 価格差が20%以内か？
+   - **間取り比較**: 表記が異なるだけで同一か？（`2SLDK` = `2LDK+S（納戸）` 等）
 
    判定結果:
    | 結果 | 条件 | アクション |
@@ -201,6 +217,12 @@ LIMIT 20;
    | `merge` | 同一物件（同じ部屋） | 古い方 or enrichment 少ない方を `is_active = false` に。元の方の `alt_urls` に URL を追加 |
    | `same_building` | 同一マンション別部屋 | `normalized_name` を統一（より正式な方に合わせる） |
    | `different` | 別物件 | スキップ |
+
+   **`same_building` 判定のガイドライン**: 以下のいずれかに該当すれば同一マンションとみなす:
+   - 英語名とカタカナ名が対応している（例: `BrilliaCity` = `ブリリアシティ`）
+   - 一方が他方の副名・読み仮名を含む（例: `AQUAVISTA` vs `AQUAVISTAアクアヴィスタ`）
+   - 装飾文字（三点リーダー `…`/`...`、`【】`内テキスト）を除けば同一
+   - 住所・築年・総戸数が一致し、名前が類似している
 
 3. `merge` 判定の場合:
    ```sql
