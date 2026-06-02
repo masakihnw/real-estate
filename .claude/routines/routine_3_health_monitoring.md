@@ -124,15 +124,41 @@ AND (
   -- normalized_name が短すぎる/長すぎる
   OR LENGTH(l.normalized_name) <= 3
   OR LENGTH(l.normalized_name) >= 40
+  -- 三点リーダーや省略記号が残っている
+  OR l.normalized_name ~ '[…]'
+  OR l.normalized_name ~ '\.{2,}$'
 )
 ORDER BY l.created_at DESC
 LIMIT 20;
 ```
 
+1b. 名前の表記揺れ重複を検出（住所+築年は一致するが normalized_name が異なるペア）:
+```sql
+SELECT l1.id AS id_a, l2.id AS id_b,
+       l1.normalized_name AS norm_a, l2.normalized_name AS norm_b,
+       l1.address AS addr_a, l2.address AS addr_b,
+       l1.built_year, l1.area_m2 AS area_a, l2.area_m2 AS area_b
+FROM listings l1
+JOIN listings l2
+  ON l1.id < l2.id
+  AND l1.is_active AND l2.is_active
+  AND l1.built_year = l2.built_year
+  AND l1.normalized_name != l2.normalized_name
+  AND SUBSTRING(l1.address FROM '.+?[区市].+?\d+') = SUBSTRING(l2.address FROM '.+?[区市].+?\d+')
+  AND LENGTH(SUBSTRING(l1.address FROM '.+?[区市].+?\d+')) > 3
+  AND LENGTH(l1.normalized_name) > 3
+  AND LENGTH(l2.normalized_name) > 3
+LIMIT 10;
+```
+
+→ 検出されたペアは `fuzzy_dedup_missed_{id_a}_{id_b}` として `pipeline_issues` に登録。
+  ルーティン① Step 0.7 で AI 判定・修正される。
+
 2. 取得した物件についてAI判定:
    a. **物件名品質**: `name` にプロモーション文言が混入していないか？
-   b. **表記揺れ重複**: 同一住所・同一面積の別名物件が存在しないか？
+   b. **表記揺れ重複**: 同一住所・同一面積の別名物件が存在しないか？（1b の結果も参照）
    c. **異常データ**: normalized_name が明らかに物件名でないもの
+   d. **省略記号残存**: 三点リーダー等が normalized_name に残っていないか？
 
 3. 問題発見時は `pipeline_issues` に登録:
    ```sql

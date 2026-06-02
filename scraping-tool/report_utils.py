@@ -126,6 +126,9 @@ def normalize_listing_name(name: str) -> str:
     s = re.sub(r"\s*第\d+期\s*\d*次?\s*$", "", s).strip()
     # 空白をすべて除去（比較用）
     s = re.sub(r"\s+", "", s)
+    # 三点リーダー・ドット省略を除去（NFKC で … → ... になるケースを含む）
+    s = re.sub(r"[…]+$", "", s)
+    s = re.sub(r"\.{2,}$", "", s)
     # 中黒（・）を除去（ザ・レジデンス ↔ ザレジデンス の表記揺れを吸収）
     s = s.replace("・", "")
     # SUUMO 掲載データの既知の誤字を補正
