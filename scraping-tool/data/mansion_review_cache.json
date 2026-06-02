@@ -6634,23 +6634,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603788.html",
       "deviation_score": 55,
-      "estimated_price_man": 17150,
-      "estimated_tsubo_price_man": 737,
-      "estimated_m2_price_man": 223,
+      "estimated_price_man": 12823,
+      "estimated_tsubo_price_man": 719,
+      "estimated_m2_price_man": 218,
       "shinchiku_history_count": 550,
-      "chuko_history_count": 431,
+      "chuko_history_count": 434,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 71.74,
-          "price_man": 9189,
-          "tsubo_price_man": 421.0
+          "area_m2": 71.66,
+          "price_man": 9208,
+          "tsubo_price_man": 422.0
         }
       ]
     },
-    "cached_at": "2026-05-19T10:17:12.179661"
+    "cached_at": "2026-06-02T11:01:18.289773"
   },
   "西戸山タワーホウムズサウスタワー": {
     "data": {
@@ -9252,5 +9252,27 @@
       ]
     },
     "cached_at": "2026-05-21T02:53:35.906445"
+  },
+  "クリオ杉並高井戸": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/756927.html",
+      "deviation_score": 24,
+      "estimated_price_man": 6875,
+      "estimated_tsubo_price_man": 345,
+      "estimated_m2_price_man": 105,
+      "shinchiku_history_count": 24,
+      "chuko_history_count": 26,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 58.22,
+          "price_man": 5616,
+          "tsubo_price_man": 323.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-02T11:01:26.801560"
   }
 }
