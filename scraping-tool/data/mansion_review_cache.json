@@ -6564,23 +6564,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42846.html",
       "deviation_score": 78,
-      "estimated_price_man": 10942,
-      "estimated_tsubo_price_man": 584,
-      "estimated_m2_price_man": 177,
+      "estimated_price_man": 9514,
+      "estimated_tsubo_price_man": 594,
+      "estimated_m2_price_man": 180,
       "shinchiku_history_count": 78,
-      "chuko_history_count": 31,
+      "chuko_history_count": 32,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 55.52,
-          "price_man": 6718,
-          "tsubo_price_man": 399.0
+          "area_m2": 55.74,
+          "price_man": 6867,
+          "tsubo_price_man": 406.0
         }
       ]
     },
-    "cached_at": "2026-05-19T04:09:33.445800"
+    "cached_at": "2026-06-02T04:38:02.859342"
   },
   "オークプレイス豊洲5階": {
     "data": {
@@ -9208,5 +9208,49 @@
       ]
     },
     "cached_at": "2026-06-01T12:13:59.414439"
+  },
+  "セザールスカイリバー": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13244.html",
+      "deviation_score": 64,
+      "estimated_price_man": 7926,
+      "estimated_tsubo_price_man": 452,
+      "estimated_m2_price_man": 137,
+      "shinchiku_history_count": 64,
+      "chuko_history_count": 53,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 62.94,
+          "price_man": 5608,
+          "tsubo_price_man": 298.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-02T04:37:53.891734"
+  },
+  "シティテラス品川イーストA棟": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/753539.html",
+      "deviation_score": 25,
+      "estimated_price_man": 11208,
+      "estimated_tsubo_price_man": 545,
+      "estimated_m2_price_man": 165,
+      "shinchiku_history_count": 254,
+      "chuko_history_count": 137,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 9,
+          "layout": "",
+          "area_m2": 67.34,
+          "price_man": 7846,
+          "tsubo_price_man": 386.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-21T02:53:35.906445"
   }
 }

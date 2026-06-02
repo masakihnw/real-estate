@@ -1150,5 +1150,29 @@
     "quarter": "豊洲",
     "neighbourhood": "豊洲三丁目",
     "city_district": ""
+  },
+  "35.621399,139.756367": {
+    "display_name": "品川埠頭線, 東品川五丁目, 港南, 東品川, 品川区, 東京都, 140-0002, 日本",
+    "city": "品川区",
+    "suburb": "東品川",
+    "quarter": "港南",
+    "neighbourhood": "東品川五丁目",
+    "city_district": ""
+  },
+  "35.623934,139.754017": {
+    "display_name": "東品川五丁目, 港南, 東品川, 品川区, 東京都, 108-0075, 日本",
+    "city": "品川区",
+    "suburb": "東品川",
+    "quarter": "港南",
+    "neighbourhood": "東品川五丁目",
+    "city_district": ""
+  },
+  "35.737535,139.725234": {
+    "display_name": "西巣鴨一丁目, 西巣鴨, 豊島区, 東京都, 170-0001, 日本",
+    "city": "豊島区",
+    "suburb": "",
+    "quarter": "西巣鴨",
+    "neighbourhood": "西巣鴨一丁目",
+    "city_district": ""
   }
 }
