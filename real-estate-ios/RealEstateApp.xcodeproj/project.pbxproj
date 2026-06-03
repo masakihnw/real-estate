@@ -26,6 +26,7 @@
 		1D30A4CF74D6451DE51B23CE /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */; };
 		1F72CE93F21F2E14D524D3D9 /* TransactionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5DAB8EDCE8C47645261F77 /* TransactionFilter.swift */; };
 		1F831EA70E43C0800109C454 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D04A0A3D3357841F2D446A36 /* FirebaseFirestore */; };
+		1FD364EED837B31544157394 /* DuplicateDeduplicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6FC9BF8C3C87FA90376D057 /* DuplicateDeduplicationTests.swift */; };
 		242A17AE57A5070DD5A8680F /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC4ACF084AE947A9DBA4E12 /* ComparisonView.swift */; };
 		26603E0457EEA08B54E98644 /* SwipeSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D0B9DA474AAA3422B991A /* SwipeSessionViewModel.swift */; };
 		26F2B5EFC773A320569DD803 /* NopedListingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336E18AB549B9601A34418DF /* NopedListingsView.swift */; };
@@ -265,6 +266,7 @@
 		EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTabView.swift; sourceTree = "<group>"; };
 		F0300C4A7026740400F29F0C /* ListingDetailPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingDetailPagerView.swift; sourceTree = "<group>"; };
 		F23A017D97120BDC7E28BEB8 /* AnnotationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationRouter.swift; sourceTree = "<group>"; };
+		F6FC9BF8C3C87FA90376D057 /* DuplicateDeduplicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuplicateDeduplicationTests.swift; sourceTree = "<group>"; };
 		F79EC324143F3EA32E49539E /* CleanListingNameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanListingNameTests.swift; sourceTree = "<group>"; };
 		F9A5EF2A7A899E8C2473ADDD /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FD2D3C9C14AA8ACF549EFEA9 /* CategorizedImageGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorizedImageGallery.swift; sourceTree = "<group>"; };
@@ -373,6 +375,7 @@
 				F79EC324143F3EA32E49539E /* CleanListingNameTests.swift */,
 				B7383C0353C4BC1411D012D4 /* CommuteDataDowngradeTests.swift */,
 				83282C8FF5E5A037924ED06E /* DiskImageCacheTests.swift */,
+				F6FC9BF8C3C87FA90376D057 /* DuplicateDeduplicationTests.swift */,
 				198C51ABB8661A2DADB317F6 /* ListingBadgeTests.swift */,
 				A53234D8663BD77ECD71B317 /* ListingFilterRouteStationsTests.swift */,
 				5EA46AB133285E0879FD489A /* ObjCExceptionCatcherTests.swift */,
@@ -729,6 +732,7 @@
 				B04F77A79D4C50D084377E1C /* CleanListingNameTests.swift in Sources */,
 				1D0E0C7EA99360594D5D29E0 /* CommuteDataDowngradeTests.swift in Sources */,
 				BE33DB6E3CC8654121BF532C /* DiskImageCacheTests.swift in Sources */,
+				1FD364EED837B31544157394 /* DuplicateDeduplicationTests.swift in Sources */,
 				9F75F5AB051E278D5F4DAC23 /* ListingBadgeTests.swift in Sources */,
 				C0CDA8EDCB3FF9496E423E6E /* ListingFilterRouteStationsTests.swift in Sources */,
 				7A83656CEEE34ECB47866C3C /* ObjCExceptionCatcherTests.swift in Sources */,
@@ -818,7 +822,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 780;
+				CURRENT_PROJECT_VERSION = 781;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -970,7 +974,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 780;
+				CURRENT_PROJECT_VERSION = 781;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_NS_ASSERTIONS = NO;
