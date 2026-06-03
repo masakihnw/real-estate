@@ -266,12 +266,40 @@ final class SupabaseListingStore {
                 }
             }
 
+            // 重複レコードのクリーンアップ（フルフェッチ時のみ）
+            // save() 前のフェッチなので、上記ループで insert した未コミットレコードも含まれる
+            if !isIncremental {
+                let allAfterSync = try modelContext.fetch(descriptor)
+                var seenDbKeys: [String: Listing] = [:]
+                for listing in allAfterSync {
+                    guard let dbKey = listing.supabaseIdentityKey else { continue }
+                    if let existing = seenDbKeys[dbKey] {
+                        let (keep, remove) = Self.pickKeepAndRemove(existing, listing)
+                        modelContext.delete(remove)
+                        seenDbKeys[dbKey] = keep
+                    } else {
+                        seenDbKeys[dbKey] = listing
+                    }
+                }
+            }
+
             try modelContext.save()
             return newCount
         } catch {
             logger.error("Supabase syncToDatabase 失敗 (\(propertyType, privacy: .public)): \(error.localizedDescription, privacy: .public)")
             return 0
         }
+    }
+
+    static func pickKeepAndRemove(_ a: Listing, _ b: Listing) -> (keep: Listing, remove: Listing) {
+        let aHasData = a.isLiked || a.hasComments || a.hasPhotos || !(a.memo ?? "").isEmpty
+        let bHasData = b.isLiked || b.hasComments || b.hasPhotos || !(b.memo ?? "").isEmpty
+        if aHasData && !bHasData { return (a, b) }
+        if bHasData && !aHasData { return (b, a) }
+        if aHasData && bHasData {
+            logger.warning("pickKeepAndRemove: 両レコードにユーザーデータあり。削除側のデータは失われる (a=\(a.url, privacy: .public) b=\(b.url, privacy: .public))")
+        }
+        return a.fetchedAt >= b.fetchedAt ? (a, b) : (b, a)
     }
 
     // MARK: - Detail Lazy Loading
