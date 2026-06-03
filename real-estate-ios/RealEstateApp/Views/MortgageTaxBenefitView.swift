@@ -17,13 +17,9 @@ struct MortgageTaxBenefitView: View {
 
     private var deductionRate: Double { 0.007 }
 
-    private var maxDeduction: Int {
-        listing.isShinchiku ? 350_000 : 210_000
-    }
+    private var maxDeduction: Int { 210_000 }
 
-    private var deductionYears: Int {
-        listing.isShinchiku ? 13 : 10
-    }
+    private var deductionYears: Int { 10 }
 
     private var yearlyDeductions: [(year: Int, balance: Int, deduction: Int)] {
         let monthlyRate = loanRate / 100 / 12
@@ -72,7 +68,7 @@ struct MortgageTaxBenefitView: View {
                     HStack {
                         Text("種別")
                         Spacer()
-                        Text(listing.isShinchiku ? "新築（控除期間13年）" : "中古（控除期間10年）")
+                        Text("中古（控除期間10年）")
                             .foregroundStyle(.secondary)
                     }
                 }

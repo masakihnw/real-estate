@@ -657,13 +657,9 @@ struct HazardMapView: UIViewRepresentable {
 
             view.annotation = annotation
             view.clusteringIdentifier = "listing"
-            // HTML準拠: いいね=赤、新築=緑、中古=青
             if listing.isLiked {
                 view.markerTintColor = UIColor.systemRed
                 view.glyphImage = UIImage(systemName: "heart.fill")
-            } else if listing.isShinchiku {
-                view.markerTintColor = UIColor.systemGreen
-                view.glyphImage = UIImage(systemName: "building.2.fill")
             } else {
                 view.markerTintColor = Self.scoreColor(listing.listingScore)
                 view.glyphImage = UIImage(systemName: "building.2.fill")
@@ -704,7 +700,7 @@ struct HazardMapView: UIViewRepresentable {
             let priceLabel = UILabel()
             priceLabel.text = listing.priceDisplayCompact
             priceLabel.font = .systemFont(ofSize: 14, weight: .bold)
-            priceLabel.textColor = listing.isShinchiku ? UIColor.systemTeal : UIColor.systemBlue
+            priceLabel.textColor = UIColor.systemBlue
             stack.addArrangedSubview(priceLabel)
 
             // 物件詳細行（間取り・面積・徒歩・築年）
@@ -848,7 +844,6 @@ struct HazardMapView: UIViewRepresentable {
                 listing.isLiked.toggle()
                 parent.onLikeTapped?(listing)
 
-                // ピンの表示を更新（いいね=赤、新築=緑、中古=青）
                 if let markerView = view as? MKMarkerAnnotationView {
                     let heartImage = listing.isLiked
                         ? UIImage(systemName: "heart.fill")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
@@ -857,9 +852,6 @@ struct HazardMapView: UIViewRepresentable {
                     if listing.isLiked {
                         markerView.markerTintColor = .systemRed
                         markerView.glyphImage = UIImage(systemName: "heart.fill")
-                    } else if listing.isShinchiku {
-                        markerView.markerTintColor = .systemGreen
-                        markerView.glyphImage = UIImage(systemName: "building.2.fill")
                     } else {
                         markerView.markerTintColor = Self.scoreColor(listing.listingScore)
                         markerView.glyphImage = UIImage(systemName: "building.2.fill")
@@ -1027,7 +1019,7 @@ struct MapTabView: View {
                 }
             }
             .sheet(isPresented: Binding(get: { filterStore.showFilterSheet }, set: { filterStore.showFilterSheet = $0 })) {
-                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, availableDirections: availableDirections, availableNumericFields: availableNumericFields, filteredCount: filteredListings.count, showPriceUndecidedToggle: true, showPropertyTypeFilter: true)
+                ListingFilterSheet(filter: Binding(get: { filterStore.filter }, set: { filterStore.filter = $0 }), availableLayouts: availableLayouts, availableWards: availableWards, availableRouteStations: availableRouteStations, availableDirections: availableDirections, availableNumericFields: availableNumericFields, filteredCount: filteredListings.count)
                     .presentationDetents([.medium, .large])
             }
             .overlay(alignment: .top) {
@@ -1530,19 +1522,12 @@ struct MapTabView: View {
     // MARK: - 地図凡例（ピン + ハザードレイヤー動的）
 
     /// 地図上に表示する凡例ビュー
-    /// - ピン色（中古/新築/いいね）のみ表示（コンパクト）
-    /// - ハザードレイヤー凡例はシート内で確認可能なので地図上では省略
     @ViewBuilder
     private var mapLegendView: some View {
-        // ピン凡例のみ — HTML準拠: 中古/新築/♥いいね
         HStack(spacing: 10) {
             HStack(spacing: 4) {
                 Circle().fill(.blue).frame(width: 8, height: 8)
-                Text("中古").font(.caption2)
-            }
-            HStack(spacing: 4) {
-                Circle().fill(.green).frame(width: 8, height: 8)
-                Text("新築").font(.caption2)
+                Text("物件").font(.caption2)
             }
             HStack(spacing: 4) {
                 Image(systemName: "heart.fill")

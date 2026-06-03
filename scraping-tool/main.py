@@ -328,9 +328,9 @@ def _scrape_livable_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="マンション条件に合う物件を SUUMO/HOME'S から取得（中古・新築対応）")
+    ap = argparse.ArgumentParser(description="マンション条件に合う中古物件を SUUMO/HOME'S から取得")
     ap.add_argument("--source", choices=["suumo", "homes", "athome", "rehouse", "nomucom", "stepon", "livable", "all", "both"], default="suumo", help="取得元")
-    ap.add_argument("--property-type", choices=["chuko", "shinchiku"], default="chuko", help="物件種別（中古 or 新築）")
+    ap.add_argument("--property-type", choices=["chuko"], default="chuko", help="物件種別（中古のみ）")
     ap.add_argument("--max-pages", type=int, default=0, help="最大ページ数。0=結果がなくなるまで全ページ取得（デフォルト）")
     ap.add_argument("--no-filter", action="store_true", help="条件フィルタをかけずに全件出力")
     ap.add_argument("--output", "-o", default="", help="出力ファイル（.csv / .json）。未指定なら stdout に JSON")
@@ -338,21 +338,16 @@ def main() -> None:
 
     all_rows: list[dict] = []
 
-    # property_type に応じたスクレイパー関数を選択
-    scraper_map = {
-        "chuko": {
-            "suumo": _scrape_suumo_chuko,
-            "homes": _scrape_homes_chuko,
-            "athome": _scrape_athome_chuko,
-            "rehouse": _scrape_rehouse_chuko,
-            "nomucom": _scrape_nomucom_chuko,
-            "stepon": _scrape_stepon_chuko,
-            "livable": _scrape_livable_chuko,
-        },
-        "shinchiku": {"suumo": _scrape_suumo_shinchiku, "homes": _scrape_homes_shinchiku},
+    scrapers = {
+        "suumo": _scrape_suumo_chuko,
+        "homes": _scrape_homes_chuko,
+        "athome": _scrape_athome_chuko,
+        "rehouse": _scrape_rehouse_chuko,
+        "nomucom": _scrape_nomucom_chuko,
+        "stepon": _scrape_stepon_chuko,
+        "livable": _scrape_livable_chuko,
     }
-    scrapers = scraper_map[args.property_type]
-    type_label = "中古" if args.property_type == "chuko" else "新築"
+    type_label = "中古"
 
     # ソース選択: all は全ソース、both は suumo+homes（後方互換）、単一指定も可
     if args.source == "all":

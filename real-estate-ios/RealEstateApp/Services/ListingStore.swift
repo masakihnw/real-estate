@@ -49,10 +49,8 @@ final class ListingStore {
 
     private let defaults = UserDefaults.standard
     private let chukoURLKey = "realestate.listURL"
-    private let shinchikuURLKey = "realestate.shinchikuListURL"
     private let lastFetchedKey = "realestate.lastFetchedAt"
     private let chukoETagKey = "realestate.etag.chuko"
-    private let shinchikuETagKey = "realestate.etag.shinchiku"
 
     /// 中古マンション JSON URL（空ならデフォルトを使う）
     var listURL: String {
@@ -60,10 +58,10 @@ final class ListingStore {
         set { defaults.set(newValue, forKey: chukoURLKey) }
     }
 
-    /// 新築マンション JSON URL（空ならデフォルトを使う）
+    /// レガシー互換: shinchikuListURL プロパティ（設定画面で参照される可能性）
     var shinchikuListURL: String {
-        get { defaults.string(forKey: shinchikuURLKey) ?? "" }
-        set { defaults.set(newValue, forKey: shinchikuURLKey) }
+        get { "" }
+        set { }
     }
 
     /// 実際に使用される中古 URL（カスタム URL が必要。Supabase がデフォルト）
@@ -71,15 +69,9 @@ final class ListingStore {
         listURL.trimmingCharacters(in: .whitespaces)
     }
 
-    /// 実際に使用される新築 URL（カスタム URL が必要。Supabase がデフォルト）
-    var effectiveShinchikuURL: String {
-        shinchikuListURL.trimmingCharacters(in: .whitespaces)
-    }
-
     /// カスタム URL を使用中かどうか
     var isUsingCustomURL: Bool {
-        !listURL.trimmingCharacters(in: .whitespaces).isEmpty ||
-        !shinchikuListURL.trimmingCharacters(in: .whitespaces).isEmpty
+        !listURL.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     private init() {
@@ -116,35 +108,22 @@ final class ListingStore {
         // アプリの再インストール/リビルドで SwiftData はクリアされるが
         // UserDefaults（ETag）が残っていると 304 が返り、データが 0 件になる問題を防ぐ。
         let chukoDescriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == "chuko" })
-        let shinchikuDescriptor = FetchDescriptor<Listing>(predicate: #Predicate { $0.propertyType == "shinchiku" })
         var chukoCount = 0
-        var shinchikuCount = 0
         do {
             chukoCount = try modelContext.fetchCount(chukoDescriptor)
-            shinchikuCount = try modelContext.fetchCount(shinchikuDescriptor)
         } catch {
             logger.error("fetchCount 失敗: \(error.localizedDescription, privacy: .public)")
         }
-        if chukoCount == 0 || shinchikuCount == 0 {
+        if chukoCount == 0 {
             clearETags()
             logger.info("SwiftData が空のため ETag をクリアしてフルフェッチを実行します")
         }
 
-        // P2: 中古・新築を並列取得（ネットワーク待ちを半減）
-        // NOTE: fetchAndSync 内の SwiftData 操作は同一 modelContext なので
-        //       ネットワーク取得＋デコードを並列化し、DB 書き込みは逐次実行
         let chukoURL = effectiveChukoURL
-        let shinchikuURL = effectiveShinchikuURL
-
-        // ネットワーク取得 + デコードを並列実行
-        async let chukoData = fetchData(urlString: chukoURL, etagKey: chukoETagKey)
-        async let shinData = fetchData(urlString: shinchikuURL, etagKey: shinchikuETagKey)
-
-        let (chukoFetch, shinFetch) = await (chukoData, shinData)
+        let chukoFetch = await fetchData(urlString: chukoURL, etagKey: chukoETagKey)
 
         var totalNew = 0
 
-        // DB 書き込みは逐次（ModelContext はスレッドセーフでないため）
         let chukoResult = syncToDatabase(
             fetchResult: chukoFetch,
             propertyType: "chuko",
@@ -153,17 +132,6 @@ final class ListingStore {
         totalNew += chukoResult.newCount
         if chukoResult.hadChanges { lastRefreshHadChanges = true }
         if let err = chukoResult.error { lastError = err }
-
-        let shinResult = syncToDatabase(
-            fetchResult: shinFetch,
-            propertyType: "shinchiku",
-            modelContext: modelContext
-        )
-        totalNew += shinResult.newCount
-        if shinResult.hadChanges { lastRefreshHadChanges = true }
-        if let err = shinResult.error {
-            lastError = lastError.map { "\($0); \(err)" } ?? err
-        }
 
         let fetchedAt = Date()
         await MainActor.run {
@@ -179,7 +147,6 @@ final class ListingStore {
         // バックグラウンド時はアノテーション同期・通勤時間計算をスキップ（実行時間制限のため）
         if !isBackground {
             let bothNotModified = !chukoResult.hadChanges && chukoResult.error == nil
-                && !shinResult.hadChanges && shinResult.error == nil
 
             // アノテーション（いいね・コメント）を取得してマージ
             // 両ソースが304（データ変更なし）の場合はスキップ
@@ -225,7 +192,6 @@ final class ListingStore {
     /// 保存済み ETag をクリアして次回フルフェッチを強制する
     func clearETags() {
         defaults.removeObject(forKey: chukoETagKey)
-        defaults.removeObject(forKey: shinchikuETagKey)
         SupabaseListingStore.shared.clearSyncState()
     }
 
@@ -369,7 +335,7 @@ final class ListingStore {
                 }
 
                 // 全物件の復元が完了したらバックアップを削除
-                if hasAnnotationBackup && propertyType == "shinchiku" {
+                if hasAnnotationBackup {
                     UserAnnotationStore.clearBackup()
                 }
 

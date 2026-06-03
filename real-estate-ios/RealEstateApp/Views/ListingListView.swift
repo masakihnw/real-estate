@@ -78,19 +78,9 @@ struct ListingListView: View {
                 filter: #Predicate<Listing> { $0.isLiked == true },
                 sort: \Listing.priceMan, order: .forward
             )
-        } else if propertyTypeFilter == "chuko" {
-            _listings = Query(
-                filter: #Predicate<Listing> { $0.propertyType == "chuko" && $0.isDelisted == false },
-                sort: \Listing.priceMan, order: .forward
-            )
-        } else if propertyTypeFilter == "shinchiku" {
-            _listings = Query(
-                filter: #Predicate<Listing> { $0.propertyType == "shinchiku" && $0.isDelisted == false },
-                sort: \Listing.priceMan, order: .forward
-            )
         } else {
             _listings = Query(
-                filter: #Predicate<Listing> { $0.isDelisted == false },
+                filter: #Predicate<Listing> { $0.propertyType == "chuko" && $0.isDelisted == false },
                 sort: \Listing.priceMan, order: .forward
             )
         }
@@ -549,7 +539,7 @@ struct ListingListView: View {
                     availableDirections: availableDirections,
                     availableNumericFields: availableNumericFields,
                     filteredCount: filteredAndSorted.count,
-                    showPriceUndecidedToggle: propertyTypeFilter == "shinchiku"
+                    showPriceUndecidedToggle: false
                 )
             }
             .environment(\.editMode, favoritesOnly ? $editMode : .constant(.inactive))
@@ -1363,17 +1353,7 @@ struct ListingRowView: View {
                 HStack(alignment: .center, spacing: 4) {
                     OwnershipBadge(listing: listing, size: .small)
 
-                    if listing.isShinchiku {
-                        if let pct = listing.ssProfitPct {
-                            Text("儲かる \(pct)%")
-                                .font(.caption2.weight(.semibold))
-                                .foregroundStyle(Color.accentColor)
-                                .padding(.horizontal, 5)
-                                .padding(.vertical, 2)
-                                .background(Color.accentColor.opacity(0.10))
-                                .clipShape(RoundedRectangle(cornerRadius: 4))
-                        }
-                    } else if let rate = listing.ssAppreciationRate {
+                    if let rate = listing.ssAppreciationRate {
                         let sign = rate >= 0 ? "↑" : "↓"
                         let color: Color = rate >= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor
                         Text("\(sign)\(Int(abs(rate)))%")
@@ -1385,7 +1365,7 @@ struct ListingRowView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
 
-                    if !listing.isShinchiku, let avg = listing.averageDeviation {
+                    if let avg = listing.averageDeviation {
                         DeviationBadge(value: avg)
                     }
 
@@ -1437,7 +1417,7 @@ struct ListingRowView: View {
                 HStack(alignment: .center, spacing: 6) {
                     Text(listing.priceDisplayCompact)
                         .font(.footnote.weight(.bold))
-                        .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
+                        .foregroundStyle(Color.accentColor)
                         .lineLimit(1)
                         .layoutPriority(1)
 
@@ -1492,16 +1472,10 @@ struct ListingRowView: View {
             var items: [String] = []
             if let layout = listing.layout { items.append(layout) }
             items.append(listing.areaDisplay)
-            if listing.isShinchiku {
-                if let w = listing.walkMin { items.append("🚶\(w)分") }
-                items.append(listing.deliveryDateDisplay)
-                if listing.floorTotalDisplay != "—" { items.append(listing.floorTotalDisplay) }
-            } else {
-                if let w = listing.walkMin { items.append("🚶\(w)分") }
-                items.append(listing.builtAgeDisplay)
-                if !listing.floorDisplay.isEmpty { items.append(listing.floorDisplay) }
-                if let dir = listing.direction, !dir.isEmpty { items.append(dir) }
-            }
+            if let w = listing.walkMin { items.append("🚶\(w)分") }
+            items.append(listing.builtAgeDisplay)
+            if !listing.floorDisplay.isEmpty { items.append(listing.floorDisplay) }
+            if let dir = listing.direction, !dir.isEmpty { items.append(dir) }
             return items
         }()
 
@@ -1661,7 +1635,7 @@ struct ListingRowView: View {
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             Text(unit.priceDisplayCompact)
-                                .foregroundStyle(unit.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
+                                .foregroundStyle(Color.accentColor)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             Group {
                                 if let payment = unit.estimatedMonthlyPayment {

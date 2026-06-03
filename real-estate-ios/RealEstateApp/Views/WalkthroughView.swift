@@ -62,11 +62,11 @@ private let walkthroughPages: [WalkthroughPage] = [
         icon: "list.bullet.rectangle.fill",
         iconColors: [Color(red: 0.95, green: 0.55, blue: 0.20), Color(red: 1.0, green: 0.75, blue: 0.35)],
         title: "物件リスト",
-        subtitle: "中古タブと新築タブで物件を一覧。\n豊富なフィルターとソートで効率的に探せます。",
+        subtitle: "中古マンション物件を一覧表示。\n豊富なフィルターとソートで効率的に探せます。",
         features: [
             WalkthroughFeature(icon: "slider.horizontal.3", iconColor: .orange, title: "詳細フィルター", description: "価格帯・間取り・区・駅徒歩・面積・所有権"),
             WalkthroughFeature(icon: "arrow.up.arrow.down", iconColor: .purple, title: "並び替え", description: "新着順・価格順・駅徒歩順・面積順"),
-            WalkthroughFeature(icon: "sparkles", iconColor: .yellow, title: "新築タブ", description: "未定価格の物件も表示・フィルター対応"),
+            WalkthroughFeature(icon: "chart.bar.fill", iconColor: .yellow, title: "スコア表示", description: "総合スコア・値上がり率・偏差値を一覧で確認"),
         ]
     ),
     // Page 3: Map
@@ -77,7 +77,7 @@ private let walkthroughPages: [WalkthroughPage] = [
         title: "地図で探す",
         subtitle: "物件をマップ上で確認。\nハザード情報を重ねて安全性もチェック。",
         features: [
-            WalkthroughFeature(icon: "mappin.and.ellipse", iconColor: .blue, title: "物件ピン", description: "中古=青、新築=緑、お気に入り=赤で表示"),
+            WalkthroughFeature(icon: "mappin.and.ellipse", iconColor: .blue, title: "物件ピン", description: "スコア別の色分け、お気に入り=赤で表示"),
             WalkthroughFeature(icon: "exclamationmark.triangle.fill", iconColor: .orange, title: "ハザードマップ", description: "洪水・土砂・高潮・津波・液状化・揺れやすさ"),
             WalkthroughFeature(icon: "flame.fill", iconColor: .red, title: "東京都リスク", description: "建物倒壊・火災・総合危険度を重ねて表示"),
         ]
@@ -131,7 +131,7 @@ private let walkthroughPages: [WalkthroughPage] = [
         title: "準備完了！",
         subtitle: "さっそく物件を探してみましょう。\n設定画面からいつでもこのガイドを\n見直すことができます。",
         features: [
-            WalkthroughFeature(icon: "hand.tap.fill", iconColor: .blue, title: "検索してみよう", description: "中古・新築タブで気になるエリアをフィルター"),
+            WalkthroughFeature(icon: "hand.tap.fill", iconColor: .blue, title: "検索してみよう", description: "物件タブで気になるエリアをフィルター"),
             WalkthroughFeature(icon: "star.fill", iconColor: .yellow, title: "お気に入りに追加", description: "気になる物件をスワイプして保存"),
             WalkthroughFeature(icon: "gearshape.fill", iconColor: .gray, title: "通知を設定", description: "設定タブで通知頻度と時刻をカスタマイズ"),
         ]

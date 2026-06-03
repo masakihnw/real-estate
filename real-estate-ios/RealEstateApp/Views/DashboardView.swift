@@ -833,7 +833,7 @@ private struct DashboardFilteredRow: View {
                 HStack(spacing: 6) {
                     Text(listing.priceDisplayCompact)
                         .font(.footnote.weight(.bold))
-                        .foregroundStyle(listing.isShinchiku ? DesignSystem.shinchikuPriceColor : Color.accentColor)
+                        .foregroundStyle(Color.accentColor)
 
                     if filter != .newToday && filter != .favorites, let change = listing.latestPriceChange, change != 0 {
                         let isDown = change < 0

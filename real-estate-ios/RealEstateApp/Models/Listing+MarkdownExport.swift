@@ -22,7 +22,7 @@ extension Listing {
 
         md += "## 基本情報\n\n"
         md += "| 項目 | 内容 |\n|---|---|\n"
-        md += "| 種別 | \(isShinchiku ? "新築マンション" : "中古マンション") |\n"
+        md += "| 種別 | 中古マンション |\n"
         md += "| 価格 | \(priceDisplay) |\n"
         if let area = areaM2 {
             if let hi = areaMaxM2, hi != area {
@@ -45,14 +45,9 @@ extension Listing {
             }
         }
 
-        if isShinchiku {
-            if let total = floorTotal { md += "| 階建 | \(total)階建 |\n" }
-            if let delivery = deliveryDate { md += "| 入居時期 | \(delivery) |\n" }
-        } else {
-            md += "| 築年 | \(builtDisplay) |\n"
-            let floor = floorDisplay
-            if !floor.isEmpty { md += "| 所在階/階建 | \(floor) |\n" }
-        }
+        md += "| 築年 | \(builtDisplay) |\n"
+        let floor = floorDisplay
+        if !floor.isEmpty { md += "| 所在階/階建 | \(floor) |\n" }
         if let units = totalUnits { md += "| 総戸数 | \(units)戸 |\n" }
         if let dir = direction, !dir.isEmpty { md += "| 向き | \(dir) |\n" }
         if let b = balconyAreaM2 { md += "| バルコニー | \(String(format: "%.2f㎡", b)) |\n" }
@@ -186,19 +181,12 @@ extension Listing {
                 }
                 if let judgment = computedPriceJudgment {
                     md += "- **割安判定**: \(judgment)\n"
-                    if !isShinchiku {
                         if let oki = ssOkiPrice70m2 {
-                            md += "  - 算出根拠: 沖式中古時価（70㎡換算 \(oki)万円）と販売価格の比較"
-                            if let okiArea = ssOkiPriceForArea {
-                                md += "。実面積換算では\(okiArea)万円"
-                            }
-                            md += "\n"
+                        md += "  - 算出根拠: 沖式中古時価（70㎡換算 \(oki)万円）と販売価格の比較"
+                        if let okiArea = ssOkiPriceForArea {
+                            md += "。実面積換算では\(okiArea)万円"
                         }
-                    } else {
-                        if let disc = ssM2Discount {
-                            let tsuboDisc = String(format: "%.1f", Double(disc) * 3.30578)
-                            md += "  - 算出根拠: 坪単価の乖離額 \(tsuboDisc)万円/坪（負値=割安、正値=割高）\n"
-                        }
+                        md += "\n"
                     }
                 }
                 if let rate = ssAppreciationRate {
@@ -253,7 +241,7 @@ extension Listing {
         let primaryStation = parsedStations.first
 
         var prompt = """
-        以下の\(isShinchiku ? "新築" : "中古")マンションについて、**「結論、この物件は私たちにとって買いかどうか」** を不動産購入エージェントの立場で総合判断してください。
+        以下の中古マンションについて、**「結論、この物件は私たちにとって買いかどうか」** を不動産購入エージェントの立場で総合判断してください。
 
         ## あなたの役割
         冷静・率直・論理的な不動産購入エージェント。「住みたい気持ち」と「買ってよい判断」を分ける。物件を褒めるのではなく、**買ってよい理由と買ってはいけない理由を同時に提示する**。
@@ -456,16 +444,8 @@ extension Listing {
     /// 各物件のフル Markdown を含み、総合ランキング・比較表を出力指示する。
     static func toAIComparisonPrompt(listings: [Listing], buyerProfile: BuyerProfile = .empty) -> String {
         let count = listings.count
-        let hasShinchiku = listings.contains(where: \.isShinchiku)
-        let hasChuko = listings.contains(where: { !$0.isShinchiku })
-        let typeLabel: String = {
-            if hasShinchiku && hasChuko { return "新築・中古" }
-            if hasShinchiku { return "新築" }
-            return "中古"
-        }()
-
         var prompt = """
-        以下の\(typeLabel)マンション \(count) 件について、**「この家族にとってどれを買うべきか」の購入推奨ランキング** を作成してください。
+        以下の中古マンション \(count) 件について、**「この家族にとってどれを買うべきか」の購入推奨ランキング** を作成してください。
 
         ## あなたの役割
         冷静・率直・論理的な不動産購入エージェント。「住みたい気持ち」と「買ってよい判断」を分ける。

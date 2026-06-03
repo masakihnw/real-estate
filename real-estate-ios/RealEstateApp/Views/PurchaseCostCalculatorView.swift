@@ -5,12 +5,10 @@ struct PurchaseCostCalculatorView: View {
     let listing: Listing
     @State private var priceMan: Double
     @State private var loanRatio: Double = 1.0
-    @State private var isNewConstruction: Bool
 
     init(listing: Listing) {
         self.listing = listing
         self._priceMan = State(initialValue: Double(listing.priceMan ?? 5000))
-        self._isNewConstruction = State(initialValue: listing.isShinchiku)
     }
 
     private var priceYen: Double { priceMan * 10000 }
@@ -27,13 +25,12 @@ struct PurchaseCostCalculatorView: View {
 
     private var registrationTax: Int {
         let fixedAssetValue = priceYen * 0.7
-        let ownershipRate = isNewConstruction ? 0.003 : 0.02
+        let ownershipRate = 0.02
         let mortgageRate = 0.001
         return Int(fixedAssetValue * ownershipRate + loanAmount * mortgageRate)
     }
 
     private var agencyFee: Int {
-        if isNewConstruction { return 0 }
         return Int(priceYen * 0.03 + 66_000) + Int((priceYen * 0.03 + 66_000) * 0.1)
     }
 
@@ -67,10 +64,6 @@ struct PurchaseCostCalculatorView: View {
         let fixedAssetBuilding = priceYen * 0.7 * 0.7
         let landTax = fixedAssetLand * 0.015
         var buildingTax = fixedAssetBuilding * 0.03
-        if isNewConstruction {
-            let deduction = min(fixedAssetBuilding, 12_000_000)
-            buildingTax = max(0, (fixedAssetBuilding - deduction) * 0.03)
-        }
         return Int(landTax + buildingTax)
     }
 
@@ -101,15 +94,12 @@ struct PurchaseCostCalculatorView: View {
                             .foregroundStyle(.secondary)
                     }
                     Slider(value: $loanRatio, in: 0...1, step: 0.05)
-                    Toggle("新築", isOn: $isNewConstruction)
                 }
 
                 Section("諸費用内訳") {
                     costRow("印紙税", stampTax)
                     costRow("登録免許税", registrationTax)
-                    if !isNewConstruction {
-                        costRow("仲介手数料（税込）", agencyFee)
-                    }
+                    costRow("仲介手数料（税込）", agencyFee)
                     costRow("ローン関連費用", loanExpenses)
                     costRow("火災保険料", fireInsurance)
                     costRow("司法書士報酬", judicialScrivenerFee)
