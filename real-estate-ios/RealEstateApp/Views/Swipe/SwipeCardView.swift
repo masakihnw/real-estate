@@ -6,13 +6,14 @@ struct SwipeCardView: View {
     let isTopCard: Bool
 
     @State private var imageIndex = 0
+    @State private var cardImages: [CardImage] = []
 
     private var swipeProgress: Double {
         guard isTopCard else { return 0 }
         return Double(dragOffset.width) / 150
     }
 
-    private var cardImages: [CardImage] {
+    private static func buildCardImages(for listing: Listing) -> [CardImage] {
         var images: [CardImage] = []
         if let thumb = listing.thumbnailURL {
             images.append(CardImage(url: thumb, label: "メイン"))
@@ -49,6 +50,15 @@ struct SwipeCardView: View {
                     .padding(24)
             }
         }
+        .onAppear { buildImagesIfNeeded() }
+        .onChange(of: listing.identityKey) { _, _ in
+            imageIndex = 0
+            cardImages = Self.buildCardImages(for: listing)
+        }
+        .onChange(of: listing.suumoImagesJSON) { _, _ in
+            cardImages = Self.buildCardImages(for: listing)
+            if imageIndex >= cardImages.count { imageIndex = 0 }
+        }
     }
 
     // MARK: - Image Carousel
@@ -60,21 +70,15 @@ struct SwipeCardView: View {
             let h = w * 0.65
 
             ZStack(alignment: .bottom) {
+                let safeIndex = min(imageIndex, max(images.count - 1, 0))
                 if images.isEmpty {
                     placeholder.frame(width: w, height: h)
                 } else {
-                    AsyncImage(url: images[imageIndex].url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: w, height: h)
-                                .clipped()
-                        default:
-                            placeholder.frame(width: w, height: h)
-                        }
-                    }
+                    TrimmedAsyncImage(
+                        url: images[safeIndex].url,
+                        width: w,
+                        height: h
+                    )
                     .id(imageIndex)
                 }
 
@@ -136,7 +140,7 @@ struct SwipeCardView: View {
                 if !images.isEmpty {
                     HStack {
                         Spacer()
-                        Text(images[imageIndex].label)
+                        Text(images[safeIndex].label)
                             .font(.system(size: 11, weight: .medium))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 8)
@@ -218,6 +222,14 @@ struct SwipeCardView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - Lifecycle
+
+    private func buildImagesIfNeeded() {
+        if cardImages.isEmpty {
+            cardImages = Self.buildCardImages(for: listing)
+        }
     }
 
     // MARK: - AI Summary

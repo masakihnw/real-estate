@@ -39,9 +39,9 @@ struct SwipeSessionView: View {
                 SwipeActionBar(
                     onNope: { animateSwipe(.nope) },
                     onSkip: { animateSwipe(.skip) },
-                    onUndo: { viewModel.undo() },
+                    onUndo: { guard !isExiting else { return }; viewModel.undo() },
                     onLike: { animateSwipe(.like) },
-                    canUndo: viewModel.canUndo
+                    canUndo: viewModel.canUndo && !isExiting
                 )
             }
             Spacer()
@@ -104,6 +104,7 @@ struct SwipeSessionView: View {
                     dragOffset: isTop ? effectiveOffset : .zero,
                     isTopCard: isTop
                 )
+                .id(card.identityKey)
                 .scaleEffect(scaleFor(offset: offset))
                 .offset(y: CGFloat(offset) * 8)
                 .offset(x: isTop ? effectiveOffset.width : 0,
@@ -127,7 +128,7 @@ struct SwipeSessionView: View {
         }
         .padding(.horizontal, 20)
         .accessibilityElement(children: .contain)
-        .accessibilityValue("\(viewModel.currentIndex + 1) / \(viewModel.cards.count)")
+        .accessibilityValue("\(min(viewModel.currentIndex + 1, viewModel.cards.count)) / \(viewModel.cards.count)")
     }
 
     private var visibleCardIndices: [Int] {
@@ -180,6 +181,7 @@ struct SwipeSessionView: View {
     }
 
     private func animateSwipe(_ decision: SwipeDecision) {
+        guard !isExiting else { return }
         let target: CGSize
         switch decision {
         case .like:
@@ -200,9 +202,7 @@ struct SwipeSessionView: View {
 
         withAnimation(exitAnimation) {
             exitOffset = translation
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + (reduceMotion ? 0.2 : 0.35)) {
+        } completion: {
             viewModel.commitSwipe(decision)
             dragOffset = .zero
             exitOffset = .zero
@@ -215,15 +215,13 @@ struct SwipeSessionView: View {
     private func prefetchEnrichment() async {
         let store = SupabaseListingStore.shared
         let needsFetch = viewModel.cards.filter { $0.enrichmentFetchedAt == nil }
-        await withTaskGroup(of: Void.self) { group in
-            for listing in needsFetch {
-                group.addTask {
-                    try? await store.fetchDetail(
-                        identityKey: listing.identityKey,
-                        modelContext: modelContext
-                    )
-                }
-            }
+        guard !needsFetch.isEmpty else { return }
+
+        for listing in needsFetch {
+            try? await store.fetchDetail(
+                identityKey: listing.identityKey,
+                modelContext: modelContext
+            )
         }
     }
 }

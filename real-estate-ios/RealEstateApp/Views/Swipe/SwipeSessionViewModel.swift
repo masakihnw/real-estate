@@ -13,6 +13,7 @@ final class SwipeSessionViewModel {
     private(set) var currentIndex = 0
     private(set) var swipeResults: [(listing: Listing, decision: SwipeDecision)] = []
     private(set) var undoStack: [(listing: Listing, decision: SwipeDecision)] = []
+    private var pendingTasks: [String: Task<Void, Never>] = [:]
 
     var isComplete: Bool { currentIndex >= cards.count }
     var currentCard: Listing? { cards.indices.contains(currentIndex) ? cards[currentIndex] : nil }
@@ -34,6 +35,8 @@ final class SwipeSessionViewModel {
         currentIndex = 0
         swipeResults = []
         undoStack = []
+        pendingTasks.values.forEach { $0.cancel() }
+        pendingTasks = [:]
         logger.info("Loaded \(self.cards.count) cards for swipe session")
     }
 
@@ -43,20 +46,17 @@ final class SwipeSessionViewModel {
         undoStack.append((card, decision))
         currentIndex += 1
 
-        switch decision {
-        case .like:
-            Task {
-                await BuildingPreferenceStore.shared.setPreference(card.identityKey, preference: .like)
-            }
-            logger.info("Liked: \(card.name, privacy: .public)")
-        case .nope:
-            Task {
-                await BuildingPreferenceStore.shared.setPreference(card.identityKey, preference: .nope)
-            }
-            logger.info("Noped: \(card.name, privacy: .public)")
-        case .skip:
+        guard decision != .skip else {
             logger.info("Skipped: \(card.name, privacy: .public)")
+            return
         }
+
+        let key = card.identityKey
+        let pref: BuildingPreferenceStore.Preference = decision == .like ? .like : .nope
+        pendingTasks[key] = Task {
+            await BuildingPreferenceStore.shared.setPreference(key, preference: pref)
+        }
+        logger.info("\(decision == .like ? "Liked" : "Noped", privacy: .public): \(card.name, privacy: .public)")
     }
 
     func undo() {
@@ -64,13 +64,14 @@ final class SwipeSessionViewModel {
         swipeResults.removeLast()
         currentIndex -= 1
 
-        switch last.decision {
-        case .like, .nope:
+        let key = last.listing.identityKey
+        pendingTasks[key]?.cancel()
+        pendingTasks.removeValue(forKey: key)
+
+        if last.decision != .skip {
             Task {
-                await BuildingPreferenceStore.shared.removePreference(last.listing.identityKey)
+                await BuildingPreferenceStore.shared.removePreference(key)
             }
-        case .skip:
-            break
         }
         logger.info("Undid swipe on: \(last.listing.name, privacy: .public)")
     }
@@ -81,6 +82,8 @@ final class SwipeSessionViewModel {
         currentIndex = 0
         swipeResults = []
         undoStack = []
+        pendingTasks.values.forEach { $0.cancel() }
+        pendingTasks = [:]
     }
     #endif
 
