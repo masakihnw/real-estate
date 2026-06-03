@@ -788,58 +788,72 @@ def _merge_detail_cache_into_listing(r: SuumoListing, detail: dict) -> None:
         r.repair_reserve_fund = detail["repair_reserve_fund"]
 
 
-def _load_detail_for_tower_judgement(
+def _fetch_and_parse_detail(
     r: SuumoListing,
     session: requests.Session,
     detail_cache: dict[str, dict],
 ) -> dict:
-    """築古かつ floor_total 不明の候補だけ詳細ページを見て階建てを補完する。"""
+    """詳細ページを取得・パースし、listing の不足フィールドを補完する。
+
+    取得済みの URL は呼び出しスコープ内の detail_cache から返す。
+    取得失敗時はフェイルオープン（空 dict を返し、掲載中として扱う）。
+    """
     cached = detail_cache.get(r.url)
     if cached is not None:
-        _merge_detail_cache_into_listing(r, cached)
+        if not cached.get("delisted"):
+            _merge_detail_cache_into_listing(r, cached)
         return cached
 
     try:
         html = _fetch_detail_page(session, r.url)
         detail = parse_suumo_detail_html(html)
     except Exception as e:
-        logger.warning("SUUMO detail: タワマン判定用詳細取得に失敗: %s (%s)", r.url, e)
+        logger.warning("SUUMO detail: 詳細取得に失敗（掲載中として続行）: %s (%s)", r.url, e)
         detail = {}
 
     if not isinstance(detail, dict):
         detail = {}
     detail_cache[r.url] = detail
-    if detail.get("delisted"):
-        return detail
-    _merge_detail_cache_into_listing(r, detail)
+    if not detail.get("delisted"):
+        _merge_detail_cache_into_listing(r, detail)
     return detail
 
 
+def _passes_basic_filters(r: SuumoListing, passengers_map: dict) -> bool:
+    """価格・面積・間取り・徒歩・地域・路線の基本フィルタ。"""
+    list_ward = getattr(r, "list_ward_roman", None)
+    if not _is_tokyo_23(r.address, r.url, list_ward_roman=list_ward):
+        return False
+    if not line_ok(r.station_line):
+        return False
+    if not station_passengers_ok(r.station_line, passengers_map):
+        return False
+    if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
+        return False
+    if not lower_tier_station_ok(r.station_line, r.price_man):
+        return False
+    effective_area_min = get_effective_area_min_m2(r.address)
+    if r.area_m2 is not None and (r.area_m2 < effective_area_min or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
+        return False
+    if not layout_ok(r.layout):
+        return False
+    if r.walk_min is not None and r.walk_min > WALK_MIN_MAX:
+        return False
+    return True
+
+
 def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
-    """価格・専有・間取り・築年・徒歩・地域（東京23区）・総戸数・駅乗降客数で条件ドキュメントに合わせてフィルタ。"""
+    """価格・専有・間取り・築年・徒歩・地域（東京23区）・総戸数・駅乗降客数で条件ドキュメントに合わせてフィルタ。
+
+    全フィルタ通過物件は詳細ページで掲載終了を検証する。
+    """
     units_cache = _load_building_units_cache()
     passengers_map = load_station_passengers()
     detail_cache: dict[str, dict] = {}
     detail_session: Optional[requests.Session] = None
     out = []
     for r in listings:
-        list_ward = getattr(r, "list_ward_roman", None)
-        if not _is_tokyo_23(r.address, r.url, list_ward_roman=list_ward):
-            continue
-        if not line_ok(r.station_line):
-            continue
-        if not station_passengers_ok(r.station_line, passengers_map):
-            continue
-        if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
-            continue
-        if not lower_tier_station_ok(r.station_line, r.price_man):
-            continue
-        effective_area_min = get_effective_area_min_m2(r.address)
-        if r.area_m2 is not None and (r.area_m2 < effective_area_min or (AREA_MAX_M2 is not None and r.area_m2 > AREA_MAX_M2)):
-            continue
-        if not layout_ok(r.layout):
-            continue
-        if r.walk_min is not None and r.walk_min > WALK_MIN_MAX:
+        if not _passes_basic_filters(r, passengers_map):
             continue
         cache_val = units_cache.get(r.url)
         total_units = r.total_units
@@ -853,22 +867,31 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
         elif total_units is None and isinstance(cache_val, int):
             total_units = cache_val
             r.total_units = cache_val
-        # タワーマンション（20階建て以上、または名称にタワー系キーワード）は築年数フィルタを免除
         is_tower = (r.floor_total is not None and r.floor_total >= 20) or _is_tower_name(r.name)
-        if r.built_year is not None and r.built_year < BUILT_YEAR_MIN and not is_tower and r.floor_total is None:
+        if r.built_year is not None and r.built_year < BUILT_YEAR_MIN and not is_tower:
+            if r.floor_total is None:
+                if detail_session is None:
+                    detail_session = create_session()
+                detail = _fetch_and_parse_detail(r, detail_session, detail_cache)
+                if detail.get("delisted"):
+                    logger.info("SUUMO: 掲載終了を検知 — %s (%s)", r.name, r.url)
+                    continue
+                if total_units is None:
+                    total_units = detail.get("total_units")
+                is_tower = (r.floor_total is not None and r.floor_total >= 20) or _is_tower_name(r.name)
+            if not is_tower:
+                continue
+        if total_units is not None and total_units < TOTAL_UNITS_MIN:
+            continue
+        # 全フィルタ通過後の掲載終了チェック。units_cache ヒット済みでも
+        # 掲載終了の鮮度を保証するため detail を取得して再検証する。
+        if r.url not in detail_cache:
             if detail_session is None:
                 detail_session = create_session()
-            detail = _load_detail_for_tower_judgement(r, detail_session, detail_cache)
+            detail = _fetch_and_parse_detail(r, detail_session, detail_cache)
             if detail.get("delisted"):
                 logger.info("SUUMO: 掲載終了を検知 — %s (%s)", r.name, r.url)
                 continue
-            if total_units is None:
-                total_units = detail.get("total_units")
-            is_tower = (r.floor_total is not None and r.floor_total >= 20) or _is_tower_name(r.name)
-        if r.built_year is not None and r.built_year < BUILT_YEAR_MIN and not is_tower:
-            continue
-        if total_units is not None and total_units < TOTAL_UNITS_MIN:
-            continue
         out.append(r)
     return out
 
