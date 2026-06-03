@@ -281,6 +281,9 @@ final class Listing: @unchecked Sendable {
     /// 総合投資スコア（0-100）
     var listingScore: Int?
 
+    /// サーバー側で計算された資産グレード（S/A/B/C/D）。listings_feed_light ビューの asset_grade カラムに対応。
+    var assetGrade: String?
+
     /// 代替ソース情報 JSON 文字列
     /// フォーマット: [{"source":"rehouse","url":"https://...","price_man":9500},...]
     var altSourcesJSON: String?
@@ -419,6 +422,7 @@ final class Listing: @unchecked Sendable {
         resaleLiquidityScore: Int? = nil,
         competingListingsCount: Int? = nil,
         listingScore: Int? = nil,
+        assetGrade: String? = nil,
         altSourcesJSON: String? = nil,
         investmentSummary: String? = nil,
         highlightBadge: String? = nil,
@@ -520,6 +524,7 @@ final class Listing: @unchecked Sendable {
         self.resaleLiquidityScore = resaleLiquidityScore
         self.competingListingsCount = competingListingsCount
         self.listingScore = listingScore
+        self.assetGrade = assetGrade
         self.altSourcesJSON = altSourcesJSON
         self.investmentSummary = investmentSummary
         self.highlightBadge = highlightBadge
@@ -1153,14 +1158,11 @@ final class Listing: @unchecked Sendable {
     }
 
     var scoreGradeLetter: String? {
+        // サーバー側の asset_grade があればそれを優先
+        if let grade = assetGrade, !grade.isEmpty { return grade }
+        // フォールバック: ローカル閾値で算出
         guard let score = listingScore else { return nil }
-        switch score {
-        case 80...: return "S"
-        case 65..<80: return "A"
-        case 50..<65: return "B"
-        case 35..<50: return "C"
-        default: return "D"
-        }
+        return DesignSystem.gradeThresholds.grade(for: score)
     }
 
     /// 表示用: 修繕積立基金（一時金）
@@ -2221,11 +2223,12 @@ final class Listing: @unchecked Sendable {
     /// スコアの表示用色名
     var listingScoreGrade: String {
         guard let score = listingScore else { return "unknown" }
-        switch score {
-        case 80...: return "excellent"
-        case 65..<80: return "good"
-        case 50..<65: return "average"
-        case 35..<50: return "belowAverage"
+        let grade = DesignSystem.gradeThresholds.grade(for: score)
+        switch grade {
+        case "S": return "excellent"
+        case "A": return "good"
+        case "B": return "average"
+        case "C": return "belowAverage"
         default: return "poor"
         }
     }

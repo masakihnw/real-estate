@@ -82,8 +82,7 @@ CREATE TABLE IF NOT EXISTS listing_events (
 
 CREATE TABLE IF NOT EXISTS enrichments (
     listing_id INTEGER PRIMARY KEY REFERENCES listings(id),
-    asset_rank TEXT,
-    asset_score_raw REAL,
+    asset_grade TEXT,
     latitude REAL,
     longitude REAL,
     commute_m3 TEXT,

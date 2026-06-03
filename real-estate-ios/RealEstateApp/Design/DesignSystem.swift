@@ -64,6 +64,39 @@ enum DesignSystem {
         }
     }
 
+    // MARK: - Grade Thresholds（Supabase 動的上書き対応）
+
+    /// グレード閾値。デフォルト値はハードコード、将来的に Supabase `app_config` から動的上書き可能。
+    struct GradeThresholds {
+        let s: Int
+        let a: Int
+        let b: Int
+        let c: Int
+
+        init(s: Int = 80, a: Int = 65, b: Int = 50, c: Int = 35) {
+            self.s = s
+            self.a = a
+            self.b = b
+            self.c = c
+        }
+
+        /// スコアからグレード文字列を算出する
+        func grade(for score: Int) -> String {
+            if score >= s { return "S" }
+            if score >= a { return "A" }
+            if score >= b { return "B" }
+            if score >= c { return "C" }
+            return "D"
+        }
+    }
+
+    static let gradeThresholds = GradeThresholds()
+
+    /// スコアからグレード色を返すヘルパー（スコア → グレード → 色の変換を一元化）
+    static func scoreColor(for score: Int) -> Color {
+        scoreColor(for: gradeThresholds.grade(for: score))
+    }
+
     // MARK: - Source / Portal Colors
 
     static let srcSuumo = Color(red: 0.0, green: 0.592, blue: 0.231)

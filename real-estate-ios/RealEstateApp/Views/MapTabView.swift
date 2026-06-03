@@ -618,13 +618,7 @@ struct HazardMapView: UIViewRepresentable {
 
         static func scoreColor(_ score: Int?) -> UIColor {
             guard let score else { return .systemBlue }
-            switch score {
-            case 80...: return UIColor(DesignSystem.scoreS)
-            case 65..<80: return UIColor(DesignSystem.scoreA)
-            case 50..<65: return UIColor(DesignSystem.scoreB)
-            case 35..<50: return UIColor(DesignSystem.scoreC)
-            default: return UIColor(DesignSystem.scoreD)
-            }
+            return UIColor(DesignSystem.scoreColor(for: score))
         }
 
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
