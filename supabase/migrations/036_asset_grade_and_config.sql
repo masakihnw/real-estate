@@ -127,8 +127,6 @@ BEGIN
     END IF;
     UPDATE enrichments SET
       extracted_features = p_result,
-      renovation_history = p_result->>'renovation_history',
-      management_quality = p_result->>'management_quality',
       key_strengths = p_result->'equipment_highlights',
       key_risks = p_result->'risk_factors',
       ai_source = p_source,
