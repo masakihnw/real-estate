@@ -1047,11 +1047,12 @@ struct ListingFilterSheet: View {
 
     private func formatPrice(_ man: Int) -> String {
         if man >= 10000 {
-            let oku = Double(man) / 10000.0
-            if oku == oku.rounded() {
-                return "\(Int(oku))億"
+            let oku = man / 10000
+            let remainder = man % 10000
+            if remainder == 0 {
+                return "\(oku)億"
             }
-            return String(format: "%.1f億", oku)
+            return "\(oku)億\(remainder)万"
         }
         return "\(man)万"
     }
