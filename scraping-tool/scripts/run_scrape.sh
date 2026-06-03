@@ -107,10 +107,10 @@ fi
 
 IS_SLACK_TIME=false
 
-# JST 22:00 (UTC 13:00) の回で Slack 通知
+# JST 9:00 (UTC 0:00) の回で Slack 通知（Routine②③のドラフトを朝一で送信）
 # スクリプト開始時に取得した UTC 時刻で判定（スクレイピング所要時間の影響を受けない）
 case "$STARTED_HOUR_UTC" in
-    13) IS_SLACK_TIME=true ;;
+    0|00) IS_SLACK_TIME=true ;;
 esac
 
 # ──────────────────────────── Phase 4: metadata.json 出力 ────────────────────────────

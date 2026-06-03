@@ -1,0 +1,276 @@
+openapi: 3.1.0
+info:
+  title: Real Estate Listing Facts API
+  description: |
+    Supabase PostgREST API for querying real estate listing facts and buyer profiles.
+    This API exposes factual/third-party data only — proprietary analysis scores are excluded
+    to prevent AI bias when used with ChatGPT or Claude.
+  version: "1.0.0"
+
+servers:
+  - url: https://dzhcumdmzskkvusynmyw.supabase.co/rest/v1
+
+security:
+  - apiKey: []
+    authorization: []
+
+paths:
+  /listing_facts:
+    get:
+      operationId: getListingFacts
+      summary: Search and filter property listings (facts only)
+      description: |
+        Returns factual property data from the listing_facts view.
+        Supports PostgREST filtering operators.
+        Common filters: eq, gt, lt, gte, lte, like, ilike, in, is.
+        Example: ?status=eq.active&walk_min=lte.7&area_m2=gte.55
+      parameters:
+        - name: select
+          in: query
+          description: Columns to return (comma-separated). Default returns all.
+          schema:
+            type: string
+          example: "name,address,layout,area_m2,walk_min,status,sources_json"
+        - name: status
+          in: query
+          description: "Filter by status (eq.active or eq.removed)"
+          schema:
+            type: string
+          example: "eq.active"
+        - name: list_ward_roman
+          in: query
+          description: "Filter by ward (e.g., eq.koto, eq.sumida, in.(koto,sumida,taito))"
+          schema:
+            type: string
+        - name: area_m2
+          in: query
+          description: "Filter by area in m² (e.g., gte.55, lte.80)"
+          schema:
+            type: string
+        - name: walk_min
+          in: query
+          description: "Filter by walk minutes to station (e.g., lte.7)"
+          schema:
+            type: string
+        - name: built_year
+          in: query
+          description: "Filter by built year (e.g., gte.2006)"
+          schema:
+            type: integer
+        - name: total_units
+          in: query
+          description: "Filter by total units in building (e.g., gte.50)"
+          schema:
+            type: integer
+        - name: layout
+          in: query
+          description: "Filter by layout (e.g., eq.3LDK, like.*LDK*)"
+          schema:
+            type: string
+        - name: order
+          in: query
+          description: "Sort order (e.g., updated_at.desc, area_m2.asc)"
+          schema:
+            type: string
+          example: "updated_at.desc"
+        - name: limit
+          in: query
+          description: "Max number of rows to return"
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          description: "Number of rows to skip"
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Array of listing facts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ListingFact"
+
+  /rpc/get_buyer_profile:
+    post:
+      operationId: getBuyerProfile
+      summary: Get buyer profile by user ID
+      description: Returns the buyer profile for the specified user_id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                p_user_id:
+                  type: string
+                  description: User ID (Firebase Auth UID or 'default')
+                  example: "default"
+              required:
+                - p_user_id
+      responses:
+        "200":
+          description: Buyer profile array (0 or 1 element)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BuyerProfile"
+
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: apikey
+      in: header
+      description: Supabase service role key or anon key
+    authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: "Bearer <service_role_key>"
+
+  schemas:
+    ListingFact:
+      type: object
+      properties:
+        id:
+          type: integer
+        identity_key:
+          type: string
+          description: Building identity key for deduplication
+        name:
+          type: string
+          description: Property name (building + room)
+        address:
+          type: string
+        layout:
+          type: string
+          description: "Floor plan (e.g., 3LDK, 2LDK+S)"
+        area_m2:
+          type: number
+          description: Area in square meters
+        built_year:
+          type: integer
+        walk_min:
+          type: integer
+          description: Minutes walk to nearest station
+        station_line:
+          type: string
+          description: Nearest station and line
+        total_units:
+          type: integer
+          description: Total units in building
+        floor_position:
+          type: string
+        ownership:
+          type: string
+          description: "Ownership type (所有権, 定期借地権, etc.)"
+        management_fee:
+          type: integer
+          description: Monthly management fee (yen)
+        repair_reserve_fund:
+          type: integer
+          description: Monthly repair reserve (yen)
+        list_ward_roman:
+          type: string
+          description: Ward name in roman letters
+        status:
+          type: string
+          enum: [active, removed]
+        sources_json:
+          type: array
+          description: All listing sources with prices and URLs
+          items:
+            type: object
+            properties:
+              source:
+                type: string
+              url:
+                type: string
+              price_man:
+                type: number
+                description: Price in 万円 (10,000 yen units)
+              is_active:
+                type: boolean
+        commute_info_v2:
+          type: object
+          description: Commute time data (JSONB)
+        hazard_info:
+          type: object
+          description: Hazard map info (flood, tsunami, landslide, liquefaction)
+        reinfolib_market_data:
+          type: object
+          description: ReinfoLib market price data
+        ss_profit_pct:
+          type: number
+          description: Sumai Surfin predicted profit percentage
+        ss_value_judgment:
+          type: string
+          description: Sumai Surfin value judgment
+        price_history_json:
+          type: array
+          description: Price change history
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              price_man:
+                type: number
+              source:
+                type: string
+
+    BuyerProfile:
+      type: object
+      properties:
+        user_id:
+          type: string
+        family_composition:
+          type: string
+        household_income:
+          type: string
+        work_style:
+          type: string
+        child_plan:
+          type: string
+        priorities:
+          type: string
+        deal_breakers:
+          type: string
+        planned_borrowing:
+          type: string
+        estimated_rate:
+          type: string
+        repayment_years:
+          type: string
+        monthly_payment_limit:
+          type: string
+        post_sale_strategy:
+          type: string
+        preferred_areas:
+          type: array
+          items:
+            type: string
+        must_have_features:
+          type: array
+          items:
+            type: string
+        life_scenarios:
+          type: array
+          items:
+            type: object
+        budget_scenarios:
+          type: array
+          items:
+            type: object
+        timeline:
+          type: string
+        risk_tolerance:
+          type: string

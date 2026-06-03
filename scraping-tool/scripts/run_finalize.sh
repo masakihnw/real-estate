@@ -47,7 +47,7 @@ echo "--- キャッシュマージ ---" >&2
 # 各ジョブが更新した可能性のあるキャッシュをマージ
 for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_manifest.json station_cache.json reverse_geocode_cache.json building_units.json mansion_review_cache.json; do
     UPDATES=""
-    for job_dir in enriched-chuko-core enriched-chuko-mansion enriched-chuko-claude enriched-shinchiku; do
+    for job_dir in enriched-chuko-core enriched-chuko-mansion enriched-shinchiku; do
         if [ -f "${job_dir}/data/${cache_file}" ]; then
             UPDATES="${UPDATES} ${job_dir}/data/${cache_file}"
         fi
@@ -70,7 +70,7 @@ cp "${OUTPUT_DIR}/latest.json" "${OUTPUT_DIR}/previous.json" 2>/dev/null || true
 # ── Step 1: 常に JSON merge で latest.json を生成（フォールバック + listings 同期のベース） ──
 
 CHUKO_SOURCES=""
-for job_dir in enriched-chuko-core enriched-chuko-mansion enriched-chuko-claude; do
+for job_dir in enriched-chuko-core enriched-chuko-mansion; do
     for candidate in "${job_dir}/latest.json" "${job_dir}/results/latest.json"; do
         if [ -f "$candidate" ]; then
             CHUKO_SOURCES="${CHUKO_SOURCES} $candidate"
@@ -99,14 +99,14 @@ if [ -n "$CHUKO_SOURCES" ]; then
     echo "中古: ${CHUKO_SOURCES} をマージ完了" >&2
 else
     echo "警告: enriched-chuko の成果物が1つも見つかりません（前回データを維持）" >&2
-    for job_dir in enriched-chuko-core enriched-chuko-mansion enriched-chuko-claude; do
+    for job_dir in enriched-chuko-core enriched-chuko-mansion; do
         ls -R "${job_dir}/" 2>/dev/null || echo "  ${job_dir}/ ディレクトリ自体が存在しません" >&2
     done
 fi
 
 # 欠落 artifact の検出と通知
 MISSING_ARTIFACTS=""
-for job_dir in enriched-chuko-core enriched-chuko-mansion enriched-chuko-claude; do
+for job_dir in enriched-chuko-core enriched-chuko-mansion; do
     found=false
     for candidate in "${job_dir}/latest.json" "${job_dir}/results/latest.json"; do
         if [ -f "$candidate" ]; then
@@ -354,17 +354,18 @@ fi
 fi  # end HAS_CHANGES
 
 # ──────────────────────────── Slack 通知 ────────────────────────────
-# Supabase の notification_state / listing_events から差分を取得して通知する。
-# Supabase 未設定時は JSON フォールバック（previous_slack.json）を使用。
-# 通知状態の更新は slack_notify.py 内で Supabase に書き込む。
+# JST 9:00 の回のみ送信（is_slack_time=true）。
+# listing_events 差分 + notification_drafts (Routine②③のドラフト) をまとめて送信。
 
-if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+if [ "$IS_SLACK_TIME" = "true" ] && [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
     echo "Slack 通知送信中..." >&2
     python3 slack_notify.py \
         "${OUTPUT_DIR}/latest.json" \
         "" \
         "$REPORT" \
         || echo "Slack 通知失敗（続行）" >&2
+else
+    echo "Slack 通知スキップ（is_slack_time=${IS_SLACK_TIME}）" >&2
 fi
 
 # ──────────────────────────── 地図生成（ローカル実行時のみ） ────────────────────────────
@@ -419,7 +420,7 @@ for f in "${REPORT_DIR}"/report_*.md; do
 done
 
 # enriched-* ワーキングディレクトリを削除
-rm -rf enriched-chuko-core enriched-chuko-mansion enriched-chuko-claude enriched-shinchiku transactions scrape-results
+rm -rf enriched-chuko-core enriched-chuko-mansion enriched-shinchiku transactions scrape-results
 
 # ──────────────────────────── データ品質検証 ────────────────────────────
 
