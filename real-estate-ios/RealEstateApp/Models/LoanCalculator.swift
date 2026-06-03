@@ -5,7 +5,7 @@
 //  ローン残高・含み益シミュレーション計算
 //
 //  ── アプリの計算条件 ──
-//  価格: 9,500万円 / 金利: 0.8% / 返済期間: 50年 / 頭金: 0万円
+//  価格: 9,500万円 / 金利: 1.2% / 返済期間: 50年 / 頭金: 0万円
 //
 //  住まいサーフィンのサイト条件（6,000万円 / 0.79% / 35年 / 0万円）とは異なる。
 //  サイトからは「変動率 (%)」だけを取り込み、予測値・ローン残高・含み益は
@@ -28,7 +28,7 @@ enum LoanCalculator {
     /// 返済期間（年）
     static let termYears: Int = 50
     /// 年利 (%)
-    static let annualRate: Double = 0.8
+    static let annualRate: Double = 1.2
     /// 頭金（万円）
     static let downPayment: Int = 0
 
@@ -54,7 +54,7 @@ enum LoanCalculator {
 
     // MARK: - 元利均等返済の月額返済額
 
-    /// 月額返済額を計算（万円単位）— アプリ独自条件 (0.8% / 50年)
+    /// 月額返済額を計算（万円単位）— アプリ独自条件 (1.2% / 50年)
     static func monthlyPayment(principal: Double) -> Double {
         monthlyPayment(principal: principal, rate: annualRate, years: termYears)
     }
@@ -122,7 +122,7 @@ enum LoanCalculator {
     /// 全ての値をアプリ独自に計算する:
     /// - 変動率: サイトの絶対値から逆算 or ss_forecast_change_rate から推定
     /// - 予測値: 購入価格 × (1 + 変動率)
-    /// - ローン残高: 元利均等返済で計算 (0.8% / 50年)
+    /// - ローン残高: 元利均等返済で計算 (1.2% / 50年)
     /// - 含み益: 予測値 − ローン残高
     static func simulate(listing: Listing) -> SimulationResult? {
         guard listing.hasSimulationData else { return nil }

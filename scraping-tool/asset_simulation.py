@@ -39,9 +39,9 @@ SIZE_FACTOR_UNDER_40 = 1.2     # 40㎡未満
 TYPE_FACTOR_TOWER = 0.9  # タワー: 値下がりしにくい
 # 非タワー: 1.0
 
-# ローン残高計算用（50年変動金利・金利0.8%・元利均等・10年後の残高。price_predictor と共通）
+# ローン残高計算用（50年変動金利・元利均等・10年後の残高。price_predictor と共通）
 LOAN_YEARS = 50
-LOAN_ANNUAL_RATE = 0.008   # 0.8%（iOS アプリと統一）
+LOAN_ANNUAL_RATE = 0.012   # 1.2%
 LOAN_MONTHS = LOAN_YEARS * 12  # 600
 LOAN_MONTHS_AFTER_10Y = 10 * 12  # 120
 

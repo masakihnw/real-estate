@@ -26,7 +26,7 @@ WARD_POTENTIAL_PATH = DATA_DIR / "ward_potential.csv"
 # 売り出し→成約補正（東京カンテイ 2024下期乖離率）
 LISTING_TO_CONTRACT_RATIO = 0.958
 CURRENT_YEAR = 2026
-CURRENT_INTEREST_RATE = 0.008  # 現在金利0.8%（iOS アプリと統一）
+CURRENT_INTEREST_RATE = 0.012  # 現在金利1.2%
 
 # 賃料成長ポテンシャル別の係数（S=1.2倍, A=1.0, B=0.9, C=0.8）
 RENT_GROWTH_COEF = {"S": 1.2, "A": 1.0, "B": 0.9, "C": 0.8}
