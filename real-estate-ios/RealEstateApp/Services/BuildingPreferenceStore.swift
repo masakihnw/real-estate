@@ -92,4 +92,24 @@ final class BuildingPreferenceStore {
         case nope
         case like
     }
+
+    // MARK: - Test Helpers
+
+    #if DEBUG
+    func setLocalOnly(_ identityKey: String, preference: Preference) {
+        switch preference {
+        case .nope:
+            nopedKeys.insert(identityKey)
+            likedKeys.remove(identityKey)
+        case .like:
+            likedKeys.insert(identityKey)
+            nopedKeys.remove(identityKey)
+        }
+    }
+
+    func removeLocalOnly(_ identityKey: String) {
+        likedKeys.remove(identityKey)
+        nopedKeys.remove(identityKey)
+    }
+    #endif
 }
