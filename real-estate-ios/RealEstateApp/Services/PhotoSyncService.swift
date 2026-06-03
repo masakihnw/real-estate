@@ -19,6 +19,9 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 import SwiftData
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "PhotoSync")
 
 @Observable
 @MainActor
@@ -70,7 +73,7 @@ final class PhotoSyncService {
     /// ローカル保存は呼び出し元（PhotoStorageService）で事前に完了していること。
     func uploadPhoto(_ image: UIImage, photoMeta: PhotoMeta, for listing: Listing, modelContext: ModelContext) {
         guard isAuthenticated, let userId = currentUserId else {
-            print("[PhotoSync] 未認証のためアップロードをスキップ")
+            logger.warning("未認証のためアップロードをスキップ")
             return
         }
 
@@ -80,7 +83,7 @@ final class PhotoSyncService {
         // リサイズ + 圧縮
         let resized = resizeImageIfNeeded(image, maxDimension: maxUploadDimension)
         guard let jpegData = resized.jpegData(compressionQuality: uploadJPEGQuality) else {
-            print("[PhotoSync] JPEG 変換に失敗")
+            logger.error("JPEG 変換に失敗")
             return
         }
 
@@ -95,7 +98,7 @@ final class PhotoSyncService {
             guard let self else { return }
 
             if let error {
-                print("[PhotoSync] Storage アップロード失敗: \(error.localizedDescription)")
+                logger.error("Storage アップロード失敗: \(error.localizedDescription, privacy: .public)")
                 Task { @MainActor in self.uploadingPhotoIds.remove(photoMeta.id) }
                 return
             }
@@ -115,7 +118,7 @@ final class PhotoSyncService {
                 "name": listing.name
             ], merge: true) { error in
                 if let error {
-                    print("[PhotoSync] Firestore メタデータ書き込み失敗: \(error.localizedDescription)")
+                    logger.error("Firestore メタデータ書き込み失敗: \(error.localizedDescription, privacy: .public)")
                 }
             }
 
@@ -145,7 +148,7 @@ final class PhotoSyncService {
             // ローカルから画像を読み込み
             Task {
                 guard let image = await PhotoStorageService.shared.loadImage(for: meta, listing: listing) else {
-                    print("[PhotoSync] マイグレーション: 画像の読み込みに失敗 \(meta.id)")
+                    logger.warning("マイグレーション: 画像の読み込みに失敗 \(meta.id, privacy: .public)")
                     return
                 }
                 await MainActor.run {
@@ -168,7 +171,7 @@ final class PhotoSyncService {
             let storageRef = storage.reference().child(storagePath)
             storageRef.delete { error in
                 if let error {
-                    print("[PhotoSync] Storage 削除失敗: \(error.localizedDescription)")
+                    logger.error("Storage 削除失敗: \(error.localizedDescription, privacy: .public)")
                 }
             }
         }
@@ -179,7 +182,7 @@ final class PhotoSyncService {
             "updatedAt": FieldValue.serverTimestamp()
         ]) { error in
             if let error {
-                print("[PhotoSync] Firestore メタデータ削除失敗: \(error.localizedDescription)")
+                logger.error("Firestore メタデータ削除失敗: \(error.localizedDescription, privacy: .public)")
             }
         }
     }
@@ -303,7 +306,7 @@ final class PhotoSyncService {
         return await withCheckedContinuation { continuation in
             ref.getData(maxSize: maxSize) { data, error in
                 if let error {
-                    print("[PhotoSync] Storage ダウンロード失敗: \(error.localizedDescription)")
+                    logger.error("Storage ダウンロード失敗: \(error.localizedDescription, privacy: .public)")
                     continuation.resume(returning: nil)
                 } else {
                     continuation.resume(returning: data)

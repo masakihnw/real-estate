@@ -952,6 +952,15 @@ final class Listing: @unchecked Sendable {
     }
 
     var parsedStations: [StationInfo] {
+        if let cached = _cache.stations, cached.source == stationLine {
+            return cached.result
+        }
+        let result = _parseStationsImpl()
+        _cache.stations = (stationLine, result)
+        return result
+    }
+
+    private func _parseStationsImpl() -> [StationInfo] {
         guard let line = stationLine, !line.isEmpty else { return [] }
         // ／ or / で分割
         let segments = line.components(separatedBy: CharacterSet(charactersIn: "／/"))
@@ -1248,6 +1257,14 @@ final class Listing: @unchecked Sendable {
         var priceHistory: (source: String?, result: [PriceHistoryEntry])?
         var checklist: (source: String?, result: [ChecklistItem])?
         var featureTags: (source: String?, result: [String])?
+        var extractedFeatures: (source: String?, result: ExtractedFeatures?)?
+        var dedupCandidates: (source: String?, result: [DedupCandidate])?
+        var altSourcePrices: (source: String?, result: [AlternateSourcePrice])?
+        var imageCategories: (source: String?, result: [ImageCategoryGroup])?
+        var keyStrengths: (source: String?, result: [String])?
+        var keyRisks: (source: String?, result: [String])?
+        var recommendationFlags: (source: String?, result: [String])?
+        var stations: (source: String?, result: [StationInfo])?
     }
 
     // MARK: - 周辺物件データ
@@ -2002,8 +2019,13 @@ final class Listing: @unchecked Sendable {
     }
 
     var parsedExtractedFeatures: ExtractedFeatures? {
+        if let cached = _cache.extractedFeatures, cached.source == extractedFeaturesJSON {
+            return cached.result
+        }
         guard let json = extractedFeaturesJSON, let data = json.data(using: .utf8) else { return nil }
-        return try? JSONDecoder().decode(ExtractedFeatures.self, from: data)
+        let result = try? JSONDecoder().decode(ExtractedFeatures.self, from: data)
+        _cache.extractedFeatures = (extractedFeaturesJSON, result)
+        return result
     }
 
     struct DedupCandidate: Codable, Identifiable {
@@ -2022,8 +2044,13 @@ final class Listing: @unchecked Sendable {
     }
 
     var parsedDedupCandidates: [DedupCandidate] {
+        if let cached = _cache.dedupCandidates, cached.source == dedupCandidatesJSON {
+            return cached.result
+        }
         guard let json = dedupCandidatesJSON, let data = json.data(using: .utf8) else { return [] }
-        return (try? JSONDecoder().decode([DedupCandidate].self, from: data)) ?? []
+        let result = (try? JSONDecoder().decode([DedupCandidate].self, from: data)) ?? []
+        _cache.dedupCandidates = (dedupCandidatesJSON, result)
+        return result
     }
 
     struct AlternateSourcePrice: Codable, Identifiable {
@@ -2040,8 +2067,13 @@ final class Listing: @unchecked Sendable {
     }
 
     var parsedAltSourcePrices: [AlternateSourcePrice] {
+        if let cached = _cache.altSourcePrices, cached.source == altSourcesJSON {
+            return cached.result
+        }
         guard let json = altSourcesJSON, let data = json.data(using: .utf8) else { return [] }
-        return (try? JSONDecoder().decode([AlternateSourcePrice].self, from: data)) ?? []
+        let result = (try? JSONDecoder().decode([AlternateSourcePrice].self, from: data)) ?? []
+        _cache.altSourcePrices = (altSourcesJSON, result)
+        return result
     }
 
     struct ImageCategoryGroup: Identifiable {
@@ -2072,7 +2104,16 @@ final class Listing: @unchecked Sendable {
     }
 
     var parsedImageCategories: [ImageCategoryGroup] {
-        guard let json = imageCategoriesJSON, let data = json.data(using: .utf8),
+        if let cached = _cache.imageCategories, cached.source == imageCategoriesJSON {
+            return cached.result
+        }
+        let result = Self._parseImageCategories(imageCategoriesJSON)
+        _cache.imageCategories = (imageCategoriesJSON, result)
+        return result
+    }
+
+    private static func _parseImageCategories(_ json: String?) -> [ImageCategoryGroup] {
+        guard let json, let data = json.data(using: .utf8),
               let dict = try? JSONSerialization.jsonObject(with: data) as? [String: [[String: Any]]] else {
             return []
         }
@@ -2097,18 +2138,33 @@ final class Listing: @unchecked Sendable {
     }
 
     var parsedKeyStrengths: [String] {
+        if let cached = _cache.keyStrengths, cached.source == keyStrengthsJSON {
+            return cached.result
+        }
         guard let json = keyStrengthsJSON, let data = json.data(using: .utf8) else { return [] }
-        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        let result = (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        _cache.keyStrengths = (keyStrengthsJSON, result)
+        return result
     }
 
     var parsedKeyRisks: [String] {
+        if let cached = _cache.keyRisks, cached.source == keyRisksJSON {
+            return cached.result
+        }
         guard let json = keyRisksJSON, let data = json.data(using: .utf8) else { return [] }
-        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        let result = (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        _cache.keyRisks = (keyRisksJSON, result)
+        return result
     }
 
     var parsedRecommendationFlags: [String] {
+        if let cached = _cache.recommendationFlags, cached.source == aiRecommendationFlagsJSON {
+            return cached.result
+        }
         guard let json = aiRecommendationFlagsJSON, let data = json.data(using: .utf8) else { return [] }
-        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        let result = (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        _cache.recommendationFlags = (aiRecommendationFlagsJSON, result)
+        return result
     }
 
     var recommendationStars: String {

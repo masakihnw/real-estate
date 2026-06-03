@@ -224,6 +224,21 @@ if _should_run_track core; then
     PIDS="$PIDS $!"
     ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_gm.json"
 
+    # Track G: HOME'S 画像（間取り図+物件写真）
+    if [ "$PROPERTY_TYPE" = "chuko" ]; then
+        cp "$INPUT" "$WORK_DIR/track_hi.json"
+        (
+            _t=$(date +%s)
+            python3 floor_plan_enricher.py \
+                --input "$WORK_DIR/track_hi.json" \
+                --output "$WORK_DIR/track_hi.json" \
+                --limit 50 || true
+            echo "[TIMING] homes_images: $(( ($(date +%s) - _t) ))s" >&2
+        ) &
+        PIDS="$PIDS $!"
+        ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_hi.json"
+    fi
+
 fi
 
 # ── sumai トラック ──
@@ -269,49 +284,9 @@ if _should_run_track mansion; then
 
 fi
 
-# ── claude トラック ──
-if _should_run_track claude; then
-
-    if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
-        # クレジット不足フラグは claude_client.py の24時間TTLに委ねる
-
-        # Track CL1: claude_dedup + claude_text_enricher
-        cp "$INPUT" "$WORK_DIR/track_cl.json"
-        (
-            _t=$(date +%s)
-            python3 claude_dedup.py \
-                --input "$WORK_DIR/track_cl.json" \
-                --output "$WORK_DIR/track_cl.json" \
-                --max-time 30 || true
-            python3 claude_text_enricher.py \
-                --input "$WORK_DIR/track_cl.json" \
-                --output "$WORK_DIR/track_cl.json" \
-                --max-time 30 || true
-            echo "[TIMING] claude_dedup+text: $(( ($(date +%s) - _t) ))s" >&2
-        ) &
-        PIDS="$PIDS $!"
-        ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_cl.json"
-
-        # Track CL2: claude_image_analyzer — 無効化（コスト削減）
-        # 間取り図はスクレイパーの alt 属性ベースで判別済みのため、
-        # 画像カテゴリ分類・サムネイル選定は一旦不要と判断。
-        # 再有効化する場合はこのブロックのコメントを外す。
-        # cp "$INPUT" "$WORK_DIR/track_ci.json"
-        # (
-        #     _t=$(date +%s)
-        #     python3 claude_image_analyzer.py \
-        #         --input "$WORK_DIR/track_ci.json" \
-        #         --output "$WORK_DIR/track_ci.json" \
-        #         --max-time 50 || true
-        #     echo "[TIMING] claude_image: $(( ($(date +%s) - _t) ))s" >&2
-        # ) &
-        # PIDS="$PIDS $!"
-        # ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_ci.json"
-    else
-        echo "claude: ANTHROPIC_API_KEY 未設定（スキップ）" >&2
-    fi
-
-fi
+# ── claude トラック（Routine化済み → パイプラインからのAPI呼び出し廃止） ──
+# dedup / text_enricher / image_analyzer / investment_summary / ai_scoring は
+# 全て Claude Desktop Routines 経由で実行。ai_prompts テーブルでプロンプト管理。
 
 echo "enricher 起動完了 (PIDs:$PIDS)" >&2
 

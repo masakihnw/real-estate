@@ -9,6 +9,9 @@
 import BackgroundTasks
 import SwiftData
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "BGRefresh")
 
 final class BackgroundRefreshManager {
     static let shared = BackgroundRefreshManager()
@@ -58,7 +61,7 @@ final class BackgroundRefreshManager {
         do {
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            print("[BGRefresh] スケジュール失敗: \(error.localizedDescription)")
+            logger.error("スケジュール失敗: \(error.localizedDescription, privacy: .public)")
         }
     }
 
@@ -69,7 +72,7 @@ final class BackgroundRefreshManager {
         scheduleNextRefresh()
 
         guard let modelContainer else {
-            print("[BGRefresh] ModelContainer が未設定のためスキップ")
+            logger.warning("ModelContainer が未設定のためスキップ")
             task.setTaskCompleted(success: false)
             return
         }

@@ -8,6 +8,9 @@
 
 import Foundation
 import SwiftData
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "SaveError")
 
 @Observable
 final class SaveErrorHandler {
@@ -29,7 +32,7 @@ final class SaveErrorHandler {
             let msg = source.isEmpty
                 ? "データの保存に失敗しました: \(error.localizedDescription)"
                 : "[\(source)] データの保存に失敗しました: \(error.localizedDescription)"
-            print("[SaveErrorHandler] \(msg)")
+            logger.error("\(msg, privacy: .public)")
             lastSaveError = msg
             showSaveError = true
         }

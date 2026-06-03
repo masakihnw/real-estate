@@ -221,9 +221,9 @@ struct ListingDetailView: View {
                     try? modelContext.save()
                 }
                 .task {
-                    await loadEnrichmentIfNeeded()
                     similarListings = fetchSimilarListings()
                     nearbyTransactions = fetchNearbyTransactions()
+                    await loadEnrichmentIfNeeded()
                 }
                 .safeAreaInset(edge: .top) {
                     sectionNavBar

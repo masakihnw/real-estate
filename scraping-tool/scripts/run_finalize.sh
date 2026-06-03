@@ -272,19 +272,6 @@ echo "--- 価格変動・掲載日数・競合・投資スコア注入 ---" >&2
 python3 scripts/finalize_helpers.py inject-investment --output-dir "${OUTPUT_DIR}" \
     || echo "投資スコア注入失敗（続行）" >&2
 
-# ──────────────────────────── Claude 投資サマリー生成 ────────────────────────────
-
-if [ -n "${ANTHROPIC_API_KEY:-}" ] && [ ! -f "data/.claude_credit_exhausted" ]; then
-    echo "--- Claude 投資サマリー生成 ---" >&2
-    _t=$(date +%s)
-    python3 claude_investment_summarizer.py \
-        --input "${OUTPUT_DIR}/latest.json" \
-        --output "${OUTPUT_DIR}/latest.json" || echo "Claude サマリー生成失敗（続行）" >&2
-    echo "[TIMING] claude_investment_summary: $(( ($(date +%s) - _t) ))s" >&2
-elif [ -f "data/.claude_credit_exhausted" ]; then
-    echo "Claude API クレジット不足: 投資サマリー生成をスキップ" >&2
-fi
-
 # ──────────────────────────── SQLite DB + Supabase 同期 ────────────────────────────
 # JSON への全フィールド注入完了後に同期する（is_new, 投資スコア, AI推奨を含む）
 

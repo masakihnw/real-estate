@@ -9,6 +9,9 @@
 
 import Foundation
 import UserNotifications
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "NotifSchedule")
 
 @Observable
 final class NotificationScheduleService {
@@ -250,7 +253,7 @@ final class NotificationScheduleService {
             )
             center.add(request) { error in
                 if let error {
-                    print("[NotifSchedule] 通知スケジュール失敗 (\(time.displayString)): \(error.localizedDescription)")
+                    logger.error("通知スケジュール失敗 (\(time.displayString, privacy: .public)): \(error.localizedDescription, privacy: .public)")
                 }
             }
         }

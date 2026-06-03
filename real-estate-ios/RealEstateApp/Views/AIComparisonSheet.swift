@@ -248,19 +248,8 @@ struct AIComparisonSheet: View {
         var entries: [(name: String, image: UIImage)] = []
         for listing in listings {
             guard let url = listing.parsedFloorPlanImages.first else { continue }
-            let cacheKey = url.absoluteString
-            if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
-                entries.append((name: listing.name, image: cached))
-                continue
-            }
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                guard let original = UIImage(data: data) else { continue }
-                let trimmed = original.trimmingWhitespaceBorder()
-                TrimmedImageCache.shared.set(trimmed, for: cacheKey)
-                entries.append((name: listing.name, image: trimmed))
-            } catch {
-                continue
+            if let image = await ImagePipeline.shared.loadTrimmed(from: url) {
+                entries.append((name: listing.name, image: image))
             }
         }
         floorPlanEntries = entries

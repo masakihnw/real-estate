@@ -21,6 +21,9 @@
 
 import Foundation
 import SwiftData
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "UserAnnotation")
 
 // MARK: - 保存するユーザーデータの構造
 
@@ -73,7 +76,7 @@ enum UserAnnotationStore {
         guard !dict.isEmpty else { return }
         if let data = try? JSONEncoder().encode(dict) {
             defaults.set(data, forKey: backupKey)
-            print("[UserAnnotationStore] \(dict.count)件のユーザーデータをバックアップしました")
+            logger.info("\(dict.count, privacy: .public)件のユーザーデータをバックアップしました")
         }
     }
 
@@ -137,7 +140,7 @@ enum UserAnnotationStore {
     static func clearBackup() {
         defaults.removeObject(forKey: backupKey)
         _loadedCache = nil
-        print("[UserAnnotationStore] バックアップをクリアしました")
+        logger.info("バックアップをクリアしました")
     }
 
     // MARK: - Private cache

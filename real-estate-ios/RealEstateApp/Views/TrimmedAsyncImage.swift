@@ -29,6 +29,16 @@ final class DiskImageCache: @unchecked Sendable {
         return UIImage(data: data)
     }
 
+    func imageAsync(for key: String) async -> UIImage? {
+        let url = path(for: key)
+        return await withCheckedContinuation { continuation in
+            queue.async {
+                let img = (try? Data(contentsOf: url)).flatMap(UIImage.init(data:))
+                continuation.resume(returning: img)
+            }
+        }
+    }
+
     func save(_ image: UIImage, for key: String) {
         queue.async { [self] in
             let url = path(for: key)
@@ -124,36 +134,10 @@ struct TrimmedAsyncImage: View {
     }
 
     private func loadAndTrim() async {
-        let cacheKey = url.absoluteString
-
-        // 1. メモリキャッシュ
-        if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
-            loadedImage = cached
+        if let image = await ImagePipeline.shared.loadTrimmed(from: url) {
+            loadedImage = image
             loadPhase = .success
-            return
-        }
-
-        // 2. ディスクキャッシュ
-        if let diskCached = DiskImageCache.shared.image(for: cacheKey) {
-            TrimmedImageCache.shared.set(diskCached, for: cacheKey)
-            loadedImage = diskCached
-            loadPhase = .success
-            return
-        }
-
-        // 3. ネットワーク取得
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            guard let original = UIImage(data: data) else {
-                loadPhase = .failure
-                return
-            }
-            let trimmed = original.trimmingWhitespaceBorder()
-            TrimmedImageCache.shared.set(trimmed, for: cacheKey)
-            DiskImageCache.shared.save(trimmed, for: cacheKey)
-            loadedImage = trimmed
-            loadPhase = .success
-        } catch {
+        } else {
             loadPhase = .failure
         }
     }

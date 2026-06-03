@@ -186,23 +186,10 @@ struct GalleryThumbnailView: View {
     }
 
     private func loadAndTrim() async {
-        let cacheKey = url.absoluteString
-        if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
-            loadedImage = cached
+        if let image = await ImagePipeline.shared.loadTrimmed(from: url) {
+            loadedImage = image
             loadPhase = .success
-            return
-        }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            guard let original = UIImage(data: data) else {
-                loadPhase = .failure
-                return
-            }
-            let trimmed = original.trimmingWhitespaceBorder()
-            TrimmedImageCache.shared.set(trimmed, for: cacheKey)
-            loadedImage = trimmed
-            loadPhase = .success
-        } catch {
+        } else {
             loadPhase = .failure
         }
     }
@@ -398,23 +385,10 @@ struct GalleryFullScreenView: View {
         guard index >= 0, index < items.count else { return }
         guard loadedImages[index] == nil, !failedIndices.contains(index) else { return }
         let url = items[index].url
-        let cacheKey = url.absoluteString
 
-        if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
-            loadedImages[index] = cached
-            return
-        }
-
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            guard let original = UIImage(data: data) else {
-                failedIndices.insert(index)
-                return
-            }
-            let trimmed = original.trimmingWhitespaceBorder()
-            TrimmedImageCache.shared.set(trimmed, for: cacheKey)
-            loadedImages[index] = trimmed
-        } catch {
+        if let image = await ImagePipeline.shared.loadTrimmed(from: url) {
+            loadedImages[index] = image
+        } else {
             failedIndices.insert(index)
         }
     }

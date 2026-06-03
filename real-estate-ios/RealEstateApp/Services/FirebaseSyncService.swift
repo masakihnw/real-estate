@@ -15,6 +15,9 @@ import CryptoKit
 import FirebaseAuth
 import FirebaseFirestore
 import SwiftData
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "FirebaseSync")
 
 @Observable
 final class FirebaseSyncService {
@@ -49,7 +52,7 @@ final class FirebaseSyncService {
     /// いいね状態を Firestore に書き込む。
     func pushLikeState(for listing: Listing) {
         guard isAuthenticated else {
-            print("[FirebaseSync] 未認証のため push をスキップ")
+            logger.warning("未認証のため push をスキップ")
             return
         }
         let docID = documentID(for: listing.identityKey)
@@ -59,7 +62,7 @@ final class FirebaseSyncService {
             "name": listing.name
         ]
         db.collection(collectionName).document(docID).setData(data, merge: true) { error in
-            if let error { print("[FirebaseSync] pushLikeState 書き込み失敗: \(error.localizedDescription)") }
+            if let error { logger.error("pushLikeState 書き込み失敗: \(error.localizedDescription, privacy: .public)") }
         }
     }
 
@@ -69,7 +72,7 @@ final class FirebaseSyncService {
     @MainActor
     func addComment(for listing: Listing, text: String, modelContext: ModelContext) {
         guard isAuthenticated, let user = Auth.auth().currentUser else {
-            print("[FirebaseSync] 未認証のためコメント追加をスキップ")
+            logger.warning("未認証のためコメント追加をスキップ")
             return
         }
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -103,7 +106,7 @@ final class FirebaseSyncService {
             "updatedAt": FieldValue.serverTimestamp(),
             "name": listing.name
         ], merge: true) { error in
-            if let error { print("[FirebaseSync] addComment 書き込み失敗: \(error.localizedDescription)") }
+            if let error { logger.error("addComment 書き込み失敗: \(error.localizedDescription, privacy: .public)") }
         }
     }
 
@@ -132,7 +135,7 @@ final class FirebaseSyncService {
             "comments.\(commentId).editedAt": Timestamp(date: now),
             "updatedAt": FieldValue.serverTimestamp()
         ]) { error in
-            if let error { print("[FirebaseSync] editComment 書き込み失敗: \(error.localizedDescription)") }
+            if let error { logger.error("editComment 書き込み失敗: \(error.localizedDescription, privacy: .public)") }
         }
     }
 
@@ -157,7 +160,7 @@ final class FirebaseSyncService {
             "comments.\(commentId)": FieldValue.delete(),
             "updatedAt": FieldValue.serverTimestamp()
         ]) { error in
-            if let error { print("[FirebaseSync] deleteComment 書き込み失敗: \(error.localizedDescription)") }
+            if let error { logger.error("deleteComment 書き込み失敗: \(error.localizedDescription, privacy: .public)") }
         }
     }
 
@@ -168,7 +171,7 @@ final class FirebaseSyncService {
     @MainActor
     func pullAnnotations(modelContext: ModelContext, onError: ((String) -> Void)? = nil) async {
         guard isAuthenticated else {
-            print("[FirebaseSync] 未認証のため pull をスキップ")
+            logger.warning("未認証のため pull をスキップ")
             return
         }
         isSyncing = true
@@ -254,7 +257,7 @@ final class FirebaseSyncService {
                 )
             }
         } catch {
-            print("[FirebaseSync] Pull 失敗: \(error.localizedDescription)")
+            logger.error("Pull 失敗: \(error.localizedDescription, privacy: .public)")
             onError?("Firebase いいね・メモの同期に失敗: \(error.localizedDescription)")
         }
     }
