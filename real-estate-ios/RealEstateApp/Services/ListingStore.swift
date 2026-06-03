@@ -97,7 +97,8 @@ final class ListingStore {
 
     /// 中古・新築の両方を取得し、SwiftData に反映。新規があればローカル通知を発火。
     /// ETag チェックにより、サーバー上のデータが未変更ならダウンロードをスキップする。
-    func refresh(modelContext: ModelContext) async {
+    /// - Parameter isBackground: バックグラウンドタスクからの呼び出し時は true。通勤時間計算など重い処理をスキップする。
+    func refresh(modelContext: ModelContext, isBackground: Bool = false) async {
         // P6: 二重実行ガード — 既に更新中なら何もしない
         guard !isRefreshing else { return }
         await MainActor.run { isRefreshing = true }
@@ -107,7 +108,7 @@ final class ListingStore {
 
         // Supabase モードの場合は SupabaseListingStore に委譲
         if useSupabase {
-            await refreshFromSupabase(modelContext: modelContext)
+            await refreshFromSupabase(modelContext: modelContext, isBackground: isBackground)
             return
         }
 
@@ -175,24 +176,30 @@ final class ListingStore {
             NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
         }
 
-        let bothNotModified = !chukoResult.hadChanges && chukoResult.error == nil
-            && !shinResult.hadChanges && shinResult.error == nil
+        // バックグラウンド時はアノテーション同期・通勤時間計算をスキップ（実行時間制限のため）
+        if !isBackground {
+            let bothNotModified = !chukoResult.hadChanges && chukoResult.error == nil
+                && !shinResult.hadChanges && shinResult.error == nil
 
-        // アノテーション（いいね・コメント）を取得してマージ
-        // 両ソースが304（データ変更なし）の場合はスキップ
-        if !bothNotModified {
-            await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
-            await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
-                Task { @MainActor in
-                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+            // アノテーション（いいね・コメント）を取得してマージ
+            // 両ソースが304（データ変更なし）の場合はスキップ
+            if !bothNotModified {
+                await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
+                await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
+                    Task { @MainActor in
+                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                    }
                 }
             }
-        }
 
-        // 通勤時間の自動計算（未計算 or 7日以上経過のみ）
-        await CommuteTimeService.shared.calculateForAllListings(modelContext: modelContext) { [self] msg in
-            Task { @MainActor in
-                syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+            // 通勤時間計算を低優先度で遅延実行（起動時のフリーズ防止）
+            Task.detached(priority: .utility) {
+                try? await Task.sleep(for: .seconds(5))
+                await CommuteTimeService.shared.calculateForAllListings(modelContext: modelContext) { [self] msg in
+                    Task { @MainActor in
+                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                    }
+                }
             }
         }
 
@@ -471,6 +478,9 @@ final class ListingStore {
         existing.keyStrengthsJSON = new.keyStrengthsJSON ?? existing.keyStrengthsJSON
         existing.keyRisksJSON = new.keyRisksJSON ?? existing.keyRisksJSON
         existing.aiRecommendationScore = new.aiRecommendationScore ?? existing.aiRecommendationScore
+        existing.aiRecommendationSummary = new.aiRecommendationSummary ?? existing.aiRecommendationSummary
+        existing.aiRecommendationFlagsJSON = new.aiRecommendationFlagsJSON ?? existing.aiRecommendationFlagsJSON
+        existing.aiRecommendationAction = new.aiRecommendationAction ?? existing.aiRecommendationAction
         // Enrichment JSONB フィールド（軽量ビューに含まれない → nil なら既存値を保持）
         existing.floorPlanImagesJSON = new.floorPlanImagesJSON ?? existing.floorPlanImagesJSON
         existing.suumoImagesJSON = new.suumoImagesJSON ?? existing.suumoImagesJSON
@@ -488,9 +498,6 @@ final class ListingStore {
         existing.extractedFeaturesJSON = new.extractedFeaturesJSON ?? existing.extractedFeaturesJSON
         existing.imageCategoriesJSON = new.imageCategoriesJSON ?? existing.imageCategoriesJSON
         existing.dedupCandidatesJSON = new.dedupCandidatesJSON ?? existing.dedupCandidatesJSON
-        existing.aiRecommendationSummary = new.aiRecommendationSummary ?? existing.aiRecommendationSummary
-        existing.aiRecommendationFlagsJSON = new.aiRecommendationFlagsJSON ?? existing.aiRecommendationFlagsJSON
-        existing.aiRecommendationAction = new.aiRecommendationAction ?? existing.aiRecommendationAction
         // 通勤時間（パイプラインデータがあれば更新、なければ既存を保持）
         if let pipelineCommute = new.commuteInfoJSON {
             let pipelineInfo = Listing._parseCommuteInfo(pipelineCommute)
@@ -513,7 +520,7 @@ final class ListingStore {
     }
 
     /// Supabase 経由でデータ取得・同期
-    private func refreshFromSupabase(modelContext: ModelContext) async {
+    private func refreshFromSupabase(modelContext: ModelContext, isBackground: Bool = false) async {
         do {
             await BuildingPreferenceStore.shared.fetch()
             let (chukoNew, shinNew) = try await SupabaseListingStore.shared.refresh(modelContext: modelContext)
@@ -531,6 +538,9 @@ final class ListingStore {
                 NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
             }
 
+            // バックグラウンド時はアノテーション同期・通勤時間計算をスキップ（実行時間制限のため）
+            guard !isBackground else { return }
+
             // アノテーション同期（Supabase 初回はローカルデータを push してから pull）
             await SupabaseAnnotationService.shared.pushAllLocalAnnotationsIfNeeded(modelContext: modelContext)
             await SupabaseAnnotationService.shared.pullAnnotations(modelContext: modelContext) { [self] msg in
@@ -539,10 +549,13 @@ final class ListingStore {
                 }
             }
 
-            // 通勤時間計算
-            await CommuteTimeService.shared.calculateForAllListings(modelContext: modelContext) { [self] msg in
-                Task { @MainActor in
-                    syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+            // 通勤時間計算を低優先度で遅延実行（起動時のフリーズ防止）
+            Task.detached(priority: .utility) {
+                try? await Task.sleep(for: .seconds(5))
+                await CommuteTimeService.shared.calculateForAllListings(modelContext: modelContext) { [self] msg in
+                    Task { @MainActor in
+                        syncWarning = syncWarning.map { "\($0); \(msg)" } ?? msg
+                    }
                 }
             }
         } catch {

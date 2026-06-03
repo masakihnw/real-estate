@@ -15,19 +15,10 @@ import Charts
 struct TransactionDetailView: View {
     let record: TransactionRecord
     @Query private var allRecords: [TransactionRecord]
-    @Query private var allListings: [Listing]
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var isSameGroupExpanded = false
-
-    /// 同一区の販売中物件（掲載終了を除く、最大5件）
-    private var nearbyListings: [Listing] {
-        let ward = record.ward
-        guard !ward.isEmpty else { return [] }
-        return allListings
-            .filter { !$0.isDelisted && Listing.extractWardFromAddress($0.address ?? "") == ward }
-            .prefix(5)
-            .map { $0 }
-    }
+    @State private var nearbyListings: [Listing] = []
 
     /// 同一建物グループの取引（自身を含む）
     private var sameGroupRecords: [TransactionRecord] {
@@ -38,6 +29,17 @@ struct TransactionDetailView: View {
     }
 
     // MARK: - 類似条件の m²単価推移データ
+
+    private func loadNearbyListings() {
+        let ward = record.ward
+        guard !ward.isEmpty else { return }
+        let predicate = #Predicate<Listing> { !$0.isDelisted }
+        let descriptor = FetchDescriptor<Listing>(predicate: predicate)
+        guard let listings = try? modelContext.fetch(descriptor) else { return }
+        nearbyListings = Array(listings
+            .filter { Listing.extractWardFromAddress($0.address ?? "") == ward }
+            .prefix(5))
+    }
 
     /// 間取りカテゴリ（"2LDK" or "3LDK"）に正規化
     private static func layoutCategory(_ layout: String) -> String? {
@@ -235,6 +237,7 @@ struct TransactionDetailView: View {
             }
             .navigationTitle("成約詳細")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear { loadNearbyListings() }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("閉じる") { dismiss() }

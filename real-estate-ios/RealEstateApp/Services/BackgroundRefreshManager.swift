@@ -75,9 +75,10 @@ final class BackgroundRefreshManager {
         }
 
         // バックグラウンドでリフレッシュ実行（MainActor を占有しない）
+        // isBackground: true で通勤時間計算等の重い処理をスキップ
         let refreshTask = Task {
             let context = ModelContext(modelContainer)
-            await ListingStore.shared.refresh(modelContext: context)
+            await ListingStore.shared.refresh(modelContext: context, isBackground: true)
         }
 
         // タスク期限切れ時のキャンセル処理

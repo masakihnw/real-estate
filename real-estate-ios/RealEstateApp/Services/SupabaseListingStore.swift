@@ -41,22 +41,45 @@ final class SupabaseListingStore {
 
     /// Supabase から物件データを取得して SwiftData に同期する。
     /// 初回はフルフェッチ、2回目以降は差分同期。
+    /// ネットワーク取得は並列、DB 書き込みは逐次（ModelContext はスレッドセーフでないため）。
     func refresh(modelContext: ModelContext) async throws -> (chukoNew: Int, shinchikuNew: Int) {
-        async let chukoResult = fetchAndSync(propertyType: "chuko", modelContext: modelContext)
-        async let shinResult = fetchAndSync(propertyType: "shinchiku", modelContext: modelContext)
+        let likedKeys = await MainActor.run { BuildingPreferenceStore.shared.likedKeys }
 
-        let (chuko, shin) = try await (chukoResult, shinResult)
+        // ネットワーク取得 + デコードを並列実行
+        async let chukoDTOs = fetchDTOs(propertyType: "chuko", modelContext: modelContext)
+        async let shinDTOs = fetchDTOs(propertyType: "shinchiku", modelContext: modelContext)
+
+        let (chukoFetch, shinFetch) = try await (chukoDTOs, shinDTOs)
+
+        // DB 書き込みは逐次（ModelContext はスレッドセーフでないため）
+        let chukoNew = chukoFetch.dtos.isEmpty ? 0 :
+            syncToDatabase(dtos: chukoFetch.dtos, propertyType: "chuko", modelContext: modelContext, isIncremental: chukoFetch.isIncremental, likedKeys: likedKeys)
+        if !chukoFetch.dtos.isEmpty {
+            defaults.set(ISO8601DateFormatter().string(from: Date()), forKey: lastSyncKeyChuko)
+        }
+
+        let shinNew = shinFetch.dtos.isEmpty ? 0 :
+            syncToDatabase(dtos: shinFetch.dtos, propertyType: "shinchiku", modelContext: modelContext, isIncremental: shinFetch.isIncremental, likedKeys: likedKeys)
+        if !shinFetch.dtos.isEmpty {
+            defaults.set(ISO8601DateFormatter().string(from: Date()), forKey: lastSyncKeyShinchiku)
+        }
 
         if UserAnnotationStore.hasBackup {
             UserAnnotationStore.clearBackup()
         }
 
-        return (chuko, shin)
+        return (chukoNew, shinNew)
     }
 
     // MARK: - Private
 
-    private func fetchAndSync(propertyType: String, modelContext: ModelContext) async throws -> Int {
+    private struct FetchResult {
+        let dtos: [ListingDTO]
+        let isIncremental: Bool
+    }
+
+    /// ネットワーク取得 + デコードのみ（ModelContext の読み取りは最小限に抑え、書き込みは行わない）
+    private func fetchDTOs(propertyType: String, modelContext: ModelContext) async throws -> FetchResult {
         let syncKey = propertyType == "chuko" ? lastSyncKeyChuko : lastSyncKeyShinchiku
         var lastSync = defaults.string(forKey: syncKey)
 
@@ -77,18 +100,7 @@ final class SupabaseListingStore {
             dtos.append(contentsOf: likedInactive)
         }
 
-        if dtos.isEmpty {
-            return 0
-        }
-
-        let likedKeys = await MainActor.run { BuildingPreferenceStore.shared.likedKeys }
-        let newCount = syncToDatabase(dtos: dtos, propertyType: propertyType, modelContext: modelContext, isIncremental: lastSync != nil, likedKeys: likedKeys)
-
-        // 同期タイムスタンプを更新 (ISO 8601)
-        let now = ISO8601DateFormatter().string(from: Date())
-        defaults.set(now, forKey: syncKey)
-
-        return newCount
+        return FetchResult(dtos: dtos, isIncremental: lastSync != nil)
     }
 
     /// 全件取得 (ページネーション) — 軽量ビューを使用
