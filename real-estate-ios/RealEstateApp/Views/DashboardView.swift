@@ -556,7 +556,7 @@ struct DashboardView: View {
     }
 
     private var newListingsCount: Int {
-        activeListings.filter(\.isRecentlyAdded).count
+        Self.deduplicatedNewListings(activeListings.filter(\.isRecentlyAdded)).count
     }
 
     private var priceDecreasedCount: Int {
@@ -582,8 +582,7 @@ struct DashboardView: View {
     private func filteredListings(for filter: DashboardQuickFilter) -> [Listing] {
         switch filter {
         case .newToday:
-            return activeListings.filter(\.isRecentlyAdded)
-                .sorted { $0.addedAt > $1.addedAt }
+            return Self.deduplicatedNewListings(activeListings.filter(\.isRecentlyAdded))
         case .priceDecreased:
             return priceDecreasedListings
         case .priceIncreased:
@@ -591,6 +590,16 @@ struct DashboardView: View {
         case .favorites:
             return favoriteListings
         }
+    }
+
+    static func deduplicatedNewListings(_ listings: [Listing]) -> [Listing] {
+        var seen = Set<String>()
+        return listings
+            .sorted { $0.addedAt > $1.addedAt }
+            .filter { listing in
+                let key = listing.supabaseIdentityKey ?? listing.identityKey
+                return seen.insert(key).inserted
+            }
     }
 
     private var scoreGrades: (s: Int, a: Int, b: Int, c: Int, d: Int, maxCount: Int) {
