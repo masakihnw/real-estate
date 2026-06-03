@@ -17,7 +17,7 @@ on:
 jobs:
   backfill:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: scraping-tool
@@ -28,15 +28,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}
 
       - name: Install dependencies
         run: |
-          pip install playwright beautifulsoup4 lxml
+          pip install playwright beautifulsoup4 lxml supabase
           python -m playwright install --with-deps chromium
 
       - name: Run backfill
         env:
-          SUPABASE_URL: https://dzhcumdmzskkvusynmyw.supabase.co
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           BACKFILL_LIMIT: ${{ inputs.limit }}
           BACKFILL_DELAY: ${{ inputs.delay }}
@@ -47,12 +54,10 @@ jobs:
           from playwright.sync_api import sync_playwright
           from supabase import create_client
 
-          # --- Supabase ---
           sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_ROLE_KEY"])
           limit = int(os.environ.get("BACKFILL_LIMIT", "0"))
           delay = float(os.environ.get("BACKFILL_DELAY", "8"))
 
-          # --- 画像解析 ---
           _DOMAIN_RE = re.compile(r"^https?://image\d?\.homes\.jp/")
           _SIZE_PARAMS = re.compile(r"[&?](width|height|modify_date)=[^&]*")
           _TRAILING = re.compile(r"[&?]$")
@@ -92,12 +97,13 @@ jobs:
                           seen.add(u); urls.append(u)
               return urls
 
+          _WAF_MARKERS = ("human verification", "awswafcookie", "gokuprops")
+
           def is_waf(html):
               if not html or len(html) < 1000: return True
               low = html.lower()
-              return "human verification" in low or ("captcha" in low and len(html) < 5000) or "challenge" in low
+              return any(m in low for m in _WAF_MARKERS)
 
-          # --- 対象取得 ---
           print("対象物件を取得中...")
           all_rows = []
           offset = 0
@@ -120,7 +126,6 @@ jobs:
           if not targets:
               print("バックフィル対象なし"); sys.exit(0)
 
-          # --- Playwright で取得 ---
           stats = {"ok": 0, "waf": 0, "error": 0, "no_img": 0}
           consecutive_waf = 0
 
@@ -152,7 +157,6 @@ jobs:
                           consecutive_waf += 1
                           stats["waf"] += 1
                           print(f"  [{idx+1}] WAF id={lid}")
-                          time.sleep(min(15 * consecutive_waf, 60))
                           continue
 
                       consecutive_waf = 0
@@ -167,12 +171,11 @@ jobs:
                       row = {"listing_id": lid}
                       if props: row["suumo_images"] = props
                       if fps: row["floor_plan_images"] = fps
-                      sb.table("enrichments").upsert(row, on_conflict="listing_id").execute()
+                      sb.table("enrichments").upsert(row, on_conflict="listing_id", returning="minimal").execute()
                       stats["ok"] += 1
                       print(f"  [{idx+1}] ✓ id={lid} 写真{len(props)}枚 間取り{len(fps)}枚")
 
                   except Exception as e:
-                      consecutive_waf += 1
                       stats["error"] += 1
                       print(f"  [{idx+1}] ERROR id={lid}: {e}")
                   finally:
