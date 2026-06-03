@@ -47,8 +47,8 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          BACKFILL_LIMIT: ${{ inputs.limit || '20' }}
-          BACKFILL_DELAY: ${{ inputs.delay || '8' }}
+          BACKFILL_LIMIT: ${{ inputs.limit || '50' }}
+          BACKFILL_DELAY: ${{ inputs.delay || '10' }}
         run: |
           python3 << 'PYEOF'
           import json, os, re, sys, time
