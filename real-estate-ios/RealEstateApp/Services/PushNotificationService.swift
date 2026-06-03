@@ -17,6 +17,8 @@ extension Notification.Name {
     static let didTapPushNotification = Notification.Name("didTapPushNotification")
     /// コメント通知タップ → 該当物件の詳細画面へ遷移
     static let didTapCommentNotification = Notification.Name("didTapCommentNotification")
+    /// スワイプセッションの表示要求（ダッシュボード・プッシュ通知ディープリンク共用）
+    static let didRequestSwipeSession = Notification.Name("didRequestSwipeSession")
 }
 
 /// AppDelegate — FCM のデバイストークン登録とリモート通知受信を処理
@@ -138,14 +140,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     ) {
         let userInfo = response.notification.request.content.userInfo
 
-        // スケジュール通知がタップされた → カウントリセット
+        // スケジュール通知がタップされた → スワイプセッションを起動
         if response.notification.request.identifier.hasPrefix("scheduled-listing-") {
             NotificationScheduleService.shared.resetAccumulatedCount()
-            NotificationCenter.default.post(
-                name: .didTapPushNotification,
-                object: nil,
-                userInfo: ["tab": 0]
-            )
+            NotificationCenter.default.post(name: .didRequestSwipeSession, object: nil)
         }
         // コメント通知がタップされた → 該当物件の詳細画面へ
         else if userInfo["type"] as? String == "comment",

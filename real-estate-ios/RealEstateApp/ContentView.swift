@@ -73,17 +73,16 @@ struct ContentView: View {
     @Environment(TransactionStore.self) private var transactionStore
     @Environment(SaveErrorHandler.self) private var saveErrorHandler
     private let networkMonitor = NetworkMonitor.shared
-    /// 通知タップ時のディープリンク用。コメント通知で渡される listingIdentityKey に該当する物件を探す。
-    /// identityKey は computed プロパティ（name/layout/area 等の組み合わせ）のため、FetchDescriptor の
-    /// predicate では検索できず、全件インメモリで first(where:) する必要がある。将来的に identityKey を
-    /// ストアド属性にすれば predicate による targeted fetch で最適化可能。
-    @Query private var allListings: [Listing]
     @SceneStorage("selectedTab") private var selectedTab = 0
     @SceneStorage("selectedSidebar") private var selectedSidebarRaw = SidebarItem.dashboard.rawValue
     /// 通知タップで詳細表示する物件
     @State private var notificationListing: Listing?
     /// Spotlight 検索から開く物件（URL で受け取り、該当物件を表示）
     @State private var spotlightListing: Listing?
+    /// スワイプセッション表示制御
+    @State private var showSwipeSession = false
+    /// 「あとで」で閉じた場合のセッション内抑制フラグ（フォアグラウンド復帰でリセット）
+    @State private var swipeDismissedThisSession = false
     /// フォアグラウンド復帰時の自動更新を抑制する最小間隔（秒）
     private let autoRefreshInterval: TimeInterval = 15 * 60  // 15分
 
@@ -121,7 +120,8 @@ struct ContentView: View {
         }
         .task {
             store.requestNotificationPermission()
-            if store.lastFetchedAt == nil || allListings.isEmpty {
+            let listingCount = (try? modelContext.fetchCount(FetchDescriptor<Listing>())) ?? 0
+            if store.lastFetchedAt == nil || listingCount == 0 {
                 await store.refresh(modelContext: modelContext)
             }
             let txDescriptor = FetchDescriptor<TransactionRecord>()
@@ -129,10 +129,12 @@ struct ContentView: View {
             if transactionStore.lastFetchedAt == nil || txCount == 0 {
                 await transactionStore.refresh(modelContext: modelContext)
             }
+            showSwipeIfNeeded()
         }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
                 NotificationScheduleService.shared.resetAccumulatedCount()
+                swipeDismissedThisSession = false
                 // オフライン時はキャッシュ済みデータがある場合は自動更新をスキップ
                 guard networkMonitor.isConnected else { return }
                 let elapsed = -(store.lastFetchedAt ?? .distantPast).timeIntervalSinceNow
@@ -147,6 +149,7 @@ struct ContentView: View {
                         await transactionStore.refresh(modelContext: modelContext)
                     }
                 }
+                showSwipeIfNeeded()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didTapPushNotification)) { notification in
@@ -158,9 +161,22 @@ struct ContentView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didTapCommentNotification)) { notification in
-            if let key = notification.userInfo?["listingIdentityKey"] as? String,
-               let listing = allListings.first(where: { $0.identityKey == key }) {
-                notificationListing = listing
+            if let key = notification.userInfo?["listingIdentityKey"] as? String {
+                let descriptor = FetchDescriptor<Listing>()
+                if let all = try? modelContext.fetch(descriptor),
+                   let listing = all.first(where: { $0.identityKey == key }) {
+                    notificationListing = listing
+                }
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .didRequestSwipeSession)) { _ in
+            showSwipeSession = true
+        }
+        .fullScreenCover(isPresented: $showSwipeSession) {
+            let listings = (try? modelContext.fetch(FetchDescriptor<Listing>())) ?? []
+            SwipeSessionView(listings: listings) {
+                swipeDismissedThisSession = true
+                showSwipeSession = false
             }
         }
         .fullScreenCover(item: $notificationListing) { listing in
@@ -174,6 +190,17 @@ struct ContentView: View {
         } message: {
             Text(saveErrorHandler.lastSaveError ?? "データの保存に失敗しました")
         }
+    }
+
+    // MARK: - Swipe Auto-Presentation
+
+    private func showSwipeIfNeeded() {
+        guard !swipeDismissedThisSession,
+              !showSwipeSession,
+              notificationListing == nil else { return }
+        let listings = (try? modelContext.fetch(FetchDescriptor<Listing>())) ?? []
+        guard SwipeSessionViewModel.pendingCount(from: listings) > 0 else { return }
+        showSwipeSession = true
     }
 
     // MARK: - compact (iPhone): TabView
