@@ -4048,11 +4048,11 @@
   },
   "【オープンレジデンシア下北沢】憧れの下北沢に住む未来...": {
     "data": null,
-    "cached_at": "2026-05-14T16:28:25.239180"
+    "cached_at": "2026-06-03T04:43:52.940807"
   },
   "オープンレジデンシア下北沢憧れの下北沢に住む未来...": {
     "data": null,
-    "cached_at": "2026-05-14T16:28:25.239180"
+    "cached_at": "2026-06-03T04:43:52.940807"
   },
   "ピアース用賀": {
     "data": {
@@ -6656,23 +6656,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11320.html",
       "deviation_score": 0,
-      "estimated_price_man": 11638,
-      "estimated_tsubo_price_man": 448,
-      "estimated_m2_price_man": 136,
+      "estimated_price_man": 11165,
+      "estimated_tsubo_price_man": 451,
+      "estimated_m2_price_man": 137,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 370,
+      "chuko_history_count": 373,
       "sales_history": [
         {
           "end_date": "",
           "floor": 12,
           "layout": "",
-          "area_m2": 78.61,
-          "price_man": 7677,
-          "tsubo_price_man": 321.0
+          "area_m2": 78.65,
+          "price_man": 7715,
+          "tsubo_price_man": 322.0
         }
       ]
     },
-    "cached_at": "2026-05-20T04:08:43.552558"
+    "cached_at": "2026-06-03T04:43:49.490614"
   },
   "南東向きテラス40.95平米ある3LDK住戸": {
     "data": null,
@@ -9274,5 +9274,27 @@
       ]
     },
     "cached_at": "2026-06-02T11:01:26.801560"
+  },
+  "東京ビューマークス18階(新規内装フルリノベーション...": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13309.html",
+      "deviation_score": 25,
+      "estimated_price_man": 11515,
+      "estimated_tsubo_price_man": 459,
+      "estimated_m2_price_man": 139,
+      "shinchiku_history_count": 257,
+      "chuko_history_count": 201,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 77.55,
+          "price_man": 6343,
+          "tsubo_price_man": 270.0
+        }
+      ]
+    },
+    "cached_at": "2026-05-28T17:36:40.585409"
   }
 }

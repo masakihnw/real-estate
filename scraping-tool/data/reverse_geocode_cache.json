@@ -1174,5 +1174,189 @@
     "quarter": "西巣鴨",
     "neighbourhood": "西巣鴨一丁目",
     "city_district": ""
+  },
+  "35.650533,139.605592": {
+    "display_name": "祖師谷五丁目, 祖師谷, 世田谷区, 東京都, 157-0072, 日本",
+    "city": "世田谷区",
+    "suburb": "",
+    "quarter": "祖師谷",
+    "neighbourhood": "祖師谷五丁目",
+    "city_district": ""
+  },
+  "35.647662,139.748398": {
+    "display_name": "第一京浜, 芝五丁目, 芝, 港区, 東京都, 108-0014, 日本",
+    "city": "港区",
+    "suburb": "",
+    "quarter": "芝",
+    "neighbourhood": "芝五丁目",
+    "city_district": ""
+  },
+  "35.673569,139.679248": {
+    "display_name": "西原二丁目, 西原, 渋谷区, 東京都, 151-0066, 日本",
+    "city": "渋谷区",
+    "suburb": "西原",
+    "quarter": "",
+    "neighbourhood": "西原二丁目",
+    "city_district": ""
+  },
+  "35.683521,139.667254": {
+    "display_name": "南台三丁目, 南台, 中野区, 東京都, 164-0014, 日本",
+    "city": "中野区",
+    "suburb": "",
+    "quarter": "南台",
+    "neighbourhood": "南台三丁目",
+    "city_district": ""
+  },
+  "35.693763,139.703632": {
+    "display_name": "区役所通り, 歌舞伎町一丁目, 歌舞伎町, 新宿区, 東京都, 160-0021, 日本",
+    "city": "新宿区",
+    "suburb": "",
+    "quarter": "歌舞伎町",
+    "neighbourhood": "歌舞伎町一丁目",
+    "city_district": ""
+  },
+  "35.686140,139.728656": {
+    "display_name": "新宿通り, 四谷一丁目, 四谷, 新宿区, 東京都, 160-8484, 日本",
+    "city": "新宿区",
+    "suburb": "四谷",
+    "quarter": "",
+    "neighbourhood": "四谷一丁目",
+    "city_district": ""
+  },
+  "35.690557,139.743591": {
+    "display_name": "三番町, 千代田区, 東京都, 102-0075, 日本",
+    "city": "千代田区",
+    "suburb": "",
+    "quarter": "",
+    "neighbourhood": "三番町",
+    "city_district": ""
+  },
+  "35.665091,139.770828": {
+    "display_name": "築地東通り, 築地四丁目, 築地, 中央区, 東京都, 104-0045, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "築地",
+    "neighbourhood": "築地四丁目",
+    "city_district": ""
+  },
+  "35.669740,139.772479": {
+    "display_name": "平成通り, 築地二丁目, 築地, 中央区, 東京都, 104-0045, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "築地",
+    "neighbourhood": "築地二丁目",
+    "city_district": ""
+  },
+  "35.702000,139.735000": {
+    "display_name": "横寺町, 神楽坂, 新宿区, 東京都, 162-0825, 日本",
+    "city": "新宿区",
+    "suburb": "",
+    "quarter": "神楽坂",
+    "neighbourhood": "横寺町",
+    "city_district": ""
+  },
+  "35.721505,139.752158": {
+    "display_name": "旧白山通り, 白山一丁目, 白山, 文京区, 東京都, 113-0001, 日本",
+    "city": "文京区",
+    "suburb": "",
+    "quarter": "白山",
+    "neighbourhood": "白山一丁目",
+    "city_district": ""
+  },
+  "35.727588,139.745705": {
+    "display_name": "本駒込二丁目, 本駒込, 文京区, 東京都, 113-0021, 日本",
+    "city": "文京区",
+    "suburb": "",
+    "quarter": "本駒込",
+    "neighbourhood": "本駒込二丁目",
+    "city_district": ""
+  },
+  "35.605861,139.712772": {
+    "display_name": "中延四丁目, 中延, 品川区, 東京都, 142-0052, 日本",
+    "city": "品川区",
+    "suburb": "中延",
+    "quarter": "",
+    "neighbourhood": "中延四丁目",
+    "city_district": ""
+  },
+  "35.605847,139.712790": {
+    "display_name": "中延四丁目, 中延, 品川区, 東京都, 142-0052, 日本",
+    "city": "品川区",
+    "suburb": "中延",
+    "quarter": "",
+    "neighbourhood": "中延四丁目",
+    "city_district": ""
+  },
+  "35.706632,139.868677": {
+    "display_name": "中央一丁目, 中央, 江戸川区, 東京都, 132-0021, 日本",
+    "city": "江戸川区",
+    "suburb": "",
+    "quarter": "中央",
+    "neighbourhood": "中央一丁目",
+    "city_district": ""
+  },
+  "35.686044,139.883120": {
+    "display_name": "一之江八丁目, 一之江, 江戸川区, 東京都, 132-0024, 日本",
+    "city": "江戸川区",
+    "suburb": "",
+    "quarter": "一之江",
+    "neighbourhood": "一之江八丁目",
+    "city_district": ""
+  },
+  "35.647608,139.660232": {
+    "display_name": "若林五丁目, 若林, 世田谷区, 東京都, 154-0023, 日本",
+    "city": "世田谷区",
+    "suburb": "",
+    "quarter": "若林",
+    "neighbourhood": "若林五丁目",
+    "city_district": ""
+  },
+  "35.648411,139.662963": {
+    "display_name": "若林二丁目, 若林, 世田谷区, 東京都, 154-0023, 日本",
+    "city": "世田谷区",
+    "suburb": "",
+    "quarter": "若林",
+    "neighbourhood": "若林二丁目",
+    "city_district": ""
+  },
+  "35.696712,139.888525": {
+    "display_name": "春江町三丁目, 春江町, 江戸川区, 東京都, 132-0003, 日本",
+    "city": "江戸川区",
+    "suburb": "",
+    "quarter": "春江町",
+    "neighbourhood": "春江町三丁目",
+    "city_district": ""
+  },
+  "35.697274,139.826709": {
+    "display_name": "亀戸六丁目, 亀戸, 江東区, 東京都, 136-0071, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "亀戸",
+    "neighbourhood": "亀戸六丁目",
+    "city_district": ""
+  },
+  "35.688918,139.849796": {
+    "display_name": "小松川一丁目, 小松川, 江戸川区, 東京都, 132-0034, 日本",
+    "city": "江戸川区",
+    "suburb": "",
+    "quarter": "小松川",
+    "neighbourhood": "小松川一丁目",
+    "city_district": ""
+  },
+  "35.732854,139.798818": {
+    "display_name": "南千住四丁目, 南千住, 荒川区, 東京都, 116-0000, 日本",
+    "city": "荒川区",
+    "suburb": "",
+    "quarter": "南千住",
+    "neighbourhood": "南千住四丁目",
+    "city_district": ""
+  },
+  "35.733302,139.799014": {
+    "display_name": "南千住四丁目, 南千住, 荒川区, 東京都, 116-0000, 日本",
+    "city": "荒川区",
+    "suburb": "",
+    "quarter": "南千住",
+    "neighbourhood": "南千住四丁目",
+    "city_district": ""
   }
 }
