@@ -80,9 +80,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         Task {
             let context = ModelContext(container)
             do {
-                let (chukoNew, shinNew) = try await SupabaseListingStore.shared.refresh(modelContext: context)
-                let total = chukoNew + shinNew
-                print("[SilentPush] 同期完了: 中古 \(chukoNew)件, 新築 \(shinNew)件")
+                let (chukoNew, _) = try await SupabaseListingStore.shared.refresh(modelContext: context)
+                let total = chukoNew
+                print("[SilentPush] 同期完了: \(chukoNew)件")
                 if total > 0 {
                     NotificationScheduleService.shared.accumulateAndReschedule(newCount: total)
                 }

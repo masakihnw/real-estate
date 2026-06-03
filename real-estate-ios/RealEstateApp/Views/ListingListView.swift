@@ -475,11 +475,7 @@ struct ListingListView: View {
 
     private var navTitle: String {
         if favoritesOnly { return "マイリスト" }
-        switch propertyTypeFilter {
-        case "shinchiku": return "新築マンション"
-        case "chuko": return "中古マンション"
-        default: return "物件一覧"
-        }
+        return "中古マンション"
     }
 
     /// お気に入り物件を CSV 形式でエクスポートする
