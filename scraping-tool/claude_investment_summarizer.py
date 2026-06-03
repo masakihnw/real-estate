@@ -29,9 +29,8 @@ logger = get_logger(__name__)
 # ─────────────────────── フィルタ閾値（有望物件の判定） ───────────────────────
 FILTER_LISTING_SCORE_MIN = 55
 FILTER_SS_PROFIT_PCT_MIN = 50
-FILTER_ASSET_RANKS_PROMISING = {"S", "A", "B"}
 FILTER_PRICE_FAIRNESS_MIN = 60
-REANALYZE_ASSET_RANKS = {"S", "A"}
+REANALYZE_LISTING_SCORE_MIN = 65
 
 _BUYER_PROFILE_PATH = Path(__file__).resolve().parent / "config" / "buyer_profile.json"
 _DEFAULT_USER_ID = os.environ.get("BUYER_PROFILE_USER_ID", "[USER_ID]")
@@ -135,7 +134,7 @@ def _format_buyer_profile(profile: dict) -> str:
 
 
 def _is_promising(listing: dict) -> bool:
-    """有望物件判定（OR条件）。asset_rank は現在全件 "S" のため除外。"""
+    """有望物件判定（OR条件）。"""
     listing_score = listing.get("listing_score")
     if listing_score is not None and listing_score >= FILTER_LISTING_SCORE_MIN:
         return True
@@ -358,7 +357,7 @@ def _build_score_context(listing: dict) -> str:
     _add("総合投資スコア", listing.get("listing_score"), "/100")
     _add("価格妥当性スコア", listing.get("price_fairness_score"), "/100（50=適正、高い=割安）")
     _add("再販流動性スコア", listing.get("resale_liquidity_score"), "/100")
-    _add("資産ランク", listing.get("asset_rank"))
+    _add("グレード", listing.get("asset_grade"))
     if listing.get("is_cheapest_in_building"):
         sections.append("棟内最安値: はい")
 
@@ -494,7 +493,8 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
     for i in target_indices:
         listing = listings[i]
         has_existing_score = listing.get("ai_recommendation_score") is not None
-        if has_existing_score and listing.get("asset_rank") not in REANALYZE_ASSET_RANKS:
+        listing_score = listing.get("listing_score")
+        if has_existing_score and (listing_score is None or listing_score < REANALYZE_LISTING_SCORE_MIN):
             continue
 
         context = _build_score_context(listing)
@@ -521,8 +521,8 @@ def generate_investment_summaries(listings: list[dict], *, skip_filter: bool = F
 
         if has_existing_score:
             logger.info(
-                "プロンプト更新による再分析: %s (asset_rank=%s)",
-                listing.get("name", "?"), listing.get("asset_rank", "?"),
+                "プロンプト更新による再分析: %s (listing_score=%s)",
+                listing.get("name", "?"), listing.get("listing_score", "?"),
             )
 
         requests.append(BatchRequest(

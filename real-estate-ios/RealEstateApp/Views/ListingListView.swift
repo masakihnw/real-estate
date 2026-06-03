@@ -1338,7 +1338,7 @@ struct ListingRowView: View {
 
                     if let score = listing.listingScore,
                        let grade = listing.scoreGradeLetter {
-                        ScoreBadge(grade: grade, value: score, isAIAnalyzed: listing.aiRecommendationScore != nil)
+                        ScoreBadge(grade: grade, value: score)
                     }
 
                     if BuildingPreferenceStore.shared.isLiked(listing.identityKey) {

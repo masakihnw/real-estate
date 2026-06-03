@@ -141,10 +141,12 @@ def get_search_conditions_md() -> str:
     return "\n".join(rows)
 
 
-def _is_asset_rank_b_or_above(r: dict) -> bool:
-    """資産性がB以上（S/A/B）かどうか。"""
-    _, rank = optional_features.get_asset_score_and_rank(r)
-    return rank in ("S", "A", "B")
+def _is_listing_score_b_or_above(r: dict) -> bool:
+    """listing_scoreがB以上（50+）かどうか。スコアなしは含める（未分析物件を除外しない）。"""
+    score = r.get("listing_score")
+    if score is None:
+        return True
+    return score >= 50
 
 
 def _price_diff_for_sort(r: dict) -> float:
@@ -157,13 +159,21 @@ def _price_diff_for_sort(r: dict) -> float:
 
 def _listing_cells(r: dict) -> dict[str, Any]:
     """1物件の表用セル値をまとめて返す。行組み立ての重複を避ける。"""
-    _, rank, breakdown = optional_features.get_asset_score_and_rank_with_breakdown(r)
+    grade = r.get("asset_grade") or ""
+    if not grade:
+        score = r.get("listing_score")
+        if score is not None:
+            if score >= 80: grade = "S"
+            elif score >= 65: grade = "A"
+            elif score >= 50: grade = "B"
+            elif score >= 35: grade = "C"
+            else: grade = "D"
     opt_10y, neu_10y, pes_10y = optional_features.get_three_scenario_columns(r)
     monthly_loan, _ = optional_features.get_loan_display_for_listing(r.get("price_man"))
     m3_str, pg_str = _commute_display_for_listing(r)
     return {
-        "rank": rank,
-        "breakdown": breakdown,
+        "rank": grade,
+        "breakdown": "",
         "opt_10y": opt_10y,
         "neu_10y": neu_10y,
         "pes_10y": pes_10y,
@@ -290,13 +300,13 @@ def generate_markdown(
     search_conditions = get_search_conditions_md()
 
     # 資産性B以上に絞る
-    listings_a = [r for r in listings if _is_asset_rank_b_or_above(r)]
+    listings_a = [r for r in listings if _is_listing_score_b_or_above(r)]
     diff_a: Optional[dict[str, Any]] = None
     if diff:
         diff_a = {
-            "new": [r for r in diff.get("new", []) if _is_asset_rank_b_or_above(r)],
-            "updated": [item for item in diff.get("updated", []) if _is_asset_rank_b_or_above(item.get("current", {}))],
-            "removed": [r for r in diff.get("removed", []) if _is_asset_rank_b_or_above(r)],
+            "new": [r for r in diff.get("new", []) if _is_listing_score_b_or_above(r)],
+            "updated": [item for item in diff.get("updated", []) if _is_listing_score_b_or_above(item.get("current", {}))],
+            "removed": [r for r in diff.get("removed", []) if _is_listing_score_b_or_above(r)],
         }
 
     lines = [

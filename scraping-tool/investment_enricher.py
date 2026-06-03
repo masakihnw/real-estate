@@ -247,17 +247,9 @@ def enrich_investment_scores(
     listings: list[dict],
     transaction_data: Optional[dict] = None,
 ) -> list[dict]:
-    """物件リストに投資スコアを付与する。"""
-    from asset_score import get_asset_score_and_rank
-
+    """物件リストに投資スコアを付与する。asset_rank は AI スコアリング (Routine) に一元化済み。"""
     for listing in listings:
         listing["resale_liquidity_score"] = _calc_resale_liquidity(listing, transaction_data)
-        try:
-            score_raw, rank = get_asset_score_and_rank(listing)
-            listing["asset_rank"] = rank
-            listing["asset_score_raw"] = score_raw
-        except Exception:
-            pass
 
     return listings
 
@@ -298,7 +290,6 @@ def main():
     write_enrichments(listings, [
         "resale_liquidity_score",
         "competing_listings_count", "investment_summary", "highlight_badge",
-        "asset_rank", "asset_score_raw",
     ], "investment")
 
     scored = sum(1 for r in listings if r.get("listing_score") is not None)

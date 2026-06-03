@@ -604,13 +604,14 @@ struct DashboardView: View {
 
     private var scoreGrades: (s: Int, a: Int, b: Int, c: Int, d: Int, maxCount: Int) {
         var s = 0, a = 0, b = 0, c = 0, d = 0
+        let thresholds = DesignSystem.gradeThresholds
         for listing in activeListings {
             guard let score = listing.listingScore else { continue }
-            switch score {
-            case 80...: s += 1
-            case 65..<80: a += 1
-            case 50..<65: b += 1
-            case 35..<50: c += 1
+            switch thresholds.grade(for: score) {
+            case "S": s += 1
+            case "A": a += 1
+            case "B": b += 1
+            case "C": c += 1
             default: d += 1
             }
         }
@@ -640,14 +641,7 @@ struct DashboardView: View {
     }
 
     private func gradeForScore(_ score: Int) -> String {
-        // Mirrors Listing.scoreGradeLetter thresholds
-        switch score {
-        case 80...: return "S"
-        case 65..<80: return "A"
-        case 50..<65: return "B"
-        case 35..<50: return "C"
-        default: return "D"
-        }
+        DesignSystem.gradeThresholds.grade(for: score)
     }
 }
 

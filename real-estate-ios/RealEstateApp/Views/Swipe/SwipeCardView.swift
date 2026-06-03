@@ -172,11 +172,7 @@ struct SwipeCardView: View {
     private var badgeOverlay: some View {
         HStack(spacing: 6) {
             if let grade = listing.scoreGradeLetter, let score = listing.listingScore {
-                ScoreBadge(
-                    grade: grade,
-                    value: score,
-                    isAIAnalyzed: listing.aiRecommendationScore != nil
-                )
+                ScoreBadge(grade: grade, value: score)
             }
             if let badge = listing.highlightBadge {
                 HighlightBadgeView(text: badge)
