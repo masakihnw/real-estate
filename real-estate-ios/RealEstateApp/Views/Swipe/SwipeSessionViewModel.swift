@@ -28,7 +28,7 @@ final class SwipeSessionViewModel {
     func loadCards(from allListings: [Listing]) {
         let prefStore = BuildingPreferenceStore.shared
         cards = allListings
-            .filter { $0.isRecentlyAdded && !$0.isDelisted }
+            .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
             .filter { !prefStore.isLiked($0.identityKey) && !prefStore.isNoped($0.identityKey) }
             .sorted { ($0.listingScore ?? 0) > ($1.listingScore ?? 0) }
         currentIndex = 0
@@ -87,7 +87,7 @@ final class SwipeSessionViewModel {
     static func pendingCount(from listings: [Listing]) -> Int {
         let prefStore = BuildingPreferenceStore.shared
         return listings
-            .filter { $0.isRecentlyAdded && !$0.isDelisted }
+            .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
             .filter { !prefStore.isLiked($0.identityKey) && !prefStore.isNoped($0.identityKey) }
             .count
     }

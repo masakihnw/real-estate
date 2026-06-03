@@ -9,13 +9,22 @@ struct SwipeSessionView: View {
     @State private var exitOffset: CGSize = .zero
     @State private var isExiting = false
     @State private var selectedListing: Listing?
+    @State private var isLoadingEnrichment = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         VStack(spacing: 0) {
             header
             Spacer()
-            if viewModel.isComplete {
+            if isLoadingEnrichment {
+                VStack(spacing: 12) {
+                    ProgressView()
+                    Text("物件データを読み込み中…")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            } else if viewModel.isComplete {
                 SwipeCompletionView(
                     likedCount: viewModel.likedCount,
                     nopedCount: viewModel.nopedCount,
@@ -38,7 +47,11 @@ struct SwipeSessionView: View {
             Spacer()
         }
         .background(Color(.systemGroupedBackground))
-        .task { viewModel.loadCards(from: listings) }
+        .task {
+            viewModel.loadCards(from: listings)
+            await prefetchEnrichment()
+            isLoadingEnrichment = false
+        }
         .sheet(item: $selectedListing) { listing in
             ListingDetailView(listing: listing)
         }
@@ -194,6 +207,23 @@ struct SwipeSessionView: View {
             dragOffset = .zero
             exitOffset = .zero
             isExiting = false
+        }
+    }
+
+    // MARK: - Enrichment Prefetch
+
+    private func prefetchEnrichment() async {
+        let store = SupabaseListingStore.shared
+        let needsFetch = viewModel.cards.filter { $0.enrichmentFetchedAt == nil }
+        await withTaskGroup(of: Void.self) { group in
+            for listing in needsFetch {
+                group.addTask {
+                    try? await store.fetchDetail(
+                        identityKey: listing.identityKey,
+                        modelContext: modelContext
+                    )
+                }
+            }
         }
     }
 }
