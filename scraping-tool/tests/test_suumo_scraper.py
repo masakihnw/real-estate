@@ -5,6 +5,7 @@ from pathlib import Path
 from suumo_scraper import (
     SuumoListing,
     _is_tower_name,
+    _passes_basic_filters,
     _snap_kt_server,
     apply_conditions,
     parse_suumo_detail_html,
@@ -206,3 +207,130 @@ def test_merge_detail_cache_removes_delisted_suumo_listing():
     assert merged_count == 0
     assert removed_count == 1
     assert [r["name"] for r in merged_listings] == ["他社物件"]
+
+
+# ---------- 掲載終了チェック統合テスト ----------
+
+
+def _make_listing(**overrides) -> SuumoListing:
+    """テスト用 SuumoListing ファクトリ。"""
+    defaults = dict(
+        source="suumo",
+        url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_99999999/",
+        name="テストマンション",
+        price_man=10000,
+        address="東京都江東区毛利1",
+        station_line="東京メトロ半蔵門線「住吉」徒歩6分",
+        walk_min=6,
+        area_m2=65.0,
+        layout="3LDK",
+        built_str="2014年2月",
+        built_year=2014,
+        total_units=100,
+    )
+    defaults.update(overrides)
+    return SuumoListing(**defaults)
+
+
+def _common_monkeypatches(monkeypatch):
+    """apply_conditions テスト共通のモック設定。"""
+    monkeypatch.setattr("suumo_scraper._is_tokyo_23", lambda *args, **kwargs: True)
+    monkeypatch.setattr("suumo_scraper.line_ok", lambda *args, **kwargs: True)
+    monkeypatch.setattr("suumo_scraper.station_passengers_ok", lambda *args, **kwargs: True)
+    monkeypatch.setattr("suumo_scraper.load_station_passengers", lambda: {})
+    monkeypatch.setattr("suumo_scraper.lower_tier_station_ok", lambda *args, **kwargs: True)
+    monkeypatch.setattr("suumo_scraper.get_effective_area_min_m2", lambda *args: 50.0)
+    monkeypatch.setattr("suumo_scraper.layout_ok", lambda *args: True)
+
+
+def test_apply_conditions_excludes_delisted_detail_page(monkeypatch):
+    """詳細ページで掲載終了が検出された場合、キャッシュに無くても除外される。"""
+    _common_monkeypatches(monkeypatch)
+    monkeypatch.setattr("suumo_scraper._load_building_units_cache", lambda: {})
+    monkeypatch.setattr("suumo_scraper.create_session", lambda: object())
+    delisted_html = '<p>※このページは過去の掲載情報を元に作成しています。</p>'
+    monkeypatch.setattr("suumo_scraper._fetch_detail_page", lambda *_a, **_kw: delisted_html)
+    monkeypatch.setattr("suumo_scraper.parse_suumo_detail_html",
+                        lambda html: {"delisted": True} if "過去の掲載情報" in html else {})
+
+    row = _make_listing()
+    result = apply_conditions([row])
+    assert result == [], "掲載終了の物件は除外されるべき"
+
+
+def test_apply_conditions_keeps_active_detail_page(monkeypatch):
+    """詳細ページが有効な場合、リストに含まれる。"""
+    _common_monkeypatches(monkeypatch)
+    monkeypatch.setattr("suumo_scraper._load_building_units_cache", lambda: {})
+    monkeypatch.setattr("suumo_scraper.create_session", lambda: object())
+    monkeypatch.setattr("suumo_scraper._fetch_detail_page", lambda *_a, **_kw: "<html></html>")
+    monkeypatch.setattr("suumo_scraper.parse_suumo_detail_html",
+                        lambda *_a: {"total_units": 100, "floor_position": 5, "floor_total": 11})
+
+    row = _make_listing()
+    result = apply_conditions([row])
+    assert len(result) == 1
+    assert result[0].name == "テストマンション"
+
+
+def test_apply_conditions_fail_open_on_fetch_error(monkeypatch):
+    """詳細ページ取得失敗時はフェイルオープン（掲載中として扱う）。"""
+    _common_monkeypatches(monkeypatch)
+    monkeypatch.setattr("suumo_scraper._load_building_units_cache", lambda: {})
+    monkeypatch.setattr("suumo_scraper.create_session", lambda: object())
+
+    def _raise(*_a, **_kw):
+        raise ConnectionError("mock network error")
+
+    monkeypatch.setattr("suumo_scraper._fetch_detail_page", _raise)
+
+    row = _make_listing()
+    result = apply_conditions([row])
+    assert len(result) == 1, "取得失敗時は掲載中として含めるべき"
+
+
+def test_apply_conditions_excludes_old_non_tower_with_known_floor(monkeypatch):
+    """築古・floor_total判明・非タワーは除外される。"""
+    _common_monkeypatches(monkeypatch)
+    monkeypatch.setattr("suumo_scraper._load_building_units_cache", lambda: {})
+    row = _make_listing(built_year=1990, floor_total=10)
+    result = apply_conditions([row])
+    assert result == [], "築古・非タワーは除外されるべき"
+
+
+def test_apply_conditions_excludes_delisted_even_when_units_cache_exists(monkeypatch):
+    """units_cache に有効エントリがあっても、詳細ページが掲載終了なら除外される。"""
+    _common_monkeypatches(monkeypatch)
+    url = "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20519655/"
+    monkeypatch.setattr("suumo_scraper._load_building_units_cache",
+                        lambda: {url: {"total_units": 74, "floor_total": 11}})
+    monkeypatch.setattr("suumo_scraper.create_session", lambda: object())
+    delisted_html = '<p>※このページは過去の掲載情報を元に作成しています。</p>'
+    monkeypatch.setattr("suumo_scraper._fetch_detail_page", lambda *_a, **_kw: delisted_html)
+    monkeypatch.setattr("suumo_scraper.parse_suumo_detail_html",
+                        lambda html: {"delisted": True} if "過去の掲載情報" in html else {})
+
+    row = _make_listing(url=url, total_units=74, floor_total=11)
+    result = apply_conditions([row])
+    assert result == [], "キャッシュが古くても詳細ページで掲載終了なら除外すべき"
+
+
+def test_apply_conditions_does_not_double_fetch(monkeypatch):
+    """タワー判定でdetail取得済みの物件は掲載終了チェックで再取得しない。"""
+    _common_monkeypatches(monkeypatch)
+    monkeypatch.setattr("suumo_scraper._load_building_units_cache", lambda: {})
+    monkeypatch.setattr("suumo_scraper.create_session", lambda: object())
+    fetch_count = {"n": 0}
+
+    def _count_fetch(*_a, **_kw):
+        fetch_count["n"] += 1
+        return "<html></html>"
+
+    monkeypatch.setattr("suumo_scraper._fetch_detail_page", _count_fetch)
+    monkeypatch.setattr("suumo_scraper.parse_suumo_detail_html",
+                        lambda *_a: {"floor_total": 25, "total_units": 300})
+
+    row = _make_listing(built_year=1991, floor_total=None)
+    result = apply_conditions([row])
+    assert len(result) == 1
+    assert fetch_count["n"] == 1, "detail取得は1回のみであるべき"
