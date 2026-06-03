@@ -3,6 +3,7 @@ import Foundation
 @testable import RealEstateApp
 
 @Suite("重複排除: ダッシュボード新着デデュプ + 同期クリーンアップ")
+@MainActor
 struct DuplicateDeduplicationTests {
 
     // MARK: - Helpers
@@ -13,7 +14,7 @@ struct DuplicateDeduplicationTests {
         supabaseIdentityKey: String? = nil,
         layout: String? = "3LDK",
         areaM2: Double? = 70.0,
-        address: String? = "千代田区1",
+        address: String? = "千代田区丸の内1",
         builtYear: Int? = 2020,
         floorPosition: Int? = nil,
         addedAt: Date = Date(),
@@ -38,59 +39,107 @@ struct DuplicateDeduplicationTests {
         return l
     }
 
-    // MARK: - deduplicatedNewListings
+    // MARK: - deduplicatedNewListings (prefStore なし)
 
     @Test("重複なし: 全物件がそのまま返る")
     func noDuplicatesReturnsAll() {
         let listings = [
-            makeListing(url: "u1", name: "A", supabaseIdentityKey: "a|3LDK|70|addr|2020|3"),
-            makeListing(url: "u2", name: "B", supabaseIdentityKey: "b|3LDK|65|addr|2019|5"),
-            makeListing(url: "u3", name: "C", supabaseIdentityKey: "c|2LDK|55|addr|2018|2"),
+            makeListing(url: "u1", name: "A", address: "千代田区1"),
+            makeListing(url: "u2", name: "B", address: "中央区1"),
+            makeListing(url: "u3", name: "C", address: "港区1"),
         ]
         let result = DashboardView.deduplicatedNewListings(listings)
         #expect(result.count == 3)
     }
 
-    @Test("supabaseIdentityKey 重複: 先に追加された方（addedAt が新しい方）のみ残る")
-    func dbKeyDuplicatesKeptByNewest() {
-        let older = makeListing(
-            url: "u1", name: "A",
-            supabaseIdentityKey: "same|3LDK|70|addr|2020|3",
+    @Test("同一マンション別住戸: buildingGroupKey でデデュプされ1件になる")
+    func sameBuildingDifferentUnitsDeduped() {
+        let floor3 = makeListing(
+            url: "u1", name: "テスト",
+            supabaseIdentityKey: "テスト|3LDK|70|千代田区1|2020|3",
+            floorPosition: 3,
             addedAt: Date().addingTimeInterval(-3600)
         )
-        let newer = makeListing(
-            url: "u2", name: "A",
-            supabaseIdentityKey: "same|3LDK|70|addr|2020|3",
+        let floor5 = makeListing(
+            url: "u2", name: "テスト",
+            supabaseIdentityKey: "テスト|3LDK|70|千代田区1|2020|5",
+            floorPosition: 5,
             addedAt: Date()
         )
+        #expect(floor3.buildingGroupKey == floor5.buildingGroupKey)
+        let result = DashboardView.deduplicatedNewListings([floor3, floor5])
+        #expect(result.count == 1)
+        #expect(result[0].url == "u2")
+    }
+
+    @Test("異なるマンション: 両方残る")
+    func differentBuildingsKeptBoth() {
+        let a = makeListing(url: "u1", name: "マンションA", address: "千代田区1")
+        let b = makeListing(url: "u2", name: "マンションB", address: "千代田区2")
+        let result = DashboardView.deduplicatedNewListings([a, b])
+        #expect(result.count == 2)
+    }
+
+    @Test("空配列: パニックしない")
+    func emptyArrayNoPanic() {
+        let result = DashboardView.deduplicatedNewListings([])
+        #expect(result.isEmpty)
+    }
+
+    @Test("addedAt 最新の物件が代表になる")
+    func newestAddedAtIsRepresentative() {
+        let older = makeListing(url: "u1", name: "テスト", addedAt: Date().addingTimeInterval(-3600))
+        let newer = makeListing(url: "u2", name: "テスト", addedAt: Date())
         let result = DashboardView.deduplicatedNewListings([older, newer])
         #expect(result.count == 1)
         #expect(result[0].url == "u2")
     }
 
-    @Test("supabaseIdentityKey nil: Swift identityKey でデデュプ")
-    func fallsBackToSwiftKey() {
-        let a = makeListing(url: "u1", name: "テスト", supabaseIdentityKey: nil, addedAt: Date())
-        let b = makeListing(url: "u2", name: "テスト", supabaseIdentityKey: nil, addedAt: Date().addingTimeInterval(-1))
-        #expect(a.identityKey == b.identityKey)
-        let result = DashboardView.deduplicatedNewListings([a, b])
-        #expect(result.count == 1)
+    // MARK: - deduplicatedNewListings (like/nope フィルタ)
+
+    @Test("Like済み物件は除外される")
+    func likedListingsExcluded() {
+        let prefStore = BuildingPreferenceStore.shared
+        let listing = makeListing(url: "u1", name: "テスト")
+        let key = listing.identityKey
+        prefStore.setLocalOnly(key, preference: .like)
+        defer { prefStore.removeLocalOnly(key) }
+
+        let result = DashboardView.deduplicatedNewListings([listing], prefStore: prefStore)
+        #expect(result.isEmpty)
     }
 
-    @Test("異なる floor_position の物件: supabaseIdentityKey が異なればどちらも残る")
-    func differentFloorsDifferentDbKeys() {
-        let floor3 = makeListing(
-            url: "u1", name: "テスト",
-            supabaseIdentityKey: "テスト|3LDK|70|addr|2020|3",
-            floorPosition: 3
-        )
-        let floor5 = makeListing(
-            url: "u2", name: "テスト",
-            supabaseIdentityKey: "テスト|3LDK|70|addr|2020|5",
-            floorPosition: 5
-        )
-        let result = DashboardView.deduplicatedNewListings([floor3, floor5])
-        #expect(result.count == 2)
+    @Test("Nope済み物件は除外される")
+    func nopedListingsExcluded() {
+        let prefStore = BuildingPreferenceStore.shared
+        let listing = makeListing(url: "u1", name: "テスト2", address: "港区1")
+        let key = listing.identityKey
+        prefStore.setLocalOnly(key, preference: .nope)
+        defer { prefStore.removeLocalOnly(key) }
+
+        let result = DashboardView.deduplicatedNewListings([listing], prefStore: prefStore)
+        #expect(result.isEmpty)
+    }
+
+    @Test("未レビュー物件のみ残る")
+    func onlyUnreviewedRemain() {
+        let prefStore = BuildingPreferenceStore.shared
+        let liked = makeListing(url: "u1", name: "A", address: "千代田区1")
+        let unreviewed = makeListing(url: "u2", name: "B", address: "中央区1")
+
+        prefStore.setLocalOnly(liked.identityKey, preference: .like)
+        defer { prefStore.removeLocalOnly(liked.identityKey) }
+
+        let result = DashboardView.deduplicatedNewListings([liked, unreviewed], prefStore: prefStore)
+        #expect(result.count == 1)
+        #expect(result[0].url == "u2")
+    }
+
+    @Test("prefStore nil ならフィルタなし（後方互換）")
+    func nilPrefStoreNoFilter() {
+        let listing = makeListing(url: "u1", name: "テスト")
+        let result = DashboardView.deduplicatedNewListings([listing], prefStore: nil)
+        #expect(result.count == 1)
     }
 
     // MARK: - pickKeepAndRemove
