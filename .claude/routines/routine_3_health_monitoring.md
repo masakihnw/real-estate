@@ -40,8 +40,47 @@ SELECT * FROM health_check_enrichment_coverage();
 | extracted_features | 30% | |
 | image_categories | 30% | |
 | ss_lookup_status | 30% | |
+| suumo_images | 60% | 物件写真の取得率 |
+| floor_plan_images | 50% | 間取り図の取得率 |
 
 最低基準未満のフィールドがあれば「⚠️」としてレポートに記録。基準以上なら「✅」。
+
+`health_check_enrichment_coverage()` に `suumo_images` / `floor_plan_images` が含まれない場合、以下のカスタムクエリで補完:
+
+```sql
+SELECT
+  'suumo_images' AS field_name,
+  COUNT(*) AS total_active,
+  COUNT(*) FILTER (WHERE e.suumo_images IS NOT NULL AND jsonb_array_length(e.suumo_images) > 0) AS non_null_count,
+  ROUND(100.0 * COUNT(*) FILTER (WHERE e.suumo_images IS NOT NULL AND jsonb_array_length(e.suumo_images) > 0) / NULLIF(COUNT(*), 0), 1) AS coverage_pct
+FROM listings l
+LEFT JOIN enrichments e ON e.listing_id = l.id
+WHERE l.is_active = true
+UNION ALL
+SELECT
+  'floor_plan_images',
+  COUNT(*),
+  COUNT(*) FILTER (WHERE e.floor_plan_images IS NOT NULL AND jsonb_array_length(e.floor_plan_images) > 0),
+  ROUND(100.0 * COUNT(*) FILTER (WHERE e.floor_plan_images IS NOT NULL AND jsonb_array_length(e.floor_plan_images) > 0) / NULLIF(COUNT(*), 0), 1)
+FROM listings l
+LEFT JOIN enrichments e ON e.listing_id = l.id
+WHERE l.is_active = true;
+```
+
+さらに **homes 物件固有の画像取得率** も確認:
+
+```sql
+SELECT
+  COUNT(*) AS homes_total,
+  COUNT(*) FILTER (WHERE e.suumo_images IS NOT NULL AND jsonb_array_length(e.suumo_images) > 0) AS homes_with_images,
+  ROUND(100.0 * COUNT(*) FILTER (WHERE e.suumo_images IS NOT NULL AND jsonb_array_length(e.suumo_images) > 0) / NULLIF(COUNT(*), 0), 1) AS homes_image_pct
+FROM listings l
+JOIN listing_sources ls ON l.id = ls.listing_id AND ls.is_active AND ls.source = 'homes'
+LEFT JOIN enrichments e ON e.listing_id = l.id
+WHERE l.is_active = true;
+```
+
+homes 画像取得率が 30% 未満の場合は「⚠️」として記録し、Step 6b の `homes_images_backlog_large` issue として検知する。
 
 結果を以下の構造で保持:
 ```json
@@ -210,6 +249,8 @@ SELECT * FROM health_check_anomaly_detection();
 
 `is_alert = true` の項目を重点報告。
 
+**注意**: `active_count_drop` がアラートになった場合、意図的な一括非アクティブ化（例: 新築物件の廃止、条件変更による除外）が原因でないか確認すること。直近のルーティン①実行ログや `listing_events` テーブルで大量の `deactivated` イベントがあれば false positive として扱い、`pipeline_issues` には登録しない。
+
 ---
 
 ## Step 5: health_check_logs 保存
@@ -268,6 +309,15 @@ FROM buyer_preference_summaries
 WHERE user_id = 'default';
 ```
 
+```sql
+-- 非アクティブ物件の画像URL残存（リンク切れ候補）
+SELECT COUNT(*) AS stale_image_count
+FROM enrichments e
+JOIN listings l ON l.id = e.listing_id
+WHERE l.is_active = false
+  AND (e.suumo_images IS NOT NULL AND jsonb_array_length(e.suumo_images) > 0);
+```
+
 ### 6b: 課題検出ルール
 
 以下のルールに従い、該当する課題を `upsert_pipeline_issue()` で登録:
@@ -283,6 +333,9 @@ WHERE user_id = 'default';
 | `log_files_large` | ローカルの `.claude/routines/logs/` 内ファイルが 100KB 超 | low | auto_fixable | maintenance |
 | `fuzzy_dedup_missed` | Step 3.5 で表記揺れ重複を検出 | high | auto_fixable | data_quality |
 | `promotional_name` | Step 3.5 で name にプロモーション文言残存 | medium | auto_fixable | data_quality |
+| `homes_images_backlog_large` | Step 1 の homes 画像取得率が 30% 未満 | high | auto_fixable | data_quality |
+| `homes_waf_continuous_failure` | ルーティン① Step 5 で WAF 連続ブロック | high | manual | pipeline |
+| `image_urls_stale` | 非アクティブ物件の画像URLが enrichments に残存（50件以上） | low | auto_fixable | maintenance |
 
 各 issue の `description` には現在値・傾向・推定解消時期を含める。
 `suggested_fix` には Claude Code で実行可能な修正指示を含める。
@@ -397,6 +450,10 @@ SELECT skip_notification_draft('slack', 'pipeline_health_report');
 | extracted_features | XX.XX% | 30% | ✅/⚠️ |
 | image_categories | XX.XX% | 30% | ✅/⚠️ |
 | ss_lookup_status | XX.XX% | 30% | ✅/⚠️ |
+| suumo_images | XX.XX% | 60% | ✅/⚠️ |
+| floor_plan_images | XX.XX% | 50% | ✅/⚠️ |
+
+**homes 画像取得率**: XX.XX%（XX/XX件） ✅/⚠️
 
 ### Step 2: パイプライン鮮度
 - new_listings_24h: X件 ✅/⚠️

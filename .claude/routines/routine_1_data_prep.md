@@ -359,6 +359,95 @@ SELECT * FROM batch_update_commute_from_master(100);
 
 ---
 
+## Step 5: HOME'S 画像取得（デイリー増分）
+
+HOME'S 物件で suumo_images が未登録のものを対象に、詳細ページから画像を取得する。
+1日あたり最大10件を処理（WAF レート制限を考慮）。
+
+### 5a: 対象物件の取得
+
+```sql
+SELECT l.id, ls.url, l.name
+FROM listings l
+JOIN listing_sources ls ON l.id = ls.listing_id AND ls.is_active AND ls.source = 'homes'
+LEFT JOIN enrichments e ON e.listing_id = l.id
+WHERE l.is_active = true
+  AND (e.suumo_images IS NULL OR jsonb_array_length(e.suumo_images) = 0)
+ORDER BY l.created_at DESC
+LIMIT 10;
+```
+
+結果が0件なら「HOME'S 画像: 対象なし」と報告してスキップ。
+
+### 5b: 環境準備 + 画像取得（Playwright）
+
+`/tmp/homes_parser.py` が存在しない場合のみ生成する。
+Playwright（ヘッドレスブラウザ）を使用して WAF を回避する。
+
+```bash
+pip install playwright beautifulsoup4 lxml 2>/dev/null || pip3 install playwright beautifulsoup4 lxml 2>/dev/null
+python3 -m playwright install chromium 2>/dev/null || true
+```
+
+スクリプトはバックフィル用ルーティン（`routine_backfill_homes_images.md`）の Step 2 と同一。
+`/tmp/homes_parser.py` が既に存在する場合は再生成不要。存在しない場合のみ Step 2 のスクリプト全文を `cat > /tmp/homes_parser.py << 'PARSER_EOF' ... PARSER_EOF` で生成する。
+
+対象物件を JSON にして実行:
+
+```bash
+python3 /tmp/homes_parser.py '__TARGETS_JSON__'
+```
+
+`__TARGETS_JSON__` には Step 5a で取得した `[{"id": ..., "url": ...}, ...]` を埋め込む。
+
+### 5c: DB 書き込み
+
+Python の結果から `status == 'ok'` の物件を enrichments テーブルに upsert:
+
+```sql
+INSERT INTO enrichments (listing_id, suumo_images, floor_plan_images)
+VALUES (<id>, '<suumo_images_json>'::jsonb, '<floor_plan_images_json>'::jsonb)
+ON CONFLICT (listing_id)
+DO UPDATE SET
+  suumo_images = CASE
+    WHEN EXCLUDED.suumo_images IS NOT NULL AND jsonb_array_length(EXCLUDED.suumo_images) > 0
+    THEN EXCLUDED.suumo_images
+    ELSE enrichments.suumo_images
+  END,
+  floor_plan_images = CASE
+    WHEN EXCLUDED.floor_plan_images IS NOT NULL AND jsonb_array_length(EXCLUDED.floor_plan_images) > 0
+    THEN EXCLUDED.floor_plan_images
+    ELSE enrichments.floor_plan_images
+  END;
+```
+
+**注意**: 空配列 `[]` で既存データを上書きしないよう `jsonb_array_length > 0` を条件にしている。
+
+### 5d: WAF 失敗検知 + 結果報告
+
+WAF 失敗件数が対象件数の80%以上の場合、`pipeline_issues` に記録:
+
+```sql
+SELECT upsert_pipeline_issue(
+  'homes_waf_continuous_failure',
+  'high',
+  'pipeline',
+  'HOME''S WAF 連続ブロック',
+  'Step 5 で {waf_count}/{target_count} 件が WAF ブロック。IP レート制限の可能性',
+  '{"waf_count": <waf_count>, "target_count": <target_count>}'::jsonb,
+  '時間を置いて再実行するか、Playwright 経由での取得を検討して',
+  'manual'
+);
+```
+
+結果を報告:
+
+```
+HOME'S 画像: {success}件成功（写真{total_prop}枚, 間取り{total_fp}枚）, WAF失敗{waf}件
+```
+
+---
+
 ## 完了レポート
 
 全ステップ完了後、以下のテンプレートに値を埋めた**マークダウンブロック**をチャットに出力する。
@@ -378,6 +467,7 @@ SELECT * FROM batch_update_commute_from_master(100);
 | Step 2: テキスト特徴抽出 | X件 | ✅/スキップ |
 | Step 3: AIスコアリング | X件（平均XX点） | ✅/スキップ |
 | Step 4: 通勤時間更新 | X件（ヒットY件、parse_failed Z件） | ✅/スキップ |
+| Step 5: HOME'S画像 | X件成功（写真Y枚, 間取りZ枚）, WAF失敗W件 | ✅/スキップ |
 
 ### アラート
 - {アラート内容。なければ「なし」}
