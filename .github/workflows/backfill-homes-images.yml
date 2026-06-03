@@ -1,6 +1,8 @@
 name: Backfill HOME'S Images
 
 on:
+  schedule:
+    - cron: '30 19 * * *'  # 毎日 JST 4:30（UTC 19:30）
   workflow_dispatch:
     inputs:
       limit:
@@ -45,8 +47,8 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          BACKFILL_LIMIT: ${{ inputs.limit }}
-          BACKFILL_DELAY: ${{ inputs.delay }}
+          BACKFILL_LIMIT: ${{ inputs.limit || '20' }}
+          BACKFILL_DELAY: ${{ inputs.delay || '8' }}
         run: |
           python3 << 'PYEOF'
           import json, os, re, sys, time
