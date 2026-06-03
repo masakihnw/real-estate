@@ -10,6 +10,9 @@
 import SwiftUI
 import PhotosUI
 import SwiftData
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "PhotoSection")
 
 struct PhotoSectionView: View {
     let listing: Listing
@@ -146,7 +149,7 @@ struct PhotoSectionView: View {
                 photoStorage.savePhoto(image, for: listing, modelContext: modelContext)
             }
         } catch {
-            print("[PhotoSection] 写真の読み込みに失敗: \(error.localizedDescription)")
+            logger.error("写真の読み込みに失敗: \(error.localizedDescription, privacy: .public)")
         }
     }
 }

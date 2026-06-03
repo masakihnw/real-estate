@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Optional
@@ -33,9 +34,10 @@ FILTER_PRICE_FAIRNESS_MIN = 60
 REANALYZE_ASSET_RANKS = {"S", "A"}
 
 _BUYER_PROFILE_PATH = Path(__file__).resolve().parent / "config" / "buyer_profile.json"
+_DEFAULT_USER_ID = os.environ.get("BUYER_PROFILE_USER_ID", "POc6v7aGyGcVeRSWXZR3xy15bKs1")
 
 
-def _load_buyer_profile_from_supabase(user_id: str = "default") -> Optional[dict]:
+def _load_buyer_profile_from_supabase(user_id: str = _DEFAULT_USER_ID) -> Optional[dict]:
     try:
         import supabase_client
         client = supabase_client.get_client()
@@ -50,7 +52,7 @@ def _load_buyer_profile_from_supabase(user_id: str = "default") -> Optional[dict
     return None
 
 
-def _load_buyer_profile(user_id: str = "default") -> dict:
+def _load_buyer_profile(user_id: str = _DEFAULT_USER_ID) -> dict:
     profile = _load_buyer_profile_from_supabase(user_id)
     if profile is not None:
         return profile

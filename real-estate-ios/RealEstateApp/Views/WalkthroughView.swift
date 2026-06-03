@@ -423,6 +423,5 @@ struct WalkthroughView: View {
 
 #Preview("Walkthrough") {
     WalkthroughView {
-        print("Dismissed")
     }
 }

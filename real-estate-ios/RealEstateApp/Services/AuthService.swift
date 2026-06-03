@@ -13,6 +13,9 @@ import Foundation
 import FirebaseAuth
 import FirebaseCore
 import GoogleSignIn
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "Auth")
 
 @Observable
 final class AuthService {
@@ -132,7 +135,7 @@ final class AuthService {
         } catch {
             let errDesc = error.localizedDescription
             Task { @MainActor in lastError = errDesc }
-            print("[Auth] サインアウト失敗: \(errDesc)")
+            logger.error("サインアウト失敗: \(errDesc, privacy: .public)")
         }
     }
 

@@ -193,10 +193,103 @@ def parse_homes_floor_plan_images(html: str, base_url: str = "https://www.homes.
     return urls
 
 
+_HOMES_IMAGE_DOMAIN_RE = re.compile(r"^https?://image\d?\.homes\.jp/")
+_HOMES_SIZE_PARAMS = re.compile(r"[&?](width|height|modify_date)=[^&]*")
+_HOMES_TRAILING_AMP = re.compile(r"[&?]$")
+
+_HOMES_PROPERTY_PATH_PATTERNS = (
+    "/sale/image/",
+    "%2Fsale%2Fimage%2F",
+    "/premium/image/",
+    # 中古物件: img.homes.jp/{company}/sale/{listing}/ (URL-encoded)
+    "%2Fsale%2F",
+)
+
+_HOMES_JUNK_LABELS = frozenset({"HOME'S", "LIFULL HOME'S", "ホームズ", ""})
+
+
+def _normalize_homes_image_url(raw_url: str) -> Optional[str]:
+    """HOME'S 画像 URL からサイズパラメータを除去して正規化する。
+
+    homes.jp ドメインの画像でなければ None を返す。
+    """
+    if not raw_url or raw_url.startswith("data:"):
+        return None
+    if not _HOMES_IMAGE_DOMAIN_RE.search(raw_url):
+        return None
+    normalized = _HOMES_SIZE_PARAMS.sub("", raw_url)
+    normalized = _HOMES_TRAILING_AMP.sub("", normalized)
+    return normalized
+
+
+def parse_homes_property_images(
+    html: str, base_url: str = "https://www.homes.co.jp"
+) -> list[dict[str, str]]:
+    """HOME'S 詳細ページから物件写真（間取り図を除く）を抽出する。
+
+    Returns:
+        [{"url": "...", "label": "..."}, ...] — 間取り図は含まない。
+    """
+    soup = BeautifulSoup(html, "lxml")
+    images: list[dict[str, str]] = []
+    seen_normalized: set[str] = set()
+
+    # 関連物件カルーセル（splide）内の img を除外対象とする
+    related_imgs: set[int] = set()
+    for carousel in soup.find_all(class_=re.compile(r"splide")):
+        for img in carousel.find_all("img"):
+            related_imgs.add(id(img))
+
+    for img in soup.find_all("img"):
+        if id(img) in related_imgs:
+            continue
+
+        raw_url = (img.get("data-src") or img.get("src") or "").strip()
+        alt = (img.get("alt") or "").strip()
+
+        normalized = _normalize_homes_image_url(raw_url)
+        if normalized is None:
+            continue
+
+        if "間取" in alt or "_madori" in raw_url:
+            continue
+
+        if normalized in seen_normalized:
+            continue
+
+        if not any(pat in raw_url for pat in _HOMES_PROPERTY_PATH_PATTERNS):
+            continue
+
+        seen_normalized.add(normalized)
+
+        label = alt
+        if not label or label in _HOMES_JUNK_LABELS:
+            label = "外観"
+
+        images.append({"url": raw_url, "label": label})
+
+    return images
+
+
+def _needs_image_enrichment(listing: dict) -> bool:
+    """HOME'S 物件が画像エンリッチメントの対象かどうかを判定する。"""
+    if not isinstance(listing, dict):
+        return False
+    if listing.get("source") != "homes":
+        return False
+    if not listing.get("url"):
+        return False
+    has_fp = bool(listing.get("floor_plan_images"))
+    has_prop = bool(listing.get("suumo_images"))
+    return not has_fp or not has_prop
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="HOME'S 間取り図画像 enricher")
+    parser = argparse.ArgumentParser(description="HOME'S 画像 enricher（間取り図+物件写真）")
     parser.add_argument("--input", required=True, help="入力 JSON ファイル")
     parser.add_argument("--output", required=True, help="出力 JSON ファイル")
+    parser.add_argument("--limit", type=int, default=0,
+                        help="処理上限件数（0=無制限）。CI 環境での timeout 防止用")
     args = parser.parse_args()
 
     input_path = Path(args.input)
@@ -213,60 +306,74 @@ def main() -> None:
         logger.info("JSON は配列である必要があります")
         sys.exit(1)
 
-    # HOME'S の物件で floor_plan_images が未取得のものを対象にする
     homes_listings = [
         (i, r) for i, r in enumerate(listings)
-        if isinstance(r, dict)
-        and r.get("source") == "homes"
-        and r.get("url")
-        and not r.get("floor_plan_images")
+        if _needs_image_enrichment(r)
     ]
 
+    if args.limit and args.limit > 0:
+        homes_listings = homes_listings[:args.limit]
+
     if not homes_listings:
-        logger.info("HOME'S で間取り図未取得の物件はありません")
+        logger.info("HOME'S で画像未取得の物件はありません")
         sys.exit(0)
 
-    logger.info(f"HOME'S 間取り図取得: {len(homes_listings)}件の詳細ページを取得します")
+    logger.info(f"HOME'S 画像取得: {len(homes_listings)}件の詳細ページを処理します")
 
     manifest = _load_manifest()
     session = create_session()
-    enriched = 0
+    enriched_fp = 0
+    enriched_prop = 0
     fetched = 0
+    consecutive_waf = 0
 
     for idx, (list_idx, listing) in enumerate(homes_listings):
+        if consecutive_waf >= 3:
+            logger.warning("WAF 連続3回検出: 残りの処理を中断します")
+            break
+
         url = listing["url"]
         html = _read_cached_html(url, manifest)
 
-        if html is None:
+        if html is not None:
+            consecutive_waf = 0
+        else:
             try:
                 html = fetch_homes_detail(session, url)
                 _write_html_cache(url, html, manifest)
                 fetched += 1
+                consecutive_waf = 0
             except Exception as e:
                 logger.error(f"  取得失敗 {url[:60]}...: {e}")
+                consecutive_waf += 1
                 continue
 
-        images = parse_homes_floor_plan_images(html)
-        if images:
-            listings[list_idx]["floor_plan_images"] = images
-            enriched += 1
-            logger.debug(f"  ✓ {listing.get('name', '?')}: {len(images)}枚")
+        if not listing.get("floor_plan_images"):
+            fp_images = parse_homes_floor_plan_images(html)
+            if fp_images:
+                listings[list_idx]["floor_plan_images"] = fp_images
+                enriched_fp += 1
 
-        # 進捗表示
+        if not listing.get("suumo_images"):
+            prop_images = parse_homes_property_images(html)
+            if prop_images:
+                listings[list_idx]["suumo_images"] = prop_images
+                enriched_prop += 1
+
         if (idx + 1) % 20 == 0:
             logger.info(f"  ...{idx + 1}/{len(homes_listings)}件処理済")
 
-    # 原子的書き込み
     tmp_path = output_path.with_suffix(".json.tmp")
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(output_path)
 
     from enrichment_writer import write_enrichments
-    write_enrichments(listings, ["floor_plan_images"], "floor_plan")
+    write_enrichments(listings, ["floor_plan_images", "suumo_images"], "homes_images")
 
     print(
-        f"HOME'S 間取り図: {enriched}件に付与（HTML新規取得{fetched}件）",
+        f"HOME'S 画像: 間取り図 {enriched_fp}件, 物件写真 {enriched_prop}件"
+        f"（HTML新規取得 {fetched}件）",
         file=sys.stderr,
     )
 

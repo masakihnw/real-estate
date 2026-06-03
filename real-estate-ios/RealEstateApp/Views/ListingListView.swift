@@ -36,16 +36,21 @@ struct ListingListView: View {
     @State private var showComparison = false
     @State private var isCompareMode = false
     @State private var searchText = ""
-    /// フィルタ＋ソート結果のキャッシュ（body 再評価時の重計算を避ける）
-    @State private var cachedFiltered: [Listing] = []
-    @State private var cachedGrouped: [ListingGroup] = []
-    @State private var cachedAvailableLayouts: [String] = []
-    @State private var cachedAvailableWards: Set<String> = []
-    @State private var cachedAvailableRouteStations: [RouteStations] = []
-    @State private var cachedAvailableDirections: [String] = []
-    @State private var cachedAvailableNumericFields: [ListingNumericField] = []
+    /// フィルタ＋ソート結果のキャッシュ（body 再評価時の重計算を避ける。1回のState更新でUI反映を最小化）
+    private struct FilterCache {
+        var filtered: [Listing] = []
+        var grouped: [ListingGroup] = []
+        var availableLayouts: [String] = []
+        var availableWards: Set<String> = []
+        var availableRouteStations: [RouteStations] = []
+        var availableDirections: [String] = []
+        var availableNumericFields: [ListingNumericField] = []
+    }
+    @State private var filterCache = FilterCache()
     /// フィルタ再計算タスク（連続変更時のキャンセル用）
     @State private var filterTask: Task<Void, Never>?
+    /// Preference 変更の debounce タスク（nopedKeys/likedKeys の連鎖発火を統合）
+    @State private var preferenceDebounceTask: Task<Void, Never>?
     /// 初回ロード完了フラグ（スケルトン表示の切り替え用）
     @State private var isInitialLoadComplete = false
     /// Phase 5: お気に入りタブの一括いいね解除用
@@ -407,8 +412,20 @@ struct ListingListView: View {
         }
     }
 
+    /// Preference 変更時の debounce（nopedKeys/likedKeys の連鎖発火を50msで統合）
+    private func schedulePreferenceRecompute() {
+        preferenceDebounceTask?.cancel()
+        preferenceDebounceTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(50))
+            guard !Task.isCancelled else { return }
+            if delistFilter == .noped || delistFilter == .liked { loadPrefListings() }
+            recomputeFiltered(animated: true)
+        }
+    }
+
     /// キャッシュを非同期再計算（onChange / onAppear から呼ぶ）。
     /// 連続する変更（検索入力など）では前回のタスクをキャンセルして最新のみ実行。
+    /// FilterCache を1回の代入で更新し、SwiftUI の body 再評価を最小化する。
     private func recomputeFiltered(animated: Bool = false) {
         filterTask?.cancel()
         filterTask = Task { @MainActor in
@@ -417,30 +434,26 @@ struct ListingListView: View {
             guard !Task.isCancelled else { return }
             let grouped = Self.computeGrouped(from: result)
             guard !Task.isCancelled else { return }
-            // MainActor を一瞬解放してUIの応答性を維持
             await Task.yield()
             guard !Task.isCancelled else { return }
             let currentBase = baseList
-            let layouts = ListingFilter.availableLayouts(from: currentBase)
-            let wards = ListingFilter.availableWards(from: currentBase)
-            let routes = ListingFilter.availableRouteStations(from: currentBase)
-            let directions = ListingFilter.availableDirections(from: currentBase)
-            let numericFields = ListingFilter.availableNumericFields(from: currentBase)
+            let newCache = FilterCache(
+                filtered: result,
+                grouped: grouped,
+                availableLayouts: ListingFilter.availableLayouts(from: currentBase),
+                availableWards: ListingFilter.availableWards(from: currentBase),
+                availableRouteStations: ListingFilter.availableRouteStations(from: currentBase),
+                availableDirections: ListingFilter.availableDirections(from: currentBase),
+                availableNumericFields: ListingFilter.availableNumericFields(from: currentBase)
+            )
             guard !Task.isCancelled else { return }
             if animated {
                 withAnimation(.easeInOut(duration: 0.3)) {
-                    cachedFiltered = result
-                    cachedGrouped = grouped
+                    filterCache = newCache
                 }
             } else {
-                cachedFiltered = result
-                cachedGrouped = grouped
+                filterCache = newCache
             }
-            cachedAvailableLayouts = layouts
-            cachedAvailableWards = wards
-            cachedAvailableRouteStations = routes
-            cachedAvailableDirections = directions
-            cachedAvailableNumericFields = numericFields
         }
     }
 
@@ -462,11 +475,11 @@ struct ListingListView: View {
 
     /// 表示用フィルタ＋ソート結果（キャッシュ。検索・ソート・フィルタ変更時のみ再計算）
     private var filteredAndSorted: [Listing] {
-        cachedFiltered
+        filterCache.filtered
     }
 
     private var groupedListings: [ListingGroup] {
-        cachedGrouped
+        filterCache.grouped
     }
 
     private var isSearchActive: Bool {
@@ -501,11 +514,11 @@ struct ListingListView: View {
         return ([header] + rows).joined(separator: "\n")
     }
 
-    private var availableLayouts: [String] { cachedAvailableLayouts }
-    private var availableWards: Set<String> { cachedAvailableWards }
-    private var availableRouteStations: [RouteStations] { cachedAvailableRouteStations }
-    private var availableDirections: [String] { cachedAvailableDirections }
-    private var availableNumericFields: [ListingNumericField] { cachedAvailableNumericFields }
+    private var availableLayouts: [String] { filterCache.availableLayouts }
+    private var availableWards: Set<String> { filterCache.availableWards }
+    private var availableRouteStations: [RouteStations] { filterCache.availableRouteStations }
+    private var availableDirections: [String] { filterCache.availableDirections }
+    private var availableNumericFields: [ListingNumericField] { filterCache.availableNumericFields }
 
     var body: some View {
         NavigationStack {
@@ -517,8 +530,8 @@ struct ListingListView: View {
     private var mainContent: some View {
         mainZStack
             .fullScreenCover(item: $selectedListing) { listing in
-                let index = cachedFiltered.firstIndex(where: { $0.url == listing.url }) ?? 0
-                ListingDetailPagerView(listings: cachedFiltered, initialIndex: index)
+                let index = filterCache.filtered.firstIndex(where: { $0.url == listing.url }) ?? 0
+                ListingDetailPagerView(listings: filterCache.filtered, initialIndex: index)
             }
             .sheet(isPresented: $showComparison, onDismiss: {
                 isCompareMode = false
@@ -558,12 +571,10 @@ struct ListingListView: View {
                 recomputeFiltered()
             }
             .onChange(of: BuildingPreferenceStore.shared.nopedKeys.count) { _, _ in
-                if delistFilter == .noped { loadPrefListings() }
-                recomputeFiltered(animated: true)
+                schedulePreferenceRecompute()
             }
             .onChange(of: BuildingPreferenceStore.shared.likedKeys.count) { _, _ in
-                if delistFilter == .liked { loadPrefListings() }
-                recomputeFiltered()
+                schedulePreferenceRecompute()
             }
     }
 
@@ -571,7 +582,7 @@ struct ListingListView: View {
     private var mainZStack: some View {
         ZStack(alignment: .bottomTrailing) {
             Group {
-                if cachedFiltered.isEmpty && !isInitialLoadComplete {
+                if filterCache.filtered.isEmpty && !isInitialLoadComplete {
                     SkeletonLoadingView()
                 } else if favoritesOnly && delistFilter != .all && (baseList.isEmpty || filteredAndSorted.isEmpty) {
                     VStack(spacing: 0) {
@@ -598,7 +609,7 @@ struct ListingListView: View {
             .alert("いいね解除", isPresented: $showBulkUnlikeConfirm) {
                 Button("解除", role: .destructive) {
                     for url in selectedForDeletion {
-                        if let listing = cachedFiltered.first(where: { $0.url == url }) {
+                        if let listing = filterCache.filtered.first(where: { $0.url == url }) {
                             listing.isLiked = false
                             AnnotationRouter.pushLikeState(for: listing)
                         }
@@ -930,7 +941,7 @@ struct ListingListView: View {
                 }
             }
             if favoritesOnly && editMode == .active {
-                ForEach(cachedFiltered, id: \.url) { listing in
+                ForEach(filterCache.filtered, id: \.url) { listing in
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(listing.name)

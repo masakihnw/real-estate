@@ -12,6 +12,9 @@ import SwiftUI
 import SwiftData
 import MapKit
 import CoreLocation
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "MapTab")
 
 // MARK: - Hazard Layer Definitions
 
@@ -327,7 +330,7 @@ final class TokyoRiskService {
             }
             cache[layer.id] = polygons
         } catch {
-            print("[TokyoRisk] Fetch failed for \(layer.filename): \(error)")
+            logger.error("Fetch failed for \(layer.filename, privacy: .public): \(error.localizedDescription, privacy: .public)")
         }
     }
 

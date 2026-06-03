@@ -10,6 +10,9 @@ import Foundation
 import MapKit
 import SwiftData
 import UIKit
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "CommuteTime")
 
 private actor CommuteETACache {
     static let shared = CommuteETACache()
@@ -174,7 +177,7 @@ final class CommuteTimeService {
         do {
             listings = try modelContext.fetch(descriptor)
         } catch {
-            print("[CommuteTimeService] 物件一覧の取得に失敗: \(error.localizedDescription)")
+            logger.error("物件一覧の取得に失敗: \(error.localizedDescription, privacy: .public)")
             onError?("通勤時間の取得に失敗: \(error.localizedDescription)")
             return
         }
@@ -204,7 +207,7 @@ final class CommuteTimeService {
         }
         if forceAll { needsRecalculation = false }
 
-        print("[CommuteTimeService] 計算対象: \(targets.count)件 / 全\(listings.count)件")
+        logger.info("計算対象: \(targets.count, privacy: .public)件 / 全\(listings.count, privacy: .public)件")
 
         // ループ処理をバックグラウンドへ（MKDirections はスレッドセーフ）
         let targetsData: [(listing: Listing, lat: Double, lon: Double, existingJSON: String?)] = targets.compactMap { listing in
@@ -248,7 +251,7 @@ final class CommuteTimeService {
                 }
             }.value
         } catch {
-            print("[CommuteTimeService] 通勤時間計算に失敗: \(error.localizedDescription)")
+            logger.error("通勤時間計算に失敗: \(error.localizedDescription, privacy: .public)")
             onError?("通勤時間の計算に失敗: \(error.localizedDescription)")
         }
 
@@ -304,7 +307,7 @@ final class CommuteTimeService {
     ) async -> CommuteDestination? {
         #if targetEnvironment(simulator)
         // シミュレータでは MKDirections Transit が利用不可のためフォールバック概算を使用
-        print("[CommuteTimeService] ⚠️ シミュレータでは MKDirections Transit は利用不可。フォールバック概算を使用 → \(destinationName)")
+        logger.warning("シミュレータでは MKDirections Transit は利用不可。フォールバック概算を使用 → \(destinationName, privacy: .public)")
         return await Self.calculateFallbackRoute(from: origin, to: destination, destinationName: destinationName)
         #else
         // 1st attempt: departureDate 指定（次の平日朝 8:00 出発）
@@ -338,7 +341,7 @@ final class CommuteTimeService {
         }
 
         // 全て失敗した場合のみフォールバック
-        print("[CommuteTimeService] 全リトライ失敗（3回）、フォールバック概算 → \(destinationName)")
+        logger.warning("全リトライ失敗（3回）、フォールバック概算 → \(destinationName, privacy: .public)")
         return await Self.calculateFallbackRoute(from: origin, to: destination, destinationName: destinationName)
         #endif
     }
@@ -369,7 +372,7 @@ final class CommuteTimeService {
         do {
             let response = try await directions.calculate()
             guard let route = response.routes.first else {
-                print("[CommuteTimeService] 経路なし（routes empty） → \(destinationName)")
+                logger.warning("経路なし（routes empty） → \(destinationName, privacy: .public)")
                 return nil
             }
 
@@ -393,7 +396,7 @@ final class CommuteTimeService {
                 dateDesc = "no date"
             }
             let errorCode = (error as? MKError).map { String($0.errorCode) } ?? "unknown"
-            print("[CommuteTimeService] 経路計算失敗 (\(dateDesc)) → \(destinationName): code=\(errorCode) \(error.localizedDescription)")
+            logger.error("経路計算失敗 (\(dateDesc, privacy: .public)) → \(destinationName, privacy: .public): code=\(errorCode, privacy: .public) \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }
@@ -451,7 +454,7 @@ final class CommuteTimeService {
             return result
         } catch {
             let errorCode = (error as? MKError).map { String($0.errorCode) } ?? "unknown"
-            print("[CommuteTimeService] ETA 計算失敗 → \(destinationName): code=\(errorCode) \(error.localizedDescription)")
+            logger.error("ETA 計算失敗 → \(destinationName, privacy: .public): code=\(errorCode, privacy: .public) \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }

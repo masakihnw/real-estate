@@ -106,7 +106,7 @@ final class TransactionStore {
         }
 
         try modelContext.save()
-        print("[TransactionStore] insert=\(insertCount) update=\(updateCount) delete=\(deleteCount)")
+        logger.info("insert=\(insertCount, privacy: .public) update=\(updateCount, privacy: .public) delete=\(deleteCount, privacy: .public)")
         return insertCount + updateCount
     }
 

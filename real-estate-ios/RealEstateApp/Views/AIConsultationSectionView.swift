@@ -236,18 +236,7 @@ struct AIConsultationSectionView: View {
 
     private func loadFloorPlanImage() async {
         guard let url = listing.parsedFloorPlanImages.first else { return }
-        let cacheKey = url.absoluteString
-        if let cached = TrimmedImageCache.shared.image(for: cacheKey) {
-            floorPlanImage = cached
-            return
-        }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            guard let original = UIImage(data: data) else { return }
-            let trimmed = original.trimmingWhitespaceBorder()
-            TrimmedImageCache.shared.set(trimmed, for: cacheKey)
-            floorPlanImage = trimmed
-        } catch {}
+        floorPlanImage = await ImagePipeline.shared.loadTrimmed(from: url)
     }
 
     // MARK: - Markdown コピーボタン

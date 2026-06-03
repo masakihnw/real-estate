@@ -11,6 +11,9 @@ import Foundation
 import UIKit
 import SwiftData
 import CryptoKit
+import OSLog
+
+private let logger = Logger(subsystem: "com.realestate", category: "PhotoStorage")
 
 @Observable
 final class PhotoStorageService {
@@ -38,7 +41,7 @@ final class PhotoStorageService {
         do {
             try fileManager.createDirectory(at: photosRootURL, withIntermediateDirectories: true)
         } catch {
-            print("[PhotoStorage] ルートディレクトリの作成に失敗: \(error.localizedDescription)")
+            logger.error("ルートディレクトリの作成に失敗: \(error.localizedDescription, privacy: .public)")
         }
     }
 
@@ -66,7 +69,7 @@ final class PhotoStorageService {
         do {
             try fileManager.createDirectory(at: dir, withIntermediateDirectories: true)
         } catch {
-            print("[PhotoStorage] 物件ディレクトリの作成に失敗: \(error.localizedDescription)")
+            logger.error("物件ディレクトリの作成に失敗: \(error.localizedDescription, privacy: .public)")
             return
         }
 
@@ -79,7 +82,7 @@ final class PhotoStorageService {
         do {
             try data.write(to: fileURL, options: .atomic)
         } catch {
-            print("[PhotoStorage] 写真の保存に失敗: \(error.localizedDescription)")
+            logger.error("写真の保存に失敗: \(error.localizedDescription, privacy: .public)")
             return
         }
 
@@ -108,7 +111,7 @@ final class PhotoStorageService {
         do {
             try fileManager.createDirectory(at: dir, withIntermediateDirectories: true)
         } catch {
-            print("[PhotoStorage] 物件ディレクトリの作成に失敗: \(error.localizedDescription)")
+            logger.error("物件ディレクトリの作成に失敗: \(error.localizedDescription, privacy: .public)")
             return
         }
 
@@ -116,7 +119,7 @@ final class PhotoStorageService {
         do {
             try data.write(to: fileURL, options: .atomic)
         } catch {
-            print("[PhotoStorage] クラウド写真のローカル保存に失敗: \(error.localizedDescription)")
+            logger.error("クラウド写真のローカル保存に失敗: \(error.localizedDescription, privacy: .public)")
         }
     }
 
@@ -126,7 +129,7 @@ final class PhotoStorageService {
         do {
             try fileManager.removeItem(at: fileURL)
         } catch {
-            print("[PhotoStorage] ファイル削除失敗: \(error.localizedDescription)")
+            logger.error("ファイル削除失敗: \(error.localizedDescription, privacy: .public)")
         }
         evictCache(for: meta)
     }
@@ -172,7 +175,7 @@ final class PhotoStorageService {
         do {
             try fileManager.removeItem(at: fileURL)
         } catch {
-            print("[PhotoStorage] ファイル削除失敗（メタデータは更新します）: \(error.localizedDescription)")
+            logger.error("ファイル削除失敗（メタデータは更新します）: \(error.localizedDescription, privacy: .public)")
         }
         evictCache(for: meta)
 
@@ -192,7 +195,7 @@ final class PhotoStorageService {
         do {
             try fileManager.removeItem(at: dir)
         } catch {
-            print("[PhotoStorage] ディレクトリ削除失敗: \(error.localizedDescription)")
+            logger.error("ディレクトリ削除失敗: \(error.localizedDescription, privacy: .public)")
         }
 
         listing.photosJSON = nil
