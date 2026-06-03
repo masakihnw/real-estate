@@ -75139,5 +75139,1697 @@
         "label": "幼稚園・保育園"
       }
     ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_79136739/": {
+    "total_units": 352,
+    "floor_position": 8,
+    "floor_total": 33,
+    "floor_structure": "RC33階地下2階建",
+    "ownership": "所有権",
+    "management_fee": 23365,
+    "repair_reserve_fund": 20760,
+    "balcony_area_m2": 10.69,
+    "parking": "空無",
+    "zoning": "１種住居",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "スーパー 徒歩10分以内",
+      "内装リフォーム",
+      "システムキッチン",
+      "浴室乾燥機",
+      "陽当り良好",
+      "全居室収納",
+      "ミストサウナ",
+      "対面式キッチン",
+      "２４時間ゴミ出し可",
+      "オートバス",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "通風良好",
+      "全居室フローリング",
+      "眺望良好",
+      "天井高２．５ｍ以上",
+      "ペット相談",
+      "小学校 徒歩10分以内",
+      "平坦地",
+      "２４時間有人管理",
+      "床暖房",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "食器洗乾燥機",
+      "バイク置場",
+      "整備された歩道",
+      "ディスポーザー（生ごみ粉砕処理器）",
+      "浄水器"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0016.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0017.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0018.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0027.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0021.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0024.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0030.jpg&w=1200&h=900",
+        "label": "玄関"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0026.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0028.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0035.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0031.jpg&w=1200&h=900",
+        "label": "バルコニー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0029.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0032.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0019.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0022.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0025.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0034.jpg&w=1200&h=900",
+        "label": "玄関"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0033.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0020.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F739%2F79136739%2F79136739_0023.jpg&w=1200&h=900",
+        "label": "キッチン"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20965627/": {
+    "total_units": 624,
+    "floor_position": 20,
+    "floor_total": 50,
+    "floor_structure": "RC50階地下2階建",
+    "ownership": "所有権",
+    "management_fee": 13490,
+    "repair_reserve_fund": 24730,
+    "balcony_area_m2": 11.38,
+    "parking": "敷地内（2万7000円～2万9000円／月）",
+    "delivery_date": "即引渡可",
+    "feature_tags": [
+      "即引渡可",
+      "２沿線以上利用可",
+      "リバーサイド",
+      "スーパー 徒歩10分以内",
+      "市街地が近い",
+      "内装リフォーム",
+      "南向き",
+      "システムキッチン",
+      "浴室乾燥機",
+      "陽当り良好",
+      "共有施設充実",
+      "全居室収納",
+      "ＬＤＫ１５畳以上",
+      "高層階",
+      "ゲストルーム",
+      "シャワー付洗面化粧台",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "ワイドバルコニー",
+      "自走式駐車場",
+      "浴室１坪以上",
+      "２面以上バルコニー",
+      "フローリング張替",
+      "平面駐車場",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "リノベーション",
+      "都市近郊",
+      "前面棟無",
+      "通風良好",
+      "全居室フローリング",
+      "眺望良好",
+      "天井高２．５ｍ以上",
+      "全居室６畳以上",
+      "ＩＨクッキングヒーター",
+      "ペット相談",
+      "小学校 徒歩10分以内",
+      "平坦地",
+      "２４時間有人管理",
+      "床暖房",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "可動間仕切り",
+      "キッズルーム・託児所",
+      "納戸",
+      "食器洗乾燥機",
+      "バイク置場",
+      "整備された歩道",
+      "オール電化",
+      "浄水器"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0074.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0055.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0081.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0076.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0009.jpg&w=1200&h=900",
+        "label": "玄関"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0051.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0026.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0053.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0035.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0030.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0024.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0018.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0014.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0021.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0016.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0056.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0050.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0049.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0072.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F627%2F20965627%2F20965627_0066.jpg&w=1200&h=900",
+        "label": "エントランス"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20522946/": {
+    "total_units": 624,
+    "floor_position": 34,
+    "floor_total": 50,
+    "floor_structure": "SRC50階地下2階建一部RC",
+    "ownership": "所有権",
+    "management_fee": 13490,
+    "repair_reserve_fund": 24730,
+    "balcony_area_m2": 11.38,
+    "parking": "空無",
+    "zoning": "１種住居",
+    "delivery_date": "即引渡可",
+    "feature_tags": [
+      "適合リノベーション",
+      "２沿線以上利用可",
+      "内装リフォーム",
+      "システムキッチン",
+      "角住戸",
+      "高層階",
+      "セキュリティ充実",
+      "東南向き",
+      "南面バルコニー",
+      "ＴＶモニタ付インターホン",
+      "眺望良好",
+      "ウォークインクローゼット",
+      "ペット相談",
+      "２４時間有人管理",
+      "エレベーター",
+      "宅配ボックス",
+      "納戸",
+      "オール電化"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0014.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0030.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0016.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0015.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0017.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0026.jpg&w=1200&h=900",
+        "label": "玄関"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0020.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0019.jpg&w=1200&h=900",
+        "label": "収納"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0021.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0027.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0029.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0023.jpg&w=1200&h=900",
+        "label": "バルコニー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0024.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0022.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0031.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0018.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0025.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F946%2F20522946%2F20522946_0028.jpg&w=1200&h=900",
+        "label": "その他"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20701805/": {
+    "total_units": 53,
+    "floor_position": 2,
+    "floor_total": 13,
+    "floor_structure": "RC13階建",
+    "ownership": "所有権",
+    "management_fee": 17000,
+    "repair_reserve_fund": 20090,
+    "balcony_area_m2": 31.8,
+    "zoning": "１種住居、商業",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "ＬＤＫ１８畳以上",
+      "スーパー 徒歩10分以内",
+      "市街地が近い",
+      "システムキッチン",
+      "陽当り良好",
+      "総合病院 徒歩10分以内",
+      "対面式キッチン",
+      "東南向き",
+      "眺望良好",
+      "ペット相談",
+      "小学校 徒歩10分以内",
+      "床暖房",
+      "テラス",
+      "宅配ボックス"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0004.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0002.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0003.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0005.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0007.jpg&w=1200&h=900",
+        "label": "駐車場"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0010.jpg&w=1200&h=900",
+        "label": "小学校"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0008.jpg&w=1200&h=900",
+        "label": "その他現地"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0006.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0011.jpg&w=1200&h=900",
+        "label": "中学校"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0009.jpg&w=1200&h=900",
+        "label": "その他現地"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0012.jpg&w=1200&h=900",
+        "label": "ショッピングセンター"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0013.jpg&w=1200&h=900",
+        "label": "病院"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0014.jpg&w=1200&h=900",
+        "label": "公園"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0015.jpg&w=1200&h=900",
+        "label": "幼稚園・保育園"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0016.jpg&w=1200&h=900",
+        "label": "その他環境写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0017.jpg&w=1200&h=900",
+        "label": "ショッピングセンター"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F805%2F20701805%2F20701805_0018.jpg&w=1200&h=900",
+        "label": "図書館"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20969445/": {
+    "total_units": 151,
+    "floor_position": 19,
+    "floor_total": 23,
+    "floor_structure": "RC23階地下1階建",
+    "ownership": "所有権",
+    "management_fee": 14700,
+    "repair_reserve_fund": 16800,
+    "balcony_area_m2": 3.52,
+    "zoning": "商業、準工業",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "システムキッチン",
+      "角住戸",
+      "陽当り良好",
+      "全居室収納",
+      "高層階",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "東南向き",
+      "ＴＶモニタ付インターホン",
+      "眺望良好",
+      "パントリー（食器・食品の収納庫）",
+      "ウォークインクローゼット",
+      "ペット相談",
+      "２４時間有人管理",
+      "エレベーター",
+      "宅配ボックス",
+      "整備された歩道"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F445%2F20969445%2F20969445_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F445%2F20969445%2F20969445_0002.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F445%2F20969445%2F20969445_0003.jpg&w=1200&h=900",
+        "label": "ロビー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F445%2F20969445%2F20969445_0006.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F445%2F20969445%2F20969445_0004.jpg&w=1200&h=900",
+        "label": "その他現地"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F445%2F20969445%2F20969445_0007.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F445%2F20969445%2F20969445_0005.jpg&w=1200&h=900",
+        "label": "その他現地"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20520510/": {
+    "total_units": 192,
+    "floor_position": 7,
+    "floor_total": 25,
+    "floor_structure": "SRC25階地下1階建",
+    "ownership": "所有権",
+    "management_fee": 17479,
+    "repair_reserve_fund": 26109,
+    "balcony_area_m2": 9.1,
+    "parking": "敷地内（2万8000円～3万4000円／月）",
+    "zoning": "１種中高",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "ＬＤＫ１８畳以上",
+      "内装リフォーム",
+      "南向き",
+      "システムキッチン",
+      "浴室乾燥機",
+      "陽当り良好",
+      "全居室収納",
+      "駅まで平坦",
+      "ゲストルーム",
+      "シャワー付洗面化粧台",
+      "ワイドバルコニー",
+      "南面バルコニー",
+      "フローリング張替",
+      "全室南向き",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "リノベーション",
+      "緑豊かな住宅地",
+      "通風良好",
+      "全居室フローリング",
+      "ＩＨクッキングヒーター",
+      "全居室複層ガラスか複層サッシ",
+      "平坦地",
+      "エレベーター",
+      "駐輪場",
+      "食器洗乾燥機",
+      "バイク置場",
+      "オール電化",
+      "浄水器"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0001.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0003.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0004.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0017.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0012.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0006.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0014.jpg&w=1200&h=900",
+        "label": "玄関"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0015.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0016.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0018.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0020.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0005.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0013.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0007.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0019.jpg&w=1200&h=900",
+        "label": "その他内観"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0008.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0009.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0010.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F510%2F20520510%2F20520510_0011.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20848558/": {
+    "total_units": 158,
+    "floor_position": 9,
+    "floor_total": 15,
+    "floor_structure": "RC15階地下2階建",
+    "ownership": "所有権",
+    "management_fee": 16650,
+    "repair_reserve_fund": 16140,
+    "balcony_area_m2": 4.8,
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "市街地が近い",
+      "システムキッチン",
+      "浴室乾燥機",
+      "陽当り良好",
+      "全居室収納",
+      "駅まで平坦",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "バリアフリー",
+      "オートバス",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "都市近郊",
+      "全居室フローリング",
+      "ウォークインクローゼット",
+      "全居室６畳以上",
+      "ペット相談",
+      "小学校 徒歩10分以内",
+      "平坦地",
+      "床暖房",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "バイク置場",
+      "浄水器"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0019.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0002.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0011.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0003.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0004.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0012.jpg&w=1200&h=900",
+        "label": "玄関"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0010.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0009.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0014.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0017.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0013.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0008.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0005.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0015.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0018.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0006.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0016.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F558%2F20848558%2F20848558_0007.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20721352/": {
+    "total_units": 45,
+    "floor_position": 4,
+    "floor_total": 5,
+    "floor_structure": "RC5階建",
+    "ownership": "所有権",
+    "management_fee": 14600,
+    "repair_reserve_fund": 12150,
+    "balcony_area_m2": 10.48,
+    "parking": "空無",
+    "zoning": "２種住居",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "瑕疵保証付（不動産会社独自）",
+      "フラット３５・S適合証明書",
+      "年内引渡可",
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "内装リフォーム",
+      "システムキッチン",
+      "浴室乾燥機",
+      "陽当り良好",
+      "全居室収納",
+      "駅まで平坦",
+      "閑静な住宅地",
+      "シャワー付洗面化粧台",
+      "対面式キッチン",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "オートバス",
+      "高速ネット対応",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "リノベーション",
+      "通風良好",
+      "全居室フローリング",
+      "ペット相談",
+      "小学校 徒歩10分以内",
+      "平坦地",
+      "床暖房",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "可動間仕切り",
+      "食器洗乾燥機",
+      "バイク置場",
+      "ディスポーザー（生ごみ粉砕処理器）"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0003.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0004.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0009.jpg&w=1200&h=900",
+        "label": "その他現地"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0005.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0007.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0006.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0008.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0011.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0010.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0013.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0012.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0020.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0014.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0015.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0016.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0017.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0018.jpg&w=1200&h=900",
+        "label": "その他現地"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F352%2F20721352%2F20721352_0019.jpg&w=1200&h=900",
+        "label": "その他現地"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20872161/": {
+    "total_units": 125,
+    "floor_position": 10,
+    "floor_total": 11,
+    "floor_structure": "RC11階建",
+    "ownership": "所有権",
+    "management_fee": 11200,
+    "repair_reserve_fund": 10660,
+    "balcony_area_m2": 10.03,
+    "parking": "敷地内（0円／月）",
+    "zoning": "準工業",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "年内引渡可",
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "市街地が近い",
+      "内装リフォーム",
+      "南向き",
+      "システムキッチン",
+      "浴室乾燥機",
+      "陽当り良好",
+      "総合病院 徒歩10分以内",
+      "シャワー付洗面化粧台",
+      "対面式キッチン",
+      "南面バルコニー",
+      "フローリング張替",
+      "オートバス",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "リノベーション",
+      "前面棟無",
+      "全居室フローリング",
+      "眺望良好",
+      "ペット相談",
+      "BS・CS・CATV",
+      "小学校 徒歩10分以内",
+      "床暖房",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "食器洗乾燥機",
+      "バイク置場",
+      "浄水器"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0003.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0002.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0010.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0012.jpg&w=1200&h=900",
+        "label": "玄関"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0004.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0006.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0009.jpg&w=1200&h=900",
+        "label": "駐車場"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0011.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0005.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0007.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F161%2F20872161%2F20872161_0008.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20820124/": {
+    "total_units": 53,
+    "floor_position": 1,
+    "floor_total": 7,
+    "floor_structure": "RC7階建",
+    "ownership": "所有権",
+    "management_fee": 16800,
+    "repair_reserve_fund": 15400,
+    "balcony_area_m2": 8.1,
+    "parking": "敷地内（2万5000円～3万7000円／月）",
+    "zoning": "１種中高",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "内装リフォーム",
+      "システムキッチン",
+      "浴室乾燥機",
+      "全居室収納",
+      "シャワー付洗面化粧台",
+      "対面式キッチン",
+      "セキュリティ充実",
+      "フローリング張替",
+      "平面駐車場",
+      "床下収納",
+      "リノベーション",
+      "ウォークインクローゼット",
+      "ペット相談",
+      "床暖房",
+      "宅配ボックス",
+      "駐輪場",
+      "納戸",
+      "バイク置場"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0020.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0021.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0036.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0022.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0032.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0023.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0025.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0030.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0029.jpg&w=1200&h=900",
+        "label": "収納"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0033.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0034.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0024.jpg&w=1200&h=900",
+        "label": "バルコニー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0011.jpg&w=1200&h=900",
+        "label": "駅"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0035.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0037.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0026.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0031.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0038.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0012.jpg&w=1200&h=900",
+        "label": "駅"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F124%2F20820124%2F20820124_0027.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20947574/": {
+    "total_units": 483,
+    "floor_position": 25,
+    "floor_total": 33,
+    "floor_structure": "RC33階地下1階建一部鉄骨",
+    "ownership": "所有権",
+    "management_fee": 16031,
+    "repair_reserve_fund": 18210,
+    "parking": "敷地内（1万6500円～3万5000円／月）",
+    "zoning": "準工業",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "瑕疵保証付（不動産会社独自）",
+      "２沿線以上利用可",
+      "省エネ給湯器",
+      "スーパー 徒歩10分以内",
+      "市街地が近い",
+      "システムキッチン",
+      "浴室乾燥機",
+      "陽当り良好",
+      "共有施設充実",
+      "全居室収納",
+      "駅まで平坦",
+      "高層階",
+      "ゲストルーム",
+      "シャワー付洗面化粧台",
+      "対面式キッチン",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "オートバス",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "緑豊かな住宅地",
+      "都市近郊",
+      "通風良好",
+      "眺望良好",
+      "ウォークインクローゼット",
+      "ペット相談",
+      "小学校 徒歩10分以内",
+      "平坦地",
+      "２４時間有人管理",
+      "エレベーター",
+      "宅配ボックス",
+      "食器洗乾燥機",
+      "周辺交通量少なめ",
+      "整備された歩道",
+      "ディスポーザー（生ごみ粉砕処理器）",
+      "浄水器"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0042.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0032.jpg&w=1200&h=900",
+        "label": "玄関"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0019.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0018.jpg&w=1200&h=900",
+        "label": "バルコニー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0017.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0033.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0029.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0009.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0034.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0021.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0027.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0026.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0028.jpg&w=1200&h=900",
+        "label": "収納"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0025.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0014.jpg&w=1200&h=900",
+        "label": "構造・工法・仕様"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0030.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0007.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0020.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0023.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0010.jpg&w=1200&h=900",
+        "label": "発電・温水設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0008.jpg&w=1200&h=900",
+        "label": "防犯設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0036.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0037.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0039.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0035.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0038.jpg&w=1200&h=900",
+        "label": "収納"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0041.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0040.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0004.jpg&w=1200&h=900",
+        "label": "プレゼント"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F574%2F20947574%2F20947574_0005.jpg&w=1200&h=900",
+        "label": "こんなパンフレットが届きます"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20889015/": {
+    "total_units": 125,
+    "floor_position": 6,
+    "floor_total": 14,
+    "floor_structure": "RC14階建",
+    "ownership": "所有権",
+    "management_fee": 9900,
+    "repair_reserve_fund": 16100,
+    "balcony_area_m2": 10.26,
+    "zoning": "準工業",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "市街地が近い",
+      "南向き",
+      "システムキッチン",
+      "浴室乾燥機",
+      "角住戸",
+      "陽当り良好",
+      "全居室収納",
+      "駅まで平坦",
+      "ＬＤＫ１５畳以上",
+      "対面式キッチン",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "２面以上バルコニー",
+      "オートバス",
+      "温水洗浄便座",
+      "都市近郊",
+      "通風良好",
+      "全居室フローリング",
+      "ウォークインクローゼット",
+      "ペット相談",
+      "平坦地",
+      "床暖房",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "納戸",
+      "食器洗乾燥機",
+      "バイク置場",
+      "周辺交通量少なめ",
+      "整備された歩道"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0009.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0008.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0010.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0011.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0012.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0014.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0015.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0016.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0017.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0025.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0013.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0018.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0019.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0020.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0023.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0022.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0021.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0024.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0035.jpg&w=1200&h=900",
+        "label": "構造・工法・仕様"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0036.jpg&w=1200&h=900",
+        "label": "構造・工法・仕様"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0037.jpg&w=1200&h=900",
+        "label": "構造・工法・仕様"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0001.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0002.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0003.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0004.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0005.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0006.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0007.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0026.jpg&w=1200&h=900",
+        "label": "幼稚園・保育園"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0027.jpg&w=1200&h=900",
+        "label": "幼稚園・保育園"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0028.jpg&w=1200&h=900",
+        "label": "小学校"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0041.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0042.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0043.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0047.jpg&w=1200&h=900",
+        "label": "その他"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0048.jpg&w=1200&h=900",
+        "label": "こんなパンフレットが届きます"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0029.jpg&w=1200&h=900",
+        "label": "その他環境写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0030.jpg&w=1200&h=900",
+        "label": "スーパー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0031.jpg&w=1200&h=900",
+        "label": "スーパー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0032.jpg&w=1200&h=900",
+        "label": "スーパー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0033.jpg&w=1200&h=900",
+        "label": "ショッピングセンター"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0034.jpg&w=1200&h=900",
+        "label": "ドラッグストア"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0044.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0045.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0046.jpg&w=1200&h=900",
+        "label": "その他設備"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0038.jpg&w=1200&h=900",
+        "label": "構造・工法・仕様"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0039.jpg&w=1200&h=900",
+        "label": "構造・工法・仕様"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F015%2F20889015%2F20889015_0040.jpg&w=1200&h=900",
+        "label": "構造・工法・仕様"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_79004479/": {
+    "total_units": 182,
+    "floor_position": 8,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権",
+    "management_fee": 10600,
+    "repair_reserve_fund": 10910,
+    "balcony_area_m2": 14.33,
+    "parking": "敷地内（2万1000円／月）",
+    "zoning": "準工業",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "設計住宅性能評価書",
+      "建設住宅性能評価書（新築時）",
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "市街地が近い",
+      "システムキッチン",
+      "浴室乾燥機",
+      "角住戸",
+      "陽当り良好",
+      "全居室収納",
+      "駅まで平坦",
+      "閑静な住宅地",
+      "最上階・上階なし",
+      "シャワー付洗面化粧台",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "ワイドバルコニー",
+      "３面採光",
+      "バリアフリー",
+      "２面以上バルコニー",
+      "平面駐車場",
+      "オートバス",
+      "高速ネット対応",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "緑豊かな住宅地",
+      "通風良好",
+      "全居室フローリング",
+      "ウッドデッキ",
+      "眺望良好",
+      "ウォークインクローゼット",
+      "BS・CS・CATV",
+      "小学校 徒歩10分以内",
+      "ルーフバルコニー",
+      "平坦地",
+      "床暖房",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "キッズルーム・託児所",
+      "食器洗乾燥機",
+      "バイク置場",
+      "ディスポーザー（生ごみ粉砕処理器）",
+      "バルコニー・屋上に水栓あり"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0003.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0002.jpg&w=1200&h=900",
+        "label": "エントランス"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0005.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0004.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0006.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0007.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0008.jpg&w=1200&h=900",
+        "label": "キッチン"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0010.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0009.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0014.jpg&w=1200&h=900",
+        "label": "バルコニー"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0015.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0016.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0018.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0017.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0012.jpg&w=1200&h=900",
+        "label": "住戸からの眺望写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0019.jpg&w=1200&h=900",
+        "label": "周辺の街並み"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0021.jpg&w=1200&h=900",
+        "label": "コンビニ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0020.jpg&w=1200&h=900",
+        "label": "コンビニ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0024.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F479%2F79004479%2F79004479_0025.jpg&w=1200&h=900",
+        "label": "その他共用部"
+      }
+    ]
   }
 }
