@@ -38,6 +38,12 @@ struct ListingListView: View {
     @State private var searchText = ""
     /// フィルタ＋ソート結果のキャッシュ（body 再評価時の重計算を避ける）
     @State private var cachedFiltered: [Listing] = []
+    @State private var cachedGrouped: [ListingGroup] = []
+    @State private var cachedAvailableLayouts: [String] = []
+    @State private var cachedAvailableWards: Set<String> = []
+    @State private var cachedAvailableRouteStations: [RouteStations] = []
+    @State private var cachedAvailableDirections: [String] = []
+    @State private var cachedAvailableNumericFields: [ListingNumericField] = []
     /// フィルタ再計算タスク（連続変更時のキャンセル用）
     @State private var filterTask: Task<Void, Never>?
     /// 初回ロード完了フラグ（スケルトン表示の切り替え用）
@@ -418,29 +424,41 @@ struct ListingListView: View {
         filterTask = Task { @MainActor in
             guard !Task.isCancelled else { return }
             let result = computeFilteredAndSorted()
+            guard !Task.isCancelled else { return }
+            let grouped = Self.computeGrouped(from: result)
+            guard !Task.isCancelled else { return }
+            // MainActor を一瞬解放してUIの応答性を維持
+            await Task.yield()
+            guard !Task.isCancelled else { return }
+            let currentBase = baseList
+            let layouts = ListingFilter.availableLayouts(from: currentBase)
+            let wards = ListingFilter.availableWards(from: currentBase)
+            let routes = ListingFilter.availableRouteStations(from: currentBase)
+            let directions = ListingFilter.availableDirections(from: currentBase)
+            let numericFields = ListingFilter.availableNumericFields(from: currentBase)
+            guard !Task.isCancelled else { return }
             if animated {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     cachedFiltered = result
+                    cachedGrouped = grouped
                 }
             } else {
                 cachedFiltered = result
+                cachedGrouped = grouped
             }
+            cachedAvailableLayouts = layouts
+            cachedAvailableWards = wards
+            cachedAvailableRouteStations = routes
+            cachedAvailableDirections = directions
+            cachedAvailableNumericFields = numericFields
         }
     }
 
-    /// 表示用フィルタ＋ソート結果（キャッシュ。検索・ソート・フィルタ変更時のみ再計算）
-    private var filteredAndSorted: [Listing] {
-        cachedFiltered
-    }
-
-    /// マンション単位でグルーピングした表示用リスト。
-    /// 同一 buildingGroupKey を持つ物件を1グループにまとめ、代表物件のカードで表示する。
-    /// cachedFiltered のソート順を維持し、最初に出現した物件を代表とする。
-    private var groupedListings: [ListingGroup] {
-        let grouped = Dictionary(grouping: cachedFiltered) { $0.buildingGroupKey }
+    private static func computeGrouped(from filtered: [Listing]) -> [ListingGroup] {
+        let grouped = Dictionary(grouping: filtered) { $0.buildingGroupKey }
         var seen = Set<String>()
         var orderedKeys: [String] = []
-        for listing in cachedFiltered {
+        for listing in filtered {
             let key = listing.buildingGroupKey
             if seen.insert(key).inserted {
                 orderedKeys.append(key)
@@ -450,6 +468,15 @@ struct ListingListView: View {
             guard let units = grouped[key], let first = units.first else { return nil }
             return ListingGroup(id: key, representative: first, units: units)
         }
+    }
+
+    /// 表示用フィルタ＋ソート結果（キャッシュ。検索・ソート・フィルタ変更時のみ再計算）
+    private var filteredAndSorted: [Listing] {
+        cachedFiltered
+    }
+
+    private var groupedListings: [ListingGroup] {
+        cachedGrouped
     }
 
     private var isSearchActive: Bool {
@@ -488,28 +515,11 @@ struct ListingListView: View {
         return ([header] + rows).joined(separator: "\n")
     }
 
-    /// 一覧内に存在する間取りの一意リスト（フィルタシートの選択肢用）
-    private var availableLayouts: [String] {
-        ListingFilter.availableLayouts(from: baseList)
-    }
-
-    /// 一覧内に存在する区名のセット（フィルタシートの選択肢用）
-    private var availableWards: Set<String> {
-        ListingFilter.availableWards(from: baseList)
-    }
-
-    /// 路線別駅名リスト（フィルタシートの選択肢用）
-    private var availableRouteStations: [RouteStations] {
-        ListingFilter.availableRouteStations(from: baseList)
-    }
-
-    private var availableDirections: [String] {
-        ListingFilter.availableDirections(from: baseList)
-    }
-
-    private var availableNumericFields: [ListingNumericField] {
-        ListingFilter.availableNumericFields(from: baseList)
-    }
+    private var availableLayouts: [String] { cachedAvailableLayouts }
+    private var availableWards: Set<String> { cachedAvailableWards }
+    private var availableRouteStations: [RouteStations] { cachedAvailableRouteStations }
+    private var availableDirections: [String] { cachedAvailableDirections }
+    private var availableNumericFields: [ListingNumericField] { cachedAvailableNumericFields }
 
     var body: some View {
         NavigationStack {
@@ -895,8 +905,15 @@ struct ListingListView: View {
     }
 
     private func loadPrefListings() {
+        let allKeys = BuildingPreferenceStore.shared.likedKeys
+            .union(BuildingPreferenceStore.shared.nopedKeys)
+        guard !allKeys.isEmpty else {
+            prefListings = []
+            return
+        }
         let descriptor = FetchDescriptor<Listing>()
-        prefListings = (try? modelContext.fetch(descriptor)) ?? []
+        let all = (try? modelContext.fetch(descriptor)) ?? []
+        prefListings = all.filter { allKeys.contains($0.identityKey) }
     }
 
     private var listContent: some View {

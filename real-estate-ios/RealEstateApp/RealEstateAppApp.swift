@@ -192,13 +192,15 @@ private struct RootView: View {
                     .task {
                         let context = sharedModelContainer.mainContext
                         await withTaskGroup(of: Void.self) { group in
-                            group.addTask { await syncService.pullAnnotations(modelContext: context) }
+                            // Supabase モード時は Firebase 同期をスキップ（ContentView 側で Supabase 同期が走る）
+                            if !ListingStore.shared.useSupabase {
+                                group.addTask { await syncService.pullAnnotations(modelContext: context) }
+                            }
                             group.addTask { await BuyerProfileSyncService.shared.syncOnLaunch() }
                             group.addTask {
                                 try? await Task.sleep(for: .seconds(15))
                                 logger.warning("起動時同期がタイムアウト（15秒）")
                             }
-                            // 最初の2つが完了するか、タイムアウトしたら次へ
                             var completed = 0
                             for await _ in group {
                                 completed += 1
