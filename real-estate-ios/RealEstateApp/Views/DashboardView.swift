@@ -34,12 +34,15 @@ struct DashboardView: View {
     @State private var quickFilter: DashboardQuickFilter?
     @State private var preferenceProfile: PreferenceProfile = .inactive
     @State private var preferenceSummaryTask: Task<Void, Never>?
+    @State private var isVisible = false
+    @State private var preferenceUpdateTask: Task<Void, Never>?
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     searchOverviewSection
+                    swipePromptSection
                     quickFiltersSection
                     if preferenceProfile.isActive {
                         recommendationSection
@@ -61,13 +64,22 @@ struct DashboardView: View {
                     listings: filteredListings(for: filter)
                 )
             }
-            .onAppear { updatePreferenceProfile() }
-            .onDisappear { preferenceSummaryTask?.cancel() }
-            .onChange(of: BuildingPreferenceStore.shared.likedKeys.count) { _, _ in
+            .onAppear {
+                isVisible = true
                 updatePreferenceProfile()
             }
+            .onDisappear {
+                isVisible = false
+                preferenceSummaryTask?.cancel()
+                preferenceUpdateTask?.cancel()
+            }
+            .onChange(of: BuildingPreferenceStore.shared.likedKeys.count) { _, _ in
+                guard isVisible else { return }
+                debouncedUpdatePreferenceProfile()
+            }
             .onChange(of: BuildingPreferenceStore.shared.nopedKeys.count) { _, _ in
-                updatePreferenceProfile()
+                guard isVisible else { return }
+                debouncedUpdatePreferenceProfile()
             }
         }
     }
@@ -96,6 +108,44 @@ struct DashboardView: View {
                     color: .primary
                 )
             }
+        }
+    }
+
+    // MARK: - Swipe Prompt
+
+    private var pendingSwipeCount: Int {
+        SwipeSessionViewModel.pendingCount(from: activeListings)
+    }
+
+    @ViewBuilder
+    private var swipePromptSection: some View {
+        if pendingSwipeCount > 0 {
+            Button {
+                NotificationCenter.default.post(name: .didRequestSwipeSession, object: nil)
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "rectangle.stack.fill")
+                        .font(.title2)
+                        .foregroundStyle(Color.accentColor)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("新着 \(pendingSwipeCount) 件をチェック")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.primary)
+                        Text("スワイプで Like / Nope を仕分け")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(14)
+                .background(.background)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .shadow(color: .black.opacity(0.06), radius: 4, y: 2)
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -440,6 +490,15 @@ struct DashboardView: View {
             }
             .padding(14)
             .listingGlassBackground()
+        }
+    }
+
+    private func debouncedUpdatePreferenceProfile() {
+        preferenceUpdateTask?.cancel()
+        preferenceUpdateTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            updatePreferenceProfile()
         }
     }
 
