@@ -56,26 +56,6 @@ final class DiskImageCache: @unchecked Sendable {
     }
 }
 
-// MARK: - トリミング済み画像キャッシュ
-
-/// 余白トリミング済み画像を NSCache で保持するシングルトン
-final class TrimmedImageCache: @unchecked Sendable {
-    static let shared = TrimmedImageCache()
-    private let cache = NSCache<NSString, UIImage>()
-
-    init() {
-        cache.countLimit = 200
-    }
-
-    func image(for key: String) -> UIImage? {
-        cache.object(forKey: key as NSString)
-    }
-
-    func set(_ image: UIImage, for key: String) {
-        cache.setObject(image, forKey: key as NSString)
-    }
-}
-
 // MARK: - TrimmedAsyncImage
 
 /// URL から画像を非同期読み込みし、周囲の白余白を自動トリミングして表示するビュー。

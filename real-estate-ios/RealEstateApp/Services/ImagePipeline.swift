@@ -21,8 +21,8 @@ actor ImagePipeline {
     }()
 
     // MARK: - メモリキャッシュ（decoded bytes ベースで制限）
-
-    private let memoryCache: NSCache<NSString, UIImage> = {
+    // NSCache はスレッドセーフだが actor isolation 外からのアクセスに nonisolated(unsafe) が必要
+    nonisolated(unsafe) private let memoryCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
         cache.totalCostLimit = 100_000_000 // 100 MB
         cache.countLimit = 200
@@ -49,9 +49,8 @@ actor ImagePipeline {
             return await existing.value
         }
 
-        let task = Task<UIImage?, Never> { [weak self] in
-            guard let self else { return nil }
-            return await self.fetchAndProcess(url: url, key: key)
+        let task = Task<UIImage?, Never> {
+            await self.fetchAndProcess(url: url, key: key)
         }
         inFlight[key] = task
         let result = await task.value
