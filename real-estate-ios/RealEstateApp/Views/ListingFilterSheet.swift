@@ -120,7 +120,7 @@ struct ListingFilterSheet: View {
                         isActiveSection: filter.monthlyPaymentMax != nil,
                         onClear: {
                             filter.monthlyPaymentMax = nil
-                            filter.loanInterestRate = 0.8
+                            filter.loanInterestRate = 1.2
                             filter.loanTermYears = 50
                             monthlyPaymentMaxText = ""
                             interestRateText = ""

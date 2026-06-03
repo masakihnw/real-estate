@@ -6,9 +6,9 @@ import math
 import re
 from typing import Optional
 
-# ローン計算の共通定数（50年変動金利・金利0.8%・元利均等・iOS アプリと統一）
+# ローン計算の共通定数（50年変動金利・元利均等）
 LOAN_YEARS = 50
-LOAN_ANNUAL_RATE = 0.008  # 0.8%
+LOAN_ANNUAL_RATE = 0.012  # 1.2%
 LOAN_MONTHS = LOAN_YEARS * 12
 LOAN_MONTHS_AFTER_10Y = 10 * 12
 
