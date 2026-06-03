@@ -24,8 +24,6 @@ enum DesignSystem {
 
     // MARK: - Semantic Colors (D1, D4, D5)
 
-    /// 新築物件の価格色
-    static let shinchikuPriceColor = Color(red: 0.204, green: 0.78, blue: 0.349)
     /// 値上がり/プラス色
     static let positiveColor = Color(red: 0.204, green: 0.78, blue: 0.349)
     /// 値下がり/マイナス色

@@ -94,15 +94,8 @@ struct ComparisonView: View {
                         .font(.caption)
                         .fontWeight(.semibold)
                         .lineLimit(2)
-                    if listing.isShinchiku {
-                        Text("新築")
-                            .font(.caption2)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 4)
-                            .padding(.vertical, 1)
-                            .background(DesignSystem.shinchikuPriceColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 3))
-                    }
+
+
                 }
                 .frame(width: 140, alignment: .leading)
                 .padding(8)
@@ -118,7 +111,7 @@ struct ComparisonView: View {
         comparisonRow("間取り", values: listings.map { $0.layout ?? "—" })
         comparisonRow("最寄駅", values: listings.map { $0.stationName ?? "—" })
         comparisonRow("徒歩", values: listings.map(\.walkDisplay))
-        comparisonRow("築年", values: listings.map { $0.isShinchiku ? $0.deliveryDateDisplay : $0.builtAgeDisplay })
+        comparisonRow("築年", values: listings.map(\.builtAgeDisplay))
         comparisonRow("階数", values: listings.map { $0.floorDisplay.isEmpty ? "—" : $0.floorDisplay })
         comparisonRow("総戸数", values: listings.map(\.totalUnitsDisplay))
         comparisonRow("権利形態", values: listings.map(\.ownershipShort))

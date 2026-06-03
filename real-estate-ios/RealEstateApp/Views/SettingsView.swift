@@ -18,8 +18,6 @@ struct SettingsView: View {
     // データ件数用クエリ
     @Query(filter: #Predicate<Listing> { $0.propertyType == "chuko" })
     private var chukoListings: [Listing]
-    @Query(filter: #Predicate<Listing> { $0.propertyType == "shinchiku" })
-    private var shinchikuListings: [Listing]
 
     @State private var showSignOutConfirmation = false
     @State private var showFullRefreshConfirmation = false
@@ -29,7 +27,6 @@ struct SettingsView: View {
 
     // カスタム URL
     @State private var chukoURLInput: String = ""
-    @State private var shinchikuURLInput: String = ""
     @State private var showAdvancedURL = false
     @State private var showSaveConfirmation = false
     @State private var showResetConfirmation = false
@@ -68,7 +65,6 @@ struct SettingsView: View {
             .navigationTitle("設定")
             .onAppear {
                 chukoURLInput = store.listURL
-                shinchikuURLInput = store.shinchikuListURL
                 showAdvancedURL = store.isUsingCustomURL
             }
             .task {
@@ -100,10 +96,8 @@ struct SettingsView: View {
             .alert("デフォルト URL に戻しますか？", isPresented: $showResetConfirmation) {
                 Button("戻す", role: .destructive) {
                     store.listURL = ""
-                    store.shinchikuListURL = ""
                     store.clearETags()
                     chukoURLInput = ""
-                    shinchikuURLInput = ""
                     showAdvancedURL = false
                 }
                 Button("キャンセル", role: .cancel) { }
@@ -166,11 +160,8 @@ struct SettingsView: View {
                 Spacer()
                 Text("\(chukoListings.count)件")
             }
-            HStack {
-                Text("新築マンション")
-                Spacer()
-                Text("\(shinchikuListings.count)件")
-            }
+
+
             if let at = store.lastFetchedAt {
                 HStack {
                     Text("最終更新")
@@ -373,15 +364,9 @@ struct SettingsView: View {
                         .autocapitalization(.none)
                         .autocorrectionDisabled()
                         .font(.caption)
-                    TextField("新築マンション JSON URL", text: $shinchikuURLInput)
-                        .keyboardType(.URL)
-                        .autocapitalization(.none)
-                        .autocorrectionDisabled()
-                        .font(.caption)
 
                     Button {
                         store.listURL = chukoURLInput.trimmingCharacters(in: .whitespaces)
-                        store.shinchikuListURL = shinchikuURLInput.trimmingCharacters(in: .whitespaces)
                         store.clearETags()
                         showSaveConfirmation = true
                     } label: {
@@ -417,7 +402,7 @@ struct SettingsView: View {
         .alert("カスタム URL 設定について", isPresented: $showCustomURLInfo) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text("物件データの取得元 URL を変更できます。\n\nデフォルトでは GitHub 上の JSON ファイルから物件データを自動取得しています。独自のサーバーやフォーク先のリポジトリから取得したい場合に、中古・新築それぞれの JSON URL を指定できます。\n\n通常は変更不要です。")
+            Text("物件データの取得元 URL を変更できます。\n\nデフォルトでは GitHub 上の JSON ファイルから物件データを自動取得しています。独自のサーバーやフォーク先のリポジトリから取得したい場合に JSON URL を指定できます。\n\n通常は変更不要です。")
         }
     }
 

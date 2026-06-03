@@ -592,8 +592,6 @@ final class Listing: @unchecked Sendable {
         return String(inner.dropFirst().dropLast()).trimmingCharacters(in: .whitespaces)
     }
 
-    var isShinchiku: Bool { propertyType == "shinchiku" }
-
     /// 複数戸が同一条件で売り出されているか
     var hasMultipleUnits: Bool { duplicateCount > 1 }
 
@@ -755,7 +753,7 @@ final class Listing: @unchecked Sendable {
             }
             return Self.formatPriceMan(lo, unit: "万円")
         }
-        return isShinchiku ? "価格未定" : "—"
+        return "—"
     }
 
     /// 表示用: 価格コンパクト（一覧カード用: 円 なし）
@@ -767,7 +765,7 @@ final class Listing: @unchecked Sendable {
             }
             return Self.formatPriceMan(lo)
         }
-        return isShinchiku ? "価格未定" : "—"
+        return "—"
     }
 
     /// 表示用: 専有面積 — 新築は幅表示対応
@@ -1036,16 +1034,14 @@ final class Listing: @unchecked Sendable {
 
     /// 表示用: 築年数（現在年 − 竣工年）
     var builtAgeDisplay: String {
-        if isShinchiku { return "新築" }
         guard let y = builtYear else { return "—" }
         let age = Calendar.current.component(.year, from: .now) - y
         if age <= 0 { return "新築" }
         return "築\(age)年"
     }
 
-    /// 築年数（年数の生値）。新築は 0 として扱う。
+    /// 築年数（年数の生値）
     var builtAgeYears: Int? {
-        if isShinchiku { return 0 }
         guard let y = builtYear else { return nil }
         return max(Calendar.current.component(.year, from: .now) - y, 0)
     }
@@ -1529,17 +1525,11 @@ final class Listing: @unchecked Sendable {
     ///   1. シミュレーション絶対値（ベスト/標準/ワースト）がある → 変動率を逆算して使用
     ///   2. 予測変動率（ss_forecast_change_rate）がある → ±10pp スプレッドで推定
     var hasSimulationData: Bool {
-        isShinchiku
-            && (
-                (ssSimBest5yr != nil && ssSimStandard5yr != nil && ssSimWorst5yr != nil)
-                || ssForecastChangeRate != nil
-            )
+        false
     }
 
-    /// 10年後予測詳細データがあるか（新築のみ）
     var hasForecastDetail: Bool {
-        isShinchiku
-            && (ssNewM2Price != nil || ssForecastM2Price != nil || ssForecastChangeRate != nil || ssPurchaseJudgment != nil)
+        false
     }
 
     /// 表示用: 沖式儲かる確率

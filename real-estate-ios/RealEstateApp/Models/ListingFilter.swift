@@ -15,14 +15,6 @@ enum OwnershipType: String, CaseIterable, Hashable, Codable {
     case leasehold = "定期借地"
 }
 
-// MARK: - 物件種別フィルタ
-
-enum PropertyTypeFilter: String, CaseIterable, Hashable, Codable {
-    case all = "すべて"
-    case chuko = "中古"
-    case shinchiku = "新築"
-}
-
 struct ListingNumericRange: Equatable, Codable {
     var min: Double? = nil
     var max: Double? = nil
@@ -177,7 +169,7 @@ enum ListingNumericField: String, CaseIterable, Hashable, Codable, Identifiable 
 struct ListingFilter: Equatable, Codable {
     var priceMin: Int? = nil              // 万円
     var priceMax: Int? = nil              // 万円
-    var includePriceUndecided: Bool = true // 新築で価格未定の物件を含むか
+    var includePriceUndecided: Bool = true
     var tsuboUnitPriceMin: Double? = nil  // 万円/坪
     var tsuboUnitPriceMax: Double? = nil  // 万円/坪
     var layouts: Set<String> = []         // 空 = 全て
@@ -186,7 +178,6 @@ struct ListingFilter: Equatable, Codable {
     var walkMax: Int? = nil               // 分以内
     var areaMin: Double? = nil            // ㎡以上
     var ownershipTypes: Set<OwnershipType> = []  // 空 = 全て
-    var propertyType: PropertyTypeFilter = .all   // 新築/中古/すべて
     var directions: Set<String> = []      // 空 = 全て
     var numericFilters: [ListingNumericField: ListingNumericRange] = [:]
     var monthlyPaymentMax: Double? = nil    // 万円/月
@@ -194,11 +185,11 @@ struct ListingFilter: Equatable, Codable {
     var loanTermYears: Int = 50             // 返済期間 (年)
 
     var isActive: Bool {
-        priceMin != nil || priceMax != nil || !includePriceUndecided || tsuboUnitPriceMin != nil || tsuboUnitPriceMax != nil || !layouts.isEmpty || !wards.isEmpty || !stations.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty || propertyType != .all || !directions.isEmpty || numericFilters.values.contains(where: \.isActive) || monthlyPaymentMax != nil
+        priceMin != nil || priceMax != nil || !includePriceUndecided || tsuboUnitPriceMin != nil || tsuboUnitPriceMax != nil || !layouts.isEmpty || !wards.isEmpty || !stations.isEmpty || walkMax != nil || areaMin != nil || !ownershipTypes.isEmpty || !directions.isEmpty || numericFilters.values.contains(where: \.isActive) || monthlyPaymentMax != nil
     }
 
     mutating func reset() {
-        priceMin = nil; priceMax = nil; includePriceUndecided = true; tsuboUnitPriceMin = nil; tsuboUnitPriceMax = nil; layouts = []; wards = []; stations = []; walkMax = nil; areaMin = nil; ownershipTypes = []; propertyType = .all; directions = []; numericFilters = [:]; monthlyPaymentMax = nil; loanInterestRate = 1.2; loanTermYears = 50
+        priceMin = nil; priceMax = nil; includePriceUndecided = true; tsuboUnitPriceMin = nil; tsuboUnitPriceMax = nil; layouts = []; wards = []; stations = []; walkMax = nil; areaMin = nil; ownershipTypes = []; directions = []; numericFilters = [:]; monthlyPaymentMax = nil; loanInterestRate = 1.2; loanTermYears = 50
     }
 
     /// 住所から区名を抽出（例: "東京都江東区豊洲5丁目" → "江東区"）
@@ -217,31 +208,22 @@ struct ListingFilter: Equatable, Codable {
     func apply(to listings: [Listing]) -> [Listing] {
         var list = listings
 
-        // 物件種別（新築/中古）
-        switch propertyType {
-        case .all: break
-        case .chuko: list = list.filter { $0.propertyType == "chuko" }
-        case .shinchiku: list = list.filter { $0.propertyType == "shinchiku" }
-        }
-
         // 価格未定フィルタ（includePriceUndecided が false なら除外）
         if !includePriceUndecided {
             list = list.filter { $0.priceMan != nil }
         }
 
-        // 価格帯（新築は priceMan〜priceMaxMan の範囲交差で判定）
+        // 価格帯
         if let min = priceMin {
             list = list.filter {
-                guard $0.priceMan != nil || $0.priceMaxMan != nil else { return includePriceUndecided }
-                let upper = $0.priceMaxMan ?? $0.priceMan ?? 0
-                return upper >= min
+                guard let price = $0.priceMan else { return includePriceUndecided }
+                return price >= min
             }
         }
         if let max = priceMax {
             list = list.filter {
-                guard $0.priceMan != nil || $0.priceMaxMan != nil else { return includePriceUndecided }
-                let lower = $0.priceMan ?? 0
-                return lower <= max
+                guard let price = $0.priceMan else { return includePriceUndecided }
+                return price <= max
             }
         }
 

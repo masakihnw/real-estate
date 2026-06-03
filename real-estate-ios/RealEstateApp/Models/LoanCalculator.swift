@@ -32,9 +32,6 @@ enum LoanCalculator {
     /// 頭金（万円）
     static let downPayment: Int = 0
 
-    /// 新築物件のデフォルトシミュレーション価格（万円）
-    static let defaultShinchikuPrice: Int = 9500
-
     // MARK: - 定数（住まいサーフィン準拠 — 月額支払いシミュレーション用）
 
     /// 住まいサーフィンの返済期間（年）
@@ -133,14 +130,8 @@ enum LoanCalculator {
         }
 
         // ── 購入価格の決定 ──
-        let purchasePrice: Int
-        if listing.isShinchiku {
-            purchasePrice = defaultShinchikuPrice
-        } else {
-            guard let price = listing.priceMan ?? listing.ssOkiPriceForArea ?? listing.ssOkiPrice70m2,
-                  price > 0 else { return nil }
-            purchasePrice = price
-        }
+        guard let purchasePrice = listing.priceMan ?? listing.ssOkiPriceForArea ?? listing.ssOkiPrice70m2,
+              purchasePrice > 0 else { return nil }
 
         let principal = Double(purchasePrice - downPayment)
         guard principal > 0 else { return nil }

@@ -42,7 +42,6 @@ struct ListingFilterSheet: View {
     let availableNumericFields: [ListingNumericField]
     let filteredCount: Int
     var showPriceUndecidedToggle: Bool = false
-    var showPropertyTypeFilter: Bool = false
 
     @State private var originalFilter = ListingFilter()
     @State private var didApply = false
@@ -62,7 +61,6 @@ struct ListingFilterSheet: View {
 
     private var activeFilterCount: Int {
         var count = 0
-        if filter.propertyType != .all { count += 1 }
         if filter.priceMin != nil || filter.priceMax != nil || !filter.includePriceUndecided { count += 1 }
         if filter.tsuboUnitPriceMin != nil || filter.tsuboUnitPriceMax != nil { count += 1 }
         if !filter.layouts.isEmpty { count += 1 }
@@ -85,16 +83,8 @@ struct ListingFilterSheet: View {
                     quickPresetSection
                         .padding(.bottom, 8)
 
-                    if showPropertyTypeFilter {
-                        FilterAccordion(
-                            title: "物件種別",
-                            summary: propertyTypeSummary,
-                            isActiveSection: filter.propertyType != .all,
-                            onClear: { filter.propertyType = .all }
-                        ) {
-                            propertyTypeChipsContent
-                        }
-                    }
+
+
 
                     FilterAccordion(
                         title: "価格帯",
@@ -418,10 +408,6 @@ struct ListingFilterSheet: View {
 
     // MARK: - Summaries
 
-    private var propertyTypeSummary: String {
-        filter.propertyType == .all ? "指定なし" : filter.propertyType.rawValue
-    }
-
     private var priceSummary: String {
         if let min = filter.priceMin, let max = filter.priceMax {
             return "\(formatPrice(min))〜\(formatPrice(max))"
@@ -679,22 +665,6 @@ struct ListingFilterSheet: View {
                     isSelected: filter.directions.contains(direction)
                 ) {
                     toggleSet(&filter.directions, value: direction)
-                }
-            }
-        }
-    }
-
-    // MARK: - Property Type Chips
-
-    @ViewBuilder
-    private var propertyTypeChipsContent: some View {
-        FlowLayout(spacing: 8) {
-            ForEach(PropertyTypeFilter.allCases, id: \.self) { type in
-                FilterChip(
-                    label: type.rawValue,
-                    isSelected: filter.propertyType == type
-                ) {
-                    filter.propertyType = type
                 }
             }
         }

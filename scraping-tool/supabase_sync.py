@@ -655,39 +655,8 @@ def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None
     else:
         logger.info("[supabase] latest.json が空（スキップ）")
 
-    # 新築
-    shinchiku_path = output_path / "latest_shinchiku.json"
-    shinchiku = _load_json(str(shinchiku_path))
-    if shinchiku:
-        sources_in_batch: dict[str, list[dict]] = {}
-        for item in shinchiku:
-            src = item.get("source", "suumo")
-            sources_in_batch.setdefault(src, []).append(item)
-
-        for source, items in sources_in_batch.items():
-            try:
-                summary = _sync_source_listings(client, items, source, "shinchiku")
-                logger.info(
-                    "[supabase] %s(新築): new=%d updated=%d removed=%d unchanged=%d reappeared=%d",
-                    source, summary["new"], summary["updated"], summary["removed"],
-                    summary["unchanged"], summary["reappeared"],
-                )
-            except Exception as e:
-                logger.error("[supabase] %s(新築) listings 同期失敗: %s", source, e)
-
-        if skip_enrichments:
-            logger.info("[supabase] enrichments(新築): スキップ（dual-write モード）")
-        else:
-            try:
-                enriched = _sync_enrichments(client, shinchiku)
-                logger.info("[supabase] enrichments(新築): %d 件同期", enriched)
-            except Exception as e:
-                logger.error("[supabase] enrichments(新築) 同期失敗: %s", e)
-    else:
-        logger.info("[supabase] latest_shinchiku.json が空（スキップ）")
-
     # 整合性検証: JSON件数 vs Supabase is_active=true 件数
-    for pt, items in [("chuko", chuko), ("shinchiku", shinchiku)]:
+    for pt, items in [("chuko", chuko)]:
         if not items:
             continue
         json_count = len(items)

@@ -551,19 +551,11 @@ struct ListingDetailView: View {
             }
             DetailRow(title: "間取り", value: listing.layout ?? "—")
             DetailRow(title: "面積 / 坪数", value: "\(listing.areaDisplay) / \(listing.tsuboDisplay)")
-            if listing.isShinchiku {
-                DetailRow(title: "入居時期", value: listing.deliveryDateDisplay)
-            } else {
-                DetailRow(title: "築年", value: listing.builtDisplay)
-            }
-            DetailRow(title: listing.isShinchiku ? "階建" : "所在階 / 階建", value: {
-                if listing.isShinchiku {
-                    return listing.floorTotalDisplay
-                } else {
-                    let floor = listing.floorPosition.map { "\($0)階" } ?? "—"
-                    let total = listing.floorTotal.map { "\($0)階建" } ?? "—"
-                    return "\(floor) / \(total)"
-                }
+            DetailRow(title: "築年", value: listing.builtDisplay)
+            DetailRow(title: "所在階 / 階建", value: {
+                let floor = listing.floorPosition.map { "\($0)階" } ?? "—"
+                let total = listing.floorTotal.map { "\($0)階建" } ?? "—"
+                return "\(floor) / \(total)"
             }())
             DetailRow(title: "総戸数", value: listing.totalUnits.map { "\($0)戸" } ?? "—")
             if let dir = listing.direction, !dir.isEmpty {
@@ -595,10 +587,10 @@ struct ListingDetailView: View {
             if listing.repairFundOnetime != nil {
                 DetailRow(title: "修繕積立基金", value: listing.repairFundOnetimeDisplay)
             }
-            if !listing.isShinchiku, let delivery = listing.deliveryDate, !delivery.isEmpty {
+            if let delivery = listing.deliveryDate, !delivery.isEmpty {
                 DetailRow(title: "引渡時期", value: delivery)
             }
-            DetailRow(title: "種別", value: listing.isShinchiku ? "新築マンション" : "中古マンション")
+            DetailRow(title: "種別", value: "中古マンション")
             if listing.hasFeatureTags {
                 featureTagsRow
             }
@@ -1201,9 +1193,7 @@ struct ListingDetailView: View {
                 toolButton("銀行比較", icon: "building.columns", color: .green) { showBankComparison = true }
                 toolButton("ローン減税", icon: "arrow.down.circle", color: .orange) { showTaxBenefit = true }
                 toolButton("賃貸 vs 購入", icon: "arrow.left.arrow.right", color: .purple) { showRentVsBuy = true }
-                if !listing.isShinchiku {
-                    toolButton("リノベ費用", icon: "hammer", color: .teal) { showRenovation = true }
-                }
+                toolButton("リノベ費用", icon: "hammer", color: .teal) { showRenovation = true }
             }
         }
         .sheet(isPresented: $showPurchaseCost) {
@@ -2470,13 +2460,8 @@ struct ListingDetailView: View {
                 .fontWeight(.bold)
                 .foregroundStyle(Color.accentColor)
 
-            if listing.isShinchiku {
-                // ── 新築: 儲かる確率 + ランキング ──
-                shinchikuSumaiSection
-            } else {
-                // ── 中古: 沖式時価 + 値上がり率 + レーダーチャート ──
-                chukoSumaiSection
-            }
+            // 沖式時価 + 値上がり率 + レーダーチャート
+            chukoSumaiSection
 
             // ランキング（共通）
             if listing.ssStationRank != nil || listing.ssWardRank != nil {
@@ -2637,172 +2622,6 @@ struct ListingDetailView: View {
         if value >= 50 { return .teal }
         if value >= 45 { return .orange }
         return .gray
-    }
-
-    // MARK: - 新築マンション: 儲かる確率
-
-    @ViewBuilder
-    private var shinchikuSumaiSection: some View {
-        // ── 儲かる確率 + m²割安額 ──
-        if let pct = listing.ssProfitPct {
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("沖式儲かる確率")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    HStack(alignment: .firstTextBaseline, spacing: 2) {
-                        Text("\(pct)")
-                            .font(.system(.largeTitle, design: .rounded).weight(.heavy))
-                            .foregroundStyle(profitColor(pct))
-                        Text("%")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(profitColor(pct))
-                    }
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 6) {
-                    if let discount = listing.ssM2Discount {
-                        VStack(alignment: .trailing, spacing: 1) {
-                            Text("m²割安額")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                            HStack(alignment: .firstTextBaseline, spacing: 1) {
-                                Text(discount >= 0 ? "+\(discount)" : "\(discount)")
-                                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
-                                    .foregroundStyle(discount <= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
-                                Text("万円/m²")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    if let judgment = listing.computedPriceJudgment {
-                        Text(judgment)
-                            .font(.caption)
-                            .fontWeight(.bold)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(judgmentColor(judgment).opacity(0.15))
-                            .foregroundStyle(judgmentColor(judgment))
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
-                    }
-                }
-            }
-        } else if let discount = listing.ssM2Discount {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("m²割安額")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    HStack(alignment: .firstTextBaseline, spacing: 1) {
-                        Text(discount >= 0 ? "+\(discount)" : "\(discount)")
-                            .font(.system(.title3, design: .rounded).weight(.semibold))
-                            .foregroundStyle(discount <= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor)
-                        Text("万円/m²")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                Spacer()
-                if let judgment = listing.computedPriceJudgment {
-                    Text(judgment)
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(judgmentColor(judgment).opacity(0.15))
-                        .foregroundStyle(judgmentColor(judgment))
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                }
-            }
-        }
-
-        // ── 10年後予測詳細 ──
-        if listing.hasForecastDetail {
-            forecastDetailSection
-        }
-    }
-
-    /// 10年後予測詳細セクション（新築のみ）
-    @ViewBuilder
-    private var forecastDetailSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("10年後予測詳細")
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                // シミュレーションセクションで購入判定を表示する場合は重複を避ける
-                if !listing.hasSimulationData, let judgment = listing.ssPurchaseJudgment {
-                    Text(judgment)
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(
-                            judgment.contains("値上がり") || judgment.contains("期待")
-                                ? DesignSystem.positiveColor.opacity(0.12)
-                                : Color.secondary.opacity(0.12)
-                        )
-                        .foregroundStyle(
-                            judgment.contains("値上がり") || judgment.contains("期待")
-                                ? DesignSystem.positiveColor
-                                : .primary
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                }
-            }
-
-            // 詳細行
-            VStack(spacing: 6) {
-                if let price = listing.ssOkiPrice70m2 {
-                    forecastRow(label: "沖式新築時価", value: "\(price.formatted())万円", subLabel: "(70㎡)")
-                }
-                if let m2Price = listing.ssNewM2Price {
-                    forecastRow(label: "新築時坪単価", value: String(format: "%.1f万円/坪", Double(m2Price) * 3.30578))
-                }
-                if let forecastM2 = listing.ssForecastM2Price {
-                    forecastRow(label: "10年後予測坪", value: String(format: "%.1f万円/坪", Double(forecastM2) * 3.30578))
-                }
-                if let changeRate = listing.ssForecastChangeRate {
-                    let formatted = changeRate.truncatingRemainder(dividingBy: 1) == 0
-                        ? String(format: "%.0f", changeRate)
-                        : String(format: "%.1f", changeRate)
-                    let sign = changeRate >= 0 ? "+" : ""
-                    forecastRow(
-                        label: "予測変動率",
-                        value: "\(sign)\(formatted)%",
-                        valueColor: changeRate >= 0 ? DesignSystem.positiveColor : DesignSystem.negativeColor
-                    )
-                }
-            }
-        }
-        .padding(10)
-        .background(Color(.systemGray6).opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
-    @ViewBuilder
-    private func forecastRow(label: String, value: String, subLabel: String? = nil, valueColor: Color = .primary) -> some View {
-        HStack {
-            HStack(spacing: 2) {
-                Text(label)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                if let sub = subLabel {
-                    Text(sub)
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-            Spacer()
-            Text(value)
-                .font(.subheadline)
-                .fontWeight(.bold)
-                .foregroundStyle(valueColor)
-        }
     }
 
     // MARK: - 周辺の中古マンション相場
