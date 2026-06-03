@@ -489,8 +489,8 @@ final class ListingStore {
     private func refreshFromSupabase(modelContext: ModelContext, isBackground: Bool = false) async {
         do {
             await BuildingPreferenceStore.shared.fetch()
-            let (chukoNew, shinNew) = try await SupabaseListingStore.shared.refresh(modelContext: modelContext)
-            let totalNew = chukoNew + shinNew
+            let (chukoNew, _) = try await SupabaseListingStore.shared.refresh(modelContext: modelContext)
+            let totalNew = chukoNew
             lastRefreshHadChanges = totalNew > 0
 
             let fetchedAt = Date()

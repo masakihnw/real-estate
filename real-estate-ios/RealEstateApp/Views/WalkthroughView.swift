@@ -49,7 +49,7 @@ private let walkthroughPages: [WalkthroughPage] = [
         icon: "building.2.fill",
         iconColors: [Color(red: 0.20, green: 0.50, blue: 0.95), Color(red: 0.40, green: 0.70, blue: 1.0)],
         title: "物件情報へようこそ",
-        subtitle: "中古・新築マンションの検索から比較、\nお気に入り管理まで一つのアプリで。",
+        subtitle: "中古マンションの検索から比較、\nお気に入り管理まで一つのアプリで。",
         features: [
             WalkthroughFeature(icon: "magnifyingglass", iconColor: .blue, title: "かんたん検索", description: "価格・間取り・エリアで絞り込み"),
             WalkthroughFeature(icon: "map.fill", iconColor: .green, title: "地図で探す", description: "ハザードマップも重ねて表示"),
