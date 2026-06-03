@@ -12,6 +12,7 @@ import SwiftData
 // MARK: - JSON Decoding (latest.json / latest_shinchiku.json 形式)
 
 struct ListingDTO: Codable {
+    var identity_key: String?
     var source: String?
     var property_type: String?
     var url: String?
@@ -318,6 +319,7 @@ extension Listing {
               let rawName = dto.name, !rawName.isEmpty else { return nil }
         let name = cleanListingName(rawName)
         guard !name.isEmpty else { return nil }
+        let dbIdentityKey = dto.identity_key
         // floor_plan_images 配列を JSON 文字列に変換
         var floorPlanJSON: String?
         if let images = dto.floor_plan_images, !images.isEmpty,
@@ -344,7 +346,7 @@ extension Listing {
                 altSourcesJSON = String(data: data, encoding: .utf8)
             }
         }
-        return Listing(
+        let listing = Listing(
             source: dto.source,
             url: url,
             name: name,
@@ -463,5 +465,7 @@ extension Listing {
             }(),
             aiRecommendationAction: dto.ai_recommendation_action
         )
+        listing.supabaseIdentityKey = dbIdentityKey
+        return listing
     }
 }
