@@ -2,9 +2,9 @@
 """
 投資判断支援用の enricher。
 各物件に以下のフィールドを付与する:
-- price_fairness_score: 掲載価格の妥当性スコア（0-100、50=適正、50未満=割高、50超=割安）
 - resale_liquidity_score: 再販流動性スコア（0-100、高い=売りやすい）
-- listing_score: 総合投資スコア（0-100）
+
+listing_score / price_fairness_score は Routine① の AI スコアリングに一元化済み。
 
 Phase 7 追加: テスト可能なラッパー関数
 - calculate_investment_score, calculate_days_on_market, count_competing_listings
@@ -251,9 +251,7 @@ def enrich_investment_scores(
     from asset_score import get_asset_score_and_rank
 
     for listing in listings:
-        listing["price_fairness_score"] = _calc_price_fairness(listing)
         listing["resale_liquidity_score"] = _calc_resale_liquidity(listing, transaction_data)
-        listing["listing_score"] = _calc_listing_score(listing)
         try:
             score_raw, rank = get_asset_score_and_rank(listing)
             listing["asset_rank"] = rank
@@ -298,7 +296,7 @@ def main():
 
     from enrichment_writer import write_enrichments
     write_enrichments(listings, [
-        "price_fairness_score", "resale_liquidity_score", "listing_score",
+        "resale_liquidity_score",
         "competing_listings_count", "investment_summary", "highlight_badge",
         "asset_rank", "asset_score_raw",
     ], "investment")

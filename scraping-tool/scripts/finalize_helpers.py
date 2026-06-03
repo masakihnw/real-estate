@@ -86,9 +86,8 @@ def inject_investment_fields(output_dir: Path) -> None:
     enrich_investment_scores(cur, tx_data)
     p["latest"].write_text(json.dumps(cur, ensure_ascii=False), encoding="utf-8")
 
-    scored = sum(1 for r in cur if r.get("listing_score") is not None)
     history = sum(1 for r in cur if len(r.get("price_history", [])) > 1)
-    logger.info(f"中古: スコア {scored}/{len(cur)}件, 価格変動あり {history}件")
+    logger.info(f"中古: {len(cur)}件, 価格変動あり {history}件")
 
     cur_s = load_json(p["latest_shinchiku"], missing_ok=True, default=[])
     prev_s = load_json(p["previous_shinchiku"], missing_ok=True, default=[])
@@ -98,8 +97,7 @@ def inject_investment_fields(output_dir: Path) -> None:
         inject_competing_count(cur_s)
         enrich_investment_scores(cur_s, tx_data)
         p["latest_shinchiku"].write_text(json.dumps(cur_s, ensure_ascii=False), encoding="utf-8")
-        scored_s = sum(1 for r in cur_s if r.get("listing_score") is not None)
-        logger.info(f"新築: スコア {scored_s}/{len(cur_s)}件")
+        logger.info(f"新築: {len(cur_s)}件")
 
 
 def count_new(output_dir: Path) -> None:
