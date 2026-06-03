@@ -94,5 +94,5 @@ jobs:
           detect-delisted workflow
           building_units.json 更新 + latest.json から除去"
 
-          git pull --rebase origin main
+          git pull --rebase --autostash origin main
           git push origin HEAD:refs/heads/main
