@@ -556,7 +556,10 @@ struct DashboardView: View {
     }
 
     private var newListingsCount: Int {
-        Self.deduplicatedNewListings(activeListings.filter(\.isRecentlyAdded)).count
+        Self.deduplicatedNewListings(
+            activeListings.filter(\.isRecentlyAdded),
+            prefStore: BuildingPreferenceStore.shared
+        ).count
     }
 
     private var priceDecreasedCount: Int {
@@ -582,7 +585,10 @@ struct DashboardView: View {
     private func filteredListings(for filter: DashboardQuickFilter) -> [Listing] {
         switch filter {
         case .newToday:
-            return Self.deduplicatedNewListings(activeListings.filter(\.isRecentlyAdded))
+            return Self.deduplicatedNewListings(
+                activeListings.filter(\.isRecentlyAdded),
+                prefStore: BuildingPreferenceStore.shared
+            )
         case .priceDecreased:
             return priceDecreasedListings
         case .priceIncreased:
@@ -592,12 +598,19 @@ struct DashboardView: View {
         }
     }
 
-    static func deduplicatedNewListings(_ listings: [Listing]) -> [Listing] {
+    static func deduplicatedNewListings(
+        _ listings: [Listing],
+        prefStore: BuildingPreferenceStore? = nil
+    ) -> [Listing] {
         var seen = Set<String>()
         return listings
             .sorted { $0.addedAt > $1.addedAt }
             .filter { listing in
-                let key = listing.supabaseIdentityKey ?? listing.identityKey
+                if let pref = prefStore,
+                   pref.isLiked(listing.identityKey) || pref.isNoped(listing.identityKey) {
+                    return false
+                }
+                let key = listing.buildingGroupKey
                 return seen.insert(key).inserted
             }
     }
