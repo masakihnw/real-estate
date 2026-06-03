@@ -7,13 +7,14 @@ struct SwipeSessionViewModelTests {
 
     // MARK: - Helpers
 
-    private static var counter = 0
+    private nonisolated(unsafe) static var counter = 0
 
     private func makeListing(
         name: String,
         addedAt: Date = Date(),
         isDelisted: Bool = false,
-        listingScore: Int? = nil
+        listingScore: Int? = nil,
+        propertyType: String = "chuko"
     ) -> Listing {
         SwipeSessionViewModelTests.counter += 1
         let unique = "\(name)_\(SwipeSessionViewModelTests.counter)_\(UUID().uuidString.prefix(8))"
@@ -22,6 +23,7 @@ struct SwipeSessionViewModelTests {
             name: unique,
             addedAt: addedAt,
             isDelisted: isDelisted,
+            propertyType: propertyType,
             listingScore: listingScore
         )
     }
@@ -52,6 +54,17 @@ struct SwipeSessionViewModelTests {
         #expect(vm.cards.count == 2)
         #expect(!vm.cards.contains(where: { $0.name == old.name }))
         #expect(!vm.cards.contains(where: { $0.name == delisted.name }))
+    }
+
+    @Test("loadCards は新築（shinchiku）を除外する")
+    @MainActor
+    func loadCardsExcludesShinchiku() {
+        let vm = SwipeSessionViewModel()
+        let chuko = makeListing(name: "中古物件")
+        let shinchiku = makeListing(name: "新築物件", propertyType: "shinchiku")
+        vm.loadCards(from: [chuko, shinchiku])
+        #expect(vm.cards.count == 1)
+        #expect(vm.cards[0].name == chuko.name)
     }
 
     @Test("loadCards は listingScore 降順でソートする")
@@ -259,6 +272,43 @@ struct SwipeSessionViewModelTests {
         vm.setCardsForTesting([newCard])
         #expect(vm.likedCount == 0)
         #expect(vm.currentCard?.name == newCard.name)
+        #expect(!vm.canUndo)
+    }
+
+    // MARK: - Rapid Swipe (連続スワイプ)
+
+    @Test("連続スワイプで正しくカウントが進む")
+    @MainActor
+    func rapidSwipeUpdatesCorrectly() {
+        let vm = vmWithCards(5)
+        vm.commitSwipe(.like)
+        vm.commitSwipe(.nope)
+        vm.commitSwipe(.like)
+        vm.commitSwipe(.skip)
+        vm.commitSwipe(.nope)
+        #expect(vm.isComplete)
+        #expect(vm.likedCount == 2)
+        #expect(vm.nopedCount == 2)
+        #expect(vm.skippedCount == 1)
+    }
+
+    @Test("連続スワイプ後の連続 undo で全て元に戻る")
+    @MainActor
+    func rapidSwipeThenFullUndo() {
+        let vm = vmWithCards(3)
+        let firstName = vm.cards[0].name
+        vm.commitSwipe(.like)
+        vm.commitSwipe(.nope)
+        vm.commitSwipe(.skip)
+        #expect(vm.isComplete)
+
+        vm.undo()
+        vm.undo()
+        vm.undo()
+        #expect(vm.currentCard?.name == firstName)
+        #expect(vm.likedCount == 0)
+        #expect(vm.nopedCount == 0)
+        #expect(vm.skippedCount == 0)
         #expect(!vm.canUndo)
     }
 }
