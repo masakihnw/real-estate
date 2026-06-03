@@ -735,12 +735,13 @@ final class Listing: @unchecked Sendable {
 
     private static func formatPriceMan(_ man: Int, unit: String = "万") -> String {
         if man >= 10000 {
-            let oku = Double(man) / 10000.0
-            // 整数なら小数点なし（"2億"）、そうでなければ小数1桁（"1.2億"）
-            if oku == oku.rounded(.down) && oku.truncatingRemainder(dividingBy: 1) == 0 {
-                return "\(Int(oku))億"
+            let oku = man / 10000
+            let remainder = man % 10000
+            if remainder == 0 {
+                return "\(oku)億"
             }
-            return String(format: "%.1f億", oku)
+            let manFormatted = priceFormatter.string(from: NSNumber(value: remainder)) ?? "\(remainder)"
+            return "\(oku)億\(manFormatted)\(unit)"
         }
         let formatted = priceFormatter.string(from: NSNumber(value: man)) ?? "\(man)"
         return "\(formatted)\(unit)"
@@ -2431,8 +2432,12 @@ final class Listing: @unchecked Sendable {
             /// 成約価格の表示
             var tradePriceDisplay: String {
                 if tradePriceMan >= 10000 {
-                    let oku = Double(tradePriceMan) / 10000.0
-                    return String(format: "%.1f億円", oku)
+                    let oku = tradePriceMan / 10000
+                    let remainder = tradePriceMan % 10000
+                    if remainder == 0 {
+                        return "\(oku)億円"
+                    }
+                    return "\(oku)億\(remainder)万円"
                 }
                 return "\(tradePriceMan)万円"
             }

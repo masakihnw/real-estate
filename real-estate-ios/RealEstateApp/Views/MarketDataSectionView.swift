@@ -264,7 +264,12 @@ struct MarketDataSectionView: View {
 
         var avgPriceDisplay: String {
             if avgPriceMan >= 10000 {
-                return String(format: "%.1f億円", Double(avgPriceMan) / 10000.0)
+                let oku = avgPriceMan / 10000
+                let remainder = avgPriceMan % 10000
+                if remainder == 0 {
+                    return "\(oku)億円"
+                }
+                return "\(oku)億\(remainder)万円"
             }
             return "\(avgPriceMan)万円"
         }
