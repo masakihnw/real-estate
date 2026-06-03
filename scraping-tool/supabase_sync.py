@@ -284,10 +284,8 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             "geocode_fixed": item.get("geocode_fixed"),
             "alt_urls": item.get("alt_urls"),
         }
-        if item.get("is_new"):
-            listing_row["is_new"] = True
-        if item.get("is_new_building"):
-            listing_row["is_new_building"] = True
+        listing_row["is_new"] = bool(item.get("is_new", False))
+        listing_row["is_new_building"] = bool(item.get("is_new_building", False))
 
         REAL_COLUMNS = {"area_m2", "area_max_m2", "balcony_area_m2", "latitude", "longitude"}
         listing_row = {

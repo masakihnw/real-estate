@@ -371,6 +371,7 @@ final class ListingStore {
 
     /// JSON 由来のプロパティのみ更新。memo / isLiked / isNew / addedAt / latitude / longitude はユーザーデータ・同期管理データのため上書きしない。
     private func update(_ existing: Listing, from new: Listing) {
+        existing.supabaseIdentityKey = new.supabaseIdentityKey ?? existing.supabaseIdentityKey
         existing.source = new.source
         existing.url = new.url
         existing.name = new.name

@@ -10,6 +10,8 @@ import SwiftData
 
 @Model
 final class Listing: @unchecked Sendable {
+    /// Supabase 側で計算された identity_key（同期マッチング用。Swift computed identityKey とは別）
+    var supabaseIdentityKey: String?
     var source: String?
     var url: String
     var name: String

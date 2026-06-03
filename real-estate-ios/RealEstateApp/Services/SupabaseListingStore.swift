@@ -145,7 +145,6 @@ final class SupabaseListingStore {
 
     /// SwiftData に同期 (既存 ListingStore.syncToDatabase のロジックを流用)
     private func syncToDatabase(dtos: [ListingDTO], propertyType: String, modelContext: ModelContext, isIncremental: Bool, likedKeys: Set<String> = []) -> Int {
-        // フルフェッチ時: identityKey 変更による不一致に備え自動バックアップ
         if !isIncremental && !UserAnnotationStore.hasBackup {
             UserAnnotationStore.backup(from: modelContext)
         }
@@ -156,7 +155,18 @@ final class SupabaseListingStore {
             let predicate = #Predicate<Listing> { $0.propertyType == propertyType }
             let descriptor = FetchDescriptor<Listing>(predicate: predicate)
             let existing = try modelContext.fetch(descriptor)
-            let existingByKey = Dictionary(existing.map { ($0.identityKey, $0) }, uniquingKeysWith: { first, _ in first })
+
+            // マッチング辞書: Supabase identity_key（優先）+ Swift computed identityKey（フォールバック）
+            var existingByDbKey: [String: Listing] = [:]
+            var existingBySwiftKey: [String: Listing] = [:]
+            for e in existing {
+                if let dbKey = e.supabaseIdentityKey, existingByDbKey[dbKey] == nil {
+                    existingByDbKey[dbKey] = e
+                }
+                if existingBySwiftKey[e.identityKey] == nil {
+                    existingBySwiftKey[e.identityKey] = e
+                }
+            }
 
             for e in existing {
                 e.isNew = false
@@ -165,25 +175,31 @@ final class SupabaseListingStore {
             }
 
             var newCount = 0
-            var incomingKeys = Set<String>()
+            var incomingDbKeys = Set<String>()
+            var incomingSwiftKeys = Set<String>()
 
             let hasAnnotationBackup = UserAnnotationStore.hasBackup
 
             for dto in dtos {
                 guard let listing = Listing.from(dto: dto, fetchedAt: fetchedAt) else { continue }
                 listing.propertyType = propertyType
-                let key = listing.identityKey
+                let swiftKey = listing.identityKey
+                let dbKey = dto.identity_key
 
-                // 非アクティブ物件: Supabase で is_active=false になった
+                // Supabase identity_key → Swift computed identityKey の順でマッチ
+                let matched: Listing? = dbKey.flatMap { existingByDbKey[$0] }
+                    ?? existingBySwiftKey[swiftKey]
+
                 if dto.is_active == false {
-                    if let existing = existingByKey[key] {
+                    if let existing = matched {
                         let hasUserData = existing.isLiked || existing.hasComments || existing.hasPhotos || !(existing.memo ?? "").isEmpty
                         if hasUserData {
                             existing.isDelisted = true
+                            existing.supabaseIdentityKey = dbKey ?? existing.supabaseIdentityKey
                         } else {
                             modelContext.delete(existing)
                         }
-                    } else if likedKeys.contains(key) {
+                    } else if likedKeys.contains(swiftKey) {
                         listing.isLiked = true
                         listing.isDelisted = true
                         if let createdAt = dto.created_at,
@@ -203,14 +219,16 @@ final class SupabaseListingStore {
                     continue
                 }
 
-                incomingKeys.insert(key)
+                if let dbKey { incomingDbKeys.insert(dbKey) }
+                incomingSwiftKeys.insert(swiftKey)
 
-                if let same = existingByKey[key] {
+                if let same = matched {
                     if same.isDelisted {
                         same.isDelisted = false
                         same.isRelisted = true
                         same.addedAt = fetchedAt
                     }
+                    same.supabaseIdentityKey = dbKey ?? same.supabaseIdentityKey
                     ListingStore.shared.updateFromSupabase(same, from: listing)
                 } else {
                     if listing.isNew { newCount += 1 }
@@ -232,8 +250,13 @@ final class SupabaseListingStore {
 
             // フルフェッチ時のみ、Supabase から消えた物件を処理
             // 安全策: 取得件数が0または既存の10%未満の場合はスキップ（API障害時の誤削除防止）
-            if !isIncremental && !incomingKeys.isEmpty && incomingKeys.count >= existing.count / 10 {
-                for e in existing where !incomingKeys.contains(e.identityKey) {
+            if !isIncremental && !incomingSwiftKeys.isEmpty && incomingSwiftKeys.count >= existing.count / 10 {
+                for e in existing {
+                    let matchedByDbKey = e.supabaseIdentityKey.map { incomingDbKeys.contains($0) } ?? false
+                    let matchedBySwiftKey = incomingSwiftKeys.contains(e.identityKey)
+                    if matchedByDbKey || matchedBySwiftKey { continue }
+                    // 移行期: supabaseIdentityKey 未設定のレコードは保護（次回同期で設定される）
+                    if e.supabaseIdentityKey == nil { continue }
                     let hasUserData = e.isLiked || e.hasComments || e.hasPhotos || !(e.memo ?? "").isEmpty
                     if hasUserData {
                         if !e.isDelisted { e.isDelisted = true }
