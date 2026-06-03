@@ -104,6 +104,7 @@
 		CC96986E6F49533736E0051D /* PropertyListingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C3F6C00E4EDA77FD77F04A /* PropertyListingTabView.swift */; };
 		D02597AD698F8E60CF1F11D4 /* WalkthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1FD6AB10F203FC324097D8 /* WalkthroughView.swift */; };
 		D0CB8E0312FD2887D70458A7 /* ListingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607511ACC91ACD538F163E71 /* ListingListView.swift */; };
+		D756E498FB182D70DF3929A0 /* ImagePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10BDA7C39DF4EB584E2416B /* ImagePipeline.swift */; };
 		D894CEAB397F8943B10687D6 /* TrimmedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19119F6570B5BC09CB87F0B2 /* TrimmedAsyncImage.swift */; };
 		D8C9244D891E76AED4B99536 /* UserAnnotationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC3A219B7AF772D1DADDF0E /* UserAnnotationStore.swift */; };
 		DB0AB520BA62A5369467B414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97732299FBD4E61C33F84F0E /* Assets.xcassets */; };
@@ -231,6 +232,7 @@
 		A53234D8663BD77ECD71B317 /* ListingFilterRouteStationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilterRouteStationsTests.swift; sourceTree = "<group>"; };
 		A94333B46786557992552519 /* RadarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarChartView.swift; sourceTree = "<group>"; };
 		AFD3E9BA23AEB1C1A566EF4D /* SaveErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveErrorHandler.swift; sourceTree = "<group>"; };
+		B10BDA7C39DF4EB584E2416B /* ImagePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePipeline.swift; sourceTree = "<group>"; };
 		B5945F9FF2AF3675E525F384 /* ObjCExceptionCatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionCatcher.m; sourceTree = "<group>"; };
 		B7383C0353C4BC1411D012D4 /* CommuteDataDowngradeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteDataDowngradeTests.swift; sourceTree = "<group>"; };
 		B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStorageService.swift; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 				0C32C97436B7CC7252692AFE /* BuyerProfileSyncService.swift */,
 				4C01B541CE8BDAC3B3E2C7BD /* CommuteTimeService.swift */,
 				32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */,
+				B10BDA7C39DF4EB584E2416B /* ImagePipeline.swift */,
 				EA5549338A98AC303BCC728D /* ListingStore.swift */,
 				06A07BB042F9CA8B1BAFA65F /* NetworkMonitor.swift */,
 				A35674F1DD6C3C99DB9E65C2 /* NotificationScheduleService.swift */,
@@ -649,6 +652,7 @@
 				575E06F0173318384B77E526 /* FirebaseSyncService.swift in Sources */,
 				647AA8527388CFD44AAFCCB3 /* FlowLayout.swift in Sources */,
 				160C679F22FB90962F2B32DE /* HighlightBadgeView.swift in Sources */,
+				D756E498FB182D70DF3929A0 /* ImagePipeline.swift in Sources */,
 				FBFF57FCA991E452D7AA747F /* InvestmentSummaryCard.swift in Sources */,
 				F4C92ACF4AD03ECB5EA847CB /* Listing+JSONDecoding.swift in Sources */,
 				4C925176E13ED9B8CD72E5F1 /* Listing+MarkdownExport.swift in Sources */,
@@ -814,7 +818,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 776;
+				CURRENT_PROJECT_VERSION = 777;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -966,7 +970,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 776;
+				CURRENT_PROJECT_VERSION = 777;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_NS_ASSERTIONS = NO;
