@@ -12,7 +12,7 @@ sys.modules.setdefault("playwright.sync_api", pw_mock)
 import pytest
 from bs4 import BeautifulSoup
 
-from homes_scraper import _extract_card_listings
+from homes_scraper import HomesListing, _extract_card_listings, apply_conditions
 
 
 BASE_URL = "https://www.homes.co.jp"
@@ -207,3 +207,49 @@ class TestNameOrUrlRequired:
         soup = BeautifulSoup(html, "lxml")
         items = _extract_card_listings(soup, BASE_URL)
         assert all(item.name != "" for item in items)
+
+
+def _make_homes_listing(**overrides) -> HomesListing:
+    defaults = dict(
+        source="homes",
+        url="https://www.homes.co.jp/mansion/b-99999/",
+        name="テストマンション",
+        price_man=10000,
+        address="東京都江東区東陽1",
+        station_line="東京メトロ東西線「東陽町」徒歩5分",
+        walk_min=5,
+        area_m2=65.0,
+        layout="3LDK",
+        built_str="2015年3月",
+        built_year=2015,
+        total_units=100,
+    )
+    defaults.update(overrides)
+    return HomesListing(**defaults)
+
+
+class TestApplyConditionsNullPrice:
+    """price_man=None（価格未定）の物件が除外されることを検証。"""
+
+    def test_null_price_excluded(self, monkeypatch):
+        monkeypatch.setattr("homes_scraper.is_tokyo_23_by_address", lambda *args: True)
+        monkeypatch.setattr("homes_scraper.line_ok", lambda *args, **kwargs: True)
+        monkeypatch.setattr("homes_scraper.station_passengers_ok", lambda *args: True)
+        monkeypatch.setattr("homes_scraper.load_station_passengers", lambda: {})
+        monkeypatch.setattr("homes_scraper.lower_tier_station_ok", lambda *args: True)
+        monkeypatch.setattr("homes_scraper.get_effective_area_min_m2", lambda *args: 50.0)
+        monkeypatch.setattr("homes_scraper.layout_ok", lambda *args: True)
+        row = _make_homes_listing(price_man=None)
+        assert apply_conditions([row]) == []
+
+    def test_valid_price_passes(self, monkeypatch):
+        monkeypatch.setattr("homes_scraper.is_tokyo_23_by_address", lambda *args: True)
+        monkeypatch.setattr("homes_scraper.line_ok", lambda *args, **kwargs: True)
+        monkeypatch.setattr("homes_scraper.station_passengers_ok", lambda *args: True)
+        monkeypatch.setattr("homes_scraper.load_station_passengers", lambda: {})
+        monkeypatch.setattr("homes_scraper.lower_tier_station_ok", lambda *args: True)
+        monkeypatch.setattr("homes_scraper.get_effective_area_min_m2", lambda *args: 50.0)
+        monkeypatch.setattr("homes_scraper.layout_ok", lambda *args: True)
+        row = _make_homes_listing(price_man=10000)
+        result = apply_conditions([row])
+        assert len(result) == 1

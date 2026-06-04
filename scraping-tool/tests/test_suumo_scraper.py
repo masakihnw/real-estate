@@ -334,3 +334,33 @@ def test_apply_conditions_does_not_double_fetch(monkeypatch):
     result = apply_conditions([row])
     assert len(result) == 1
     assert fetch_count["n"] == 1, "detail取得は1回のみであるべき"
+
+
+def test_passes_basic_filters_rejects_null_price(monkeypatch):
+    """price_man=None の物件（価格未定）は基本フィルタで除外される。"""
+    monkeypatch.setattr("suumo_scraper._is_tokyo_23", lambda *args, **kwargs: True)
+    monkeypatch.setattr("suumo_scraper.line_ok", lambda *args, **kwargs: True)
+    monkeypatch.setattr("suumo_scraper.station_passengers_ok", lambda *args, **kwargs: True)
+    row = _make_listing(price_man=None)
+    assert _passes_basic_filters(row, {}) is False
+
+
+def test_apply_conditions_excludes_null_price(monkeypatch):
+    """price_man=None の物件は apply_conditions で除外される。"""
+    _common_monkeypatches(monkeypatch)
+    monkeypatch.setattr("suumo_scraper._load_building_units_cache", lambda: {})
+    row = _make_listing(price_man=None)
+    assert apply_conditions([row]) == []
+
+
+def test_apply_conditions_keeps_valid_price(monkeypatch):
+    """price_man が有効範囲内の物件は通過する。"""
+    _common_monkeypatches(monkeypatch)
+    monkeypatch.setattr("suumo_scraper._load_building_units_cache", lambda: {})
+    monkeypatch.setattr("suumo_scraper.create_session", lambda: object())
+    monkeypatch.setattr("suumo_scraper._fetch_detail_page", lambda *_a, **_kw: "<html></html>")
+    monkeypatch.setattr("suumo_scraper.parse_suumo_detail_html",
+                        lambda *_a: {"total_units": 100, "floor_position": 5, "floor_total": 11})
+    row = _make_listing(price_man=10000)
+    result = apply_conditions([row])
+    assert len(result) == 1

@@ -828,7 +828,9 @@ def _passes_basic_filters(r: SuumoListing, passengers_map: dict) -> bool:
         return False
     if not station_passengers_ok(r.station_line, passengers_map):
         return False
-    if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
+    if r.price_man is None:
+        return False
+    if r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN:
         return False
     if not lower_tier_station_ok(r.station_line, r.price_man):
         return False
