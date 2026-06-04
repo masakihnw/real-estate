@@ -26,9 +26,23 @@ final class SupabaseListingStore {
     private let defaults = UserDefaults.standard
 
     private let lastSyncKeyChuko = "supabase.lastSync.chuko"
+    private let syncVersionKey = "supabase.syncVersion"
     private let pageSize = 100
 
-    private init() {}
+    static let currentSyncVersion = 3
+
+    private init() {
+        migrateSyncVersionIfNeeded()
+    }
+
+    /// syncVersion が古い場合、同期状態をリセットしてフル再同期を強制する。
+    func migrateSyncVersionIfNeeded() {
+        let stored = defaults.integer(forKey: syncVersionKey)
+        if stored < Self.currentSyncVersion {
+            clearSyncState()
+            defaults.set(Self.currentSyncVersion, forKey: syncVersionKey)
+        }
+    }
 
     // MARK: - Public
 
@@ -46,7 +60,12 @@ final class SupabaseListingStore {
 
         let chukoNew = chukoFetch.dtos.isEmpty ? 0 :
             syncToDatabase(dtos: chukoFetch.dtos, propertyType: "chuko", modelContext: modelContext, isIncremental: chukoFetch.isIncremental, likedKeys: likedKeys)
-        if !chukoFetch.dtos.isEmpty {
+
+        if !chukoFetch.delistedKeys.isEmpty {
+            applyDelistings(keys: chukoFetch.delistedKeys, propertyType: "chuko", modelContext: modelContext)
+        }
+
+        if !chukoFetch.dtos.isEmpty || !chukoFetch.delistedKeys.isEmpty {
             defaults.set(ISO8601DateFormatter().string(from: Date()), forKey: lastSyncKeyChuko)
         }
 
@@ -62,6 +81,7 @@ final class SupabaseListingStore {
     private struct FetchResult {
         let dtos: [ListingDTO]
         let isIncremental: Bool
+        let delistedKeys: [String]
     }
 
     /// ネットワーク取得 + デコードのみ（ModelContext の読み取りは最小限に抑え、書き込みは行わない）
@@ -77,8 +97,16 @@ final class SupabaseListingStore {
         }
 
         var dtos: [ListingDTO]
+        var delistedKeys: [String] = []
         if let lastSync = lastSync {
-            dtos = try await fetchIncremental(propertyType: propertyType, since: lastSync)
+            async let incrementalTask = fetchIncremental(propertyType: propertyType, since: lastSync)
+            async let delistTask = fetchDelistedKeys(since: lastSync)
+            dtos = try await incrementalTask
+            do {
+                delistedKeys = try await delistTask
+            } catch {
+                logger.warning("fetchDelistedKeys 失敗（スキップ）: \(error.localizedDescription, privacy: .public)")
+            }
         } else {
             dtos = try await fetchAll(propertyType: propertyType)
             let likedInactive = try await fetchLikedInactiveListings()
@@ -86,7 +114,7 @@ final class SupabaseListingStore {
             dtos.append(contentsOf: likedInactive)
         }
 
-        return FetchResult(dtos: dtos, isIncremental: lastSync != nil)
+        return FetchResult(dtos: dtos, isIncremental: lastSync != nil, delistedKeys: delistedKeys)
     }
 
     /// 全件取得 (ページネーション) — 軽量ビューを使用
@@ -131,6 +159,17 @@ final class SupabaseListingStore {
         return dtos
     }
 
+    /// 差分同期中に掲載終了した物件の identity_key を取得する。
+    /// listings テーブルを直接クエリするため、ビューから消えた物件も検知できる。
+    private func fetchDelistedKeys(since: String) async throws -> [String] {
+        let params: [String: Any] = ["since_ts": since]
+        let data = try await client.rpc("get_delisted_since", params: params)
+        let rows = try JSONDecoder().decode([[String: String]].self, from: data)
+        let keys = rows.compactMap { $0["identity_key"] }
+        logger.info("Supabase delisted since \(since, privacy: .public): \(keys.count) 件")
+        return keys
+    }
+
     /// 差分取得 (since timestamp) — 軽量ビューを使用
     private func fetchIncremental(propertyType: String, since: String) async throws -> [ListingDTO] {
         let params: [String: Any] = ["since_ts": since]
@@ -141,6 +180,41 @@ final class SupabaseListingStore {
 
         logger.info("Supabase incremental(\(propertyType, privacy: .public)) since \(since, privacy: .public): \(dtos.count) 件")
         return dtos
+    }
+
+    /// 差分同期で掲載終了が判明した物件をローカル DB に反映する。
+    func applyDelistings(keys: [String], propertyType: String, modelContext: ModelContext) {
+        guard !keys.isEmpty else { return }
+        let delistedSet = Set(keys)
+
+        do {
+            let predicate = #Predicate<Listing> { $0.propertyType == propertyType && !$0.isDelisted }
+            let descriptor = FetchDescriptor<Listing>(predicate: predicate)
+            let existing = try modelContext.fetch(descriptor)
+
+            var delistedCount = 0
+            var deletedCount = 0
+            for listing in existing {
+                let matchByDbKey = listing.supabaseIdentityKey.map { delistedSet.contains($0) } ?? false
+                guard matchByDbKey else { continue }
+
+                let hasUserData = listing.isLiked || listing.hasComments || listing.hasPhotos || !(listing.memo ?? "").isEmpty
+                if hasUserData {
+                    listing.isDelisted = true
+                    delistedCount += 1
+                } else {
+                    modelContext.delete(listing)
+                    deletedCount += 1
+                }
+            }
+
+            if delistedCount + deletedCount > 0 {
+                try modelContext.save()
+                logger.info("applyDelistings: \(delistedCount) marked delisted, \(deletedCount) deleted")
+            }
+        } catch {
+            logger.error("applyDelistings 失敗: \(error.localizedDescription, privacy: .public)")
+        }
     }
 
     /// SwiftData に同期 (既存 ListingStore.syncToDatabase のロジックを流用)
@@ -175,8 +249,8 @@ final class SupabaseListingStore {
             }
 
             var newCount = 0
-            var incomingDbKeys = Set<String>()
             var incomingSwiftKeys = Set<String>()
+            var matchedExisting = Set<ObjectIdentifier>()
 
             let hasAnnotationBackup = UserAnnotationStore.hasBackup
 
@@ -192,6 +266,7 @@ final class SupabaseListingStore {
 
                 if dto.is_active == false {
                     if let existing = matched {
+                        matchedExisting.insert(ObjectIdentifier(existing))
                         let hasUserData = existing.isLiked || existing.hasComments || existing.hasPhotos || !(existing.memo ?? "").isEmpty
                         if hasUserData {
                             existing.isDelisted = true
@@ -219,10 +294,10 @@ final class SupabaseListingStore {
                     continue
                 }
 
-                if let dbKey { incomingDbKeys.insert(dbKey) }
                 incomingSwiftKeys.insert(swiftKey)
 
                 if let same = matched {
+                    matchedExisting.insert(ObjectIdentifier(same))
                     if same.isDelisted {
                         same.isDelisted = false
                         same.isRelisted = true
@@ -252,11 +327,7 @@ final class SupabaseListingStore {
             // 安全策: 取得件数が0または既存の10%未満の場合はスキップ（API障害時の誤削除防止）
             if !isIncremental && !incomingSwiftKeys.isEmpty && incomingSwiftKeys.count >= existing.count / 10 {
                 for e in existing {
-                    let matchedByDbKey = e.supabaseIdentityKey.map { incomingDbKeys.contains($0) } ?? false
-                    let matchedBySwiftKey = incomingSwiftKeys.contains(e.identityKey)
-                    if matchedByDbKey || matchedBySwiftKey { continue }
-                    // 移行期: supabaseIdentityKey 未設定のレコードは保護（次回同期で設定される）
-                    if e.supabaseIdentityKey == nil { continue }
+                    if matchedExisting.contains(ObjectIdentifier(e)) { continue }
                     let hasUserData = e.isLiked || e.hasComments || e.hasPhotos || !(e.memo ?? "").isEmpty
                     if hasUserData {
                         if !e.isDelisted { e.isDelisted = true }
