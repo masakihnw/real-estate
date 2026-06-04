@@ -29,7 +29,7 @@ final class SupabaseListingStore {
     private let syncVersionKey = "supabase.syncVersion"
     private let pageSize = 100
 
-    static let currentSyncVersion = 3
+    static let currentSyncVersion = 4
 
     private init() {
         migrateSyncVersionIfNeeded()
@@ -54,6 +54,8 @@ final class SupabaseListingStore {
     /// Supabase から中古物件データを取得して SwiftData に同期する。
     /// 初回はフルフェッチ、2回目以降は差分同期。
     func refresh(modelContext: ModelContext) async throws -> (chukoNew: Int, shinchikuNew: Int) {
+        purgeNonChukoListings(modelContext: modelContext)
+
         let likedKeys = await MainActor.run { BuildingPreferenceStore.shared.likedKeys }
 
         let chukoFetch = try await fetchDTOs(propertyType: "chuko", modelContext: modelContext)
@@ -214,6 +216,23 @@ final class SupabaseListingStore {
             }
         } catch {
             logger.error("applyDelistings 失敗: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
+    /// 新築廃止以前にローカルに同期された非chuko物件を一括削除する。
+    private func purgeNonChukoListings(modelContext: ModelContext) {
+        do {
+            let predicate = #Predicate<Listing> { $0.propertyType != "chuko" }
+            let descriptor = FetchDescriptor<Listing>(predicate: predicate)
+            let stale = try modelContext.fetch(descriptor)
+            guard !stale.isEmpty else { return }
+            for listing in stale {
+                modelContext.delete(listing)
+            }
+            try modelContext.save()
+            logger.info("purgeNonChukoListings: \(stale.count) 件削除")
+        } catch {
+            logger.error("purgeNonChukoListings 失敗: \(error.localizedDescription, privacy: .public)")
         }
     }
 

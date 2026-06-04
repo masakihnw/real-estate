@@ -28,7 +28,7 @@ enum DashboardQuickFilter: Hashable {
 
 struct DashboardView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(filter: #Predicate<Listing> { !$0.isDelisted }) private var activeListings: [Listing]
+    @Query(filter: #Predicate<Listing> { !$0.isDelisted && $0.propertyType == "chuko" }) private var activeListings: [Listing]
     @Query(filter: #Predicate<Listing> { $0.isLiked == true }) private var favoriteListings: [Listing]
     @State private var selectedListing: Listing?
     @State private var quickFilter: DashboardQuickFilter?
@@ -232,7 +232,7 @@ struct DashboardView: View {
                                         }
 
                                         VStack(alignment: .leading, spacing: 2) {
-                                            Text(listing.name)
+                                            Text(listing.nameWithFloor)
                                                 .font(.caption.weight(.medium))
                                                 .lineLimit(1)
                                             if let monthly = listing.estimatedMonthlyPayment {
@@ -456,7 +456,7 @@ struct DashboardView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 6))
                             }
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(rec.listing.name)
+                                Text(rec.listing.nameWithFloor)
                                     .font(.caption.weight(.medium))
                                     .lineLimit(1)
                                 HStack(spacing: 6) {
@@ -750,7 +750,7 @@ private struct PriceMoverRow: View {
         Button(action: action) {
             HStack(spacing: 8) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(listing.name)
+                    Text(listing.nameWithFloor)
                         .font(.caption.weight(.semibold))
                         .lineLimit(1)
                     if let price = listing.priceMan {
@@ -844,7 +844,7 @@ private struct DashboardFilteredRow: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(listing.name)
+                Text(listing.nameWithFloor)
                     .font(.subheadline.weight(.semibold))
                     .lineLimit(2)
 
