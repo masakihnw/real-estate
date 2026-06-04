@@ -8118,15 +8118,15 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/2281113.html",
       "deviation_score": 0,
-      "estimated_price_man": 8205,
-      "estimated_tsubo_price_man": 485,
-      "estimated_m2_price_man": 147,
+      "estimated_price_man": 8509,
+      "estimated_tsubo_price_man": 494,
+      "estimated_m2_price_man": 150,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 3,
+      "chuko_history_count": 4,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 7,
+          "floor": 8,
           "layout": "",
           "area_m2": 55.27,
           "price_man": 8180,
@@ -8134,7 +8134,7 @@
         }
       ]
     },
-    "cached_at": "2026-05-21T16:50:19.815908"
+    "cached_at": "2026-06-04T17:02:29.031746"
   },
   "晴海アイランドトリトンスクエアビュータワー1号棟": {
     "data": null,
@@ -9388,5 +9388,72 @@
       ]
     },
     "cached_at": "2026-06-04T10:41:05.323737"
+  },
+  "羽根木ガーデンテラス2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/603445.html",
+      "deviation_score": 50,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 1,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 80.5,
+          "price_man": 7500,
+          "tsubo_price_man": 308.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-04T10:40:57.159693"
+  },
+  "ミオカステーロ大岡山": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/535922.html",
+      "deviation_score": 37,
+      "shinchiku_history_count": 37,
+      "chuko_history_count": 18,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 61.73,
+          "price_man": 6552,
+          "tsubo_price_man": 353.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-04T17:02:37.881093"
+  },
+  "ピアース杉並方南町レジデンス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1641751.html",
+      "deviation_score": 90,
+      "estimated_price_man": 15611,
+      "estimated_tsubo_price_man": 638,
+      "estimated_m2_price_man": 193,
+      "shinchiku_history_count": 90,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 74.05,
+          "price_man": 14026,
+          "tsubo_price_man": 632.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-04T17:02:46.347450"
+  },
+  "レーベン練馬春日町GRANWARDTERRACE": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1442322.html",
+      "deviation_score": 2
+    },
+    "cached_at": "2026-06-04T17:02:54.622285"
   }
 }
