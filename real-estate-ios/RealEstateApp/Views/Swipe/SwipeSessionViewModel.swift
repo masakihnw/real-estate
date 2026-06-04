@@ -30,7 +30,7 @@ final class SwipeSessionViewModel {
         let prefStore = BuildingPreferenceStore.shared
         cards = allListings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
-            .filter { !prefStore.isLiked($0.identityKey) && !prefStore.isNoped($0.identityKey) }
+            .filter { !prefStore.isBuildingReviewed($0) }
             .sorted { ($0.listingScore ?? 0) > ($1.listingScore ?? 0) }
         currentIndex = 0
         swipeResults = []
@@ -91,7 +91,7 @@ final class SwipeSessionViewModel {
         let prefStore = BuildingPreferenceStore.shared
         return listings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
-            .filter { !prefStore.isLiked($0.identityKey) && !prefStore.isNoped($0.identityKey) }
+            .filter { !prefStore.isBuildingReviewed($0) }
             .count
     }
 }

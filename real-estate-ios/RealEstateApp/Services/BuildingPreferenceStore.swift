@@ -88,6 +88,21 @@ final class BuildingPreferenceStore {
         likedKeys.contains(identityKey)
     }
 
+    /// like/nope済み建物の名前セット（identityKeyの先頭要素）。
+    /// 同一マンション別住戸やstaleキー（レイアウト変更等）でも建物名で除外可能。
+    var reviewedBuildingNames: Set<String> {
+        Set(
+            likedKeys.union(nopedKeys).map { key in
+                String(key.prefix(while: { $0 != "|" }))
+            }
+        )
+    }
+
+    func isBuildingReviewed(_ listing: Listing) -> Bool {
+        let name = String(listing.identityKey.prefix(while: { $0 != "|" }))
+        return reviewedBuildingNames.contains(name)
+    }
+
     enum Preference: String {
         case nope
         case like
