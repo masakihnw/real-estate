@@ -195,6 +195,57 @@ struct DuplicateDeduplicationTests {
         #expect(result.isEmpty)
     }
 
+    // MARK: - isBuildingReviewed
+
+    @Test("isBuildingReviewed: like済みの建物はtrueを返す")
+    func isBuildingReviewedForLikedBuilding() {
+        let prefStore = BuildingPreferenceStore.shared
+        let listing = makeListing(url: "u1", name: "テストマンション")
+        prefStore.setLocalOnly(listing.identityKey, preference: .like)
+        defer { prefStore.removeLocalOnly(listing.identityKey) }
+
+        #expect(prefStore.isBuildingReviewed(listing) == true)
+    }
+
+    @Test("isBuildingReviewed: 同一建物の別住戸もtrueを返す")
+    func isBuildingReviewedForSiblingUnit() {
+        let prefStore = BuildingPreferenceStore.shared
+        let unitA = makeListing(url: "u1", name: "テストタワー", areaM2: 70.0, address: "千代田区丸の内1")
+        let unitB = makeListing(url: "u2", name: "テストタワー", areaM2: 55.0, address: "千代田区丸の内1")
+        prefStore.setLocalOnly(unitA.identityKey, preference: .nope)
+        defer { prefStore.removeLocalOnly(unitA.identityKey) }
+
+        #expect(unitA.identityKey != unitB.identityKey)
+        #expect(prefStore.isBuildingReviewed(unitB) == true)
+    }
+
+    @Test("isBuildingReviewed: 未レビューの建物はfalseを返す")
+    func isBuildingReviewedForUnreviewedBuilding() {
+        let listing = makeListing(url: "u1", name: "未レビュー物件", address: "港区1")
+        #expect(BuildingPreferenceStore.shared.isBuildingReviewed(listing) == false)
+    }
+
+    // MARK: - SwipeSessionViewModel.pendingCount
+
+    @Test("pendingCount: like/nope済み建物はカウントされない")
+    func pendingCountExcludesReviewedBuildings() {
+        let prefStore = BuildingPreferenceStore.shared
+        let recentDate = Date()
+        let reviewed = makeListing(url: "u1", name: "レビュー済み", address: "千代田区1", addedAt: recentDate)
+        reviewed.propertyType = "chuko"
+        let pending = makeListing(url: "u2", name: "未レビュー", address: "中央区1", addedAt: recentDate)
+        pending.propertyType = "chuko"
+
+        #expect(reviewed.isRecentlyAdded == true)
+        #expect(pending.isRecentlyAdded == true)
+
+        prefStore.setLocalOnly(reviewed.identityKey, preference: .nope)
+        defer { prefStore.removeLocalOnly(reviewed.identityKey) }
+
+        let count = SwipeSessionViewModel.pendingCount(from: [reviewed, pending])
+        #expect(count == 1)
+    }
+
     // MARK: - pickKeepAndRemove
 
     @Test("ユーザーデータありの方を保持")

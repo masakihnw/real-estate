@@ -129,13 +129,13 @@ struct ContentView: View {
             if transactionStore.lastFetchedAt == nil || txCount == 0 {
                 await transactionStore.refresh(modelContext: modelContext)
             }
+            await BuildingPreferenceStore.shared.fetch()
             showSwipeIfNeeded()
         }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
                 NotificationScheduleService.shared.resetAccumulatedCount()
                 swipeDismissedThisSession = false
-                // オフライン時はキャッシュ済みデータがある場合は自動更新をスキップ
                 guard networkMonitor.isConnected else { return }
                 let elapsed = -(store.lastFetchedAt ?? .distantPast).timeIntervalSinceNow
                 if elapsed >= autoRefreshInterval {
@@ -149,7 +149,10 @@ struct ContentView: View {
                         await transactionStore.refresh(modelContext: modelContext)
                     }
                 }
-                showSwipeIfNeeded()
+                Task {
+                    await BuildingPreferenceStore.shared.fetch()
+                    showSwipeIfNeeded()
+                }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didTapPushNotification)) { notification in
@@ -170,7 +173,10 @@ struct ContentView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didRequestSwipeSession)) { _ in
-            showSwipeSession = true
+            Task {
+                await BuildingPreferenceStore.shared.fetch()
+                showSwipeSession = true
+            }
         }
         .fullScreenCover(isPresented: $showSwipeSession) {
             let listings = (try? modelContext.fetch(FetchDescriptor<Listing>())) ?? []
@@ -192,11 +198,15 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Swipe Auto-Presentation (disabled — ダッシュボードのボタンから手動起動)
+    // MARK: - Swipe Auto-Presentation
 
     private func showSwipeIfNeeded() {
-        // 自動表示を無効化: preferences未読み込み状態でlike/nope済み物件が出る問題を回避
-        // ダッシュボードの「新着 X 件をチェック」ボタンからの手動起動は引き続き可能
+        guard !swipeDismissedThisSession,
+              !showSwipeSession,
+              notificationListing == nil else { return }
+        let listings = (try? modelContext.fetch(FetchDescriptor<Listing>())) ?? []
+        guard SwipeSessionViewModel.pendingCount(from: listings) > 0 else { return }
+        showSwipeSession = true
     }
 
     // MARK: - compact (iPhone): TabView
