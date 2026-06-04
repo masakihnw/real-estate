@@ -236,6 +236,10 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
 
     # 物件を1件ずつ処理
     for item in listings:
+        if item.get("price_man") is None:
+            logger.debug("price_man=None のため除外: source=%s url=%s",
+                         item.get("source"), item.get("url"))
+            continue
         ik = identity_key_str(item)
         if not ik or all(p in ("None", "") for p in ik.split("|")):
             continue
@@ -680,5 +684,17 @@ def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None
             logger.info("[supabase] transactions: %d 件同期", tx_count)
         except Exception as e:
             logger.error("[supabase] transactions 同期失敗: %s", e)
+
+    # 基準外物件の除外を適用（scraping_config テーブルの設定値を参照）
+    try:
+        resp = client.rpc("apply_spec_exclusions").execute()
+        if resp.data:
+            row = resp.data[0] if isinstance(resp.data, list) else resp.data
+            excluded = row.get("excluded_count", 0)
+            restored = row.get("restored_count", 0)
+            if excluded or restored:
+                logger.info("[supabase] spec_exclusions: %d件除外, %d件復活", excluded, restored)
+    except Exception as e:
+        logger.warning("[supabase] apply_spec_exclusions 失敗: %s", e)
 
     logger.info("[supabase] 同期完了")

@@ -703,7 +703,9 @@ def apply_conditions(listings: list[SteponListing]) -> list[SteponListing]:
             continue
         if not station_passengers_ok(r.station_line, passengers_map):
             continue
-        if r.price_man is not None and (r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN):
+        if r.price_man is None:
+            continue
+        if r.price_man < PRICE_MIN_MAN or r.price_man > PRICE_MAX_MAN:
             continue
         if not lower_tier_station_ok(r.station_line, r.price_man):
             continue
