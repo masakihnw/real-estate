@@ -803,14 +803,22 @@ struct DashboardFilteredListView: View {
     let listings: [Listing]
     @State private var selectedListing: Listing?
 
+    private var displayListings: [Listing] {
+        guard filter == .newToday else { return listings }
+        let pref = BuildingPreferenceStore.shared
+        return listings.filter { listing in
+            !pref.isLiked(listing.identityKey) && !pref.isNoped(listing.identityKey)
+        }
+    }
+
     var body: some View {
         Group {
-            if listings.isEmpty {
+            if displayListings.isEmpty {
                 ContentUnavailableView {
                     Label("該当する物件がありません", systemImage: filter.systemImage)
                 }
             } else {
-                List(listings, id: \.url) { listing in
+                List(displayListings, id: \.url) { listing in
                     Button {
                         selectedListing = listing
                     } label: {
@@ -824,8 +832,8 @@ struct DashboardFilteredListView: View {
         .navigationTitle(filter.title)
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(item: $selectedListing) { listing in
-            let index = listings.firstIndex(where: { $0.url == listing.url }) ?? 0
-            ListingDetailPagerView(listings: listings, initialIndex: index)
+            let index = displayListings.firstIndex(where: { $0.url == listing.url }) ?? 0
+            ListingDetailPagerView(listings: displayListings, initialIndex: index)
         }
     }
 }
