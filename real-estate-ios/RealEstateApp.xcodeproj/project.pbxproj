@@ -75,6 +75,7 @@
 		7C9EDA58DB888F9E89FC90A5 /* MortgageTaxBenefitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C1453586517654E863287 /* MortgageTaxBenefitView.swift */; };
 		7CCCDC03AC2811D2C49DD09B /* PopulationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A050CCBF6353433066A86B6E /* PopulationSectionView.swift */; };
 		7E0A1949C419EF89EFE1FA1B /* RealEstateWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE01C15EC3F109E628A5EF7 /* RealEstateWidget.swift */; };
+		7EED137DF88A393F9D4E0348 /* NameWithFloorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30000A4F8562645B8C703A22 /* NameWithFloorTests.swift */; };
 		812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */; };
 		81C95C9E5465F0DB3B10143A /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2B439F060EE0745A8D2196 /* TransactionListView.swift */; };
 		866FE1277B3AEEF25E68B5CD /* SwipeSessionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCA8939D6426AEC130F89D9 /* SwipeSessionViewModelTests.swift */; };
@@ -182,6 +183,7 @@
 		283EFC574DD3B5C822974FB1 /* RealEstateApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RealEstateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A8462396154DCAD49363D09 /* SimulationChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationChartView.swift; sourceTree = "<group>"; };
 		2BFA3A204AD51A2AC4089B06 /* ListingDetailViewComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingDetailViewComponents.swift; sourceTree = "<group>"; };
+		30000A4F8562645B8C703A22 /* NameWithFloorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameWithFloorTests.swift; sourceTree = "<group>"; };
 		32F2647820E18AD8ABBEFB1A /* FirebaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseSyncService.swift; sourceTree = "<group>"; };
 		336E18AB549B9601A34418DF /* NopedListingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NopedListingsView.swift; sourceTree = "<group>"; };
 		36FCB1428ACF923881849CE6 /* PreferenceAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceAnalyzer.swift; sourceTree = "<group>"; };
@@ -383,6 +385,7 @@
 				F6FC9BF8C3C87FA90376D057 /* DuplicateDeduplicationTests.swift */,
 				198C51ABB8661A2DADB317F6 /* ListingBadgeTests.swift */,
 				A53234D8663BD77ECD71B317 /* ListingFilterRouteStationsTests.swift */,
+				30000A4F8562645B8C703A22 /* NameWithFloorTests.swift */,
 				5EA46AB133285E0879FD489A /* ObjCExceptionCatcherTests.swift */,
 				C5F03A4E08C66625F3F387BC /* PreferenceAnalyzerDedupTests.swift */,
 				E225D64919DFC75724F76C8E /* SupabaseTimestampParserTests.swift */,
@@ -742,6 +745,7 @@
 				1FD364EED837B31544157394 /* DuplicateDeduplicationTests.swift in Sources */,
 				9F75F5AB051E278D5F4DAC23 /* ListingBadgeTests.swift in Sources */,
 				C0CDA8EDCB3FF9496E423E6E /* ListingFilterRouteStationsTests.swift in Sources */,
+				7EED137DF88A393F9D4E0348 /* NameWithFloorTests.swift in Sources */,
 				7A83656CEEE34ECB47866C3C /* ObjCExceptionCatcherTests.swift in Sources */,
 				03D1425DC3D9AB03512F6844 /* PreferenceAnalyzerDedupTests.swift in Sources */,
 				6BD16BC33232D68E79F5B194 /* SupabaseTimestampParserTests.swift in Sources */,
@@ -830,7 +834,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 804;
+				CURRENT_PROJECT_VERSION = 805;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -982,7 +986,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 804;
+				CURRENT_PROJECT_VERSION = 805;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				ENABLE_NS_ASSERTIONS = NO;
