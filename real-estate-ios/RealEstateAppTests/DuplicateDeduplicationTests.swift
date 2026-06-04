@@ -142,6 +142,59 @@ struct DuplicateDeduplicationTests {
         #expect(result.count == 1)
     }
 
+    @Test("同一マンション別住戸: 1件nopeすると全住戸が除外される")
+    func nopingOneUnitExcludesAllUnitsOfSameBuilding() {
+        let prefStore = BuildingPreferenceStore.shared
+        let unitA = makeListing(url: "u1", name: "ブリリア有明", areaM2: 63.37, address: "江東区有明1", floorPosition: 16)
+        let unitB = makeListing(url: "u2", name: "ブリリア有明", areaM2: 57.04, address: "江東区有明1", floorPosition: 30)
+        let unitC = makeListing(url: "u3", name: "ブリリア有明", areaM2: 62.52, address: "江東区有明1", floorPosition: 2)
+        let other = makeListing(url: "u4", name: "別のマンション", address: "中央区1")
+
+        #expect(unitA.buildingGroupKey == unitB.buildingGroupKey)
+        #expect(unitA.identityKey != unitB.identityKey)
+
+        prefStore.setLocalOnly(unitA.identityKey, preference: .nope)
+        defer { prefStore.removeLocalOnly(unitA.identityKey) }
+
+        let result = DashboardView.deduplicatedNewListings(
+            [unitA, unitB, unitC, other], prefStore: prefStore
+        )
+        #expect(result.count == 1)
+        #expect(result[0].url == "u4")
+    }
+
+    @Test("同一マンション別住戸: 1件likeすると全住戸が除外される")
+    func likingOneUnitExcludesAllUnitsOfSameBuilding() {
+        let prefStore = BuildingPreferenceStore.shared
+        let unitA = makeListing(url: "u1", name: "グランエスタ", areaM2: 81.59, address: "江東区新砂3")
+        let unitB = makeListing(url: "u2", name: "グランエスタ", areaM2: 73.77, address: "江東区新砂3")
+
+        prefStore.setLocalOnly(unitA.identityKey, preference: .like)
+        defer { prefStore.removeLocalOnly(unitA.identityKey) }
+
+        let result = DashboardView.deduplicatedNewListings(
+            [unitA, unitB], prefStore: prefStore
+        )
+        #expect(result.isEmpty)
+    }
+
+    @Test("staleキー: レイアウト変更後もbuilding名で除外される")
+    func staleKeyStillExcludesByBuildingName() {
+        let prefStore = BuildingPreferenceStore.shared
+        // nope時のidentityKey（レイアウトが2LDK+S）
+        let staleKey = "ブリリア有明スカイタワー|2LDK+S（納戸）|63.37|江東区有明1|2010"
+        prefStore.setLocalOnly(staleKey, preference: .nope)
+        defer { prefStore.removeLocalOnly(staleKey) }
+
+        // 現在のリスト（レイアウトが2LDKに変更されている）
+        let unit = makeListing(url: "u1", name: "ブリリア有明スカイタワー", layout: "2LDK", areaM2: 63.37, address: "江東区有明1", builtYear: 2010)
+        // identityKeyが変わっているので直接マッチしない
+        #expect(unit.identityKey != staleKey)
+        // だがbuilding名（最初の|まで）は一致する
+        let result = DashboardView.deduplicatedNewListings([unit], prefStore: prefStore)
+        #expect(result.isEmpty)
+    }
+
     // MARK: - pickKeepAndRemove
 
     @Test("ユーザーデータありの方を保持")

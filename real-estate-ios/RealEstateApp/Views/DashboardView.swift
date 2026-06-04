@@ -602,16 +602,26 @@ struct DashboardView: View {
         _ listings: [Listing],
         prefStore: BuildingPreferenceStore? = nil
     ) -> [Listing] {
+        // preference キーから建物名（最初の | まで）を抽出し、建物名ベースで除外
+        // identityKey 変更（レイアウト更新等）で直接マッチしなくなった物件もカバー
+        let reviewedNames: Set<String>
+        if let pref = prefStore {
+            reviewedNames = Set(
+                pref.likedKeys.union(pref.nopedKeys).map { key in
+                    String(key.prefix(while: { $0 != "|" }))
+                }
+            )
+        } else {
+            reviewedNames = []
+        }
+
         var seen = Set<String>()
         return listings
             .sorted { $0.addedAt > $1.addedAt }
             .filter { listing in
-                if let pref = prefStore,
-                   pref.isLiked(listing.identityKey) || pref.isNoped(listing.identityKey) {
-                    return false
-                }
-                let key = listing.buildingGroupKey
-                return seen.insert(key).inserted
+                let namePrefix = String(listing.identityKey.prefix(while: { $0 != "|" }))
+                if reviewedNames.contains(namePrefix) { return false }
+                return seen.insert(listing.buildingGroupKey).inserted
             }
     }
 
@@ -806,8 +816,14 @@ struct DashboardFilteredListView: View {
     private var displayListings: [Listing] {
         guard filter == .newToday else { return listings }
         let pref = BuildingPreferenceStore.shared
+        let reviewedNames = Set(
+            pref.likedKeys.union(pref.nopedKeys).map { key in
+                String(key.prefix(while: { $0 != "|" }))
+            }
+        )
         return listings.filter { listing in
-            !pref.isLiked(listing.identityKey) && !pref.isNoped(listing.identityKey)
+            let namePrefix = String(listing.identityKey.prefix(while: { $0 != "|" }))
+            return !reviewedNames.contains(namePrefix)
         }
     }
 
