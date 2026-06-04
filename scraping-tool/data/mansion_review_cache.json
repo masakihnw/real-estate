@@ -9318,5 +9318,75 @@
       ]
     },
     "cached_at": "2026-06-04T04:46:18.735031"
+  },
+  "南麻布": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/188716.html",
+      "deviation_score": 7
+    },
+    "cached_at": "2026-06-04T10:40:38.743352"
+  },
+  "GREENPARK東日本橋RiverTerr...": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/40274.html",
+      "deviation_score": 0,
+      "estimated_price_man": 10053,
+      "estimated_tsubo_price_man": 708,
+      "estimated_m2_price_man": 214,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 36,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 50.79,
+          "price_man": 5696,
+          "tsubo_price_man": 369.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-04T10:40:48.944385"
+  },
+  "羽根木ガーデンテラス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/603445.html",
+      "deviation_score": 50,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 1,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 80.5,
+          "price_man": 7500,
+          "tsubo_price_man": 308.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-04T10:40:57.159693"
+  },
+  "THEパームス世田谷桜": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/14391.html",
+      "deviation_score": 97,
+      "estimated_price_man": 10022,
+      "estimated_tsubo_price_man": 425,
+      "estimated_m2_price_man": 129,
+      "shinchiku_history_count": 97,
+      "chuko_history_count": 43,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 71.25,
+          "price_man": 6143,
+          "tsubo_price_man": 286.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-04T10:41:05.323737"
   }
 }
