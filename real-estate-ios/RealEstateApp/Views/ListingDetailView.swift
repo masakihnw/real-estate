@@ -1241,84 +1241,97 @@ struct ListingDetailView: View {
 
             // スコアカード
             if let score = listing.listingScore {
+                let breakdown = listing.scoreBreakdown
                 VStack(spacing: 0) {
                     HStack(spacing: 16) {
                         VStack(spacing: 4) {
                             Text("\(score)")
                                 .font(.system(size: 36, weight: .bold, design: .rounded))
-                                .foregroundStyle(scoreColor(score))
+                                .foregroundStyle(DesignSystem.scoreColor(for: score))
                             Text("総合スコア")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
                         .frame(width: 80)
 
-                        VStack(alignment: .leading, spacing: 6) {
-                            if let fairness = listing.priceFairnessScore {
-                                scoreRow(label: "価格妥当性", value: fairness, icon: "yensign.circle")
+                        if !breakdown.isEmpty {
+                            VStack(alignment: .leading, spacing: 6) {
+                                ForEach(Array(breakdown.enumerated()), id: \.offset) { _, c in
+                                    HStack(spacing: 6) {
+                                        Image(systemName: c.icon)
+                                            .font(.caption)
+                                            .frame(width: 14)
+                                            .foregroundStyle(.secondary)
+                                        Text(c.label)
+                                            .font(.caption2.weight(.semibold))
+                                            .frame(width: 64, alignment: .leading)
+                                        GeometryReader { geo in
+                                            ZStack(alignment: .leading) {
+                                                RoundedRectangle(cornerRadius: 3)
+                                                    .fill(Color.secondary.opacity(0.1))
+                                                    .frame(height: 5)
+                                                RoundedRectangle(cornerRadius: 3)
+                                                    .fill(DesignSystem.scoreColor(for: c.score))
+                                                    .frame(width: geo.size.width * CGFloat(c.score) / 100, height: 5)
+                                            }
+                                        }
+                                        .frame(height: 5)
+                                        Text("\(c.score)")
+                                            .font(.caption2.weight(.bold).monospacedDigit())
+                                            .frame(width: 24, alignment: .trailing)
+                                    }
+                                }
                             }
-                            if let liquidity = listing.resaleLiquidityScore {
-                                scoreRow(label: "再販流動性", value: liquidity, icon: "arrow.triangle.2.circlepath")
-                            }
-                            if let count = listing.competingListingsCount, count > 1 {
-                                HStack {
-                                    Image(systemName: "building.2")
-                                        .font(.caption)
-                                        .frame(width: 16)
-                                    Text("同一マンション売出: \(count)件")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                        } else {
+                            VStack(alignment: .leading, spacing: 6) {
+                                if let fairness = listing.priceFairnessScore {
+                                    scoreRow(label: "価格妥当性", value: fairness, icon: "yensign.circle")
+                                }
+                                if let liquidity = listing.resaleLiquidityScore {
+                                    scoreRow(label: "再販流動性", value: liquidity, icon: "arrow.triangle.2.circlepath")
                                 }
                             }
                         }
                     }
                     .padding(14)
 
-                    let breakdown = listing.scoreBreakdown
                     if !breakdown.isEmpty {
-                        DisclosureGroup("5軸評価の内訳") {
-                            VStack(alignment: .leading, spacing: 10) {
-                                ForEach(Array(breakdown.enumerated()), id: \.offset) { _, component in
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        HStack(spacing: 6) {
-                                            Image(systemName: component.icon)
-                                                .font(.caption)
-                                                .frame(width: 16)
-                                                .foregroundStyle(.secondary)
-                                            Text(component.label)
-                                                .font(.caption.weight(.semibold))
-                                                .frame(width: 72, alignment: .leading)
-                                            GeometryReader { geo in
-                                                ZStack(alignment: .leading) {
-                                                    RoundedRectangle(cornerRadius: 3)
-                                                        .fill(Color.secondary.opacity(0.1))
-                                                        .frame(height: 6)
-                                                    RoundedRectangle(cornerRadius: 3)
-                                                        .fill(scoreColor(component.score))
-                                                        .frame(width: geo.size.width * CGFloat(component.score) / 100, height: 6)
-                                                }
-                                            }
-                                            .frame(height: 6)
-                                            Text("\(component.score)")
-                                                .font(.caption.weight(.bold).monospacedDigit())
-                                                .frame(width: 28, alignment: .trailing)
-                                        }
-                                        Text(component.detail)
+                        Divider().padding(.horizontal, 14)
+                        VStack(alignment: .leading, spacing: 8) {
+                            ForEach(Array(breakdown.enumerated()), id: \.offset) { _, c in
+                                HStack(alignment: .top, spacing: 6) {
+                                    Image(systemName: c.icon)
+                                        .font(.caption2)
+                                        .frame(width: 14)
+                                        .foregroundStyle(.secondary)
+                                        .padding(.top, 1)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(c.label)
+                                            .font(.caption2.weight(.semibold))
+                                        Text(c.detail)
                                             .font(.caption2)
                                             .foregroundStyle(.secondary)
-                                            .padding(.leading, 22)
                                     }
                                 }
                             }
-                            .padding(.top, 8)
                         }
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 14)
-                        .padding(.bottom, 14)
+                        .padding(14)
+                    }
+
+                    if let count = listing.competingListingsCount, count > 1 {
+                        Divider().padding(.horizontal, 14)
+                        HStack {
+                            Image(systemName: "building.2")
+                                .font(.caption)
+                                .frame(width: 16)
+                            Text("同一マンション売出: \(count)件")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(14)
                     }
                 }
-                .tintedGlassBackground(tint: scoreColor(score), tintOpacity: 0.03, borderOpacity: 0.08)
+                .tintedGlassBackground(tint: DesignSystem.scoreColor(for: score), tintOpacity: 0.03, borderOpacity: 0.08)
             }
 
             // 掲載日数
