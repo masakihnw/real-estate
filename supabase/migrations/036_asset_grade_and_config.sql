@@ -260,6 +260,7 @@ SELECT
     e.competing_listings_count,
     e.listing_score,
     e.asset_grade,
+    e.ai_scoring_reasoning,
     e.ai_recommendation_score,
     e.ai_recommendation_summary,
     e.ai_recommendation_flags,
