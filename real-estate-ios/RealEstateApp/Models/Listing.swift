@@ -284,6 +284,9 @@ final class Listing: @unchecked Sendable {
     /// サーバー側で計算された資産グレード（S/A/B/C/D）。listings_feed_light ビューの asset_grade カラムに対応。
     var assetGrade: String?
 
+    /// AI スコアリングの5軸別スコア+ノート (JSONB)
+    var aiScoringReasoningJSON: String?
+
     /// 代替ソース情報 JSON 文字列
     /// フォーマット: [{"source":"rehouse","url":"https://...","price_man":9500},...]
     var altSourcesJSON: String?
@@ -423,6 +426,7 @@ final class Listing: @unchecked Sendable {
         competingListingsCount: Int? = nil,
         listingScore: Int? = nil,
         assetGrade: String? = nil,
+        aiScoringReasoningJSON: String? = nil,
         altSourcesJSON: String? = nil,
         investmentSummary: String? = nil,
         highlightBadge: String? = nil,
@@ -525,6 +529,7 @@ final class Listing: @unchecked Sendable {
         self.competingListingsCount = competingListingsCount
         self.listingScore = listingScore
         self.assetGrade = assetGrade
+        self.aiScoringReasoningJSON = aiScoringReasoningJSON
         self.altSourcesJSON = altSourcesJSON
         self.investmentSummary = investmentSummary
         self.highlightBadge = highlightBadge
@@ -2233,9 +2238,8 @@ final class Listing: @unchecked Sendable {
         }
     }
 
-    // MARK: - スコア内訳
+    // MARK: - スコア内訳（5軸: AI スコアリング）
 
-    /// 総合スコアの各構成要素（Python の _calc_listing_score と同じロジック）
     struct ScoreComponent {
         let label: String
         let icon: String
@@ -2244,96 +2248,64 @@ final class Listing: @unchecked Sendable {
         let detail: String
     }
 
+    struct AIScoringReasoning {
+        struct Axis {
+            let score: Int
+            let note: String
+        }
+        let budget: Axis?
+        let living: Axis?
+        let location: Axis?
+        let building: Axis?
+        let exit: Axis?
+        let strengths: [String]
+        let weaknesses: [String]
+    }
+
+    var parsedAIScoringReasoning: AIScoringReasoning? {
+        guard let json = aiScoringReasoningJSON, !json.isEmpty,
+              let data = json.data(using: .utf8),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else { return nil }
+
+        func parseAxis(_ key: String) -> AIScoringReasoning.Axis? {
+            guard let axis = obj[key] as? [String: Any],
+                  let note = axis["note"] as? String
+            else { return nil }
+            let score = (axis["score"] as? Int) ?? (axis["score"] as? Double).map { Int($0) }
+            guard let score else { return nil }
+            return .init(score: score, note: note)
+        }
+
+        return AIScoringReasoning(
+            budget: parseAxis("budget"),
+            living: parseAxis("living"),
+            location: parseAxis("location"),
+            building: parseAxis("building"),
+            exit: parseAxis("exit"),
+            strengths: obj["strengths"] as? [String] ?? [],
+            weaknesses: obj["weaknesses"] as? [String] ?? []
+        )
+    }
+
     var scoreBreakdown: [ScoreComponent] {
         guard listingScore != nil else { return [] }
-        var components: [ScoreComponent] = []
 
-        if let fairness = priceFairnessScore {
-            let detail = priceFairnessDetail
-            components.append(.init(label: "価格妥当性", icon: "yensign.circle", score: fairness, weight: 3, detail: detail))
-        }
-        if let liquidity = resaleLiquidityScore {
-            let detail = resaleLiquidityDetail
-            components.append(.init(label: "再販流動性", icon: "arrow.triangle.2.circlepath", score: liquidity, weight: 2, detail: detail))
-        }
-        if let rate = ssAppreciationRate {
-            let s = 50 + min(max(Int(rate * 2), -40), 40)
-            let clamped = min(100, max(0, s))
-            components.append(.init(label: "値上がり率", icon: "chart.line.uptrend.xyaxis", score: clamped, weight: 3,
-                                    detail: "住まいサーフィン値上がり率: \(String(format: "%.1f", rate))%"))
-        }
-        if let profit = ssProfitPct {
-            let s = min(100, profit)
-            components.append(.init(label: "儲かる確率", icon: "percent", score: s, weight: 2,
-                                    detail: "住まいサーフィン儲かる確率: \(profit)%"))
-        }
-        if hasHazardData {
-            let hd = parsedHazardData
-            let riskItems = [
-                hd.flood ? "洪水" : nil,
-                hd.sediment ? "土砂災害" : nil,
-                hd.stormSurge ? "高潮" : nil,
-                hd.tsunami ? "津波" : nil,
-                hd.liquefaction ? "液状化" : nil,
-                hd.inlandWater ? "内水" : nil,
-            ].compactMap { $0 }
-            let riskCount = riskItems.count
-            let s = max(0, 100 - riskCount * 20)
-            let detail = riskItems.isEmpty ? "リスクなし" : "リスク: \(riskItems.joined(separator: "・"))"
-            components.append(.init(label: "ハザード", icon: "exclamationmark.triangle", score: s, weight: 1, detail: detail))
-        }
-        if hasCommuteInfo {
-            let ci = parsedCommuteInfo
-            let ciV2 = parsedCommuteInfoV2
-            var times: [Int] = []
-            var parts: [String] = []
-            // 信頼ソース優先、v2 フォールバック
-            if let pg = ci.playground, pg.isReliableSource {
-                times.append(pg.minutes)
-                parts.append("Playground \(pg.minutes)分")
-            } else if let pgV2 = ciV2?.offices.playground {
-                times.append(pgV2.representativeMinutes)
-                parts.append("Playground \(pgV2.representativeMinutes)分")
-            } else if let pg = ci.playground {
-                times.append(pg.minutes)
-                parts.append("Playground \(pg.minutes)分")
+        if let r = parsedAIScoringReasoning {
+            let axes: [(String, String, AIScoringReasoning.Axis?)] = [
+                ("予算適合度", "yensign.circle", r.budget),
+                ("住居適合度", "house", r.living),
+                ("立地総合", "mappin.and.ellipse", r.location),
+                ("建物・管理", "building.2", r.building),
+                ("出口・流動性", "arrow.right.circle", r.exit),
+            ]
+            return axes.compactMap { label, icon, axis in
+                guard let axis else { return nil }
+                return ScoreComponent(label: label, icon: icon, score: axis.score, weight: 1, detail: axis.note)
             }
-            if let m3 = ci.m3career, m3.isReliableSource {
-                times.append(m3.minutes)
-                parts.append("M3Career \(m3.minutes)分")
-            } else if let m3V2 = ciV2?.offices.m3career {
-                times.append(m3V2.representativeMinutes)
-                parts.append("M3Career \(m3V2.representativeMinutes)分")
-            } else if let m3 = ci.m3career {
-                times.append(m3.minutes)
-                parts.append("M3Career \(m3.minutes)分")
-            }
-            if !times.isEmpty {
-                let avg = Double(times.reduce(0, +)) / Double(times.count)
-                let s: Int
-                switch avg {
-                case ...20: s = 90
-                case ...30: s = 75
-                case ...45: s = 55
-                default: s = 35
-                }
-                components.append(.init(label: "通勤利便性", icon: "tram", score: s, weight: 2,
-                                        detail: parts.joined(separator: " / ")))
-            }
-        }
-        if let popData = parsedPopulationData, let yoy = popData.popChange1yrPct {
-            let s: Int
-            switch yoy {
-            case let y where y > 1: s = 80
-            case let y where y > 0: s = 65
-            case let y where y > -1: s = 45
-            default: s = 30
-            }
-            components.append(.init(label: "人口動態", icon: "person.3", score: s, weight: 1,
-                                    detail: "\(popData.ward) 前年比\(String(format: "%+.1f", yoy))%"))
         }
 
-        return components
+        return []
     }
 
     private var priceFairnessDetail: String {

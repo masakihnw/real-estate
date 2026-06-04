@@ -113,6 +113,7 @@ struct ListingDTO: Codable {
     var competing_listings_count: Int?
     var listing_score: Int?
     var asset_grade: String?
+    var ai_scoring_reasoning: String?
 
     // サーバーサイドで判定された新着フラグ（前回スクレイピングとの差分比較）
     var is_new: Bool?
@@ -434,6 +435,7 @@ extension Listing {
             competingListingsCount: dto.competing_listings_count,
             listingScore: dto.listing_score,
             assetGrade: dto.asset_grade,
+            aiScoringReasoningJSON: dto.ai_scoring_reasoning,
             altSourcesJSON: altSourcesJSON,
             investmentSummary: dto.investment_summary,
             highlightBadge: dto.highlight_badge,
