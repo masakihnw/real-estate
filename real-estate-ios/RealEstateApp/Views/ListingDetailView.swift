@@ -1276,7 +1276,7 @@ struct ListingDetailView: View {
 
                     let breakdown = listing.scoreBreakdown
                     if !breakdown.isEmpty {
-                        DisclosureGroup("スコアの根拠") {
+                        DisclosureGroup("5軸評価の内訳") {
                             VStack(alignment: .leading, spacing: 10) {
                                 ForEach(Array(breakdown.enumerated()), id: \.offset) { _, component in
                                     VStack(alignment: .leading, spacing: 4) {
@@ -1302,10 +1302,6 @@ struct ListingDetailView: View {
                                             Text("\(component.score)")
                                                 .font(.caption.weight(.bold).monospacedDigit())
                                                 .frame(width: 28, alignment: .trailing)
-                                            Text("×\(component.weight)")
-                                                .font(.caption2)
-                                                .foregroundStyle(.tertiary)
-                                                .frame(width: 20, alignment: .trailing)
                                         }
                                         Text(component.detail)
                                             .font(.caption2)

@@ -440,6 +440,7 @@ final class ListingStore {
         existing.competingListingsCount = new.competingListingsCount ?? existing.competingListingsCount
         existing.listingScore = new.listingScore ?? existing.listingScore
         existing.assetGrade = new.assetGrade ?? existing.assetGrade
+        existing.aiScoringReasoningJSON = new.aiScoringReasoningJSON ?? existing.aiScoringReasoningJSON
         existing.highlightBadge = new.highlightBadge ?? existing.highlightBadge
         existing.bestThumbnailURL = new.bestThumbnailURL ?? existing.bestThumbnailURL
         existing.dedupConfidence = new.dedupConfidence ?? existing.dedupConfidence
