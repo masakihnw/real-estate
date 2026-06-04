@@ -192,15 +192,11 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Swipe Auto-Presentation
+    // MARK: - Swipe Auto-Presentation (disabled — ダッシュボードのボタンから手動起動)
 
     private func showSwipeIfNeeded() {
-        guard !swipeDismissedThisSession,
-              !showSwipeSession,
-              notificationListing == nil else { return }
-        let listings = (try? modelContext.fetch(FetchDescriptor<Listing>())) ?? []
-        guard SwipeSessionViewModel.pendingCount(from: listings) > 0 else { return }
-        showSwipeSession = true
+        // 自動表示を無効化: preferences未読み込み状態でlike/nope済み物件が出る問題を回避
+        // ダッシュボードの「新着 X 件をチェック」ボタンからの手動起動は引き続き可能
     }
 
     // MARK: - compact (iPhone): TabView
