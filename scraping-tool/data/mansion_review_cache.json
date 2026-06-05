@@ -8144,31 +8144,31 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1932059.html",
       "deviation_score": 20,
-      "estimated_price_man": 11116,
-      "estimated_tsubo_price_man": 557,
-      "estimated_m2_price_man": 169,
+      "estimated_price_man": 11497,
+      "estimated_tsubo_price_man": 585,
+      "estimated_m2_price_man": 177,
       "shinchiku_history_count": 208,
-      "chuko_history_count": 16,
+      "chuko_history_count": 18,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 3,
+          "floor": 4,
           "layout": "",
-          "area_m2": 65.81,
-          "price_man": 10280,
-          "tsubo_price_man": 519.0
+          "area_m2": 65.22,
+          "price_man": 10442,
+          "tsubo_price_man": 534.0
         }
       ]
     },
-    "cached_at": "2026-05-22T04:19:19.622835"
+    "cached_at": "2026-06-05T04:35:41.974343"
   },
   "プラウド住吉": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1386072.html",
       "deviation_score": 96,
-      "estimated_price_man": 9198,
-      "estimated_tsubo_price_man": 507,
-      "estimated_m2_price_man": 154,
+      "estimated_price_man": 9584,
+      "estimated_tsubo_price_man": 503,
+      "estimated_m2_price_man": 153,
       "shinchiku_history_count": 96,
       "chuko_history_count": 26,
       "sales_history": [
@@ -8177,12 +8177,12 @@
           "floor": 2,
           "layout": "",
           "area_m2": 63.79,
-          "price_man": 7343,
-          "tsubo_price_man": 380.0
+          "price_man": 7324,
+          "tsubo_price_man": 379.0
         }
       ]
     },
-    "cached_at": "2026-05-22T04:19:28.207745"
+    "cached_at": "2026-06-05T04:35:32.997552"
   },
   "メインステージ蒲田V": {
     "data": {
@@ -9455,5 +9455,31 @@
       "deviation_score": 2
     },
     "cached_at": "2026-06-04T17:02:54.622285"
+  },
+  "パークシティ小岩ザ・タワー": {
+    "data": null,
+    "cached_at": "2026-06-05T04:35:24.281889"
+  },
+  "ブリリア板橋大山": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/534753.html",
+      "deviation_score": 42,
+      "estimated_price_man": 8992,
+      "estimated_tsubo_price_man": 438,
+      "estimated_m2_price_man": 133,
+      "shinchiku_history_count": 42,
+      "chuko_history_count": 20,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 9,
+          "layout": "",
+          "area_m2": 67.38,
+          "price_man": 6622,
+          "tsubo_price_man": 325.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-05T04:35:50.255387"
   }
 }
