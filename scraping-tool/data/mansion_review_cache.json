@@ -8188,23 +8188,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42043.html",
       "deviation_score": 90,
-      "estimated_price_man": 2381,
-      "estimated_tsubo_price_man": 375,
-      "estimated_m2_price_man": 114,
+      "estimated_price_man": 2859,
+      "estimated_tsubo_price_man": 394,
+      "estimated_m2_price_man": 120,
       "shinchiku_history_count": 90,
-      "chuko_history_count": 20,
+      "chuko_history_count": 21,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 8,
+          "floor": 9,
           "layout": "",
-          "area_m2": 31.56,
-          "price_man": 2867,
-          "tsubo_price_man": 298.0
+          "area_m2": 33.27,
+          "price_man": 3162,
+          "tsubo_price_man": 305.0
         }
       ]
     },
-    "cached_at": "2026-05-22T16:24:11.101032"
+    "cached_at": "2026-06-05T16:37:33.491952"
   },
   "デュフレベース南麻布": {
     "data": {
