@@ -76,6 +76,29 @@ final class SwipeSessionViewModel {
         logger.info("Undid swipe on: \(last.listing.name, privacy: .public)")
     }
 
+    /// prefetchEnrichment 完了後に呼ぶ。外観写真+間取り図がない物件を除外する。
+    /// loadCards() が先に呼ばれて currentIndex/swipeResults がリセット済みであることを前提とする。
+    func filterCardsWithoutImages() {
+        let before = cards.count
+        cards = cards.filter { $0.hasSwipeableImages }
+        if cards.count < before {
+            logger.info("Filtered \(before - self.cards.count) cards without images, \(self.cards.count) remaining")
+        }
+    }
+
+    /// enrichment の再フェッチが必要な物件を判定する。
+    /// - 未フェッチ（enrichmentFetchedAt == nil）
+    /// - 画像なしで前回フェッチから staleThreshold 以降経過（サーバー側で画像が後追い追加された可能性）
+    static func listingsNeedingEnrichmentFetch(_ listings: [Listing], staleThreshold: Date) -> [Listing] {
+        listings.filter { listing in
+            if listing.enrichmentFetchedAt == nil { return true }
+            if !listing.hasSwipeableImages,
+               let fetched = listing.enrichmentFetchedAt,
+               fetched < staleThreshold { return true }
+            return false
+        }
+    }
+
     #if DEBUG
     func setCardsForTesting(_ listings: [Listing]) {
         cards = listings
@@ -91,6 +114,7 @@ final class SwipeSessionViewModel {
         let prefStore = BuildingPreferenceStore.shared
         return listings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
+            .filter { $0.hasFloorPlanImagesServer && $0.hasPropertyImagesServer }
             .filter { !prefStore.isBuildingReviewed($0) }
             .count
     }

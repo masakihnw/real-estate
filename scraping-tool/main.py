@@ -29,12 +29,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from logger import get_logger
 logger = get_logger(__name__)
 
-# Firestore からスクレイピング条件を取得（config を使用する全モジュールの import より前に実行）
+# Supabase からスクレイピング条件を取得（config を使用する全モジュールの import より前に実行）
 try:
-    from firestore_config_loader import load_config_from_firestore
-    load_config_from_firestore()
+    from supabase_config_loader import load_config_from_supabase
+    load_config_from_supabase()
 except Exception as e:
-    logger.warning("Firestore 設定の読み込みに失敗（デフォルトを使用）: %s", e)
+    logger.warning("Supabase 設定の読み込みに失敗（デフォルトを使用）: %s", e)
 
 from config import DISABLED_SCRAPERS
 from report_utils import listing_key, clean_listing_name, fuzzy_identity_match, building_key

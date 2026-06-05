@@ -944,7 +944,7 @@ struct ListingListView: View {
                 ForEach(filterCache.filtered, id: \.url) { listing in
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(listing.name)
+                            Text(listing.nameWithFloor)
                                 .font(.subheadline.weight(.medium))
                                 .lineLimit(2)
                             Text(listing.priceDisplayCompact)
@@ -1120,7 +1120,7 @@ struct ListingListView: View {
                     }
                 } preview: {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(listing.name)
+                        Text(listing.nameWithFloor)
                             .font(.headline)
                             .lineLimit(2)
                         Text(listing.priceDisplayCompact)
@@ -1318,21 +1318,11 @@ struct ListingRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 // 1行目: 物件名 + スコアバッジ + ♥
                 HStack(alignment: .center, spacing: 6) {
-                    Text(listing.name)
+                    Text(hasExpandableUnits ? listing.name : listing.nameWithFloor)
                         .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.85)
                         .foregroundStyle(listing.isDelisted ? .secondary : .primary)
-
-                    if listing.isRecentlyAdded {
-                        let isNewBadge = listing.isNewBuilding || listing.isRelisted
-                        Text(isNewBadge ? "New" : "別部屋")
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 2)
-                            .background(isNewBadge ? Color.red : Color.orange)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                    }
 
                     Spacer(minLength: 0)
 
@@ -1356,8 +1346,19 @@ struct ListingRowView: View {
                     .accessibilityLabel(listing.isLiked ? "いいねを解除" : "いいねする")
                 }
 
-                // 2行目: バッジ行（所有権 + New/別部屋 + 騰落率 etc）
+                // 2行目: バッジ行（New/別部屋 + 所有権 + 騰落率 etc）
                 HStack(alignment: .center, spacing: 4) {
+                    if listing.isRecentlyAdded {
+                        let isNewBadge = listing.isNewBuilding || listing.isRelisted
+                        Text(isNewBadge ? "New" : "別部屋")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(isNewBadge ? Color.red : Color.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+
                     OwnershipBadge(listing: listing, size: .small)
 
                     if let rate = listing.ssAppreciationRate {

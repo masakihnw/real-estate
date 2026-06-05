@@ -90,7 +90,7 @@ struct ComparisonView: View {
                 .accessibilityLabel("比較表ヘッダー")
             ForEach(listings, id: \.url) { listing in
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(listing.name)
+                    Text(listing.nameWithFloor)
                         .font(.caption)
                         .fontWeight(.semibold)
                         .lineLimit(2)

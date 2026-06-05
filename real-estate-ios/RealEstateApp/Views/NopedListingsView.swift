@@ -39,7 +39,7 @@ struct NopedListingsView: View {
                 selectedListing = listing
             } label: {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(listing.name)
+                    Text(listing.nameWithFloor)
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .lineLimit(1)

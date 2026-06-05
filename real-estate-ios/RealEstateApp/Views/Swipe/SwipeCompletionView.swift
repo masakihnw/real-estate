@@ -103,7 +103,7 @@ struct SwipeCompletionView: View {
             }
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            Text(listing.name)
+            Text(listing.nameWithFloor)
                 .font(.caption)
                 .lineLimit(1)
                 .frame(width: 120, alignment: .leading)

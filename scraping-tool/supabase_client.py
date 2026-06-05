@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 _client = None
 _initialized = False
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://dzhcumdmzskkvusynmyw.supabase.co")
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
 
 
@@ -26,8 +26,8 @@ def get_client():
 
     _initialized = True
 
-    if not SUPABASE_SERVICE_ROLE_KEY:
-        logger.info("SUPABASE_SERVICE_ROLE_KEY 未設定: Supabase 同期を無効化")
+    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        logger.info("SUPABASE_URL/SERVICE_ROLE_KEY 未設定: Supabase 同期を無効化")
         return None
 
     try:

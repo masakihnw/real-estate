@@ -47,3 +47,5 @@ cd scraping-tool && python suumo_scraper.py
 - Scraping tools must handle rate limiting and error recovery
 - Never hardcode API keys; use environment variables
 - Test scraper changes against a small dataset before full run
+- 方針が固まったタイミングと実装が終わったタイミングの2回、コードレビュー（code-reviewer agent）を必ず実施する
+- 実装中はこまめにユニットテストを書き、テストが通ることを確認しながら進める（省略禁止）
