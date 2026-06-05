@@ -425,6 +425,8 @@ final class SupabaseListingStore {
     static func updateEnrichmentFields(_ existing: Listing, from new: Listing) {
         existing.floorPlanImagesJSON = new.floorPlanImagesJSON ?? existing.floorPlanImagesJSON
         existing.suumoImagesJSON = new.suumoImagesJSON ?? existing.suumoImagesJSON
+        if new.hasFloorPlanImagesServer || existing.hasFloorPlanImages { existing.hasFloorPlanImagesServer = true }
+        if new.hasPropertyImagesServer || existing.hasSuumoImages { existing.hasPropertyImagesServer = true }
         existing.hazardInfo = new.hazardInfo ?? existing.hazardInfo
         existing.ssRadarData = new.ssRadarData ?? existing.ssRadarData
         existing.ssPastMarketTrends = new.ssPastMarketTrends ?? existing.ssPastMarketTrends

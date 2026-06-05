@@ -450,6 +450,9 @@ final class ListingStore {
         existing.aiRecommendationSummary = new.aiRecommendationSummary ?? existing.aiRecommendationSummary
         existing.aiRecommendationFlagsJSON = new.aiRecommendationFlagsJSON ?? existing.aiRecommendationFlagsJSON
         existing.aiRecommendationAction = new.aiRecommendationAction ?? existing.aiRecommendationAction
+        // サーバー側画像有無フラグ（軽量ビューに含まれる boolean）
+        if new.hasFloorPlanImagesServer { existing.hasFloorPlanImagesServer = true }
+        if new.hasPropertyImagesServer { existing.hasPropertyImagesServer = true }
         // Enrichment JSONB フィールド（軽量ビューに含まれない → nil なら既存値を保持）
         existing.floorPlanImagesJSON = new.floorPlanImagesJSON ?? existing.floorPlanImagesJSON
         existing.suumoImagesJSON = new.suumoImagesJSON ?? existing.suumoImagesJSON

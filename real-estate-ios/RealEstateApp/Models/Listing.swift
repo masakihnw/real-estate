@@ -338,6 +338,10 @@ final class Listing: @unchecked Sendable {
     /// enrichment データの最終取得日時（nil = 未取得、詳細画面でレイジーロード要）
     var enrichmentFetchedAt: Date?
 
+    /// サーバー側の画像有無フラグ（listings_feed_light 経由で取得、pendingCount フィルタ用）
+    var hasFloorPlanImagesServer: Bool
+    var hasPropertyImagesServer: Bool
+
     init(
         source: String? = nil,
         url: String,
@@ -440,7 +444,9 @@ final class Listing: @unchecked Sendable {
         aiRecommendationScore: Int? = nil,
         aiRecommendationSummary: String? = nil,
         aiRecommendationFlagsJSON: String? = nil,
-        aiRecommendationAction: String? = nil
+        aiRecommendationAction: String? = nil,
+        hasFloorPlanImagesServer: Bool = false,
+        hasPropertyImagesServer: Bool = false
     ) {
         self.source = source
         self.url = url
@@ -544,6 +550,8 @@ final class Listing: @unchecked Sendable {
         self.aiRecommendationSummary = aiRecommendationSummary
         self.aiRecommendationFlagsJSON = aiRecommendationFlagsJSON
         self.aiRecommendationAction = aiRecommendationAction
+        self.hasFloorPlanImagesServer = hasFloorPlanImagesServer
+        self.hasPropertyImagesServer = hasPropertyImagesServer
     }
 
     // MARK: - Identity
@@ -1087,6 +1095,14 @@ final class Listing: @unchecked Sendable {
     /// 表示用: 階建のみ（新築一覧用。何階建かだけ表示）
     var floorTotalDisplay: String {
         floorTotal.map { "\($0)階建" } ?? "—"
+    }
+
+    /// 表示用: 物件名＋所在階（名前末尾に既に階数がある場合は付与しない）
+    var nameWithFloor: String {
+        guard let floor = floorPosition else { return name }
+        if name.range(of: #"\d+階(?!建)"#, options: .regularExpression) != nil { return name }
+        if name.range(of: #"\d+[Ff]$"#, options: .regularExpression) != nil { return name }
+        return "\(name) \(floor)階"
     }
 
     /// 権利形態の種別
@@ -1901,6 +1917,11 @@ final class Listing: @unchecked Sendable {
     /// 間取り図画像があるか
     var hasFloorPlanImages: Bool {
         floorPlanImagesJSON != nil && !parsedFloorPlanImages.isEmpty
+    }
+
+    /// 外観写真と間取り図の両方があるか（スワイプ表示の必須条件）
+    var hasSwipeableImages: Bool {
+        hasSuumoImages && hasFloorPlanImages
     }
 
     // MARK: - SUUMO 物件写真

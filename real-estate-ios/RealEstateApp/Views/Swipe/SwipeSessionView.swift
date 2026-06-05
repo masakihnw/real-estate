@@ -10,6 +10,7 @@ struct SwipeSessionView: View {
     @State private var isExiting = false
     @State private var selectedListing: Listing?
     @State private var isLoadingEnrichment = true
+    @State private var noEligibleListings = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.modelContext) private var modelContext
 
@@ -24,6 +25,22 @@ struct SwipeSessionView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+            } else if noEligibleListings {
+                VStack(spacing: 16) {
+                    Image(systemName: "photo.badge.exclamationmark")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.secondary)
+                    Text("画像付きの新着物件はありません")
+                        .font(.headline)
+                    Text("外観写真と間取り図が揃った物件のみ表示しています")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Button("閉じる") { onDismiss() }
+                        .buttonStyle(.borderedProminent)
+                        .padding(.top, 8)
+                }
+                .padding()
             } else if viewModel.isComplete {
                 SwipeCompletionView(
                     likedCount: viewModel.likedCount,
@@ -50,6 +67,8 @@ struct SwipeSessionView: View {
         .task {
             viewModel.loadCards(from: listings)
             await prefetchEnrichment()
+            viewModel.filterCardsWithoutImages()
+            noEligibleListings = viewModel.cards.isEmpty
             isLoadingEnrichment = false
         }
         .sheet(item: $selectedListing) { listing in
@@ -214,7 +233,10 @@ struct SwipeSessionView: View {
 
     private func prefetchEnrichment() async {
         let store = SupabaseListingStore.shared
-        let needsFetch = viewModel.cards.filter { $0.enrichmentFetchedAt == nil }
+        let staleThreshold = Calendar.current.date(byAdding: .hour, value: -6, to: Date()) ?? .distantPast
+        let needsFetch = SwipeSessionViewModel.listingsNeedingEnrichmentFetch(
+            viewModel.cards, staleThreshold: staleThreshold
+        )
         guard !needsFetch.isEmpty else { return }
 
         for listing in needsFetch {

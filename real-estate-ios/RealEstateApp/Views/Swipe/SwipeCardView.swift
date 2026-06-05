@@ -185,7 +185,7 @@ struct SwipeCardView: View {
 
     private var infoSection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(listing.name)
+            Text(listing.nameWithFloor)
                 .font(.headline)
                 .lineLimit(2)
 

@@ -143,6 +143,10 @@ struct ListingDTO: Codable {
 
     // Supabase 同期用: 物件のアクティブ状態
     var is_active: Bool?
+
+    // 画像有無フラグ（listings_feed_light のみ。enrichments の generated column）
+    var has_floor_plan_images: Bool?
+    var has_property_images: Bool?
 }
 
 extension Listing {
@@ -467,7 +471,9 @@ extension Listing {
                 }
                 return nil
             }(),
-            aiRecommendationAction: dto.ai_recommendation_action
+            aiRecommendationAction: dto.ai_recommendation_action,
+            hasFloorPlanImagesServer: dto.has_floor_plan_images ?? false,
+            hasPropertyImagesServer: dto.has_property_images ?? false
         )
         listing.supabaseIdentityKey = dbIdentityKey
         return listing

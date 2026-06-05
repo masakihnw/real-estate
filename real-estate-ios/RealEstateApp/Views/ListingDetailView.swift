@@ -65,7 +65,7 @@ struct ListingDetailView: View {
                     }
 
                     // ② タイトルブロック（物件名 + 住所 + 価格）
-                    Text(listing.name)
+                    Text(listing.nameWithFloor)
                         .font(.title2)
                         .fontWeight(.semibold)
                         .textSelection(.enabled)
@@ -1297,20 +1297,69 @@ struct ListingDetailView: View {
 
                     if !breakdown.isEmpty {
                         Divider().padding(.horizontal, 14)
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 10) {
                             ForEach(Array(breakdown.enumerated()), id: \.offset) { _, c in
-                                HStack(alignment: .top, spacing: 6) {
-                                    Image(systemName: c.icon)
-                                        .font(.caption2)
-                                        .frame(width: 14)
-                                        .foregroundStyle(.secondary)
-                                        .padding(.top, 1)
-                                    VStack(alignment: .leading, spacing: 2) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack(spacing: 6) {
+                                        Image(systemName: c.icon)
+                                            .font(.caption)
+                                            .frame(width: 16)
+                                            .foregroundStyle(DesignSystem.scoreColor(for: c.score))
                                         Text(c.label)
-                                            .font(.caption2.weight(.semibold))
+                                            .font(.caption.weight(.semibold))
+                                        Spacer()
+                                        Text("\(c.score)")
+                                            .font(.caption.weight(.bold).monospacedDigit())
+                                            .foregroundStyle(DesignSystem.scoreColor(for: c.score))
+                                    }
+                                    if !c.detail.isEmpty {
                                         Text(c.detail)
-                                            .font(.caption2)
-                                            .foregroundStyle(.secondary)
+                                            .font(.caption)
+                                            .foregroundStyle(.primary.opacity(0.7))
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .padding(.leading, 22)
+                                    }
+                                }
+                            }
+                        }
+                        .padding(14)
+                    }
+
+                    if let r = listing.parsedAIScoringReasoning,
+                       (!r.strengths.isEmpty || !r.weaknesses.isEmpty) {
+                        Divider().padding(.horizontal, 14)
+                        HStack(alignment: .top, spacing: 12) {
+                            if !r.strengths.isEmpty {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Label("強み", systemImage: "plus.circle.fill")
+                                        .font(.caption2.weight(.semibold))
+                                        .foregroundStyle(.green)
+                                    FlowLayout(spacing: 4) {
+                                        ForEach(r.strengths, id: \.self) { s in
+                                            Text(s)
+                                                .font(.caption2)
+                                                .padding(.horizontal, 6)
+                                                .padding(.vertical, 2)
+                                                .background(.green.opacity(0.1))
+                                                .clipShape(Capsule())
+                                        }
+                                    }
+                                }
+                            }
+                            if !r.weaknesses.isEmpty {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Label("弱み", systemImage: "minus.circle.fill")
+                                        .font(.caption2.weight(.semibold))
+                                        .foregroundStyle(.orange)
+                                    FlowLayout(spacing: 4) {
+                                        ForEach(r.weaknesses, id: \.self) { s in
+                                            Text(s)
+                                                .font(.caption2)
+                                                .padding(.horizontal, 6)
+                                                .padding(.vertical, 2)
+                                                .background(.orange.opacity(0.1))
+                                                .clipShape(Capsule())
+                                        }
                                     }
                                 }
                             }

@@ -233,8 +233,12 @@ struct DuplicateDeduplicationTests {
         let recentDate = Date()
         let reviewed = makeListing(url: "u1", name: "レビュー済み", address: "千代田区1", addedAt: recentDate)
         reviewed.propertyType = "chuko"
+        reviewed.hasFloorPlanImagesServer = true
+        reviewed.hasPropertyImagesServer = true
         let pending = makeListing(url: "u2", name: "未レビュー", address: "中央区1", addedAt: recentDate)
         pending.propertyType = "chuko"
+        pending.hasFloorPlanImagesServer = true
+        pending.hasPropertyImagesServer = true
 
         #expect(reviewed.isRecentlyAdded == true)
         #expect(pending.isRecentlyAdded == true)

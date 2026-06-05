@@ -3,6 +3,9 @@ name: Backfill HOME'S Images
 on:
   schedule:
     - cron: '30 19 * * *'  # 毎日 JST 4:30（UTC 19:30）
+  workflow_run:
+    workflows: ["Enrich and Report"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       limit:
@@ -19,6 +22,9 @@ on:
 jobs:
   backfill:
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     timeout-minutes: 60
     defaults:
       run:
@@ -47,7 +53,7 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          BACKFILL_LIMIT: ${{ inputs.limit || '50' }}
+          BACKFILL_LIMIT: ${{ inputs.limit || (github.event_name == 'workflow_run' && '20') || '50' }}
           BACKFILL_DELAY: ${{ inputs.delay || '10' }}
         run: |
           python3 << 'PYEOF'
@@ -110,7 +116,7 @@ jobs:
           all_rows = []
           offset = 0
           while True:
-              resp = sb.table("listing_facts").select("id, sources_json").eq("status", "active").is_("suumo_images", "null").range(offset, offset + 499).execute()
+              resp = sb.table("listing_facts").select("id, sources_json").eq("status", "active").is_("suumo_images", "null").order("first_seen_at", desc=True).range(offset, offset + 499).execute()
               if not resp.data: break
               all_rows.extend(resp.data)
               if len(resp.data) < 500: break

@@ -42,15 +42,15 @@ from report_utils import (
     format_total_units,
 )
 
-# Firestore からスクレイピング条件を上書き（main.py と同じ条件でレポートを生成するため）
+# Supabase からスクレイピング条件を上書き（main.py と同じ条件でレポートを生成するため）
 # config を import する前に呼ぶこと（from config import X は呼び出し時点の値をコピーするため）
 try:
-    from firestore_config_loader import load_config_from_firestore
-    loaded = load_config_from_firestore()
+    from supabase_config_loader import load_config_from_supabase
+    loaded = load_config_from_supabase()
     if not loaded:
-        logger.info("# Firestore 設定は未適用（config.py のデフォルトを使用）")
+        logger.info("# Supabase 設定は未適用（config.py のデフォルトを使用）")
 except Exception as e:
-    logger.error(f"# Firestore 設定の読み込みに失敗（config.py のデフォルトを使用）: {e}")
+    logger.error(f"# Supabase 設定の読み込みに失敗（config.py のデフォルトを使用）: {e}")
 
 try:
     from config import (

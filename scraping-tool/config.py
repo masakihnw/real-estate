@@ -191,8 +191,8 @@ _BUILT_OFFSET_MAX = _to_int(_OFFSET_CONSTRAINT.get("max"), 50) if isinstance(_OF
 _BUILT_OFFSET = min(max(_BUILT_OFFSET_MIN, _to_int(_DEFAULTS.get("builtYearMinOffsetYears"), 20)), _BUILT_OFFSET_MAX)
 
 # 価格帯（万円）
-PRICE_MIN_MAN = _to_int(_DEFAULTS.get("priceMinMan"), 9000)
-PRICE_MAX_MAN = _to_int(_DEFAULTS.get("priceMaxMan"), 11500)
+PRICE_MIN_MAN = _to_int(_DEFAULTS.get("priceMinMan"), 7500)
+PRICE_MAX_MAN = _to_int(_DEFAULTS.get("priceMaxMan"), 12000)
 
 # 専有面積（㎡）
 AREA_MIN_M2 = _to_int(_DEFAULTS.get("areaMinM2"), 60)
@@ -380,7 +380,7 @@ def _normalize_runtime_config() -> None:
 
 def apply_runtime_overrides(data: dict[str, Any]) -> bool:
     """
-    Firestore など外部設定を runtime 反映する。
+    Supabase など外部設定を runtime 反映する。
     1つでも適用されたら True を返す。
     スレッドセーフ: 同時呼び出しは _config_lock で排他制御する。
     """
@@ -427,6 +427,15 @@ def _apply_runtime_overrides_locked(data: dict[str, Any]) -> bool:
         applied = True
     if "allowedStations" in data and isinstance(data["allowedStations"], list):
         ALLOWED_STATIONS = tuple(str(x) for x in data["allowedStations"])
+        applied = True
+
+    if "toshinWards" in data and isinstance(data["toshinWards"], list):
+        import scraper_common
+        scraper_common.TOSHIN_3_WARDS = frozenset(str(x) for x in data["toshinWards"])
+        applied = True
+    if "waterfrontKeywords" in data and isinstance(data["waterfrontKeywords"], list):
+        import scraper_common
+        scraper_common.WATERFRONT_ADDRESS_KEYWORDS = tuple(str(x) for x in data["waterfrontKeywords"])
         applied = True
 
     _normalize_runtime_config()
