@@ -8210,23 +8210,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/534302.html",
       "deviation_score": 18,
-      "estimated_price_man": 12324,
-      "estimated_tsubo_price_man": 658,
-      "estimated_m2_price_man": 199,
+      "estimated_price_man": 12262,
+      "estimated_tsubo_price_man": 634,
+      "estimated_m2_price_man": 192,
       "shinchiku_history_count": 18,
-      "chuko_history_count": 59,
+      "chuko_history_count": 61,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 66.39,
-          "price_man": 10270,
-          "tsubo_price_man": 515.0
+          "area_m2": 66.24,
+          "price_man": 10295,
+          "tsubo_price_man": 518.0
         }
       ]
     },
-    "cached_at": "2026-05-23T03:57:04.537543"
+    "cached_at": "2026-06-06T04:12:06.555132"
   },
   "マストレジデンス世田谷": {
     "data": {
@@ -9481,5 +9481,27 @@
       ]
     },
     "cached_at": "2026-06-05T04:35:50.255387"
+  },
+  "イニシア蒲田": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/15921.html",
+      "deviation_score": 32,
+      "estimated_price_man": 8298,
+      "estimated_tsubo_price_man": 404,
+      "estimated_m2_price_man": 123,
+      "shinchiku_history_count": 32,
+      "chuko_history_count": 17,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 64.52,
+          "price_man": 5641,
+          "tsubo_price_man": 289.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-06T04:12:15.675103"
   }
 }
