@@ -8254,9 +8254,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603980.html",
       "deviation_score": 50,
-      "estimated_price_man": 11977,
-      "estimated_tsubo_price_man": 502,
-      "estimated_m2_price_man": 152,
+      "estimated_price_man": 12123,
+      "estimated_tsubo_price_man": 495,
+      "estimated_m2_price_man": 150,
       "shinchiku_history_count": 50,
       "chuko_history_count": 22,
       "sales_history": [
@@ -8265,12 +8265,12 @@
           "floor": 2,
           "layout": "",
           "area_m2": 73.59,
-          "price_man": 8111,
-          "tsubo_price_man": 365.0
+          "price_man": 8098,
+          "tsubo_price_man": 364.0
         }
       ]
     },
-    "cached_at": "2026-05-23T08:55:10.877270"
+    "cached_at": "2026-06-06T09:15:20.112647"
   },
   "ブリリア久が原": {
     "data": {
