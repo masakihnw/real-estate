@@ -9591,5 +9591,35 @@
       ]
     },
     "cached_at": "2026-06-07T04:41:25.062698"
+  },
+  "ウェリスシティ大森タワー【リノベ】【高層階】": {
+    "data": null,
+    "cached_at": "2026-06-07T09:37:46.457157"
+  },
+  "ウェリスシティ大森タワーリノベ高層階": {
+    "data": null,
+    "cached_at": "2026-06-07T09:37:46.457157"
+  },
+  "パークシティ高田馬場": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/2087280.html",
+      "deviation_score": 0,
+      "estimated_price_man": 17895,
+      "estimated_tsubo_price_man": 740,
+      "estimated_m2_price_man": 224,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 383,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 60.53,
+          "price_man": 14779,
+          "tsubo_price_man": 799.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-07T09:37:56.628697"
   }
 }
