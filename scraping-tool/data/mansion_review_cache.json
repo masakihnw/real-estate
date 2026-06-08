@@ -841,7 +841,7 @@
         }
       ]
     },
-    "cached_at": "2026-05-14T16:06:16.285318"
+    "cached_at": "2026-06-08T03:17:38.437547"
   },
   "サンクタス市ヶ谷富久ウエストテラス": {
     "data": null,
@@ -9621,5 +9621,46 @@
       ]
     },
     "cached_at": "2026-06-07T09:37:56.628697"
+  },
+  "リムテラス早稲田夏目坂": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1639033.html",
+      "deviation_score": 4,
+      "shinchiku_history_count": 4,
+      "chuko_history_count": 1,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 84.41,
+          "price_man": 12480,
+          "tsubo_price_man": 489.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-08T03:17:29.790133"
+  },
+  "クラッシィハウス新宿中落合": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/533816.html",
+      "deviation_score": 86,
+      "estimated_price_man": 10345,
+      "estimated_tsubo_price_man": 503,
+      "estimated_m2_price_man": 153,
+      "shinchiku_history_count": 86,
+      "chuko_history_count": 41,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 72.97,
+          "price_man": 7286,
+          "tsubo_price_man": 331.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-08T03:17:47.364885"
   }
 }
