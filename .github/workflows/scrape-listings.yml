@@ -7,7 +7,7 @@ name: Scrape Listings
 on:
   schedule:
     # 1日4回実行: JST 9:00, 15:00, 18:00, 22:00（UTC 0:00, 6:00, 9:00, 13:00）
-    # UTC 13:00 (JST 22:00) の回で Slack 通知を送信
+    # UTC 0:00 (JST 9:00) の回で Slack 通知を送信（GHA遅延許容: UTC 0-5）
     - cron: '0 0,6,9,13 * * *'
   workflow_dispatch:
     inputs:

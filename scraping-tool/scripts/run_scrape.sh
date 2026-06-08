@@ -108,9 +108,11 @@ fi
 IS_SLACK_TIME=false
 
 # JST 9:00 (UTC 0:00) の回で Slack 通知（Routine②③のドラフトを朝一で送信）
-# スクリプト開始時に取得した UTC 時刻で判定（スクレイピング所要時間の影響を受けない）
+# GHA cron は最大3-5時間遅延するため、UTC 0-5 をスラック通知時間帯として許容する。
+# 次のスケジュール(UTC 6)は遅延しても UTC 8以降のため重複しない。
+# 二重送信は slack_notify.py の notification_state CAS で防止。
 case "$STARTED_HOUR_UTC" in
-    0|00) IS_SLACK_TIME=true ;;
+    0|00|01|02|03|04|05) IS_SLACK_TIME=true ;;
 esac
 
 # ──────────────────────────── Phase 4: metadata.json 出力 ────────────────────────────
