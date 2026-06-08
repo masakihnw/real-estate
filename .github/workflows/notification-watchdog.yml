@@ -1,0 +1,149 @@
+name: Notification Watchdog
+
+# Slack通知パイプラインの独立監視
+# Slack送信が壊れていても GitHub Issue 経由で検知できる。
+# JST 10:00 (UTC 1:00) = 通常の Slack 送信 (JST 9:00) の1時間後に実行。
+# GHA遅延を考慮し、JST 12:00 (UTC 3:00) にも実行。
+
+on:
+  schedule:
+    - cron: '0 1,3 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-notification-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+
+    steps:
+      - name: Check for stuck notification drafts
+        id: check
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          CUTOFF=$(date -u -d '24 hours ago' '+%Y-%m-%dT%H:%M:%S')
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            "${SUPABASE_URL}/rest/v1/notification_drafts?status=eq.pending&created_at=lt.${CUTOFF}&select=id,notification_type,draft_date,created_at&order=draft_date.desc&limit=50" \
+            -H "apikey: ${SUPABASE_SERVICE_ROLE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Supabase API error: HTTP $HTTP_CODE"
+            echo "stuck_count=error" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          STUCK_COUNT=$(echo "$BODY" | python3 -c "import sys,json; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "0")
+
+          if ! [[ "$STUCK_COUNT" =~ ^[0-9]+$ ]]; then
+            echo "::warning::STUCK_COUNT is not numeric: '$STUCK_COUNT'"
+            echo "stuck_count=error" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "stuck_count=$STUCK_COUNT" >> "$GITHUB_OUTPUT"
+          echo "::notice::Stuck notification drafts: $STUCK_COUNT"
+
+          if [ "$STUCK_COUNT" -gt 0 ]; then
+            DETAILS=$(echo "$BODY" | python3 -c "
+          import sys, json
+          rows = json.load(sys.stdin)
+          for r in rows:
+              print(f\"- {r['notification_type']} ({r['draft_date']}): pending since {r['created_at'][:16]}\")
+          ")
+            DELIMITER="$(openssl rand -hex 8)"
+            echo "details<<${DELIMITER}" >> "$GITHUB_OUTPUT"
+            echo "$DETAILS" >> "$GITHUB_OUTPUT"
+            echo "${DELIMITER}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Log API error
+        if: steps.check.outputs.stuck_count == 'error'
+        run: |
+          echo "::error::Supabase API への接続に失敗しました。監視をスキップします。"
+
+      - name: Ensure label exists
+        if: steps.check.outputs.stuck_count != '0' && steps.check.outputs.stuck_count != 'error'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "notification-watchdog" \
+            --repo "${{ github.repository }}" \
+            --description "Slack通知パイプライン障害の自動検知" \
+            --color "D93F0B" \
+            2>/dev/null || true
+
+      - name: Check for existing open issue
+        if: steps.check.outputs.stuck_count != '0' && steps.check.outputs.stuck_count != 'error'
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COUNT=$(gh issue list \
+            --repo "${{ github.repository }}" \
+            --label "notification-watchdog" \
+            --state open \
+            --json number \
+            --jq 'length')
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Issue
+        if: |
+          steps.check.outputs.stuck_count != '0' &&
+          steps.check.outputs.stuck_count != 'error' &&
+          steps.existing.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STUCK_COUNT: ${{ steps.check.outputs.stuck_count }}
+          DETAILS: ${{ steps.check.outputs.details }}
+        run: |
+          cat > /tmp/watchdog-issue.md <<BODY
+          ## 検出内容
+
+          ${STUCK_COUNT}件の通知ドラフトが24時間以上 pending のままです。
+          Slack送信パイプライン（GHA enrich-and-report → slack_notify.py）に障害の可能性があります。
+
+          ### 未送信ドラフト
+
+          ${DETAILS}
+
+          ### 対処手順
+
+          1. \`notification_drafts\` テーブルの pending レコードを確認
+          2. GHA \`enrich-and-report\` ワークフローの最近の実行ログを確認
+          3. \`slack_notify.py\` のエラーログを確認
+          4. 必要に応じて手動再送信またはドラフトの status 更新
+
+          ---
+          *[notification-watchdog](.github/workflows/notification-watchdog.yml) が自動作成。解決後にクローズしてください。*
+          BODY
+
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "🚨 Slack通知パイプライン障害: ${STUCK_COUNT}件の通知が未送信" \
+            --label "notification-watchdog" \
+            --body-file /tmp/watchdog-issue.md
+
+      - name: Auto-close resolved issues
+        if: steps.check.outputs.stuck_count == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUES=$(gh issue list \
+            --repo "${{ github.repository }}" \
+            --label "notification-watchdog" \
+            --state open \
+            --json number \
+            --jq '.[].number')
+
+          for NUM in $ISSUES; do
+            gh issue close "$NUM" \
+              --repo "${{ github.repository }}" \
+              --comment "✅ 未送信ドラフトが解消されました。自動クローズします。"
+          done
