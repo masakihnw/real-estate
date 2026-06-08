@@ -8412,23 +8412,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17824.html",
       "deviation_score": 62,
-      "estimated_price_man": 8594,
-      "estimated_tsubo_price_man": 379,
-      "estimated_m2_price_man": 115,
+      "estimated_price_man": 8301,
+      "estimated_tsubo_price_man": 387,
+      "estimated_m2_price_man": 117,
       "shinchiku_history_count": 620,
-      "chuko_history_count": 216,
+      "chuko_history_count": 217,
       "sales_history": [
         {
           "end_date": "",
           "floor": 9,
           "layout": "",
-          "area_m2": 84.31,
-          "price_man": 5500,
-          "tsubo_price_man": 217.0
+          "area_m2": 84.34,
+          "price_man": 5520,
+          "tsubo_price_man": 218.0
         }
       ]
     },
-    "cached_at": "2026-05-25T10:43:29.546447"
+    "cached_at": "2026-06-08T11:42:46.965108"
   },
   "蘆花公園ザ・レジデンスフォレストコート☆リフォー...": {
     "data": null,
@@ -8458,51 +8458,51 @@
   },
   "プラウドタシティ東雲キャナルマークス": {
     "data": null,
-    "cached_at": "2026-05-25T10:43:36.663348"
+    "cached_at": "2026-06-08T11:43:17.402089"
   },
   "シティテラス赤羽THEEAST": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1633618.html",
       "deviation_score": 30,
-      "estimated_price_man": 10977,
-      "estimated_tsubo_price_man": 512,
-      "estimated_m2_price_man": 155,
+      "estimated_price_man": 11924,
+      "estimated_tsubo_price_man": 548,
+      "estimated_m2_price_man": 166,
       "shinchiku_history_count": 300,
-      "chuko_history_count": 3,
+      "chuko_history_count": 6,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 68.38,
-          "price_man": 9853,
-          "tsubo_price_man": 476.0
+          "area_m2": 68.42,
+          "price_man": 10993,
+          "tsubo_price_man": 531.0
         }
       ]
     },
-    "cached_at": "2026-05-25T10:43:46.327596"
+    "cached_at": "2026-06-08T11:42:56.753199"
   },
   "シティテラス赤羽THE": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1633618.html",
       "deviation_score": 30,
-      "estimated_price_man": 10977,
-      "estimated_tsubo_price_man": 512,
-      "estimated_m2_price_man": 155,
+      "estimated_price_man": 11924,
+      "estimated_tsubo_price_man": 548,
+      "estimated_m2_price_man": 166,
       "shinchiku_history_count": 300,
-      "chuko_history_count": 3,
+      "chuko_history_count": 6,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 68.38,
-          "price_man": 9853,
-          "tsubo_price_man": 476.0
+          "area_m2": 68.42,
+          "price_man": 10993,
+          "tsubo_price_man": 531.0
         }
       ]
     },
-    "cached_at": "2026-05-25T10:43:46.327596"
+    "cached_at": "2026-06-08T11:42:56.753199"
   },
   "プライムパークス品川シーサイドザ・タワー19階": {
     "data": {
@@ -9662,5 +9662,53 @@
       ]
     },
     "cached_at": "2026-06-08T03:17:47.364885"
+  },
+  "マーク・ゼロワン曳舟レジデンス棟": {
+    "data": null,
+    "cached_at": "2026-05-28T17:33:36.350855"
+  },
+  "リストレジデンス桜新町": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/603450.html",
+      "deviation_score": 54,
+      "estimated_price_man": 15665,
+      "estimated_tsubo_price_man": 720,
+      "estimated_m2_price_man": 218,
+      "shinchiku_history_count": 54,
+      "chuko_history_count": 32,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 68.9,
+          "price_man": 8780,
+          "tsubo_price_man": 422.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-08T11:43:05.584559"
+  },
+  "ルフォン杉並方南町": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/597227.html",
+      "deviation_score": 37,
+      "estimated_price_man": 9072,
+      "estimated_tsubo_price_man": 469,
+      "estimated_m2_price_man": 142,
+      "shinchiku_history_count": 37,
+      "chuko_history_count": 16,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 62.69,
+          "price_man": 6736,
+          "tsubo_price_man": 363.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-08T11:43:14.143791"
   }
 }
