@@ -14840,9 +14840,9 @@
     {
       "date": "2026-06-08",
       "total_listings": 468,
-      "new_count": 18,
+      "new_count": 0,
       "removed_count": 0,
-      "updated_count": 4,
+      "updated_count": 1,
       "price_changed_count": 0,
       "avg_price_man": 10679,
       "median_price_man": 10880,
@@ -14938,17 +14938,17 @@
           "min_price_man": 9480,
           "max_price_man": 11980
         },
-        "中野区": {
-          "count": 10,
-          "avg_price_man": 10285,
-          "min_price_man": 9199,
-          "max_price_man": 11950
-        },
         "港区": {
           "count": 10,
           "avg_price_man": 11629,
           "min_price_man": 9980,
           "max_price_man": 11998
+        },
+        "中野区": {
+          "count": 10,
+          "avg_price_man": 10285,
+          "min_price_man": 9199,
+          "max_price_man": 11950
         },
         "荒川区": {
           "count": 10,
