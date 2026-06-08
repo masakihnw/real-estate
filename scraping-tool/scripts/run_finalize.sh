@@ -341,7 +341,7 @@ fi
 fi  # end HAS_CHANGES
 
 # ──────────────────────────── Slack 通知 ────────────────────────────
-# JST 9:00 の回のみ送信（is_slack_time=true）。
+# JST 9:00 (UTC 0, GHA遅延で実際は UTC 3-5) の回で送信（is_slack_time=true）。
 # listing_events 差分 + notification_drafts (Routine②③のドラフト) をまとめて送信。
 
 if [ "$IS_SLACK_TIME" = "true" ] && [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
