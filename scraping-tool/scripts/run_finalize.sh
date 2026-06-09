@@ -341,18 +341,23 @@ fi
 fi  # end HAS_CHANGES
 
 # ──────────────────────────── Slack 通知 ────────────────────────────
-# JST 9:00 (UTC 0, GHA遅延で実際は UTC 3-5) の回で送信（is_slack_time=true）。
-# listing_events 差分 + notification_drafts (Routine②③のドラフト) をまとめて送信。
+# (1) pending な notification_drafts は毎回送信（GHA遅延でタイミングがずれても確実に届ける）
+# (2) listing_events 差分通知は is_slack_time=true の回のみ
+
+if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+    echo "--- pending ドラフト送信 ---" >&2
+    python3 send_pending_drafts.py || echo "pending ドラフト送信失敗（続行）" >&2
+fi
 
 if [ "$IS_SLACK_TIME" = "true" ] && [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
-    echo "Slack 通知送信中..." >&2
+    echo "Slack 差分通知送信中..." >&2
     python3 slack_notify.py \
         "${OUTPUT_DIR}/latest.json" \
         "" \
         "$REPORT" \
         || echo "Slack 通知失敗（続行）" >&2
 else
-    echo "Slack 通知スキップ（is_slack_time=${IS_SLACK_TIME}）" >&2
+    echo "Slack 差分通知スキップ（is_slack_time=${IS_SLACK_TIME}）" >&2
 fi
 
 # ──────────────────────────── 地図生成（ローカル実行時のみ） ────────────────────────────
