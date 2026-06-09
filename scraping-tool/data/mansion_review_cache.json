@@ -3451,7 +3451,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/753775.html",
       "deviation_score": 52,
-      "estimated_price_man": 12408,
+      "estimated_price_man": 12956,
       "estimated_tsubo_price_man": 604,
       "estimated_m2_price_man": 183,
       "shinchiku_history_count": 522,
@@ -3467,7 +3467,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-09T04:08:45.029163"
+    "cached_at": "2026-06-09T04:51:47.588101"
   },
   "ザ・ガーデンタワーズサンライズタワー": {
     "data": {
@@ -8530,45 +8530,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18407.html",
       "deviation_score": 15,
-      "estimated_price_man": 6944,
-      "estimated_tsubo_price_man": 284,
-      "estimated_m2_price_man": 86,
+      "estimated_price_man": 7696,
+      "estimated_tsubo_price_man": 296,
+      "estimated_m2_price_man": 90,
       "shinchiku_history_count": 150,
-      "chuko_history_count": 78,
+      "chuko_history_count": 79,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
           "area_m2": 82.42,
-          "price_man": 5422,
-          "tsubo_price_man": 216.0
+          "price_man": 5476,
+          "tsubo_price_man": 218.0
         }
       ]
     },
-    "cached_at": "2026-05-26T04:11:35.276275"
+    "cached_at": "2026-06-09T04:51:18.082441"
   },
   "サンウッド品川天王洲タワー": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17446.html",
       "deviation_score": 12,
-      "estimated_price_man": 9498,
-      "estimated_tsubo_price_man": 542,
-      "estimated_m2_price_man": 164,
+      "estimated_price_man": 13238,
+      "estimated_tsubo_price_man": 534,
+      "estimated_m2_price_man": 162,
       "shinchiku_history_count": 129,
-      "chuko_history_count": 186,
+      "chuko_history_count": 187,
       "sales_history": [
         {
           "end_date": "",
           "floor": 13,
           "layout": "",
-          "area_m2": 57.19,
-          "price_man": 5352,
-          "tsubo_price_man": 310.0
+          "area_m2": 57.31,
+          "price_man": 5387,
+          "tsubo_price_man": 311.0
         }
       ]
     },
-    "cached_at": "2026-05-26T04:11:45.011685"
+    "cached_at": "2026-06-09T04:51:26.699942"
   },
   "パークタワー東雲28階": {
     "data": {
@@ -9715,7 +9715,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1639114.html",
       "deviation_score": 0,
-      "estimated_price_man": 12426,
+      "estimated_price_man": 12204,
       "estimated_tsubo_price_man": 734,
       "estimated_m2_price_man": 222,
       "shinchiku_history_count": 0,
@@ -9731,13 +9731,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-09T04:08:14.180671"
+    "cached_at": "2026-06-09T04:51:00.236308"
   },
   "GREENPARK日暮里": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/755791.html",
       "deviation_score": 25,
-      "estimated_price_man": 9564,
+      "estimated_price_man": 9438,
       "estimated_tsubo_price_man": 417,
       "estimated_m2_price_man": 126,
       "shinchiku_history_count": 25,
@@ -9753,13 +9753,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-09T04:08:23.756211"
+    "cached_at": "2026-06-09T04:51:09.691550"
   },
   "BrilliaTower大崎": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/12014.html",
       "deviation_score": 23,
-      "estimated_price_man": 9791,
+      "estimated_price_man": 9954,
       "estimated_tsubo_price_man": 540,
       "estimated_m2_price_man": 164,
       "shinchiku_history_count": 238,
@@ -9775,17 +9775,17 @@
         }
       ]
     },
-    "cached_at": "2026-06-09T04:08:32.477367"
+    "cached_at": "2026-06-09T04:51:35.391652"
   },
   "クレヴィア住吉601": {
     "data": null,
-    "cached_at": "2026-06-09T04:08:35.905570"
+    "cached_at": "2026-06-09T04:51:38.779120"
   },
   "プラウドシティ小竹向原グランドコート": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1629887.html",
       "deviation_score": 32,
-      "estimated_price_man": 11603,
+      "estimated_price_man": 11774,
       "estimated_tsubo_price_man": 565,
       "estimated_m2_price_man": 171,
       "shinchiku_history_count": 329,
@@ -9801,6 +9801,6 @@
         }
       ]
     },
-    "cached_at": "2026-06-09T04:08:53.575842"
+    "cached_at": "2026-06-09T04:51:56.133192"
   }
 }
