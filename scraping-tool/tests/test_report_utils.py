@@ -128,6 +128,28 @@ def test_clean_listing_name_button_text():
     assert clean_listing_name("noimage") == ""
 
 
+def test_clean_listing_name_diamond_wrapped():
+    """◆NAME◆ の装飾記号を除去して物件名だけ返す"""
+    assert clean_listing_name("◆ザ・パークハウス弦巻◆") == "ザ・パークハウス弦巻"
+
+
+def test_clean_listing_name_diamond_leading_only():
+    """先頭の◆だけ付いている場合も除去"""
+    assert clean_listing_name("◆パークタワー晴海") == "パークタワー晴海"
+
+
+def test_clean_listing_name_decorative_symbols():
+    """■□☆★♪ などの装飾記号を先頭末尾から除去"""
+    assert clean_listing_name("★プラウド目黒★") == "プラウド目黒"
+    assert clean_listing_name("■□パークシティ武蔵小山") == "パークシティ武蔵小山"
+    assert clean_listing_name("ブリリア有明♪") == "ブリリア有明"
+
+
+def test_clean_listing_name_normal_unchanged():
+    """装飾のない通常名称はそのまま返す"""
+    assert clean_listing_name("ザ・パークハウス弦巻") == "ザ・パークハウス弦巻"
+
+
 # --- identity_key_str: area_m2 formatting ---
 
 
