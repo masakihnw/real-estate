@@ -80,8 +80,15 @@ MAX_PAGES_SAFETY = 100
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
 EARLY_EXIT_PAGES = 20
 
+# 空パース許容回数: 連続でパース結果0件が続いた場合のみ停止
+# bot検出/一時的なHTML変化を1回の空パースで諦めないためのバッファ
+EMPTY_PARSE_TOLERANCE = 2
+
+# 空パース時の追加待機秒数（rate limit/bot検出回避のバックオフ）
+EMPTY_PARSE_BACKOFF_SEC = 10
+
 # 区ごと並列取得のワーカー数（livable は負荷対策のため控えめに設定）
-PARALLEL_WARD_WORKERS = 3
+PARALLEL_WARD_WORKERS = 2
 
 
 # ──────────────────────────── CSS Modules ユーティリティ ────────────────────────────
@@ -440,6 +447,7 @@ def _scrape_ward(
     ward_total_parsed = 0
     ward_total_passed = 0
     pages_since_last_pass = 0
+    consecutive_empty_parses = 0
 
     while p <= limit:
         if p == 1:
@@ -451,7 +459,6 @@ def _scrape_ward(
             html = fetch_list_page(session, url)
         except requests.exceptions.HTTPError as e:
             if e.response is not None and e.response.status_code == 404:
-                # 404 は物件がない区 or ページ範囲外
                 if p == 1:
                     logger.info("livable: %s (a%s) は物件なし (404)", ward_name, ward_code)
                 break
@@ -469,8 +476,26 @@ def _scrape_ward(
 
         rows = parse_list_html(html)
         if not rows:
-            break
+            consecutive_empty_parses += 1
+            html_size = len(html)
+            logger.warning(
+                "livable: %s (a%s) ページ%d パース0件 (HTML: %dB, 連続: %d/%d)",
+                ward_name, ward_code, p, html_size,
+                consecutive_empty_parses, EMPTY_PARSE_TOLERANCE,
+            )
+            if consecutive_empty_parses >= EMPTY_PARSE_TOLERANCE:
+                logger.info(
+                    "livable: %s (a%s) ページ%d 連続%d回パース0件のため停止"
+                    " (累計パース: %d件, 累計通過: %d件)",
+                    ward_name, ward_code, p, consecutive_empty_parses,
+                    ward_total_parsed, ward_total_passed,
+                )
+                break
+            time.sleep(EMPTY_PARSE_BACKOFF_SEC)
+            p += 1
+            continue
 
+        consecutive_empty_parses = 0
         ward_total_parsed += len(rows)
         passed = 0
         for row in rows:
@@ -506,6 +531,8 @@ def _scrape_ward(
 
     if ward_total_parsed > 0:
         logger.info("livable: %s (a%s) 完了 — %d件パース, %d件通過", ward_name, ward_code, ward_total_parsed, ward_total_passed)
+    elif ward_total_parsed == 0 and p > 1:
+        logger.warning("livable: %s (a%s) 全ページでパース0件 — bot検出またはHTML構造変更の可能性", ward_name, ward_code)
 
     return results
 
