@@ -272,6 +272,14 @@ def clean_listing_name(name: str) -> str:
         segments = [seg.strip() for seg in s.split("×") if seg.strip()]
         if segments and all(_is_feature_tag(seg) for seg in segments):
             return ""
+    # 装飾記号を除去（◆NAME◆ → NAME、先頭末尾の装飾文字、■□ブロック）
+    m = re.match(r"^[◆◇]+([^◆◇]+)[◆◇]+\s*$", s)
+    if m:
+        s = m.group(1).strip()
+    else:
+        s = s.strip("◆◇")
+    s = re.sub(r"^[■□★☆♪]+\s*", "", s)
+    s = re.sub(r"\s*[■□★☆♪]+$", "", s)
     # 先頭のプレフィックスを除去（順序重要: 長い方から先に試す）
     s = re.sub(r"^新築マンション\s*", "", s).strip()
     s = re.sub(r"^マンション未入居\s*", "", s).strip()
