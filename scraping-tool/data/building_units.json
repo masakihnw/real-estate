@@ -81516,5 +81516,45 @@
         "label": "その他共用部"
       }
     ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_21032816/": {
+    "total_units": 456,
+    "floor_position": 6,
+    "floor_total": 31,
+    "floor_structure": "RC31階地下1階建",
+    "ownership": "所有権",
+    "management_fee": 8700,
+    "repair_reserve_fund": 14810,
+    "parking": "敷地内（9800円～2万6000円／月）",
+    "zoning": "準工業",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "浴室乾燥機",
+      "ゲストルーム",
+      "シャワー付洗面化粧台",
+      "対面式キッチン",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "オートバス",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "全居室フローリング",
+      "ウォークインクローゼット",
+      "ペット相談",
+      "２４時間有人管理",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "バイク置場"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F816%2F21032816%2F21032816_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F816%2F21032816%2F21032816_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      }
+    ]
   }
 }
