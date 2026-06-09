@@ -796,11 +796,12 @@ def _fetch_and_parse_detail(
     """詳細ページを取得・パースし、listing の不足フィールドを補完する。
 
     取得済みの URL は呼び出しスコープ内の detail_cache から返す。
-    取得失敗時はフェイルオープン（空 dict を返し、掲載中として扱う）。
+    取得失敗時はフェイルクローズ（``{"fetch_failed": True}`` を返し、
+    呼び出し元で除外させる）。
     """
     cached = detail_cache.get(r.url)
     if cached is not None:
-        if not cached.get("delisted"):
+        if not cached.get("delisted") and not cached.get("fetch_failed"):
             _merge_detail_cache_into_listing(r, cached)
         return cached
 
@@ -808,13 +809,13 @@ def _fetch_and_parse_detail(
         html = _fetch_detail_page(session, r.url)
         detail = parse_suumo_detail_html(html)
     except Exception as e:
-        logger.warning("SUUMO detail: 詳細取得に失敗（掲載中として続行）: %s (%s)", r.url, e)
-        detail = {}
+        logger.warning("SUUMO detail: 詳細取得に失敗（除外）: %s (%s)", r.url, e)
+        detail = {"fetch_failed": True}
 
     if not isinstance(detail, dict):
-        detail = {}
+        detail = {"fetch_failed": True}
     detail_cache[r.url] = detail
-    if not detail.get("delisted"):
+    if not detail.get("delisted") and not detail.get("fetch_failed"):
         _merge_detail_cache_into_listing(r, detail)
     return detail
 
@@ -875,8 +876,8 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
                 if detail_session is None:
                     detail_session = create_session()
                 detail = _fetch_and_parse_detail(r, detail_session, detail_cache)
-                if detail.get("delisted"):
-                    logger.info("SUUMO: 掲載終了を検知 — %s (%s)", r.name, r.url)
+                if detail.get("delisted") or detail.get("fetch_failed"):
+                    logger.info("SUUMO: 掲載終了/取得失敗を検知 — %s (%s)", r.name, r.url)
                     continue
                 if total_units is None:
                     total_units = detail.get("total_units")
@@ -891,8 +892,13 @@ def apply_conditions(listings: list[SuumoListing]) -> list[SuumoListing]:
             if detail_session is None:
                 detail_session = create_session()
             detail = _fetch_and_parse_detail(r, detail_session, detail_cache)
-            if detail.get("delisted"):
-                logger.info("SUUMO: 掲載終了を検知 — %s (%s)", r.name, r.url)
+            if detail.get("delisted") or detail.get("fetch_failed"):
+                logger.info("SUUMO: 掲載終了/取得失敗を検知 — %s (%s)", r.name, r.url)
+                continue
+        else:
+            cached_detail = detail_cache[r.url]
+            if cached_detail.get("delisted") or cached_detail.get("fetch_failed"):
+                logger.info("SUUMO: 掲載終了/取得失敗キャッシュにより除外 — %s (%s)", r.name, r.url)
                 continue
         out.append(r)
     return out

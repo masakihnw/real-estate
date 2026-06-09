@@ -4,6 +4,7 @@ from pathlib import Path
 
 from suumo_scraper import (
     SuumoListing,
+    _fetch_and_parse_detail,
     _is_tower_name,
     _passes_basic_filters,
     _snap_kt_server,
@@ -95,6 +96,48 @@ def test_parse_suumo_detail_html_delisted_page():
     </section>
     """
     assert parse_suumo_detail_html(html) == {"delisted": True}
+
+
+def _make_detail_listing(**overrides) -> SuumoListing:
+    """_fetch_and_parse_detail テスト用 SuumoListing ファクトリ。"""
+    defaults = dict(
+        source="suumo",
+        url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_99999999/",
+        name="テストマンション",
+        price_man=10000,
+        address="東京都江東区毛利1",
+        station_line="東京メトロ半蔵門線「住吉」徒歩6分",
+        walk_min=6,
+        area_m2=65.0,
+        layout="3LDK",
+        built_str="2014年2月",
+        built_year=2014,
+    )
+    defaults.update(overrides)
+    return SuumoListing(**defaults)
+
+
+def test_fetch_and_parse_detail_returns_fetch_failed_on_error(monkeypatch):
+    """詳細ページ取得失敗時は fetch_failed=True を返す。"""
+    def _raise(*_a, **_kw):
+        raise ConnectionError("mock network error")
+
+    monkeypatch.setattr("suumo_scraper._fetch_detail_page", _raise)
+
+    row = _make_detail_listing()
+    detail_cache: dict[str, dict] = {}
+    result = _fetch_and_parse_detail(row, session=object(), detail_cache=detail_cache)
+    assert result.get("fetch_failed") is True
+    assert detail_cache[row.url].get("fetch_failed") is True
+
+
+def test_fetch_and_parse_detail_cache_hit_with_fetch_failed(monkeypatch):
+    """fetch_failed がキャッシュされている場合、再取得せずそのまま返す。"""
+    url = "https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_88888888/"
+    row = _make_detail_listing(url=url)
+    detail_cache = {url: {"fetch_failed": True}}
+    result = _fetch_and_parse_detail(row, session=object(), detail_cache=detail_cache)
+    assert result.get("fetch_failed") is True
 
 
 def test_parse_suumo_detail_html_only_units():
@@ -273,8 +316,8 @@ def test_apply_conditions_keeps_active_detail_page(monkeypatch):
     assert result[0].name == "テストマンション"
 
 
-def test_apply_conditions_fail_open_on_fetch_error(monkeypatch):
-    """詳細ページ取得失敗時はフェイルオープン（掲載中として扱う）。"""
+def test_apply_conditions_fail_close_on_fetch_error(monkeypatch):
+    """詳細ページ取得失敗時はフェイルクローズ（除外する）。"""
     _common_monkeypatches(monkeypatch)
     monkeypatch.setattr("suumo_scraper._load_building_units_cache", lambda: {})
     monkeypatch.setattr("suumo_scraper.create_session", lambda: object())
@@ -286,7 +329,7 @@ def test_apply_conditions_fail_open_on_fetch_error(monkeypatch):
 
     row = _make_listing()
     result = apply_conditions([row])
-    assert len(result) == 1, "取得失敗時は掲載中として含めるべき"
+    assert len(result) == 0, "取得失敗時は除外すべき"
 
 
 def test_apply_conditions_excludes_old_non_tower_with_known_floor(monkeypatch):
