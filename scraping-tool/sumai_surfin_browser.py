@@ -30,7 +30,10 @@ import re
 import sys
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import requests
 
 try:
     from playwright.sync_api import sync_playwright, Page, Browser, BrowserContext
