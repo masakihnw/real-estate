@@ -113,37 +113,54 @@ def dedupe_listings(rows: list[dict]) -> list[dict]:
             _merge_images(representative, others)
         out.append(representative)
 
-    # 2次判定: ファジーマッチング（クロスサイト表記揺れの吸収）
-    merged = []
+    # 2次判定: ファジーマッチング（クロスサイト表記揺れの吸収）。
+    # fuzzy_identity_match は area_m2 / built_year / 正規化住所 の完全一致が前提なので、
+    # そのキーで事前ブロック化し、ブロック内のみ総当たりする（O(N²) → O(N×k)）
+    from report_utils import _normalize_address_for_key
+
+    blocks: "OrderedDict[tuple, list[int]]" = OrderedDict()
+    for i, r in enumerate(out):
+        block_key = (
+            r.get("area_m2"),
+            r.get("built_year"),
+            _normalize_address_for_key(r.get("address") or ""),
+        )
+        blocks.setdefault(block_key, []).append(i)
+
+    rep_by_index: dict[int, dict] = {}
     used = set()
-    for i, a in enumerate(out):
-        if i in used:
-            continue
-        group = [a]
-        for j in range(i + 1, len(out)):
-            if j in used:
+    for indices in blocks.values():
+        for pos, i in enumerate(indices):
+            if i in used:
                 continue
-            if a.get("source") == out[j].get("source"):
-                continue
-            if fuzzy_identity_match(a, out[j]):
-                group.append(out[j])
-                used.add(j)
-        if len(group) > 1:
-            representative = max(group, key=lambda r: sum(1 for v in r.values() if v is not None))
-            others = [r for r in group if r is not representative]
-            alts = [(r.get("source", "unknown"), r["url"])
-                    for r in others if r.get("url") and r["url"] != representative.get("url")]
-            if alts:
-                existing_alt_s = representative.get("alt_sources", [])
-                existing_alt_u = representative.get("alt_urls", [])
-                representative["alt_sources"] = existing_alt_s + [s for s, _ in alts]
-                representative["alt_urls"] = existing_alt_u + [u for _, u in alts]
-            _merge_images(representative, others)
-            representative["duplicate_count"] = representative.get("duplicate_count", 1) + len(group) - 1
-            merged.append(representative)
-        else:
-            merged.append(a)
-        used.add(i)
+            a = out[i]
+            group = [a]
+            for j in indices[pos + 1:]:
+                if j in used:
+                    continue
+                if a.get("source") == out[j].get("source"):
+                    continue
+                if fuzzy_identity_match(a, out[j]):
+                    group.append(out[j])
+                    used.add(j)
+            if len(group) > 1:
+                representative = max(group, key=lambda r: sum(1 for v in r.values() if v is not None))
+                others = [r for r in group if r is not representative]
+                alts = [(r.get("source", "unknown"), r["url"])
+                        for r in others if r.get("url") and r["url"] != representative.get("url")]
+                if alts:
+                    existing_alt_s = representative.get("alt_sources", [])
+                    existing_alt_u = representative.get("alt_urls", [])
+                    representative["alt_sources"] = existing_alt_s + [s for s, _ in alts]
+                    representative["alt_urls"] = existing_alt_u + [u for _, u in alts]
+                _merge_images(representative, others)
+                representative["duplicate_count"] = representative.get("duplicate_count", 1) + len(group) - 1
+                rep_by_index[i] = representative
+            else:
+                rep_by_index[i] = a
+            used.add(i)
+    # 元の入力順を維持して出力（ブロック化で処理順が変わっても結果順は同じ）
+    merged = [rep_by_index[i] for i in sorted(rep_by_index)]
 
     # 3次判定: 同一建物内で面積・階・価格が一致する物件をマージ
     building_groups: dict[tuple, list[int]] = {}

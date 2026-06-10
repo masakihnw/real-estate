@@ -92,3 +92,53 @@ class TestDedupeAllNoneEntries:
         ]
         result = dedupe_listings(data)
         assert len(result) == 2
+
+
+class TestFuzzyCrossSiteDedup:
+    """2次判定（ファジーマッチング）のブロック化後の回帰テスト。
+
+    fuzzy_identity_match の前提条件（area/built_year/住所の完全一致）で
+    事前ブロック化しても、クロスサイトの表記揺れマージが機能すること。
+    """
+
+    def test_cross_site_name_variation_merged(self):
+        a = _listing("パークタワー晴海", layout="3LDK", area_m2=70.5,
+                     price_man=9800, source="suumo", built_year=2019,
+                     address="東京都中央区晴海2-1")
+        b = _listing("三井パークタワー晴海", layout="3LDK", area_m2=70.5,
+                     price_man=9800, source="homes", built_year=2019,
+                     address="東京都中央区晴海2-1")
+        result = dedupe_listings([a, b])
+        assert len(result) == 1
+        assert result[0]["duplicate_count"] == 2
+        assert "homes" in result[0].get("alt_sources", []) or \
+               "suumo" in result[0].get("alt_sources", [])
+
+    def test_different_area_not_merged(self):
+        """面積が異なればブロックが分かれ、マージされない。"""
+        a = _listing("パークタワー晴海", layout="3LDK", area_m2=70.5,
+                     price_man=9800, source="suumo", built_year=2019)
+        b = _listing("パークタワー晴海Z", layout="3LDK", area_m2=75.0,
+                     price_man=9800, source="homes", built_year=2019)
+        result = dedupe_listings([a, b])
+        assert len(result) == 2
+
+    def test_same_source_not_fuzzy_merged(self):
+        """同一ソース内はファジーマージしない（別部屋の可能性）。"""
+        a = _listing("パークタワー晴海", layout="3LDK", area_m2=70.5,
+                     price_man=9800, source="suumo", built_year=2019,
+                     floor_position=5)
+        b = _listing("パークタワー晴海レジデンス", layout="3LDK", area_m2=70.5,
+                     price_man=9700, source="suumo", built_year=2019,
+                     floor_position=8)
+        result = dedupe_listings([a, b])
+        assert len(result) == 2
+
+    def test_input_order_preserved(self):
+        listings = [
+            _listing(f"マンション{i}", layout="2LDK", area_m2=60.0 + i,
+                     price_man=8000 + i, built_year=2010)
+            for i in range(5)
+        ]
+        result = dedupe_listings(listings)
+        assert [r["name"] for r in result] == [f"マンション{i}" for i in range(5)]
