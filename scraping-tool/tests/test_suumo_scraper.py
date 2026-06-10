@@ -516,3 +516,61 @@ def test_parse_suumo_unit_exception_returns_none_with_debug_log(caplog, monkeypa
         assert _parse_suumo_unit(_Broken(), "https://suumo.jp") is None
     assert any("parse" in rec.message.lower() or "パース" in rec.message
                for rec in caplog.records), "例外がログに残っていない"
+
+
+# ---------- 空ページメトリクスのセマンティクス ----------
+
+
+def test_scrape_ward_normal_end_does_not_record_empty_pages(monkeypatch):
+    """正常なページネーション終端（末尾の連続空ページ）はメトリクスに記録しない。
+
+    終端の空ページは毎ラン necessarily 発生するため、記録すると
+    23区 × 許容回数 = 数十回の「正常値」が常時アラートになってしまう。
+    """
+    import scraper_metrics
+    scraper_metrics.reset()
+    from suumo_scraper import _scrape_ward
+
+    row1 = _make_listing(url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_00000001/")
+    _setup_scrape_ward(monkeypatch, [[row1]])
+
+    _scrape_ward("koto", False, 50, None, None)
+
+    metrics = scraper_metrics.get_all()
+    assert metrics.get("suumo", {}).get("empty_pages", 0) == 0, \
+        "正常終端の空ページが記録されている（誤アラートの温床）"
+    scraper_metrics.reset()
+
+
+def test_scrape_ward_mid_gap_records_empty_pages(monkeypatch):
+    """ページ列の途中の空ページ（後続ページで復活）は異常としてメトリクスに記録する。"""
+    import scraper_metrics
+    scraper_metrics.reset()
+    from suumo_scraper import _scrape_ward
+
+    row1 = _make_listing(url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_00000001/")
+    row3 = _make_listing(url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_00000003/")
+    _setup_scrape_ward(monkeypatch, [[row1], [], [row3]])
+
+    _scrape_ward("koto", False, 10, None, None)
+
+    metrics = scraper_metrics.get_all()
+    assert metrics.get("suumo", {}).get("empty_pages", 0) == 1, \
+        "途中の空ページ（botブロックの兆候）が記録されていない"
+    scraper_metrics.reset()
+
+
+def test_scrape_ward_total_failure_records_empty_pages(monkeypatch):
+    """区全体が0件のまま終了（全滅）は異常としてメトリクスに記録する。"""
+    import scraper_metrics
+    scraper_metrics.reset()
+    from suumo_scraper import _scrape_ward
+
+    _setup_scrape_ward(monkeypatch, [[]])
+
+    _scrape_ward("koto", False, 50, None, None)
+
+    metrics = scraper_metrics.get_all()
+    assert metrics.get("suumo", {}).get("empty_pages", 0) >= 1, \
+        "区全滅（最有力のbotブロックシグナル）が記録されていない"
+    scraper_metrics.reset()
