@@ -53,6 +53,9 @@ struct SettingsView: View {
                 // MARK: - データ
                 dataSection
 
+                // MARK: - My指標
+                customMetricSection
+
                 // MARK: - 詳細設定
                 advancedSection
 
@@ -112,6 +115,42 @@ struct SettingsView: View {
             } message: {
                 Text("再度 Google アカウントでログインする必要があります。")
             }
+        }
+    }
+
+    // MARK: - My指標（カスタム合成スコアの重み設定）
+
+    @State private var customMetric = CustomMetric.load()
+
+    @ViewBuilder
+    private var customMetricSection: some View {
+        Section {
+            metricSlider("価格妥当性", value: $customMetric.weightPriceFairness)
+            metricSlider("再販流動性", value: $customMetric.weightResaleLiquidity)
+            metricSlider("総合スコア", value: $customMetric.weightListingScore)
+            metricSlider("駅近（徒歩）", value: $customMetric.weightWalkConvenience)
+            metricSlider("AI推奨度", value: $customMetric.weightAIRecommendation)
+        } header: {
+            Text("My指標の重み")
+        } footer: {
+            Text("一覧のソート「My指標（高い順）」で使う合成スコアの重み付けです。データが欠けている項目は自動的に除外して計算します。")
+        }
+        .onChange(of: customMetric) { _, newValue in
+            newValue.save()
+        }
+    }
+
+    private func metricSlider(_ label: String, value: Binding<Double>) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack {
+                Text(label)
+                    .font(.subheadline)
+                Spacer()
+                Text(String(format: "%.0f%%", value.wrappedValue * 100))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+            Slider(value: value, in: 0...1, step: 0.05)
         }
     }
 

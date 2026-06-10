@@ -51,6 +51,7 @@ struct DashboardView: View {
                         recommendationSection
                     }
                     aiInsightsSection(stats)
+                    timelineSection(stats)
                     scoreDistributionSection(stats)
                     watchlistPriceDropSection(stats)
                     priceMoversSection(stats)
@@ -289,6 +290,31 @@ struct DashboardView: View {
             }
             .padding(14)
             .listingGlassBackground()
+        }
+    }
+
+    // MARK: - タイムライン (Timeline Feed)
+
+    @ViewBuilder
+    private func timelineSection(_ stats: DashboardStats) -> some View {
+        if !stats.timeline.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
+                Label("タイムライン", systemImage: "clock.arrow.circlepath")
+                    .font(.headline)
+
+                VStack(spacing: 0) {
+                    ForEach(stats.timeline) { item in
+                        TimelineFeedRow(item: item) {
+                            selectedListing = item.listing
+                        }
+                        if item.id != stats.timeline.last?.id {
+                            Divider().padding(.leading, 60)
+                        }
+                    }
+                }
+                .padding(.vertical, 4)
+                .listingGlassBackground()
+            }
         }
     }
 
@@ -737,6 +763,81 @@ private struct PriceMoverRow: View {
                 RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
                     .fill((isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor).opacity(0.04))
             )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private struct TimelineFeedRow: View {
+    let item: TimelineFeedItem
+    let action: () -> Void
+
+    private static let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ja_JP")
+        f.dateFormat = "M/d"
+        return f
+    }()
+
+    private var kindColor: Color {
+        switch item.kind {
+        case .added: return DesignSystem.aiAccent
+        case .relisted: return .orange
+        case .priceDrop: return DesignSystem.priceDownColor
+        case .priceRaise: return DesignSystem.priceUpColor
+        }
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                Text(Self.timeFormatter.string(from: item.date))
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .frame(width: 34, alignment: .leading)
+
+                HStack(spacing: 3) {
+                    Image(systemName: item.kind.systemImage)
+                        .font(.system(size: 9))
+                    Text(item.kind.label)
+                        .font(.system(size: 10, weight: .semibold))
+                }
+                .foregroundStyle(kindColor)
+                .frame(width: 56, alignment: .leading)
+
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(item.listing.nameWithFloor)
+                        .font(.caption)
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                    HStack(spacing: 6) {
+                        if let price = item.listing.priceMan {
+                            Text(Listing.formatPriceCompact(price))
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        switch item.kind {
+                        case .priceDrop(let amount):
+                            Text("↓\(amount)万")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(DesignSystem.priceDownColor)
+                        case .priceRaise(let amount):
+                            Text("↑\(amount)万")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(DesignSystem.priceUpColor)
+                        default:
+                            EmptyView()
+                        }
+                    }
+                }
+
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
         }
         .buttonStyle(.plain)
     }

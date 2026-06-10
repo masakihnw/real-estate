@@ -144,6 +144,7 @@ struct ListingListView: View {
         case forecastChangeRateDesc
         case recommendationAsc
         case recommendationDesc
+        case customMetricDesc
 
         var label: String {
             switch self {
@@ -195,6 +196,7 @@ struct ListingListView: View {
             case .forecastChangeRateDesc: return "予測変動率（高い順）"
             case .recommendationAsc: return "AI推奨度（低い順）"
             case .recommendationDesc: return "AI推奨度（高い順）"
+            case .customMetricDesc: return "My指標（高い順）"
             }
         }
 
@@ -242,6 +244,9 @@ struct ListingListView: View {
                 return { $0.ssForecastChangeRate != nil }
             case .recommendationAsc, .recommendationDesc:
                 return { $0.aiRecommendationScore != nil }
+            case .customMetricDesc:
+                // いずれかのコンポーネントがあれば計算可能
+                return { CustomMetric.load().score(for: $0) != nil }
             }
         }
     }
@@ -386,6 +391,9 @@ struct ListingListView: View {
             sortByNumericValue(&list, ascending: true) { $0.aiRecommendationScore.map(Double.init) }
         case .recommendationDesc:
             sortByNumericValue(&list, ascending: false) { $0.aiRecommendationScore.map(Double.init) }
+        case .customMetricDesc:
+            let metric = CustomMetric.load()
+            sortByNumericValue(&list, ascending: false) { metric.score(for: $0) }
         }
         return list
     }
