@@ -198,3 +198,60 @@ class TestScrapeWardEmptyParseRetry:
         results = _scrape_ward("13108", "江東区", apply_filter=True, limit=10)
 
         assert len(results) == 3
+
+
+class TestScrapeWardFinishReasons:
+    """終端理由の scraper_metrics 記録のテスト。"""
+
+    @patch("livable_scraper.time.sleep")
+    @patch("livable_scraper.create_session")
+    @patch("livable_scraper.fetch_list_page")
+    @patch("livable_scraper.parse_list_html")
+    def test_normal_end_records_completed(
+        self, mock_parse, mock_fetch, mock_session, mock_sleep
+    ):
+        import scraper_metrics
+        scraper_metrics.reset()
+        l1 = _make_listing()
+        mock_parse.side_effect = [[l1], [], []]
+        mock_fetch.return_value = "<html>dummy</html>"
+
+        _scrape_ward("13108", "江東区", apply_filter=False, limit=10)
+
+        entry = scraper_metrics.get_all()["livable"]
+        assert entry["parsed"] == 1
+        assert entry["finish_reasons"] == {"completed": 1}
+        assert scraper_metrics.health_alerts() == []
+        scraper_metrics.reset()
+
+    @patch("livable_scraper.time.sleep")
+    @patch("livable_scraper.create_session")
+    @patch("livable_scraper.fetch_list_page")
+    def test_fetch_error_records_reason(self, mock_fetch, mock_session, mock_sleep):
+        import scraper_metrics
+        scraper_metrics.reset()
+        mock_fetch.side_effect = RuntimeError("connection reset")
+
+        _scrape_ward("13108", "江東区", apply_filter=False, limit=10)
+
+        entry = scraper_metrics.get_all()["livable"]
+        assert entry["finish_reasons"] == {"fetch_error": 1}
+        scraper_metrics.reset()
+
+    @patch("livable_scraper.time.sleep")
+    @patch("livable_scraper.create_session")
+    @patch("livable_scraper.fetch_list_page")
+    @patch("livable_scraper.parse_list_html")
+    def test_full_run_limit_records_safety_limit(
+        self, mock_parse, mock_fetch, mock_session, mock_sleep
+    ):
+        import scraper_metrics
+        scraper_metrics.reset()
+        mock_parse.return_value = [_make_listing()]
+        mock_fetch.return_value = "<html>dummy</html>"
+
+        _scrape_ward("13108", "江東区", apply_filter=False, limit=2, is_full_run=True)
+
+        entry = scraper_metrics.get_all()["livable"]
+        assert entry["finish_reasons"] == {"safety_limit": 1}
+        scraper_metrics.reset()

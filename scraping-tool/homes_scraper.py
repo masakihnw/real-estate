@@ -41,7 +41,9 @@ from parse_utils import (
     parse_ownership,
 )
 from report_utils import clean_listing_name
+import scraper_metrics
 from scraper_common import (
+    dump_debug_html,
     is_waf_challenge,
     load_station_passengers,
     station_passengers_ok,
@@ -569,9 +571,12 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
     """
     if not HAS_PLAYWRIGHT:
         logger.warning("HOME'S: Playwright がインストールされていないためスキップします。")
+        scraper_metrics.record_finish("homes", "fetch_error")
         return
 
+    is_full_run = not max_pages or max_pages <= 0
     limit = max_pages if max_pages and max_pages > 0 else HOMES_MAX_PAGES_SAFETY
+    finish_reason = None
     pw, browser, context = _launch_browser()
     try:
         page = 1
@@ -583,7 +588,11 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
             # タイムリミットチェック
             elapsed = time.monotonic() - start_time
             if elapsed > HOMES_SCRAPE_TIMEOUT_SEC:
-                logger.info(f"HOME'S: タイムリミット到達（{int(elapsed)}秒, {page - 1}ページ処理済, 通過: {total_passed}件）")
+                logger.warning(
+                    f"HOME'S: タイムリミット到達（{int(elapsed)}秒, {page - 1}ページ処理済, 通過: {total_passed}件）"
+                    f" — {page}ページ目以降を取りこぼしています"
+                )
+                finish_reason = "timeout"
                 break
 
             url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
@@ -594,12 +603,21 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
 
             html = fetch_list_page(context, url)
             if not html:
-                logger.info(f"HOME'S: ページ{page}で空HTML。WAF/ネットワークエラーの可能性。")
+                logger.warning(f"HOME'S: ページ{page}で空HTML（WAFリトライ枯渇/ネットワークエラー）— 残ページを放棄")
+                finish_reason = "waf_abort"
                 break
 
             rows = parse_list_html(html)
+            scraper_metrics.record("homes", parsed=len(rows))
             if not rows:
-                logger.info(f"HOME'S: ページ{page}で0件パース。一覧のHTML構造が変わった可能性があります。")
+                if total_parsed == 0:
+                    # 1ページ目から0件 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
+                    scraper_metrics.record("homes", empty_pages=1)
+                    dump_debug_html("homes", f"p{page}", html)
+                    finish_reason = "empty_parse_abort"
+                else:
+                    logger.info(f"HOME'S: ページ{page}で0件パース（一覧の終端）")
+                    finish_reason = "completed"
                 break
 
             total_parsed += len(rows)
@@ -622,13 +640,32 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
                 pages_since_last_pass += 1
             if pages_since_last_pass >= HOMES_EARLY_EXIT_PAGES:
                 logger.info(f"HOME'S: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
+                finish_reason = "early_exit"
                 break
             # 進捗: 10ページごとにサマリー
             if page % 10 == 0:
                 logger.info(f"HOME'S: ...{page}ページ処理済 (通過: {total_passed}件)")
             page += 1
+
+        if finish_reason is None:
+            # while 条件で抜けた = limit 到達。全ページ指定なら取りこぼしの可能性
+            if is_full_run:
+                finish_reason = "safety_limit"
+                logger.warning(f"HOME'S: 安全上限{limit}ページ到達 — 上限超のページを取りこぼしている可能性")
+            else:
+                finish_reason = "completed"
+
         if total_parsed > 0:
             logger.info(f"HOME'S: 完了 — {total_parsed}件パース, {total_passed}件通過")
+    except GeneratorExit:
+        # 呼び出し元が break / close() した = 意図的な打ち切り（異常ではない）
+        finish_reason = finish_reason or "completed"
+        raise
+    except Exception:
+        finish_reason = finish_reason or "fetch_error"
+        raise
     finally:
+        # ジェネレータの早期クローズや例外経路でも終端理由を必ず記録する
+        scraper_metrics.record_finish("homes", finish_reason or "completed")
         browser.close()
         pw.stop()

@@ -574,3 +574,28 @@ def test_scrape_ward_total_failure_records_empty_pages(monkeypatch):
     assert metrics.get("suumo", {}).get("empty_pages", 0) >= 1, \
         "区全滅（最有力のbotブロックシグナル）が記録されていない"
     scraper_metrics.reset()
+
+
+def test_scrape_ward_records_finish_reason(monkeypatch):
+    """終端理由が scraper_metrics に記録される（正常終端 / 早期打ち切り / 取得例外）。"""
+    import scraper_metrics
+    from suumo_scraper import _scrape_ward, SUUMO_EMPTY_PARSE_TOLERANCE
+
+    # 正常終端（連続空パースによる停止）
+    scraper_metrics.reset()
+    row1 = _make_listing(url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_00000001/")
+    _setup_scrape_ward(monkeypatch, [[row1]] + [[]] * SUUMO_EMPTY_PARSE_TOLERANCE)
+    _scrape_ward("koto", False, 10, None, None)
+    assert scraper_metrics.get_all()["suumo"]["finish_reasons"] == {"completed": 1}
+
+    # 取得例外 = fetch_error（残ページ放棄として異常終端扱い）
+    scraper_metrics.reset()
+
+    def _boom(session, p, ward_roman=None, filtered_base_url=None):
+        raise RuntimeError("connection reset")
+
+    monkeypatch.setattr("suumo_scraper.fetch_list_page", _boom)
+    _scrape_ward("koto", False, 10, None, None)
+    assert scraper_metrics.get_all()["suumo"]["finish_reasons"] == {"fetch_error": 1}
+    assert any("fetch_error" in a for a in scraper_metrics.health_alerts())
+    scraper_metrics.reset()

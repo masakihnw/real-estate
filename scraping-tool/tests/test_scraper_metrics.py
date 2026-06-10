@@ -26,8 +26,31 @@ class TestRecord:
         scraper_metrics.record("rehouse", parsed=30)
 
         all_metrics = scraper_metrics.get_all()
-        assert all_metrics["suumo"] == {"parsed": 150, "parse_failures": 2, "empty_pages": 1}
+        assert all_metrics["suumo"]["parsed"] == 150
+        assert all_metrics["suumo"]["parse_failures"] == 2
+        assert all_metrics["suumo"]["empty_pages"] == 1
         assert all_metrics["rehouse"]["parsed"] == 30
+
+
+class TestRecordFinish:
+    def test_accumulates_reasons(self):
+        scraper_metrics.record_finish("athome", "completed")
+        scraper_metrics.record_finish("athome", "completed")
+        scraper_metrics.record_finish("athome", "waf_abort")
+
+        entry = scraper_metrics.get_all()["athome"]
+        assert entry["finish_reasons"] == {"completed": 2, "waf_abort": 1}
+
+    def test_invalid_reason_raises(self):
+        with pytest.raises(ValueError):
+            scraper_metrics.record_finish("athome", "unknown_reason")
+
+    def test_get_all_returns_copy(self):
+        """get_all の戻り値を変更しても内部状態に影響しない。"""
+        scraper_metrics.record_finish("homes", "timeout")
+        snapshot = scraper_metrics.get_all()
+        snapshot["homes"]["finish_reasons"]["timeout"] = 99
+        assert scraper_metrics.get_all()["homes"]["finish_reasons"]["timeout"] == 1
 
 
 class TestHealthAlerts:
@@ -58,6 +81,50 @@ class TestHealthAlerts:
     def test_no_activity_no_alert(self):
         assert scraper_metrics.health_alerts() == []
 
+    def test_zero_parse_with_activity_alerts(self):
+        """活動記録があるのにパース0件 = 媒体全損の可能性（athome全損ケース）。"""
+        for _ in range(23):
+            scraper_metrics.record_finish("athome", "completed")
+        scraper_metrics.record("athome", empty_pages=23)
+        alerts = scraper_metrics.health_alerts()
+        assert any("athome" in a and "媒体全損" in a for a in alerts)
+
+    def test_zero_parse_without_activity_no_alert(self):
+        """無効化等で一度も走っていないソースはアラートしない。"""
+        assert scraper_metrics.health_alerts() == []
+
+    def test_normal_finish_reasons_no_alert(self):
+        """completed / early_exit は正常終端なのでアラートしない。"""
+        scraper_metrics.record("suumo", parsed=500)
+        scraper_metrics.record_finish("suumo", "completed")
+        scraper_metrics.record_finish("suumo", "early_exit")
+        assert scraper_metrics.health_alerts() == []
+
+    def test_abnormal_finish_reasons_alert(self):
+        """timeout / safety_limit 等は取りこぼしの可能性としてアラート。"""
+        scraper_metrics.record("homes", parsed=3447)
+        scraper_metrics.record_finish("homes", "timeout")
+        alerts = scraper_metrics.health_alerts()
+        assert len(alerts) == 1
+        assert "homes" in alerts[0]
+        assert "timeout" in alerts[0]
+        assert "取りこぼし" in alerts[0]
+
+    def test_safety_limit_alert(self):
+        """安全上限到達（nomucom 100ページケース）は取りこぼしの可能性としてアラート。"""
+        scraper_metrics.record("nomucom", parsed=4000)
+        scraper_metrics.record_finish("nomucom", "safety_limit")
+        alerts = scraper_metrics.health_alerts()
+        assert any("nomucom" in a and "safety_limit" in a for a in alerts)
+
+    def test_zero_parse_alert_suppresses_abnormal_finish_alert(self):
+        """全損アラートが出るソースには異常終端アラートを重複して出さない。"""
+        scraper_metrics.record_finish("athome", "waf_abort")
+        alerts = scraper_metrics.health_alerts()
+        athome_alerts = [a for a in alerts if "athome" in a]
+        assert len(athome_alerts) == 1
+        assert "媒体全損" in athome_alerts[0]
+
 
 class TestSaveLoad:
     def test_roundtrip(self, tmp_path):
@@ -68,6 +135,15 @@ class TestSaveLoad:
         loaded = scraper_metrics.load(target)
         assert loaded["metrics"]["suumo"]["parsed"] == 60
         assert len(loaded["alerts"]) == 1
+
+    def test_roundtrip_includes_finish_reasons(self, tmp_path):
+        scraper_metrics.record("homes", parsed=100)
+        scraper_metrics.record_finish("homes", "timeout")
+        target = tmp_path / "metrics.json"
+        scraper_metrics.save(target)
+
+        loaded = scraper_metrics.load(target)
+        assert loaded["metrics"]["homes"]["finish_reasons"] == {"timeout": 1}
 
     def test_load_missing_file(self, tmp_path):
         loaded = scraper_metrics.load(tmp_path / "nonexistent.json")

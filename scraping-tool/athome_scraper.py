@@ -10,7 +10,7 @@ import time
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Callable, Iterator, Optional
 
 import requests
 from bs4 import BeautifulSoup
@@ -39,8 +39,10 @@ from parse_utils import (
     layout_ok,
 )
 from report_utils import clean_listing_name
+import scraper_metrics
 from scraper_common import (
     create_session,
+    dump_debug_html,
     load_station_passengers,
     station_passengers_ok,
     line_ok,
@@ -636,103 +638,126 @@ def apply_conditions(listings: list[AthomeListing]) -> list[AthomeListing]:
     return out
 
 
+def _scrape_ward_pages(
+    fetch_fn: Callable[[int], str],
+    ward: str,
+    limit: int,
+    apply_filter: bool,
+    is_full_run: bool,
+    delay_sec: float = 0.0,
+) -> list[AthomeListing]:
+    """1区分の一覧ページ巡回（Playwright 版 / requests 版の共通ロジック）。
+
+    取得失敗・空HTML・パース0件を無警告で break しない（athome が全23区0件で
+    終わってもログ1行で気づけなかった事故の再発防止）。終端理由とパース件数を
+    scraper_metrics に記録する。
+    """
+    results: list[AthomeListing] = []
+    page = 1
+    pages_since_last_pass = 0
+    ward_parsed = 0
+    finish_reason = None
+
+    try:
+        while page <= limit:
+            try:
+                html = fetch_fn(page)
+            except Exception as e:
+                logger.error("athome/%s: ページ%dでエラー — 区の残ページを放棄: %s", ward, page, e)
+                finish_reason = "fetch_error"
+                break
+
+            if not html:
+                logger.warning(
+                    "athome/%s: ページ%dで空HTML（CAPTCHA/WAFリトライ枯渇の可能性）— 区の残ページを放棄",
+                    ward, page,
+                )
+                finish_reason = "waf_abort"
+                break
+
+            rows = parse_list_html(html)
+            scraper_metrics.record("athome", parsed=len(rows))
+            if not rows:
+                if ward_parsed == 0:
+                    # 区の1ページ目から0件 = botブロック / HTML構造変更 / 正規の0件区
+                    # のいずれか。切り分けのため実HTMLを保全し、空ページとして計上する
+                    # （全区で発生すると parsed=0 の媒体全損アラートも発火する）。
+                    scraper_metrics.record("athome", empty_pages=1)
+                    dump_debug_html("athome", ward, html)
+                else:
+                    logger.info("athome/%s: ページ%dで0件パース（一覧の終端）", ward, page)
+                finish_reason = "completed"
+                break
+
+            ward_parsed += len(rows)
+            passed = 0
+            for row in rows:
+                if apply_filter:
+                    filtered = apply_conditions([row])
+                    if filtered:
+                        results.append(filtered[0])
+                        passed += 1
+                else:
+                    results.append(row)
+                    passed += 1
+
+            if passed > 0:
+                pages_since_last_pass = 0
+            else:
+                pages_since_last_pass += 1
+            if pages_since_last_pass >= EARLY_EXIT_PAGES:
+                finish_reason = "early_exit"
+                break
+
+            page += 1
+            if delay_sec > 0:
+                time.sleep(delay_sec)
+
+        if finish_reason is None:
+            # while 条件で抜けた = limit 到達。全ページ取得の指定なら取りこぼしの可能性
+            if is_full_run:
+                finish_reason = "safety_limit"
+                logger.warning(
+                    "athome/%s: 安全上限%dページ到達 — 上限超のページを取りこぼしている可能性",
+                    ward, limit,
+                )
+            else:
+                finish_reason = "completed"
+    finally:
+        # 予期しない例外（パース内部エラー等）の経路でも終端理由を必ず記録する
+        scraper_metrics.record_finish("athome", finish_reason or "fetch_error")
+
+    if results:
+        logger.info("athome/%s: %d件通過（%d件パース）", ward, len(results), ward_parsed)
+    return results
+
+
 def _scrape_ward_pw(context: "BrowserContext", ward: str, max_pages: int, apply_filter: bool) -> list[AthomeListing]:
     """Playwright で1区分のスクレイピング。"""
     limit = max_pages if max_pages > 0 else MAX_PAGES_SAFETY
-    results: list[AthomeListing] = []
-    page = 1
-    pages_since_last_pass = 0
-
-    while page <= limit:
-        try:
-            html = fetch_list_page(context, page, ward=ward)
-        except Exception as e:
-            logger.error("athome/%s: ページ%dでエラー: %s", ward, page, e)
-            break
-
-        if not html:
-            break
-
-        rows = parse_list_html(html)
-        if not rows:
-            break
-
-        passed = 0
-        for row in rows:
-            if apply_filter:
-                filtered = apply_conditions([row])
-                if filtered:
-                    results.append(filtered[0])
-                    passed += 1
-            else:
-                results.append(row)
-                passed += 1
-
-        if passed > 0:
-            pages_since_last_pass = 0
-        else:
-            pages_since_last_pass += 1
-        if pages_since_last_pass >= EARLY_EXIT_PAGES:
-            break
-
-        page += 1
-        time.sleep(ATHOME_REQUEST_DELAY_SEC)
-
-    if results:
-        logger.info("athome/%s: %d件通過", ward, len(results))
-    return results
+    return _scrape_ward_pages(
+        lambda page: fetch_list_page(context, page, ward=ward),
+        ward, limit, apply_filter,
+        is_full_run=max_pages <= 0,
+        delay_sec=ATHOME_REQUEST_DELAY_SEC,
+    )
 
 
 def _scrape_ward_requests(ward: str, max_pages: int, apply_filter: bool) -> list[AthomeListing]:
-    """requests 版の1区分スクレイピング（フォールバック）。"""
+    """requests 版の1区分スクレイピング（フォールバック）。リクエスト間隔は fetch 側で確保。"""
     session = create_session()
     limit = max_pages if max_pages > 0 else MAX_PAGES_SAFETY
-    results: list[AthomeListing] = []
-    page = 1
-    pages_since_last_pass = 0
-
-    while page <= limit:
-        try:
-            html = _fetch_list_page_requests(session, page, ward=ward)
-        except Exception as e:
-            logger.error("athome/%s: ページ%dでエラー: %s", ward, page, e)
-            break
-
-        if not html:
-            break
-
-        rows = parse_list_html(html)
-        if not rows:
-            break
-
-        passed = 0
-        for row in rows:
-            if apply_filter:
-                filtered = apply_conditions([row])
-                if filtered:
-                    results.append(filtered[0])
-                    passed += 1
-            else:
-                results.append(row)
-                passed += 1
-
-        if passed > 0:
-            pages_since_last_pass = 0
-        else:
-            pages_since_last_pass += 1
-        if pages_since_last_pass >= EARLY_EXIT_PAGES:
-            break
-
-        page += 1
-
-    if results:
-        logger.info("athome/%s: %d件通過", ward, len(results))
-    return results
+    return _scrape_ward_pages(
+        lambda page: _fetch_list_page_requests(session, page, ward=ward),
+        ward, limit, apply_filter,
+        is_full_run=max_pages <= 0,
+    )
 
 
 def scrape_athome(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Iterator[AthomeListing]:
     """アットホーム東京23区中古マンション一覧を区ごとに取得。max_pages=0 で全ページ取得。"""
-    limit = max_pages if max_pages and max_pages > 0 else MAX_PAGES_SAFETY
+    # 区側で「全ページ指定（=0）か」を判定するため、解決前の値をそのまま渡す
+    raw_max_pages = max_pages if max_pages and max_pages > 0 else 0
     total_passed = 0
     seen_urls: set[str] = set()
 
@@ -741,7 +766,7 @@ def scrape_athome(max_pages: Optional[int] = 2, apply_filter: bool = True) -> It
         pw, browser, context = launch_stealth_browser(referer="https://www.athome.co.jp/")
         try:
             for ward in _ATHOME_WARD_SLUGS:
-                results = _scrape_ward_pw(context, ward, limit, apply_filter)
+                results = _scrape_ward_pw(context, ward, raw_max_pages, apply_filter)
                 for r in results:
                     if r.url not in seen_urls:
                         seen_urls.add(r.url)
@@ -756,7 +781,7 @@ def scrape_athome(max_pages: Optional[int] = 2, apply_filter: bool = True) -> It
         from concurrent.futures import ThreadPoolExecutor, as_completed
         with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
             futures = {
-                executor.submit(_scrape_ward_requests, ward, limit, apply_filter): ward
+                executor.submit(_scrape_ward_requests, ward, raw_max_pages, apply_filter): ward
                 for ward in _ATHOME_WARD_SLUGS
             }
             for future in as_completed(futures):
@@ -771,4 +796,9 @@ def scrape_athome(max_pages: Optional[int] = 2, apply_filter: bool = True) -> It
                 except Exception as e:
                     logger.error("athome/%s: エラー: %s", ward, e)
 
+    if total_passed == 0:
+        logger.warning(
+            "athome: 全23区で通過0件 — botブロック/構造変更の可能性。"
+            "scraper_metrics の終端理由と data/debug_dumps/ の保全HTMLを確認してください"
+        )
     logger.info("athome: 完了 — %d件通過（全23区）", total_passed)

@@ -44,8 +44,10 @@ from parse_utils import (
     layout_ok,
 )
 from report_utils import clean_listing_name
+import scraper_metrics
 from scraper_common import (
     create_session,
+    dump_debug_html,
     load_station_passengers,
     station_passengers_ok,
     line_ok,
@@ -308,46 +310,70 @@ def _scrape_ward(ward_code: str, apply_filter: bool,
     price_min = PRICE_MIN_MAN if PRICE_MIN_MAN else 0
     area_min = int(AREA_MIN_M2_FETCH) if AREA_MIN_M2_FETCH else 0
     pages_no_pass = 0
+    ward_parsed = 0
+    finish_reason = None
 
-    for page in range(1, MAX_PAGES_PER_WARD + 1):
-        if page == 1:
-            url = _WARD_URL_TEMPLATE.format(
-                ward_code=ward_code, price_min=price_min, area_min=area_min)
-        else:
-            url = _WARD_URL_PAGE_TEMPLATE.format(
-                ward_code=ward_code, price_min=price_min, area_min=area_min, page=page)
-
-        try:
-            html = fetch_list_page(session, url)
-        except Exception as e:
-            logger.warning(f"rehouse: ward={ward_code} page={page} エラー: {e}")
-            break
-
-        rows = parse_list_html(html)
-        if not rows:
-            break
-
-        passed = 0
-        for row in rows:
-            with url_lock:
-                if row.url in seen_urls:
-                    continue
-                seen_urls.add(row.url)
-            if apply_filter:
-                filtered = apply_conditions([row])
-                if filtered:
-                    results.append(filtered[0])
-                    passed += 1
+    try:
+        for page in range(1, MAX_PAGES_PER_WARD + 1):
+            if page == 1:
+                url = _WARD_URL_TEMPLATE.format(
+                    ward_code=ward_code, price_min=price_min, area_min=area_min)
             else:
-                results.append(row)
-                passed += 1
+                url = _WARD_URL_PAGE_TEMPLATE.format(
+                    ward_code=ward_code, price_min=price_min, area_min=area_min, page=page)
 
-        if passed > 0:
-            pages_no_pass = 0
-        else:
-            pages_no_pass += 1
-        if pages_no_pass >= EARLY_EXIT_PAGES:
-            break
+            try:
+                html = fetch_list_page(session, url)
+            except Exception as e:
+                logger.warning(f"rehouse: ward={ward_code} page={page} エラー — 区の残ページを放棄: {e}")
+                finish_reason = "fetch_error"
+                break
+
+            rows = parse_list_html(html)
+            scraper_metrics.record("rehouse", parsed=len(rows))
+            if not rows:
+                if ward_parsed == 0:
+                    # 区の1ページ目から0件 = botブロック / 構造変更 / 正規の0件区 のいずれか。
+                    # 切り分け用にHTMLを保全（複数区で発生すると媒体全損アラートが発火）
+                    scraper_metrics.record("rehouse", empty_pages=1)
+                    dump_debug_html("rehouse", ward_code, html)
+                finish_reason = "completed"
+                break
+            ward_parsed += len(rows)
+
+            passed = 0
+            for row in rows:
+                with url_lock:
+                    if row.url in seen_urls:
+                        continue
+                    seen_urls.add(row.url)
+                if apply_filter:
+                    filtered = apply_conditions([row])
+                    if filtered:
+                        results.append(filtered[0])
+                        passed += 1
+                else:
+                    results.append(row)
+                    passed += 1
+
+            if passed > 0:
+                pages_no_pass = 0
+            else:
+                pages_no_pass += 1
+            if pages_no_pass >= EARLY_EXIT_PAGES:
+                finish_reason = "early_exit"
+                break
+
+        if finish_reason is None:
+            # for ループを使い切った = 区上限ページ到達。rehouse は max_pages 指定に
+            # 関わらず常に全ページ取得を試みる設計のため、上限到達は常に取りこぼしの可能性
+            finish_reason = "safety_limit"
+            logger.warning(
+                f"rehouse: ward={ward_code} 上限{MAX_PAGES_PER_WARD}ページ到達 — 取りこぼしの可能性"
+            )
+    finally:
+        # 予期しない例外（パース内部エラー等）の経路でも終端理由を必ず記録する
+        scraper_metrics.record_finish("rehouse", finish_reason or "fetch_error")
 
     return results
 

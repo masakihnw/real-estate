@@ -23,11 +23,25 @@ FAILURE_RATE_THRESHOLD = 0.30
 # 空ページ（パース0件）がこの回数以上のソースもアラート対象
 EMPTY_PAGE_THRESHOLD = 3
 
+# 終端理由。スクレイパーは区/リストの巡回ループを抜けるたびに record_finish で記録する。
+# - completed:         正常終端（一覧の末尾に到達）
+# - early_exit:        連続Nページ通過0件による早期打ち切り（正常な省力化）
+# - safety_limit:      安全上限ページ到達。上限超のページを取りこぼしている可能性
+# - timeout:           タイムリミット到達。未巡回ページを取りこぼしている
+# - waf_abort:         WAF/CAPTCHA連続検知による放棄
+# - empty_parse_abort: 1件もパースできずに停止（botブロック/構造変更の可能性）
+# - fetch_error:       取得例外による中断
+NORMAL_FINISH_REASONS = frozenset({"completed", "early_exit"})
+ABNORMAL_FINISH_REASONS = frozenset(
+    {"safety_limit", "timeout", "waf_abort", "empty_parse_abort", "fetch_error"}
+)
+FINISH_REASONS = NORMAL_FINISH_REASONS | ABNORMAL_FINISH_REASONS
+
 METRICS_PATH = Path(__file__).resolve().parent / "results" / "scraper_metrics.json"
 
 
 def _new_entry() -> dict:
-    return {"parsed": 0, "parse_failures": 0, "empty_pages": 0}
+    return {"parsed": 0, "parse_failures": 0, "empty_pages": 0, "finish_reasons": {}}
 
 
 _metrics: dict[str, dict] = defaultdict(_new_entry)
@@ -41,12 +55,23 @@ def record(source: str, *, parsed: int = 0, parse_failures: int = 0, empty_pages
     entry["empty_pages"] += empty_pages
 
 
+def record_finish(source: str, reason: str) -> None:
+    """巡回ループの終端理由を記録する（区単位のスクレイパーは区ごとに1回）。"""
+    if reason not in FINISH_REASONS:
+        raise ValueError(f"未知の終端理由: {reason}（{sorted(FINISH_REASONS)} のいずれか）")
+    reasons = _metrics[source]["finish_reasons"]
+    reasons[reason] = reasons.get(reason, 0) + 1
+
+
 def reset() -> None:
     _metrics.clear()
 
 
 def get_all() -> dict[str, dict]:
-    return {k: dict(v) for k, v in _metrics.items()}
+    return {
+        k: {**v, "finish_reasons": dict(v["finish_reasons"])}
+        for k, v in _metrics.items()
+    }
 
 
 def failure_rate(entry: dict) -> float:
@@ -57,11 +82,40 @@ def failure_rate(entry: dict) -> float:
     return entry.get("parse_failures", 0) / total
 
 
+def _has_activity(entry: dict) -> bool:
+    """そのソースが今回の実行で1度でも走った形跡があるか。"""
+    return bool(
+        entry.get("parsed", 0)
+        or entry.get("parse_failures", 0)
+        or entry.get("empty_pages", 0)
+        or entry.get("finish_reasons", {})
+    )
+
+
 def health_alerts(metrics: dict[str, dict] | None = None) -> list[str]:
     """閾値超過したソースの警告メッセージ一覧を返す。"""
     metrics = metrics if metrics is not None else get_all()
     alerts: list[str] = []
     for source, entry in sorted(metrics.items()):
+        reasons = entry.get("finish_reasons", {})
+        abnormal = {r: n for r, n in sorted(reasons.items()) if r in ABNORMAL_FINISH_REASONS}
+
+        # 走った形跡があるのにパース0件 = 媒体全損の最有力シグナル
+        # （athome が全23区0件・無警告で1ヶ月気づかなかった事故の再発防止）
+        if entry.get("parsed", 0) == 0 and _has_activity(entry):
+            detail = "、".join(f"{r}×{n}" for r, n in sorted(reasons.items())) or "終端理由記録なし"
+            alerts.append(
+                f"{source}: 1件もパースできずに終了（媒体全損の可能性） — 終端: {detail}"
+            )
+            # 全損アラートに異常終端の内訳を含めたため、下の異常終端アラートは重複出力しない
+            abnormal = {}
+
+        if abnormal:
+            detail = "、".join(f"{r}×{n}" for r, n in abnormal.items())
+            alerts.append(
+                f"{source}: 異常終端 {detail} — 残ページ取りこぼしの可能性"
+            )
+
         rate = failure_rate(entry)
         if rate >= FAILURE_RATE_THRESHOLD and entry.get("parse_failures", 0) > 0:
             alerts.append(
