@@ -443,6 +443,9 @@ struct ListingListView: View {
             // 全件×5回の走査を繰り返さないよう、baseList が同一なら前回値を使い回す
             var hasher = Hasher()
             for listing in currentBase { hasher.combine(listing.url) }
+            // 同期で既存物件の内容が in-place 更新された場合（URL不変）も
+            // 選択肢が陳腐化しないよう、最終フェッチ時刻も署名に含める
+            hasher.combine(ListingStore.shared.lastFetchedAt?.timeIntervalSince1970 ?? 0)
             let signature = hasher.finalize()
 
             let newCache: FilterCache
