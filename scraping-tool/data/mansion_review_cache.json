@@ -8596,23 +8596,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/43361.html",
       "deviation_score": 50,
-      "estimated_price_man": 14009,
-      "estimated_tsubo_price_man": 692,
-      "estimated_m2_price_man": 210,
+      "estimated_price_man": 13357,
+      "estimated_tsubo_price_man": 660,
+      "estimated_m2_price_man": 200,
       "shinchiku_history_count": 50,
-      "chuko_history_count": 14,
+      "chuko_history_count": 15,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 68.93,
-          "price_man": 9979,
-          "tsubo_price_man": 481.0
+          "area_m2": 68.34,
+          "price_man": 9987,
+          "tsubo_price_man": 486.0
         }
       ]
     },
-    "cached_at": "2026-05-26T17:20:33.267884"
+    "cached_at": "2026-06-10T04:28:57.151335"
   },
   "パークホームズ雪が谷大塚": {
     "data": {
