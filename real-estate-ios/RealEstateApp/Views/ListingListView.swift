@@ -46,6 +46,9 @@ struct ListingListView: View {
         var availableDirections: [String] = []
         var availableNumericFields: [ListingNumericField] = []
         var availableSortOrders: [SortOrder] = []
+        /// available* 計算時の baseList の署名（URL 列のハッシュ）。
+        /// baseList が変わらない限り available* の全件走査をスキップするために使う
+        var baseSignature: Int = 0
     }
     @State private var filterCache = FilterCache()
     /// フィルタ再計算タスク（連続変更時のキャンセル用）
@@ -436,18 +439,40 @@ struct ListingListView: View {
             await Task.yield()
             guard !Task.isCancelled else { return }
             let currentBase = baseList
-            let newCache = FilterCache(
-                filtered: result,
-                grouped: grouped,
-                availableLayouts: ListingFilter.availableLayouts(from: currentBase),
-                availableWards: ListingFilter.availableWards(from: currentBase),
-                availableRouteStations: ListingFilter.availableRouteStations(from: currentBase),
-                availableDirections: ListingFilter.availableDirections(from: currentBase),
-                availableNumericFields: ListingFilter.availableNumericFields(from: currentBase),
-                availableSortOrders: SortOrder.allCases.filter { order in
-                    currentBase.contains(where: order.availabilityCheck)
-                }
-            )
+            // available* 各リストは baseList のみに依存する。検索・ソート変更のたびに
+            // 全件×5回の走査を繰り返さないよう、baseList が同一なら前回値を使い回す
+            var hasher = Hasher()
+            for listing in currentBase { hasher.combine(listing.url) }
+            let signature = hasher.finalize()
+
+            let newCache: FilterCache
+            if signature == filterCache.baseSignature {
+                newCache = FilterCache(
+                    filtered: result,
+                    grouped: grouped,
+                    availableLayouts: filterCache.availableLayouts,
+                    availableWards: filterCache.availableWards,
+                    availableRouteStations: filterCache.availableRouteStations,
+                    availableDirections: filterCache.availableDirections,
+                    availableNumericFields: filterCache.availableNumericFields,
+                    availableSortOrders: filterCache.availableSortOrders,
+                    baseSignature: signature
+                )
+            } else {
+                newCache = FilterCache(
+                    filtered: result,
+                    grouped: grouped,
+                    availableLayouts: ListingFilter.availableLayouts(from: currentBase),
+                    availableWards: ListingFilter.availableWards(from: currentBase),
+                    availableRouteStations: ListingFilter.availableRouteStations(from: currentBase),
+                    availableDirections: ListingFilter.availableDirections(from: currentBase),
+                    availableNumericFields: ListingFilter.availableNumericFields(from: currentBase),
+                    availableSortOrders: SortOrder.allCases.filter { order in
+                        currentBase.contains(where: order.availabilityCheck)
+                    },
+                    baseSignature: signature
+                )
+            }
             guard !Task.isCancelled else { return }
             if animated {
                 withAnimation(.easeInOut(duration: 0.3)) {

@@ -52,40 +52,11 @@ def _sanitize_value(obj: object) -> object:
 def _resolve_listing_ids(
     client: object, listings: list[dict]
 ) -> dict[str, int]:
+    """identity_key → listings.id の解決。共通実装 resolve_listing_ids に委譲。"""
     from report_utils import identity_key_str
+    from supabase_client import resolve_listing_ids
 
-    all_iks = list({identity_key_str(item) for item in listings if identity_key_str(item)})
-    if not all_iks:
-        return {}
-
-    ik_to_id: dict[str, int] = {}
-    for i in range(0, len(all_iks), 20):
-        chunk = all_iks[i : i + 20]
-        try:
-            resp = (
-                client.table("listings")
-                .select("id, identity_key")
-                .in_("identity_key", chunk)
-                .execute()
-            )
-            if resp.data:
-                for row in resp.data:
-                    ik_to_id[row["identity_key"]] = row["id"]
-        except Exception as e:
-            logger.error(f"listing_id 解決エラー (chunk {i}): {e}")
-            for ik in chunk:
-                try:
-                    resp = (
-                        client.table("listings")
-                        .select("id, identity_key")
-                        .eq("identity_key", ik)
-                        .execute()
-                    )
-                    if resp.data:
-                        ik_to_id[resp.data[0]["identity_key"]] = resp.data[0]["id"]
-                except Exception as row_err:
-                    logger.debug(f"per-row fallback 失敗 (ik={ik[:40]}): {row_err}")
-    return ik_to_id
+    return resolve_listing_ids(client, [identity_key_str(item) for item in listings])
 
 
 def write_enrichments(
