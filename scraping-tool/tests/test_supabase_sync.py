@@ -73,3 +73,37 @@ class TestSanitizeValue:
         assert result["reinfolib_market_data"] == '{"price_ratio": 1.05}'
         assert result["ss_radar_data"] is None
         assert result["latitude"] == 35.6762
+
+
+class TestDeleteDuplicateListing:
+    """_delete_duplicate_listing のテスト。
+
+    子テーブル（listing_sources / enrichments / price_history / listing_events）は
+    すべて ON DELETE CASCADE（migration 001）なので、listings への単一 DELETE で
+    原子的に削除されることを検証する。旧実装は5つの DELETE を非トランザクションで
+    逐次実行しており、途中失敗で孤児レコードが残る温床だった。
+    """
+
+    def test_single_cascade_delete_on_listings_only(self):
+        from unittest.mock import MagicMock
+        from supabase_sync import _delete_duplicate_listing
+
+        client = MagicMock()
+        _delete_duplicate_listing(client, 123)
+
+        # listings テーブルのみに対する1回の delete であること
+        tables_called = [c.args[0] for c in client.table.call_args_list]
+        assert tables_called == ["listings"]
+        client.table.return_value.delete.return_value.eq.assert_called_once_with("id", 123)
+
+    def test_delete_failure_propagates(self):
+        """削除失敗は握り潰さず例外を伝播させる（部分削除が無いので安全に再試行可能）。"""
+        from unittest.mock import MagicMock
+        import pytest as _pytest
+        from supabase_sync import _delete_duplicate_listing
+
+        client = MagicMock()
+        client.table.return_value.delete.return_value.eq.return_value.execute.side_effect = \
+            Exception("network error")
+        with _pytest.raises(Exception, match="network error"):
+            _delete_duplicate_listing(client, 123)

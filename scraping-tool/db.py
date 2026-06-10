@@ -355,10 +355,14 @@ def get_active_listings(conn: sqlite3.Connection, source: str | None = None) -> 
     ).fetchall()
 
 
-def get_listing_by_identity_key(conn: sqlite3.Connection, identity_key: str) -> dict | None:
-    """Look up a listing by identity key.
-    折衷案: 完全一致を優先し、見つからなければ floor=None 版でフォールバック検索する。
-    これにより、片方の媒体に階数がない場合でも同一物件としてマージされる。"""
+def resolve_listing_identity(conn: sqlite3.Connection, identity_key: str) -> dict | None:
+    """identity_key で物件を解決する。**キー移行の副作用あり**。
+
+    完全一致を優先し、見つからなければ floor=None 版・旧6要素キーで
+    フォールバック検索する。フォールバックでヒットした場合は既存レコードの
+    identity_key を新キーに UPDATE する（呼び出し元トランザクションの一部として
+    実行され、sync_scrape_results 末尾の commit で確定する）。
+    純粋な参照だけが必要な場合はこの関数を使わないこと。"""
     exact = conn.execute(
         "SELECT * FROM listings WHERE identity_key = ?", (identity_key,)
     ).fetchone()
@@ -420,7 +424,14 @@ def get_days_on_market(conn: sqlite3.Connection, listing_id: int) -> int | None:
     ).fetchone()
     if not row or not row["first_seen"]:
         return None
-    first_seen = datetime.fromisoformat(row["first_seen"])
+    try:
+        first_seen = datetime.fromisoformat(row["first_seen"])
+    except ValueError:
+        logger.warning("get_days_on_market: first_seen_at のパース失敗: %r", row["first_seen"])
+        return None
+    if first_seen.tzinfo is None:
+        # 古いレコードはタイムゾーンなしで保存されている場合がある。JST として解釈する
+        first_seen = first_seen.replace(tzinfo=JST)
     now = datetime.now(JST)
     return (now - first_seen).days
 
@@ -483,7 +494,7 @@ def sync_scrape_results(
             "developer_brokerage": item.get("developer_brokerage"),
         }
 
-        existing = get_listing_by_identity_key(conn, ik)
+        existing = resolve_listing_identity(conn, ik)
         existing_source = None
         was_inactive_source = False
 

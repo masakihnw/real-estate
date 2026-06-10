@@ -464,3 +464,55 @@ def test_scrape_ward_stops_after_consecutive_empty_parses(monkeypatch):
     assert [r.url for r in results] == [row1.url]
     # ページ1（成功） + 連続空ページ（許容回数ぶん）で停止
     assert calls["fetch"] == 1 + SUUMO_EMPTY_PARSE_TOLERANCE
+
+
+# ---------- パース失敗の可観測性 ----------
+
+
+def test_parse_list_html_logs_unit_parse_failures(monkeypatch, caplog):
+    """_parse_suumo_unit が例外で None を返した件数が warning ログに集計される。
+
+    HTML構造変更でパースが落ち始めたことを検知できるようにする
+    （従来は except Exception: return None でサイレントに握り潰されていた）。
+    """
+    import logging
+    import suumo_scraper
+
+    html = (
+        '<html><body>'
+        '<div class="property_unit-content">a</div>'
+        '<div class="property_unit-content">b</div>'
+        '</body></html>'
+    )
+    monkeypatch.setattr(suumo_scraper, "_parse_suumo_unit", lambda *_a, **_kw: None)
+    monkeypatch.setattr(suumo_scraper, "_parse_cassette", lambda *_a, **_kw: None)
+    monkeypatch.setattr(suumo_scraper, "_parse_fallback", lambda *_a, **_kw: [])
+
+    # 共通ロガーは propagate=False のため、caplog で拾えるよう一時的に伝播させる
+    monkeypatch.setattr(logging.getLogger("realestate"), "propagate", True)
+    with caplog.at_level(logging.WARNING, logger="realestate.suumo_scraper"):
+        result = suumo_scraper.parse_list_html(html)
+
+    assert result == []
+    assert any("2/2" in rec.message for rec in caplog.records), \
+        "パース失敗件数の集計ログが出ていない"
+
+
+def test_parse_suumo_unit_exception_returns_none_with_debug_log(caplog, monkeypatch):
+    """_parse_suumo_unit は要素が壊れていても例外を外に漏らさず None を返す。"""
+    import logging
+    from suumo_scraper import _parse_suumo_unit
+
+    monkeypatch.setattr(logging.getLogger("realestate"), "propagate", True)
+
+    class _Broken:
+        def find(self, *a, **kw):
+            raise RuntimeError("boom")
+
+        def get_text(self, *a, **kw):
+            raise RuntimeError("boom")
+
+    with caplog.at_level(logging.DEBUG, logger="realestate.suumo_scraper"):
+        assert _parse_suumo_unit(_Broken(), "https://suumo.jp") is None
+    assert any("parse" in rec.message.lower() or "パース" in rec.message
+               for rec in caplog.records), "例外がログに残っていない"
