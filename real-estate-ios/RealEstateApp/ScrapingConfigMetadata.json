@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "defaults": {
     "priceMinMan": 7500,
-    "priceMaxMan": 12000,
+    "priceMaxMan": 13000,
     "areaMinM2": 60,
     "areaMaxM2": null,
     "walkMinMax": 10,
-    "builtYearMinOffsetYears": 20,
-    "totalUnitsMin": 30,
+    "builtYearMinOffsetYears": 30,
+    "totalUnitsMin": 20,
     "layoutPrefixOk": ["2", "3"],
     "allowedLineKeywords": [],
     "allowedStations": []
