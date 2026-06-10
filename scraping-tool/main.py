@@ -399,6 +399,10 @@ def main() -> None:
     # 同一物件（名前・間取り・広さ・価格・住所・築年・駅徒歩が全て一致）を1件にまとめる
     all_rows = dedupe_listings(all_rows)
 
+    # スクレイパー健全性メトリクスを保存（slack_notify が閾値超過を警告通知する）
+    import scraper_metrics
+    scraper_metrics.save()
+
     if args.output:
         outpath = Path(args.output)
         outpath.parent.mkdir(parents=True, exist_ok=True)
