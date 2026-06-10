@@ -41,6 +41,8 @@ struct DashboardStats {
     let dedupCount: Int
     /// AI推奨トップ物件（建物グループで重複排除、最大3件）
     let aiTopListings: [Listing]
+    /// 時系列フィード（新着・値下げ・値上げ・再掲、直近7日）
+    let timeline: [TimelineFeedItem]
 
     init(activeListings: [Listing], prefStore: BuildingPreferenceStore? = nil) {
         var recentlyAdded: [Listing] = []
@@ -102,6 +104,8 @@ struct DashboardStats {
             }
             .sorted { $0.avgScore > $1.avgScore }
         dedupCount = dedup
+
+        timeline = TimelineFeed.build(from: activeListings)
 
         var seenBuildings = Set<String>()
         aiTopListings = Array(
