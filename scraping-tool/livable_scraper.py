@@ -476,8 +476,6 @@ def _scrape_ward(
 
         rows = parse_list_html(html)
         if not rows:
-            import scraper_metrics
-            scraper_metrics.record("livable", empty_pages=1)
             consecutive_empty_parses += 1
             html_size = len(html)
             logger.warning(
@@ -492,11 +490,19 @@ def _scrape_ward(
                     ward_name, ward_code, p, consecutive_empty_parses,
                     ward_total_parsed, ward_total_passed,
                 )
+                # 区全体0件の終了のみ異常として記録（終端の空ページは正常なため記録しない）
+                if ward_total_parsed == 0:
+                    import scraper_metrics
+                    scraper_metrics.record("livable", empty_pages=consecutive_empty_parses)
                 break
             time.sleep(EMPTY_PARSE_BACKOFF_SEC)
             p += 1
             continue
 
+        if consecutive_empty_parses > 0:
+            # 途中の空ページ（後続で復活）= 異常なギャップとして記録
+            import scraper_metrics
+            scraper_metrics.record("livable", empty_pages=consecutive_empty_parses)
         consecutive_empty_parses = 0
         ward_total_parsed += len(rows)
         passed = 0

@@ -995,15 +995,21 @@ def _scrape_ward(
                         "SUUMO: sc_%s ページ%d 連続%d回パース0件のため停止 (累計パース: %d件, 累計通過: %d件)",
                         ward_roman, p, consecutive_empty_parses, ward_total_parsed, ward_total_passed,
                     )
+                # 区全体が0件のまま終了 = botブロックの最有力シグナルとして記録。
+                # パース実績ありの終端空ページは正常なページネーション終了なので記録しない
+                if ward_total_parsed == 0:
+                    scraper_metrics.record("suumo", empty_pages=consecutive_empty_parses)
                 break
             logger.warning(
                 "SUUMO: sc_%s ページ%d パース0件 (HTML: %dB, 連続: %d/%d) — botブロック/構造変更の可能性、次ページへ進みます",
                 ward_roman, p, len(html), consecutive_empty_parses, SUUMO_EMPTY_PARSE_TOLERANCE,
             )
-            scraper_metrics.record("suumo", empty_pages=1)
             time.sleep(SUUMO_EMPTY_PARSE_BACKOFF_SEC)
             p += 1
             continue
+        if consecutive_empty_parses > 0:
+            # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
+            scraper_metrics.record("suumo", empty_pages=consecutive_empty_parses)
         consecutive_empty_parses = 0
         ward_total_parsed += len(rows)
         passed = 0
