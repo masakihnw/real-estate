@@ -3,6 +3,8 @@ import SwiftUI
 struct InvestmentSummaryCard: View {
     let listing: Listing
 
+    @State private var isEvidenceExpanded = false
+
     private var hasRecommendation: Bool { listing.aiRecommendationScore != nil }
     private var summary: String? { listing.investmentSummary }
     private var badge: String? { listing.highlightBadge }
@@ -37,6 +39,37 @@ struct InvestmentSummaryCard: View {
             let flags = listing.parsedRecommendationFlags
             if !flags.isEmpty {
                 recommendationFlagsView(flags: flags)
+            }
+
+            // 判断の根拠（フラグに対応する一次データを展開表示）
+            let evidenceList = RecommendationEvidence.evidenceList(for: listing)
+            if !evidenceList.isEmpty {
+                DisclosureGroup(isExpanded: $isEvidenceExpanded) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        ForEach(evidenceList, id: \.flag) { item in
+                            HStack(alignment: .top, spacing: 6) {
+                                Text(item.flag)
+                                    .font(.caption2.weight(.semibold))
+                                    .foregroundStyle(flagColor(for: item.flag))
+                                    .frame(width: 92, alignment: .leading)
+                                Text(item.evidence)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
+                    .padding(.top, 4)
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "doc.text.magnifyingglass")
+                            .font(.caption2)
+                        Text("判断の根拠")
+                            .font(.caption2.weight(.medium))
+                    }
+                    .foregroundStyle(.secondary)
+                }
+                .tint(.secondary)
             }
 
             if let action = listing.aiRecommendationAction, !action.isEmpty {

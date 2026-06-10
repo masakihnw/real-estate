@@ -106,24 +106,62 @@ struct ComparisonView: View {
 
     @ViewBuilder
     private var basicRows: some View {
-        comparisonRow("価格", values: listings.map(\.priceDisplay))
-        comparisonRow("面積", values: listings.map(\.areaDisplay))
+        // 投資スコア（グレードバッジで視覚化）
+        if listings.contains(where: { $0.listingScore != nil }) {
+            scoreRow
+        }
+        comparisonRow("価格", values: listings.map(\.priceDisplay),
+                      numeric: listings.map { $0.priceMan.map(Double.init) }, higherIsBetter: false)
+        comparisonRow("面積", values: listings.map(\.areaDisplay),
+                      numeric: listings.map(\.areaM2), higherIsBetter: true)
         comparisonRow("間取り", values: listings.map { $0.layout ?? "—" })
         comparisonRow("最寄駅", values: listings.map { $0.stationName ?? "—" })
-        comparisonRow("徒歩", values: listings.map(\.walkDisplay))
-        comparisonRow("築年", values: listings.map(\.builtAgeDisplay))
+        comparisonRow("徒歩", values: listings.map(\.walkDisplay),
+                      numeric: listings.map { $0.walkMin.map(Double.init) }, higherIsBetter: false)
+        comparisonRow("築年", values: listings.map(\.builtAgeDisplay),
+                      numeric: listings.map { $0.builtYear.map(Double.init) }, higherIsBetter: true)
         comparisonRow("階数", values: listings.map { $0.floorDisplay.isEmpty ? "—" : $0.floorDisplay })
-        comparisonRow("総戸数", values: listings.map(\.totalUnitsDisplay))
+        comparisonRow("総戸数", values: listings.map(\.totalUnitsDisplay),
+                      numeric: listings.map { $0.totalUnits.map(Double.init) }, higherIsBetter: true)
         comparisonRow("権利形態", values: listings.map(\.ownershipShort))
+    }
+
+    /// 投資スコア行（グレードバッジ付き）
+    private var scoreRow: some View {
+        GridRow {
+            labelCell("投資スコア")
+                .frame(width: 90)
+            ForEach(listings, id: \.url) { listing in
+                HStack(spacing: 6) {
+                    if let grade = listing.scoreGradeLetter {
+                        Text(grade)
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 22, height: 22)
+                            .background(DesignSystem.scoreColor(for: grade))
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                    }
+                    Text(listing.listingScore.map { "\($0)" } ?? "—")
+                        .font(.caption.weight(.semibold).monospacedDigit())
+                    Spacer()
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .overlay(alignment: .bottom) { Divider() }
+                .frame(width: 140)
+            }
+        }
     }
 
     @ViewBuilder
     private var optionalRows: some View {
         if showProfitPct {
-            comparisonRow("儲かる確率", values: listings.map(\.ssProfitDisplay))
+            comparisonRow("儲かる確率", values: listings.map(\.ssProfitDisplay),
+                          numeric: listings.map { $0.ssProfitPct.map(Double.init) }, higherIsBetter: true)
         }
         if showAppreciationRate {
-            comparisonRow("値上がり率", values: listings.map { $0.ssAppreciationRate.map { String(format: "%.1f%%", $0) } ?? "—" })
+            comparisonRow("値上がり率", values: listings.map { $0.ssAppreciationRate.map { String(format: "%.1f%%", $0) } ?? "—" },
+                          numeric: listings.map(\.ssAppreciationRate), higherIsBetter: true)
         }
         if showPriceJudgment {
             comparisonRow("割安判定", values: listings.map { $0.computedPriceJudgment ?? "—" })
@@ -140,16 +178,26 @@ struct ComparisonView: View {
     }
 
     /// Grid の1行。ラベル列 + 各物件の値列で構成。行高は Grid が自動同期。
-    private func comparisonRow(_ label: String, values: [String]) -> some View {
-        GridRow {
+    /// numeric を渡すと最良値を緑・最劣値を赤で強調する（物件間の差分を一目で把握）。
+    private func comparisonRow(
+        _ label: String,
+        values: [String],
+        numeric: [Double?]? = nil,
+        higherIsBetter: Bool = true
+    ) -> some View {
+        let best = numeric.flatMap { ComparisonHighlight.bestIndex($0, higherIsBetter: higherIsBetter) }
+        let worst = numeric.flatMap { ComparisonHighlight.worstIndex($0, higherIsBetter: higherIsBetter) }
+        return GridRow {
             labelCell(label)
                 .frame(width: 90)
-            ForEach(Array(values.enumerated()), id: \.offset) { _, val in
-                valueCell(val)
+            ForEach(Array(values.enumerated()), id: \.offset) { idx, val in
+                valueCell(val, emphasis: idx == best ? .best : (idx == worst ? .worst : nil))
                     .frame(width: 140)
             }
         }
     }
+
+    private enum CellEmphasis { case best, worst }
 
     private func exportPDF() {
         guard let data = PDFExporter.generateComparisonPDF(listings: listings) else { return }
@@ -183,14 +231,24 @@ struct ComparisonView: View {
             .overlay(alignment: .bottom) { Divider() }
     }
 
-    private func valueCell(_ text: String) -> some View {
-        Text(text)
-            .font(.caption)
-            .lineLimit(2)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 6)
-            .overlay(alignment: .bottom) { Divider() }
+    private func valueCell(_ text: String, emphasis: CellEmphasis? = nil) -> some View {
+        HStack(spacing: 3) {
+            Text(text)
+                .font(emphasis == nil ? .caption : .caption.weight(.bold))
+                .foregroundStyle(emphasis == .best ? Color.green :
+                                 emphasis == .worst ? Color.red : Color.primary)
+                .lineLimit(2)
+            if emphasis == .best {
+                Image(systemName: "crown.fill")
+                    .font(.system(size: 8))
+                    .foregroundStyle(.green)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
+        .background(emphasis == .best ? Color.green.opacity(0.06) : Color.clear)
+        .overlay(alignment: .bottom) { Divider() }
     }
 }
 
