@@ -15141,24 +15141,24 @@
     },
     {
       "date": "2026-06-10",
-      "total_listings": 893,
+      "total_listings": 892,
       "new_count": 458,
-      "removed_count": 5,
+      "removed_count": 6,
       "updated_count": 38,
       "price_changed_count": 7,
-      "avg_price_man": 10982,
+      "avg_price_man": 10981,
       "median_price_man": 10980,
       "price_distribution": {
         "under_10000": 262,
         "10000_11000": 202,
-        "11000_12000": 271,
+        "11000_12000": 270,
         "over_12000": 158,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 184,
-          "avg_price_man": 10952,
+          "count": 183,
+          "avg_price_man": 10946,
           "min_price_man": 7999,
           "max_price_man": 12990
         },
