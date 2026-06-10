@@ -243,19 +243,33 @@ struct AppreciationChartView: View {
 
     var body: some View {
         let data = chartData()
-        Chart(data, id: \.id) { point in
-            LineMark(
-                x: .value("時期", point.period),
-                y: .value("万円", point.value)
-            )
-            .foregroundStyle(by: .value("ケース", point.caseName))
+        Chart {
+            // ベスト〜ワーストの予測レンジ帯。点ではなく「振れ幅」として
+            // 不確実性を視覚化する（予測は一点の値ではないことを明示）
+            ForEach(bandData(), id: \.period) { band in
+                AreaMark(
+                    x: .value("時期", band.period),
+                    yStart: .value("ワースト", band.worst),
+                    yEnd: .value("ベスト", band.best)
+                )
+                .foregroundStyle(Color.blue.opacity(0.07))
+                .interpolationMethod(.monotone)
+            }
 
-            PointMark(
-                x: .value("時期", point.period),
-                y: .value("万円", point.value)
-            )
-            .foregroundStyle(by: .value("ケース", point.caseName))
-            .symbolSize(20)
+            ForEach(data, id: \.id) { point in
+                LineMark(
+                    x: .value("時期", point.period),
+                    y: .value("万円", point.value)
+                )
+                .foregroundStyle(by: .value("ケース", point.caseName))
+
+                PointMark(
+                    x: .value("時期", point.period),
+                    y: .value("万円", point.value)
+                )
+                .foregroundStyle(by: .value("ケース", point.caseName))
+                .symbolSize(20)
+            }
         }
         .chartForegroundStyleScale([
             "ベスト": Color.blue,
@@ -287,6 +301,21 @@ struct AppreciationChartView: View {
         .accessibilityValue(
             "購入価格\(sim.purchasePrice)万円、5年後 標準\(sim.standardCase.yr5)万円、10年後 標準\(sim.standardCase.yr10)万円"
         )
+    }
+
+    private struct BandPoint {
+        let period: String
+        let worst: Int
+        let best: Int
+    }
+
+    /// ベスト〜ワーストの帯データ
+    private func bandData() -> [BandPoint] {
+        [
+            BandPoint(period: "購入時", worst: sim.purchasePrice, best: sim.purchasePrice),
+            BandPoint(period: "5年後", worst: sim.worstCase.yr5, best: sim.bestCase.yr5),
+            BandPoint(period: "10年後", worst: sim.worstCase.yr10, best: sim.bestCase.yr10),
+        ]
     }
 
     private func chartData() -> [ChartPoint] {

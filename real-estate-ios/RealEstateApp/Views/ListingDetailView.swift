@@ -48,6 +48,8 @@ struct ListingDetailView: View {
     @State private var nearbyTransactions: [TransactionRecord] = []
     /// enrichment データのロード状態
     @State private var isLoadingEnrichment = false
+    /// 同区・同間取りの平均掲載日数（Days on Market 比較用）
+    @State private var avgDaysOnMarketSameSegment: Int?
 
     var body: some View {
         NavigationStack {
@@ -237,6 +239,7 @@ struct ListingDetailView: View {
                 .task {
                     similarListings = fetchSimilarListings()
                     nearbyTransactions = fetchNearbyTransactions()
+                    loadDaysOnMarketComparison()
                     await loadEnrichmentIfNeeded()
                 }
                 .safeAreaInset(edge: .top) {
@@ -314,6 +317,21 @@ struct ListingDetailView: View {
             Logger(subsystem: "com.realestate", category: "ListingDetail")
                 .warning("enrichment ロード失敗: \(error.localizedDescription, privacy: .public)")
         }
+    }
+
+    /// 同区・同間取りの平均掲載日数を読み込む（Days on Market 比較）
+    private func loadDaysOnMarketComparison() {
+        guard listing.daysOnMarket != nil else { return }
+        let descriptor = FetchDescriptor<Listing>(
+            predicate: #Predicate<Listing> { !$0.isDelisted && $0.propertyType == "chuko" }
+        )
+        guard let all = try? modelContext.fetch(descriptor) else { return }
+        avgDaysOnMarketSameSegment = DaysOnMarketStats.averageDays(
+            ward: listing.wardName,
+            layout: listing.layout,
+            excludingURL: listing.url,
+            in: all
+        )
     }
 
     private func fetchSimilarListings() -> [Listing] {
@@ -1397,7 +1415,7 @@ struct ListingDetailView: View {
                 .tintedGlassBackground(tint: DesignSystem.scoreColor(for: score), tintOpacity: 0.03, borderOpacity: 0.08)
             }
 
-            // 掲載日数
+            // 掲載日数（同区・同間取りの平均と比較）
             if listing.firstSeenAt != nil {
                 HStack(spacing: 8) {
                     Image(systemName: "clock")
@@ -1406,6 +1424,11 @@ struct ListingDetailView: View {
                     Text(listing.daysOnMarketDisplay)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                    if let days = listing.daysOnMarket, let avg = avgDaysOnMarketSameSegment {
+                        Text(DaysOnMarketStats.comparisonLabel(listingDays: days, averageDays: avg))
+                            .font(.caption2)
+                            .foregroundStyle(days > avg ? Color.orange : Color.green)
+                    }
                 }
             }
 
