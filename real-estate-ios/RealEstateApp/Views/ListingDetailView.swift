@@ -24,11 +24,11 @@ struct ListingDetailView: View {
     /// 編集中のコメントID（nil なら新規投稿モード）
     @State private var editingCommentId: String?
     /// 駅プルダウン展開状態
-    @State private var isStationsExpanded: Bool = false
+    @AppStorage("detail.isStationsExpanded") private var isStationsExpanded: Bool = false
     /// 周辺物件プルダウン展開状態
-    @State private var isSurroundingExpanded: Bool = false
+    @AppStorage("detail.isSurroundingExpanded") private var isSurroundingExpanded: Bool = false
     /// 割安判定プルダウン展開状態
-    @State private var isPriceJudgmentsExpanded: Bool = false
+    @AppStorage("detail.isPriceJudgmentsExpanded") private var isPriceJudgmentsExpanded: Bool = false
     /// SFSafariViewController 表示用
     @State private var safariURL: URL?
     /// HIG: 破壊的操作の確認用（コメント削除）
@@ -1589,6 +1589,46 @@ struct ListingDetailView: View {
         .padding(10)
         .background(Color(.systemGray6).opacity(0.5))
         .clipShape(RoundedRectangle(cornerRadius: 8))
+
+        // 値下げ頻度・トレンド判定（PriceTrendAnalysis）
+        if let analysis = PriceTrendAnalysis(history: history) {
+            HStack(spacing: 8) {
+                Text(analysis.trend.rawValue)
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(trendColor(analysis.trend))
+                    .clipShape(Capsule())
+
+                if analysis.dropCount > 0 {
+                    Text("値下げ\(analysis.dropCount)回")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                if analysis.raiseCount > 0 {
+                    Text("値上げ\(analysis.raiseCount)回")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                if let interval = analysis.avgDaysBetweenChanges {
+                    Text("平均\(interval)日間隔")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+        }
+    }
+
+    private func trendColor(_ trend: PriceTrendAnalysis.Trend) -> Color {
+        switch trend {
+        case .rapidDiscount: return .green
+        case .gradualDiscount: return .teal
+        case .stable: return .gray
+        case .increased: return .red
+        case .mixed: return .orange
+        }
     }
 
     private func priceChangeForEntry(

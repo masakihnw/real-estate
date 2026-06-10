@@ -299,9 +299,22 @@ struct DashboardView: View {
         return Group {
             if !drops.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    Label("注目物件の値下げ", systemImage: "bell.badge.fill")
-                        .font(.headline)
-                        .foregroundStyle(.primary)
+                    HStack {
+                        Label("注目物件の値下げ", systemImage: "bell.badge.fill")
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        NavigationLink {
+                            WatchlistView()
+                        } label: {
+                            HStack(spacing: 2) {
+                                Text("すべて見る")
+                                Image(systemName: "chevron.right")
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
+                    }
 
                     Text("お気に入り・高評価(S/A)物件の値下げ")
                         .font(.caption)
