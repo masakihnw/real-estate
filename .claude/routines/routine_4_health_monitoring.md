@@ -309,6 +309,20 @@ FROM buyer_preference_summaries
 WHERE user_id = 'default';
 ```
 
+**スクレイパー健全性メトリクス**（GHA が毎ラン更新・コミットする JSON を取得）:
+
+以下の URL を Web fetch で取得する（public リポジトリのため認証不要）:
+
+```
+https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/results/scraper_metrics.json
+```
+
+形式: `{"metrics": {"suumo": {"parsed": N, "parse_failures": N, "empty_pages": N}, ...}, "alerts": ["..."]}`
+
+- `alerts` 配列が空でない場合 → 6b の `scraper_parse_health` issue を登録する
+- fetch 失敗・ファイル未存在の場合はスキップ（初回ラン前や一時的なネットワーク要因のため issue 化しない）
+- `metrics` が空 `{}` の場合もスキップ（メトリクス未収集のランがあるだけで異常ではない）
+
 ```sql
 -- 非アクティブ物件の画像URL残存（リンク切れ候補）
 SELECT COUNT(*) AS stale_image_count
@@ -336,9 +350,24 @@ WHERE l.is_active = false
 | `homes_images_backlog_large` | Step 1 の homes 画像取得率が 30% 未満 | high | auto_fixable | data_quality |
 | `homes_waf_continuous_failure` | ルーティン① Step 5 で WAF 連続ブロック | high | manual | pipeline |
 | `image_urls_stale` | 非アクティブ物件の画像URLが enrichments に残存（50件以上） | low | auto_fixable | maintenance |
+| `scraper_parse_health` | 6a の scraper_metrics.json の `alerts` が1件以上（パース失敗率30%以上 or 空ページ3回以上） | high | manual | pipeline |
 
 各 issue の `description` には現在値・傾向・推定解消時期を含める。
 `suggested_fix` には Claude Code で実行可能な修正指示を含める。
+
+`scraper_parse_health` の例（description には alerts の内容をそのまま列挙する）:
+```sql
+SELECT upsert_pipeline_issue(
+  'scraper_parse_health',
+  'high',
+  'pipeline',
+  'スクレイパーパース健全性の劣化',
+  'suumo: パース失敗率 40%（120/300件） — HTML構造変更の可能性',
+  '{"alerts": ["suumo: パース失敗率 40%..."], "metrics": {"suumo": {"parsed": 180, "parse_failures": 120}}}'::jsonb,
+  '該当スクレイパーの parse_list_html のセレクタが現行HTMLと一致しているか調査して修正方針を提案して',
+  'manual'
+);
+```
 
 例:
 ```sql
