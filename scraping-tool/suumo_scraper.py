@@ -18,6 +18,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from logger import get_logger
+import scraper_metrics
 logger = get_logger(__name__)
 
 from config import (
@@ -239,6 +240,7 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[SuumoListing]:
             "SUUMO: 一覧パースで %d/%d 件が例外失敗 — HTML構造変更の可能性",
             unit_parse_failures, len(primary_blocks),
         )
+    scraper_metrics.record("suumo", parsed=len(items), parse_failures=unit_parse_failures)
 
     # フォールバック: cassetteitem 系
     if not items:
@@ -998,6 +1000,7 @@ def _scrape_ward(
                 "SUUMO: sc_%s ページ%d パース0件 (HTML: %dB, 連続: %d/%d) — botブロック/構造変更の可能性、次ページへ進みます",
                 ward_roman, p, len(html), consecutive_empty_parses, SUUMO_EMPTY_PARSE_TOLERANCE,
             )
+            scraper_metrics.record("suumo", empty_pages=1)
             time.sleep(SUUMO_EMPTY_PARSE_BACKOFF_SEC)
             p += 1
             continue

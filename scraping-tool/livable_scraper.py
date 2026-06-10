@@ -476,6 +476,8 @@ def _scrape_ward(
 
         rows = parse_list_html(html)
         if not rows:
+            import scraper_metrics
+            scraper_metrics.record("livable", empty_pages=1)
             consecutive_empty_parses += 1
             html_size = len(html)
             logger.warning(

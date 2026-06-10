@@ -904,6 +904,17 @@ def main() -> None:
     if watchlist_drops:
         message = message + "\n" + build_watchlist_price_drop_section(watchlist_drops)
 
+    # スクレイパー健全性アラート（パース失敗率・空ページの閾値超過）
+    try:
+        import scraper_metrics
+        health = scraper_metrics.load()
+        if health.get("alerts"):
+            lines = ["", "*⚠️ スクレイパー健全性アラート*"]
+            lines += [f"  • {a}" for a in health["alerts"]]
+            message = message + "\n" + "\n".join(lines)
+    except Exception as e:
+        logger.warning("スクレイパー健全性アラートの取得失敗: %s", e)
+
     # pending な AI ダイジェストを本文末尾に統合（Routine 2 が1日1回生成。上で取得済み）
     if digest_text:
         message = message + "\n\n" + digest_text
