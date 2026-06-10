@@ -245,8 +245,10 @@ struct ListingListView: View {
             case .recommendationAsc, .recommendationDesc:
                 return { $0.aiRecommendationScore != nil }
             case .customMetricDesc:
-                // いずれかのコンポーネントがあれば計算可能
-                return { CustomMetric.load().score(for: $0) != nil }
+                // いずれかのコンポーネントがあれば計算可能。
+                // load() はクロージャ外で1回だけ（全件×UserDefaults読込を避ける）
+                let metric = CustomMetric.load()
+                return { metric.score(for: $0) != nil }
             }
         }
     }
