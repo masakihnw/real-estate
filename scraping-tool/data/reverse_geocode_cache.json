@@ -1414,5 +1414,117 @@
     "quarter": "月島",
     "neighbourhood": "月島一丁目",
     "city_district": ""
+  },
+  "35.666835,139.785680": {
+    "display_name": "佃仲通り, 佃二丁目, 佃, 中央区, 東京都, 104-0051, 日本",
+    "city": "中央区",
+    "suburb": "",
+    "quarter": "佃",
+    "neighbourhood": "佃二丁目",
+    "city_district": ""
+  },
+  "35.708921,139.784846": {
+    "display_name": "元浅草一丁目, 元浅草, 台東区, 東京都, 111-0041, 日本",
+    "city": "台東区",
+    "suburb": "",
+    "quarter": "元浅草",
+    "neighbourhood": "元浅草一丁目",
+    "city_district": ""
+  },
+  "35.709708,139.786945": {
+    "display_name": "元浅草四丁目, 元浅草, 台東区, 東京都, 111-0036, 日本",
+    "city": "台東区",
+    "suburb": "",
+    "quarter": "元浅草",
+    "neighbourhood": "元浅草四丁目",
+    "city_district": ""
+  },
+  "35.727608,139.787931": {
+    "display_name": "根岸五丁目, 根岸, 台東区, 東京都, 110-0003, 日本",
+    "city": "台東区",
+    "suburb": "",
+    "quarter": "根岸",
+    "neighbourhood": "根岸五丁目",
+    "city_district": ""
+  },
+  "35.727123,139.788519": {
+    "display_name": "金杉通り, 下谷三丁目, 下谷, 台東区, 東京都, 110-0012, 日本",
+    "city": "台東区",
+    "suburb": "",
+    "quarter": "下谷",
+    "neighbourhood": "下谷三丁目",
+    "city_district": ""
+  },
+  "35.574534,139.706774": {
+    "display_name": "池上四丁目, 池上, 大田区, 東京都, 146-0082, 日本",
+    "city": "大田区",
+    "suburb": "",
+    "quarter": "池上",
+    "neighbourhood": "池上四丁目",
+    "city_district": ""
+  },
+  "35.572021,139.703049": {
+    "display_name": "池上六丁目, 池上, 大田区, 東京都, 146-0082, 日本",
+    "city": "大田区",
+    "suburb": "",
+    "quarter": "池上",
+    "neighbourhood": "池上六丁目",
+    "city_district": ""
+  },
+  "35.648412,139.630636": {
+    "display_name": "経堂五丁目, 経堂, 世田谷区, 東京都, 156-8799, 日本",
+    "city": "世田谷区",
+    "suburb": "",
+    "quarter": "経堂",
+    "neighbourhood": "経堂五丁目",
+    "city_district": ""
+  },
+  "35.672862,139.822903": {
+    "display_name": "南砂二丁目, 南砂, 江東区, 東京都, 136-0076, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "南砂",
+    "neighbourhood": "南砂二丁目",
+    "city_district": ""
+  },
+  "35.671479,139.820561": {
+    "display_name": "南砂二丁目, 南砂, 江東区, 東京都, 136-0076, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "南砂",
+    "neighbourhood": "南砂二丁目",
+    "city_district": ""
+  },
+  "35.636824,139.784106": {
+    "display_name": "有明一丁目, 有明, 江東区, 東京都, 135-0063, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "有明",
+    "neighbourhood": "有明一丁目",
+    "city_district": ""
+  },
+  "35.697686,139.659932": {
+    "display_name": "青梅街道, 和田三丁目, 和田, 杉並区, 東京都, 164-0012, 日本",
+    "city": "杉並区",
+    "suburb": "",
+    "quarter": "和田",
+    "neighbourhood": "和田三丁目",
+    "city_district": ""
+  },
+  "35.708367,139.681929": {
+    "display_name": "東中野 ギンザ通り, 東中野三丁目, 東中野, 中野区, 東京都, 164-0003, 日本",
+    "city": "中野区",
+    "suburb": "",
+    "quarter": "東中野",
+    "neighbourhood": "東中野三丁目",
+    "city_district": ""
+  },
+  "35.712326,139.685055": {
+    "display_name": "上落合三丁目, 上落合, 新宿区, 東京都, 160-8484, 日本",
+    "city": "新宿区",
+    "suburb": "上落合",
+    "quarter": "上落合",
+    "neighbourhood": "上落合三丁目",
+    "city_district": ""
   }
 }
