@@ -69,17 +69,20 @@ def _build_listing_text(listing: dict) -> str:
     if listing.get("repair_reserve_fund"):
         parts.append(f"修繕積立金: {listing['repair_reserve_fund']}円/月")
 
+    # 自由記述フィールドは第三者が任意文字列を書けるためサニタイズしてから渡す
+    from claude_client import sanitize_untrusted_text
+
     feature_tags = listing.get("feature_tags") or []
     if feature_tags:
-        parts.append(f"特徴タグ: {', '.join(feature_tags)}")
+        parts.append(f"特徴タグ: {sanitize_untrusted_text(', '.join(feature_tags))}")
 
     remarks = listing.get("remarks") or listing.get("description") or ""
     if remarks:
-        parts.append(f"備考: {remarks[:500]}")
+        parts.append(f"備考: {sanitize_untrusted_text(remarks[:500])}")
 
     equipment = listing.get("equipment") or ""
     if equipment:
-        parts.append(f"設備: {equipment[:300]}")
+        parts.append(f"設備: {sanitize_untrusted_text(equipment[:300])}")
 
     return "\n".join(parts)
 

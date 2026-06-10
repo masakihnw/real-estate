@@ -665,7 +665,10 @@ def _fetch_detail_page(session: requests.Session, url: str) -> str:
     raise RuntimeError(f"全 {REQUEST_RETRIES} 回のリトライが失敗しました: {url}")
 
 
-def parse_livable_detail_html(html: str, url: str = "") -> dict:
+def parse_livable_detail_html(
+    html: str, url: str = "",
+    session: Optional[requests.Session] = None,
+) -> dict:
     """livable 詳細ページ HTML をパースして物件情報辞書を返す。
 
     Returns:
@@ -823,8 +826,10 @@ def parse_livable_detail_html(html: str, url: str = "") -> dict:
             prop_id = m.group(1)
             inferred_url = f"https://www.livable.co.jp/rue_image/layout/{prop_id}.gif"
             try:
-                head_r = requests.head(inferred_url, timeout=5, allow_redirects=True,
-                                       headers={"User-Agent": "Mozilla/5.0"})
+                # リトライ・User-Agent 設定済みの共通セッションを優先して使う
+                http = session if session is not None else requests
+                head_r = http.head(inferred_url, timeout=5, allow_redirects=True,
+                                   headers={"User-Agent": "Mozilla/5.0"})
                 if head_r.status_code == 200:
                     floor_plan_imgs.append(inferred_url)
                     logger.debug(f"livable: 間取り推定成功 {prop_id}")
@@ -900,7 +905,7 @@ def enrich_livable_listings(
         # 詳細ページ取得
         try:
             html = _fetch_detail_page(session, url)
-            detail = parse_livable_detail_html(html, url)
+            detail = parse_livable_detail_html(html, url, session=session)
         except Exception as e:
             logger.warning("livable detail: 詳細取得失敗: %s (%s)", url, e)
             # 失敗時も空エントリでキャッシュして再取得を抑止

@@ -454,7 +454,9 @@ def _build_score_context(listing: dict) -> str:
 
     tags = listing.get("feature_tags")
     if tags and isinstance(tags, list) and len(tags) > 0:
-        sections.append(f"特徴タグ: {', '.join(tags)}")
+        # スクレイプ由来の自由記述はサニタイズしてから埋め込む
+        from claude_client import sanitize_untrusted_text
+        sections.append(f"特徴タグ: {sanitize_untrusted_text(', '.join(str(t) for t in tags))}")
 
     return "\n".join(sections)
 

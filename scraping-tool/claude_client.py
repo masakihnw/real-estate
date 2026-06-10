@@ -36,6 +36,31 @@ def _is_credit_error(exc: Exception) -> bool:
     msg = str(exc).lower()
     return "credit balance" in msg or "payment required" in msg or "usage limits" in msg
 
+# スクレイプ由来テキストから除去する既知のプロンプトインジェクションマーカー。
+# 備考欄等は第三者（不動産業者）が任意の文字列を書けるため、
+# Claude API へ渡す前に sanitize_untrusted_text() を通すこと。
+_INJECTION_PATTERNS = [
+    re.compile(r"(?im)^[ \t]*(?:system|assistant|human|user)[ \t]*:[^\n]*"),
+    re.compile(r"(?i)\[[ \t]*(?:system|assistant|inst(?:ruction)?s?)[ \t]*\][^\n]*"),
+    re.compile(r"(?i)<[ \t]*/?[ \t]*(?:system|instructions?|admin)[ \t]*>"),
+    re.compile(r"(?i)ignore\s+(?:all\s+)?(?:previous|above|prior)\s+instructions?[^\n]*"),
+    re.compile(r"(?:(?:これ)?まで|以前|以降|上記)の?指示[をは]?(?:すべて)?無視[^\n]*"),
+    re.compile(r"指示[をは]?(?:すべて)?無視して[^\n]*"),
+]
+
+
+def sanitize_untrusted_text(text: str) -> str:
+    """スクレイプした自由記述テキストから既知のインジェクションマーカーを除去する。
+
+    完全な防御ではなくリスク低減策。通常の物件説明文は変更しない。
+    """
+    if not text:
+        return text
+    for pat in _INJECTION_PATTERNS:
+        text = pat.sub(" ", text)
+    return text
+
+
 _CACHE_SCHEMA = """
 CREATE TABLE IF NOT EXISTS claude_cache (
     cache_key TEXT PRIMARY KEY,
@@ -184,10 +209,17 @@ class ClaudeClient:
         logger.info("Batch ID: %s, status: %s", batch_id, batch.processing_status)
 
         results = self._poll_batch(batch_id, timeout_minutes=poll_timeout_minutes, prefill_map=prefill_map)
-        succeeded = sum(1 for r in results if not r.error)
-        if not succeeded:
-            logger.warning("Batch 結果なし → 同期 API フォールバック (%d件)", len(requests))
-            results = self._send_sync(requests)
+        # 成功済みリクエストは再送しない（バッチで課金済みのため二重コスト防止）。
+        # 結果が取得できなかった・エラーになったリクエストのみ同期 API にフォールバックする
+        ok_results = [r for r in results if not r.error]
+        ok_ids = {r.custom_id for r in ok_results}
+        pending = [req for req in requests if req.custom_id not in ok_ids]
+        if pending:
+            logger.warning(
+                "Batch 未取得/失敗 %d/%d 件のみ同期 API フォールバック",
+                len(pending), len(requests),
+            )
+            return ok_results + self._send_sync(pending)
         return results
 
     def _poll_batch(
