@@ -32,7 +32,25 @@ struct ComparisonView: View {
             }
         } else {
             NavigationStack {
-                comparisonGrid
+                ScrollView(.vertical) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        // ポートフォリオ比較: 候補のレーダーチャートを重ね描き
+                        let radarEntries = MultiRadarChartView.entries(from: listings)
+                        if radarEntries.count >= 2 {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Label("評価バランス比較", systemImage: "hexagon")
+                                    .font(.subheadline.weight(.semibold))
+                                MultiRadarChartView(entries: radarEntries)
+                                    .frame(maxWidth: 320)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 8)
+                        }
+
+                        comparisonGrid
+                    }
+                }
                     .accessibilityLabel("物件比較表")
                     .accessibilityHint("横にスワイプして全物件を比較できます")
                     .navigationTitle("物件比較")

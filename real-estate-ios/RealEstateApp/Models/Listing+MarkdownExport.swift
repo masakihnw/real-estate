@@ -235,7 +235,50 @@ extension Listing {
     }
 
     /// 他の候補物件の概要を含めた AI 相談用プロンプトを生成する（意思決定型）
-    func toAIConsultationPrompt(otherCandidates: [Listing], buyerProfile: BuyerProfile = .empty) -> String {
+    /// AI相談の質問フォーカス（相談テンプレート）
+    enum ConsultationFocus: String, CaseIterable {
+        case overall = "総合判断"
+        case risk = "リスク分析"
+        case negotiation = "価格交渉"
+        case exit = "売却出口"
+
+        var instruction: String {
+            switch self {
+            case .overall:
+                return ""
+            case .risk:
+                return """
+
+                ## 今回の相談フォーカス: リスク分析
+                総合判断に加えて、**この物件を買った場合に起こりうる最悪シナリオ**を重点的に分析してください。
+                ハザード・管理状態・修繕積立金の将来負担・流動性リスク・近隣供給リスクを順に評価し、
+                それぞれ「発生確率」「影響度」「回避/軽減策」を表で示してください。
+                """
+            case .negotiation:
+                return """
+
+                ## 今回の相談フォーカス: 価格交渉
+                総合判断に加えて、**いくらまでなら買ってよいか・どう交渉すべきか**を重点的に分析してください。
+                掲載日数・価格変動履歴・相場乖離・競合売出状況から売主の売り急ぎ度を推定し、
+                指値の目安額（強気/標準/弱気の3案)と交渉材料を具体的に提示してください。
+                """
+            case .exit:
+                return """
+
+                ## 今回の相談フォーカス: 売却出口
+                総合判断に加えて、**8〜10年後に売却する際の出口戦略**を重点的に分析してください。
+                想定売却価格レンジ・売却までの期間・買い手層・売りにくくなる要因を評価し、
+                「出口で困らないための購入時チェックポイント」を提示してください。
+                """
+            }
+        }
+    }
+
+    func toAIConsultationPrompt(
+        otherCandidates: [Listing],
+        buyerProfile: BuyerProfile = .empty,
+        focus: ConsultationFocus = .overall
+    ) -> String {
         let buildingName = name
         let addr = ssAddress ?? address ?? ""
         let primaryStation = parsedStations.first
@@ -434,6 +477,9 @@ extension Listing {
         }
 
         prompt += "10. **未確認事項・仲介確認質問** — 確認すべき情報と資料名、内覧時の質問リスト\n"
+
+        // 相談テンプレートによる質問フォーカスの上書き
+        prompt += focus.instruction
 
         return prompt
     }

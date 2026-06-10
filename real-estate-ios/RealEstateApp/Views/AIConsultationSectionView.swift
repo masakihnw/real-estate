@@ -96,6 +96,7 @@ struct AIConsultationSectionView: View {
     @State private var floorPlanImage: UIImage?
     @State private var showBuyerProfileSheet = false
     @State private var buyerProfile: BuyerProfile = .empty
+    @State private var consultationFocus: Listing.ConsultationFocus = .overall
 
     private enum CopiedType: Equatable {
         case markdown
@@ -137,6 +138,29 @@ struct AIConsultationSectionView: View {
                 .font(.caption)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
+
+            // 相談テンプレート（質問のフォーカスを選んでからAIを開く）
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(Listing.ConsultationFocus.allCases, id: \.rawValue) { focus in
+                        Button {
+                            consultationFocus = focus
+                        } label: {
+                            Text(focus.rawValue)
+                                .font(.caption2.weight(.medium))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(
+                                    Capsule().fill(consultationFocus == focus
+                                                   ? Color.accentColor.opacity(0.15)
+                                                   : Color(.systemGray6))
+                                )
+                                .foregroundStyle(consultationFocus == focus ? Color.accentColor : .secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
 
             HStack(spacing: 4) {
                 Image(systemName: "lightbulb.min")
@@ -336,7 +360,11 @@ struct AIConsultationSectionView: View {
     // MARK: - AI サービス起動
 
     private func openAIService(_ service: AIService) {
-        let prompt = listing.toAIConsultationPrompt(otherCandidates: otherCandidates, buyerProfile: buyerProfile)
+        let prompt = listing.toAIConsultationPrompt(
+            otherCandidates: otherCandidates,
+            buyerProfile: buyerProfile,
+            focus: consultationFocus
+        )
 
         UIPasteboard.general.string = prompt
 
