@@ -38,20 +38,23 @@ struct DashboardView: View {
     @State private var preferenceUpdateTask: Task<Void, Never>?
 
     var body: some View {
+        // 集計は単一パスで1度だけ行い、各セクションに渡す
+        // （以前は各 computed property が個別に全件走査していた）
+        let stats = DashboardStats(activeListings: activeListings, prefStore: BuildingPreferenceStore.shared)
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    searchOverviewSection
-                    swipePromptSection
-                    quickFiltersSection
+                    searchOverviewSection(stats)
+                    swipePromptSection(stats)
+                    quickFiltersSection(stats)
                     if preferenceProfile.isActive {
                         recommendationSection
                     }
-                    aiInsightsSection
-                    scoreDistributionSection
-                    watchlistPriceDropSection
-                    priceMoversSection
-                    areaRankingSection
+                    aiInsightsSection(stats)
+                    scoreDistributionSection(stats)
+                    watchlistPriceDropSection(stats)
+                    priceMoversSection(stats)
+                    areaRankingSection(stats)
                 }
                 .padding()
             }
@@ -62,7 +65,7 @@ struct DashboardView: View {
             .navigationDestination(item: $quickFilter) { filter in
                 DashboardFilteredListView(
                     filter: filter,
-                    listings: filteredListings(for: filter)
+                    listings: filteredListings(for: filter, stats: stats)
                 )
             }
             .onAppear {
@@ -87,7 +90,7 @@ struct DashboardView: View {
 
     // MARK: - 検索状況 (Search Overview)
 
-    private var searchOverviewSection: some View {
+    private func searchOverviewSection(_ stats: DashboardStats) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("検索状況", systemImage: "magnifyingglass")
                 .font(.headline)
@@ -100,7 +103,7 @@ struct DashboardView: View {
                 )
                 DashboardStatCard(
                     title: "本日新着",
-                    value: "\(newListingsCount)",
+                    value: "\(stats.newListings.count)",
                     color: DesignSystem.priceDownColor
                 )
                 DashboardStatCard(
@@ -114,13 +117,9 @@ struct DashboardView: View {
 
     // MARK: - Swipe Prompt
 
-    private var pendingSwipeCount: Int {
-        SwipeSessionViewModel.pendingCount(from: activeListings)
-    }
-
     @ViewBuilder
-    private var swipePromptSection: some View {
-        if pendingSwipeCount > 0 {
+    private func swipePromptSection(_ stats: DashboardStats) -> some View {
+        if stats.pendingSwipeCount > 0 {
             Button {
                 NotificationCenter.default.post(name: .didRequestSwipeSession, object: nil)
             } label: {
@@ -129,7 +128,7 @@ struct DashboardView: View {
                         .font(.title2)
                         .foregroundStyle(Color.accentColor)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("新着 \(pendingSwipeCount) 件をチェック")
+                        Text("新着 \(stats.pendingSwipeCount) 件をチェック")
                             .font(.subheadline.bold())
                             .foregroundStyle(.primary)
                         Text("スワイプで Like / Nope を仕分け")
@@ -152,16 +151,16 @@ struct DashboardView: View {
 
     // MARK: - Quick Filters
 
-    private var quickFiltersSection: some View {
+    private func quickFiltersSection(_ stats: DashboardStats) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
-                QuickFilterButton(icon: "sparkles", label: "本日の新着", count: newListingsCount) {
+                QuickFilterButton(icon: "sparkles", label: "本日の新着", count: stats.newListings.count) {
                     quickFilter = .newToday
                 }
-                QuickFilterButton(icon: "arrow.down.circle.fill", label: "値下げ物件", count: priceDecreasedCount) {
+                QuickFilterButton(icon: "arrow.down.circle.fill", label: "値下げ物件", count: stats.priceDecreased.count) {
                     quickFilter = .priceDecreased
                 }
-                QuickFilterButton(icon: "arrow.up.circle.fill", label: "値上げ物件", count: priceIncreasedCount) {
+                QuickFilterButton(icon: "arrow.up.circle.fill", label: "値上げ物件", count: stats.priceIncreased.count) {
                     quickFilter = .priceIncreased
                 }
                 QuickFilterButton(icon: "heart.fill", label: "お気に入り", count: favoriteListings.count) {
@@ -173,21 +172,9 @@ struct DashboardView: View {
 
     // MARK: - AI Insights
 
-    private var aiInsightsSection: some View {
-        let topListings = chukoListings
-            .filter { !$0.isDelisted && $0.highlightBadge != nil && $0.investmentSummary != nil && ($0.aiRecommendationScore ?? 0) >= 4 }
-            .sorted { ($0.listingScore ?? 0) > ($1.listingScore ?? 0) }
-            .reduce(into: (seen: Set<String>(), result: [Listing]())) { acc, listing in
-                let key = listing.buildingGroupKey
-                if !acc.seen.contains(key) {
-                    acc.seen.insert(key)
-                    acc.result.append(listing)
-                }
-            }
-            .result
-            .prefix(3)
-
-        let dedupCount = chukoListings.filter { !$0.parsedDedupCandidates.isEmpty }.count
+    private func aiInsightsSection(_ stats: DashboardStats) -> some View {
+        let topListings = stats.aiTopListings
+        let dedupCount = stats.dedupCount
 
         return Group {
             if !topListings.isEmpty || dedupCount > 0 {
@@ -222,14 +209,7 @@ struct DashboardView: View {
                                     HStack(spacing: 10) {
                                         // Thumbnail
                                         if let thumbURL = listing.thumbnailURL {
-                                            AsyncImage(url: thumbURL) { image in
-                                                image.resizable().scaledToFill()
-                                            } placeholder: {
-                                                RoundedRectangle(cornerRadius: 6)
-                                                    .fill(Color(.systemGray5))
-                                            }
-                                            .frame(width: 44, height: 44)
-                                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                                            TrimmedAsyncImage(url: thumbURL, width: 44, height: 44)
                                         }
 
                                         VStack(alignment: .leading, spacing: 2) {
@@ -294,12 +274,12 @@ struct DashboardView: View {
 
     // MARK: - おすすめ度の分布 (Score Distribution)
 
-    private var scoreDistributionSection: some View {
+    private func scoreDistributionSection(_ stats: DashboardStats) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("おすすめ度の分布", systemImage: "chart.bar.fill")
                 .font(.headline)
 
-            let grades = scoreGrades
+            let grades = stats.scoreGrades
             VStack(spacing: 8) {
                 ScoreDistributionBar(grade: "S", count: grades.s, maxCount: grades.maxCount)
                 ScoreDistributionBar(grade: "A", count: grades.a, maxCount: grades.maxCount)
@@ -314,8 +294,8 @@ struct DashboardView: View {
 
     // MARK: - ウォッチリスト値下げ (Watchlist Price Drops)
 
-    private var watchlistPriceDropSection: some View {
-        let drops = watchlistPriceDropListings
+    private func watchlistPriceDropSection(_ stats: DashboardStats) -> some View {
+        let drops = stats.watchlistDrops
         return Group {
             if !drops.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
@@ -348,13 +328,13 @@ struct DashboardView: View {
 
     // MARK: - 価格変動 (Price Movers)
 
-    private var priceMoversSection: some View {
+    private func priceMoversSection(_ stats: DashboardStats) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("価格変動", systemImage: "arrow.up.arrow.down")
                 .font(.headline)
 
-            let decreased = priceDecreasedListings.prefix(3)
-            let increased = priceIncreasedListings.prefix(3)
+            let decreased = stats.priceDecreased.prefix(3)
+            let increased = stats.priceIncreased.prefix(3)
 
             if decreased.isEmpty && increased.isEmpty {
                 Text("価格変動のある物件はありません")
@@ -394,12 +374,12 @@ struct DashboardView: View {
 
     // MARK: - エリアランキング (Area Ranking)
 
-    private var areaRankingSection: some View {
+    private func areaRankingSection(_ stats: DashboardStats) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("エリアランキング", systemImage: "chart.bar.xaxis")
                 .font(.headline)
 
-            let rankings = wardScoreRankings
+            let rankings = stats.wardRankings
             if rankings.isEmpty {
                 Text("データがありません")
                     .font(.caption)
@@ -481,14 +461,7 @@ struct DashboardView: View {
                     Button { selectedListing = rec.listing } label: {
                         HStack(spacing: 10) {
                             if let thumbURL = rec.listing.thumbnailURL {
-                                AsyncImage(url: thumbURL) { image in
-                                    image.resizable().scaledToFill()
-                                } placeholder: {
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .fill(Color(.systemGray5))
-                                }
-                                .frame(width: 44, height: 44)
-                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                                TrimmedAsyncImage(url: thumbURL, width: 44, height: 44)
                             }
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(rec.listing.nameWithFloor)
@@ -586,52 +559,15 @@ struct DashboardView: View {
 
     // MARK: - Computed Data
 
-    private var chukoListings: [Listing] {
-        activeListings.filter { $0.propertyType == "chuko" }
-    }
 
-    private var newListingsCount: Int {
-        Self.deduplicatedNewListings(
-            activeListings.filter(\.isRecentlyAdded),
-            prefStore: BuildingPreferenceStore.shared
-        ).count
-    }
-
-    private var priceDecreasedCount: Int {
-        activeListings.filter { ($0.latestPriceChange ?? 0) < 0 }.count
-    }
-
-    private var priceIncreasedCount: Int {
-        activeListings.filter { ($0.latestPriceChange ?? 0) > 0 }.count
-    }
-
-    private var watchlistPriceDropListings: [Listing] {
-        WatchlistFilter.priceDrops(in: activeListings)
-    }
-
-    private var priceDecreasedListings: [Listing] {
-        activeListings
-            .filter { ($0.latestPriceChange ?? 0) < 0 }
-            .sorted { abs($0.latestPriceChange ?? 0) > abs($1.latestPriceChange ?? 0) }
-    }
-
-    private var priceIncreasedListings: [Listing] {
-        activeListings
-            .filter { ($0.latestPriceChange ?? 0) > 0 }
-            .sorted { abs($0.latestPriceChange ?? 0) > abs($1.latestPriceChange ?? 0) }
-    }
-
-    private func filteredListings(for filter: DashboardQuickFilter) -> [Listing] {
+    private func filteredListings(for filter: DashboardQuickFilter, stats: DashboardStats) -> [Listing] {
         switch filter {
         case .newToday:
-            return Self.deduplicatedNewListings(
-                activeListings.filter(\.isRecentlyAdded),
-                prefStore: BuildingPreferenceStore.shared
-            )
+            return stats.newListings
         case .priceDecreased:
-            return priceDecreasedListings
+            return stats.priceDecreased
         case .priceIncreased:
-            return priceIncreasedListings
+            return stats.priceIncreased
         case .favorites:
             return favoriteListings
         }
@@ -650,43 +586,6 @@ struct DashboardView: View {
             }
     }
 
-    private var scoreGrades: (s: Int, a: Int, b: Int, c: Int, d: Int, maxCount: Int) {
-        var s = 0, a = 0, b = 0, c = 0, d = 0
-        let thresholds = DesignSystem.gradeThresholds
-        for listing in activeListings {
-            guard let score = listing.listingScore else { continue }
-            switch thresholds.grade(for: score) {
-            case "S": s += 1
-            case "A": a += 1
-            case "B": b += 1
-            case "C": c += 1
-            default: d += 1
-            }
-        }
-        let maxCount = max(max(s, a, b, c, d), 1)
-        return (s, a, b, c, d, maxCount)
-    }
-
-    struct WardScoreRanking: Hashable {
-        let ward: String
-        let avgScore: Int
-        let count: Int
-    }
-
-    private var wardScoreRankings: [WardScoreRanking] {
-        var wardData: [String: (totalScore: Int, count: Int)] = [:]
-        for listing in activeListings {
-            guard let score = listing.listingScore else { continue }
-            let ward = listing.wardName
-            guard !ward.isEmpty else { continue }
-            let existing = wardData[ward] ?? (0, 0)
-            wardData[ward] = (existing.totalScore + score, existing.count + 1)
-        }
-        return wardData.map { (ward, data) -> WardScoreRanking in
-            WardScoreRanking(ward: ward, avgScore: data.totalScore / max(data.count, 1), count: data.count)
-        }
-        .sorted { $0.avgScore > $1.avgScore }
-    }
 
     private func gradeForScore(_ score: Int) -> String {
         DesignSystem.gradeThresholds.grade(for: score)
@@ -838,14 +737,7 @@ private struct WatchlistPriceDropRow: View {
         Button(action: action) {
             HStack(spacing: 10) {
                 if let thumbURL = listing.thumbnailURL {
-                    AsyncImage(url: thumbURL) { image in
-                        image.resizable().scaledToFill()
-                    } placeholder: {
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(Color(.systemGray5))
-                    }
-                    .frame(width: 48, height: 48)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    TrimmedAsyncImage(url: thumbURL, width: 48, height: 48)
                 }
 
                 VStack(alignment: .leading, spacing: 3) {
