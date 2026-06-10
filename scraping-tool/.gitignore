@@ -40,3 +40,6 @@ data/*_html_cache/
 
 # enrichment 中間成果物（パイプラインが再生成可能）
 enriched-chuko-sumai/
+
+# 過去レポートの死蔵防止（履歴は Git に残る。old/ ディレクトリは作らない）
+results/**/old/
