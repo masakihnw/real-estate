@@ -98,6 +98,18 @@ def _batch_upsert(client, table: str, rows: list[dict], on_conflict: str) -> int
     return total
 
 
+def _delete_duplicate_listing(client, listing_id: int) -> None:
+    """重複物件を listings への単一 DELETE で削除する。
+
+    子テーブル（listing_sources / enrichments / price_history / listing_events）は
+    すべて ON DELETE CASCADE（migration 001）のため、1リクエスト = 1トランザクションで
+    原子的に削除される。子テーブルを個別に DELETE すると途中失敗時に
+    孤児レコードが残るため、必ずこの関数を使うこと。
+    失敗時は例外を伝播させる（部分削除が発生しないため安全に再試行できる）。
+    """
+    client.table("listings").delete(returning="minimal").eq("id", listing_id).execute()
+
+
 def _sync_source_listings(client, listings: list[dict], source: str, property_type: str) -> dict:
     """1ソース分の物件リストを Supabase に同期する。"""
     from report_utils import identity_key_str, normalize_listing_name, _normalize_address_for_key
@@ -219,15 +231,11 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         all_db_listings.pop(best_key, None)
         all_db_listings[ik] = (best_id, True)
 
-        # 残りの重複レコードを削除
+        # 残りの重複レコードを削除（CASCADE で子テーブルごと原子的に削除される）
         for old_key, old_id, _ in candidates[1:]:
             if old_id == best_id:
                 continue
-            client.table("listing_sources").delete(returning="minimal").eq("listing_id", old_id).execute()
-            client.table("enrichments").delete(returning="minimal").eq("listing_id", old_id).execute()
-            client.table("price_history").delete(returning="minimal").eq("listing_id", old_id).execute()
-            client.table("listing_events").delete(returning="minimal").eq("listing_id", old_id).execute()
-            client.table("listings").delete(returning="minimal").eq("id", old_id).execute()
+            _delete_duplicate_listing(client, old_id)
             _deleted_ids.add(old_id)
             existing_listings.pop(old_key, None)
             all_db_listings.pop(old_key, None)

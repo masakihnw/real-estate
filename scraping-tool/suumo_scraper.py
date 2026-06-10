@@ -225,12 +225,20 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[SuumoListing]:
 
     # 中古マンション一覧: div.property_unit-content が1物件ずつ
     primary_blocks = soup.select("div.property_unit-content")
+    unit_parse_failures = 0
     for bloc in primary_blocks:
         row = _parse_suumo_unit(bloc, base_url)
-        if row and row.price_man is not None:
+        if row is None:
+            unit_parse_failures += 1
+        elif row.price_man is not None:
             items.append(row)
     if primary_blocks:
         used_selector = "property_unit-content"
+    if unit_parse_failures:
+        logger.warning(
+            "SUUMO: 一覧パースで %d/%d 件が例外失敗 — HTML構造変更の可能性",
+            unit_parse_failures, len(primary_blocks),
+        )
 
     # フォールバック: cassetteitem 系
     if not items:
@@ -315,7 +323,8 @@ def _parse_suumo_unit(bloc, base_url: str) -> Optional[SuumoListing]:
             floor_structure=None,
             ownership=ownership,
         )
-    except Exception:
+    except Exception as e:
+        logger.debug("SUUMO: unit パース失敗: %s", e)
         return None
 
 
@@ -382,7 +391,8 @@ def _parse_cassette(div, base_url: str) -> Optional[SuumoListing]:
             floor_structure=None,
             ownership=None,
         )
-    except Exception:
+    except Exception as e:
+        logger.debug("SUUMO: cassette パース失敗: %s", e)
         return None
 
 
