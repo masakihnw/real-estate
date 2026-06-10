@@ -147,6 +147,10 @@ struct ListingDTO: Codable {
     // 画像有無フラグ（listings_feed_light のみ。enrichments の generated column）
     var has_floor_plan_images: Bool?
     var has_property_images: Bool?
+
+    // カードサムネのフォールバックURL（listings_feed_light のみ。
+    // best_thumbnail_url 未設定の間に外観優先で選定された画像URL）
+    var first_image_url: String?
 }
 
 extension Listing {
@@ -444,6 +448,7 @@ extension Listing {
             investmentSummary: dto.investment_summary,
             highlightBadge: dto.highlight_badge,
             bestThumbnailURL: dto.best_thumbnail_url,
+            firstImageURL: dto.first_image_url,
             extractedFeaturesJSON: dto.extracted_features,
             imageCategoriesJSON: dto.image_categories,
             dedupConfidence: dto.dedup_confidence,
