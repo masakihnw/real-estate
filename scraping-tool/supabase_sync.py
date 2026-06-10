@@ -655,32 +655,10 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
     count = 0
     batch_map: dict[int, dict] = {}
 
-    # identity_key → listing_id のマッピングをバッチ取得
-    ik_to_id: dict[str, int] = {}
-    all_iks = list({identity_key_str(item) for item in listings if identity_key_str(item)})
-    # identity_key は日本語を含むためURL-encode後1件150B超 → 100件で20KB超えPostgREST制限
-    for i in range(0, len(all_iks), 20):
-        chunk = all_iks[i:i + 20]
-        try:
-            resp = (client.table("listings")
-                    .select("id, identity_key")
-                    .in_("identity_key", chunk)
-                    .execute())
-            if resp.data:
-                for row in resp.data:
-                    ik_to_id[row["identity_key"]] = row["id"]
-        except Exception as e:
-            logger.error("[supabase] listing_id 解決エラー (chunk %d): %s", i, e)
-            for ik in chunk:
-                try:
-                    resp = (client.table("listings")
-                            .select("id, identity_key")
-                            .eq("identity_key", ik)
-                            .execute())
-                    if resp.data:
-                        ik_to_id[resp.data[0]["identity_key"]] = resp.data[0]["id"]
-                except Exception as row_err:
-                    logger.debug("[supabase] per-row fallback 失敗 (ik=%s): %s", ik[:40], row_err)
+    # identity_key → listing_id のマッピングをバッチ取得（共通実装）
+    from supabase_client import resolve_listing_ids
+    all_iks = [identity_key_str(item) for item in listings]
+    ik_to_id = resolve_listing_ids(client, all_iks)
 
     for item in listings:
         ik = identity_key_str(item)
