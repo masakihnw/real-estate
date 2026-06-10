@@ -97,7 +97,8 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-      # 前回データ (レポート差分用)
+      # 前回データ (レポート差分用) + スクレイパー健全性メトリクス
+      # (finalize ジョブが results/ に展開し、slack_notify がアラート判定に使う)
       - name: Upload previous data
         uses: actions/upload-artifact@v4
         with:
@@ -105,6 +106,7 @@ jobs:
           path: |
             scraping-tool/results/latest.json
             scraping-tool/results/latest_shinchiku.json
+            scraping-tool/results/scraper_metrics.json
           retention-days: 1
           if-no-files-found: warn
 
