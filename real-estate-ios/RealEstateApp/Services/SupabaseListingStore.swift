@@ -497,21 +497,30 @@ final class SupabaseListingStore {
 
         let decoder = JSONDecoder()
         var dtos: [ListingDTO] = []
+        var failureCount = 0
+        var firstError: Error?
         for (i, row) in jsonArray.enumerated() {
             do {
                 let rowData = try JSONSerialization.data(withJSONObject: row)
                 let dto = try decoder.decode(ListingDTO.self, from: rowData)
                 dtos.append(dto)
             } catch {
-                if dtos.isEmpty && i < 3 {
+                failureCount += 1
+                if firstError == nil { firstError = error }
+                if failureCount <= 3 {
                     let name = (row["name"] as? String) ?? "unknown"
                     logger.error("DTO decode失敗 row[\(i)] \(name, privacy: .public): \(String(describing: error), privacy: .public)")
                 }
             }
         }
-        if dtos.isEmpty && !jsonArray.isEmpty {
-            let sampleRow = try JSONSerialization.data(withJSONObject: jsonArray[0])
-            return [try decoder.decode(ListingDTO.self, from: sampleRow)]
+        if failureCount > 0 {
+            logger.warning("DTO decode: \(failureCount)/\(jsonArray.count) 行が失敗")
+        }
+        // スキーマドリフト防御: 半数超が decode 失敗した場合は同期を中断する。
+        // 黙って少数の成功分だけを返すと、フルフェッチ時の削除安全ガード
+        // （取得件数 >= 既存の10%）をすり抜けてローカル物件が大量削除される恐れがある
+        if failureCount * 2 > jsonArray.count, let firstError {
+            throw firstError
         }
         return dtos
     }

@@ -74,6 +74,7 @@
 		7C2DC3F1723DF5B611734921 /* TransactionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB8C0D23BB1A1920E3B4EA9 /* TransactionTabView.swift */; };
 		7C9EDA58DB888F9E89FC90A5 /* MortgageTaxBenefitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396C1453586517654E863287 /* MortgageTaxBenefitView.swift */; };
 		7CCCDC03AC2811D2C49DD09B /* PopulationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A050CCBF6353433066A86B6E /* PopulationSectionView.swift */; };
+		7DFCFFF3217312A84F61D9EE /* WatchlistFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D67A9EA849D127C80B00F383 /* WatchlistFilter.swift */; };
 		7E0A1949C419EF89EFE1FA1B /* RealEstateWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE01C15EC3F109E628A5EF7 /* RealEstateWidget.swift */; };
 		7EED137DF88A393F9D4E0348 /* NameWithFloorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30000A4F8562645B8C703A22 /* NameWithFloorTests.swift */; };
 		812375EA33DA05E68F7990E7 /* PhotoStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BAFAA3D5A5C24F8474E807 /* PhotoStorageService.swift */; };
@@ -259,6 +260,7 @@
 		CE1D0B9DA474AAA3422B991A /* SwipeSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeSessionViewModel.swift; sourceTree = "<group>"; };
 		D3C0C94AE1FB88F04B9D301B /* ListingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingFilter.swift; sourceTree = "<group>"; };
 		D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogService.swift; sourceTree = "<group>"; };
+		D67A9EA849D127C80B00F383 /* WatchlistFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistFilter.swift; sourceTree = "<group>"; };
 		D771B189D37C2ADF6ADBF6BC /* ExtractedFeaturesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractedFeaturesSection.swift; sourceTree = "<group>"; };
 		E077CAC08921E24541D9707D /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 			children = (
 				FD48CB4F9C32BEAC827C54E2 /* ObjCExceptionCatcher.h */,
 				B5945F9FF2AF3675E525F384 /* ObjCExceptionCatcher.m */,
+				D67A9EA849D127C80B00F383 /* WatchlistFilter.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -733,6 +736,7 @@
 				D894CEAB397F8943B10687D6 /* TrimmedAsyncImage.swift in Sources */,
 				D8C9244D891E76AED4B99536 /* UserAnnotationStore.swift in Sources */,
 				D02597AD698F8E60CF1F11D4 /* WalkthroughView.swift in Sources */,
+				7DFCFFF3217312A84F61D9EE /* WatchlistFilter.swift in Sources */,
 				B60E9F83EC85E4223D691998 /* WidgetDataProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
