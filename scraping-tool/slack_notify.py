@@ -863,11 +863,14 @@ def main() -> None:
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
 
-    # pending な AI ダイジェストがあれば、この回で統合送信する（1日1回、最初の GHA が拾う）
-    has_pending_digest = False
+    # pending な AI ダイジェストがあれば、この回で統合送信する（1日1回、最初の GHA が拾う）。
+    # ここで一度だけ取得し、後段の本文組み立てでも同じ結果を再利用する
+    # （二重取得は冗長なうえ、並行ランナーとの競合窓を広げる）
+    digest_text = ""
+    digest_draft_id = None
     if supabase_client:
-        digest_preview, _ = _pop_morning_digest(supabase_client)
-        has_pending_digest = bool(digest_preview)
+        digest_text, digest_draft_id = _pop_morning_digest(supabase_client)
+    has_pending_digest = bool(digest_text)
 
     has_content = diff_new_a or diff_removed_a or has_pending_digest or watchlist_drops
 
@@ -901,12 +904,9 @@ def main() -> None:
     if watchlist_drops:
         message = message + "\n" + build_watchlist_price_drop_section(watchlist_drops)
 
-    # pending な AI ダイジェストを本文末尾に統合（Routine 2 が1日1回生成）
-    digest_draft_id = None
-    if supabase_client:
-        digest_text, digest_draft_id = _pop_morning_digest(supabase_client)
-        if digest_text:
-            message = message + "\n\n" + digest_text
+    # pending な AI ダイジェストを本文末尾に統合（Routine 2 が1日1回生成。上で取得済み）
+    if digest_text:
+        message = message + "\n\n" + digest_text
 
     if send_slack_message_chunked_with_retry(webhook_url, message):
         logger.info("Slack通知を送信しました")

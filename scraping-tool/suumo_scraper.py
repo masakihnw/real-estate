@@ -995,7 +995,7 @@ def _scrape_ward(
                     )
                 break
             logger.warning(
-                "SUUMO: sc_%s ページ%d パース0件 (HTML: %dB, 連続: %d/%d) — botブロック/構造変更の可能性、再試行します",
+                "SUUMO: sc_%s ページ%d パース0件 (HTML: %dB, 連続: %d/%d) — botブロック/構造変更の可能性、次ページへ進みます",
                 ward_roman, p, len(html), consecutive_empty_parses, SUUMO_EMPTY_PARSE_TOLERANCE,
             )
             time.sleep(SUUMO_EMPTY_PARSE_BACKOFF_SEC)
