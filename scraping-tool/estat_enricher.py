@@ -29,6 +29,7 @@ data/estat_population.json + data/estat_aging.json を参照し、
 
 import argparse
 import json
+from functools import lru_cache
 import os
 import re
 import sys
@@ -48,8 +49,14 @@ POPULATION_CACHE = os.path.join(DATA_DIR, "estat_population.json")
 AGING_CACHE = os.path.join(DATA_DIR, "estat_aging.json")
 
 
+@lru_cache(maxsize=8)
 def load_json_file(path: str) -> Optional[dict]:
-    """JSON ファイルを読み込む。なければ None。"""
+    """JSON ファイルを読み込む（プロセス内キャッシュ付き。なければ None）。
+
+    enricher が呼ばれるたびに数MB級のキャッシュ JSON をディスクから
+    再ロードしないための lru_cache。パイプラインは1プロセス実行で
+    ファイルは実行中不変のため安全（scraper_common.load_station_passengers と同パターン）。
+    """
     if not os.path.exists(path):
         return None
     with open(path, "r", encoding="utf-8") as f:

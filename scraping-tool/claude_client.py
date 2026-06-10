@@ -13,6 +13,7 @@ import json
 import os
 import re
 import sqlite3
+import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -118,15 +119,18 @@ class ClaudeClient:
 
     def _init_cache_db(self) -> None:
         Path(self._cache_db_path).parent.mkdir(parents=True, exist_ok=True)
-        with sqlite3.connect(self._cache_db_path) as conn:
-            conn.execute("PRAGMA journal_mode=WAL")
-            conn.executescript(_CACHE_SCHEMA)
+        # 接続を使い回す（バッチ書き込み N 件で N 回の open/close を避ける）。
+        # Batch ポーリングはスレッドをまたぐ可能性があるため check_same_thread=False + Lock で保護
+        self._cache_lock = threading.Lock()
+        self._cache_conn = sqlite3.connect(self._cache_db_path, check_same_thread=False)
+        self._cache_conn.execute("PRAGMA journal_mode=WAL")
+        self._cache_conn.executescript(_CACHE_SCHEMA)
 
     def get_cached(self, module: str, input_data: Any) -> Optional[dict]:
         """キャッシュからの結果取得。"""
         key = self._cache_key(module, input_data)
-        with sqlite3.connect(self._cache_db_path) as conn:
-            row = conn.execute(
+        with self._cache_lock:
+            row = self._cache_conn.execute(
                 "SELECT result_json FROM claude_cache WHERE cache_key = ?", (key,)
             ).fetchone()
         if row:
@@ -139,8 +143,8 @@ class ClaudeClient:
     ) -> None:
         """結果をキャッシュに保存。"""
         key = self._cache_key(module, input_data)
-        with sqlite3.connect(self._cache_db_path) as conn:
-            conn.execute(
+        with self._cache_lock, self._cache_conn:
+            self._cache_conn.execute(
                 """INSERT OR REPLACE INTO claude_cache
                    (cache_key, module, result_json, model, input_tokens, output_tokens)
                    VALUES (?, ?, ?, ?, ?, ?)""",

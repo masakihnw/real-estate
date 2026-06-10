@@ -13,6 +13,7 @@ import logging
 import math
 import os
 import sys
+from dataclasses import dataclass, field
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -96,6 +97,212 @@ def _batch_upsert(client, table: str, rows: list[dict], on_conflict: str) -> int
                                  table, row_err,
                                  list(row.keys())[:5])
     return total
+
+
+def _group_rows_by_keys(rows: list[dict]) -> list[list[dict]]:
+    """行をキー集合ごとにグループ化する。
+
+    PostgREST のバッチ insert/upsert は1リクエスト内の全行が同じキー集合で
+    ある必要がある（None キーを除去した行は行ごとにキーが異なりうる）。
+    """
+    groups: dict[tuple, list[dict]] = {}
+    for row in rows:
+        groups.setdefault(tuple(sorted(row.keys())), []).append(row)
+    return list(groups.values())
+
+
+def _grouped_batch_upsert(client, table: str, rows: list[dict], on_conflict: str) -> int:
+    """キー集合ごとにグループ化してバッチ upsert する。失敗グループは1行ずつリトライ。"""
+    total = 0
+    for group in _group_rows_by_keys(rows):
+        for i in range(0, len(group), BATCH_SIZE):
+            batch = group[i:i + BATCH_SIZE]
+            try:
+                (client.table(table)
+                 .upsert(batch, on_conflict=on_conflict, returning="minimal")
+                 .execute())
+                total += len(batch)
+            except Exception as e:
+                logger.warning("[supabase] バッチ upsert 失敗 (%s, %d行): %s — 1行ずつリトライ",
+                               table, len(batch), e)
+                for row in batch:
+                    try:
+                        (client.table(table)
+                         .upsert(row, on_conflict=on_conflict, returning="minimal")
+                         .execute())
+                        total += 1
+                    except Exception as row_err:
+                        logger.error("[supabase] 行 upsert 失敗 (%s): %s", table, row_err)
+    return total
+
+
+def _grouped_batch_insert(client, table: str, rows: list[dict]) -> int:
+    """キー集合ごとにグループ化してバッチ insert する。失敗グループは1行ずつリトライ。"""
+    total = 0
+    for group in _group_rows_by_keys(rows):
+        for i in range(0, len(group), BATCH_SIZE):
+            batch = group[i:i + BATCH_SIZE]
+            try:
+                client.table(table).insert(batch, returning="minimal").execute()
+                total += len(batch)
+            except Exception as e:
+                logger.warning("[supabase] バッチ insert 失敗 (%s, %d行): %s — 1行ずつリトライ",
+                               table, len(batch), e)
+                for row in batch:
+                    try:
+                        client.table(table).insert(row, returning="minimal").execute()
+                        total += 1
+                    except Exception as row_err:
+                        logger.error("[supabase] 行 insert 失敗 (%s): %s", table, row_err)
+    return total
+
+
+@dataclass
+class SourceSyncPlan:
+    """_plan_source_sync の出力。バッチ書き込みする行と件数集計。"""
+    source_rows: list[dict] = field(default_factory=list)
+    price_history_rows: list[dict] = field(default_factory=list)
+    event_rows: list[dict] = field(default_factory=list)
+    summary: dict = field(default_factory=lambda: {
+        "new": 0, "updated": 0, "removed": 0, "unchanged": 0, "reappeared": 0,
+    })
+
+
+def _plan_source_sync(
+    items: list[tuple[dict, str, int]],
+    existing_listings: dict[str, int],
+    existing_sources: dict[int, dict],
+    source: str,
+) -> SourceSyncPlan:
+    """同期の計画フェーズ（純粋関数・ネットワーク I/O なし）。
+
+    items: (物件dict, identity_key, listing_id) のリスト。
+    旧実装は物件1件ごとに upsert + SELECT + insert を逐次実行しており
+    N 件で最大 4N 回の HTTP コールが発生していた。計画と実行を分離し、
+    実行側はテーブルごとのバッチ書き込みにする。
+    """
+    plan = SourceSyncPlan()
+    now = _now_iso()
+    seen_source_keys: set[tuple[int, str]] = set()
+
+    for item, ik, listing_id in items:
+        # 同一バッチ内の同一 (listing_id, source) はバッチ upsert がエラーに
+        # なるため最初の1件のみ処理する
+        if (listing_id, source) in seen_source_keys:
+            continue
+        seen_source_keys.add((listing_id, source))
+
+        source_row = {
+            "listing_id": listing_id,
+            "source": source,
+            "url": item.get("url", ""),
+            "price_man": item.get("price_man"),
+            "management_fee": item.get("management_fee"),
+            "repair_reserve_fund": item.get("repair_reserve_fund"),
+            "listing_agent": item.get("listing_agent"),
+            "is_motodzuke": item.get("is_motodzuke"),
+            "price_max_man": item.get("price_max_man"),
+            "last_seen_at": now,
+            "is_active": True,
+            "consecutive_misses": 0,
+        }
+        source_row = {k: v for k, v in _sanitize_value(source_row).items() if v is not None}
+        plan.source_rows.append(source_row)
+
+        existing_src = existing_sources.get(listing_id)
+        new_price = item.get("price_man")
+        price_changed = False
+        if existing_src and existing_src.get("is_active") and new_price is not None:
+            old_price = existing_src.get("price_man")
+            if old_price is not None and old_price != new_price:
+                plan.price_history_rows.append({
+                    "listing_id": listing_id, "source": source, "price_man": new_price,
+                })
+                plan.event_rows.append({
+                    "listing_id": listing_id, "source": source,
+                    "event_type": "price_changed",
+                    "old_value": str(old_price), "new_value": str(new_price),
+                })
+                plan.summary["updated"] += 1
+                price_changed = True
+
+        if price_changed:
+            continue
+        if ik not in existing_listings:
+            if existing_src and not existing_src.get("is_active"):
+                plan.event_rows.append({
+                    "listing_id": listing_id, "source": source, "event_type": "reappeared",
+                })
+                plan.summary["reappeared"] += 1
+            else:
+                plan.event_rows.append({
+                    "listing_id": listing_id, "source": source, "event_type": "appeared",
+                })
+                plan.summary["new"] += 1
+            if new_price is not None:
+                plan.price_history_rows.append({
+                    "listing_id": listing_id, "source": source, "price_man": new_price,
+                })
+        elif listing_id not in existing_sources:
+            plan.event_rows.append({
+                "listing_id": listing_id, "source": source, "event_type": "appeared",
+            })
+            plan.summary["new"] += 1
+            if new_price is not None:
+                plan.price_history_rows.append({
+                    "listing_id": listing_id, "source": source, "price_man": new_price,
+                })
+        else:
+            plan.summary["unchanged"] += 1
+
+    return plan
+
+
+@dataclass
+class GracePeriodPlan:
+    """_plan_grace_period の出力。掲載終了処理のバッチ計画。"""
+    deactivate_source_ids: list[int] = field(default_factory=list)
+    deactivate_listing_candidates: list[int] = field(default_factory=list)
+    # consecutive_misses の新しい値 → 対象 listing_sources.id のリスト
+    miss_increment_groups: dict[int, list[int]] = field(default_factory=dict)
+    event_rows: list[dict] = field(default_factory=list)
+    removed_count: int = 0
+    grace_pending: int = 0
+
+
+def _plan_grace_period(
+    existing_listings: dict[str, int],
+    seen_identity_keys: set[str],
+    existing_sources: dict[int, dict],
+    grace_threshold: int,
+    source: str,
+) -> GracePeriodPlan:
+    """掲載終了判定の計画フェーズ（純粋関数）。
+
+    旧実装は欠落物件 K 件ごとに最大4回の HTTP コール（update + count +
+    update + insert）を逐次実行していた。同じ値の update はまとめて
+    `.in_()` で1回にできるため、計画と実行を分離する。
+    """
+    plan = GracePeriodPlan()
+    for ik, listing_id in existing_listings.items():
+        if ik in seen_identity_keys:
+            continue
+        src_row = existing_sources.get(listing_id)
+        if not src_row or not src_row.get("is_active"):
+            continue
+
+        new_misses = (src_row.get("consecutive_misses") or 0) + 1
+        if new_misses >= grace_threshold:
+            plan.deactivate_source_ids.append(src_row["id"])
+            plan.deactivate_listing_candidates.append(listing_id)
+            plan.event_rows.append({
+                "listing_id": listing_id, "source": source, "event_type": "removed",
+            })
+            plan.removed_count += 1
+        else:
+            plan.miss_increment_groups.setdefault(new_misses, []).append(src_row["id"])
+            plan.grace_pending += 1
+    return plan
 
 
 def _delete_duplicate_listing(client, listing_id: int) -> None:
@@ -242,7 +449,9 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
 
         return ik
 
-    # 物件を1件ずつ処理
+    # --- フェーズ1: 行構築（identity_key 解決はフォールバック時のみネットワーク）---
+    resolved_items: list[tuple[dict, str]] = []
+    listing_rows_by_ik: dict[str, dict] = {}  # バッチ upsert は同一キー重複不可のため ik ごとに1行
     for item in listings:
         if item.get("price_man") is None:
             logger.debug("price_man=None のため除外: source=%s url=%s",
@@ -305,150 +514,113 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             for k, v in _sanitize_value(listing_row).items()
             if v is not None or k in REAL_COLUMNS
         }
+        listing_rows_by_ik[ik] = listing_row
+        resolved_items.append((item, ik))
 
-        # listings テーブルに upsert（レスポンスなし）+ 別クエリで id 取得
-        (client.table("listings")
-         .upsert(listing_row, on_conflict="identity_key", returning="minimal")
-         .execute())
-        id_resp = (client.table("listings")
-                   .select("id")
-                   .eq("identity_key", ik)
-                   .execute())
-        if not id_resp.data:
-            continue
-        listing_id = id_resp.data[0]["id"]
+    # --- フェーズ2: listings 一括 upsert（representation で id を直接取得）---
+    # 旧実装は1件ごとに upsert + SELECT（2N リクエスト）だった。
+    # returning="representation" なら upsert レスポンスから id が取れる
+    ik_to_id: dict[str, int] = {}
+    for group in _group_rows_by_keys(list(listing_rows_by_ik.values())):
+        for i in range(0, len(group), BATCH_SIZE):
+            batch = group[i:i + BATCH_SIZE]
+            try:
+                resp = (client.table("listings")
+                        .upsert(batch, on_conflict="identity_key", returning="representation")
+                        .execute())
+                for r in (resp.data or []):
+                    ik_to_id[r["identity_key"]] = r["id"]
+            except Exception as e:
+                logger.warning("[supabase] listings バッチ upsert 失敗 (%d行): %s — 1行ずつリトライ",
+                               len(batch), e)
+                for row in batch:
+                    try:
+                        resp = (client.table("listings")
+                                .upsert(row, on_conflict="identity_key", returning="representation")
+                                .execute())
+                        for r in (resp.data or []):
+                            ik_to_id[r["identity_key"]] = r["id"]
+                    except Exception as row_err:
+                        logger.error("[supabase] listings 行 upsert 失敗 (ik=%s): %s",
+                                     row.get("identity_key"), row_err)
 
-        # listing_sources テーブルに upsert
-        source_row = {
-            "listing_id": listing_id,
-            "source": source,
-            "url": item.get("url", ""),
-            "price_man": item.get("price_man"),
-            "management_fee": item.get("management_fee"),
-            "repair_reserve_fund": item.get("repair_reserve_fund"),
-            "listing_agent": item.get("listing_agent"),
-            "is_motodzuke": item.get("is_motodzuke"),
-            "price_max_man": item.get("price_max_man"),
-            "last_seen_at": _now_iso(),
-            "is_active": True,
-            "consecutive_misses": 0,
-        }
-        source_row = {k: v for k, v in _sanitize_value(source_row).items() if v is not None}
+    # representation で id が返らなかった分の防御的フォールバック
+    missing_iks = [ik for ik in listing_rows_by_ik if ik not in ik_to_id]
+    for i in range(0, len(missing_iks), 100):
+        batch_iks = missing_iks[i:i + 100]
+        resp = (client.table("listings")
+                .select("id, identity_key")
+                .in_("identity_key", batch_iks)
+                .execute())
+        for r in (resp.data or []):
+            ik_to_id[r["identity_key"]] = r["id"]
 
-        # 価格変動検出
-        existing_src = existing_sources.get(listing_id)
-        new_price = item.get("price_man")
-        price_changed = False
-        if existing_src and existing_src.get("is_active") and new_price is not None:
-            old_price = existing_src.get("price_man")
-            if old_price is not None and old_price != new_price:
-                client.table("price_history").insert({
-                    "listing_id": listing_id,
-                    "source": source,
-                    "price_man": new_price,
-                }, returning="minimal").execute()
-                client.table("listing_events").insert({
-                    "listing_id": listing_id,
-                    "source": source,
-                    "event_type": "price_changed",
-                    "old_value": str(old_price),
-                    "new_value": str(new_price),
-                }, returning="minimal").execute()
-                summary["updated"] += 1
-                price_changed = True
+    # --- フェーズ3: 計画（純粋関数）---
+    planned_items = [(item, ik, ik_to_id[ik]) for item, ik in resolved_items if ik in ik_to_id]
+    skipped = len(resolved_items) - len(planned_items)
+    if skipped:
+        logger.warning("[supabase] id 解決できず %d 件をスキップ", skipped)
+    plan = _plan_source_sync(planned_items, existing_listings, existing_sources, source)
+    for key in summary:
+        summary[key] += plan.summary[key]
 
-        # source upsert
-        (client.table("listing_sources")
-         .upsert(source_row, on_conflict="listing_id,source",
-                 returning="minimal")
-         .execute())
+    # --- フェーズ4: バッチ書き込み ---
+    _grouped_batch_upsert(client, "listing_sources", plan.source_rows,
+                          on_conflict="listing_id,source")
+    _grouped_batch_insert(client, "price_history", plan.price_history_rows)
+    _grouped_batch_insert(client, "listing_events", plan.event_rows)
 
-        if price_changed:
-            pass
-        elif ik not in existing_listings:
-            if existing_src and not existing_src.get("is_active"):
-                client.table("listing_events").insert({
-                    "listing_id": listing_id,
-                    "source": source,
-                    "event_type": "reappeared",
-                }, returning="minimal").execute()
-                summary["reappeared"] += 1
-            else:
-                client.table("listing_events").insert({
-                    "listing_id": listing_id,
-                    "source": source,
-                    "event_type": "appeared",
-                }, returning="minimal").execute()
-                summary["new"] += 1
-            if new_price is not None:
-                client.table("price_history").insert({
-                    "listing_id": listing_id,
-                    "source": source,
-                    "price_man": new_price,
-                }, returning="minimal").execute()
-        elif listing_id not in existing_sources:
-            client.table("listing_events").insert({
-                "listing_id": listing_id,
-                "source": source,
-                "event_type": "appeared",
-            }, returning="minimal").execute()
-            summary["new"] += 1
-            if new_price is not None:
-                client.table("price_history").insert({
-                    "listing_id": listing_id,
-                    "source": source,
-                    "price_man": new_price,
-                }, returning="minimal").execute()
-        else:
-            summary["unchanged"] += 1
-
-    # このソースの active な物件のうち、今回バッチに無かったものを inactive に
-    # Grace period: 連続 N 回欠落するまで削除を保留
+    # --- 掲載終了（grace period）: 計画 → バッチ実行 ---
     grace_threshold = int(os.environ.get("GRACE_PERIOD_RUNS", "2"))
-    grace_pending = 0
-    for ik, listing_id in existing_listings.items():
-        if ik in seen_identity_keys:
-            continue
-        if listing_id not in existing_sources:
-            continue
-        src_row = existing_sources[listing_id]
-        if not src_row.get("is_active"):
-            continue
+    gplan = _plan_grace_period(
+        existing_listings, seen_identity_keys, existing_sources, grace_threshold, source,
+    )
 
-        new_misses = (src_row.get("consecutive_misses") or 0) + 1
-        if new_misses >= grace_threshold:
+    if gplan.deactivate_source_ids:
+        for i in range(0, len(gplan.deactivate_source_ids), 100):
+            batch_ids = gplan.deactivate_source_ids[i:i + 100]
             (client.table("listing_sources")
              .update({"is_active": False, "last_seen_at": _now_iso(),
                       "consecutive_misses": 0},
                      returning="minimal")
-             .eq("id", src_row["id"])
+             .in_("id", batch_ids)
              .execute())
-            active_count = (client.table("listing_sources")
-                            .select("id", count="exact")
-                            .eq("listing_id", listing_id)
-                            .eq("is_active", True)
-                            .execute())
-            if active_count.count == 0:
-                (client.table("listings")
-                 .update({"is_active": False}, returning="minimal")
-                 .eq("id", listing_id)
-                 .execute())
-            client.table("listing_events").insert({
-                "listing_id": listing_id,
-                "source": source,
-                "event_type": "removed",
-            }, returning="minimal").execute()
-            summary["removed"] += 1
-        else:
-            (client.table("listing_sources")
-             .update({"consecutive_misses": new_misses},
-                     returning="minimal")
-             .eq("id", src_row["id"])
-             .execute())
-            grace_pending += 1
 
-    if grace_pending:
-        logger.info("grace_pending=%d listings deferred from removal (source=%s)", grace_pending, source)
+        # deactivate 後に他ソースが active な listing を除外して listings を inactive 化
+        still_active: set[int] = set()
+        candidates = gplan.deactivate_listing_candidates
+        for i in range(0, len(candidates), 100):
+            batch_ids = candidates[i:i + 100]
+            resp = (client.table("listing_sources")
+                    .select("listing_id")
+                    .in_("listing_id", batch_ids)
+                    .eq("is_active", True)
+                    .execute())
+            for r in (resp.data or []):
+                still_active.add(r["listing_id"])
+        to_deactivate = [lid for lid in candidates if lid not in still_active]
+        for i in range(0, len(to_deactivate), 100):
+            batch_ids = to_deactivate[i:i + 100]
+            (client.table("listings")
+             .update({"is_active": False}, returning="minimal")
+             .in_("id", batch_ids)
+             .execute())
+
+    # 同じ値になる consecutive_misses 更新は .in_() でまとめる
+    for new_misses, src_ids in gplan.miss_increment_groups.items():
+        for i in range(0, len(src_ids), 100):
+            batch_ids = src_ids[i:i + 100]
+            (client.table("listing_sources")
+             .update({"consecutive_misses": new_misses}, returning="minimal")
+             .in_("id", batch_ids)
+             .execute())
+
+    _grouped_batch_insert(client, "listing_events", gplan.event_rows)
+    summary["removed"] += gplan.removed_count
+
+    if gplan.grace_pending:
+        logger.info("grace_pending=%d listings deferred from removal (source=%s)",
+                    gplan.grace_pending, source)
     return summary
 
 
