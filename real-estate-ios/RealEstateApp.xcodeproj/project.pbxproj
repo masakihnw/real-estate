@@ -66,6 +66,7 @@
 		72188035EBF232524AD778B9 /* SimulationChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8462396154DCAD49363D09 /* SimulationChartView.swift */; };
 		738E226355B87CB2BD6B8020 /* CategorizedImageGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2D3C9C14AA8ACF549EFEA9 /* CategorizedImageGallery.swift */; };
 		7393FE27975AB05DA8225AE3 /* SwipeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5597667481DF2424331E0BC2 /* SwipeCardView.swift */; };
+		748B1AE0F8563067A198DD40 /* DashboardStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86C11ABFF05033A14E26551 /* DashboardStats.swift */; };
 		7538BC831D6816AEF731DD12 /* BuyerProfileSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EC9F60CCFA3A6629C3754CE /* BuyerProfileSheet.swift */; };
 		761BBD45852C176F31555C67 /* RealEstateWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 01FED85B686F284CE634CDC5 /* RealEstateWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		767C0B0B4070CE4C84C91B27 /* BuyerProfileSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C32C97436B7CC7252692AFE /* BuyerProfileSyncService.swift */; };
@@ -268,6 +269,7 @@
 		E48C62989FA6BAC697E31F00 /* Listing+MarkdownExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Listing+MarkdownExport.swift"; sourceTree = "<group>"; };
 		E623D7A7882FFF98A5AEFA57 /* RecentlyViewedListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyViewedListView.swift; sourceTree = "<group>"; };
 		E6DC892696F0E098888C28B1 /* TransactionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionMapView.swift; sourceTree = "<group>"; };
+		E86C11ABFF05033A14E26551 /* DashboardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStats.swift; sourceTree = "<group>"; };
 		EA3890AAC58D1F45D703CF33 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		EA5549338A98AC303BCC728D /* ListingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingStore.swift; sourceTree = "<group>"; };
 		EBAE64911ACD8407EC794380 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 		398F4D2B0CC618A894D5663D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				E86C11ABFF05033A14E26551 /* DashboardStats.swift */,
 				FD48CB4F9C32BEAC827C54E2 /* ObjCExceptionCatcher.h */,
 				B5945F9FF2AF3675E525F384 /* ObjCExceptionCatcher.m */,
 				D67A9EA849D127C80B00F383 /* WatchlistFilter.swift */,
@@ -662,6 +665,7 @@
 				633BEE675B6087DCCAB9F343 /* CommuteTimeService.swift in Sources */,
 				242A17AE57A5070DD5A8680F /* ComparisonView.swift in Sources */,
 				8EE4894DFCD5C7C657DD928E /* ContentView.swift in Sources */,
+				748B1AE0F8563067A198DD40 /* DashboardStats.swift in Sources */,
 				6A0EA76B5A6736641390DA6F /* DashboardView.swift in Sources */,
 				E11EB7A8EE84FB1AEDC3D516 /* DedupCandidateCard.swift in Sources */,
 				41B090E076423A0A468A44E3 /* DesignSystem.swift in Sources */,

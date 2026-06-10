@@ -45,6 +45,7 @@ struct ListingListView: View {
         var availableRouteStations: [RouteStations] = []
         var availableDirections: [String] = []
         var availableNumericFields: [ListingNumericField] = []
+        var availableSortOrders: [SortOrder] = []
     }
     @State private var filterCache = FilterCache()
     /// フィルタ再計算タスク（連続変更時のキャンセル用）
@@ -242,11 +243,9 @@ struct ListingListView: View {
         }
     }
 
-    /// タブの物件種別に応じた利用可能なソート順
+    /// タブの物件種別に応じた利用可能なソート順（filterCache で再計算済みのもの）
     private var availableSortOrders: [SortOrder] {
-        SortOrder.allCases.filter { order in
-            baseList.contains(where: order.availabilityCheck)
-        }
+        filterCache.availableSortOrders
     }
 
     /// @Query で DB レベルフィルタ済み。マイリストタブのチップで追加フィルタ。
@@ -444,7 +443,10 @@ struct ListingListView: View {
                 availableWards: ListingFilter.availableWards(from: currentBase),
                 availableRouteStations: ListingFilter.availableRouteStations(from: currentBase),
                 availableDirections: ListingFilter.availableDirections(from: currentBase),
-                availableNumericFields: ListingFilter.availableNumericFields(from: currentBase)
+                availableNumericFields: ListingFilter.availableNumericFields(from: currentBase),
+                availableSortOrders: SortOrder.allCases.filter { order in
+                    currentBase.contains(where: order.availabilityCheck)
+                }
             )
             guard !Task.isCancelled else { return }
             if animated {
