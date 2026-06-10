@@ -407,3 +407,60 @@ def test_apply_conditions_keeps_valid_price(monkeypatch):
     row = _make_listing(price_man=10000)
     result = apply_conditions([row])
     assert len(result) == 1
+
+
+# ---------- パース0件トレランス（_scrape_ward） ----------
+
+
+def _setup_scrape_ward(monkeypatch, pages: list[list]) -> dict:
+    """_scrape_ward 用モック。pages[i] = ページ i+1 のパース結果（範囲外は空）。"""
+    from suumo_scraper import _scrape_ward  # noqa: F401  (存在確認)
+
+    calls = {"fetch": 0}
+    monkeypatch.setattr("suumo_scraper.create_session", lambda: object())
+    monkeypatch.setattr("suumo_scraper.time.sleep", lambda *_a, **_kw: None)
+
+    def _fetch(session, p, ward_roman=None, filtered_base_url=None):
+        calls["fetch"] += 1
+        return f"<html>page{p}</html>"
+
+    def _parse(html):
+        page_no = int(html.split("page")[1].split("<")[0])
+        return pages[page_no - 1] if page_no <= len(pages) else []
+
+    monkeypatch.setattr("suumo_scraper.fetch_list_page", _fetch)
+    monkeypatch.setattr("suumo_scraper.parse_list_html", _parse)
+    return calls
+
+
+def test_scrape_ward_continues_after_single_empty_parse(monkeypatch):
+    """1回だけパース0件のページがあっても、後続ページの取得を継続する。
+
+    botブロック・一時的な空ページで残ページ全件を取りこぼさないこと
+    （livable の EMPTY_PARSE_TOLERANCE と同じフェイルセーフ）。
+    """
+    from suumo_scraper import _scrape_ward
+
+    row1 = _make_listing(url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_00000001/")
+    row3 = _make_listing(url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_00000003/")
+    _setup_scrape_ward(monkeypatch, [[row1], [], [row3]])
+
+    results = _scrape_ward("koto", False, 10, None, None)
+
+    urls = {r.url for r in results}
+    assert row1.url in urls
+    assert row3.url in urls, "空ページ1回で打ち切られ、後続ページが取りこぼされている"
+
+
+def test_scrape_ward_stops_after_consecutive_empty_parses(monkeypatch):
+    """連続でパース0件が続いた場合は許容回数で停止する（無限リクエスト防止）。"""
+    from suumo_scraper import _scrape_ward, SUUMO_EMPTY_PARSE_TOLERANCE
+
+    row1 = _make_listing(url="https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_00000001/")
+    calls = _setup_scrape_ward(monkeypatch, [[row1]])
+
+    results = _scrape_ward("koto", False, 50, None, None)
+
+    assert [r.url for r in results] == [row1.url]
+    # ページ1（成功） + 連続空ページ（許容回数ぶん）で停止
+    assert calls["fetch"] == 1 + SUUMO_EMPTY_PARSE_TOLERANCE
