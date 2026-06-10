@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Firestore からスクレイピング条件を取得し、config モジュールをパッチする。
+[DEPRECATED] Firestore からスクレイピング条件を取得し、config モジュールをパッチする。
+
+※ 2026-06 時点で main.py は supabase_config_loader を使用しており、本モジュールは
+  どこからも呼ばれていない。新規機能は supabase_config_loader に追加すること。
+  Firebase 完全撤退時にこのファイルと push_scraping_config_to_firestore.py を削除する。
 
 環境変数 FIREBASE_SERVICE_ACCOUNT が設定されている場合、scraping_config/default
 ドキュメントを読み取り、config の各定数を上書きする。

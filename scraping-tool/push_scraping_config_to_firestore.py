@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-ScrapingConfigMetadata.json の defaults を Firestore scraping_config/default に反映する。
+[DEPRECATED] ScrapingConfigMetadata.json の defaults を Firestore scraping_config/default に反映する。
+
+※ ランタイム設定は Supabase scraping_config テーブルに移行済み（migration 039）。
+  本スクリプトは Firebase 完全撤退時に削除する。
 
 iOS の ScrapingConfig.toFirestoreData() と同じキーを書き込む（GitHub Actions / ローカルから実行可）。
 
