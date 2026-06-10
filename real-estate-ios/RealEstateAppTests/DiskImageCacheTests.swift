@@ -61,4 +61,48 @@ struct DiskImageCacheTests {
         let loaded = await DiskImageCache.shared.imageAsync(for: key)
         #expect(loaded != nil)
     }
+
+    // MARK: - ディスク上限（LRU トリム）
+
+    private func makeTestImage() -> UIImage {
+        let size = CGSize(width: 4, height: 4)
+        return UIGraphicsImageRenderer(size: size).image { ctx in
+            UIColor.green.setFill()
+            ctx.fill(CGRect(origin: .zero, size: size))
+        }
+    }
+
+    @Test("上限を超えた保存で古いファイルから削除される")
+    func trimEnforcesMaxFileCount() throws {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("DiskImageCacheTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let cache = DiskImageCache(directory: dir, maxFileCount: 5)
+
+        let image = makeTestImage()
+        for i in 0..<9 {
+            cache.save(image, for: "key-\(i)")
+        }
+        cache.waitForPendingOperations()
+
+        let files = try FileManager.default.contentsOfDirectory(atPath: dir.path)
+        #expect(files.count <= 5, "上限5に対して \(files.count) ファイル残存（無制限に増殖する）")
+    }
+
+    @Test("上限以内ならファイルは削除されない")
+    func noTrimUnderLimit() throws {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("DiskImageCacheTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let cache = DiskImageCache(directory: dir, maxFileCount: 10)
+
+        let image = makeTestImage()
+        for i in 0..<3 {
+            cache.save(image, for: "key-\(i)")
+        }
+        cache.waitForPendingOperations()
+
+        let files = try FileManager.default.contentsOfDirectory(atPath: dir.path)
+        #expect(files.count == 3)
+    }
 }

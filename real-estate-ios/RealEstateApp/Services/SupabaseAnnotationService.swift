@@ -22,6 +22,11 @@ final class SupabaseAnnotationService {
 
     private(set) var isSyncing = false
 
+    /// 直近の書き込み失敗メッセージ。楽観的ローカル更新の後に push が失敗すると
+    /// ローカルとサーバーが不整合になるため、UI から表示できるよう公開する。
+    /// 次の書き込みが成功すると nil に戻る。
+    private(set) var lastWriteError: String?
+
     private let client = SupabaseClient.shared
     private let defaults = UserDefaults.standard
     private let lastSyncKey = "supabase.annotations.lastSync"
@@ -68,8 +73,12 @@ final class SupabaseAnnotationService {
                     "p_name": listing.name
                 ]
                 _ = try await client.rpc("upsert_annotation", params: params)
+                await MainActor.run { lastWriteError = nil }
             } catch {
                 logger.error("pushLikeState 失敗: \(error.localizedDescription, privacy: .public)")
+                await MainActor.run {
+                    lastWriteError = "いいねの同期に失敗しました（ローカルには保存済み）"
+                }
             }
         }
     }
@@ -316,8 +325,12 @@ final class SupabaseAnnotationService {
                     "p_name": listing.name
                 ]
                 _ = try await client.rpc("upsert_annotation", params: params)
+                await MainActor.run { lastWriteError = nil }
             } catch {
                 logger.error("pushComments 失敗: \(error.localizedDescription, privacy: .public)")
+                await MainActor.run {
+                    lastWriteError = "コメントの同期に失敗しました（ローカルには保存済み）"
+                }
             }
         }
     }

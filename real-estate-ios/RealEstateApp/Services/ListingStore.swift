@@ -94,6 +94,14 @@ final class ListingStore {
         // P6: 二重実行ガード — 既に更新中なら何もしない
         guard !isRefreshing else { return }
         await MainActor.run { isRefreshing = true }
+        await performRefresh(modelContext: modelContext, isBackground: isBackground)
+        // 早期 return・throw・タスクキャンセルのどの経路でも必ずここでリセットする。
+        // 経路ごとに個別リセットすると漏れた経路で isRefreshing が立ちっぱなしになり、
+        // 二重実行ガードにより以後リフレッシュ不能になる
+        await MainActor.run { isRefreshing = false }
+    }
+
+    private func performRefresh(modelContext: ModelContext, isBackground: Bool) async {
         lastError = nil
         syncWarning = nil
         lastRefreshHadChanges = false
@@ -137,7 +145,6 @@ final class ListingStore {
         await MainActor.run {
             lastFetchedAt = fetchedAt
             defaults.set(fetchedAt, forKey: lastFetchedKey)
-            isRefreshing = false
         }
 
         if totalNew > 0 {
@@ -503,7 +510,6 @@ final class ListingStore {
             await MainActor.run {
                 lastFetchedAt = fetchedAt
                 defaults.set(fetchedAt, forKey: lastFetchedKey)
-                isRefreshing = false
             }
 
             if totalNew > 0 {
@@ -550,7 +556,6 @@ final class ListingStore {
             }
             await MainActor.run {
                 lastError = detail
-                isRefreshing = false
             }
         }
     }

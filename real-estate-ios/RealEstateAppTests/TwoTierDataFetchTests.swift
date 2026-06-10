@@ -294,4 +294,50 @@ struct TwoTierDataFetchTests {
 
         #expect(existing.commuteInfoJSON == "{\"total_min\":30}")
     }
+
+    // MARK: - decodeDTOs: スキーマドリフト防御
+
+    private func validRow(_ n: Int) -> [String: Any] {
+        [
+            "identity_key": "suumo_test_\(n)",
+            "source": "suumo",
+            "url": "https://suumo.jp/test/\(n)",
+            "name": "テストマンション\(n)",
+            "property_type": "chuko",
+            "is_active": true,
+        ]
+    }
+
+    /// name に数値を入れて型不一致で decode を失敗させる
+    private func brokenRow(_ n: Int) -> [String: Any] {
+        var row = validRow(n)
+        row["name"] = 12345
+        return row
+    }
+
+    @Test("decodeDTOs: 半数超の行が decode 失敗したら throw する（全物件サイレント消失防止）")
+    func decodeDTOsThrowsOnMajorityFailure() throws {
+        let json: [[String: Any]] = [brokenRow(1), brokenRow(2), validRow(3)]
+        let data = try JSONSerialization.data(withJSONObject: json)
+        #expect(throws: (any Error).self) {
+            _ = try SupabaseListingStore.decodeDTOs(from: data)
+        }
+    }
+
+    @Test("decodeDTOs: 全行 decode 失敗でも空配列を返さず throw する")
+    func decodeDTOsThrowsOnTotalFailure() throws {
+        let json: [[String: Any]] = [brokenRow(1), brokenRow(2)]
+        let data = try JSONSerialization.data(withJSONObject: json)
+        #expect(throws: (any Error).self) {
+            _ = try SupabaseListingStore.decodeDTOs(from: data)
+        }
+    }
+
+    @Test("decodeDTOs: 少数の行だけ失敗した場合は成功分を返す")
+    func decodeDTOsToleratesMinorityFailure() throws {
+        let json: [[String: Any]] = [validRow(1), validRow(2), brokenRow(3)]
+        let data = try JSONSerialization.data(withJSONObject: json)
+        let dtos = try SupabaseListingStore.decodeDTOs(from: data)
+        #expect(dtos.count == 2)
+    }
 }

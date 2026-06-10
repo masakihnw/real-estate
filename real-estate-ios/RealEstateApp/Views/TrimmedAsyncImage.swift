@@ -9,12 +9,46 @@ final class DiskImageCache: @unchecked Sendable {
     static let shared = DiskImageCache()
     private let cacheDir: URL
     private let queue = DispatchQueue(label: "diskImageCache", qos: .utility)
+    /// ディスクキャッシュの上限ファイル数。超過時は更新日時の古い順に削除する（LRU近似）。
+    /// 無制限だと物件閲覧に比例してストレージを圧迫し続ける
+    private let maxFileCount: Int
+    /// トリムチェックの間隔（保存 N 回ごと）。毎回ディレクトリ走査するコストを避ける
+    private let trimCheckInterval: Int
+    private var saveCountSinceTrim = 0
 
-    private init() {
+    init(directory: URL? = nil, maxFileCount: Int = 500) {
         let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
-        cacheDir = caches.appendingPathComponent("ImageCache", isDirectory: true)
+        cacheDir = directory ?? caches.appendingPathComponent("ImageCache", isDirectory: true)
+        self.maxFileCount = maxFileCount
+        self.trimCheckInterval = max(1, min(20, maxFileCount / 4))
         try? FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
+        // 起動時に前回セッションまでの超過分を整理
+        queue.async { [self] in trim() }
+    }
+
+    /// 更新日時の古い順に上限超過分を削除する。queue 上で呼ぶこと。
+    private func trim() {
+        let fm = FileManager.default
+        guard let files = try? fm.contentsOfDirectory(
+            at: cacheDir,
+            includingPropertiesForKeys: [.contentModificationDateKey],
+            options: .skipsHiddenFiles
+        ), files.count > maxFileCount else { return }
+
+        let sorted = files.sorted { a, b in
+            let da = (try? a.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+            let db = (try? b.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+            return da < db
+        }
+        for url in sorted.prefix(files.count - maxFileCount) {
+            try? fm.removeItem(at: url)
+        }
+    }
+
+    /// テスト用: キュー上の保留中操作の完了を待つ
+    func waitForPendingOperations() {
+        queue.sync {}
     }
 
     private func path(for key: String) -> URL {
@@ -44,6 +78,11 @@ final class DiskImageCache: @unchecked Sendable {
             let url = path(for: key)
             if let data = image.jpegData(compressionQuality: 0.85) {
                 try? data.write(to: url, options: .atomic)
+            }
+            saveCountSinceTrim += 1
+            if saveCountSinceTrim >= trimCheckInterval {
+                saveCountSinceTrim = 0
+                trim()
             }
         }
     }

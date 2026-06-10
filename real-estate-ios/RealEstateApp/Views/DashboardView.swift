@@ -49,6 +49,7 @@ struct DashboardView: View {
                     }
                     aiInsightsSection
                     scoreDistributionSection
+                    watchlistPriceDropSection
                     priceMoversSection
                     areaRankingSection
                 }
@@ -311,6 +312,40 @@ struct DashboardView: View {
         }
     }
 
+    // MARK: - ウォッチリスト値下げ (Watchlist Price Drops)
+
+    private var watchlistPriceDropSection: some View {
+        let drops = watchlistPriceDropListings
+        return Group {
+            if !drops.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    Label("注目物件の値下げ", systemImage: "bell.badge.fill")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+
+                    Text("お気に入り・高評価(S/A)物件の値下げ")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    ForEach(drops, id: \.url) { listing in
+                        WatchlistPriceDropRow(listing: listing) {
+                            selectedListing = listing
+                        }
+                    }
+                }
+                .padding(14)
+                .background(
+                    RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
+                        .fill(DesignSystem.priceDownColor.opacity(0.06))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
+                                .strokeBorder(DesignSystem.priceDownColor.opacity(0.2), lineWidth: 1)
+                        )
+                )
+            }
+        }
+    }
+
     // MARK: - 価格変動 (Price Movers)
 
     private var priceMoversSection: some View {
@@ -570,6 +605,10 @@ struct DashboardView: View {
         activeListings.filter { ($0.latestPriceChange ?? 0) > 0 }.count
     }
 
+    private var watchlistPriceDropListings: [Listing] {
+        WatchlistFilter.priceDrops(in: activeListings)
+    }
+
     private var priceDecreasedListings: [Listing] {
         activeListings
             .filter { ($0.latestPriceChange ?? 0) < 0 }
@@ -785,6 +824,82 @@ private struct PriceMoverRow: View {
             .background(
                 RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
                     .fill((isDown ? DesignSystem.priceDownColor : DesignSystem.priceUpColor).opacity(0.04))
+            )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private struct WatchlistPriceDropRow: View {
+    let listing: Listing
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                if let thumbURL = listing.thumbnailURL {
+                    AsyncImage(url: thumbURL) { image in
+                        image.resizable().scaledToFill()
+                    } placeholder: {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color(.systemGray5))
+                    }
+                    .frame(width: 48, height: 48)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                }
+
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 4) {
+                        if listing.isLiked {
+                            Image(systemName: "heart.fill")
+                                .font(.system(size: 9))
+                                .foregroundStyle(.red)
+                        }
+                        if let grade = listing.assetGrade, grade == "S" || grade == "A" {
+                            Text(grade)
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 1)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(grade == "S" ? Color.orange : DesignSystem.aiAccent)
+                                )
+                        }
+                        Text(listing.nameWithFloor)
+                            .font(.caption.weight(.semibold))
+                            .lineLimit(1)
+                    }
+
+                    if let price = listing.priceMan, let change = listing.latestPriceChange {
+                        let delta = abs(change)
+                        let originalPrice = price + delta
+                        HStack(spacing: 6) {
+                            Text(Listing.formatPriceCompact(price))
+                                .font(.caption2.weight(.medium))
+                            Text("↓\(delta)万")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(DesignSystem.priceDownColor)
+                            if originalPrice > 0 {
+                                let pct = Double(delta) / Double(originalPrice) * 100
+                                Text("(-\(String(format: "%.1f", pct))%)")
+                                    .font(.caption2.weight(.medium))
+                                    .foregroundStyle(DesignSystem.priceDownColor)
+                            }
+                        }
+                    }
+                }
+
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: DesignSystem.cornerRadius, style: .continuous)
+                    .fill(Color(.systemBackground))
             )
         }
         .buttonStyle(.plain)

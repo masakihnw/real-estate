@@ -57,6 +57,20 @@ struct ListingDetailView: View {
                     // 掲載終了バナー
                     delistedBanner
 
+                    // いいね・コメントの同期失敗警告（楽観的更新後の不整合をユーザーに知らせる）
+                    if let writeError = SupabaseAnnotationService.shared.lastWriteError {
+                        Label(writeError, systemImage: "exclamationmark.icloud")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .fill(Color.orange.opacity(0.1))
+                            )
+                    }
+
                     // ① 物件画像ギャラリー（Claude分類 → 従来フォールバック）
                     if !listing.parsedImageCategories.isEmpty {
                         CategorizedImageGallery(listing: listing)

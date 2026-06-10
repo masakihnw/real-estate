@@ -1936,9 +1936,7 @@ final class Listing: @unchecked Sendable {
         var priceMan: Int? { price_man }
 
         var parsedDate: Date? {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            return formatter.date(from: date)
+            Listing.isoDayFormatter.date(from: date)
         }
     }
 
@@ -2230,12 +2228,20 @@ final class Listing: @unchecked Sendable {
         return current - previous
     }
 
+    /// "yyyy-MM-dd" パース用の共有フォーマッタ。
+    /// en_US_POSIX 固定にしないと端末設定（和暦等）で誤解析するリスクがあり、
+    /// 計算プロパティ内での毎回生成はリスト描画時の O(n) アロケーションになる
+    static let isoDayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "yyyy-MM-dd"
+        return f
+    }()
+
     /// 掲載日数（first_seen_at から計算）
     var daysOnMarket: Int? {
         guard let seen = firstSeenAt else { return nil }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        guard let seenDate = formatter.date(from: seen) else { return nil }
+        guard let seenDate = Self.isoDayFormatter.date(from: String(seen.prefix(10))) else { return nil }
         return Calendar.current.dateComponents([.day], from: seenDate, to: Date()).day
     }
 
