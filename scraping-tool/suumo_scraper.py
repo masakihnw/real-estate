@@ -911,6 +911,15 @@ SUUMO_MAX_PAGES_SAFETY = 100
 # URL プリフィルタ適用後でも通過しない物件が多い区での無駄なリクエストを削減
 EARLY_EXIT_PAGES = 20
 
+# パース0件ページの許容回数。botブロック・一時メンテ等で1ページだけ空に
+# なった場合に残ページを取りこぼさないためのフェイルセーフ
+# （livable_scraper の EMPTY_PARSE_TOLERANCE と同じパターン）。
+# 連続でこの回数に達したら正常なページ末尾とみなして停止する。
+SUUMO_EMPTY_PARSE_TOLERANCE = 2
+
+# パース0件時の再試行前ウェイト秒数
+SUUMO_EMPTY_PARSE_BACKOFF_SEC = 10
+
 # 区ごと並列取得のワーカー数。
 # 各ワーカーは REQUEST_DELAY_SEC ぶんのウェイトを置くため、
 # PARALLEL_WARD_WORKERS=4 でも実質リクエスト間隔は約 0.5 秒/回になる。
@@ -950,6 +959,7 @@ def _scrape_ward(
     ward_total_parsed = 0
     ward_total_passed = 0
     pages_since_last_pass = 0
+    consecutive_empty_parses = 0
 
     while p <= limit:
         try:
@@ -966,7 +976,22 @@ def _scrape_ward(
 
         rows = parse_list_html(html)
         if not rows:
-            break
+            consecutive_empty_parses += 1
+            if consecutive_empty_parses >= SUUMO_EMPTY_PARSE_TOLERANCE:
+                if ward_total_parsed > 0 or p > 1:
+                    logger.info(
+                        "SUUMO: sc_%s ページ%d 連続%d回パース0件のため停止 (累計パース: %d件, 累計通過: %d件)",
+                        ward_roman, p, consecutive_empty_parses, ward_total_parsed, ward_total_passed,
+                    )
+                break
+            logger.warning(
+                "SUUMO: sc_%s ページ%d パース0件 (HTML: %dB, 連続: %d/%d) — botブロック/構造変更の可能性、再試行します",
+                ward_roman, p, len(html), consecutive_empty_parses, SUUMO_EMPTY_PARSE_TOLERANCE,
+            )
+            time.sleep(SUUMO_EMPTY_PARSE_BACKOFF_SEC)
+            p += 1
+            continue
+        consecutive_empty_parses = 0
         ward_total_parsed += len(rows)
         passed = 0
         for row in rows:
