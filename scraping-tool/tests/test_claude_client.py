@@ -138,3 +138,33 @@ class TestSanitizeUntrustedText:
         from claude_client import sanitize_untrusted_text
         text = "駅まで徒歩5分。以前は賃貸でした。上記の通り南向きです。"
         assert sanitize_untrusted_text(text) == text
+
+
+class TestCacheConnectionReuse:
+    """SQLite キャッシュ接続の使い回しテスト。"""
+
+    def test_roundtrip_with_shared_connection(self, tmp_path):
+        client = ClaudeClient.__new__(ClaudeClient)
+        client._cache_db_path = str(tmp_path / "cache.db")
+        client._init_cache_db()
+
+        conn_before = client._cache_conn
+        client.set_cached("test_module", {"q": 1}, {"answer": 42}, model="haiku")
+        assert client.get_cached("test_module", {"q": 1}) == {"answer": 42}
+        assert client.get_cached("test_module", {"q": 2}) is None
+        # 接続が再生成されていないこと
+        assert client._cache_conn is conn_before
+
+    def test_set_cached_persists(self, tmp_path):
+        """別接続から読んでもコミット済みであること（with conn: の自動コミット確認）。"""
+        import sqlite3 as _sq
+        db = str(tmp_path / "cache.db")
+        client = ClaudeClient.__new__(ClaudeClient)
+        client._cache_db_path = db
+        client._init_cache_db()
+        client.set_cached("m", "input", {"v": 1})
+
+        other = _sq.connect(db)
+        rows = other.execute("SELECT COUNT(*) FROM claude_cache").fetchone()
+        other.close()
+        assert rows[0] == 1
