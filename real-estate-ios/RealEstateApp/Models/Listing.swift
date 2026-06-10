@@ -302,6 +302,12 @@ final class Listing: @unchecked Sendable {
     /// Claude選定のベスト代表画像URL
     var bestThumbnailURL: String?
 
+    /// サーバー側で算出されたサムネのフォールバックURL（listings_feed_light.first_image_url）。
+    /// bestThumbnailURL は Routine②（毎日1回のAI画像分析）が設定するため、新着物件は
+    /// 最大約24時間未設定になる。その間も一覧カードに画像を出すための代替
+    /// （外観/エントランス優先 → 先頭画像。サーバー側ビューで選定）。
+    var firstImageURL: String?
+
     /// 構造化抽出データ JSON
     /// フォーマット: {"renovation_history":"...","management_quality":"...","equipment_highlights":[],...}
     var extractedFeaturesJSON: String?
@@ -435,6 +441,7 @@ final class Listing: @unchecked Sendable {
         investmentSummary: String? = nil,
         highlightBadge: String? = nil,
         bestThumbnailURL: String? = nil,
+        firstImageURL: String? = nil,
         extractedFeaturesJSON: String? = nil,
         imageCategoriesJSON: String? = nil,
         dedupConfidence: Double? = nil,
@@ -540,6 +547,7 @@ final class Listing: @unchecked Sendable {
         self.investmentSummary = investmentSummary
         self.highlightBadge = highlightBadge
         self.bestThumbnailURL = bestThumbnailURL
+        self.firstImageURL = firstImageURL
         self.extractedFeaturesJSON = extractedFeaturesJSON
         self.imageCategoriesJSON = imageCategoriesJSON
         self.dedupConfidence = dedupConfidence
@@ -2014,16 +2022,30 @@ final class Listing: @unchecked Sendable {
         return groups
     }
 
-    /// 一覧カードのサムネイル用 URL（Claude選定 → 外観写真 → 先頭画像の優先順）
+    /// 一覧カードのサムネイル用 URL
+    /// （Claude選定 → 外観写真 → 先頭画像 → サーバー側フォールバックの優先順）
+    ///
+    /// 軽量フィード（listings_feed_light）経由の行は画像配列を持たないため、
+    /// 一覧カードの実際のパスは bestThumbnailURL → firstImageURL → nil の3段階。
+    /// 外観写真・先頭画像の段は詳細取得済み（スワイプ等）の場合のみ有効。
     var thumbnailURL: URL? {
         if let best = bestThumbnailURL, let url = URL(string: best) {
             return url
         }
+        // 軽量フィード（listings_feed_light）経由の行は画像配列を持たないため、
+        // 以下はスワイプ等で詳細を取得済みの場合のみ有効
         let images = parsedSuumoImages
         if let exterior = images.first(where: { $0.category == .exterior }) {
             return exterior.resolvedURL
         }
-        return images.first?.resolvedURL
+        if let first = images.first {
+            return first.resolvedURL
+        }
+        // Routine② が bestThumbnailURL を設定するまでの間のフォールバック
+        if let fallback = firstImageURL, let url = URL(string: fallback) {
+            return url
+        }
+        return nil
     }
 
     // MARK: - Claude AI Enrichment Parsed Properties
