@@ -401,6 +401,9 @@ def _get_watchlist_price_drops(client, last_notified_at: str) -> list[dict]:
 
         listing_ids = [d["listing_id"] for d in drops.data]
 
+        # NOTE: 現在は単一ユーザー運用のため全ユーザーの is_liked を対象にしている。
+        # マルチユーザー化する場合は user_id でのフィルタが必須（他ユーザーの
+        # いいね物件が通知に混入する）
         ann = (client.table("user_annotations")
                .select("listing_identity_key")
                .eq("is_liked", True)

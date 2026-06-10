@@ -226,7 +226,15 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[RehouseListing]
                     built_str = p
                     built_year = parse_built_year(p)
                 elif "階" in p:
-                    floor_position = parse_floor_position(p)
+                    # "5階"（所在階）と "36階建"（建物階数）の両方に対応。
+                    # floor_total が欠けると identity_key の floor 要素が不安定になり
+                    # 他ソースとの dedup で誤マージの温床になる
+                    fp = parse_floor_position(p)
+                    if fp is not None:
+                        floor_position = fp
+                    ft = parse_floor_total(p)
+                    if ft is not None:
+                        floor_total = ft
 
         items.append(RehouseListing(
             source="rehouse",
