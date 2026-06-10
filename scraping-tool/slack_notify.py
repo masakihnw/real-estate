@@ -378,6 +378,101 @@ def _get_diff_from_supabase(client, current_listings: list[dict]) -> Optional[di
         return None
 
 
+# ウォッチリスト値下げ通知の最小値下げ率。
+# 単位は % （0.1 = 0.1%。RPC get_significant_price_changes のデフォルトは 5.0 = 5%）。
+# いいね済み・高評価物件はわずかな値下げでも通知したいため、ノイズ除去程度の小さい閾値にしている。
+WATCHLIST_MIN_DROP_PCT = 0.1
+
+
+def _get_watchlist_price_drops(client, last_notified_at: str) -> list[dict]:
+    """前回通知以降の値下げイベントのうち、いいね or S/A グレードの物件を返す。
+
+    RPC get_significant_price_changes の change_pct は「正の値下げ率（%単位）」
+    （migration 024 で old > new を WHERE 句で強制している）。
+    例: 5000万 → 4800万 なら change_pct = 4.0。
+    """
+    try:
+        drops = client.rpc("get_significant_price_changes", {
+            "p_since": last_notified_at,
+            "p_min_drop_pct": WATCHLIST_MIN_DROP_PCT,
+        }).execute()
+        if not drops.data:
+            return []
+
+        listing_ids = [d["listing_id"] for d in drops.data]
+
+        ann = (client.table("user_annotations")
+               .select("listing_identity_key")
+               .eq("is_liked", True)
+               .execute())
+        liked_keys: set[str] = {r["listing_identity_key"] for r in (ann.data or [])}
+
+        grade_by_id: dict[int, str] = {}
+        for i in range(0, len(listing_ids), 100):
+            batch = listing_ids[i:i + 100]
+            rows = (client.table("enrichments")
+                    .select("listing_id, asset_grade")
+                    .in_("listing_id", batch)
+                    .execute())
+            for r in (rows.data or []):
+                grade_by_id[r["listing_id"]] = r.get("asset_grade") or ""
+
+        ik_by_id: dict[int, str] = {}
+        for i in range(0, len(listing_ids), 100):
+            batch = listing_ids[i:i + 100]
+            rows = (client.table("listings")
+                    .select("id, identity_key")
+                    .in_("id", batch)
+                    .execute())
+            for r in (rows.data or []):
+                ik_by_id[r["id"]] = r["identity_key"]
+
+        result: list[dict] = []
+        for d in drops.data:
+            lid = d["listing_id"]
+            ik = ik_by_id.get(lid, "")
+            is_liked = ik in liked_keys
+            grade = grade_by_id.get(lid, "")
+            is_high_rated = grade in ("S", "A")
+            if is_liked or is_high_rated:
+                result.append({
+                    "listing_id": lid,
+                    "name": d["name"],
+                    "old_price_man": d["old_price_man"],
+                    "new_price_man": d["new_price_man"],
+                    "change_pct": float(d["change_pct"]),
+                    "changed_at": d["changed_at"],
+                    "is_liked": is_liked,
+                    "asset_grade": grade,
+                })
+        logger.info("Watchlist price drops: %d件 (since %s)", len(result), last_notified_at)
+        return result
+    except Exception as e:
+        logger.warning("Watchlist 値下げ取得失敗: %s", e)
+        return []
+
+
+def build_watchlist_price_drop_section(drops: list[dict]) -> str:
+    """注目物件の値下げ Slack セクションを組み立てる。"""
+    if not drops:
+        return ""
+    lines = ["", "*💰 注目物件の値下げ*", "（お気に入り・高評価 S/A 物件）", ""]
+    for d in sorted(drops, key=lambda x: x["change_pct"], reverse=True):
+        badge = ""
+        if d.get("is_liked"):
+            badge += "❤️"
+        if d.get("asset_grade") in ("S", "A"):
+            badge += f"[{d['asset_grade']}]"
+        name = (d.get("name") or "")[:30]
+        old_p = format_price(d["old_price_man"])
+        new_p = format_price(d["new_price_man"])
+        diff_man = d["old_price_man"] - d["new_price_man"]
+        pct = d["change_pct"]
+        lines.append(f"  {badge} {name}")
+        lines.append(f"    {old_p} → {new_p}（▼{diff_man}万円 / -{pct:.1f}%）")
+    return "\n".join(lines)
+
+
 def _get_noped_building_names(client) -> set[str]:
     """Supabase から nope 済み建物名を取得。identity_key の先頭セグメントを正規化して返す。"""
     try:
@@ -652,12 +747,21 @@ def _send_notification_drafts(client: Any, webhook_url: str) -> tuple[int, int]:
 
     SKIP_TYPES = {"health_report", "daily_brief"}
 
+    from datetime import date
+    today_str = date.today().isoformat()
+
     sent = 0
     failed = 0
     for draft in drafts:
         draft_id = draft["id"]
         ntype = draft["notification_type"]
         msg = draft.get("message_text") or ""
+
+        # 当日分の new_listing_digest は朝の本通知への統合（_pop_morning_digest）を
+        # 待つため pending のまま残す。翌日以降も残っていればフォールバック送信する。
+        if ntype == "new_listing_digest" and draft.get("draft_date") == today_str:
+            logger.info("notification_draft 保留（当日 digest は朝の統合待ち）: id=%d", draft_id)
+            continue
 
         if ntype in SKIP_TYPES:
             try:
@@ -746,6 +850,12 @@ def main() -> None:
             diff[key] = [r for r in diff.get(key, [])
                          if normalize_listing_name(r.get("name") or "") not in noped]
 
+    # --- 注目物件の値下げ取得 ---
+    watchlist_drops: list[dict] = []
+    last_notified_at = diff.get("_last_notified_at") if diff else None
+    if supabase_client and last_notified_at:
+        watchlist_drops = _get_watchlist_price_drops(supabase_client, last_notified_at)
+
     # --- 通知判定 ---
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
@@ -756,12 +866,14 @@ def main() -> None:
         digest_preview, _ = _pop_morning_digest(supabase_client)
         has_pending_digest = bool(digest_preview)
 
-    if not diff_new_a and not diff_removed_a and not has_pending_digest:
+    has_content = diff_new_a or diff_removed_a or has_pending_digest or watchlist_drops
+
+    if not has_content:
         if supabase_client:
             _send_notification_drafts(supabase_client, webhook_url)
-        logger.warning("変更なし（資産性B以上の新規・削除なし）Slack通知をスキップします")
+        logger.warning("変更なし（資産性B以上の新規・削除なし、注目値下げなし）Slack通知をスキップします")
         sys.exit(0)
-    elif not diff_new_a and diff_removed_a and not has_pending_digest:
+    elif not diff_new_a and diff_removed_a and not has_pending_digest and not watchlist_drops:
         if supabase_client:
             _send_notification_drafts(supabase_client, webhook_url)
         logger.warning("削除のみの変更 — AI ダイジェストもなし、通知を保留します")
@@ -781,6 +893,10 @@ def main() -> None:
 
     # --- メッセージ組み立て・送信 ---
     message = build_slack_message_from_listings(current, None, report_url, map_url=map_url, diff_override=diff)
+
+    # 注目物件の値下げセクションを追加
+    if watchlist_drops:
+        message = message + "\n" + build_watchlist_price_drop_section(watchlist_drops)
 
     # pending な AI ダイジェストを本文末尾に統合（Routine 2 が1日1回生成）
     digest_draft_id = None
