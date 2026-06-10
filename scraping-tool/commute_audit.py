@@ -763,7 +763,6 @@ def main():
         with open(output, "w", encoding="utf-8") as f:
             f.write(html)
 
-        total = len(STATIONS) if 'STATIONS' in dir() else '?'
         # Count stations
         pg_path = DATA_DIR / "commute_playground.json"
         m3_path = DATA_DIR / "commute_m3career.json"

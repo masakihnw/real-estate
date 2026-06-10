@@ -28,3 +28,15 @@ __pycache__/
 .venv/
 venv/
 .env
+
+# HOME'S 詳細ページ HTML キャッシュ（homes_image_backfill 等が生成。再取得で復元可能）
+data/homes_html_cache/
+# 汎用: 全ソースの HTML キャッシュディレクトリ
+data/*_html_cache/
+
+# バックアップファイル（一時退避用。コミットしない）
+*.bak
+*.backup.json
+
+# enrichment 中間成果物（パイプラインが再生成可能）
+enriched-chuko-sumai/
