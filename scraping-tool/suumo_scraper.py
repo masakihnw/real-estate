@@ -945,6 +945,7 @@ def _scrape_ward(
     limit: int,
     mb: Optional[int],
     et: Optional[int],
+    is_full_run: bool = True,
 ) -> list[SuumoListing]:
     """指定区の全ページをスクレイピングして SuumoListing リストを返す。
 
@@ -972,6 +973,7 @@ def _scrape_ward(
     ward_total_passed = 0
     pages_since_last_pass = 0
     consecutive_empty_parses = 0
+    finish_reason = None
 
     while p <= limit:
         try:
@@ -981,9 +983,13 @@ def _scrape_ward(
                 logger.warning("SUUMO: sc_%s ページ%d で %d エラーのためスキップします: %s", ward_roman, p, e.response.status_code, e.response.url)
                 p += 1
                 continue
+            # 404/403 等は再送出（呼び出し元で区単位エラーとして処理）。
+            # この経路は関数末尾の record_finish に到達しないため、ここで記録する
+            scraper_metrics.record_finish("suumo", "fetch_error")
             raise
         except Exception as e:
-            logger.error("SUUMO: sc_%s ページ%d 取得失敗: %s", ward_roman, p, e)
+            logger.error("SUUMO: sc_%s ページ%d 取得失敗 — 区の残ページを放棄: %s", ward_roman, p, e)
+            finish_reason = "fetch_error"
             break
 
         rows = parse_list_html(html)
@@ -999,6 +1005,7 @@ def _scrape_ward(
                 # パース実績ありの終端空ページは正常なページネーション終了なので記録しない
                 if ward_total_parsed == 0:
                     scraper_metrics.record("suumo", empty_pages=consecutive_empty_parses)
+                finish_reason = "completed"
                 break
             logger.warning(
                 "SUUMO: sc_%s ページ%d パース0件 (HTML: %dB, 連続: %d/%d) — botブロック/構造変更の可能性、次ページへ進みます",
@@ -1033,10 +1040,20 @@ def _scrape_ward(
             pages_since_last_pass += 1
         if pages_since_last_pass >= EARLY_EXIT_PAGES:
             logger.info("SUUMO: sc_%s 早期打ち切り（%dページ連続で通過0件, 累計通過: %d件）", ward_roman, pages_since_last_pass, ward_total_passed)
+            finish_reason = "early_exit"
             break
         if p % 10 == 0:
             logger.info("SUUMO: sc_%s ...%dページ処理済 (通過: %d件)", ward_roman, p, ward_total_passed)
         p += 1
+
+    if finish_reason is None:
+        # while 条件で抜けた = limit 到達。全ページ指定なら取りこぼしの可能性
+        if is_full_run:
+            finish_reason = "safety_limit"
+            logger.warning("SUUMO: sc_%s 安全上限%dページ到達 — 取りこぼしの可能性", ward_roman, limit)
+        else:
+            finish_reason = "completed"
+    scraper_metrics.record_finish("suumo", finish_reason)
 
     if ward_total_parsed > 0:
         logger.info("SUUMO: sc_%s 完了 — %d件パース, %d件通過", ward_roman, ward_total_parsed, ward_total_passed)
@@ -1050,6 +1067,7 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
     全23区を ThreadPoolExecutor で並列取得する（PARALLEL_WARD_WORKERS 区を同時処理）。
     max_pages=0 のときは結果がなくなるまで全ページ取得。
     """
+    is_full_run = not max_pages or max_pages <= 0
     limit = max_pages if max_pages and max_pages > 0 else SUUMO_MAX_PAGES_SAFETY
 
     mb = _snap_mb(AREA_MIN_M2_FETCH) if apply_filter else None
@@ -1072,7 +1090,7 @@ def scrape_suumo(max_pages: Optional[int] = 3, apply_filter: bool = True) -> Ite
 
     with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
         for ward_roman in SUUMO_23_WARD_ROMAN:
-            future = executor.submit(_scrape_ward, ward_roman, apply_filter, limit, mb, et)
+            future = executor.submit(_scrape_ward, ward_roman, apply_filter, limit, mb, et, is_full_run)
             futures[future] = ward_roman
 
         for future in as_completed(futures):

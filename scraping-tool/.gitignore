@@ -34,6 +34,9 @@ data/homes_html_cache/
 # 汎用: 全ソースの HTML キャッシュディレクトリ
 data/*_html_cache/
 
+# 異常応答HTMLの保全ダンプ（scraper_common.dump_debug_html が生成。切り分け用の一時ファイル）
+data/debug_dumps/
+
 # バックアップファイル（一時退避用。コミットしない）
 *.bak
 *.backup.json

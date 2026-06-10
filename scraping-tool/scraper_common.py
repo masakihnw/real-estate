@@ -10,6 +10,8 @@ import json
 import random
 import re
 import sys
+import threading
+from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Optional
@@ -53,6 +55,52 @@ def is_waf_challenge(html: str) -> bool:
     if len(html) < 5000 and "gokuProps" in html:
         return True
     return False
+
+
+# ──────────────────────────── デバッグHTMLダンプ ────────────────────────────
+
+DEBUG_DUMP_DIR = Path(__file__).resolve().parent / "data" / "debug_dumps"
+
+# 1プロセスあたりのダンプ保存上限（区単位の全損が23区連発してもディスクを荒らさない）
+_MAX_DUMPS_PER_RUN = 5
+_dump_count = 0
+# 複数スレッド（区並列スクレイパー）からの同時呼び出しに備える
+_dump_lock = threading.Lock()
+
+
+def _extract_title(html: str) -> str:
+    m = re.search(r"<title[^>]*>(.*?)</title>", html, re.IGNORECASE | re.DOTALL)
+    return m.group(1).strip()[:80] if m else "(no title)"
+
+
+def dump_debug_html(source: str, label: str, html: str) -> Optional[Path]:
+    """異常応答のHTMLを data/debug_dumps/ に保全し、切り分け用の要約をログする。
+
+    パース0件が「botブロック」「HTML構造変更」「正規の0件」のどれかは
+    実HTMLを見ないと切り分けられないため、検知時点のHTMLを保存する。
+    要約（サイズ・title）はログにも出すので、ダンプを回収できないCI環境でも
+    ログだけで一次切り分けができる。戻り値は保存先パス（上限超過・失敗時は None）。
+    """
+    global _dump_count
+    logger.warning(
+        "%s/%s: 異常応答 HTML %dB, title=%r", source, label, len(html), _extract_title(html)
+    )
+    with _dump_lock:
+        if _dump_count >= _MAX_DUMPS_PER_RUN:
+            return None
+        _dump_count += 1
+        seq = _dump_count
+    try:
+        DEBUG_DUMP_DIR.mkdir(parents=True, exist_ok=True)
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        # 連番で同一秒・同一ラベルの上書きを防ぐ
+        path = DEBUG_DUMP_DIR / f"{source}_{label}_{ts}_{seq}.html"
+        path.write_text(html, encoding="utf-8")
+        logger.warning("%s/%s: 異常応答HTMLを保存: %s", source, label, path)
+        return path
+    except OSError as e:
+        logger.warning("%s/%s: HTMLダンプ保存失敗: %s", source, label, e)
+        return None
 
 
 # ──────────────────────────── 駅乗降客数 ────────────────────────────

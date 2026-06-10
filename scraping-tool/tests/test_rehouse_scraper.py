@@ -63,3 +63,86 @@ def test_parse_floor_total_only():
 
 def test_parse_empty_html_returns_empty():
     assert parse_list_html("<html><body></body></html>") == []
+
+
+# ──────────────────────────── 区巡回ループの終端理由テスト ────────────────────────────
+
+import threading
+from types import SimpleNamespace
+
+import pytest
+
+import rehouse_scraper
+import scraper_metrics
+
+
+@pytest.fixture(autouse=True)
+def _reset_metrics():
+    scraper_metrics.reset()
+    yield
+    scraper_metrics.reset()
+
+
+def _run_ward(monkeypatch, pages: dict[int, int]) -> list:
+    """ページ番号→行数 の辞書で fetch/parse を偽装して _scrape_ward を実行する。"""
+    monkeypatch.setattr(rehouse_scraper, "create_session", lambda: None)
+    monkeypatch.setattr(rehouse_scraper, "_WARD_URL_TEMPLATE", "p=1")
+    monkeypatch.setattr(rehouse_scraper, "_WARD_URL_PAGE_TEMPLATE", "p={page}")
+    monkeypatch.setattr(rehouse_scraper, "fetch_list_page", lambda session, url: url)
+
+    def fake_parse(html):
+        page = int(html.split("=", 1)[1])
+        return [SimpleNamespace(url=f"u{page}-{i}") for i in range(pages.get(page, 0))]
+
+    monkeypatch.setattr(rehouse_scraper, "parse_list_html", fake_parse)
+    monkeypatch.setattr(rehouse_scraper, "dump_debug_html", lambda *a: None)
+    return rehouse_scraper._scrape_ward("13101", False, set(), threading.Lock())
+
+
+class TestScrapeWardFinishReasons:
+    def test_normal_termination(self, monkeypatch):
+        results = _run_ward(monkeypatch, {1: 3, 2: 0})
+        assert len(results) == 3
+        entry = scraper_metrics.get_all()["rehouse"]
+        assert entry["parsed"] == 3
+        assert entry["finish_reasons"] == {"completed": 1}
+        assert scraper_metrics.health_alerts() == []
+
+    def test_empty_ward_records_empty_page(self, monkeypatch):
+        """1ページ目から0件の区は空ページ計上（全損切り分け用）。
+
+        他の区にパース実績があればアラートなし。全区0件（=ソース全体で
+        parsed=0）なら媒体全損アラートが発火する。
+        """
+        results = _run_ward(monkeypatch, {1: 0})
+        assert results == []
+        entry = scraper_metrics.get_all()["rehouse"]
+        assert entry["empty_pages"] == 1
+        assert entry["finish_reasons"] == {"completed": 1}
+        # この時点ではソース全体で parsed=0 なので全損扱い（フェイルセーフ方向）
+        assert any("媒体全損" in a for a in scraper_metrics.health_alerts())
+
+        # 別の区でパース実績が出れば全損アラートは消える
+        _run_ward(monkeypatch, {1: 3, 2: 0})
+        assert scraper_metrics.health_alerts() == []
+
+    def test_ward_limit_reached_records_safety_limit(self, monkeypatch):
+        monkeypatch.setattr(rehouse_scraper, "MAX_PAGES_PER_WARD", 2)
+        _run_ward(monkeypatch, {1: 2, 2: 2, 3: 2})
+        entry = scraper_metrics.get_all()["rehouse"]
+        assert entry["finish_reasons"] == {"safety_limit": 1}
+        assert any("rehouse" in a and "safety_limit" in a for a in scraper_metrics.health_alerts())
+
+    def test_fetch_error_records_reason(self, monkeypatch):
+        monkeypatch.setattr(rehouse_scraper, "create_session", lambda: None)
+        monkeypatch.setattr(rehouse_scraper, "_WARD_URL_TEMPLATE", "p=1")
+        monkeypatch.setattr(rehouse_scraper, "_WARD_URL_PAGE_TEMPLATE", "p={page}")
+
+        def boom(session, url):
+            raise RuntimeError("connection reset")
+
+        monkeypatch.setattr(rehouse_scraper, "fetch_list_page", boom)
+        results = rehouse_scraper._scrape_ward("13101", False, set(), threading.Lock())
+        assert results == []
+        entry = scraper_metrics.get_all()["rehouse"]
+        assert entry["finish_reasons"] == {"fetch_error": 1}

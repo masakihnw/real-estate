@@ -42,6 +42,7 @@ from parse_utils import (
     layout_ok,
 )
 from report_utils import clean_listing_name
+import scraper_metrics
 from scraper_common import (
     create_session,
     load_station_passengers,
@@ -434,6 +435,7 @@ def _scrape_ward(
     ward_name: str,
     apply_filter: bool,
     limit: int,
+    is_full_run: bool = True,
 ) -> list[LivableListing]:
     """指定区の全ページをスクレイピングして LivableListing リストを返す。
 
@@ -448,6 +450,7 @@ def _scrape_ward(
     ward_total_passed = 0
     pages_since_last_pass = 0
     consecutive_empty_parses = 0
+    finish_reason = None
 
     while p <= limit:
         if p == 1:
@@ -461,6 +464,7 @@ def _scrape_ward(
             if e.response is not None and e.response.status_code == 404:
                 if p == 1:
                     logger.info("livable: %s (a%s) は物件なし (404)", ward_name, ward_code)
+                finish_reason = "completed"
                 break
             if e.response is not None and 500 <= e.response.status_code < 600:
                 logger.warning(
@@ -469,12 +473,17 @@ def _scrape_ward(
                 )
                 p += 1
                 continue
+            # 404/5xx 以外の HTTPError は再送出（呼び出し元で区単位エラーとして処理）。
+            # この経路は関数末尾の record_finish に到達しないため、ここで記録する
+            scraper_metrics.record_finish("livable", "fetch_error")
             raise
         except Exception as e:
-            logger.error("livable: %s (a%s) ページ%d 取得失敗: %s", ward_name, ward_code, p, e)
+            logger.error("livable: %s (a%s) ページ%d 取得失敗 — 区の残ページを放棄: %s", ward_name, ward_code, p, e)
+            finish_reason = "fetch_error"
             break
 
         rows = parse_list_html(html)
+        scraper_metrics.record("livable", parsed=len(rows))
         if not rows:
             consecutive_empty_parses += 1
             html_size = len(html)
@@ -492,8 +501,8 @@ def _scrape_ward(
                 )
                 # 区全体0件の終了のみ異常として記録（終端の空ページは正常なため記録しない）
                 if ward_total_parsed == 0:
-                    import scraper_metrics
                     scraper_metrics.record("livable", empty_pages=consecutive_empty_parses)
+                finish_reason = "completed"
                 break
             time.sleep(EMPTY_PARSE_BACKOFF_SEC)
             p += 1
@@ -501,7 +510,6 @@ def _scrape_ward(
 
         if consecutive_empty_parses > 0:
             # 途中の空ページ（後続で復活）= 異常なギャップとして記録
-            import scraper_metrics
             scraper_metrics.record("livable", empty_pages=consecutive_empty_parses)
         consecutive_empty_parses = 0
         ward_total_parsed += len(rows)
@@ -530,12 +538,25 @@ def _scrape_ward(
                 "livable: %s (a%s) 早期打ち切り（%dページ連続で通過0件, 累計通過: %d件）",
                 ward_name, ward_code, pages_since_last_pass, ward_total_passed,
             )
+            finish_reason = "early_exit"
             break
 
         if p % 10 == 0:
             logger.info("livable: %s (a%s) ...%dページ処理済 (通過: %d件)", ward_name, ward_code, p, ward_total_passed)
 
         p += 1
+
+    if finish_reason is None:
+        # while 条件で抜けた = limit 到達。全ページ指定なら取りこぼしの可能性
+        if is_full_run:
+            finish_reason = "safety_limit"
+            logger.warning(
+                "livable: %s (a%s) 安全上限%dページ到達 — 取りこぼしの可能性",
+                ward_name, ward_code, limit,
+            )
+        else:
+            finish_reason = "completed"
+    scraper_metrics.record_finish("livable", finish_reason)
 
     if ward_total_parsed > 0:
         logger.info("livable: %s (a%s) 完了 — %d件パース, %d件通過", ward_name, ward_code, ward_total_parsed, ward_total_passed)
@@ -555,6 +576,7 @@ def scrape_livable(max_pages: Optional[int] = 2, apply_filter: bool = True) -> I
     各区内は1ページ目からページネーションし、物件が0件になるまで取得する。
     max_pages=0 のときは結果がなくなるまで全ページ取得。
     """
+    is_full_run = not max_pages or max_pages <= 0
     limit = max_pages if max_pages and max_pages > 0 else MAX_PAGES_SAFETY
 
     logger.info(
@@ -568,7 +590,7 @@ def scrape_livable(max_pages: Optional[int] = 2, apply_filter: bool = True) -> I
 
     with ThreadPoolExecutor(max_workers=PARALLEL_WARD_WORKERS) as executor:
         for ward_code, ward_name in TOKYO_23_WARD_CODES.items():
-            future = executor.submit(_scrape_ward, ward_code, ward_name, apply_filter, limit)
+            future = executor.submit(_scrape_ward, ward_code, ward_name, apply_filter, limit, is_full_run)
             futures[future] = (ward_code, ward_name)
 
         for future in as_completed(futures):

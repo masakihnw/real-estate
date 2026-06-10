@@ -253,3 +253,114 @@ class TestApplyConditionsNullPrice:
         row = _make_homes_listing(price_man=10000)
         result = apply_conditions([row])
         assert len(result) == 1
+
+
+# ──────────────────────────── scrape_homes ループの終端理由テスト ────────────────────────────
+
+from types import SimpleNamespace
+
+import homes_scraper
+import scraper_metrics
+
+
+@pytest.fixture(autouse=True)
+def _reset_metrics():
+    scraper_metrics.reset()
+    yield
+    scraper_metrics.reset()
+
+
+def _run_scrape_homes(monkeypatch, pages: dict[int, int], max_pages: int = 0) -> list:
+    """ページ番号→行数 の辞書で Playwright/fetch/parse を偽装して scrape_homes を実行する。"""
+    monkeypatch.setattr(homes_scraper, "HAS_PLAYWRIGHT", True)
+    monkeypatch.setattr(
+        homes_scraper, "_launch_browser",
+        lambda: (MagicMock(), MagicMock(), MagicMock()),
+    )
+    monkeypatch.setattr(homes_scraper, "LIST_URL_FIRST", "page=1")
+    monkeypatch.setattr(homes_scraper, "LIST_URL_PAGE", "page={page}")
+    monkeypatch.setattr(homes_scraper, "fetch_list_page", lambda context, url: url)
+    monkeypatch.setattr(homes_scraper, "HOMES_REQUEST_DELAY_SEC", 0)
+
+    def fake_parse(html):
+        page = int(html.split("=", 1)[1])
+        return [SimpleNamespace(url=f"u{page}-{i}") for i in range(pages.get(page, 0))]
+
+    monkeypatch.setattr(homes_scraper, "parse_list_html", fake_parse)
+    monkeypatch.setattr(homes_scraper, "dump_debug_html", lambda *a: None)
+    return list(homes_scraper.scrape_homes(max_pages=max_pages, apply_filter=False))
+
+
+class TestScrapeHomesFinishReasons:
+    def test_normal_termination(self, monkeypatch):
+        results = _run_scrape_homes(monkeypatch, {1: 3, 2: 2, 3: 0})
+        assert len(results) == 5
+        entry = scraper_metrics.get_all()["homes"]
+        assert entry["parsed"] == 5
+        assert entry["finish_reasons"] == {"completed": 1}
+        assert scraper_metrics.health_alerts() == []
+
+    def test_timeout_records_reason(self, monkeypatch):
+        """30分タイムリミット打ち切り（82ページで停止していた実ケース）を異常終端として記録。"""
+        monkeypatch.setattr(homes_scraper, "HOMES_SCRAPE_TIMEOUT_SEC", -1)  # 即タイムアウト
+        results = _run_scrape_homes(monkeypatch, {1: 3})
+        assert results == []
+        entry = scraper_metrics.get_all()["homes"]
+        assert entry["finish_reasons"] == {"timeout": 1}
+        assert any("homes" in a and "timeout" in a for a in scraper_metrics.health_alerts())
+
+    def test_empty_html_records_waf_abort(self, monkeypatch):
+        monkeypatch.setattr(homes_scraper, "HAS_PLAYWRIGHT", True)
+        monkeypatch.setattr(
+            homes_scraper, "_launch_browser",
+            lambda: (MagicMock(), MagicMock(), MagicMock()),
+        )
+        monkeypatch.setattr(homes_scraper, "fetch_list_page", lambda context, url: "")
+        results = list(homes_scraper.scrape_homes(max_pages=0, apply_filter=False))
+        assert results == []
+        entry = scraper_metrics.get_all()["homes"]
+        assert entry["finish_reasons"] == {"waf_abort": 1}
+
+    def test_empty_first_page_records_abort(self, monkeypatch):
+        results = _run_scrape_homes(monkeypatch, {1: 0})
+        assert results == []
+        entry = scraper_metrics.get_all()["homes"]
+        assert entry["finish_reasons"] == {"empty_parse_abort": 1}
+        assert entry["empty_pages"] == 1
+        assert any("媒体全損" in a for a in scraper_metrics.health_alerts())
+
+    def test_safety_limit_full_run(self, monkeypatch):
+        monkeypatch.setattr(homes_scraper, "HOMES_MAX_PAGES_SAFETY", 2)
+        _run_scrape_homes(monkeypatch, {1: 2, 2: 2, 3: 2}, max_pages=0)
+        entry = scraper_metrics.get_all()["homes"]
+        assert entry["finish_reasons"] == {"safety_limit": 1}
+
+    def test_user_limit_records_completed(self, monkeypatch):
+        _run_scrape_homes(monkeypatch, {1: 2, 2: 2, 3: 2}, max_pages=2)
+        entry = scraper_metrics.get_all()["homes"]
+        assert entry["finish_reasons"] == {"completed": 1}
+        assert scraper_metrics.health_alerts() == []
+
+    def test_generator_early_close_still_records_finish(self, monkeypatch):
+        """呼び出し元が break してもジェネレータの終端理由が記録される（漏れ防止）。"""
+        monkeypatch.setattr(homes_scraper, "HAS_PLAYWRIGHT", True)
+        monkeypatch.setattr(
+            homes_scraper, "_launch_browser",
+            lambda: (MagicMock(), MagicMock(), MagicMock()),
+        )
+        monkeypatch.setattr(homes_scraper, "LIST_URL_FIRST", "page=1")
+        monkeypatch.setattr(homes_scraper, "LIST_URL_PAGE", "page={page}")
+        monkeypatch.setattr(homes_scraper, "fetch_list_page", lambda context, url: url)
+        monkeypatch.setattr(homes_scraper, "HOMES_REQUEST_DELAY_SEC", 0)
+        monkeypatch.setattr(
+            homes_scraper, "parse_list_html",
+            lambda html: [SimpleNamespace(url=f"u{i}") for i in range(5)],
+        )
+
+        gen = homes_scraper.scrape_homes(max_pages=0, apply_filter=False)
+        next(gen)
+        gen.close()  # for ループ内 break と同じ経路
+
+        entry = scraper_metrics.get_all()["homes"]
+        assert entry["finish_reasons"] == {"completed": 1}
+        assert scraper_metrics.health_alerts() == []

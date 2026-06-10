@@ -38,8 +38,10 @@ from parse_utils import (
     layout_ok,
 )
 from report_utils import clean_listing_name
+import scraper_metrics
 from scraper_common import (
     create_session,
+    dump_debug_html,
     load_station_passengers,
     station_passengers_ok,
     line_ok,
@@ -302,47 +304,80 @@ def apply_conditions(listings: list[NomucomListing]) -> list[NomucomListing]:
 def scrape_nomucom(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Iterator[NomucomListing]:
     """ノムコム東京23区中古マンション一覧を取得。max_pages=0 のときは結果がなくなるまで全ページ取得。"""
     session = create_session()
+    is_full_run = not max_pages or max_pages <= 0
     limit = max_pages if max_pages and max_pages > 0 else MAX_PAGES_SAFETY
     page = 1
     total_parsed = 0
     total_passed = 0
     pages_since_last_pass = 0
-    while page <= limit:
-        url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
-        try:
-            html = fetch_list_page(session, url)
-        except Exception as e:
-            logger.error(f"nomucom: ページ{page}でエラー: {e}")
-            break
-        rows = parse_list_html(html)
-        if not rows:
-            logger.info(f"nomucom: ページ{page}で0件パース。一覧の終端またはHTML構造変更の可能性。")
-            break
-        total_parsed += len(rows)
-        passed = 0
-        for row in rows:
-            if apply_filter:
-                filtered = apply_conditions([row])
-                if filtered:
-                    yield filtered[0]
+    finish_reason = None
+    try:
+        while page <= limit:
+            url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
+            try:
+                html = fetch_list_page(session, url)
+            except Exception as e:
+                logger.error(f"nomucom: ページ{page}でエラー — 残ページを放棄: {e}")
+                finish_reason = "fetch_error"
+                break
+            rows = parse_list_html(html)
+            scraper_metrics.record("nomucom", parsed=len(rows))
+            if not rows:
+                if total_parsed == 0:
+                    # 1ページ目から0件 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
+                    scraper_metrics.record("nomucom", empty_pages=1)
+                    dump_debug_html("nomucom", f"p{page}", html)
+                    finish_reason = "empty_parse_abort"
+                else:
+                    logger.info(f"nomucom: ページ{page}で0件パース（一覧の終端）")
+                    finish_reason = "completed"
+                break
+            total_parsed += len(rows)
+            passed = 0
+            for row in rows:
+                if apply_filter:
+                    filtered = apply_conditions([row])
+                    if filtered:
+                        yield filtered[0]
+                        passed += 1
+                        logger.debug(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)")
+                else:
+                    yield row
                     passed += 1
-                    logger.debug(f"  ✓ {filtered[0].name} ({filtered[0].price_man}万)")
+            total_passed += passed
+            if passed > 0:
+                pages_since_last_pass = 0
             else:
-                yield row
-                passed += 1
-        total_passed += passed
-        if passed > 0:
-            pages_since_last_pass = 0
-        else:
-            pages_since_last_pass += 1
-        if pages_since_last_pass >= EARLY_EXIT_PAGES:
-            logger.info(f"nomucom: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
-            break
-        if page % 10 == 0:
-            logger.info(f"nomucom: ...{page}ページ処理済 (通過: {total_passed}件)")
-        page += 1
-    if total_parsed > 0:
-        logger.info(f"nomucom: 完了 — {total_parsed}件パース, {total_passed}件通過")
+                pages_since_last_pass += 1
+            if pages_since_last_pass >= EARLY_EXIT_PAGES:
+                logger.info(f"nomucom: 早期打ち切り（{pages_since_last_pass}ページ連続で通過0件, 累計通過: {total_passed}件）")
+                finish_reason = "early_exit"
+                break
+            if page % 10 == 0:
+                logger.info(f"nomucom: ...{page}ページ処理済 (通過: {total_passed}件)")
+            page += 1
+
+        if finish_reason is None:
+            # while 条件で抜けた = limit 到達。全ページ指定なら「上限到達」と「正常終端」を
+            # 区別できないまま完了扱いになっていた問題（100ページちょうどで4000件）への対策
+            if is_full_run:
+                finish_reason = "safety_limit"
+                logger.warning(f"nomucom: 安全上限{limit}ページ到達 — {limit + 1}ページ目以降を取りこぼしている可能性")
+            else:
+                finish_reason = "completed"
+
+        if total_parsed > 0:
+            logger.info(f"nomucom: 完了 — {total_parsed}件パース, {total_passed}件通過")
+    except GeneratorExit:
+        # 呼び出し元が break / close() した = 意図的な打ち切り（異常ではない）
+        finish_reason = finish_reason or "completed"
+        raise
+    except Exception:
+        finish_reason = finish_reason or "fetch_error"
+        raise
+    finally:
+        # ジェネレータの早期クローズや例外経路でも終端理由を必ず記録する
+        scraper_metrics.record_finish("nomucom", finish_reason or "completed")
 
 
 # ──────────────────────────── 詳細ページ ────────────────────────────
