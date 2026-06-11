@@ -2,7 +2,7 @@
 スクレイパー共通ユーティリティ。
 
 セッション生成、フィルタ補助関数、WAF 検出など、
-suumo_scraper / suumo_shinchiku_scraper / homes_scraper / homes_shinchiku_scraper で
+suumo_scraper / homes_scraper などの各スクレイパーで
 共有する副作用を持つ関数群。
 """
 

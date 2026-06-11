@@ -317,7 +317,7 @@ USER_AGENT = (
 
 # ボット検知で取得不能なスクレイパーを一時的に無効化。
 # 環境変数 DISABLED_SCRAPERS（カンマ区切り）で上書き可能。空文字列で全て有効化。
-# "athome" → chuko/shinchiku 両方無効, "homes_shinchiku" → shinchiku の homes のみ無効
+# "athome" → athome を無効化, "homes_chuko" → homes の中古のみ無効
 _disabled_env = os.environ.get("DISABLED_SCRAPERS")
 if _disabled_env is not None:
     DISABLED_SCRAPERS: tuple[str, ...] = tuple(s.strip() for s in _disabled_env.split(",") if s.strip())
