@@ -741,7 +741,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 | **パイプライン初期データ（駅テーブル）** | `commute_enricher.py` が `station_line` + `walk_min` から駅ベースの概算を付与（`commute_info` フィールド）。`Listing.from(dto:)` で `commuteInfoJSON` に取り込み |
 | **パイプライン高精度データ（Google Maps）** | `commute_gmaps_enricher.py` が Playwright で Google Maps をスクレイピングし、物件住所 → 各オフィスの door-to-door 通勤時間を取得。`source: "gmaps"` フラグ付きで `commute_info` に格納。到着時刻: 平日朝 9:00 JST。初回のみ全件取得、以降は新着・未取得のみ。並列ワーカー対応 |
 | **iOS 計算方式** | `source: "gmaps"` のデータがある物件は MKDirections 再計算をスキップ。それ以外は MKDirections（公共交通機関モード、`requestsAlternateRoutes = true`）で計算 |
-| **目的地** | デフォルト: Playground株式会社（千代田区一番町4-6）/ エムスリーキャリア（港区虎ノ門4-1-28）。設定画面の「通勤先設定」で最大3箇所までカスタマイズ可能（CommuteDestinationConfig）。MKDirections 計算は従来の固定2箇所を継続使用（CommuteData 構造の互換性のため） |
+| **目的地** | デフォルトの通勤先2箇所（slug: `playground` / `m3career`）。実住所・名称は環境変数 `COMMUTE_OFFICES_JSON` / Supabase で管理（リポジトリにはプレースホルダのみ）。設定画面の「通勤先設定」で最大3箇所までカスタマイズ可能（CommuteDestinationConfig）。MKDirections 計算は従来の固定2箇所を継続使用（CommuteData 構造の互換性のため） |
 | **キャッシュ** | `Listing.commuteInfoJSON` に JSON 文字列で保存 |
 | **再計算条件** | `source: "gmaps"` でない物件のうち: 未計算 or フォールバック概算（`経路情報取得不可`）or 7日以上経過 |
 | **リトライ戦略** | 1回目: departureDate（次の平日8:00）→ 2回目: 日時指定なし → 3回目: arrivalDate（次の平日9:00）→ フォールバック概算。各リトライ間に2秒待機 |

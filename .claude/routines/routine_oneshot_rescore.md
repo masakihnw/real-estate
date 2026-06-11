@@ -39,7 +39,7 @@ SELECT * FROM get_active_prompt('ai_scoring');
 
 2. バイヤープロファイル取得:
 ```sql
-SELECT * FROM buyer_profiles WHERE user_id = 'POc6v7aGyGcVeRSWXZR3xy15bKs1';
+SELECT * FROM buyer_profiles WHERE user_id = '<BUYER_PROFILE_USER_ID>';
 ```
 
 3. 対象取得:

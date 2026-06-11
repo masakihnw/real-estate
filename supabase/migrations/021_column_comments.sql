@@ -163,10 +163,10 @@ COMMENT ON COLUMN listing_events.occurred_at IS 'イベント発生日時';
 COMMENT ON TABLE buyer_profiles IS '買い手プロフィール。物件分析の前提条件としてAI（パイプライン・ChatGPT・Claude）が参照する';
 
 COMMENT ON COLUMN buyer_profiles.user_id IS 'Firebase Auth UID';
-COMMENT ON COLUMN buyer_profiles.family_composition IS '家族構成（例：夫1997年生・妻1996年生、子どもなし）';
-COMMENT ON COLUMN buyer_profiles.household_income IS '世帯年収（例：1,200万円）';
-COMMENT ON COLUMN buyer_profiles.work_style IS '働き方（例：夫は基本出社、妻は週1リモート）';
-COMMENT ON COLUMN buyer_profiles.child_plan IS '子ども計画（例：今年1人目予定、3人計画）';
+COMMENT ON COLUMN buyer_profiles.family_composition IS '家族構成（例：夫YYYY年生・妻YYYY年生、子ども○人）';
+COMMENT ON COLUMN buyer_profiles.household_income IS '世帯年収（例：○○○○万円）';
+COMMENT ON COLUMN buyer_profiles.work_style IS '働き方（例：基本出社／週N回リモート 等）';
+COMMENT ON COLUMN buyer_profiles.child_plan IS '子ども計画（例：人数・想定時期・教育方針）';
 COMMENT ON COLUMN buyer_profiles.priorities IS '物件選びで重視する点（優先順位付き）';
 COMMENT ON COLUMN buyer_profiles.current_housing IS '現在の住居形態（賃貸/持ち家等）';
 COMMENT ON COLUMN buyer_profiles.neighborhood_preference IS '街の雰囲気の好み';

@@ -28,3 +28,16 @@ supabase/.temp/
 
 # Scraping log (Firestore にアップロードされるためリポジトリに含めない)
 scraping-tool/results/scraping_log.txt
+
+# 買い手PII・AI分析結果を含む再生成可能な生成物（コミット禁止 — PII漏洩防止）
+scraping-tool/results/latest.json
+scraping-tool/results/previous_slack.json
+scraping-tool/results/report/
+scraping-tool/results/report_*.md
+scraping-tool/commute_audit.html
+scraping-tool/commute_audit_results/
+scraping-tool/data/claude_cache.db
+# 実データを含む個人相談メモ（プレースホルダ以外コミット禁止）
+docs/initial-consultation.md
+# 通勤先オフィスのローカル実値（実住所・座標。コミット禁止）
+configs/commute/offices.local.yaml
