@@ -22044,7 +22044,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/15745.html",
       "deviation_score": 71,
-      "estimated_price_man": 8619,
+      "estimated_price_man": 8791,
       "estimated_tsubo_price_man": 570,
       "estimated_m2_price_man": 173,
       "shinchiku_history_count": 71,
@@ -22060,13 +22060,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T14:27:10.244469"
+    "cached_at": "2026-06-11T15:42:27.289805"
   },
   "ライオンズマンション西早稲田シティ": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/15745.html",
       "deviation_score": 71,
-      "estimated_price_man": 8619,
+      "estimated_price_man": 8791,
       "estimated_tsubo_price_man": 570,
       "estimated_m2_price_man": 173,
       "shinchiku_history_count": 71,
@@ -22082,13 +22082,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T14:27:10.244469"
+    "cached_at": "2026-06-11T15:42:27.289805"
   },
   "オープンレジデンス島津山W棟1階": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42089.html",
       "deviation_score": 21,
-      "estimated_price_man": 11328,
+      "estimated_price_man": 11843,
       "estimated_tsubo_price_man": 568,
       "estimated_m2_price_man": 172,
       "shinchiku_history_count": 21,
@@ -22104,13 +22104,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T14:27:18.864929"
+    "cached_at": "2026-06-11T15:42:35.731406"
   },
   "オープンレジデンス島津山": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42089.html",
       "deviation_score": 21,
-      "estimated_price_man": 11328,
+      "estimated_price_man": 11843,
       "estimated_tsubo_price_man": 568,
       "estimated_m2_price_man": 172,
       "shinchiku_history_count": 21,
@@ -22126,13 +22126,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T14:27:18.864929"
+    "cached_at": "2026-06-11T15:42:35.731406"
   },
   "ルミネ東京ベイフロント8階": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/26375.html",
       "deviation_score": 36,
-      "estimated_price_man": 9359,
+      "estimated_price_man": 9647,
       "estimated_tsubo_price_man": 477,
       "estimated_m2_price_man": 144,
       "shinchiku_history_count": 36,
@@ -22148,13 +22148,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T14:27:27.463550"
+    "cached_at": "2026-06-11T15:42:44.008786"
   },
   "ルミネ東京ベイフロント": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/26375.html",
       "deviation_score": 36,
-      "estimated_price_man": 9359,
+      "estimated_price_man": 9647,
       "estimated_tsubo_price_man": 477,
       "estimated_m2_price_man": 144,
       "shinchiku_history_count": 36,
@@ -22170,6 +22170,6 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T14:27:27.463550"
+    "cached_at": "2026-06-11T15:42:44.008786"
   }
 }
