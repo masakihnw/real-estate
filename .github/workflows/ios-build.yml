@@ -14,8 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ランナーにインストール済みの最新 Xcode を選択する。
+      # 以前は Xcode_16.0.app を固定していたが、macos-15 イメージ更新で
+      # この Xcode の iOS シミュレータ runtime が削除され、destination 解決に
+      # 失敗して CI が落ちた（iPhone 16/iOS18 が見つからない）。
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.0.app
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)
+          echo "Selecting ${XCODE:-(default)}"
+          [ -n "$XCODE" ] && sudo xcode-select -s "$XCODE"
+          xcodebuild -version
 
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -34,14 +42,27 @@ jobs:
       # NOTE: 以前は `| xcpretty || true` でビルド失敗が CI 上は常に成功扱いになっていた。
       # pipefail + || true 削除で失敗を正しく検知する。
       # Mac Catalyst ビルドは Mac 版廃止（2026-05-16）に伴い削除済み。
+      # destination はハードコードせず、実在する iPhone シミュレータを動的解決する
+      # （ランナーイメージ更新で特定のデバイス名/OSが消えても壊れないように）。
       - name: Build & Test (iOS)
         working-directory: real-estate-ios
         run: |
           set -o pipefail
+          echo "--- 利用可能な iOS シミュレータ ---"
+          xcrun simctl list devices available | grep -E "iPhone" || true
+          DEVICE=$(xcrun simctl list devices available \
+            | grep -oE "iPhone [0-9]+( Pro( Max)?| Plus| Air| mini)?" \
+            | sort -V | tail -1)
+          if [ -z "$DEVICE" ]; then
+            echo "::error::利用可能な iPhone シミュレータが見つかりません"
+            xcrun simctl list runtimes
+            exit 1
+          fi
+          echo "使用シミュレータ: $DEVICE"
           xcodebuild test \
             -project RealEstateApp.xcodeproj \
             -scheme RealEstateApp \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination "platform=iOS Simulator,name=$DEVICE" \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             | xcpretty
