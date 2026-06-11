@@ -47,6 +47,7 @@ from report_utils import clean_listing_name
 import scraper_metrics
 from scraper_common import (
     create_session,
+    sleep_with_jitter,
     dump_debug_html,
     load_station_passengers,
     station_passengers_ok,
@@ -88,7 +89,15 @@ _WARD_CODES = (
 
 MAX_PAGES_PER_WARD = 30
 PARALLEL_WARD_WORKERS = 3
-EARLY_EXIT_PAGES = 5
+# 早期打ち切り: 連続 N ページで通過0件なら区の残りをスキップ。
+# 5 はリスト並び順によっては末尾の通過物件を取りこぼすため、他媒体（10-20）に揃えて緩和
+EARLY_EXIT_PAGES = 10
+
+# パース0件ページの許容回数（suumo / livable と同じフェイルセーフ）
+EMPTY_PARSE_TOLERANCE = 2
+
+# パース0件時の再試行前ウェイト秒数
+EMPTY_PARSE_BACKOFF_SEC = 10
 
 
 @dataclass
@@ -125,7 +134,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
     """一覧ページのHTMLを取得。5xx/429/タイムアウト・接続エラー時はリトライする。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
-        time.sleep(REHOUSE_REQUEST_DELAY_SEC)
+        sleep_with_jitter(REHOUSE_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
@@ -311,10 +320,12 @@ def _scrape_ward(ward_code: str, apply_filter: bool,
     area_min = int(AREA_MIN_M2_FETCH) if AREA_MIN_M2_FETCH else 0
     pages_no_pass = 0
     ward_parsed = 0
+    consecutive_empty_parses = 0
     finish_reason = None
 
     try:
-        for page in range(1, MAX_PAGES_PER_WARD + 1):
+        page = 1
+        while page <= MAX_PAGES_PER_WARD:
             if page == 1:
                 url = _WARD_URL_TEMPLATE.format(
                     ward_code=ward_code, price_min=price_min, area_min=area_min)
@@ -332,13 +343,27 @@ def _scrape_ward(ward_code: str, apply_filter: bool,
             rows = parse_list_html(html)
             scraper_metrics.record("rehouse", parsed=len(rows))
             if not rows:
-                if ward_parsed == 0:
-                    # 区の1ページ目から0件 = botブロック / 構造変更 / 正規の0件区 のいずれか。
-                    # 切り分け用にHTMLを保全（複数区で発生すると媒体全損アラートが発火）
-                    scraper_metrics.record("rehouse", empty_pages=1)
-                    dump_debug_html("rehouse", ward_code, html)
-                finish_reason = "completed"
-                break
+                consecutive_empty_parses += 1
+                if consecutive_empty_parses >= EMPTY_PARSE_TOLERANCE:
+                    if ward_parsed == 0:
+                        # 区の全ページが0件 = botブロック / 構造変更 / 正規の0件区 のいずれか。
+                        # 切り分け用にHTMLを保全（複数区で発生すると媒体全損アラートが発火）
+                        scraper_metrics.record("rehouse", empty_pages=consecutive_empty_parses)
+                        dump_debug_html("rehouse", ward_code, html)
+                    finish_reason = "completed"
+                    break
+                logger.warning(
+                    f"rehouse: ward={ward_code} page={page} パース0件 (HTML: {len(html)}B, 連続: "
+                    f"{consecutive_empty_parses}/{EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
+                )
+                time.sleep(EMPTY_PARSE_BACKOFF_SEC)
+                page += 1
+                continue
+
+            if consecutive_empty_parses > 0:
+                # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
+                scraper_metrics.record("rehouse", empty_pages=consecutive_empty_parses)
+            consecutive_empty_parses = 0
             ward_parsed += len(rows)
 
             passed = 0
@@ -364,8 +389,10 @@ def _scrape_ward(ward_code: str, apply_filter: bool,
                 finish_reason = "early_exit"
                 break
 
+            page += 1
+
         if finish_reason is None:
-            # for ループを使い切った = 区上限ページ到達。rehouse は max_pages 指定に
+            # while を使い切った = 区上限ページ到達。rehouse は max_pages 指定に
             # 関わらず常に全ページ取得を試みる設計のため、上限到達は常に取りこぼしの可能性
             finish_reason = "safety_limit"
             logger.warning(
@@ -583,7 +610,7 @@ def enrich_rehouse_listings(listings: list[RehouseListing], session=None) -> lis
         if cached:
             detail = cached
         else:
-            time.sleep(REHOUSE_REQUEST_DELAY_SEC)
+            sleep_with_jitter(REHOUSE_REQUEST_DELAY_SEC)
             html = _fetch_detail_page(session, listing.url)
             detail = parse_rehouse_detail_html(html, listing.url)
             detail["cached_at"] = datetime.now(timezone.utc).isoformat()

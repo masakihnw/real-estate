@@ -42,6 +42,7 @@ from report_utils import clean_listing_name
 import scraper_metrics
 from scraper_common import (
     create_session,
+    sleep_with_jitter,
     dump_debug_html,
     load_station_passengers,
     station_passengers_ok,
@@ -76,6 +77,12 @@ MAX_PAGES_SAFETY = 50
 
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
 EARLY_EXIT_PAGES = 10
+
+# パース0件ページの許容回数（suumo / livable と同じフェイルセーフ）
+EMPTY_PARSE_TOLERANCE = 2
+
+# パース0件時の再試行前ウェイト秒数
+EMPTY_PARSE_BACKOFF_SEC = 10
 
 # athome の区名スラッグ（URL用）
 _ATHOME_WARD_SLUGS = (
@@ -176,7 +183,7 @@ def _fetch_list_page_requests(session: requests.Session, page: int, *, ward: str
         url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
-        time.sleep(ATHOME_REQUEST_DELAY_SEC)
+        sleep_with_jitter(ATHOME_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
@@ -383,7 +390,7 @@ def _fetch_detail_page_pw(context: "BrowserContext", url: str, *, max_retries: i
     for attempt in range(max_retries):
         pw_page = context.new_page()
         try:
-            time.sleep(ATHOME_REQUEST_DELAY_SEC)
+            sleep_with_jitter(ATHOME_REQUEST_DELAY_SEC)
             pw_page.goto(url, wait_until="domcontentloaded", timeout=45000)
             try:
                 pw_page.wait_for_selector("table, .property-detail", timeout=10000)
@@ -407,7 +414,7 @@ def _fetch_detail_page_requests(session: requests.Session, url: str) -> str:
     """requests 版の詳細ページ取得（フォールバック）。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
-        time.sleep(ATHOME_REQUEST_DELAY_SEC)
+        sleep_with_jitter(ATHOME_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
@@ -656,6 +663,7 @@ def _scrape_ward_pages(
     page = 1
     pages_since_last_pass = 0
     ward_parsed = 0
+    consecutive_empty_parses = 0
     finish_reason = None
 
     try:
@@ -678,17 +686,30 @@ def _scrape_ward_pages(
             rows = parse_list_html(html)
             scraper_metrics.record("athome", parsed=len(rows))
             if not rows:
-                if ward_parsed == 0:
-                    # 区の1ページ目から0件 = botブロック / HTML構造変更 / 正規の0件区
-                    # のいずれか。切り分けのため実HTMLを保全し、空ページとして計上する
-                    # （全区で発生すると parsed=0 の媒体全損アラートも発火する）。
-                    scraper_metrics.record("athome", empty_pages=1)
-                    dump_debug_html("athome", ward, html)
-                else:
-                    logger.info("athome/%s: ページ%dで0件パース（一覧の終端）", ward, page)
-                finish_reason = "completed"
-                break
+                consecutive_empty_parses += 1
+                if consecutive_empty_parses >= EMPTY_PARSE_TOLERANCE:
+                    if ward_parsed == 0:
+                        # 区の全ページが0件 = botブロック / HTML構造変更 / 正規の0件区
+                        # のいずれか。切り分けのため実HTMLを保全し、空ページとして計上する
+                        # （全区で発生すると parsed=0 の媒体全損アラートも発火する）。
+                        scraper_metrics.record("athome", empty_pages=consecutive_empty_parses)
+                        dump_debug_html("athome", ward, html)
+                    else:
+                        logger.info("athome/%s: ページ%dで連続%d回0件パース（一覧の終端）", ward, page, consecutive_empty_parses)
+                    finish_reason = "completed"
+                    break
+                logger.warning(
+                    "athome/%s: ページ%dでパース0件 (HTML: %dB, 連続: %d/%d) — 次ページへ進みます",
+                    ward, page, len(html), consecutive_empty_parses, EMPTY_PARSE_TOLERANCE,
+                )
+                time.sleep(EMPTY_PARSE_BACKOFF_SEC)
+                page += 1
+                continue
 
+            if consecutive_empty_parses > 0:
+                # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
+                scraper_metrics.record("athome", empty_pages=consecutive_empty_parses)
+            consecutive_empty_parses = 0
             ward_parsed += len(rows)
             passed = 0
             for row in rows:

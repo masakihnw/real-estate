@@ -92,6 +92,7 @@ def _run_scrape(monkeypatch, pages: dict[int, int], max_pages: int = 0) -> list:
 
     monkeypatch.setattr(nomucom_scraper, "parse_list_html", fake_parse)
     monkeypatch.setattr(nomucom_scraper, "dump_debug_html", lambda *a: None)
+    monkeypatch.setattr(nomucom_scraper, "EMPTY_PARSE_BACKOFF_SEC", 0)
     return list(nomucom_scraper.scrape_nomucom(max_pages=max_pages, apply_filter=False))
 
 
@@ -105,12 +106,22 @@ class TestScrapeLoopFinishReasons:
         assert scraper_metrics.health_alerts() == []
 
     def test_empty_first_page_records_abort(self, monkeypatch):
+        """全ページ空のときは連続2回（tolerance）試した上で全損として記録。"""
         results = _run_scrape(monkeypatch, {1: 0})
         assert results == []
         entry = scraper_metrics.get_all()["nomucom"]
         assert entry["finish_reasons"] == {"empty_parse_abort": 1}
-        assert entry["empty_pages"] == 1
+        assert entry["empty_pages"] == 2  # EMPTY_PARSE_TOLERANCE 回分
         assert any("媒体全損" in a for a in scraper_metrics.health_alerts())
+
+    def test_single_empty_page_does_not_abort(self, monkeypatch):
+        """空ページ1回では打ち切らず、後続ページの物件を取りこぼさない。"""
+        results = _run_scrape(monkeypatch, {1: 3, 2: 0, 3: 2})
+        assert len(results) == 5, "空ページ1回で残ページが打ち切られている"
+        entry = scraper_metrics.get_all()["nomucom"]
+        assert entry["parsed"] == 5
+        assert entry["empty_pages"] == 1  # 途中ギャップのみ（終端の連続空は正常終端）
+        assert entry["finish_reasons"] == {"completed": 1}
 
     def test_safety_limit_reached_alerts(self, monkeypatch):
         """100ページちょうどで「完了」と報告していた問題: 上限到達を区別して警告する。"""
