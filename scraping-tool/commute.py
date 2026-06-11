@@ -28,9 +28,10 @@ ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 
 # 通勤先: key -> (表示ラベル, 最寄駅メモ)
+# 実住所・名称は commute_offices（環境変数 COMMUTE_OFFICES_JSON）が正。
 COMMUTE_DESTINATIONS = {
-    "m3career": ("オフィスB", "虎ノ門"),   # 港区虎ノ門4-1-28 （勤務地ビル）オフィス
-    "playground": ("playground(一番町)", "半蔵門"),  # 千代田区（勤務地） 一番町中央ビル
+    "m3career": ("オフィスB", "虎ノ門"),
+    "playground": ("オフィスA", "半蔵門"),
 }
 
 _cache: dict[str, dict[str, int]] = {}

@@ -40,7 +40,7 @@ struct CommuteDestinationSettingsView: View {
                     if isAddingNew {
                         VStack(spacing: 12) {
                             TextField("名前（例: 会社名）", text: $newName)
-                            TextField("住所（例: 千代田区（勤務地））", text: $newAddress)
+                            TextField("住所（例: 千代田区◯◯1-2-3）", text: $newAddress)
                             HStack {
                                 Button("キャンセル") {
                                     isAddingNew = false

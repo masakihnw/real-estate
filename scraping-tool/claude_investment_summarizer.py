@@ -33,10 +33,15 @@ FILTER_PRICE_FAIRNESS_MIN = 60
 REANALYZE_LISTING_SCORE_MIN = 65
 
 _BUYER_PROFILE_PATH = Path(__file__).resolve().parent / "config" / "buyer_profile.json"
-_DEFAULT_USER_ID = os.environ.get("BUYER_PROFILE_USER_ID", "[USER_ID]")
+# user_id は環境変数 BUYER_PROFILE_USER_ID から取得する（リポジトリにハードコードしない）。
+# 未設定の場合は Supabase 参照をスキップし、ローカル buyer_profile.json にフォールバックする。
+_DEFAULT_USER_ID = os.environ.get("BUYER_PROFILE_USER_ID", "")
 
 
 def _load_buyer_profile_from_supabase(user_id: str = _DEFAULT_USER_ID) -> Optional[dict]:
+    if not user_id:
+        logger.info("BUYER_PROFILE_USER_ID 未設定のため Supabase 参照をスキップ")
+        return None
     try:
         import supabase_client
         client = supabase_client.get_client()

@@ -112,56 +112,39 @@ struct BuyerProfile: Codable, Equatable {
             }
         }
 
-        if !budgetScenarios.isEmpty {
-            md += "\n### 予算シナリオ\n\n"
-            for scenario in budgetScenarios {
-                let label = scenario["label"] ?? ""
-                let value = scenario["value"] ?? ""
-                let note = scenario["note"] ?? ""
-                if !label.isEmpty {
-                    let suffix = note.isEmpty ? "" : "（\(note)）"
-                    md += "- **\(label)**: \(value)\(suffix)\n"
-                }
-            }
-        }
-
         return md
     }
 
     // MARK: - Presets
 
+    // 新規インストール時のプレースホルダ既定値。実データは入れない
+    // （実運用の買い手条件は Supabase `buyer_profiles` が正）。
     static let preset = BuyerProfile(
-        familyComposition: "夫（1997年生まれ）・妻（1996年生まれ）、子どもなし",
-        householdIncome: "（金額）",
-        selfFunds: "なし（フルローン）",
-        plannedBorrowing: "諸費用(物件価格の約6%)+物件価格全額。FP相談(2026/6/1)で与信最大額までの借入も理論上問題なしと確認。仲介MTG(2026/6/8)以降は予算を二段構えで運用(探索上限1.3億／実質アンカー物件1.1億前後)。試算例は物件1.1億・ペア借入約1.169億・50年・変動・頭金なし。",
+        familyComposition: "夫（YYYY年生まれ）・妻（YYYY年生まれ）、子ども○人",
+        householdIncome: "○○○○万円",
+        selfFunds: "○○○万円（または「なし（フルローン）」）",
+        plannedBorrowing: "借入方針の説明（諸費用・物件価格・ペア借入の有無など）",
         interestType: .variable,
-        estimatedRate: "1.3%（FPライフプラン設計時の前提金利）",
-        repaymentYears: "50年",
-        monthlyPaymentLimit: "実質上限はローン返済30万円/月以内(金利1.5%想定)。総額(管理費・修繕積立金・固定資産税込み)で約33万円/月。制約は①与信枠 ②産休育休期間のキャッシュフロー成立性。資金計画書(2026/6/8)では1.5%でローン約27.7万・2.0%で約30.8万。",
-        workStyle: "夫：基本出社（随時リモート可）、勤務地(東京都千代田区（勤務地）) 妻：週1リモート・関西/東海に隔週出張あり、勤務地(東京都港区虎ノ門4-1-28)",
-        childPlan: "3人想定（第1子2025年、第2子2027年、第3子2030年）。全員中学から私立・大学は私立文系想定。",
-        relocationReason: "子どもの増加・成長に伴い手狭になるため。5〜10年単位で住み替え続ける予定",
+        estimatedRate: "○.○%",
+        repaymentYears: "○○年",
+        monthlyPaymentLimit: "月返済・月総額の上限や制約条件の説明",
+        workStyle: "夫：勤務形態 妻：勤務形態（勤務地は設定画面で入力）",
+        childPlan: "子ども計画の説明（人数・想定時期・教育方針など）",
+        relocationReason: "住み替え理由の説明",
         postSaleStrategy: .sellOnly,
-        priorities: "1.資産性（5〜10年後の売却時に残債割れしないこと＝最重要） 2.間取り（LDK隣接でない独立した部屋＝赤ちゃん寝室用） 3.広さ（60㎡以上希望） 4.エリア（都心アクセス）",
+        priorities: "優先順位（資産性・間取り・広さ・エリア等）",
         currentHousing: "賃貸",
         neighborhoodPreference: "",
         schoolPriority: "",
-        commuteQuality: "夫は自転車で45分圏内なら自転車通勤希望(自転車の方が電車通勤よりドアtoドアで所用時間短い場合)",
+        commuteQuality: "通勤に関する希望の説明",
         weekendLifestyle: "",
         communityPreference: "",
         dealBreakers: "",
         lifeScenarios: [],
-        budgetScenarios: [
-            ["label": "探索上限", "value": "1.3億円", "note": "売出は査定+5〜10%の割高が常。1.3億売出でも成約1.1億台になり得るため、値下げ待ちでマークする上限として網を広げる"],
-            ["label": "実質アンカー", "value": "物件価格1.1億円前後", "note": "月返済30万円以内（金利1.5%想定）で成立する安心圏"],
-            ["label": "月返済上限", "value": "ローン返済30万円/月以内", "note": "金利1.5%想定。管理費・修繕積立金・固定資産税を含む総額で約33万円/月"],
-            ["label": "1.1億超の判断", "value": "個別判断", "note": "安全余白・値下げ余地・本気度（買い直したくないと思える物件か）で可否を決める。煽りや相場高騰を理由に上限は上げない"],
-            ["label": "資金計画(2026/6/8)", "value": "物件1.1億・ペア借入約1.169億・50年・変動", "note": "1.5%でローン約27.7万、2.0%で約30.8万。諸費用約692万はフルローンに含む"],
-        ],
+        budgetScenarios: [],
         preferredAreas: [],
         mustHaveFeatures: [],
-        timeline: "半年以内",
+        timeline: "購入時期の目安",
         riskTolerance: "中〜高",
         updatedAt: Date()
     )
