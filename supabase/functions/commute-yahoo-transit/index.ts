@@ -1,9 +1,28 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const OFFICES: Record<string, { address: string; name: string }> = {
-  playground: { address: "千代田区（勤務地）", name: "オフィスA" },
-  m3career: { address: "港区虎ノ門4-1-28", name: "オフィスB株式会社" },
+// 実住所・名称はリポジトリに置かず、環境変数 COMMUTE_OFFICES_JSON から注入する。
+// リポジトリにはプレースホルダ既定値のみを保持する（slug はロゴ等の製品機能として保持）。
+const DEFAULT_OFFICES: Record<string, { address: string; name: string }> = {
+  playground: { address: "東京都（住所未設定）", name: "オフィスA" },
+  m3career: { address: "東京都（住所未設定）", name: "オフィスB" },
 };
+
+function loadOffices(): Record<string, { address: string; name: string }> {
+  const raw = Deno.env.get("COMMUTE_OFFICES_JSON");
+  if (!raw) return DEFAULT_OFFICES;
+  try {
+    const override = JSON.parse(raw) as Record<string, Partial<{ address: string; name: string }>>;
+    const merged: Record<string, { address: string; name: string }> = {};
+    for (const key of Object.keys(DEFAULT_OFFICES)) {
+      merged[key] = { ...DEFAULT_OFFICES[key], ...(override[key] ?? {}) };
+    }
+    return merged;
+  } catch (_e) {
+    return DEFAULT_OFFICES;
+  }
+}
+
+const OFFICES: Record<string, { address: string; name: string }> = loadOffices();
 
 const BATCH_SIZE = 20;
 const MAX_MINUTES = 120;

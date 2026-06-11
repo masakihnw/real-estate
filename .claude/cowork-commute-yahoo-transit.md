@@ -6,8 +6,9 @@ Supabase上のアクティブな物件に対して、Yahoo路線情報（WebFetc
 
 ## オフィス情報
 
-- **playground**: 千代田区（勤務地）（オフィスA）
-- **m3career**: 港区虎ノ門4-1-28（オフィスB株式会社）
+通勤先2箇所（slug: `playground` / `m3career`）。実住所・名称は環境変数
+`COMMUTE_OFFICES_JSON` / Supabase で管理する（このドキュメントに実住所を書かない）。
+以下の手順内の `{playground_address}` / `{m3career_address}` は実行時に注入する。
 
 ## 手順
 
@@ -36,12 +37,12 @@ LIMIT 20;
 
 **playground:**
 ```
-https://transit.yahoo.co.jp/search/result?from={ss_address}&to=千代田区（勤務地）&type=4&dt={YYYYMMDD}&tm=0900
+https://transit.yahoo.co.jp/search/result?from={ss_address}&to={playground_address}&type=4&dt={YYYYMMDD}&tm=0900
 ```
 
 **m3career:**
 ```
-https://transit.yahoo.co.jp/search/result?from={ss_address}&to=港区虎ノ門4-1-28&type=4&dt={YYYYMMDD}&tm=0900
+https://transit.yahoo.co.jp/search/result?from={ss_address}&to={m3career_address}&type=4&dt={YYYYMMDD}&tm=0900
 ```
 
 - `{YYYYMMDD}`: 次の平日の日付（土日祝を避ける）
