@@ -1878,5 +1878,29 @@
     "quarter": "平河町",
     "neighbourhood": "平河町一丁目",
     "city_district": ""
+  },
+  "35.640311,139.788022": {
+    "display_name": "有明一丁目, 有明, 江東区, 東京都, 135-0063, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "有明",
+    "neighbourhood": "有明一丁目",
+    "city_district": ""
+  },
+  "35.685516,139.649017": {
+    "display_name": "堀ノ内一丁目, 堀ノ内, 杉並区, 東京都, 166-0013, 日本",
+    "city": "杉並区",
+    "suburb": "",
+    "quarter": "堀ノ内",
+    "neighbourhood": "堀ノ内一丁目",
+    "city_district": ""
+  },
+  "35.683407,139.657267": {
+    "display_name": "方南通り, 方南二丁目, 方南, 杉並区, 東京都, 168-0062, 日本",
+    "city": "杉並区",
+    "suburb": "",
+    "quarter": "方南",
+    "neighbourhood": "方南二丁目",
+    "city_district": ""
   }
 }

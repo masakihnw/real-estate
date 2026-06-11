@@ -25,263 +25,53 @@
 
 ---
 
-**更新日時**: 2026年06月11日 19:05（JST）
-**対象件数**: 1090件（資産性B以上 / 全1106件中）
+**更新日時**: 2026年06月11日 21:30（JST）
+**対象件数**: 1095件（資産性B以上 / 全1112件中）
 
 ## 🆕 新規物件
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 所在地 | Google Map | 詳細 |
 |--------|------|--------|------|------|--------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|--------|------------|------|
-|  | 1億3000万円 | 3LDK | 73.6㎡ | 築2001年 | 護国寺駅 徒歩6分 | 9階/15階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 26分 | 18分 | 東京都豊島区雑司が谷1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E9%9B%91%E5%8F%B8%E3%81%8C%E8%B0%B71%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037824/) |
-| パークハウス東中野リヴゴーシュ 5階 | 1億2980万円 | 3LDK | 70.7㎡ | 築2011年 | 落合駅 徒歩7分 | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分 | 28分 | 東京都中野区東中野5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%B1%E4%B8%AD%E9%87%8E%E3%83%AA%E3%83%B4%E3%82%B4%E3%83%BC%E3%82%B7%E3%83%A5%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1219650013275/) |
-| ケルン大塚台 9階 | 1億2980万円 | 3LDK | 73.0㎡ | 築1999年 | 向原駅 徒歩1分 | 9階/14階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 51分 | 45分 | 東京都豊島区東池袋4丁目10 38 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B1%E3%83%AB%E3%83%B3%E5%A4%A7%E5%A1%9A%E5%8F%B0%209%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-37074420000827/) |
-| イトーピアマイズ池袋 11階 | 1億2900万円 | 3LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 26分 | 18分 | 東京都豊島区東池袋5丁目8-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%88%E3%83%BC%E3%83%94%E3%82%A2%E3%83%9E%E3%82%A4%E3%82%BA%E6%B1%A0%E8%A2%8B%2011%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1421770026658/) |
-| パークタワー池袋イーストプレイス | 1億2800万円 | 2LDK | 64.3㎡ | 築2008年 | 東池袋駅 徒歩8分 | 17階/31階建 | 204戸 |  |  | - | - | - | 31.9万円/月 | 26分 | 20分 | 豊島区東池袋３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%B1%A0%E8%A2%8B%E3%82%A4%E3%83%BC%E3%82%B9%E3%83%88%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B9) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BFA05/) |
-| ParkHOMES巣鴨 Central avenue 3階 | 1億2800万円 | 2SLDK | 73.4㎡ | 築2005年 | 庚申塚駅 徒歩2分 | 3階/8階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 35分 | 28分 | 東京都豊島区巣鴨4丁目29-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=ParkHOMES%E5%B7%A3%E9%B4%A8%20Central%20avenue%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1354210002485/) |
-| 中野坂上パークホームズ 5階 | 1億2780万円 | 3LDK | 71.5㎡ | 築2000年 | 中野坂上駅 徒歩8分 | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 31.8万円/月 | 24分 | 24分 | 東京都中野区中央1丁目50 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E9%87%8E%E5%9D%82%E4%B8%8A%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1541220001207/) |
-| 菱和パレス目白台グラーサ 9階 | 1億2500万円 | 3LDK | 73.6㎡ | 築2001年 | 護国寺 徒歩6分 | 9階/15階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 26分 | 18分 | 東京都豊島区雑司が谷1丁目49-11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%8F%B1%E5%92%8C%E3%83%91%E3%83%AC%E3%82%B9%E7%9B%AE%E7%99%BD%E5%8F%B0%E3%82%B0%E3%83%A9%E3%83%BC%E3%82%B5%209%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1535990004526/) |
-|  | 1億2480万円 | 3LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 28分 | 22分 | 東京都豊島区東池袋5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E6%9D%B1%E6%B1%A0%E8%A2%8B5%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037458/) |
-| イトーピアマイズ池袋 8階 | 1億1900万円 | 2LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 8階/14階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 26分 | 18分 | 東京都豊島区東池袋5丁目8-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%88%E3%83%BC%E3%83%94%E3%82%A2%E3%83%9E%E3%82%A4%E3%82%BA%E6%B1%A0%E8%A2%8B%208%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1404770001838/) |
-| サンクレイドルレヴィ―ル池袋 10階 | 1億1000万円 | 2SLDK | 72.9㎡ | 築2003年 | 要町駅 徒歩8分 | 10階/14階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 35分 | 26分 | 東京都豊島区池袋2丁目28-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%AF%E3%83%AC%E3%82%A4%E3%83%89%E3%83%AB%E3%83%AC%E3%83%B4%E3%82%A3%E2%80%95%E3%83%AB%E6%B1%A0%E8%A2%8B%2010%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-37074420000862/) |
-|  | 1億1000万円 | 2SLDK | 72.9㎡ | 築2003年 | 池袋駅 徒歩9分 | 10階/14階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 35分 | 26分 | 東京都豊島区上池袋2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E4%B8%8A%E6%B1%A0%E8%A2%8B2%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037614/) |
-|  | 1億1000万円 | 2LDK | 68.1㎡ | 築2006年 | 新庚申塚駅 徒歩3分 | 15階/29階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 40分 | 30分 | 東京都豊島区巣鴨4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E5%B7%A3%E9%B4%A84%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048625/) |
-| オープンレジデンシア中野新井コート 2階 | 1億980万円 | 2SLDK | 62.9㎡ | 築2023年 | 新井薬師前駅 徒歩9分 | 2階/5階建 | 戸数:不明 | B |  | - | - | - | 27.8万円/月 | 46分（43-51分） | 42分（39-47分） | 東京都中野区新井1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B7%E3%82%A2%E4%B8%AD%E9%87%8E%E6%96%B0%E4%BA%95%E3%82%B3%E3%83%BC%E3%83%88%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1535080000573/) |
-| グランドメゾン江古田の杜 8階 | 1億680万円 | 3LDK | 76.6㎡ | 築2018年 | 新江古田駅 徒歩10分 | 8階/15階建 | 戸数:不明 |  |  | - | - | - | 27.2万円/月 | 50分 | 40分 | 東京都中野区江古田3丁目14-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%89%E3%83%A1%E3%82%BE%E3%83%B3%E6%B1%9F%E5%8F%A4%E7%94%B0%E3%81%AE%E6%9D%9C%208%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1559200000002/) |
-|  | 1億598万円 | 3LDK | 95.5㎡ | 築1997年 | 北池袋駅 徒歩9分 | 6階/14階建 | 120戸 |  |  | - | - | - | 27.0万円/月 | 46分（43-51分） | 39分（36-44分） | 東京都豊島区上池袋4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E4%B8%8A%E6%B1%A0%E8%A2%8B4%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590047971/) |
-| クリオ大塚弐番館 4階 | 1億499万円 | 3LDK | 68.5㎡ | 築2001年 | 巣鴨新田駅 徒歩4分 | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 30分 | 24分 | 東京都豊島区北大塚3丁目22-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E5%A4%A7%E5%A1%9A%E5%BC%90%E7%95%AA%E9%A4%A8%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1192950012922/) |
-| マイキャッスル駒込パークヒルズ 5階 | 1億499万円 | 2LDK | 61.5㎡ | 築2002年 | 駒込駅 徒歩2分 | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 40分 | 30分 | 東京都豊島区駒込1丁目31-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E9%A7%92%E8%BE%BC%E3%83%91%E3%83%BC%E3%82%AF%E3%83%92%E3%83%AB%E3%82%BA%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1267650036171/) |
-|  | 1億2999万円 | 3LDK | 85.2㎡ | 築2003年 | 下高井戸駅 徒歩6分 | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 59分（56-64分） | 56分（53-61分） | 東京都世田谷区松原3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E6%9D%BE%E5%8E%9F3%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038248/) |
-| エルザ世田谷 29階 | 1億2980万円 | 3LDK | 98.6㎡ | 築2005年 | 千歳烏山駅 徒歩7分 | 29階/29階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 45分 | 45分 | 東京都世田谷区北烏山6丁目11-3<仲介 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%2029%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1392830001457/) |
-| Ｄ’グランセ駒沢公園 2階 | 1億2980万円 | 3LDK | 82.9㎡ | 築2004年 | 駒沢大学駅 徒歩4分 | 2階/3階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分 | 35分 | 東京都世田谷区駒沢5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%A4%E2%80%99%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%BB%E9%A7%92%E6%B2%A2%E5%85%AC%E5%9C%92%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1371630000479/) |
-| オープンレジデンシア目白 1階 | 1億280万円 | 3LDK | 69.3㎡ | 築2014年 | 目白駅 徒歩8分 | 1階/RC3階地下1階建 | 18戸 |  |  | - | - | - | 26.3万円/月 | 35分 | 24分 | 東京都豊島区目白４－４３－１６７他 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B7%E3%82%A2%E7%9B%AE%E7%99%BD%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007530000106/) |
-| リムテラスコート桜新町一丁目 1階 | 1億2800万円 | 2SLDK | 77.2㎡ | 築2016年 | 桜新町駅 徒歩4分 | 1階/2階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 35分 | 35分 | 東京都世田谷区桜新町1丁目8-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%88%E6%A1%9C%E6%96%B0%E7%94%BA%E4%B8%80%E4%B8%81%E7%9B%AE%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1461210002249/) |
-| リムテラスコート桜新町一丁目 2階 | 1億2800万円 | 3LDK | 77.2㎡ | 築2016年 | 桜新町駅 徒歩4分 | 2階/2階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 35分 | 35分 | 東京都世田谷区桜新町1丁目8-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%88%E6%A1%9C%E6%96%B0%E7%94%BA%E4%B8%80%E4%B8%81%E7%9B%AE%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1364890000417/) |
-| アンセフォルム深沢 2階 | 1億2680万円 | 3LDK | 76.1㎡ | 築1998年 | 自由が丘駅 徒歩2分 | 2階/4階建 | 戸数:不明 |  |  | - | - | - | 31.6万円/月 | 55分（52-60分） | 52分（49-57分） | 東京都世田谷区深沢4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%B3%E3%82%BB%E3%83%95%E3%82%A9%E3%83%AB%E3%83%A0%E6%B7%B1%E6%B2%A2%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007290000226/) |
-| ヴェレーナグラン二子玉川 3階 | 1億2500万円 | 2SLDK | 64.4㎡ | 築2024年 | 上野毛駅 徒歩10分 | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 50分 | 50分 | 東京都世田谷区上野毛2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%B4%E3%82%A7%E3%83%AC%E3%83%BC%E3%83%8A%E3%82%B0%E3%83%A9%E3%83%B3%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1020740089389/) |
-|  | 1億2490万円 | 3LDK | 67.9㎡ | 築2016年 | 経堂駅 徒歩2分 | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 35分 | 40分 | 東京都世田谷区桜上水1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E6%A1%9C%E4%B8%8A%E6%B0%B41%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038337/) |
-| エルザ世田谷 24階 | 1億2480万円 | 3LDK | 81.1㎡ | 築2005年 | 千歳烏山駅 徒歩7分 | 24階/29階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 40分 | 45分 | 東京都世田谷区北烏山6丁目11-3<仲介 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%2024%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1102010000652/) |
-| ライオンズステージ中野中央 1階 | 9980万円 | 3LDK | 72.0㎡ | 築2004年 | 新中野駅 徒歩6分 | 1階/10階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 35分 | 35分 | 東京都中野区中央5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%B3%E3%82%BA%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E4%B8%AD%E9%87%8E%E4%B8%AD%E5%A4%AE%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1392830001452/) |
-| ザ・パークハウス 二子玉川ガーデン 6階 | 1億2200万円 | 2LDK | 62.8㎡ | 築2015年 | 二子玉川 徒歩10分 | 6階/9階建 | 戸数:不明 |  |  | - | - | - | 30.6万円/月 | 45分 | 40分 | 東京都世田谷区瀬田4丁目15-36 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%20%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%206%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1388970017758/) |
-|  | 9790万円 | 3LDK | 70.3㎡ | 築1997年 | ■シスナブ池袋本町■ペット飼育2匹飼育◎板橋駅 徒歩5分 | 5階/19階建 | 563戸 |  |  | - | - | - | 25.2万円/月 | 47分（44-52分） | 42分（39-47分） | 東京都豊島区池袋本町4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E6%B1%A0%E8%A2%8B%E6%9C%AC%E7%94%BA4%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390036839/) |
-| レヂオンス巣鴨 4階 | 9680万円 | 3LDK | 63.1㎡ | 築1998年 | 新庚申塚駅 徒歩3分 | 4階/14階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 35分 | 28分 | 東京都豊島区巣鴨5丁目15-8 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%83%82%E3%82%AA%E3%83%B3%E3%82%B9%E5%B7%A3%E9%B4%A8%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1072760000648/) |
-| 〜最上階ルーフバルコニー付き3方面角〜テラッツァ祖師ヶ谷大蔵 | 1億1980万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵駅 徒歩9分 | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 35分 | 34分 | 東京都世田谷区砧3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%80%9C%E6%9C%80%E4%B8%8A%E9%9A%8E%E3%83%AB%E3%83%BC%E3%83%95%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E4%BB%98%E3%81%8D3%E6%96%B9%E9%9D%A2%E8%A7%92%E3%80%9C%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A1%E7%A5%96%E5%B8%AB%E3%83%B6%E8%B0%B7%E5%A4%A7%E8%94%B5%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1417040006841/) |
-| シスナブ池袋本町 19階 | 9480万円 | 3LDK | 70.3㎡ | 築1997年 | 板橋 徒歩6分 | 19階/19階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 35分 | 28分 | 東京都豊島区池袋本町4丁目47-12 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%82%B9%E3%83%8A%E3%83%96%E6%B1%A0%E8%A2%8B%E6%9C%AC%E7%94%BA%2019%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35006120000104/) |
-| フォーリア駒沢公園パークサイド 2階 | 1億1550万円 | 3LDK | 77.6㎡ | 築1996年 | 駒沢大学駅 徒歩2分 | 2階/9階建 | 戸数:不明 |  |  | - | - | - | 29.1万円/月 | 40分 | 35分 | 東京都世田谷区深沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AA%E3%82%A2%E9%A7%92%E6%B2%A2%E5%85%AC%E5%9C%92%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B5%E3%82%A4%E3%83%89%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1534560001309/) |
-| プラティーク三軒茶屋 13階 | 1億1498万円 | 2LDK | 63.8㎡ | 築2003年 | 三軒茶屋駅 徒歩4分 | 13階/14階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 22分 | 22分 | 東京都世田谷区三軒茶屋1丁目32-8 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AF%E4%B8%89%E8%BB%92%E8%8C%B6%E5%B1%8B%2013%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1465310000321/) |
-| THE 桜新町 TERRACE 1階 | 1億1480万円 | 3LDK | 72.0㎡ | 築2018年 | 桜新町 徒歩6分 | 1階/薄板軽量型鋼造2階建 | 19戸 |  |  | - | - | - | 28.9万円/月 | 40分 | 33分 | 東京都世田谷区桜新町１－２５ | [Google Map](https://www.google.com/maps/search/?api=1&query=THE%20%E6%A1%9C%E6%96%B0%E7%94%BA%20TERRACE%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1200350005562/) |
-| 成城テラス 1階 | 1億1480万円 | 2LDK | 99.5㎡ | 築2006年 | 成城学園前駅 徒歩6分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 49分 | 41分 | 東京都世田谷区成城2丁目6-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%88%90%E5%9F%8E%E3%83%86%E3%83%A9%E3%82%B9%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1533000000463/) |
-| エルザ世田谷ザタワー 14階 | 1億1480万円 | 3LDK | 81.1㎡ | 築2006年 | 千歳烏山駅 徒歩7分 | 14階/29階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 45分 | 45分 | 東京都世田谷区北烏山6丁目11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%E3%82%B6%E3%82%BF%E3%83%AF%E3%83%BC%2014%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1491240002071/) |
-| グランドメゾン江古田の杜 1階 | 9190万円 | 3LDK | 71.8㎡ | 築2018年 | 新江古田駅 徒歩10分 | 1階/15階建 | 戸数:不明 |  |  | - | - | - | 23.9万円/月 | 50分 | 40分 | 東京都中野区江古田3丁目14-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%89%E3%83%A1%E3%82%BE%E3%83%B3%E6%B1%9F%E5%8F%A4%E7%94%B0%E3%81%AE%E6%9D%9C%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1559200000003/) |
-|  | 1億1250万円 | 2SLDK | 70.3㎡ | 築2000年 | 用賀駅 徒歩5分 | 2階/8階建 | 戸数:不明 |  |  | - | - | - | 28.4万円/月 | 35分 | 39分 | 東京都世田谷区用賀2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E7%94%A8%E8%B3%802%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038298/) |
-|  | 1億1198万円 | 3LDK | 77.2㎡ | 築2004年 | 駒沢大学駅 徒歩10分 | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 28.3万円/月 | 28分 | 35分 | 東京都世田谷区野沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E9%87%8E%E6%B2%A22%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037862/) |
-|  | 1億980万円 | 2SLDK | 81.8㎡ | 築2012年 | 東松原駅 徒歩4分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 30分 | 30分 | 東京都世田谷区羽根木1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E7%BE%BD%E6%A0%B9%E6%9C%A81%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037562/) |
-|  | 1億980万円 | 3LDK | 80.2㎡ | 築1998年 | 上野毛駅 徒歩8分 | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 48分 | 50分 | 東京都世田谷区上野毛2丁目22-9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E4%B8%8A%E9%87%8E%E6%AF%9B2%E4%B8%81%E7%9B%AE22-9) | [詳細](https://www.homes.co.jp/mansion/b-1388970017950/) |
-| 〜最上階ルーフバルコニー付き3方面角〜テラッツァ祖師ヶ谷大蔵 | 1億580万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵駅 徒歩9分 | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 27.0万円/月 | 35分 | 34分 | 東京都世田谷区砧3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%80%9C%E6%9C%80%E4%B8%8A%E9%9A%8E%E3%83%AB%E3%83%BC%E3%83%95%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E4%BB%98%E3%81%8D3%E6%96%B9%E9%9D%A2%E8%A7%92%E3%80%9C%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A1%E7%A5%96%E5%B8%AB%E3%83%B6%E8%B0%B7%E5%A4%A7%E8%94%B5%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1557720000131/) |
-| アトラスシティ千歳烏山グランスイート　風の棟 4階 | 9990万円 | 3LDK | 62.7㎡ | 築2025年 | 千歳烏山駅 徒歩10分 | 4階/4階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 67分（64-72分） | 67分（64-72分） | 東京都世田谷区給田3丁目9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%88%E3%83%A9%E3%82%B9%E3%82%B7%E3%83%86%E3%82%A3%E5%8D%83%E6%AD%B3%E7%83%8F%E5%B1%B1%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88%E3%80%80%E9%A2%A8%E3%81%AE%E6%A3%9F%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1491240001987/) |
-| 羽根木の森レジデンス 1階 | 9980万円 | 2SLDK | 81.8㎡ | 築2012年 | 東松原 徒歩4分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 30分 | 30分 | 東京都世田谷区羽根木1丁目21-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%BE%BD%E6%A0%B9%E6%9C%A8%E3%81%AE%E6%A3%AE%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1130740003659/) |
-|  | 9430万円 | 3LDK | 76.4㎡ | 築2003年 | 渋谷駅 徒歩3分 | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 24.4万円/月 | 45分 | 45分 | 東京都世田谷区上用賀4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E4%B8%8A%E7%94%A8%E8%B3%804%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037130/) |
-| ザ・パークハウス板橋大山大楠ノ杜楠館 7階 | 1億2980万円 | 3LDK | 77.8㎡ | 築2023年 | 大山駅 徒歩7分 | 7階/14階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 37分（34-42分） | 31分（28-36分） | 東京都板橋区大山町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%BF%E6%A9%8B%E5%A4%A7%E5%B1%B1%E5%A4%A7%E6%A5%A0%E3%83%8E%E6%9D%9C%E6%A5%A0%E9%A4%A8%207%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35006120000106/) |
-| プラウドタワー小岩フロント 27階 | 1億2780万円 | 3LDK | 73.1㎡ | 築2025年 | 【小岩駅 徒歩3分 | 27階/33階建 | 戸数:不明 |  |  | - | - | - | 31.8万円/月 | 55分（52-60分） | 55分（52-60分） | 東京都江戸川区南小岩6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%BF%E3%83%AF%E3%83%BC%E5%B0%8F%E5%B2%A9%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%2027%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1391790007327/) |
-|  | 1億2780万円 | 3LDK | 73.1㎡ | 築2025年 | 新小岩駅 徒歩3分 | 27階/33階建 | 戸数:不明 |  |  | - | - | - | 31.8万円/月 | 55分（52-60分） | 55分（52-60分） | 東京都江戸川区南小岩6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%88%B8%E5%B7%9D%E5%8C%BA%E5%8D%97%E5%B0%8F%E5%B2%A96%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037889/) |
-| イニシア千住曙町 5階 | 1億2500万円 | 3LDK | 94.8㎡ | 築2009年 | 京成関屋駅 徒歩5分 | 5階/RC24階地下1階建 | 515戸 | B |  | - | - | - | 31.2万円/月 | 45分 | 40分 | 東京都足立区千住曙町４０－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%8B%E3%82%B7%E3%82%A2%E5%8D%83%E4%BD%8F%E6%9B%99%E7%94%BA%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35005410000924/) |
-| クリオ氷川台シーズンテラス 3階 | 1億1980万円 | 3LDK | 74.8㎡ | 築2024年 | 氷川台駅 徒歩3分 | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 50分 | 44分 | 東京都練馬区桜台3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E6%B0%B7%E5%B7%9D%E5%8F%B0%E3%82%B7%E3%83%BC%E3%82%BA%E3%83%B3%E3%83%86%E3%83%A9%E3%82%B9%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1535080000595/) |
-|  | 1億2999万円 | 3LDK | 65.7㎡ | 築2002年 | 春日駅 徒歩10分 | 4階/7階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 34分 | 20分 | 東京都文京区白山2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E7%99%BD%E5%B1%B12%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1337110001680/) |
-|  | 1億2990万円 | 2SLDK | 70.2㎡ | 築1996年 | 新大塚駅 徒歩9分 | 3階/6階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 30分 | 22分 | 東京都文京区千石3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E5%8D%83%E7%9F%B33%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037728/) |
-| グランスイート文京本駒込 12階 | 1億2990万円 | 2LDK | 69.4㎡ | 築2005年 | 駒込駅 徒歩10分 | 12階/12階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分 | 28分 | 東京都文京区本駒込4丁目36-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88%E6%96%87%E4%BA%AC%E6%9C%AC%E9%A7%92%E8%BE%BC%2012%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210003642/) |
-| エクセレント文京動坂 7階 | 1億2990万円 | 2LDK | 66.3㎡ | 築2005年 | 田端駅 徒歩10分 | 7階/13階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分 | 26分 | 東京都文京区本駒込4丁目20-11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%AF%E3%82%BB%E3%83%AC%E3%83%B3%E3%83%88%E6%96%87%E4%BA%AC%E5%8B%95%E5%9D%82%207%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1388970018275/) |
-| ピアース都立大学 3階 | 1億2980万円 | 2LDK | 62.2㎡ | 築2022年 | 都立大学駅 徒歩10分 | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 40分 | 40分 | 東京都目黒区緑が丘1丁目5-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%94%E3%82%A2%E3%83%BC%E3%82%B9%E9%83%BD%E7%AB%8B%E5%A4%A7%E5%AD%A6%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1491230001928/) |
-| ザ・パークハウス蔵前 3階 | 1億2980万円 | 3LDK | 63.4㎡ | 築2016年 | 蔵前駅 徒歩5分 | 3階/12階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 28分 | 24分 | 東京都台東区蔵前4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E8%94%B5%E5%89%8D%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35006100000136/) |
-| ピアース都立大学 3階 | 1億2900万円 | 2LDK | 64.0㎡ | 築2022年 | 都立大学駅 徒歩10分 | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 40分 | 40分 | 東京都目黒区緑が丘1丁目5-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%94%E3%82%A2%E3%83%BC%E3%82%B9%E9%83%BD%E7%AB%8B%E5%A4%A7%E5%AD%A6%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1245110000389/) |
-| CROSS小日向 1階 | 1億2900万円 | 2SLDK | 88.6㎡ | 築2010年 | 江戸川橋駅 徒歩4分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 30分 | 16分 | 東京都文京区小日向2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=CROSS%E5%B0%8F%E6%97%A5%E5%90%91%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1334250000419/) |
-|  | 1億2800万円 | 2LDK | 62.8㎡ | 築2002年 | 新大塚駅 徒歩4分 | 3階/10階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 47分（44-52分） | 41分（38-46分） | 東京都文京区大塚5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E5%A4%A7%E5%A1%9A5%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038222/) |
-| 千石パインマンション 3階 | 1億2490万円 | 3LDK | 71.0㎡ | 築1997年 | 千石駅 徒歩6分 | 3階/9階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 30分 | 22分 | 東京都文京区千石2丁目29-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%8D%83%E7%9F%B3%E3%83%91%E3%82%A4%E3%83%B3%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1533000000700/) |
-| プリムローズ浅草ウエスト 7階 | 1億2490万円 | 2SLDK | 74.7㎡ | 築2004年 | 田原町駅 徒歩5分 | 7階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 28分 | 26分 | 東京都台東区西浅草2丁目3-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AA%E3%83%A0%E3%83%AD%E3%83%BC%E3%82%BA%E6%B5%85%E8%8D%89%E3%82%A6%E3%82%A8%E3%82%B9%E3%83%88%207%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1154320000275/) |
-|  | 1億2480万円 | 2LDK | 70.0㎡ | 築2005年 | 根津駅 徒歩4分 | 2階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 33分 | 24分 | 東京都文京区根津1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E6%A0%B9%E6%B4%A51%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048494/) |
-| ボヌール千石 4階 | 1億2480万円 | 2LDK | 69.5㎡ | 築1999年 | 千石駅 徒歩10分 | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 30分 | 24分 | 東京都文京区千石3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9C%E3%83%8C%E3%83%BC%E3%83%AB%E5%8D%83%E7%9F%B3%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1565710000040/) |
-| クリオ浅草橋 11階 | 1億2400万円 | 3LDK | 65.5㎡ | 築2015年 | 浅草橋駅 徒歩8分 | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 31.0万円/月 | 24分 | 20分 | 東京都台東区浅草橋5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E6%B5%85%E8%8D%89%E6%A9%8B%2011%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35505130001924/) |
-| オープンレジデンシア千駄木ヒルズ 3階 | 1億2380万円 | 2SDK | 62.0㎡ | 築2019年 | 千駄木駅 徒歩4分 | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 30.9万円/月 | 35分 | 28分 | 東京都文京区千駄木5丁目19-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B7%E3%82%A2%E5%8D%83%E9%A7%84%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1421770027442/) |
-|  | 1億2080万円 | 2SLDK | 62.0㎡ | 築2019年 | 千駄木駅 徒歩4分 | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 30.3万円/月 | 35分 | 26分 | 東京都文京区千駄木5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E5%8D%83%E9%A7%84%E6%9C%A85%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390036057/) |
-| シティハウス日暮里 | 1億2980万円 | 3LDK | 71.6㎡ | 築2021年 | 日暮里 徒歩4分 | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 36分（33-41分） | 32分（29-37分） | 東京都荒川区東日暮里6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E6%97%A5%E6%9A%AE%E9%87%8C) | [詳細](https://www.homes.co.jp/mansion/b-1102010000646/) |
-| ザ・パークハウス十条 11階 | 1億2800万円 | 3LDK | 73.5㎡ | 築2023年 | 十条 徒歩4分 | 11階/11階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 40分 | 35分 | 東京都北区上十条1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E5%8D%81%E6%9D%A1%2011%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35005460001354/) |
-| シティハウス駒込ステーションコート 10階 | 1億2800万円 | 3SLDK | 70.4㎡ | 築2018年 | 駒込駅 徒歩6分 | 10階/12階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 40分 | 34分 | 東京都北区西ケ原1丁目6-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E9%A7%92%E8%BE%BC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%88%2010%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1565410000027/) |
-| 藤和シティホームズ駒込古河庭園 4階 | 1億2800万円 | 3LDK | 73.6㎡ | 築2002年 | 駒込駅 徒歩10分 | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 40分 | 35分 | 東京都北区中里3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E9%A7%92%E8%BE%BC%E5%8F%A4%E6%B2%B3%E5%BA%AD%E5%9C%92%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35006110000087/) |
-|  | 1億1800万円 | 3LDK | 68.0㎡ | 築2000年 | ■ベルハイム元浅草■見えない部分もしっかりと！フルリノベーシ 徒歩3分 / 田原町駅 徒歩3分 | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 29.7万円/月 | 34分（31-39分） | 31分（28-36分） | 東京都台東区元浅草4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E5%85%83%E6%B5%85%E8%8D%894%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390036861/) |
-| 藤和シティホームズ南阿佐ヶ谷 5階 | 1億2700万円 | 3LDK | 76.4㎡ | 築1996年 | 南阿佐ケ谷駅 徒歩3分 | 5階/11階建 | 戸数:不明 |  |  | - | - | - | 31.7万円/月 | 45分 | 44分 | 東京都杉並区成田東5丁目34-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1261160003566/) |
-| GENOVIA駒込駅green veil 11階 | 1億2660万円 | 3LDK | 85.0㎡ | 築2017年 | 【駒込駅 徒歩7分 | 11階/11階建 | 戸数:不明 |  |  | - | - | - | 31.6万円/月 | 40分 | 30分 | 東京都北区西ケ原1丁目27-52 | [Google Map](https://www.google.com/maps/search/?api=1&query=GENOVIA%E9%A7%92%E8%BE%BC%E9%A7%85green%20veil%2011%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1445460001073/) |
-| プラウドシティ阿佐ヶ谷ヴィラ 1階 | 1億2500万円 | 3LDK | 76.5㎡ | 築2016年 | 南阿佐ケ谷駅 徒歩7分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 45分 | 45分 | 東京都杉並区成田東4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%E3%83%B4%E3%82%A3%E3%83%A9%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-37052640001996/) |
-|  | 1億2500万円 | 2LDK | 68.4㎡ | 築2013年 | ◇22階からの開けた眺望・全室からスカイツリーが望めます 徒歩3分 / 埋め込み式暖炉・床暖房・新規エアコン2台設置で快適な居住空間 / 西巣鴨駅 徒歩3分 | 22階/28階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 45分（42-50分） | 38分（35-43分） | 東京都北区滝野川6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8C%97%E5%8C%BA%E6%BB%9D%E9%87%8E%E5%B7%9D6%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590047300/) |
-| ローレルコート杉並松庵 1階 | 1億2490万円 | 3LDK | 70.8㎡ | 築2017年 | ■西荻窪駅 徒歩10分 | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 50分 | 50分 | 東京都杉並区松庵2丁目18-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AD%E3%83%BC%E3%83%AC%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%88%E6%9D%89%E4%B8%A6%E6%9D%BE%E5%BA%B5%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1421770027582/) |
-| グローリオ南阿佐ヶ谷 1階 | 1億2480万円 | 3LDK | 93.2㎡ | 築2003年 | 南阿佐ケ谷駅 徒歩7分 | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 51分（48-56分） | 47分（44-52分） | 東京都杉並区成田東5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%AA%E3%82%AA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1392830001432/) |
-| リーデンスタワー 17階 | 1億2480万円 | 3LDK | 73.9㎡ | 築2001年 | バス 入谷区民館根岸分館下車 徒歩3分 | 17階/28階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 38分（35-43分） | 36分（33-41分） | 東京都荒川区東日暮里5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%BC%E3%83%87%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%AF%E3%83%BC%2017%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1516700000323/) |
-| ザ・パークハウス浜田山季の杜 2階 | 1億2480万円 | 2LDK | 75.0㎡ | 築2017年 | 浜田山駅 徒歩7分 | 2階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 40分 | 40分 | 東京都杉並区高井戸東3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%B5%9C%E7%94%B0%E5%B1%B1%E5%AD%A3%E3%81%AE%E6%9D%9C%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35006040000103/) |
-|  | 9998万円 | 3LDK | 73.0㎡ | 築2006年 | 西新井駅 徒歩5分 | 15階/20階建 | 戸数:不明 |  |  | - | - | - | 25.7万円/月 | 51分（48-56分） | 51分（48-56分） | 東京都足立区西新井栄町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B6%B3%E7%AB%8B%E5%8C%BA%E8%A5%BF%E6%96%B0%E4%BA%95%E6%A0%84%E7%94%BA1%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038038/) |
-|  | 1億1980万円 | 2LDK | 72.7㎡ | 築1996年 | 南阿佐ケ谷駅 徒歩4分 | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 51分（48-56分） | 47分（44-52分） | 東京都杉並区成田東5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E6%88%90%E7%94%B0%E6%9D%B15%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037956/) |
-|  | 1億1880万円 | 3LDK | 70.3㎡ | 築1999年 | 赤羽駅 徒歩4分 | 14階/20階建 | 戸数:不明 |  |  | - | - | - | 29.8万円/月 | 45分 | 40分 | 東京都北区赤羽西1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8C%97%E5%8C%BA%E8%B5%A4%E7%BE%BD%E8%A5%BF1%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1337110001829/) |
-|  | 9680万円 | 3LDK | 87.1㎡ | 築1997年 | ■エクセルシオール新桜台■専用面積87平米！ルーフバルコニー 徒歩2分 / 新桜台駅 徒歩2分 | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 45分 | 35分 | 東京都練馬区羽沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%B7%B4%E9%A6%AC%E5%8C%BA%E7%BE%BD%E6%B2%A22%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037308/) |
+| プラウドシティ上池袋 13階 | 1億2380万円 | 3LDK | 80.7㎡ | 築2005年 | 北池袋駅 徒歩3分 | 13階/15階建 | 227戸 |  |  | - | - | - | 30.9万円/月 | 35分 | 28分 | 東京都豊島区上池袋4丁目31-28 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E4%B8%8A%E6%B1%A0%E8%A2%8B%2013%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1272640001783/) |
+| 上野毛シティハウスサウステラス 4階 | 1億500万円 | 3LDK | 79.6㎡ | 築1998年 | 上野毛駅 徒歩8分 | 4階/RC5階地下1階建 | 15戸 |  |  | - | - | - | 26.8万円/月 | 65分（62-70分） | 57分（54-62分） | 東京都世田谷区上野毛2丁目22-9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%8A%E9%87%8E%E6%AF%9B%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E3%82%B5%E3%82%A6%E3%82%B9%E3%83%86%E3%83%A9%E3%82%B9%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007290000237/) |
+| ルミネ本駒込 6階 | 1億2800万円 | 2SLDK | 78.2㎡ | 築1997年 | 本駒込駅 徒歩1分 | 6階/11階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 35分 | 26分 | 東京都文京区本駒込1丁目1-18 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%9F%E3%83%8D%E6%9C%AC%E9%A7%92%E8%BE%BC%206%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1304520000374/) |
+| サンヴェ一ル後楽園 4階 | 1億1980万円 | 3LDK | 62.0㎡ | 築1998年 | 飯田橋駅 徒歩7分 | 4階/7階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 51分 | 48分 | 東京都文京区後楽2丁目16-10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%83%B4%E3%82%A7%E4%B8%80%E3%83%AB%E5%BE%8C%E6%A5%BD%E5%9C%92%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1354210002463/) |
 | ライオンズシティ東京根岸 | 1億880万円 | 3LDK | 67.0㎡ | 築2006年 | 入谷 徒歩9分 | 10階/RC15階建 | 69戸 | B |  | - | - | - | 27.6万円/月 | 33分（30-38分） | 31分（28-36分） | 東京都台東区根岸５－４－３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%B3%E3%82%BA%E3%82%B7%E3%83%86%E3%82%A3%E6%9D%B1%E4%BA%AC%E6%A0%B9%E5%B2%B8) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20642375/) |
-| 藤和シティホームズ南阿佐ヶ谷 4階 | 1億1580万円 | 2LDK | 72.7㎡ | 築1996年 | 南阿佐ケ谷駅 徒歩3分 | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 45分 | 44分 | 東京都杉並区成田東5丁目34-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1424730001075/) |
-|  | 9480万円 | 3LDK | 67.9㎡ | 築2010年 | 大泉学園駅 徒歩2分 | 10階/26階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 69分 | 66分 | 東京都練馬区東大泉1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%B7%B4%E9%A6%AC%E5%8C%BA%E6%9D%B1%E5%A4%A7%E6%B3%891%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037823/) |
-|  | 9480万円 | 2LDK | 63.9㎡ | 築2012年 | 石神井公園駅 徒歩4分 | 6階/25階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 58分（55-63分） | 52分（49-57分） | 東京都練馬区石神井町3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%B7%B4%E9%A6%AC%E5%8C%BA%E7%9F%B3%E7%A5%9E%E4%BA%95%E7%94%BA3%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037788/) |
-| LEXIA 7階 | 1億1480万円 | 3LDK | 61.8㎡ | 築2018年 | 荻窪駅 徒歩3分 | 7階/7階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 47分 | 41分 | 東京都杉並区荻窪5丁目21-10 | [Google Map](https://www.google.com/maps/search/?api=1&query=LEXIA%207%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210003804/) |
-|  | 9280万円 | 3LDK | 77.1㎡ | 築1997年 | 北千住駅 徒歩2分 | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 24.1万円/月 | 40分 | 42分 | 東京都足立区千住1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B6%B3%E7%AB%8B%E5%8C%BA%E5%8D%83%E4%BD%8F1%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037880/) |
-|  | 1億480万円 | 3LDK | 90.3㎡ | 築2003年 | 浅草駅 徒歩3分 | 11階/12階建 | 戸数:不明 |  |  | - | - | - | 26.7万円/月 | 26分 | 24分 | 東京都台東区松が谷4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E6%9D%BE%E3%81%8C%E8%B0%B74%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037362/) |
-| レクセルマンション北綾瀬第2 6階 | 9200万円 | 3LDK | 87.7㎡ | 築1997年 | 北綾瀬駅 徒歩8分 | 6階/8階建 | 戸数:不明 |  |  | - | - | - | 23.9万円/月 | 54分 | 50分 | 東京都足立区谷中3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%AF%E3%82%BB%E3%83%AB%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E5%8C%97%E7%B6%BE%E7%80%AC%E7%AC%AC2%206%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1542520000920/) |
-| リーデンスタワー | 1億1100万円 | 3LDK | 71.8㎡ | 築2001年 | 日暮里 徒歩8分 | 18階/28階建 | 297戸 |  |  | - | - | - | 28.1万円/月 | 38分（35-43分） | 36分（33-41分） | 東京都荒川区東日暮里５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%BC%E3%83%87%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%AF%E3%83%BC) | [詳細](https://www.livable.co.jp/mansion/C13266C80/) |
-| プラウド浜田山 4階 | 1億1000万円 | 2LDK | 63.3㎡ | 築2004年 | 浜田山駅 徒歩6分 | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 35分 | 40分 | 東京都杉並区浜田山1丁目22-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E6%B5%9C%E7%94%B0%E5%B1%B1%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1445580000203/) |
-|  | 1億998万円 | 3LDK | 70.0㎡ | 築1997年 | 荻窪駅 徒歩2分 | 3階/10階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 55分 | 51分 | 東京都杉並区荻窪2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E8%8D%BB%E7%AA%AA2%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038099/) |
-| アトラス日暮里マスターコート 8階 | 1億980万円 | 3LDK | 63.1㎡ | 築2018年 | 日暮里駅 徒歩4分 | 8階/RC10階地下1階建 | 27戸 | A |  | - | - | - | 27.8万円/月 | 38分（35-43分） | 36分（33-41分） | 東京都荒川区東日暮里５－５４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%88%E3%83%A9%E3%82%B9%E6%97%A5%E6%9A%AE%E9%87%8C%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%88%208%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1388540010991/) |
-| 尾久駅2分「アネシア東京尾久」 14階 | 1億880万円 | 3LDK | 68.0㎡ | 築2018年 | 尾久駅 徒歩1分 | 14階/14階建 | 戸数:不明 |  |  | - | - | - | 27.6万円/月 | 39分 | 35分 | 東京都北区昭和町2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%B0%BE%E4%B9%85%E9%A7%852%E5%88%86%E3%80%8C%E3%82%A2%E3%83%8D%E3%82%B7%E3%82%A2%E6%9D%B1%E4%BA%AC%E5%B0%BE%E4%B9%85%E3%80%8D%2014%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1385320004482/) |
-|  | 9980万円 | 2LDK | 60.1㎡ | 築2000年 | ■朝日サテライト上野■上野駅 徒歩5分 | 7階/11階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 24分 | 22分 | 東京都台東区上野7丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E4%B8%8A%E9%87%8E7%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037090/) |
-|  | 1億500万円 | 2LDK | 63.3㎡ | 築2004年 | 浜田山駅 徒歩6分 | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 35分 | 40分 | 東京都杉並区浜田山1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E6%B5%9C%E7%94%B0%E5%B1%B11%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037636/) |
-| 東京ビューマークス 2階 | 9490万円 | 3LDK | 76.0㎡ | 築2003年 | 三ノ輪駅 徒歩7分 | 2階/20階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 26分 | 26分 | 東京都台東区竜泉2丁目7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%93%E3%83%A5%E3%83%BC%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%B9%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1547630000356/) |
-|  | 1億180万円 | 3LDK | 78.9㎡ | 築1998年 | 高井戸駅 徒歩5分 | 6階/9階建 | 戸数:不明 |  |  | - | - | - | 26.1万円/月 | 40分 | 40分 | 東京都杉並区高井戸東3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E9%AB%98%E4%BA%95%E6%88%B8%E6%9D%B13%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037812/) |
-|  | 9980万円 | 2SLDK | 65.4㎡ | 築2017年 | 荻窪駅 徒歩5分 | 1階/4階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 55分 | 51分 | 東京都杉並区荻窪2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E8%8D%BB%E7%AA%AA2%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390036873/) |
-|  | 9850万円 | 2LDK | 66.4㎡ | 築2005年 | 日暮里駅 徒歩5分 | 23階/28階建 | 戸数:不明 |  |  | - | - | - | 25.3万円/月 | 38分（35-43分） | 36分（33-41分） | 東京都荒川区東日暮里5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%8D%92%E5%B7%9D%E5%8C%BA%E6%9D%B1%E6%97%A5%E6%9A%AE%E9%87%8C5%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1519960000003/) |
-| クレアホームズ滝野川　オートロック付・ペット飼育可 2階 | 9680万円 | 3LDK | 73.4㎡ | 築2005年 | 板橋駅 徒歩8分 | 2階/9階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 35分 | 26分 | 東京都北区滝野川7丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%A2%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E6%BB%9D%E9%87%8E%E5%B7%9D%E3%80%80%E3%82%AA%E3%83%BC%E3%83%88%E3%83%AD%E3%83%83%E3%82%AF%E4%BB%98%E3%83%BB%E3%83%9A%E3%83%83%E3%83%88%E9%A3%BC%E8%82%B2%E5%8F%AF%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1500010000879/) |
-|  | 9599万円 | 3LDK | 70.5㎡ | 築2001年 | 王子駅 徒歩2分 | 2階/11階建 | 戸数:不明 |  |  | - | - | - | 24.8万円/月 | 40分 | 35分 | 東京都北区王子1丁目19-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8C%97%E5%8C%BA%E7%8E%8B%E5%AD%901%E4%B8%81%E7%9B%AE19-2) | [詳細](https://www.homes.co.jp/mansion/b-1421770027762/) |
-|  | 9480万円 | 3LDK | 74.1㎡ | 築1997年 | 西永福駅 徒歩6分 | 4階/4階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 40分 | 40分 | 東京都杉並区浜田山1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E6%B5%9C%E7%94%B0%E5%B1%B11%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1421770025991/) |
-| リムテラス四谷ザ・クラス 1階 | 1億3000万円 | 2SLDK | 78.7㎡ | 築2024年 | 四ツ谷駅 徒歩10分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 16分 | 9分 | 東京都新宿区四谷坂町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E5%9B%9B%E8%B0%B7%E3%82%B6%E3%83%BB%E3%82%AF%E3%83%A9%E3%82%B9%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007190000053/) |
-| 神楽坂パークハウス 1階 | 1億2989万円 | 2LDK | 65.9㎡ | 築2002年 | 神楽坂駅 徒歩8分 | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 24分 | 13分 | 東京都新宿区南榎町5-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%A5%9E%E6%A5%BD%E5%9D%82%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1357690018889/) |
-|  | 1億2480万円 | 3LDK | 78.2㎡ | 築2001年 | 南西角部屋で陽当たり・眺望良好 徒歩4分 / 高田馬場駅 徒歩4分 | 5階/7階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 35分 | 24分 | 東京都新宿区高田馬場1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B41%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038097/) |
-| レジェンド高田馬場ドゥエ 5階 | 1億2480万円 | 3LDK | 78.2㎡ | 築2002年 | 高田馬場駅 徒歩4分 | 5階/7階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 35分 | 22分 | 東京都新宿区高田馬場1丁目22 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%89%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B4%E3%83%89%E3%82%A5%E3%82%A8%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1541220001051/) |
-| リムテラス早稲田夏目坂 1階 | 1億1980万円 | 2SLDK | 84.4㎡ | 築2023年 | 若松河田駅 徒歩6分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 24分 | 14分 | 東京都新宿区原町3丁目59 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%8F%E7%9B%AE%E5%9D%82%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1474420000058/) |
-| クレヴィア新宿中落合EAST 7階 | 1億1800万円 | 2SLDK | 73.7㎡ | 築2023年 | 下落合駅 徒歩6分 | 7階/7階建 | 戸数:不明 |  |  | - | - | - | 29.7万円/月 | 35分 | 28分 | 東京都新宿区中落合1丁目5-10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%83%B4%E3%82%A3%E3%82%A2%E6%96%B0%E5%AE%BF%E4%B8%AD%E8%90%BD%E5%90%88EAST%207%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1392830001466/) |
-| アールヴェール新宿弁天町 4階 | 1億1499万円 | 2LDK | 62.4㎡ | 築1998年 | 牛込柳町駅 徒歩3分 | 4階/8階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 20分 | 13分 | 東京都新宿区弁天町81-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%BC%E3%83%AB%E3%83%B4%E3%82%A7%E3%83%BC%E3%83%AB%E6%96%B0%E5%AE%BF%E5%BC%81%E5%A4%A9%E7%94%BA%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1192950013146/) |
-| [VECS]レグノ・セレーノ　バルコニー南向きで陽当たり良好 | 1億1500万円 | 2LDK | 64.6㎡ | 築2008年 | ◇◆【大久保】駅 徒歩3分 | 4階/24階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 28分 | 24分 | 東京都新宿区北新宿3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%5BVECS%5D%E3%83%AC%E3%82%B0%E3%83%8E%E3%83%BB%E3%82%BB%E3%83%AC%E3%83%BC%E3%83%8E%E3%80%80%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E5%8D%97%E5%90%91%E3%81%8D%E3%81%A7%E9%99%BD%E5%BD%93%E3%81%9F%E3%82%8A%E8%89%AF%E5%A5%BD%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1216190000948/) |
-| モアクレスト神宮前 | 1億1400万円 | 3SLDK | 120.7㎡ | 築1998年 | 明治神宮前駅 徒歩7分 | 2階/5階建 | 24戸 |  |  | - | - | - | 28.8万円/月 | 18分 | 18分 | 渋谷区神宮前５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A2%E3%82%A2%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E7%A5%9E%E5%AE%AE%E5%89%8D) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FBIZ7A08/) |
-| パークタワー山王 15階 | 1億2980万円 | 3LDK | 67.1㎡ | 築2014年 | 大森駅 徒歩8分 | 15階/24階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 44分（41-49分） | 48分（45-53分） | 東京都大田区山王3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E5%B1%B1%E7%8E%8B%2015%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1514960000040/) |
-|  | 1億1300万円 | 3LDK | 82.1㎡ | 築2003年 | 中井駅 徒歩5分 | 2階/6階建 | 戸数:不明 |  |  | - | - | - | 28.6万円/月 | 40分 | 28分 | 東京都新宿区中落合1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E4%B8%AD%E8%90%BD%E5%90%881%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037485/) |
-|  | 1億1180万円 | 2LDK | 61.0㎡ | 築2008年 | ■ライトコート四谷■1人暮らしにも2人暮らしにピッタリの物件です！信濃町駅 徒歩8分 | 2階/8階建 | 戸数:不明 |  |  | - | - | - | 28.3万円/月 | 14分 | 11分 | 東京都新宿区若葉3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%8B%A5%E8%91%893%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390036739/) |
-|  | 1億980万円 | 2LDK | 64.6㎡ | 築2008年 | ■レグノ・セレーノ■大久保駅 徒歩3分 | 4階/24階建 | 217戸 |  |  | - | - | - | 27.8万円/月 | 28分 | 24分 | 東京都新宿区北新宿3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E5%8C%97%E6%96%B0%E5%AE%BF3%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390036962/) |
-|  | 1億2500万円 | 3LDK | 81.5㎡ | 築2004年 | 下丸子駅 徒歩10分 | 28階/28階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 57分（54-62分） | 62分（59-67分） | 東京都大田区下丸子4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A4%A7%E7%94%B0%E5%8C%BA%E4%B8%8B%E4%B8%B8%E5%AD%904%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037716/) |
-| プラウドシティ方南町 1階 | 1億2800万円 | 3LDK | 71.4㎡ | 築2024年 | プラウドシティシリーズ 徒歩5分 | 1階/14階建 | 371戸 |  |  | - | - | - | 31.9万円/月 | 35分 | 35分 | 東京都杉並区堀ノ内1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E6%96%B9%E5%8D%97%E7%94%BA%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007220000245/) |
-| ミサワホームズ東大井 5階 | 1億690万円 | 3LDK | 61.9㎡ | 築1996年 | 鮫洲駅 徒歩6分 | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 27.2万円/月 | 28分 | 30分 | 東京都品川区東大井1丁目9-27 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9F%E3%82%B5%E3%83%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E6%9D%B1%E5%A4%A7%E4%BA%95%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210004122/) |
-| ジオ南雪谷 2階 | 1億2080万円 | 3LDK | 73.8㎡ | 築2018年 | 石川台駅 徒歩5分 | 2階/6階建 | 戸数:不明 |  |  | - | - | - | 30.3万円/月 | 40分 | 40分 | 東京都大田区南雪谷1丁目19 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B8%E3%82%AA%E5%8D%97%E9%9B%AA%E8%B0%B7%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1491230002026/) |
-| 神楽坂アインスタワー 20階 | 1億500万円 | 2SLDK | 76.1㎡ | 築2003年 | 牛込神楽坂駅 徒歩3分 | 20階/26階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 22分 | 11分 | 東京都新宿区神楽坂5丁目20-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%A5%9E%E6%A5%BD%E5%9D%82%E3%82%A2%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%AF%E3%83%BC%2020%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1372150000114/) |
-| ネオマイム西早稲田パークス 10階 | 1億500万円 | 2LDK | 69.0㎡ | 築2000年 | 早稲田駅 徒歩3分 | 10階/SRC11階建 | 31戸 |  |  | - | - | - | 26.8万円/月 | 39分（36-44分） | 33分（30-38分） | 東京都新宿区西早稲田3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%8D%E3%82%AA%E3%83%9E%E3%82%A4%E3%83%A0%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B9%2010%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-60000330230156/) |
-| ディアナコート大森山王空と光を独占する、ダブルテラスの私邸。 | 1億1900万円 | 2LDK | 69.8㎡ | 築2021年 | 大森 徒歩9分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 30分 | 35分 | 東京都大田区山王1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%82%A3%E3%82%A2%E3%83%8A%E3%82%B3%E3%83%BC%E3%83%88%E5%A4%A7%E6%A3%AE%E5%B1%B1%E7%8E%8B%E7%A9%BA%E3%81%A8%E5%85%89%E3%82%92%E7%8B%AC%E5%8D%A0%E3%81%99%E3%82%8B%E3%80%81%E3%83%80%E3%83%96%E3%83%AB%E3%83%86%E3%83%A9%E3%82%B9%E3%81%AE%E7%A7%81%E9%82%B8%E3%80%82%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1545890000138/) |
-|  | 1億300万円 | 2LDK | 67.0㎡ | 築2012年 | 高田馬場駅 徒歩9分 | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 26.3万円/月 | 39分（36-44分） | 33分（30-38分） | 東京都新宿区高田馬場4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B44%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037138/) |
-|  | 1億180万円 | 3LDK | 72.5㎡ | 築1999年 | 早稲田駅 徒歩7分 | 3階/6階建 | 戸数:不明 |  |  | - | - | - | 26.1万円/月 | 28分 | 18分 | 東京都新宿区西早稲田2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B02%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037222/) |
-|  | 1億100万円 | 2LDK | 63.1㎡ | 築1999年 | 早稲田駅 徒歩2分 | 19階/23階建 | 戸数:不明 |  |  | - | - | - | 25.9万円/月 | 30分 | 18分 | 東京都新宿区西早稲田1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B01%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048603/) |
-| アデッソ新宿若松町 12階 | 9990万円 | 2LDK | 62.5㎡ | 築2005年 | 若松河田駅 徒歩3分 | 12階/12階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 24分 | 16分 | 東京都新宿区若松町25-21 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%87%E3%83%83%E3%82%BD%E6%96%B0%E5%AE%BF%E8%8B%A5%E6%9D%BE%E7%94%BA%2012%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1557660000019/) |
-|  | 9990万円 | 2LDK | 62.5㎡ | 築2005年 | 若松河田駅 徒歩3分 | 11階/12階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 56分（53-61分） | 46分（43-51分） | 東京都新宿区若松町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%8B%A5%E6%9D%BE%E7%94%BA) | [詳細](https://www.homes.co.jp/mansion/b-1004590048521/) |
-| ラグナタワー 15階 | 9980万円 | 2LDK | 64.5㎡ | 築2005年 | 天王洲アイル駅 徒歩8分 | 15階/RC31階地下1階建 | 501戸 | B |  | - | - | - | 25.6万円/月 | 24分 | 28分 | 東京都品川区東品川３－８－８ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%B0%E3%83%8A%E3%82%BF%E3%83%AF%E3%83%BC%2015%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1393490000517/) |
-|  | 9780万円 | 2LDK | 65.6㎡ | 築2003年 | 西新宿五丁目駅 徒歩1分 | 9階/15階建 | 戸数:不明 |  |  | - | - | - | 25.2万円/月 | 20分（17-25分） | 22分（19-27分） | 東京都新宿区西新宿5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%A5%BF%E6%96%B0%E5%AE%BF5%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037066/) |
-| 西早稲田シティタワー 19階 | 9580万円 | 2LDK | 60.2㎡ | 築1999年 | 19階からのパノラマビューに驚きました！フルリフォーム済みの室内は、神田川の桜並木を望む特等席。竹中工務店施工の重厚感と、駅 徒歩2分 | 19階/23階建 | 戸数:不明 |  |  | - | - | - | 24.7万円/月 | 30分 | 18分 | 東京都新宿区西早稲田1丁目23-16 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%2019%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1421770027562/) |
-|  | 9180万円 | 2LDK | 63.0㎡ | 築2004年 | 高田馬場駅 徒歩9分 | 2階/4階建 | 戸数:不明 |  |  | - | - | - | 23.9万円/月 | 39分（36-44分） | 33分（30-38分） | 東京都新宿区高田馬場4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B44%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038219/) |
-| パークコート神宮前 | 8970万円 | 2LDK | 61.9㎡ | 築2009年 | 原宿駅 徒歩6分 | 7階/RC16階地下3階建 | 385戸 | A |  | - | - | - | 23.4万円/月 | 27分（24-32分） | 25分（22-30分） | 東京都渋谷区神宮前１－４－２０ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B3%E3%83%BC%E3%83%88%E7%A5%9E%E5%AE%AE%E5%89%8D) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FW9AQA06/) |
-|  | 9680万円 | 3LDK | 63.2㎡ | 築2011年 | 大森海岸駅 徒歩3分 | 7階/12階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 26分 | 30分 | 東京都大田区大森本町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A4%A7%E7%94%B0%E5%8C%BA%E5%A4%A7%E6%A3%AE%E6%9C%AC%E7%94%BA1%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037167/) |
-| パークスクエア南品川 9階 | 1億2180万円 | 3LDK | 75.8㎡ | 築2007年 | 青物横丁駅 徒歩1分 | 9階/16階建 | 戸数:不明 |  |  | - | - | - | 30.5万円/月 | 26分 | 35分 | 東京都品川区南品川3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E5%8D%97%E5%93%81%E5%B7%9D%209%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1393490000540/) |
-| ルイシャトレ五反田 13階 | 1億2500万円 | 2LDK | 64.9㎡ | 築1997年 | 五反田駅 徒歩5分 | 13階/13階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 24分 | 24分 | 東京都品川区東五反田2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%82%A4%E3%82%B7%E3%83%A3%E3%83%88%E3%83%AC%E4%BA%94%E5%8F%8D%E7%94%B0%2013%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-37052640002009/) |
-|  | 1億2680万円 | 2LDK | 60.1㎡ | 築2019年 | 品川シーサイド駅 徒歩3分 | 26階/29階建 | 戸数:不明 |  |  | - | - | - | 31.6万円/月 | 26分（23-31分） | 32分（29-37分） | 東京都品川区東品川4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%93%81%E5%B7%9D%E5%8C%BA%E6%9D%B1%E5%93%81%E5%B7%9D4%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1482690000013/) |
-|  | 1億2980万円 | 2LDK | 64.7㎡ | 築2000年 | 青物横丁駅 徒歩5分 | 6階/7階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 38分（35-43分） | 44分（41-49分） | 東京都品川区南品川5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%93%81%E5%B7%9D%E5%8C%BA%E5%8D%97%E5%93%81%E5%B7%9D5%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038260/) |
-| プリムローズ錦糸町 2階 | 8799万円 | 3LDK | 63.1㎡ | 築2001年 | 錦糸町 徒歩8分 | 2階/7階建 | 戸数:不明 |  |  | - | - | - | 23.0万円/月 | 40分 | 35分 | 東京都墨田区太平1丁目7-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AA%E3%83%A0%E3%83%AD%E3%83%BC%E3%82%BA%E9%8C%A6%E7%B3%B8%E7%94%BA%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1535990004904/) |
-|  | 8799万円 | 3LDK | 63.1㎡ | 築2001年 | 錦糸町駅 徒歩8分 | 2階/7階建 | 戸数:不明 |  |  | - | - | - | 23.0万円/月 | 45分（42-50分） | 40分（37-45分） | 東京都墨田区太平1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E5%A4%AA%E5%B9%B31%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038216/) |
-|  | 9399万円 | 2SLDK | 67.8㎡ | 築1996年 | 押上駅 徒歩7分 | 7階/14階建 | 戸数:不明 |  |  | - | - | - | 24.3万円/月 | 40分 | 35分 | 東京都墨田区横川5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E6%A8%AA%E5%B7%9D5%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037761/) |
-| 東京ミッドベイ勝どき 4階 | 9480万円 | 2LDK | 56.8㎡ | 築2012年 | 勝どき 徒歩8分 | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 10分 | 18分 | 東京都中央区勝どき5丁目10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%9F%E3%83%83%E3%83%89%E3%83%99%E3%82%A4%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1456430000251/) |
-| パークホームズ南麻布ザレジデンス | 9480万円 | 2LDK | 57.6㎡ | 築2013年 | 麻布十番駅 徒歩7分 | 12階/14階建 | 336戸 | B |  | - | - | - | 24.5万円/月 | 10分 | 16分 | 東京都港区南麻布２－３－１１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%BA%BB%E5%B8%83%E3%82%B6%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FBIBTA0C/) |
-|  | 1億480万円 | 3LDK | 60.7㎡ | 築2000年 | 日の出駅 徒歩4分 | 7階/11階建 | 戸数:不明 |  |  | - | - | - | 26.7万円/月 | 16分 | 22分 | 東京都港区海岸2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E6%B5%B7%E5%B2%B82%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037936/) |
-| ザ・晴海レジデンス 9階 | 1億980万円 | 2LDK | 72.4㎡ | 築2009年 | 勝どき駅 徒歩10分 | 9階/20階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 14分 | 20分 | 東京都中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%209%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007050000177/) |
-|  | 1億980万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 34階/50階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 14分 | 20分 | 東京都中央区晴海1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%99%B4%E6%B5%B71%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048116/) |
-|  | 1億990万円 | 2LDK | 55.8㎡ | 築2000年 | 水天宮前駅 徒歩3分 | 2階/13階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 20分 | 20分 | 東京都中央区日本橋蛎殻町1丁目38-15 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%97%A5%E6%9C%AC%E6%A9%8B%E8%9B%8E%E6%AE%BB%E7%94%BA1%E4%B8%81%E7%9B%AE38-15) | [詳細](https://www.homes.co.jp/mansion/b-1421770026961/) |
-| 晴海アイランドトリトンスクエアビュータワー 21階 | 1億1000万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 21階/50階建 | 624戸 |  |  | - | - | - | 27.9万円/月 | 16分 | 22分 | 東京都中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2021%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1285260002101/) |
-|  | 1億1000万円 | 2LDK | 57.4㎡ | 築2001年 | 八丁堀駅 徒歩4分 | 3階/10階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 16分 | 16分 | 東京都中央区湊1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%B9%8A1%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048308/) |
-|  | 1億1299万円 | 3LDK | 69.0㎡ | 築2005年 | 勝どき駅 徒歩8分 | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 28.6万円/月 | 12分 | 18分 | 東京都中央区勝どき5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E5%8B%9D%E3%81%A9%E3%81%8D5%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037794/) |
-| プラネ勝どき 4階 | 1億1399万円 | 3LDK | 69.0㎡ | 築2005年 | 勝どき駅 徒歩8分 | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 28.8万円/月 | 10分 | 18分 | 東京都中央区勝どき5丁目1-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%83%8D%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210002483/) |
-| ザ・晴海レジデンス 3階 | 1億1500万円 | 2LDK | 76.0㎡ | 築2009年 | 勝どき駅 徒歩10分 | 3階/20階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 14分 | 20分 | 東京都中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35005010002743/) |
-| メロディーハイム銀座東 6階 | 1億1680万円 | 2LDK | 60.5㎡ | 築1999年 | 新富町駅 徒歩4分 | 6階/12階建 | 戸数:不明 |  |  | - | - | - | 29.4万円/月 | 16分 | 20分 | 東京都中央区湊3丁目2-9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%83%AD%E3%83%87%E3%82%A3%E3%83%BC%E3%83%8F%E3%82%A4%E3%83%A0%E9%8A%80%E5%BA%A7%E6%9D%B1%206%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210004131/) |
+| ザ・パークハウス山吹神楽坂 5階 | 1億2980万円 | 2LDK | 61.2㎡ | 築2017年 | 江戸川橋駅 徒歩4分 | 5階/13階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 24分 | 14分 | 東京都新宿区山吹町297-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E5%B1%B1%E5%90%B9%E7%A5%9E%E6%A5%BD%E5%9D%82%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1373830001140/) |
+| ザ・パームス西戸山 3階 | 1億1990万円 | 3LDK | 75.0㎡ | 築1996年 | 新大久保駅 徒歩5分 | 3階/6階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 28分 | 22分 | 東京都新宿区百人町3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%83%A0%E3%82%B9%E8%A5%BF%E6%88%B8%E5%B1%B1%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1421770025840/) |
+| センチュリーハイツ品川戸越 3階 | 1億2500万円 | 2LDK | 75.1㎡ | 築2002年 | 荏原中延駅 徒歩5分 | 3階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 18分 | 22分 | 東京都品川区東中延1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%BB%E3%83%B3%E3%83%81%E3%83%A5%E3%83%AA%E3%83%BC%E3%83%8F%E3%82%A4%E3%83%84%E5%93%81%E5%B7%9D%E6%88%B8%E8%B6%8A%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35006240000136/) |
 | エクセルシオール港区海岸　オーシャンビュー | 1億1900万円 | 2LDK | 67.8㎡ | 築1998年 | 日の出 徒歩4分 | 6階/RC10階建 | 38戸 | B |  | - | - | - | 29.9万円/月 | 12分 | 22分 | 東京都港区海岸２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%AF%E3%82%BB%E3%83%AB%E3%82%B7%E3%82%AA%E3%83%BC%E3%83%AB%E6%B8%AF%E5%8C%BA%E6%B5%B7%E5%B2%B8%E3%80%80%E3%82%AA%E3%83%BC%E3%82%B7%E3%83%A3%E3%83%B3%E3%83%93%E3%83%A5%E3%83%BC) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_minato/nc_20926781/) |
-|  | 1億1900万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 20階/50階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 14分 | 20分 | 東京都中央区晴海1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%99%B4%E6%B5%B71%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048097/) |
-|  | 1億1998万円 | 2LDK | 62.0㎡ | 築2012年 | ■デュフレベース南麻布■麻布十番駅 徒歩10分 | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 12分 | 18分 | 東京都港区南麻布2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E5%8D%97%E9%BA%BB%E5%B8%832%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390036854/) |
-| ザ・晴海レジデンス 18階 | 1億2250万円 | 2LDK | 76.0㎡ | 築2009年 | 勝どき駅 徒歩10分 | 18階/20階建 | 戸数:不明 |  |  | - | - | - | 30.7万円/月 | 14分 | 20分 | 東京都中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2018%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1041110069080/) |
-|  | 1億2480万円 | 2LDK | 56.7㎡ | 築2002年 | ■ランドステージ白金台■少数ファミリーにもオススメの2LDK 徒歩2分 / 各洋室6帖以上でゆとりある空間 / 2面バルコニーで全てのお部屋に窓があり風通し眺望良好！白金台駅 徒歩2分 | 10階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 18分 | 20分 | 東京都港区白金台4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E7%99%BD%E9%87%91%E5%8F%B04%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390038075/) |
-| ブリリア新川一丁目 5階 | 1億2480万円 | 2LDK | 56.1㎡ | 築2018年 | 八丁堀駅 徒歩7分 | 5階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 20分 | 18分 | 東京都中央区新川1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%96%B0%E5%B7%9D%E4%B8%80%E4%B8%81%E7%9B%AE%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007020000133/) |
-|  | 1億2480万円 | 3LDK | 78.0㎡ | 築2000年 | 勝どき駅 徒歩10分 | 14階/26階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 12分 | 18分 | 東京都中央区勝どき5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E5%8B%9D%E3%81%A9%E3%81%8D5%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048158/) |
-| アイ・マークタワー 18階 | 1億2490万円 | 2LDK | 59.2㎡ | 築2003年 | 月島駅 徒歩1分 | 18階/32階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 18分 | 20分 | 東京都中央区月島1丁目8-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%A4%E3%83%BB%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%2018%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1388970018065/) |
-|  | 1億2490万円 | 2LDK | 56.8㎡ | 築1999年 | 人形町駅 徒歩3分 | 7階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 18分 | 20分 | 東京都中央区日本橋堀留町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%97%A5%E6%9C%AC%E6%A9%8B%E5%A0%80%E7%95%99%E7%94%BA1%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037515/) |
-| 勝どきビュータワー 9階 | 1億2500万円 | 2LDK | 57.2㎡ | 築2010年 | 勝どき駅 徒歩1分 | 9階/53階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 14分 | 18分 | 東京都中央区勝どき1丁目8-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%8B%9D%E3%81%A9%E3%81%8D%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%209%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1400850000426/) |
-| プラティーク日本橋 12階 | 1億2580万円 | 2LDK | 58.4㎡ | 築2003年 | ●茅場町駅 徒歩5分 | 12階/13階建 | 戸数:不明 |  |  | - | - | - | 31.4万円/月 | 52分（49-57分） | 49分（46-54分） | 東京都中央区日本橋小網町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AF%E6%97%A5%E6%9C%AC%E6%A9%8B%2012%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1453300000145/) |
-| リストレジデンス芝浦 | 1億2680万円 | 2LDK | 56.0㎡ | 築2014年 | 田町駅 徒歩10分 | 5階/13階建 | 45戸 |  |  | - | - | - | 31.6万円/月 | 16分 | 22分 | 港区芝浦４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%82%B9%E3%83%88%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%E8%8A%9D%E6%B5%A6) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FWPBBA03/) |
-| アスコットパーク日本橋水天宮 5階 | 1億2800万円 | 2LDK | 55.9㎡ | 築2005年 | 水天宮前駅 徒歩2分 | 5階/11階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 20分 | 20分 | 東京都中央区日本橋蛎殻町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%B9%E3%82%B3%E3%83%83%E3%83%88%E3%83%91%E3%83%BC%E3%82%AF%E6%97%A5%E6%9C%AC%E6%A9%8B%E6%B0%B4%E5%A4%A9%E5%AE%AE%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1543480000456/) |
-|  | 1億2800万円 | 2LDK | 67.0㎡ | 築1999年 | ■ビュロー平河町■半蔵門駅 徒歩3分 | 2階/8階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 9分 | 4分 | 東京都千代田区平河町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8D%83%E4%BB%A3%E7%94%B0%E5%8C%BA%E5%B9%B3%E6%B2%B3%E7%94%BA1%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390036846/) |
-| アクシア日本橋 2階 | 1億2800万円 | 2LDK | 59.6㎡ | 築2000年 | 浜町駅 徒歩1分 | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 20分 | 20分 | 東京都中央区日本橋浜町2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%AF%E3%82%B7%E3%82%A2%E6%97%A5%E6%9C%AC%E6%A9%8B%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210004096/) |
-| 晴海アイランドトリトンスクエアビュータワー 43階 | 1億2900万円 | 3LDK | 77.5㎡ | 築1998年 | 月島駅 徒歩6分 | 43階/50階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 16分 | 22分 | 東京都中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2043%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1261160003498/) |
-| HARUMI FLAG PARK VILLAGE晴海フラッグ | 1億2900万円 | 2LDK | 60.2㎡ | 築2025年 | 勝どき駅 徒歩2分 | 7階/50階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 12分 | 18分 | 東京都中央区晴海5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=HARUMI%20FLAG%20PARK%20VILLAGE%E6%99%B4%E6%B5%B7%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0T%E6%A3%9F%207%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35005010002734/) |
-| 晴海アイランドトリトンスクエアビュータワー 38階 | 1億2980万円 | 2LDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 38階/50階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 16分 | 22分 | 東京都中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2038%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1373840001023/) |
-| コスモ東京ベイタワー 14階 | 1億2980万円 | 3LDK | 78.0㎡ | 築2000年 | 勝どき駅 徒歩10分 | 14階/26階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 12分 | 18分 | 東京都中央区勝どき5丁目12-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B3%E3%82%B9%E3%83%A2%E6%9D%B1%E4%BA%AC%E3%83%99%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC%2014%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007050000140/) |
-| ザ・晴海レジデンス 19階 | 1億2980万円 | 2LDK | 68.4㎡ | 築2009年 | 勝どき駅 徒歩10分 | 19階/20階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 14分 | 20分 | 東京都中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2019%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1357690018978/) |
-| HARUMI FLAG PARK VILLAGE晴海フラッグ | 1億2980万円 | 2LDK | 61.3㎡ | 築2025年 | 勝どき駅 徒歩2分 | 3階/50階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 12分 | 18分 | 東京都中央区晴海5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=HARUMI%20FLAG%20PARK%20VILLAGE%E6%99%B4%E6%B5%B7%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0T%E6%A3%9F%203%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1199950005337/) |
-| メイクスデザイン茅場町 6階 | 1億2980万円 | 2LDK | 65.9㎡ | 築2007年 | 〜3方向角住戸×茅場町駅 徒歩6分 | 6階/10階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 18分 | 18分 | 東京都中央区新川1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%B9%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E8%8C%85%E5%A0%B4%E7%94%BA%206%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1543960000117/) |
-| アスコットパーク日本橋ミュゲット 8階 | 1億2980万円 | 2LDK | 57.6㎡ | 築2005年 | 東日本橋駅 徒歩2分 | 8階/11階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 45分（42-50分） | 42分（39-47分） | 東京都中央区東日本橋2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%B9%E3%82%B3%E3%83%83%E3%83%88%E3%83%91%E3%83%BC%E3%82%AF%E6%97%A5%E6%9C%AC%E6%A9%8B%E3%83%9F%E3%83%A5%E3%82%B2%E3%83%83%E3%83%88%208%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007120000163/) |
-| マイキャッスル水天宮前壱番館 2階 | 1億2980万円 | 3LDK | 63.2㎡ | 築1998年 | 水天宮前駅 徒歩1分 | 2階/8階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 20分 | 18分 | 東京都中央区日本橋蛎殻町2丁目5-12 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E6%B0%B4%E5%A4%A9%E5%AE%AE%E5%89%8D%E5%A3%B1%E7%95%AA%E9%A4%A8%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1404870000505/) |
-| 東京ミッドベイ勝どき 4階 | 1億2990万円 | 3LDK | 70.7㎡ | 築2012年 | 勝どき駅 徒歩8分 | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 10分 | 18分 | 東京都中央区勝どき5丁目10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%9F%E3%83%83%E3%83%89%E3%83%99%E3%82%A4%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1341620000800/) |
-|  | 1億2480万円 | 3LDK | 68.2㎡ | 築2005年 | 錦糸町駅 徒歩5分 | 7階/15階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 40分 | 35分 | 東京都墨田区錦糸4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E9%8C%A6%E7%B3%B84%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037729/) |
-| 亀戸レジデンス 6階 | 9480万円 | 3LDK | 80.2㎡ | 築2009年 | 亀戸水神 徒歩10分 | 6階/17階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 50分 | 44分 | 東京都江東区亀戸9丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%BA%80%E6%88%B8%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%206%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1275780000868/) |
-| ブリリア有明スカイタワー | 9490万円 | 2LDK | 61.2㎡ | 築2010年 | 有明テニスの森 徒歩6分 | 4階/RC33階地下1階建 | 1089戸 | B |  | - | - | - | 24.5万円/月 | 16分 | 24分 | 東京都江東区有明１－４－２０ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20700766/) |
-| エストビエント住吉ラフィナート 1階 | 9680万円 | 3SLDK | 91.7㎡ | 築2005年 | 住吉駅 徒歩10分 | 1階/9階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 40分 | 35分 | 東京都江東区扇橋3丁目10-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%B9%E3%83%88%E3%83%93%E3%82%A8%E3%83%B3%E3%83%88%E4%BD%8F%E5%90%89%E3%83%A9%E3%83%95%E3%82%A3%E3%83%8A%E3%83%BC%E3%83%88%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1496680000675/) |
-| パークタワー東雲 | 9780万円 | 2LDK+S（納戸） | 56.2㎡ | 築2014年 | 東雲 徒歩7分 | 8階/RC43階建 | 戸数:不明 | B |  | - | - | - | 25.2万円/月 | 36分（33-41分） | 40分（37-45分） | 東京都江東区東雲１－９－４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_21042384/) |
-|  | 1億290万円 | 3LDK | 78.5㎡ | 築2006年 | 東陽町駅 徒歩9分 | 9階/14階建 | 戸数:不明 |  |  | - | - | - | 26.3万円/月 | 28分 | 26分 | 東京都江東区塩浜2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E5%A1%A9%E6%B5%9C2%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037184/) |
-|  | 1億480万円 | 2LDK | 60.9㎡ | 築2014年 | 東雲駅 徒歩7分 | 6階/43階建 | 戸数:不明 |  |  | - | - | - | 26.7万円/月 | 20分 | 28分 | 東京都江東区東雲1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%9D%B1%E9%9B%B21%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037756/) |
-| レクセルプラザ東陽町 9階 | 1億490万円 | 3LDK | 78.5㎡ | 築2006年 | 東陽町駅 徒歩9分 | 9階/14階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 30分 | 28分 | 東京都江東区塩浜2丁目29-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%AF%E3%82%BB%E3%83%AB%E3%83%97%E3%83%A9%E3%82%B6%E6%9D%B1%E9%99%BD%E7%94%BA%209%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210003351/) |
-|  | 1億980万円 | 3LDK | 69.7㎡ | 築2015年 | 住吉駅 徒歩10分 | 6階/14階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 40分 | 35分 | 東京都江東区扇橋3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%89%87%E6%A9%8B3%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048530/) |
-| BRANZ東雲 14階 | 1億980万円 | 3LDK | 66.5㎡ | 築2012年 | 東雲駅 徒歩9分 | 14階/15階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 22分 | 30分 | 東京都江東区東雲1丁目6-15 | [Google Map](https://www.google.com/maps/search/?api=1&query=BRANZ%E6%9D%B1%E9%9B%B2%2014%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1354210002481/) |
-| アイ・キャナルメイツ豊洲 4階 | 1億1190万円 | 2SLDK | 70.1㎡ | 築2001年 | 豊洲駅 徒歩9分 | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 28.3万円/月 | 30分（27-35分） | 36分（33-41分） | 東京都江東区豊洲4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%A4%E3%83%BB%E3%82%AD%E3%83%A3%E3%83%8A%E3%83%AB%E3%83%A1%E3%82%A4%E3%83%84%E8%B1%8A%E6%B4%B2%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35503670000343/) |
-| メイツ深川住吉 2階 | 1億1580万円 | 2LDK | 63.0㎡ | 築2020年 | 住吉駅 徒歩7分 | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 40分 | 35分 | 東京都江東区扇橋1丁目21-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%82%A4%E3%83%84%E6%B7%B1%E5%B7%9D%E4%BD%8F%E5%90%89%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1468140013978/) |
-| パークタワー東雲 29階 | 1億1580万円 | 2LDK | 60.9㎡ | 築2014年 | 東雲駅 徒歩7分 | 29階/43階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 36分（33-41分） | 40分（37-45分） | 東京都江東区東雲1丁目9-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2%2029%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1420270002738/) |
-|  | 1億1590万円 | 3LDK | 89.8㎡ | 築1997年 | 住吉駅 徒歩7分 | 16階/39階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 44分 | 34分 | 東京都江東区大島1丁目2-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E5%A4%A7%E5%B3%B61%E4%B8%81%E7%9B%AE2-2) | [詳細](https://www.homes.co.jp/mansion/b-1354210002486/) |
-| シャリエ亀戸リーディングイースト | 1億1680万円 | 3LDK | 70.8㎡ | 築2016年 | 大島 徒歩10分 | 8階/RC12階建 | 184戸 | A |  | - | - | - | 29.4万円/月 | 40分 | 40分 | 東京都江東区亀戸７－６３－３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%A3%E3%83%AA%E3%82%A8%E4%BA%80%E6%88%B8%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A4%E3%83%BC%E3%82%B9%E3%83%88) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_78804366/) |
-| シャリエ亀戸リ−ディングイ−スト 8階 | 1億1680万円 | 3LDK | 70.8㎡ | 築2016年 | 亀戸水神駅 徒歩10分 | 8階/12階建 | 戸数:不明 |  |  | - | - | - | 29.4万円/月 | 45分 | 40分 | 東京都江東区亀戸7丁目63-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%A3%E3%83%AA%E3%82%A8%E4%BA%80%E6%88%B8%E3%83%AA%E2%88%92%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A4%E2%88%92%E3%82%B9%E3%83%88%208%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210002547/) |
-| ビーコンタワーレジデンス 18階 | 1億1980万円 | 3LDK | 77.3㎡ | 築2009年 | 辰巳駅 徒歩10分 | 18階/41階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 24分 | 30分 | 東京都江東区東雲1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%93%E3%83%BC%E3%82%B3%E3%83%B3%E3%82%BF%E3%83%AF%E3%83%BC%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2018%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1542990000005/) |
-| ブリリア有明シティタワー 10階 | 1億2180万円 | 3LDK | 70.9㎡ | 築2014年 | 有明テニスの森駅 徒歩10分 | 10階/33階建 | 戸数:不明 |  |  | - | - | - | 30.5万円/月 | 50分（47-55分） | 56分（53-61分） | 東京都江東区有明1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%2010%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1199950005308/) |
-| ブリリア有明シティタワー 6階 | 1億2300万円 | 2SLDK | 70.9㎡ | 築2014年 | 有明テニスの森駅 徒歩10分 | 6階/33階建 | 戸数:不明 |  |  | - | - | - | 30.8万円/月 | 50分（47-55分） | 56分（53-61分） | 東京都江東区有明1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%206%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1408640003881/) |
-| ザ湾岸タワーレックスガーデン | 9180万円 | 2LDK | 57.9㎡ | 築2012年 | 東雲 徒歩4分 | 6階/RC31階建 | 458戸 | S |  | - | - | - | 23.9万円/月 | 38分（35-43分） | 42分（39-47分） | 東京都江東区東雲２－２－１４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E6%B9%BE%E5%B2%B8%E3%82%BF%E3%83%AF%E3%83%BC%E3%83%AC%E3%83%83%E3%82%AF%E3%82%B9%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_21034747/) |
-| プライヴブルー東京 6階 | 1億2800万円 | 3LDK | 75.0㎡ | 築2005年 | 豊洲駅 徒歩7分 | 6階/20階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 30分（27-35分） | 36分（33-41分） | 東京都江東区豊洲4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A4%E3%83%B4%E3%83%96%E3%83%AB%E3%83%BC%E6%9D%B1%E4%BA%AC%206%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1417040006637/) |
-| ブリリア有明シティタワー 10階 | 1億2800万円 | 3LDK | 65.9㎡ | 築2014年 | 有明テニスの森駅 徒歩10分 | 10階/33階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 50分（47-55分） | 56分（53-61分） | 東京都江東区有明1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%2010%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35005010002721/) |
-| シティタワーズ豊洲ザ・シンボル 9階 | 1億2800万円 | 2LDK | 69.2㎡ | 築2009年 | 豊洲駅 徒歩6分 | 9階/44階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 26分（23-31分） | 32分（29-37分） | 東京都江東区豊洲3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%BA%E8%B1%8A%E6%B4%B2%E3%82%B6%E3%83%BB%E3%82%B7%E3%83%B3%E3%83%9C%E3%83%AB%209%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1199950005317/) |
-| シティタワーズ豊洲ザ・シンボル 23階 | 1億2980万円 | 2LDK | 67.5㎡ | 築2009年 | 豊洲駅 徒歩6分 | 23階/44階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 26分（23-31分） | 32分（29-37分） | 東京都江東区豊洲3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%BA%E8%B1%8A%E6%B4%B2%E3%82%B6%E3%83%BB%E3%82%B7%E3%83%B3%E3%83%9C%E3%83%AB%2023%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1199950005318/) |
-|  | 9980万円 | 2SLDK | 66.0㎡ | 築1997年 | 亀戸駅 徒歩3分 | 14階/14階建 | 208戸 |  |  | - | - | - | 25.6万円/月 | 51分（48-56分） | 41分（38-46分） | 東京都江東区亀戸5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E4%BA%80%E6%88%B85%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048118/) |
-| ルネ・グランマリーナ潮見 14階 | 1億800万円 | 3LDK | 78.4㎡ | 築1999年 | 潮見駅 徒歩3分 | 14階/15階建 | 戸数:不明 |  |  | - | - | - | 27.4万円/月 | 30分 | 28分 | 東京都江東区潮見2丁目8-14 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%8D%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%9E%E3%83%AA%E3%83%BC%E3%83%8A%E6%BD%AE%E8%A6%8B%2014%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1392880001592/) |
-| マークス亀戸 11階 | 1億990万円 | 3LDK | 74.2㎡ | 築1997年 | 亀戸 徒歩3分 | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 45分 | 38分 | 東京都江東区亀戸5丁目1-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%B9%E4%BA%80%E6%88%B8%2011%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007240000122/) |
-|  | 1億1000万円 | 3LDK | 78.4㎡ | 築1999年 | 潮見駅 徒歩3分 | 10階/15階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 30分 | 30分 | 東京都江東区潮見2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%BD%AE%E8%A6%8B2%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1216390037954/) |
-| スカイズタワー＆ガーデン 37階 | 1億1000万円 | 2LDK | 60.7㎡ | 築2014年 | 新豊洲駅 徒歩5分 | 37階/45階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 18分 | 26分 | 東京都江東区豊洲6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%86%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%2037%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1449550000027/) |
-|  | 1億1480万円 | 3LDK | 70.6㎡ | 築2002年 | 木場駅 徒歩5分 | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 41分（38-46分） | 35分（32-40分） | 東京都江東区東陽1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%9D%B1%E9%99%BD1%E4%B8%81%E7%9B%AE) | [詳細](https://www.homes.co.jp/mansion/b-1004590048638/) |
-| デュオシティ木場公園 5階 | 1億1990万円 | 3LDK | 70.6㎡ | 築2002年 | 木場駅 徒歩5分 | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 24分 | 24分 | 東京都江東区東陽1丁目8-12 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%83%A5%E3%82%AA%E3%82%B7%E3%83%86%E3%82%A3%E6%9C%A8%E5%A0%B4%E5%85%AC%E5%9C%92%205%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1391790007296/) |
-| 新交通ゆりかもめ 豊洲駅 徒歩5分 15階 | 1億2280万円 | 2LDK | 60.7㎡ | 築2008年 | ＴＯＷＥＲ■ライフステージ問わず住まえる2LDK 徒歩4分 / 豊洲駅 徒歩4分 | 15階/43階建 | 戸数:不明 |  |  | - | - | - | 30.7万円/月 | 26分（23-31分） | 32分（29-37分） | 東京都江東区豊洲3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E4%BA%A4%E9%80%9A%E3%82%86%E3%82%8A%E3%81%8B%E3%82%82%E3%82%81%20%E8%B1%8A%E6%B4%B2%E9%A7%85%20%E5%BE%92%E6%AD%A95%E5%88%86%2015%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1216390038119/) |
-| ブリリアマーレ有明タワーガーデン 13階 | 1億2980万円 | 2LDK | 65.8㎡ | 築2008年 | 有明テニスの森 徒歩5分 | 13階/33階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 18分 | 24分 | 東京都江東区有明1丁目4-11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E3%83%9E%E3%83%BC%E3%83%AC%E6%9C%89%E6%98%8E%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%2013%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1548200002540/) |
-| 新交通ゆりかもめ 有明テニスの森駅 徒歩5分 13階 | 1億2980万円 | 2LDK | 65.8㎡ | 築2008年 | 有明テニスの森駅 徒歩5分 | 13階/33階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 50分（47-55分） | 56分（53-61分） | 東京都江東区有明1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E4%BA%A4%E9%80%9A%E3%82%86%E3%82%8A%E3%81%8B%E3%82%82%E3%82%81%20%E6%9C%89%E6%98%8E%E3%83%86%E3%83%8B%E3%82%B9%E3%81%AE%E6%A3%AE%E9%A7%85%20%E5%BE%92%E6%AD%A95%E5%88%86%2013%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1004590048072/) |
+| マイキャッスル水天宮前壱番館 | 1億2980万円 | 3LDK | 63.2㎡ | 築1998年 | 水天宮前 徒歩1分 | 2階/8階建 | 32戸 |  |  | - | - | - | 32.3万円/月 | 21分（18-26分） | 20分（17-25分） | 中央区日本橋蛎殻町2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E6%B0%B4%E5%A4%A9%E5%AE%AE%E5%89%8D%E5%A3%B1%E7%95%AA%E9%A4%A8) | [詳細](https://www.nomu.com/mansion/id/F87C4013/) |
 
 ## 📊 変更サマリー
 
-- 🆕 **新規**: 217件
-- 🔄 **価格変動**: 15件
-- ❌ **削除**: 2件
+- 🆕 **新規**: 10件
+- 🔄 **価格変動**: 11件
+- ❌ **削除**: 3件
 
 ## 🔄 価格変動
 
 | 物件名 | 変更前 | 変更後 | 差額 | 間取り | 専有 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | Google Map | 詳細URL |
 |--------|--------|--------|------|--------|------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------------|---------|
-| ブリリア東中野パークサイドヒルズ（Brillia東中…（6/11） | 1億1950万円 | 1億980万円 | -970万円 | 3LDK | 65.2㎡ | 1階/RC8階建 | 97戸 | A |  | - | - | - | 27.8万円/月 | 33分（30-38分） | 32分（29-37分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9D%B1%E4%B8%AD%E9%87%8E%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B5%E3%82%A4%E3%83%89%E3%83%92%E3%83%AB%E3%82%BA%EF%BC%88Brillia%E6%9D%B1%E4%B8%AD%E2%80%A6) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20333960/) |
-| トゥールロワイヤル池袋要町（6/11） | 1億499万円 | 9999万円 | -500万円 | 3LDK | 62.0㎡ | 5階/RC10階建 | 30戸 | B |  | - | - | - | 25.7万円/月 | 56分（53-61分） | 49分（46-54分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%88%E3%82%A5%E3%83%BC%E3%83%AB%E3%83%AD%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AB%E6%B1%A0%E8%A2%8B%E8%A6%81%E7%94%BA) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20975344/) |
-| ドラゴンマンション池袋壱番館（6/11） | 9350万円 | 8999万円 | -351万円 | 2LDK+S（納戸） | 75.0㎡ | 4階/SRC14階建一部RC | 67戸 | A |  | - | - | - | 23.4万円/月 | 37分（34-42分） | 31分（28-36分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%89%E3%83%A9%E3%82%B4%E3%83%B3%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E6%B1%A0%E8%A2%8B%E5%A3%B1%E7%95%AA%E9%A4%A8) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20695645/) |
-| 上野毛シティハウスサウステラス 4階 | 1億500万円 | 1億500万円 | 変動なし | 3LDK | 79.6㎡ | 4階/RC5階地下1階建 | 15戸 |  |  | - | - | - | 26.8万円/月 | 48分 | 50分 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%8A%E9%87%8E%E6%AF%9B%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E3%82%B5%E3%82%A6%E3%82%B9%E3%83%86%E3%83%A9%E3%82%B9%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007290000237/) |
-| グランミュール田園調布 1階 | 1億500万円 | 1億500万円 | 変動なし | 3LDK | 95.8㎡ | 1階/木・鉄筋コンクリート2階地下1階建 | 5戸 |  |  | - | - | - | 26.8万円/月 | 45分 | 50分 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%9F%E3%83%A5%E3%83%BC%E3%83%AB%E7%94%B0%E5%9C%92%E8%AA%BF%E5%B8%83%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007290000061/) |
-| テラス加賀　【リノベ】 | 9480万円 | 9480万円 | 変動なし | 3LDK | 81.5㎡ | 5階/SRC14階地下1階建一部RC | 109戸 |  |  | - | - | - | 24.5万円/月 | 44分（41-49分） | 40分（37-45分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%86%E3%83%A9%E3%82%B9%E5%8A%A0%E8%B3%80%E3%80%80%E3%80%90%E3%83%AA%E3%83%8E%E3%83%99%E3%80%91) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20352217/) |
-| プレステージ浜田山ジヴェルニー | 1億1480万円 | 1億1480万円 | 変動なし | 2LDK | 62.8㎡ | 2階/4階建 | 105戸 |  |  | - | - | - | 28.9万円/月 | 35分 | 35分 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E6%B5%9C%E7%94%B0%E5%B1%B1%E3%82%B8%E3%83%B4%E3%82%A7%E3%83%AB%E3%83%8B%E3%83%BC) | [詳細](https://www.livable.co.jp/mansion/C13259K28/) |
-| パラッシオ池上 4階 | 9800万円 | 9800万円 | 変動なし | 3LDK | 100.0㎡ | 4階/RC4階建 | 14戸 |  |  | - | - | - | 25.2万円/月 | 35分 | 40分 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%A9%E3%83%83%E3%82%B7%E3%82%AA%E6%B1%A0%E4%B8%8A%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1358090021373/) |
-| サンクタス東京スクエア | 1億1000万円 | 1億1000万円 | 変動なし | 2LDK | 57.4㎡ | 3階/RC10階地下1階建 | 37戸 | B |  | - | - | - | 27.9万円/月 | 20分（17-25分） | 20分（17-25分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%AF%E3%82%BF%E3%82%B9%E6%9D%B1%E4%BA%AC%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20903001/) |
-| 朝日シティパリオ高輪台 A館 | 1億1490万円 | 1億1490万円 | 変動なし | 2LDK | 58.9㎡ | 2階/SRC11階建 | 30戸 | B |  | - | - | - | 29.0万円/月 | 32分（29-37分） | 38分（35-43分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9C%9D%E6%97%A5%E3%82%B7%E3%83%86%E3%82%A3%E3%83%91%E3%83%AA%E3%82%AA%E9%AB%98%E8%BC%AA%E5%8F%B0%20A%E9%A4%A8) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/F3GBGA08/) |
-| 高輪シティハウス | 1億2498万円 | 1億2498万円 | 変動なし | 2LDK | 62.0㎡ | 2階/15階建 | 69戸 |  |  | - | - | - | 31.2万円/月 | 32分（29-37分） | 38分（35-43分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E8%BC%AA%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FQQBGA23/) |
-| パークタワー東雲 28階（6/11） | 1億1880万円 | 1億1480万円 | -400万円 | 2LDK | 60.9㎡ | 28階/43階建 | 戸数:不明 | B |  | - | - | - | 28.9万円/月 | 36分（33-41分） | 40分（37-45分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2%2028%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007210000210/) |
-| THE TOYOSU TOWER (ザ・豊洲タワー)（6/11） | 1億2690万円 | 1億2490万円 | -200万円 | 2LDK | 62.5㎡ | 20階/43階建 | 825戸 |  |  | - | - | - | 31.2万円/月 | 26分（23-31分） | 32分（29-37分） | [Google Map](https://www.google.com/maps/search/?api=1&query=THE%20TOYOSU%20TOWER%20%28%E3%82%B6%E3%83%BB%E8%B1%8A%E6%B4%B2%E3%82%BF%E3%83%AF%E3%83%BC%29) | [詳細](https://www.nomu.com/mansion/id/RC370149/) |
-| デュオシティ木場公園 | 1億1480万円 | 1億1480万円 | 変動なし | 3LDK | 70.6㎡ | 5階/9階建 | 29戸 |  |  | - | - | - | 28.9万円/月 | 41分（38-46分） | 35分（32-40分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%83%A5%E3%82%AA%E3%82%B7%E3%83%86%E3%82%A3%E6%9C%A8%E5%A0%B4%E5%85%AC%E5%9C%92) | [詳細](https://www.nomu.com/mansion/id/F54C5010/) |
-| ガーデンフラッグシティ 9階 | 1億2998万円 | 1億2998万円 | 変動なし | 3LDK | 72.8㎡ | 9階/14階建 | 391戸 |  |  | - | - | - | 32.3万円/月 | 34分（31-39分） | 28分（25-33分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0%E3%82%B7%E3%83%86%E3%82%A3%209%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1338830000030/) |
+| クリオ大塚弐番館 4階（6/11） | 1億499万円 | 1億999万円 | +500万円 | 3LDK | 68.5㎡ | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 55分（52-60分） | 50分（47-55分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E5%A4%A7%E5%A1%9A%E5%BC%90%E7%95%AA%E9%A4%A8%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1267650035242/) |
+| クリオ大塚弐番館（6/11） | 1億999万円 | 1億499万円 | -500万円 | 3LDK | 68.5㎡ | 4階/15階建 | 70戸 |  |  | - | - | - | 26.8万円/月 | 54分（51-59分） | 47分（44-52分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E5%A4%A7%E5%A1%9A%E5%BC%90%E7%95%AA%E9%A4%A8) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BGA1A/) |
+| エルザ世田谷 29階 | 1億2980万円 | 1億2980万円 | 変動なし | 3LDK | 98.6㎡ | 29階/29階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 62分（59-67分） | 62分（59-67分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%2029%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1392830001457/) |
+| エルザ世田谷 24階 | 1億2480万円 | 1億2480万円 | 変動なし | 3LDK | 81.1㎡ | 24階/29階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 62分（59-67分） | 62分（59-67分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%2024%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1102010000652/) |
+| 藤和シティホームズ南阿佐ヶ谷 4階（6/11） | 1億1580万円 | 1億1780万円 | +200万円 | 2LDK | 72.7㎡ | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 29.6万円/月 | 58分（55-63分） | 57分（54-62分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210003860/) |
+| 藤和シティホームズ南阿佐ヶ谷（6/11） | 1億1780万円 | 1億1580万円 | -200万円 | 2LDK | 72.7㎡ | 4階/11階建 | 42戸 |  |  | - | - | - | 29.2万円/月 | 49分（46-54分） | 45分（42-50分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7) | [詳細](https://www.nomu.com/mansion/id/R7770471/) |
+| ＬＥＸＩＡ 7階 | 1億1480万円 | 1億1480万円 | 変動なし | 3LDK | 61.8㎡ | 7階/7階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 64分（61-69分） | 60分（57-65分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%AC%EF%BC%A5%EF%BC%B8%EF%BC%A9%EF%BC%A1%207%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1552210003804/) |
+| ライオンズマンション広尾南 | 1億2980万円 | 1億2980万円 | 変動なし | 3LDK | 62.1㎡ | 3階/8階建 | 53戸 |  |  | - | - | - | 32.3万円/月 | 38分（35-43分） | 42分（39-47分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%B3%E3%82%BA%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E5%BA%83%E5%B0%BE%E5%8D%97) | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FEUBGA0E/) |
+| 晴海アイランドトリトンスクエアビュータワー 21階 | 1億1000万円 | 1億1000万円 | 変動なし | 2SLDK | 69.9㎡ | 21階/50階建 | 624戸 |  |  | - | - | - | 27.9万円/月 | 46分（43-51分） | 52分（49-57分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2021%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1285260002101/) |
+| 晴海アイランドトリトンスクエアビュータワー 43階 | 1億2900万円 | 1億2900万円 | 変動なし | 3LDK | 77.5㎡ | 43階/50階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 46分（43-51分） | 52分（49-57分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2043%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1261160003498/) |
+| 晴海アイランドトリトンスクエアビュータワー 38階 | 1億2980万円 | 1億2980万円 | 変動なし | 2LDK | 69.9㎡ | 38階/50階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 46分（43-51分） | 52分（49-57分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2038%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1373840001023/) |
 
 ## ❌ 削除された物件
 
 | 物件名 | 価格 | 間取り | 専有 | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | Google Map | 詳細URL |
 |--------|------|--------|------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------------|---------|
-| 朝日シティパリオ高輪台 | 1億1490万円 | 2LDK | 58.9㎡ | 2階/SRC11階建 | 30戸 | B |  | - | - | - | 29.0万円/月 | 32分（29-37分） | 38分（35-43分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9C%9D%E6%97%A5%E3%82%B7%E3%83%86%E3%82%A3%E3%83%91%E3%83%AA%E3%82%AA%E9%AB%98%E8%BC%AA%E5%8F%B0) | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_minato/nc_20201464/) |
-| ブリリア有明スカイタワー | 1億1800万円 | 2LDK | 61.2㎡ | 31階/RC33階地下1階建 | 1089戸 | B |  | - | - | - | 29.7万円/月 | 50分（47-55分） | 56分（53-61分） | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC) | [詳細](https://www.nomu.com/mansion/id/KC370146/) |
+| 上野毛シティハウスサウステラス 4階 | 1億500万円 | 3LDK | 79.6㎡ | 4階/RC5階地下1階建 | 15戸 |  |  | - | - | - | 26.8万円/月 | 48分 | 50分 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%8A%E9%87%8E%E6%AF%9B%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E3%82%B5%E3%82%A6%E3%82%B9%E3%83%86%E3%83%A9%E3%82%B9%204%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-35007290000237/) |
+| ローレルコート杉並松庵 1階 | 1億2490万円 | 3LDK | 70.8㎡ | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 50分 | 50分 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AD%E3%83%BC%E3%83%AC%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%88%E6%9D%89%E4%B8%A6%E6%9D%BE%E5%BA%B5%201%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1421770027582/) |
+| マイキャッスル水天宮前壱番館 2階 | 1億2980万円 | 3LDK | 63.2㎡ | 2階/8階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 20分 | 18分 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E6%B0%B4%E5%A4%A9%E5%AE%AE%E5%89%8D%E5%A3%B1%E7%95%AA%E9%A4%A8%202%E9%9A%8E) | [詳細](https://www.homes.co.jp/mansion/b-1404870000505/) |
 
 ## 📋 物件一覧（区・最寄駅別・資産性B以上）
 
@@ -311,12 +101,12 @@
 ### 中央区
 
 #### JR京葉線 八丁堀駅
-所在地: 中央区新川1丁目、中央区湊1丁目
+所在地: 中央区湊1丁目、中央区新川1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 |  | 1億1000万円 | 2LDK | 57.4㎡ | 築2001年 | 八丁堀駅 徒歩4分 | 中央区湊1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%B9%8A1%E4%B8%81%E7%9B%AE) | 3階/10階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 16分 | 16分 | [詳細](https://www.homes.co.jp/mansion/b-1004590048308/) |
-| ブリリア新川一丁目 5階 | 1億2480万円 | 2LDK | 56.1㎡ | 築2018年 | 八丁堀駅 徒歩7分 | 中央区新川1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%96%B0%E5%B7%9D%E4%B8%80%E4%B8%81%E7%9B%AE%205%E9%9A%8E) | 5階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 20分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-35007020000133/) |
+| ブリリア新川一丁目 5階 | 1億2480万円 | 2LDK | 56.1㎡ | 築2018年 | 八丁堀駅 徒歩7分 | 中央区新川1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%96%B0%E5%B7%9D%E4%B8%80%E4%B8%81%E7%9B%AE%205%E9%9A%8E) | 5階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 54分（51-59分） | 51分（48-56分） | [詳細](https://www.homes.co.jp/mansion/b-35007020000133/) |
 
 #### ●茅場町駅 徒歩5分
 所在地: 中央区日本橋小網町
@@ -330,7 +120,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| メイクスデザイン茅場町 6階 | 1億2980万円 | 2LDK | 65.9㎡ | 築2007年 | 〜3方向角住戸×茅場町駅 徒歩6分 | 中央区新川1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%B9%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E8%8C%85%E5%A0%B4%E7%94%BA%206%E9%9A%8E) | 6階/10階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 18分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1543960000117/) |
+| メイクスデザイン茅場町 6階 | 1億2980万円 | 2LDK | 65.9㎡ | 築2007年 | 〜3方向角住戸×茅場町駅 徒歩6分 | 中央区新川1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%82%A4%E3%82%AF%E3%82%B9%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E8%8C%85%E5%A0%B4%E7%94%BA%206%E9%9A%8E) | 6階/10階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 54分（51-59分） | 51分（48-56分） | [詳細](https://www.homes.co.jp/mansion/b-1543960000117/) |
 
 #### 人形町
 所在地: 中央区日本橋人形町３、中央区日本橋富沢町
@@ -341,7 +131,7 @@
 | エクセルシオール日本橋 | 1億2980万円 | 2DK | 54.4㎡ | 築1999年 | 人形町 徒歩5分 | 中央区日本橋富沢町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%AF%E3%82%BB%E3%83%AB%E3%82%B7%E3%82%AA%E3%83%BC%E3%83%AB%E6%97%A5%E6%9C%AC%E6%A9%8B) | 6階/12階建 | 44戸 |  |  | - | - | - | 32.3万円/月 | 25分（22-30分） | 25分（22-30分） | [詳細](https://www.livable.co.jp/mansion/C13265H15/) |
 
 #### 八丁堀
-所在地: 中央区新川２-17-15、中央区新川２丁目、中央区湊２－６－１、中央区新川1丁目、中央区新川１ 他
+所在地: 中央区湊１-14-16、中央区新川２-17-15、中央区新川２丁目、中央区新川1丁目、中央区湊２－６－１ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -353,17 +143,17 @@
 | ピアース東京インプレイス | 1億2999万円 | 2LDK | 56.4㎡ | 築2004年 | 八丁堀 徒歩3分 | 中央区新川２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%94%E3%82%A2%E3%83%BC%E3%82%B9%E6%9D%B1%E4%BA%AC%E3%82%A4%E3%83%B3%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B9) | 6階/15階建 | 80戸 |  |  | - | - | - | 32.3万円/月 | 19分（16-24分） | 19分（16-24分） | [詳細](https://www.livable.co.jp/mansion/C48265T72/) |
 
 #### 勝どき
-所在地: 中央区勝どき５丁目、中央区勝どき5丁目、中央区勝どき５－５－１４、中央区晴海３－１０３、中央区勝どき5丁目10 他
+所在地: 中央区晴海５－１－１７、中央区勝どき５丁目、中央区勝どき5丁目、中央区勝どき５－５－１４、中央区晴海３－１０３ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | ベイサイドタワー晴海 | 9480万円 | 2LDK | 55.3㎡ | 築2015年 | 勝どき 徒歩7分 | 中央区晴海３－１０３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%99%E3%82%A4%E3%82%B5%E3%82%A4%E3%83%89%E3%82%BF%E3%83%AF%E3%83%BC%E6%99%B4%E6%B5%B7) | 2階/RC33階地下2階建一部鉄骨 | 352戸 | A |  | - | - | - | 24.5万円/月 | 21分（18-26分） | 27分（24-32分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20096487/) |
-| 東京ミッドベイ勝どき 4階 | 9480万円 | 2LDK | 56.8㎡ | 築2012年 | 勝どき 徒歩8分 | 中央区勝どき5丁目10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%9F%E3%83%83%E3%83%89%E3%83%99%E3%82%A4%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 10分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1456430000251/) |
+| 東京ミッドベイ勝どき 4階 | 9480万円 | 2LDK | 56.8㎡ | 築2012年 | 勝どき 徒歩8分 | 中央区勝どき5丁目10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%9F%E3%83%83%E3%83%89%E3%83%99%E3%82%A4%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 22分（19-27分） | 28分（25-33分） | [詳細](https://www.homes.co.jp/mansion/b-1456430000251/) |
 | ベイサイドタワー晴海 | 1億380万円 | 2LDK | 55.3㎡ | 築2015年 | 勝どき 徒歩7分 | 中央区晴海３－１０３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%99%E3%82%A4%E3%82%B5%E3%82%A4%E3%83%89%E3%82%BF%E3%83%AF%E3%83%BC%E6%99%B4%E6%B5%B7) | 5階/RC33階地下2階建 | 352戸 | B |  | - | - | - | 26.5万円/月 | 21分（18-26分） | 27分（24-32分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_78990101/) |
+| ザ・晴海レジデンス | 1億980万円 | 2LDK | 79.2㎡ | 築2009年 | 勝どき 徒歩10分 | 中央区晴海５－１－１７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 3階/SRC20階建 | 438戸 | A |  | - | - | - | 27.8万円/月 | 24分（21-29分） | 30分（27-35分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_78676556/) |
 | クレストシティレジデンス | 1億980万円 | 2LDK | 60.4㎡ | 築2007年 | 勝どき 徒歩8分 | 中央区勝どき5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E3%82%B7%E3%83%86%E3%82%A3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 13階/18階建 | 495戸 | B |  | - | - | - | 27.8万円/月 | 22分（19-27分） | 28分（25-33分） | [詳細](https://www.nomu.com/mansion/id/FC9C3001/) |
 | クレストシティレジデンス | 1億980万円 | 2LDK | 66.0㎡ | 築2007年 | 勝どき 徒歩7分 | 中央区勝どき５－５－１４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E3%82%B7%E3%83%86%E3%82%A3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 2階/RC18階建 | 495戸 | A |  | - | - | - | 27.8万円/月 | 21分（18-26分） | 27分（24-32分） | [詳細](https://www.livable.co.jp/mansion/C48264P86/) |
 | ベイサイドタワー晴海 | 1億980万円 | 2LDK | 55.3㎡ | 築2015年 | 勝どき 徒歩7分 | 中央区晴海３－１０３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%99%E3%82%A4%E3%82%B5%E3%82%A4%E3%83%89%E3%82%BF%E3%83%AF%E3%83%BC%E6%99%B4%E6%B5%B7) | 18階/RC33階地下2階建 | 352戸 | B |  | - | - | - | 27.8万円/月 | 21分（18-26分） | 27分（24-32分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20458079/) |
-| ザ・晴海レジデンス | 1億980万円 | 2LDK | 79.2㎡ | 築2009年 | 勝どき 徒歩10分 | 中央区晴海５－１－１７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 3階/SRC20階建 | 438戸 | A |  | - | - | - | 27.8万円/月 | 24分（21-29分） | 30分（27-35分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_78676556/) |
 | プラネ勝どき | 1億980万円 | 2LDK | 57.7㎡ | 築2005年 | 勝どき 徒歩8分 | 中央区勝どき５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%83%8D%E5%8B%9D%E3%81%A9%E3%81%8D) | 13階/13階建 | 46戸 |  |  | - | - | - | 27.8万円/月 | 22分（19-27分） | 28分（25-33分） | [詳細](https://www.livable.co.jp/mansion/C13266185/) |
 | ＴＨＥ　ＴＯＫＹＯ　ＴＯＷＥＲＳ　ＳＥＡ　ＴＯＷＥＲ | 1億1580万円 | 2LDK | 63.1㎡ | 築2008年 | 勝どき 徒歩7分 | 中央区勝どき６丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%B4%EF%BC%A8%EF%BC%A5%E3%80%80%EF%BC%B4%EF%BC%AF%EF%BC%AB%EF%BC%B9%EF%BC%AF%E3%80%80%EF%BC%B4%EF%BC%AF%EF%BC%B7%EF%BC%A5%EF%BC%B2%EF%BC%B3%E3%80%80%EF%BC%B3%EF%BC%A5%EF%BC%A1%E3%80%80%EF%BC%B4%EF%BC%AF%EF%BC%B7%EF%BC%A5%EF%BC%B2) | 12階/RC58階地下2階建 | 1戸 | B |  | - | - | - | 29.2万円/月 | 21分（18-26分） | 27分（24-32分） | [詳細](https://www.livable.co.jp/mansion/C4825Z034/) |
 | サンステイト勝鬨橋リバーテラス | 1億1800万円 | 2LDK | 58.8㎡ | 築1998年 | 勝どき 徒歩5分 | 中央区勝どき３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%B9%E3%83%86%E3%82%A4%E3%83%88%E5%8B%9D%E9%AC%A8%E6%A9%8B%E3%83%AA%E3%83%90%E3%83%BC%E3%83%86%E3%83%A9%E3%82%B9) | 9階/RC13階建 | 68戸 | B |  | - | - | - | 29.7万円/月 | 19分（16-24分） | 25分（22-30分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20629433/) |
@@ -386,7 +176,7 @@
 | マイキャッスルリバーフロントタワー銀座東 | 1億1999万円 | 2LDK+S（納戸） | 60.3㎡ | 築1998年 | 新富町 徒歩7分 | 中央区明石町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E3%83%AA%E3%83%90%E3%83%BC%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%BF%E3%83%AF%E3%83%BC%E9%8A%80%E5%BA%A7%E6%9D%B1) | 3階/SRC14階地下1階建 | 50戸 | B |  | - | - | - | 30.1万円/月 | 23分（20-28分） | 25分（22-30分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20348052/) |
 
 #### 月島
-所在地: 中央区晴海１-6-1、中央区晴海１-６－１、中央区晴海１－８、中央区佃１－１１－９、中央区佃１－１１－７ 他
+所在地: 中央区佃２丁目、中央区佃１－１１－７、中央区晴海１-6-1、中央区晴海１-６－１、中央区晴海１－８ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -408,16 +198,15 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億980万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%99%B4%E6%B5%B71%E4%B8%81%E7%9B%AE) | 34階/50階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 14分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1004590048116/) |
+|  | 1億980万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%99%B4%E6%B5%B71%E4%B8%81%E7%9B%AE) | 34階/50階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 35分（32-40分） | 41分（38-46分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048116/) |
 
 #### 東京メトロ半蔵門線 水天宮前駅
-所在地: 中央区日本橋蛎殻町1丁目38-15、中央区日本橋蛎殻町1丁目、中央区日本橋蛎殻町2丁目5-12
+所在地: 中央区日本橋蛎殻町1丁目38-15、中央区日本橋蛎殻町1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億990万円 | 2LDK | 55.8㎡ | 築2000年 | 水天宮前駅 徒歩3分 | 中央区日本橋蛎殻町1丁目38-15 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%97%A5%E6%9C%AC%E6%A9%8B%E8%9B%8E%E6%AE%BB%E7%94%BA1%E4%B8%81%E7%9B%AE38-15) | 2階/13階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 20分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1421770026961/) |
-| アスコットパーク日本橋水天宮 5階 | 1億2800万円 | 2LDK | 55.9㎡ | 築2005年 | 水天宮前駅 徒歩2分 | 中央区日本橋蛎殻町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%B9%E3%82%B3%E3%83%83%E3%83%88%E3%83%91%E3%83%BC%E3%82%AF%E6%97%A5%E6%9C%AC%E6%A9%8B%E6%B0%B4%E5%A4%A9%E5%AE%AE%205%E9%9A%8E) | 5階/11階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 20分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1543480000456/) |
-| マイキャッスル水天宮前壱番館 2階 | 1億2980万円 | 3LDK | 63.2㎡ | 築1998年 | 水天宮前駅 徒歩1分 | 中央区日本橋蛎殻町2丁目5-12 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E6%B0%B4%E5%A4%A9%E5%AE%AE%E5%89%8D%E5%A3%B1%E7%95%AA%E9%A4%A8%202%E9%9A%8E) | 2階/8階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 20分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1404870000505/) |
+|  | 1億990万円 | 2LDK | 55.8㎡ | 築2000年 | 水天宮前駅 徒歩3分 | 中央区日本橋蛎殻町1丁目38-15 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%97%A5%E6%9C%AC%E6%A9%8B%E8%9B%8E%E6%AE%BB%E7%94%BA1%E4%B8%81%E7%9B%AE38-15) | 2階/13階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 47分（44-52分） | 44分（41-49分） | [詳細](https://www.homes.co.jp/mansion/b-1421770026961/) |
+| アスコットパーク日本橋水天宮 5階 | 1億2800万円 | 2LDK | 55.9㎡ | 築2005年 | 水天宮前駅 徒歩2分 | 中央区日本橋蛎殻町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%B9%E3%82%B3%E3%83%83%E3%83%88%E3%83%91%E3%83%BC%E3%82%AF%E6%97%A5%E6%9C%AC%E6%A9%8B%E6%B0%B4%E5%A4%A9%E5%AE%AE%205%E9%9A%8E) | 5階/11階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 47分（44-52分） | 44分（41-49分） | [詳細](https://www.homes.co.jp/mansion/b-1543480000456/) |
 
 #### 東京メトロ半蔵門線 水天宮前駅 徒歩3分
 所在地: 中央区日本橋蛎殻町１丁目、中央区日本橋箱崎町
@@ -433,14 +222,14 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億2490万円 | 2LDK | 56.8㎡ | 築1999年 | 人形町駅 徒歩3分 | 中央区日本橋堀留町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%97%A5%E6%9C%AC%E6%A9%8B%E5%A0%80%E7%95%99%E7%94%BA1%E4%B8%81%E7%9B%AE) | 7階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 18分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037515/) |
+|  | 1億2490万円 | 2LDK | 56.8㎡ | 築1999年 | 人形町駅 徒歩3分 | 中央区日本橋堀留町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%97%A5%E6%9C%AC%E6%A9%8B%E5%A0%80%E7%95%99%E7%94%BA1%E4%B8%81%E7%9B%AE) | 7階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 51分（48-56分） | 48分（45-53分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037515/) |
 
 #### 東京メトロ日比谷線 人形町駅 徒歩4分
 所在地: 中央区日本橋堀留町１丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| アクシルコート日本橋 | 1億2490万円 | 2LDK | 56.8㎡ | 築1999年 | 人形町駅 徒歩4分 | 中央区日本橋堀留町１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%88%E6%97%A5%E6%9C%AC%E6%A9%8B) | 7階/10階建 | 45戸 |  |  | - | - | - | 31.2万円/月 | 18分 | 20分 | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FBHBGA1E/) |
+| アクシルコート日本橋 | 1億2490万円 | 2LDK | 56.8㎡ | 築1999年 | 人形町駅 徒歩4分 | 中央区日本橋堀留町１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%88%E6%97%A5%E6%9C%AC%E6%A9%8B) | 7階/10階建 | 45戸 |  |  | - | - | - | 31.2万円/月 | 51分（48-56分） | 48分（45-53分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FBHBGA1E/) |
 
 #### 東京メトロ日比谷線 小伝馬町駅 徒歩3分
 所在地: 中央区日本橋大伝馬町
@@ -478,11 +267,14 @@
 | カルムインフォアームズ東京コア | 1億980万円 | 2SLDK | 57.5㎡ | 築2000年 | 新富町駅 徒歩5分 | 中央区湊３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AB%E3%83%AB%E3%83%A0%E3%82%A4%E3%83%B3%E3%83%95%E3%82%A9%E3%82%A2%E3%83%BC%E3%83%A0%E3%82%BA%E6%9D%B1%E4%BA%AC%E3%82%B3%E3%82%A2) | 6階/12階建 | 84戸 |  |  | - | - | - | 27.8万円/月 | 16分 | 18分 | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FK7AGA7C/) |
 
 #### 東京メトロ有楽町線 月島駅
-所在地: 中央区晴海1丁目
+所在地: 中央区晴海1丁目6-1、中央区晴海1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億1900万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%99%B4%E6%B5%B71%E4%B8%81%E7%9B%AE) | 20階/50階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 14分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1004590048097/) |
+| 晴海アイランドトリトンスクエアビュータワー 21階 | 1億1000万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2021%E9%9A%8E) | 21階/50階建 | 624戸 |  |  | - | - | - | 27.9万円/月 | 46分（43-51分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-1285260002101/) |
+|  | 1億1900万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%99%B4%E6%B5%B71%E4%B8%81%E7%9B%AE) | 20階/50階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 35分（32-40分） | 41分（38-46分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048097/) |
+| 晴海アイランドトリトンスクエアビュータワー 43階 | 1億2900万円 | 3LDK | 77.5㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2043%E9%9A%8E) | 43階/50階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 46分（43-51分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-1261160003498/) |
+| 晴海アイランドトリトンスクエアビュータワー 38階 | 1億2980万円 | 2LDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2038%E9%9A%8E) | 38階/50階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 46分（43-51分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-1373840001023/) |
 
 #### 東京メトロ有楽町線 月島駅 徒歩1分
 所在地: 中央区月島１丁目
@@ -500,7 +292,7 @@
 | ファミール月島グランスイートタワー | 1億2900万円 | 2LDK | 59.1㎡ | 築2002年 | 月島駅 徒歩2分 | 中央区佃２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%95%E3%82%A1%E3%83%9F%E3%83%BC%E3%83%AB%E6%9C%88%E5%B3%B6%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88%E3%82%BF%E3%83%AF%E3%83%BC) | 23階/29階建 | 242戸 |  |  | - | - | - | 32.1万円/月 | 47分（44-52分） | 53分（50-58分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FK7BGA28/) |
 
 #### 東京メトロ有楽町線 月島駅 徒歩3分
-所在地: 中央区月島４丁目、中央区月島１丁目
+所在地: 中央区月島１丁目、中央区月島４丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -530,11 +322,12 @@
 | ＧＲＥＥＮ　ＰＡＲＫ　東日本橋　Ｒｉｖｅｒ　Ｔｅｒｒａｃｅ | 1億1660万円 | 2LDK | 55.4㎡ | 築2008年 | 東日本橋 徒歩3分 | 中央区東日本橋２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%A7%EF%BC%B2%EF%BC%A5%EF%BC%A5%EF%BC%AE%E3%80%80%EF%BC%B0%EF%BC%A1%EF%BC%B2%EF%BC%AB%E3%80%80%E6%9D%B1%E6%97%A5%E6%9C%AC%E6%A9%8B%E3%80%80%EF%BC%B2%EF%BD%89%EF%BD%96%EF%BD%85%EF%BD%92%E3%80%80%EF%BC%B4%EF%BD%85%EF%BD%92%EF%BD%92%EF%BD%81%EF%BD%83%EF%BD%85) | 7階/11階建 | 18戸 | B |  | - | - | - | 29.4万円/月 | 45分（42-50分） | 42分（39-47分） | [詳細](https://www.livable.co.jp/mansion/C48262241/) |
 
 #### 水天宮前
-所在地: 中央区日本橋蛎殻町２丁目
+所在地: 中央区日本橋蛎殻町２丁目、中央区日本橋蛎殻町2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | マイキャッスル水天宮前弐番館 | 1億1800万円 | 2LDK | 65.5㎡ | 築1999年 | 水天宮前 徒歩1分 | 中央区日本橋蛎殻町２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E6%B0%B4%E5%A4%A9%E5%AE%AE%E5%89%8D%E5%BC%90%E7%95%AA%E9%A4%A8) | 7階/13階建 | 25戸 |  |  | - | - | - | 29.7万円/月 | 21分（18-26分） | 20分（17-25分） | [詳細](https://www.livable.co.jp/mansion/C13264E82/) |
+| マイキャッスル水天宮前壱番館 | 1億2980万円 | 3LDK | 63.2㎡ | 築1998年 | 水天宮前 徒歩1分 | 中央区日本橋蛎殻町2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E6%B0%B4%E5%A4%A9%E5%AE%AE%E5%89%8D%E5%A3%B1%E7%95%AA%E9%A4%A8) | 2階/8階建 | 32戸 |  |  | - | - | - | 32.3万円/月 | 21分（18-26分） | 20分（17-25分） | [詳細](https://www.nomu.com/mansion/id/F87C4013/) |
 
 #### 築地
 所在地: 中央区築地６
@@ -545,22 +338,22 @@
 | モア・クレスト築地 | 1億1380万円 | 2LDK | 56.2㎡ | 築1999年 | 築地 徒歩5分 | 中央区築地６ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A2%E3%82%A2%E3%83%BB%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E7%AF%89%E5%9C%B0) | 5階/SRC13階地下1階建 | 83戸 |  |  | - | - | - | 28.7万円/月 | 19分（16-24分） | 21分（18-26分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_20880717/) |
 
 #### 都営大江戸線 勝どき駅
-所在地: 中央区勝どき5丁目10、中央区勝どき5丁目12-4、中央区晴海5丁目1-17、中央区勝どき5丁目1-20、中央区勝どき5丁目 他
+所在地: 中央区晴海5丁目1-17、中央区晴海5丁目、中央区勝どき1丁目8-1、中央区勝どき5丁目、中央区勝どき5丁目12-4 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ザ・晴海レジデンス 9階 | 1億980万円 | 2LDK | 72.4㎡ | 築2009年 | 勝どき駅 徒歩10分 | 中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%209%E9%9A%8E) | 9階/20階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 14分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-35007050000177/) |
+| ザ・晴海レジデンス 9階 | 1億980万円 | 2LDK | 72.4㎡ | 築2009年 | 勝どき駅 徒歩10分 | 中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%209%E9%9A%8E) | 9階/20階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 46分（43-51分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-35007050000177/) |
 |  | 1億1299万円 | 3LDK | 69.0㎡ | 築2005年 | 勝どき駅 徒歩8分 | 中央区勝どき5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E5%8B%9D%E3%81%A9%E3%81%8D5%E4%B8%81%E7%9B%AE) | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 28.6万円/月 | 12分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037794/) |
-| プラネ勝どき 4階 | 1億1399万円 | 3LDK | 69.0㎡ | 築2005年 | 勝どき駅 徒歩8分 | 中央区勝どき5丁目1-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%83%8D%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 28.8万円/月 | 10分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1552210002483/) |
-| ザ・晴海レジデンス 3階 | 1億1500万円 | 2LDK | 76.0㎡ | 築2009年 | 勝どき駅 徒歩10分 | 中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%203%E9%9A%8E) | 3階/20階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 14分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-35005010002743/) |
-| ザ・晴海レジデンス 18階 | 1億2250万円 | 2LDK | 76.0㎡ | 築2009年 | 勝どき駅 徒歩10分 | 中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2018%E9%9A%8E) | 18階/20階建 | 戸数:不明 |  |  | - | - | - | 30.7万円/月 | 14分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1041110069080/) |
+| プラネ勝どき 4階 | 1億1399万円 | 3LDK | 69.0㎡ | 築2005年 | 勝どき駅 徒歩8分 | 中央区勝どき5丁目1-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%83%8D%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 28.8万円/月 | 47分（44-52分） | 53分（50-58分） | [詳細](https://www.homes.co.jp/mansion/b-1552210002483/) |
+| ザ・晴海レジデンス 3階 | 1億1500万円 | 2LDK | 76.0㎡ | 築2009年 | 勝どき駅 徒歩10分 | 中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%203%E9%9A%8E) | 3階/20階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 46分（43-51分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-35005010002743/) |
+| ザ・晴海レジデンス 18階 | 1億2250万円 | 2LDK | 76.0㎡ | 築2009年 | 勝どき駅 徒歩10分 | 中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2018%E9%9A%8E) | 18階/20階建 | 戸数:不明 |  |  | - | - | - | 30.7万円/月 | 46分（43-51分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-1041110069080/) |
 |  | 1億2480万円 | 3LDK | 78.0㎡ | 築2000年 | 勝どき駅 徒歩10分 | 中央区勝どき5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%AD%E5%A4%AE%E5%8C%BA%E5%8B%9D%E3%81%A9%E3%81%8D5%E4%B8%81%E7%9B%AE) | 14階/26階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 12分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1004590048158/) |
-| 勝どきビュータワー 9階 | 1億2500万円 | 2LDK | 57.2㎡ | 築2010年 | 勝どき駅 徒歩1分 | 中央区勝どき1丁目8-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%8B%9D%E3%81%A9%E3%81%8D%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%209%E9%9A%8E) | 9階/53階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 14分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1400850000426/) |
-| HARUMI FLAG PARK VILLAGE晴海フラッグ | 1億2900万円 | 2LDK | 60.2㎡ | 築2025年 | 勝どき駅 徒歩2分 | 中央区晴海5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=HARUMI%20FLAG%20PARK%20VILLAGE%E6%99%B4%E6%B5%B7%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0T%E6%A3%9F%207%E9%9A%8E) | 7階/50階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 12分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-35005010002734/) |
-| コスモ東京ベイタワー 14階 | 1億2980万円 | 3LDK | 78.0㎡ | 築2000年 | 勝どき駅 徒歩10分 | 中央区勝どき5丁目12-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B3%E3%82%B9%E3%83%A2%E6%9D%B1%E4%BA%AC%E3%83%99%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC%2014%E9%9A%8E) | 14階/26階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 12分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-35007050000140/) |
-| ザ・晴海レジデンス 19階 | 1億2980万円 | 2LDK | 68.4㎡ | 築2009年 | 勝どき駅 徒歩10分 | 中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2019%E9%9A%8E) | 19階/20階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 14分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1357690018978/) |
-| HARUMI FLAG PARK VILLAGE晴海フラッグ | 1億2980万円 | 2LDK | 61.3㎡ | 築2025年 | 勝どき駅 徒歩2分 | 中央区晴海5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=HARUMI%20FLAG%20PARK%20VILLAGE%E6%99%B4%E6%B5%B7%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0T%E6%A3%9F%203%E9%9A%8E) | 3階/50階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 12分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1199950005337/) |
-| 東京ミッドベイ勝どき 4階 | 1億2990万円 | 3LDK | 70.7㎡ | 築2012年 | 勝どき駅 徒歩8分 | 中央区勝どき5丁目10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%9F%E3%83%83%E3%83%89%E3%83%99%E3%82%A4%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 10分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1341620000800/) |
+| 勝どきビュータワー 9階 | 1億2500万円 | 2LDK | 57.2㎡ | 築2010年 | 勝どき駅 徒歩1分 | 中央区勝どき1丁目8-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%8B%9D%E3%81%A9%E3%81%8D%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%209%E9%9A%8E) | 9階/53階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 47分（44-52分） | 53分（50-58分） | [詳細](https://www.homes.co.jp/mansion/b-1400850000426/) |
+| HARUMI FLAG PARK VILLAGE晴海フラッグ | 1億2900万円 | 2LDK | 60.2㎡ | 築2025年 | 勝どき駅 徒歩2分 | 中央区晴海5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=HARUMI%20FLAG%20PARK%20VILLAGE%E6%99%B4%E6%B5%B7%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0T%E6%A3%9F%207%E9%9A%8E) | 7階/50階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 53分（50-58分） | 59分（56-64分） | [詳細](https://www.homes.co.jp/mansion/b-35005010002734/) |
+| ザ・晴海レジデンス 19階 | 1億2980万円 | 2LDK | 68.4㎡ | 築2009年 | 勝どき駅 徒歩10分 | 中央区晴海5丁目1-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E6%99%B4%E6%B5%B7%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2019%E9%9A%8E) | 19階/20階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 46分（43-51分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-1357690018978/) |
+| HARUMI FLAG PARK VILLAGE晴海フラッグ | 1億2980万円 | 2LDK | 61.3㎡ | 築2025年 | 勝どき駅 徒歩2分 | 中央区晴海5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=HARUMI%20FLAG%20PARK%20VILLAGE%E6%99%B4%E6%B5%B7%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0T%E6%A3%9F%203%E9%9A%8E) | 3階/50階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 53分（50-58分） | 59分（56-64分） | [詳細](https://www.homes.co.jp/mansion/b-1199950005337/) |
+| コスモ東京ベイタワー 14階 | 1億2980万円 | 3LDK | 78.0㎡ | 築2000年 | 勝どき駅 徒歩10分 | 中央区勝どき5丁目12-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B3%E3%82%B9%E3%83%A2%E6%9D%B1%E4%BA%AC%E3%83%99%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC%2014%E9%9A%8E) | 14階/26階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 47分（44-52分） | 53分（50-58分） | [詳細](https://www.homes.co.jp/mansion/b-35007050000140/) |
+| 東京ミッドベイ勝どき 4階 | 1億2990万円 | 3LDK | 70.7㎡ | 築2012年 | 勝どき駅 徒歩8分 | 中央区勝どき5丁目10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%9F%E3%83%83%E3%83%89%E3%83%99%E3%82%A4%E5%8B%9D%E3%81%A9%E3%81%8D%204%E9%9A%8E) | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 47分（44-52分） | 53分（50-58分） | [詳細](https://www.homes.co.jp/mansion/b-1341620000800/) |
 
 #### 都営大江戸線 勝どき駅 徒歩10分
 所在地: 中央区勝どき５丁目
@@ -602,21 +395,18 @@
 | クレストシティレジデンス | 1億2480万円 | 3LDK | 64.9㎡ | 築2007年 | 勝どき駅 徒歩8分 | 中央区勝どき５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E3%82%B7%E3%83%86%E3%82%A3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 12階/18階建 | 495戸 |  |  | - | - | - | 31.2万円/月 | 12分 | 18分 | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FSFBCA03/) |
 
 #### 都営大江戸線 月島駅
-所在地: 中央区晴海1丁目6-1、中央区月島1丁目8-1
+所在地: 中央区月島1丁目8-1
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 晴海アイランドトリトンスクエアビュータワー 21階 | 1億1000万円 | 2SLDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2021%E9%9A%8E) | 21階/50階建 | 624戸 |  |  | - | - | - | 27.9万円/月 | 16分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1285260002101/) |
-| アイ・マークタワー 18階 | 1億2490万円 | 2LDK | 59.2㎡ | 築2003年 | 月島駅 徒歩1分 | 中央区月島1丁目8-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%A4%E3%83%BB%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%2018%E9%9A%8E) | 18階/32階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 18分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1388970018065/) |
-| 晴海アイランドトリトンスクエアビュータワー 43階 | 1億2900万円 | 3LDK | 77.5㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2043%E9%9A%8E) | 43階/50階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 16分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1261160003498/) |
-| 晴海アイランドトリトンスクエアビュータワー 38階 | 1億2980万円 | 2LDK | 69.9㎡ | 築1998年 | 月島駅 徒歩6分 | 中央区晴海1丁目6-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%99%B4%E6%B5%B7%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E3%83%88%E3%83%AA%E3%83%88%E3%83%B3%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%93%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%AF%E3%83%BC%2038%E9%9A%8E) | 38階/50階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 16分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1373840001023/) |
+| アイ・マークタワー 18階 | 1億2490万円 | 2LDK | 59.2㎡ | 築2003年 | 月島駅 徒歩1分 | 中央区月島1丁目8-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%A4%E3%83%BB%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%2018%E9%9A%8E) | 18階/32階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 43分（40-48分） | 49分（46-54分） | [詳細](https://www.homes.co.jp/mansion/b-1388970018065/) |
 
 #### 都営新宿線 浜町駅
 所在地: 中央区日本橋浜町2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| アクシア日本橋 2階 | 1億2800万円 | 2LDK | 59.6㎡ | 築2000年 | 浜町駅 徒歩1分 | 中央区日本橋浜町2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%AF%E3%82%B7%E3%82%A2%E6%97%A5%E6%9C%AC%E6%A9%8B%202%E9%9A%8E) | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 20分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1552210004096/) |
+| アクシア日本橋 2階 | 1億2800万円 | 2LDK | 59.6㎡ | 築2000年 | 浜町駅 徒歩1分 | 中央区日本橋浜町2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%82%AF%E3%82%B7%E3%82%A2%E6%97%A5%E6%9C%AC%E6%A9%8B%202%E9%9A%8E) | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 39分（36-44分） | 36分（33-41分） | [詳細](https://www.homes.co.jp/mansion/b-1552210004096/) |
 
 #### 都営浅草線 東日本橋駅
 所在地: 中央区東日本橋2丁目
@@ -639,7 +429,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億2480万円 | 2LDK | 56.7㎡ | 築2002年 | ■ランドステージ白金台■少数ファミリーにもオススメの2LDK 徒歩2分 / 各洋室6帖以上でゆとりある空間 / 2面バルコニーで全てのお部屋に窓があり風通し眺望良好！白金台駅 徒歩2分 | 港区白金台4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E7%99%BD%E9%87%91%E5%8F%B04%E4%B8%81%E7%9B%AE) | 10階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 18分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1216390038075/) |
+|  | 1億2480万円 | 2LDK | 56.7㎡ | 築2002年 | ■ランドステージ白金台■少数ファミリーにもオススメの2LDK 徒歩2分 / 各洋室6帖以上でゆとりある空間 / 2面バルコニーで全てのお部屋に窓があり風通し眺望良好！白金台駅 徒歩2分 | 港区白金台4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%AF%E5%8C%BA%E7%99%BD%E9%87%91%E5%8F%B04%E4%B8%81%E7%9B%AE) | 10階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 32分（29-37分） | 36分（33-41分） | [詳細](https://www.homes.co.jp/mansion/b-1216390038075/) |
 
 #### ■朝日シティパリオ高輪台■港区高輪アドレス・高輪駅
 所在地: 港区高輪3丁目
@@ -662,7 +452,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| リストレジデンス芝浦 | 1億2680万円 | 2LDK | 56.0㎡ | 築2014年 | 田町駅 徒歩10分 | 港区芝浦４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%82%B9%E3%83%88%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%E8%8A%9D%E6%B5%A6) | 5階/13階建 | 45戸 |  |  | - | - | - | 31.6万円/月 | 16分 | 22分 | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FWPBBA03/) |
+| リストレジデンス芝浦 | 1億2680万円 | 2LDK | 56.0㎡ | 築2014年 | 田町駅 徒歩10分 | 港区芝浦４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%82%B9%E3%83%88%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%E8%8A%9D%E6%B5%A6) | 5階/13階建 | 45戸 |  |  | - | - | - | 31.6万円/月 | 51分（48-56分） | 57分（54-62分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FWPBBA03/) |
 
 #### 日の出
 所在地: 港区海岸２、港区芝浦１丁目、港区海岸2丁目
@@ -722,14 +512,14 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 朝日シティパリオ高輪台 A館 | 1億1490万円 | 2LDK | 58.9㎡ | 築1997年 | 高輪台駅 徒歩5分 | 港区高輪３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9C%9D%E6%97%A5%E3%82%B7%E3%83%86%E3%82%A3%E3%83%91%E3%83%AA%E3%82%AA%E9%AB%98%E8%BC%AA%E5%8F%B0%20A%E9%A4%A8) | 2階/SRC11階建 | 30戸 | B |  | - | - | - | 29.0万円/月 | 32分（29-37分） | 38分（35-43分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/F3GBGA08/) |
+| 朝日シティパリオ高輪台 A館 | 1億1490万円 | 2LDK | 58.9㎡ | 築1997年 | 高輪台駅 徒歩5分 | 港区高輪３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9C%9D%E6%97%A5%E3%82%B7%E3%83%86%E3%82%A3%E3%83%91%E3%83%AA%E3%82%AA%E9%AB%98%E8%BC%AA%E5%8F%B0%20A%E9%A4%A8) | 2階/SRC11階建 | 30戸 | B |  | - | - | - | 29.0万円/月 | 28分（25-33分） | 34分（31-39分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/F3GBGA08/) |
 
 #### 都営浅草線 高輪台駅 徒歩7分
 所在地: 港区高輪３丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 高輪シティハウス | 1億2498万円 | 2LDK | 62.0㎡ | 築2000年 | 高輪台駅 徒歩7分 | 港区高輪３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E8%BC%AA%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9) | 2階/15階建 | 69戸 |  |  | - | - | - | 31.2万円/月 | 32分（29-37分） | 38分（35-43分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FQQBGA23/) |
+| 高輪シティハウス | 1億2498万円 | 2LDK | 62.0㎡ | 築2000年 | 高輪台駅 徒歩7分 | 港区高輪３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E8%BC%AA%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9) | 2階/15階建 | 69戸 |  |  | - | - | - | 31.2万円/月 | 28分（25-33分） | 34分（31-39分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FQQBGA23/) |
 
 #### 麻布十番
 所在地: 港区南麻布２－３－１１、港区南麻布２丁目
@@ -746,7 +536,14 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 西早稲田シティタワー 19階 | 9580万円 | 2LDK | 60.2㎡ | 築1999年 | 19階からのパノラマビューに驚きました！フルリフォーム済みの室内は、神田川の桜並木を望む特等席。竹中工務店施工の重厚感と、駅 徒歩2分 | 新宿区西早稲田1丁目23-16 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%2019%E9%9A%8E) | 19階/23階建 | 戸数:不明 |  |  | - | - | - | 24.7万円/月 | 30分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1421770027562/) |
+| 西早稲田シティタワー 19階 | 9580万円 | 2LDK | 60.2㎡ | 築1999年 | 19階からのパノラマビューに驚きました！フルリフォーム済みの室内は、神田川の桜並木を望む特等席。竹中工務店施工の重厚感と、駅 徒歩2分 | 新宿区西早稲田1丁目23-16 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%2019%E9%9A%8E) | 19階/23階建 | 戸数:不明 |  |  | - | - | - | 24.7万円/月 | 44分（41-49分） | 38分（35-43分） | [詳細](https://www.homes.co.jp/mansion/b-1421770027562/) |
+
+#### JR山手線 新大久保駅
+所在地: 新宿区百人町3丁目
+
+| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
+|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
+| ザ・パームス西戸山 3階 | 1億1990万円 | 3LDK | 75.0㎡ | 築1996年 | 新大久保駅 徒歩5分 | 新宿区百人町3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%83%A0%E3%82%B9%E8%A5%BF%E6%88%B8%E5%B1%B1%203%E9%9A%8E) | 3階/6階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 28分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1421770025840/) |
 
 #### JR山手線 目白駅
 所在地: 新宿区下落合3丁目
@@ -756,14 +553,14 @@
 | オープンレジデンシア目白avenue 地下1階 | 8200万円 | 2SLDK | 68.1㎡ | 築2017年 | 目白駅 徒歩4分 | 新宿区下落合3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B7%E3%82%A2%E7%9B%AE%E7%99%BDavenue%20%E5%9C%B0%E4%B8%8B1%E9%9A%8E) | 1階/9階建 | 戸数:不明 | B |  | - | - | - | 21.7万円/月 | 35分（32-40分） | 29分（26-34分） | [詳細](https://www.homes.co.jp/mansion/b-35503720000263/) |
 
 #### JR山手線 高田馬場駅
-所在地: 新宿区高田馬場４－４０－１８、新宿区高田馬場1丁目22-5、新宿区高田馬場4丁目、新宿区高田馬場1丁目22
+所在地: 新宿区高田馬場4丁目、新宿区高田馬場1丁目22、新宿区高田馬場４－４０－１８、新宿区高田馬場1丁目22-5
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
+| レジェンド高田馬場ドゥエ 5階 | 1億2480万円 | 3LDK | 78.2㎡ | 築2002年 | 高田馬場駅 徒歩4分 | 新宿区高田馬場1丁目22 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%89%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B4%E3%83%89%E3%82%A5%E3%82%A8%205%E9%9A%8E) | 5階/7階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 31分（28-36分） | 25分（22-30分） | [詳細](https://www.homes.co.jp/mansion/b-1541220001051/) |
 | レジェンド高田馬場DUE 5階 | 1億2480万円 | 3LDK | 78.2㎡ | 築2001年 | 高田馬場駅 徒歩4分 | 新宿区高田馬場1丁目22-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%89%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B4DUE%205%E9%9A%8E) | 5階/7階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 32分（29-37分） | 26分（23-31分） | [詳細](https://www.homes.co.jp/mansion/b-1539700000709/) |
-| レジェンド高田馬場ドゥエ 5階 | 1億2480万円 | 3LDK | 78.2㎡ | 築2002年 | 高田馬場駅 徒歩4分 | 新宿区高田馬場1丁目22 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%89%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B4%E3%83%89%E3%82%A5%E3%82%A8%205%E9%9A%8E) | 5階/7階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 35分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1541220001051/) |
-| ＴＨＥパームス高田馬場 2階 | 1億300万円 | 2LDK | 62.2㎡ | 築2012年 | 高田馬場駅 徒歩9分 | 新宿区高田馬場４－４０－１８ | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%B4%EF%BC%A8%EF%BC%A5%E3%83%91%E3%83%BC%E3%83%A0%E3%82%B9%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B4%202%E9%9A%8E) | 2階/15階建 | 戸数:不明 | B |  | - | - | - | 26.3万円/月 | 39分（36-44分） | 33分（30-38分） | [詳細](https://www.homes.co.jp/mansion/b-1552210002263/) |
 |  | 1億300万円 | 2LDK | 67.0㎡ | 築2012年 | 高田馬場駅 徒歩9分 | 新宿区高田馬場4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B44%E4%B8%81%E7%9B%AE) | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 26.3万円/月 | 39分（36-44分） | 33分（30-38分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037138/) |
+| ＴＨＥパームス高田馬場 2階 | 1億300万円 | 2LDK | 62.2㎡ | 築2012年 | 高田馬場駅 徒歩9分 | 新宿区高田馬場４－４０－１８ | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%B4%EF%BC%A8%EF%BC%A5%E3%83%91%E3%83%BC%E3%83%A0%E3%82%B9%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B4%202%E9%9A%8E) | 2階/15階建 | 戸数:不明 | B |  | - | - | - | 26.3万円/月 | 39分（36-44分） | 33分（30-38分） | [詳細](https://www.homes.co.jp/mansion/b-1552210002263/) |
 
 #### JR総武線 四ツ谷駅
 所在地: 新宿区四谷坂町
@@ -784,14 +581,14 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億980万円 | 2LDK | 64.6㎡ | 築2008年 | ■レグノ・セレーノ■大久保駅 徒歩3分 | 新宿区北新宿3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E5%8C%97%E6%96%B0%E5%AE%BF3%E4%B8%81%E7%9B%AE) | 4階/24階建 | 217戸 |  |  | - | - | - | 27.8万円/月 | 28分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1216390036962/) |
+|  | 1億980万円 | 2LDK | 64.6㎡ | 築2008年 | ■レグノ・セレーノ■大久保駅 徒歩3分 | 新宿区北新宿3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E5%8C%97%E6%96%B0%E5%AE%BF3%E4%B8%81%E7%9B%AE) | 4階/24階建 | 217戸 |  |  | - | - | - | 27.8万円/月 | 39分（36-44分） | 41分（38-46分） | [詳細](https://www.homes.co.jp/mansion/b-1216390036962/) |
 
 #### ◇◆【大久保】駅徒歩3分
 所在地: 新宿区北新宿3丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| [VECS]レグノ・セレーノ　バルコニー南向きで陽当たり良好 | 1億1500万円 | 2LDK | 64.6㎡ | 築2008年 | ◇◆【大久保】駅 徒歩3分 | 新宿区北新宿3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%5BVECS%5D%E3%83%AC%E3%82%B0%E3%83%8E%E3%83%BB%E3%82%BB%E3%83%AC%E3%83%BC%E3%83%8E%E3%80%80%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E5%8D%97%E5%90%91%E3%81%8D%E3%81%A7%E9%99%BD%E5%BD%93%E3%81%9F%E3%82%8A%E8%89%AF%E5%A5%BD%204%E9%9A%8E) | 4階/24階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 28分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1216190000948/) |
+| [VECS]レグノ・セレーノ　バルコニー南向きで陽当たり良好 | 1億1500万円 | 2LDK | 64.6㎡ | 築2008年 | ◇◆【大久保】駅 徒歩3分 | 新宿区北新宿3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%5BVECS%5D%E3%83%AC%E3%82%B0%E3%83%8E%E3%83%BB%E3%82%BB%E3%83%AC%E3%83%BC%E3%83%8E%E3%80%80%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E5%8D%97%E5%90%91%E3%81%8D%E3%81%A7%E9%99%BD%E5%BD%93%E3%81%9F%E3%82%8A%E8%89%AF%E5%A5%BD%204%E9%9A%8E) | 4階/24階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 39分（36-44分） | 41分（38-46分） | [詳細](https://www.homes.co.jp/mansion/b-1216190000948/) |
 
 #### 下落合
 所在地: 新宿区中落合１-5-10、新宿区中落合１、新宿区中落合2丁目、新宿区中落合２、新宿区高田馬場４－４０－１８ 他
@@ -807,7 +604,7 @@
 | サンクタス下落合 | 9780万円 | 2LDK | 73.7㎡ | 築2000年 | 下落合 徒歩4分 | 新宿区中落合１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%AF%E3%82%BF%E3%82%B9%E4%B8%8B%E8%90%BD%E5%90%88) | 8階/SRC9階建一部RC | 30戸 | B |  | - | - | - | 25.2万円/月 | 36分（33-41分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_77549087/) |
 
 #### 中井
-所在地: 新宿区中落合1丁目、新宿区中落合１、新宿区中井２丁目、新宿区中井２－１９－１
+所在地: 新宿区中落合1丁目、新宿区中落合１、新宿区中井２－１９－１、新宿区中井２丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -850,7 +647,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億2480万円 | 3LDK | 78.2㎡ | 築2001年 | 南西角部屋で陽当たり・眺望良好 徒歩4分 / 高田馬場駅 徒歩4分 | 新宿区高田馬場1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B41%E4%B8%81%E7%9B%AE) | 5階/7階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 35分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1216390038097/) |
+|  | 1億2480万円 | 3LDK | 78.2㎡ | 築2001年 | 南西角部屋で陽当たり・眺望良好 徒歩4分 / 高田馬場駅 徒歩4分 | 新宿区高田馬場1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E9%AB%98%E7%94%B0%E9%A6%AC%E5%A0%B41%E4%B8%81%E7%9B%AE) | 5階/7階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 36分（33-41分） | 30分（27-35分） | [詳細](https://www.homes.co.jp/mansion/b-1216390038097/) |
 
 #### 四谷三丁目
 所在地: 新宿区大京町20-4
@@ -889,7 +686,7 @@
 | ディナ・スカーラ新宿 | 1億2980万円 | 2LDK | 75.3㎡ | 築2002年 | 新宿三丁目 徒歩3分 | 新宿区新宿５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%82%A3%E3%83%8A%E3%83%BB%E3%82%B9%E3%82%AB%E3%83%BC%E3%83%A9%E6%96%B0%E5%AE%BF) | 9階/10階建 | 59戸 |  |  | - | - | - | 32.3万円/月 | 23分（20-28分） | 19分（16-24分） | [詳細](https://www.livable.co.jp/mansion/C13264182/) |
 
 #### 早稲田
-所在地: 新宿区戸山1丁目、新宿区西早稲田１-23-16、新宿区西早稲田1丁目、新宿区西早稲田１
+所在地: 新宿区西早稲田１-23-16、新宿区西早稲田1丁目、新宿区西早稲田１、新宿区戸山1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -899,7 +696,7 @@
 | 西早稲田シティタワー | 1億100万円 | 2LDK | 63.1㎡ | 築1999年 | 早稲田 徒歩10分 | 新宿区西早稲田1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC) | 19階/RC23階地下1階建 | 151戸 | B |  | - | - | - | 25.9万円/月 | 45分（42-50分） | 36分（33-41分） | [詳細](https://www.nomu.com/mansion/id/R9370317/) |
 
 #### 曙橋
-所在地: 新宿区富久町、新宿区富久町7-8、新宿区住吉町、新宿区市谷台町
+所在地: 新宿区富久町、新宿区富久町7-8、新宿区市谷台町、新宿区住吉町
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -930,19 +727,26 @@
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | サンウッド新宿戸山フラッツ | 1億1800万円 | 2LDK | 61.1㎡ | 築2003年 | 東新宿駅 徒歩3分 | 新宿区新宿７丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%A6%E3%83%83%E3%83%89%E6%96%B0%E5%AE%BF%E6%88%B8%E5%B1%B1%E3%83%95%E3%83%A9%E3%83%83%E3%83%84) | 5階/5階建 | 60戸 |  |  | - | - | - | 29.7万円/月 | 43分（40-48分） | 45分（42-50分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FN5BGA23/) |
 
+#### 東京メトロ有楽町線 江戸川橋駅
+所在地: 新宿区山吹町297-6
+
+| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
+|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
+| ザ・パークハウス山吹神楽坂 5階 | 1億2980万円 | 2LDK | 61.2㎡ | 築2017年 | 江戸川橋駅 徒歩4分 | 新宿区山吹町297-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E5%B1%B1%E5%90%B9%E7%A5%9E%E6%A5%BD%E5%9D%82%205%E9%9A%8E) | 5階/13階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 24分 | 14分 | [詳細](https://www.homes.co.jp/mansion/b-1373830001140/) |
+
 #### 東京メトロ東西線 早稲田駅
 所在地: 新宿区西早稲田2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億180万円 | 3LDK | 72.5㎡ | 築1999年 | 早稲田駅 徒歩7分 | 新宿区西早稲田2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B02%E4%B8%81%E7%9B%AE) | 3階/6階建 | 戸数:不明 |  |  | - | - | - | 26.1万円/月 | 28分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037222/) |
+|  | 1億180万円 | 3LDK | 72.5㎡ | 築1999年 | 早稲田駅 徒歩7分 | 新宿区西早稲田2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B02%E4%B8%81%E7%9B%AE) | 3階/6階建 | 戸数:不明 |  |  | - | - | - | 26.1万円/月 | 46分（43-51分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037222/) |
 
 #### 東京メトロ東西線 神楽坂駅
 所在地: 新宿区南榎町5-1
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 神楽坂パークハウス 1階 | 1億2989万円 | 2LDK | 65.9㎡ | 築2002年 | 神楽坂駅 徒歩8分 | 新宿区南榎町5-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%A5%9E%E6%A5%BD%E5%9D%82%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%201%E9%9A%8E) | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 24分 | 13分 | [詳細](https://www.homes.co.jp/mansion/b-1357690018889/) |
+| 神楽坂パークハウス 1階 | 1億2989万円 | 2LDK | 65.9㎡ | 築2002年 | 神楽坂駅 徒歩8分 | 新宿区南榎町5-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%A5%9E%E6%A5%BD%E5%9D%82%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%201%E9%9A%8E) | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 41分（38-46分） | 31分（28-36分） | [詳細](https://www.homes.co.jp/mansion/b-1357690018889/) |
 
 #### 東新宿
 所在地: 新宿区歌舞伎町２
@@ -1009,7 +813,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| クレヴィア新宿中落合EAST 7階 | 1億1800万円 | 2SLDK | 73.7㎡ | 築2023年 | 下落合駅 徒歩6分 | 新宿区中落合1丁目5-10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%83%B4%E3%82%A3%E3%82%A2%E6%96%B0%E5%AE%BF%E4%B8%AD%E8%90%BD%E5%90%88EAST%207%E9%9A%8E) | 7階/7階建 | 戸数:不明 |  |  | - | - | - | 29.7万円/月 | 35分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1392830001466/) |
+| クレヴィア新宿中落合EAST 7階 | 1億1800万円 | 2SLDK | 73.7㎡ | 築2023年 | 下落合駅 徒歩6分 | 新宿区中落合1丁目5-10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%83%B4%E3%82%A3%E3%82%A2%E6%96%B0%E5%AE%BF%E4%B8%AD%E8%90%BD%E5%90%88EAST%207%E9%9A%8E) | 7階/7階建 | 戸数:不明 |  |  | - | - | - | 29.7万円/月 | 44分（41-49分） | 42分（39-47分） | [詳細](https://www.homes.co.jp/mansion/b-1392830001466/) |
 
 #### 西武新宿線 下落合駅 徒歩4分
 所在地: 新宿区中落合１丁目
@@ -1030,7 +834,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億1300万円 | 3LDK | 82.1㎡ | 築2003年 | 中井駅 徒歩5分 | 新宿区中落合1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E4%B8%AD%E8%90%BD%E5%90%881%E4%B8%81%E7%9B%AE) | 2階/6階建 | 戸数:不明 |  |  | - | - | - | 28.6万円/月 | 40分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037485/) |
+|  | 1億1300万円 | 3LDK | 82.1㎡ | 築2003年 | 中井駅 徒歩5分 | 新宿区中落合1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E4%B8%AD%E8%90%BD%E5%90%881%E4%B8%81%E7%9B%AE) | 2階/6階建 | 戸数:不明 |  |  | - | - | - | 28.6万円/月 | 40分（37-45分） | 36分（33-41分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037485/) |
 
 #### 西武新宿線 中井駅 徒歩6分
 所在地: 新宿区中落合１丁目
@@ -1058,7 +862,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| アールヴェール新宿弁天町 4階 | 1億1499万円 | 2LDK | 62.4㎡ | 築1998年 | 牛込柳町駅 徒歩3分 | 新宿区弁天町81-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%BC%E3%83%AB%E3%83%B4%E3%82%A7%E3%83%BC%E3%83%AB%E6%96%B0%E5%AE%BF%E5%BC%81%E5%A4%A9%E7%94%BA%204%E9%9A%8E) | 4階/8階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 20分 | 13分 | [詳細](https://www.homes.co.jp/mansion/b-1192950013146/) |
+| アールヴェール新宿弁天町 4階 | 1億1499万円 | 2LDK | 62.4㎡ | 築1998年 | 牛込柳町駅 徒歩3分 | 新宿区弁天町81-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%BC%E3%83%AB%E3%83%B4%E3%82%A7%E3%83%BC%E3%83%AB%E6%96%B0%E5%AE%BF%E5%BC%81%E5%A4%A9%E7%94%BA%204%E9%9A%8E) | 4階/8階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 41分（38-46分） | 31分（28-36分） | [詳細](https://www.homes.co.jp/mansion/b-1192950013146/) |
 
 #### 都営大江戸線 牛込柳町駅 徒歩3分
 所在地: 新宿区弁天町
@@ -1072,16 +876,16 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 神楽坂アインスタワー 20階 | 1億500万円 | 2SLDK | 76.1㎡ | 築2003年 | 牛込神楽坂駅 徒歩3分 | 新宿区神楽坂5丁目20-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%A5%9E%E6%A5%BD%E5%9D%82%E3%82%A2%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%AF%E3%83%BC%2020%E9%9A%8E) | 20階/26階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 22分 | 11分 | [詳細](https://www.homes.co.jp/mansion/b-1372150000114/) |
+| 神楽坂アインスタワー 20階 | 1億500万円 | 2SLDK | 76.1㎡ | 築2003年 | 牛込神楽坂駅 徒歩3分 | 新宿区神楽坂5丁目20-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%A5%9E%E6%A5%BD%E5%9D%82%E3%82%A2%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%AF%E3%83%BC%2020%E9%9A%8E) | 20階/26階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 41分（38-46分） | 34分（31-39分） | [詳細](https://www.homes.co.jp/mansion/b-1372150000114/) |
 
 #### 都営大江戸線 若松河田駅
-所在地: 新宿区原町3丁目59、新宿区若松町25-21、新宿区若松町
+所在地: 新宿区若松町、新宿区若松町25-21、新宿区原町3丁目59
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| リムテラス早稲田夏目坂 1階 | 1億1980万円 | 2SLDK | 84.4㎡ | 築2023年 | 若松河田駅 徒歩6分 | 新宿区原町3丁目59 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%8F%E7%9B%AE%E5%9D%82%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 24分 | 14分 | [詳細](https://www.homes.co.jp/mansion/b-1474420000058/) |
-| アデッソ新宿若松町 12階 | 9990万円 | 2LDK | 62.5㎡ | 築2005年 | 若松河田駅 徒歩3分 | 新宿区若松町25-21 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%87%E3%83%83%E3%82%BD%E6%96%B0%E5%AE%BF%E8%8B%A5%E6%9D%BE%E7%94%BA%2012%E9%9A%8E) | 12階/12階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 24分 | 16分 | [詳細](https://www.homes.co.jp/mansion/b-1557660000019/) |
+| リムテラス早稲田夏目坂 1階 | 1億1980万円 | 2SLDK | 84.4㎡ | 築2023年 | 若松河田駅 徒歩6分 | 新宿区原町3丁目59 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%8F%E7%9B%AE%E5%9D%82%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 49分（46-54分） | 39分（36-44分） | [詳細](https://www.homes.co.jp/mansion/b-1474420000058/) |
 |  | 9990万円 | 2LDK | 62.5㎡ | 築2005年 | 若松河田駅 徒歩3分 | 新宿区若松町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%8B%A5%E6%9D%BE%E7%94%BA) | 11階/12階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 56分（53-61分） | 46分（43-51分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048521/) |
+| アデッソ新宿若松町 12階 | 9990万円 | 2LDK | 62.5㎡ | 築2005年 | 若松河田駅 徒歩3分 | 新宿区若松町25-21 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%87%E3%83%83%E3%82%BD%E6%96%B0%E5%AE%BF%E8%8B%A5%E6%9D%BE%E7%94%BA%2012%E9%9A%8E) | 12階/12階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 56分（53-61分） | 46分（43-51分） | [詳細](https://www.homes.co.jp/mansion/b-1557660000019/) |
 
 #### 都営大江戸線 若松河田駅 徒歩3分
 所在地: 新宿区若松町
@@ -1116,8 +920,8 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ネオマイム西早稲田パークス 10階 | 1億500万円 | 2LDK | 69.0㎡ | 築2000年 | 早稲田駅 徒歩3分 | 新宿区西早稲田3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%8D%E3%82%AA%E3%83%9E%E3%82%A4%E3%83%A0%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B9%2010%E9%9A%8E) | 10階/SRC11階建 | 31戸 |  |  | - | - | - | 26.8万円/月 | 39分（36-44分） | 33分（30-38分） | [詳細](https://www.homes.co.jp/mansion/b-60000330230156/) |
-|  | 1億100万円 | 2LDK | 63.1㎡ | 築1999年 | 早稲田駅 徒歩2分 | 新宿区西早稲田1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B01%E4%B8%81%E7%9B%AE) | 19階/23階建 | 戸数:不明 |  |  | - | - | - | 25.9万円/月 | 30分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1004590048603/) |
+| ネオマイム西早稲田パークス 10階 | 1億500万円 | 2LDK | 69.0㎡ | 築2000年 | 早稲田駅 徒歩3分 | 新宿区西早稲田3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%8D%E3%82%AA%E3%83%9E%E3%82%A4%E3%83%A0%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B9%2010%E9%9A%8E) | 10階/SRC11階建 | 31戸 |  |  | - | - | - | 26.8万円/月 | 40分（37-45分） | 34分（31-39分） | [詳細](https://www.homes.co.jp/mansion/b-60000330230156/) |
+|  | 1億100万円 | 2LDK | 63.1㎡ | 築1999年 | 早稲田駅 徒歩2分 | 新宿区西早稲田1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B01%E4%B8%81%E7%9B%AE) | 19階/23階建 | 戸数:不明 |  |  | - | - | - | 25.9万円/月 | 46分（43-51分） | 38分（35-43分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048603/) |
 
 #### 高田馬場
 所在地: 新宿区百人町３、新宿区高田馬場4丁目、新宿区高田馬場４丁目
@@ -1143,14 +947,21 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| エクセレント文京動坂 7階 | 1億2990万円 | 2LDK | 66.3㎡ | 築2005年 | 田端駅 徒歩10分 | 文京区本駒込4丁目20-11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%AF%E3%82%BB%E3%83%AC%E3%83%B3%E3%83%88%E6%96%87%E4%BA%AC%E5%8B%95%E5%9D%82%207%E9%9A%8E) | 7階/13階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分 | 26分 | [詳細](https://www.homes.co.jp/mansion/b-1388970018275/) |
+| エクセレント文京動坂 7階 | 1億2990万円 | 2LDK | 66.3㎡ | 築2005年 | 田端駅 徒歩10分 | 文京区本駒込4丁目20-11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%AF%E3%82%BB%E3%83%AC%E3%83%B3%E3%83%88%E6%96%87%E4%BA%AC%E5%8B%95%E5%9D%82%207%E9%9A%8E) | 7階/13階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 38分（35-43分） | 33分（30-38分） | [詳細](https://www.homes.co.jp/mansion/b-1388970018275/) |
 
 #### JR山手線 駒込駅
 所在地: 文京区本駒込4丁目36-7
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| グランスイート文京本駒込 12階 | 1億2990万円 | 2LDK | 69.4㎡ | 築2005年 | 駒込駅 徒歩10分 | 文京区本駒込4丁目36-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88%E6%96%87%E4%BA%AC%E6%9C%AC%E9%A7%92%E8%BE%BC%2012%E9%9A%8E) | 12階/12階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1552210003642/) |
+| グランスイート文京本駒込 12階 | 1億2990万円 | 2LDK | 69.4㎡ | 築2005年 | 駒込駅 徒歩10分 | 文京区本駒込4丁目36-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88%E6%96%87%E4%BA%AC%E6%9C%AC%E9%A7%92%E8%BE%BC%2012%E9%9A%8E) | 12階/12階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 38分（35-43分） | 33分（30-38分） | [詳細](https://www.homes.co.jp/mansion/b-1552210003642/) |
+
+#### JR総武線 飯田橋駅
+所在地: 文京区後楽2丁目16-10
+
+| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
+|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
+| サンヴェ一ル後楽園 4階 | 1億1980万円 | 3LDK | 62.0㎡ | 築1998年 | 飯田橋駅 徒歩7分 | 文京区後楽2丁目16-10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%83%B4%E3%82%A7%E4%B8%80%E3%83%AB%E5%BE%8C%E6%A5%BD%E5%9C%92%204%E9%9A%8E) | 4階/7階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 51分 | 48分 | [詳細](https://www.homes.co.jp/mansion/b-1354210002463/) |
 
 #### 千石
 所在地: 文京区白山５丁目
@@ -1164,7 +975,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| オープンレジデンシア千駄木ヒルズ | 1億2080万円 | 2LDK＋S | 62.0㎡ | 築2019年 | 千駄木 徒歩4分 | 文京区千駄木5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B7%E3%82%A2%E5%8D%83%E9%A7%84%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA) | 4階/5階建 | 28戸 |  |  | - | - | - | 30.3万円/月 | 43分（40-48分） | 38分（35-43分） | [詳細](https://www.nomu.com/mansion/id/R9070459/) |
+| オープンレジデンシア千駄木ヒルズ | 1億2080万円 | 2LDK＋S | 62.0㎡ | 築2019年 | 千駄木 徒歩4分 | 文京区千駄木5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B7%E3%82%A2%E5%8D%83%E9%A7%84%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA) | 4階/5階建 | 28戸 |  |  | - | - | - | 30.3万円/月 | 44分（41-49分） | 41分（38-46分） | [詳細](https://www.nomu.com/mansion/id/R9070459/) |
 | スターヒル文京 | 1億1980万円 | 3LDK | 61.5㎡ | 築1998年 | 千駄木 徒歩6分 | 文京区千駄木１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%92%E3%83%AB%E6%96%87%E4%BA%AC) | 3階/10階建 | 35戸 |  |  | - | - | - | 30.1万円/月 | 50分（47-55分） | 45分（42-50分） | [詳細](https://www.livable.co.jp/mansion/C13264533/) |
 | ナイスアーバン千駄木 | 1億1780万円 | 3LDK | 62.1㎡ | 築1996年 | 千駄木 徒歩5分 | 文京区千駄木2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%8A%E3%82%A4%E3%82%B9%E3%82%A2%E3%83%BC%E3%83%90%E3%83%B3%E5%8D%83%E9%A7%84%E6%9C%A8) | 2階/13階建 | 53戸 |  |  | - | - | - | 29.6万円/月 | 47分（44-52分） | 45分（42-50分） | [詳細](https://www.nomu.com/mansion/id/FD6C5006/) |
 
@@ -1173,7 +984,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| オープンレジデンシア千駄木ヒルズ 3階 | 1億2380万円 | 2SDK | 62.0㎡ | 築2019年 | 千駄木駅 徒歩4分 | 文京区千駄木5丁目19-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B7%E3%82%A2%E5%8D%83%E9%A7%84%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA%203%E9%9A%8E) | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 30.9万円/月 | 35分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1421770027442/) |
+| オープンレジデンシア千駄木ヒルズ 3階 | 1億2380万円 | 2SDK | 62.0㎡ | 築2019年 | 千駄木駅 徒歩4分 | 文京区千駄木5丁目19-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B7%E3%82%A2%E5%8D%83%E9%A7%84%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA%203%E9%9A%8E) | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 30.9万円/月 | 25分（22-30分） | 19分（16-24分） | [詳細](https://www.homes.co.jp/mansion/b-1421770027442/) |
 
 #### 後楽園
 所在地: 文京区白山２丁目
@@ -1201,7 +1012,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ルミネ本駒込 | 1億2600万円 | 2LDK＋S | 78.2㎡ | 築1997年 | 本駒込 徒歩1分 | 文京区本駒込1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%9F%E3%83%8D%E6%9C%AC%E9%A7%92%E8%BE%BC) | 3階/11階建 | 26戸 |  |  | - | - | - | 31.4万円/月 | 39分（36-44分） | 34分（31-39分） | [詳細](https://www.nomu.com/mansion/id/FD9C3014/) |
+| ルミネ本駒込 | 1億2600万円 | 2LDK＋S | 78.2㎡ | 築1997年 | 本駒込 徒歩1分 | 文京区本駒込1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%9F%E3%83%8D%E6%9C%AC%E9%A7%92%E8%BE%BC) | 3階/11階建 | 26戸 |  |  | - | - | - | 31.4万円/月 | 41分（38-46分） | 36分（33-41分） | [詳細](https://www.nomu.com/mansion/id/FD9C3014/) |
 
 #### 東京メトロ丸ノ内線 新大塚駅
 所在地: 文京区大塚5丁目
@@ -1229,14 +1040,14 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億2080万円 | 2SLDK | 62.0㎡ | 築2019年 | 千駄木駅 徒歩4分 | 文京区千駄木5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E5%8D%83%E9%A7%84%E6%9C%A85%E4%B8%81%E7%9B%AE) | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 30.3万円/月 | 35分 | 26分 | [詳細](https://www.homes.co.jp/mansion/b-1216390036057/) |
+|  | 1億2080万円 | 2SLDK | 62.0㎡ | 築2019年 | 千駄木駅 徒歩4分 | 文京区千駄木5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E5%8D%83%E9%A7%84%E6%9C%A85%E4%B8%81%E7%9B%AE) | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 30.3万円/月 | 45分（42-50分） | 43分（40-48分） | [詳細](https://www.homes.co.jp/mansion/b-1216390036057/) |
 
 #### 東京メトロ千代田線 根津駅
 所在地: 文京区根津1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億2480万円 | 2LDK | 70.0㎡ | 築2005年 | 根津駅 徒歩4分 | 文京区根津1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E6%A0%B9%E6%B4%A51%E4%B8%81%E7%9B%AE) | 2階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 33分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1004590048494/) |
+|  | 1億2480万円 | 2LDK | 70.0㎡ | 築2005年 | 根津駅 徒歩4分 | 文京区根津1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E6%A0%B9%E6%B4%A51%E4%B8%81%E7%9B%AE) | 2階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 45分（42-50分） | 43分（40-48分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048494/) |
 
 #### 東京メトロ千代田線 根津駅 徒歩2分
 所在地: 文京区根津２丁目
@@ -1252,6 +1063,13 @@
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | クレアセトル文京根津 | 1億2480万円 | 2LDK | 70.0㎡ | 築2005年 | 根津駅 徒歩4分 | 文京区根津１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%A2%E3%82%BB%E3%83%88%E3%83%AB%E6%96%87%E4%BA%AC%E6%A0%B9%E6%B4%A5) | 2階/5階建 | 24戸 |  |  | - | - | - | 31.2万円/月 | 45分（42-50分） | 43分（40-48分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/F7GBTA0B/) |
 
+#### 東京メトロ南北線 本駒込駅
+所在地: 文京区本駒込1丁目1-18
+
+| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
+|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
+| ルミネ本駒込 6階 | 1億2800万円 | 2SLDK | 78.2㎡ | 築1997年 | 本駒込駅 徒歩1分 | 文京区本駒込1丁目1-18 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%9F%E3%83%8D%E6%9C%AC%E9%A7%92%E8%BE%BC%206%E9%9A%8E) | 6階/11階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 35分 | 26分 | [詳細](https://www.homes.co.jp/mansion/b-1304520000374/) |
+
 #### 江戸川橋
 所在地: 文京区音羽１、文京区水道２丁目
 
@@ -1265,7 +1083,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| CROSS小日向 1階 | 1億2900万円 | 2SLDK | 88.6㎡ | 築2010年 | 江戸川橋駅 徒歩4分 | 文京区小日向2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=CROSS%E5%B0%8F%E6%97%A5%E5%90%91%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 30分 | 16分 | [詳細](https://www.homes.co.jp/mansion/b-1334250000419/) |
+| CROSS小日向 1階 | 1億2900万円 | 2SLDK | 88.6㎡ | 築2010年 | 江戸川橋駅 徒歩4分 | 文京区小日向2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=CROSS%E5%B0%8F%E6%97%A5%E5%90%91%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 33分（30-38分） | 23分（20-28分） | [詳細](https://www.homes.co.jp/mansion/b-1334250000419/) |
 
 #### 茗荷谷
 所在地: 文京区白山３
@@ -1286,8 +1104,8 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 千石パインマンション 3階 | 1億2490万円 | 3LDK | 71.0㎡ | 築1997年 | 千石駅 徒歩6分 | 文京区千石2丁目29-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%8D%83%E7%9F%B3%E3%83%91%E3%82%A4%E3%83%B3%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%203%E9%9A%8E) | 3階/9階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 30分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1533000000700/) |
-| ボヌール千石 4階 | 1億2480万円 | 2LDK | 69.5㎡ | 築1999年 | 千石駅 徒歩10分 | 文京区千石3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9C%E3%83%8C%E3%83%BC%E3%83%AB%E5%8D%83%E7%9F%B3%204%E9%9A%8E) | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 30分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1565710000040/) |
+| 千石パインマンション 3階 | 1億2490万円 | 3LDK | 71.0㎡ | 築1997年 | 千石駅 徒歩6分 | 文京区千石2丁目29-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%8D%83%E7%9F%B3%E3%83%91%E3%82%A4%E3%83%B3%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%203%E9%9A%8E) | 3階/9階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 25分（22-30分） | 19分（16-24分） | [詳細](https://www.homes.co.jp/mansion/b-1533000000700/) |
+| ボヌール千石 4階 | 1億2480万円 | 2LDK | 69.5㎡ | 築1999年 | 千石駅 徒歩10分 | 文京区千石3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9C%E3%83%8C%E3%83%BC%E3%83%AB%E5%8D%83%E7%9F%B3%204%E9%9A%8E) | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 39分（36-44分） | 34分（31-39分） | [詳細](https://www.homes.co.jp/mansion/b-1565710000040/) |
 
 #### 都営三田線 千石駅 徒歩6分
 所在地: 文京区千石２丁目
@@ -1308,7 +1126,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億2999万円 | 3LDK | 65.7㎡ | 築2002年 | 春日駅 徒歩10分 | 文京区白山2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E7%99%BD%E5%B1%B12%E4%B8%81%E7%9B%AE) | 4階/7階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 34分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-1337110001680/) |
+|  | 1億2999万円 | 3LDK | 65.7㎡ | 築2002年 | 春日駅 徒歩10分 | 文京区白山2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%87%E4%BA%AC%E5%8C%BA%E7%99%BD%E5%B1%B12%E4%B8%81%E7%9B%AE) | 4階/7階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 41分（38-46分） | 35分（32-40分） | [詳細](https://www.homes.co.jp/mansion/b-1337110001680/) |
 
 #### 飯田橋
 所在地: 文京区水道１、文京区後楽２丁目
@@ -1332,28 +1150,28 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| クリオ浅草橋 11階 | 1億2400万円 | 3LDK | 65.5㎡ | 築2015年 | 浅草橋駅 徒歩8分 | 台東区浅草橋5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E6%B5%85%E8%8D%89%E6%A9%8B%2011%E9%9A%8E) | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 31.0万円/月 | 24分 | 20分 | [詳細](https://www.homes.co.jp/mansion/b-35505130001924/) |
+| クリオ浅草橋 11階 | 1億2400万円 | 3LDK | 65.5㎡ | 築2015年 | 浅草橋駅 徒歩8分 | 台東区浅草橋5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E6%B5%85%E8%8D%89%E6%A9%8B%2011%E9%9A%8E) | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 31.0万円/月 | 38分（35-43分） | 34分（31-39分） | [詳細](https://www.homes.co.jp/mansion/b-35505130001924/) |
 
 #### ■ベルハイム元浅草■見えない部分もしっかりと！フル
 所在地: 台東区元浅草4丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億1800万円 | 3LDK | 68.0㎡ | 築2000年 | ■ベルハイム元浅草■見えない部分もしっかりと！フルリノベーシ 徒歩3分 / 田原町駅 徒歩3分 | 台東区元浅草4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E5%85%83%E6%B5%85%E8%8D%894%E4%B8%81%E7%9B%AE) | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 29.7万円/月 | 34分（31-39分） | 31分（28-36分） | [詳細](https://www.homes.co.jp/mansion/b-1216390036861/) |
+|  | 1億1800万円 | 3LDK | 68.0㎡ | 築2000年 | ■ベルハイム元浅草■見えない部分もしっかりと！フルリノベーシ 徒歩3分 / 田原町駅 徒歩3分 | 台東区元浅草4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E5%85%83%E6%B5%85%E8%8D%894%E4%B8%81%E7%9B%AE) | 4階/13階建 | 戸数:不明 |  |  | - | - | - | 29.7万円/月 | 34分（31-39分） | 32分（29-37分） | [詳細](https://www.homes.co.jp/mansion/b-1216390036861/) |
 
 #### ■朝日サテライト上野■上野駅徒歩5分
 所在地: 台東区上野7丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9980万円 | 2LDK | 60.1㎡ | 築2000年 | ■朝日サテライト上野■上野駅 徒歩5分 | 台東区上野7丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E4%B8%8A%E9%87%8E7%E4%B8%81%E7%9B%AE) | 7階/11階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 24分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037090/) |
+|  | 9980万円 | 2LDK | 60.1㎡ | 築2000年 | ■朝日サテライト上野■上野駅 徒歩5分 | 台東区上野7丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E4%B8%8A%E9%87%8E7%E4%B8%81%E7%9B%AE) | 7階/11階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 28分（25-33分） | 26分（23-31分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037090/) |
 
 #### つくばエクスプレス 浅草駅 バス4分 中入谷（台東
 所在地: 台東区松が谷4丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億480万円 | 3LDK | 90.3㎡ | 築2003年 | 浅草駅 徒歩3分 | 台東区松が谷4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E6%9D%BE%E3%81%8C%E8%B0%B74%E4%B8%81%E7%9B%AE) | 11階/12階建 | 戸数:不明 |  |  | - | - | - | 26.7万円/月 | 26分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037362/) |
+|  | 1億480万円 | 3LDK | 90.3㎡ | 築2003年 | 浅草駅 徒歩3分 | 台東区松が谷4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E6%9D%BE%E3%81%8C%E8%B0%B74%E4%B8%81%E7%9B%AE) | 11階/12階建 | 戸数:不明 |  |  | - | - | - | 26.7万円/月 | 40分（37-45分） | 38分（35-43分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037362/) |
 
 #### つくばエクスプレス 浅草駅 徒歩4分
 所在地: 台東区西浅草３丁目
@@ -1370,7 +1188,7 @@
 | MAINGRANDIA ASAKUSA | 1億1980万円 | 2SLDK | 64.7㎡ | 築2015年 | 浅草駅 徒歩6分 | 台東区千束１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=MAINGRANDIA%20ASAKUSA) | 11階/14階建 | 62戸 | B |  | - | - | - | 30.1万円/月 | 43分（40-48分） | 41分（38-46分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FN6BDA15/) |
 
 #### 三ノ輪
-所在地: 台東区竜泉2丁目、台東区根岸５、台東区竜泉２－７－７、台東区竜泉２丁目
+所在地: 台東区竜泉2丁目、台東区根岸５、台東区竜泉２丁目、台東区竜泉２－７－７
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1381,7 +1199,7 @@
 | 東京ビューマークス | 9480万円 | 3LDK+S（納戸） | 76.0㎡ | 築2003年 | 三ノ輪 徒歩7分 | 台東区竜泉２－７－７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%83%93%E3%83%A5%E3%83%BC%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%B9) | 3階/SRC20階地下1階建 | 258戸 | B |  | - | - | - | 24.5万円/月 | 35分（32-40分） | 35分（32-40分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_78991669/) |
 
 #### 上野
-所在地: 台東区北上野2丁目、台東区松が谷２、台東区東上野５丁目
+所在地: 台東区東上野５丁目、台東区北上野2丁目、台東区松が谷２
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1397,7 +1215,7 @@
 | ユニオンパレス御徒町 | 1億800万円 | 2LDK+S（納戸） | 67.9㎡ | 築2001年 | 仲御徒町 徒歩2分 | 台東区台東３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A6%E3%83%8B%E3%82%AA%E3%83%B3%E3%83%91%E3%83%AC%E3%82%B9%E5%BE%A1%E5%BE%92%E7%94%BA) | 10階/SRC12階地下1階建 | 49戸 | B |  | - | - | - | 27.4万円/月 | 32分（29-37分） | 28分（25-33分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20982895/) |
 
 #### 入谷
-所在地: 台東区竜泉１－２８－２、台東区松が谷４、台東区根岸５－４－３、台東区根岸５
+所在地: 台東区竜泉１－２８－２、台東区松が谷４、台東区根岸５、台東区根岸５－４－３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1462,10 +1280,10 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| プリムローズ浅草ウエスト 7階 | 1億2490万円 | 2SLDK | 74.7㎡ | 築2004年 | 田原町駅 徒歩5分 | 台東区西浅草2丁目3-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AA%E3%83%A0%E3%83%AD%E3%83%BC%E3%82%BA%E6%B5%85%E8%8D%89%E3%82%A6%E3%82%A8%E3%82%B9%E3%83%88%207%E9%9A%8E) | 7階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 28分 | 26分 | [詳細](https://www.homes.co.jp/mansion/b-1154320000275/) |
+| プリムローズ浅草ウエスト 7階 | 1億2490万円 | 2SLDK | 74.7㎡ | 築2004年 | 田原町駅 徒歩5分 | 台東区西浅草2丁目3-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AA%E3%83%A0%E3%83%AD%E3%83%BC%E3%82%BA%E6%B5%85%E8%8D%89%E3%82%A6%E3%82%A8%E3%82%B9%E3%83%88%207%E9%9A%8E) | 7階/10階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 37分（34-42分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1154320000275/) |
 
 #### 浅草
-所在地: 台東区千束１、台東区松が谷２、台東区西浅草３丁目、台東区千束１丁目、台東区浅草５－６－２ 他
+所在地: 台東区西浅草３丁目、台東区西浅草２-１４－７、台東区松が谷２、台東区千束１丁目、台東区千束１ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1479,7 +1297,7 @@
 | ライオンズシティ浅草 | 9180万円 | 3LDK | 68.1㎡ | 築1998年 | 浅草 徒歩3分 | 台東区西浅草３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%B3%E3%82%BA%E3%82%B7%E3%83%86%E3%82%A3%E6%B5%85%E8%8D%89) | 2階/11階建 | 33戸 |  |  | - | - | - | 23.9万円/月 | 36分（33-41分） | 36分（33-41分） | [詳細](https://www.livable.co.jp/mansion/C48263E71/) |
 
 #### 浅草橋
-所在地: 台東区柳橋１丁目、台東区柳橋１、台東区浅草橋２丁目
+所在地: 台東区浅草橋２丁目、台東区柳橋１丁目、台東区柳橋１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1520,7 +1338,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ザ・パークハウス蔵前 3階 | 1億2980万円 | 3LDK | 63.4㎡ | 築2016年 | 蔵前駅 徒歩5分 | 台東区蔵前4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E8%94%B5%E5%89%8D%203%E9%9A%8E) | 3階/12階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 28分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-35006100000136/) |
+| ザ・パークハウス蔵前 3階 | 1億2980万円 | 3LDK | 63.4㎡ | 築2016年 | 蔵前駅 徒歩5分 | 台東区蔵前4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E8%94%B5%E5%89%8D%203%E9%9A%8E) | 3階/12階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 38分（35-43分） | 34分（31-39分） | [詳細](https://www.homes.co.jp/mansion/b-35006100000136/) |
 
 #### 鶯谷
 所在地: 台東区根岸３
@@ -1579,7 +1397,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9399万円 | 2SLDK | 67.8㎡ | 築1996年 | 押上駅 徒歩7分 | 墨田区横川5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E6%A8%AA%E5%B7%9D5%E4%B8%81%E7%9B%AE) | 7階/14階建 | 戸数:不明 |  |  | - | - | - | 24.3万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037761/) |
+|  | 9399万円 | 2SLDK | 67.8㎡ | 築1996年 | 押上駅 徒歩7分 | 墨田区横川5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E6%A8%AA%E5%B7%9D5%E4%B8%81%E7%9B%AE) | 7階/14階建 | 戸数:不明 |  |  | - | - | - | 24.3万円/月 | 49分（46-54分） | 44分（41-49分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037761/) |
 
 #### 東京メトロ半蔵門線 押上駅 徒歩6分
 所在地: 墨田区業平５丁目
@@ -1638,12 +1456,12 @@
 | シャリエ錦糸町石原 | 1億2480万円 | 3LDK | 83.3㎡ | 築2008年 | 本所吾妻橋駅 徒歩10分 | 墨田区石原３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%A3%E3%83%AA%E3%82%A8%E9%8C%A6%E7%B3%B8%E7%94%BA%E7%9F%B3%E5%8E%9F) | 6階/11階建 | 78戸 |  |  | - | - | - | 31.2万円/月 | 49分（46-54分） | 44分（41-49分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/F71BCA21/) |
 
 #### 錦糸町
-所在地: 墨田区亀沢４-19-16、墨田区太平１丁目、墨田区太平1丁目7-6、墨田区太平１－１５－１３
+所在地: 墨田区太平１丁目、墨田区太平1丁目7-6、墨田区亀沢４-19-16、墨田区太平１－１５－１３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | エス・バイ・エルマンション錦糸町 | 8498万円 | 2LDK+S（納戸） | 62.7㎡ | 築1996年 | 錦糸町 徒歩7分 | 墨田区亀沢４-19-16 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%B9%E3%83%BB%E3%83%90%E3%82%A4%E3%83%BB%E3%82%A8%E3%83%AB%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E9%8C%A6%E7%B3%B8%E7%94%BA) | 2階/RC7階建 | 30戸 | B |  | - | - | - | 22.3万円/月 | 40分（37-45分） | 35分（32-40分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20995919/) |
-| プリムローズ錦糸町 2階 | 8799万円 | 3LDK | 63.1㎡ | 築2001年 | 錦糸町 徒歩8分 | 墨田区太平1丁目7-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AA%E3%83%A0%E3%83%AD%E3%83%BC%E3%82%BA%E9%8C%A6%E7%B3%B8%E7%94%BA%202%E9%9A%8E) | 2階/7階建 | 戸数:不明 |  |  | - | - | - | 23.0万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1535990004904/) |
+| プリムローズ錦糸町 2階 | 8799万円 | 3LDK | 63.1㎡ | 築2001年 | 錦糸町 徒歩8分 | 墨田区太平1丁目7-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AA%E3%83%A0%E3%83%AD%E3%83%BC%E3%82%BA%E9%8C%A6%E7%B3%B8%E7%94%BA%202%E9%9A%8E) | 2階/7階建 | 戸数:不明 |  |  | - | - | - | 23.0万円/月 | 41分（38-46分） | 36分（33-41分） | [詳細](https://www.homes.co.jp/mansion/b-1535990004904/) |
 | プリムローズ錦糸町 | 8999万円 | 3LDK | 63.1㎡ | 築2001年 | 錦糸町 徒歩8分 | 墨田区太平１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AA%E3%83%A0%E3%83%AD%E3%83%BC%E3%82%BA%E9%8C%A6%E7%B3%B8%E7%94%BA) | 2階/7階建 | 27戸 |  |  | - | - | - | 23.4万円/月 | 41分（38-46分） | 36分（33-41分） | [詳細](https://www.livable.co.jp/mansion/C13263Q21/) |
 | パレステージ錦糸町 | 9980万円 | 3LDK | 62.4㎡ | 築2013年 | 錦糸町 徒歩8分 | 墨田区太平１－１５－１３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%AC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E9%8C%A6%E7%B3%B8%E7%94%BA) | 5階/RC10階建 | 戸数:不明 | B |  | - | - | - | 25.6万円/月 | 41分（38-46分） | 36分（33-41分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20131805/) |
 
@@ -1652,7 +1470,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億2480万円 | 3LDK | 68.2㎡ | 築2005年 | 錦糸町駅 徒歩5分 | 墨田区錦糸4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E9%8C%A6%E7%B3%B84%E4%B8%81%E7%9B%AE) | 7階/15階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037729/) |
+|  | 1億2480万円 | 3LDK | 68.2㎡ | 築2005年 | 錦糸町駅 徒歩5分 | 墨田区錦糸4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E9%8C%A6%E7%B3%B84%E4%B8%81%E7%9B%AE) | 7階/15階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 39分（36-44分） | 34分（31-39分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037729/) |
 
 ### 江東区
 
@@ -1661,7 +1479,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ルネ・グランマリーナ潮見 14階 | 1億800万円 | 3LDK | 78.4㎡ | 築1999年 | 潮見駅 徒歩3分 | 江東区潮見2丁目8-14 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%8D%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%9E%E3%83%AA%E3%83%BC%E3%83%8A%E6%BD%AE%E8%A6%8B%2014%E9%9A%8E) | 14階/15階建 | 戸数:不明 |  |  | - | - | - | 27.4万円/月 | 30分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1392880001592/) |
+| ルネ・グランマリーナ潮見 14階 | 1億800万円 | 3LDK | 78.4㎡ | 築1999年 | 潮見駅 徒歩3分 | 江東区潮見2丁目8-14 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%8D%E3%83%BB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%9E%E3%83%AA%E3%83%BC%E3%83%8A%E6%BD%AE%E8%A6%8B%2014%E9%9A%8E) | 14階/15階建 | 戸数:不明 |  |  | - | - | - | 27.4万円/月 | 49分（46-54分） | 44分（41-49分） | [詳細](https://www.homes.co.jp/mansion/b-1392880001592/) |
 
 #### ◆駅徒歩3分
 所在地: 江東区東雲2丁目2-14
@@ -1724,11 +1542,11 @@
 | ザ・ミッドランドアベニュー | 9480万円 | 2LDK | 62.4㎡ | 築2012年 | 亀戸駅 徒歩7分 | 江東区大島３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%9F%E3%83%83%E3%83%89%E3%83%A9%E3%83%B3%E3%83%89%E3%82%A2%E3%83%99%E3%83%8B%E3%83%A5%E3%83%BC) | 10階/14階建 | 457戸 | C |  | - | - | - | 24.5万円/月 | 47分（44-52分） | 37分（34-42分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP6BEA04/) |
 
 #### 亀戸
-所在地: 江東区亀戸６、江東区亀戸６-４１－5、江東区亀戸９－３０２－７、江東区亀戸5丁目1-6、江東区亀戸6丁目 他
+所在地: 江東区亀戸６-４１－5、江東区亀戸６、江東区亀戸6丁目、江東区亀戸５丁目、江東区亀戸５ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| アールヴェール亀戸 | 8180万円 | 3LDK | 72.6㎡ | 築2000年 | 亀戸 徒歩7分 | 江東区亀戸6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%BC%E3%83%AB%E3%83%B4%E3%82%A7%E3%83%BC%E3%83%AB%E4%BA%80%E6%88%B8) | 4階/9階建 | 51戸 |  |  | - | - | - | 21.6万円/月 | 54分（51-59分） | 44分（41-49分） | [詳細](https://www.nomu.com/mansion/id/F54C4021/) |
+| アールヴェール亀戸 | 8180万円 | 3LDK | 72.6㎡ | 築2000年 | 亀戸 徒歩7分 | 江東区亀戸6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%BC%E3%83%AB%E3%83%B4%E3%82%A7%E3%83%BC%E3%83%AB%E4%BA%80%E6%88%B8) | 4階/9階建 | 51戸 |  |  | - | - | - | 21.6万円/月 | 51分（48-56分） | 44分（41-49分） | [詳細](https://www.nomu.com/mansion/id/F54C4021/) |
 | サンクタス大島EX【イーエックス】 | 8470万円 | 3LDK | 76.6㎡ | 築2001年 | 亀戸 徒歩9分 | 江東区大島３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%AF%E3%82%BF%E3%82%B9%E5%A4%A7%E5%B3%B6EX%E3%80%90%E3%82%A4%E3%83%BC%E3%82%A8%E3%83%83%E3%82%AF%E3%82%B9%E3%80%91) | 2階/SRC11階地下1階建 | 戸数:不明 |  |  | - | - | - | 22.3万円/月 | 46分（43-51分） | 36分（33-41分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_79080854/) |
 | アルカサル亀戸 | 8980万円 | 3LDK | 68.8㎡ | 築1996年 | 亀戸 徒歩6分 | 江東区亀戸５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%AB%E3%82%AB%E3%82%B5%E3%83%AB%E4%BA%80%E6%88%B8) | 5階/RC11階建 | 78戸 |  |  | - | - | - | 23.4万円/月 | 50分（47-55分） | 43分（40-48分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20873613/) |
 | ザ・パークハウス亀戸 | 1億580万円 | 2LDK+S（納戸） | 70.6㎡ | 築2017年 | 亀戸 徒歩9分 | 江東区亀戸９－３０２－７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E4%BA%80%E6%88%B8) | 11階/RC13階建 | 97戸 | A |  | - | - | - | 27.0万円/月 | 22分 | 20分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20589172/) |
@@ -1736,7 +1554,7 @@
 | ザ・ミッドランドアベニュー | 1億1480万円 | 3LDK | 71.1㎡ | 築2012年 | 亀戸 徒歩7分 | 江東区大島３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%9F%E3%83%83%E3%83%89%E3%83%A9%E3%83%B3%E3%83%89%E3%82%A2%E3%83%99%E3%83%8B%E3%83%A5%E3%83%BC) | 7階/14階建 | 457戸 | C |  | - | - | - | 28.9万円/月 | 45分（42-50分） | 35分（32-40分） | [詳細](https://www.livable.co.jp/mansion/C48264Y80/) |
 | ブライトスクエア | 8999万円 | 2LDK | 63.0㎡ | 築1999年 | 亀戸 徒歩2分 | 江東区亀戸６丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%A9%E3%82%A4%E3%83%88%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2) | 2階/13階建 | 96戸 |  |  | - | - | - | 23.4万円/月 | 49分（46-54分） | 39分（36-44分） | [詳細](https://www.livable.co.jp/mansion/C13265L87/) |
 | 東京ソシオグランデ | 9680万円 | 2LDK | 62.4㎡ | 築2004年 | 亀戸 徒歩4分 | 江東区亀戸６-４１－5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%82%BD%E3%82%B7%E3%82%AA%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%87) | 10階/SRC19階地下1階建 | 256戸 | B |  | - | - | - | 25.0万円/月 | 51分（48-56分） | 41分（38-46分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20811971/) |
-| マークス亀戸 11階 | 1億990万円 | 3LDK | 74.2㎡ | 築1997年 | 亀戸 徒歩3分 | 江東区亀戸5丁目1-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%B9%E4%BA%80%E6%88%B8%2011%E9%9A%8E) | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 45分 | 38分 | [詳細](https://www.homes.co.jp/mansion/b-35007240000122/) |
+| マークス亀戸 11階 | 1億990万円 | 3LDK | 74.2㎡ | 築1997年 | 亀戸 徒歩3分 | 江東区亀戸5丁目1-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%B9%E4%BA%80%E6%88%B8%2011%E9%9A%8E) | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 50分（47-55分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-35007240000122/) |
 | 東京ソシオグランデ | 1億1280万円 | 3LDK | 67.9㎡ | 築2004年 | 亀戸 徒歩3分 | 江東区亀戸６ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E3%82%BD%E3%82%B7%E3%82%AA%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%87) | 11階/SRC19階地下1階建 | 255戸 |  |  | - | - | - | 28.5万円/月 | 50分（47-55分） | 40分（37-45分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20816599/) |
 | プラウドタワー亀戸クロス ブライトタワー | 1億1800万円 | 2LDK | 60.8㎡ | 築2021年 | 亀戸 徒歩2分 | 江東区亀戸6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%BF%E3%83%AF%E3%83%BC%E4%BA%80%E6%88%B8%E3%82%AF%E3%83%AD%E3%82%B9%20%E3%83%96%E3%83%A9%E3%82%A4%E3%83%88%E3%82%BF%E3%83%AF%E3%83%BC) | 2階/25階建 | 482戸 | C |  | - | - | - | 29.7万円/月 | 49分（46-54分） | 39分（36-44分） | [詳細](https://www.nomu.com/mansion/id/FF7C4017/) |
 | プラウドタワー亀戸クロス ゲートタワー | 1億2680万円 | 2LDK | 63.5㎡ | 築2021年 | 亀戸 徒歩2分 | 江東区亀戸6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%BF%E3%83%AF%E3%83%BC%E4%BA%80%E6%88%B8%E3%82%AF%E3%83%AD%E3%82%B9%20%E3%82%B2%E3%83%BC%E3%83%88%E3%82%BF%E3%83%AF%E3%83%BC) | 10階/25階建 | 452戸 |  |  | - | - | - | 31.6万円/月 | 49分（46-54分） | 39分（36-44分） | [詳細](https://www.nomu.com/mansion/id/FF7C5004/) |
@@ -1746,7 +1564,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 亀戸レジデンス 6階 | 9480万円 | 3LDK | 80.2㎡ | 築2009年 | 亀戸水神 徒歩10分 | 江東区亀戸9丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%BA%80%E6%88%B8%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%206%E9%9A%8E) | 6階/17階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 50分 | 44分 | [詳細](https://www.homes.co.jp/mansion/b-1275780000868/) |
+| 亀戸レジデンス 6階 | 9480万円 | 3LDK | 80.2㎡ | 築2009年 | 亀戸水神 徒歩10分 | 江東区亀戸9丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%BA%80%E6%88%B8%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%206%E9%9A%8E) | 6階/17階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 58分（55-63分） | 55分（52-60分） | [詳細](https://www.homes.co.jp/mansion/b-1275780000868/) |
 
 #### 令和5年築×西大島駅徒歩8分、住吉駅徒歩11分、錦
 所在地: 江東区大島2丁目
@@ -1756,7 +1574,7 @@
 | 猿江恩賜公園レジデンス 2階 | 1億2480万円 | 3LDK | 71.1㎡ | 築2023年 | 令和5年築×西大島駅徒歩8分、住吉駅徒歩11分、錦糸町駅 徒歩8分 | 江東区大島2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%8C%BF%E6%B1%9F%E6%81%A9%E8%B3%9C%E5%85%AC%E5%9C%92%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%202%E9%9A%8E) | 2階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 46分（43-51分） | 37分（34-42分） | [詳細](https://www.homes.co.jp/mansion/b-1545920000085/) |
 
 #### 住吉
-所在地: 江東区扇橋３、江東区扇橋3丁目、江東区扇橋３-7-14、江東区扇橋１丁目、江東区扇橋１－２１－３ 他
+所在地: 江東区扇橋３、江東区扇橋3丁目、江東区扇橋１丁目、江東区扇橋１－２１－３、江東区扇橋２－４－８ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1770,14 +1588,14 @@
 | イーストゲートスクエア | 1億1580万円 | 3LDK | 64.9㎡ | 築2013年 | 住吉 徒歩10分 | 江東区扇橋１-21-26 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%BC%E3%82%B9%E3%83%88%E3%82%B2%E3%83%BC%E3%83%88%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2) | 4階/RC15階地下1階建 | 365戸 | B |  | - | - | - | 29.2万円/月 | 45分（42-50分） | 36分（33-41分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20814846/) |
 | ザ・ガーデンタワーズサンセットタワー | 1億1590万円 | 3LDK | 89.8㎡ | 築1997年 | 住吉 徒歩7分 | 江東区大島1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%BA%E3%82%B5%E3%83%B3%E3%82%BB%E3%83%83%E3%83%88%E3%82%BF%E3%83%AF%E3%83%BC) | 16階/RC39階地下2階建 | 470戸 | C |  | - | - | - | 29.2万円/月 | 42分（39-47分） | 33分（30-38分） | [詳細](https://www.nomu.com/mansion/id/R5471261/) |
 | ツインタワー住利毛利館 | 8480万円 | 3LDK | 69.8㎡ | 築1994年 | 住吉 徒歩4分 | 江東区毛利１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%84%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%AF%E3%83%BC%E4%BD%8F%E5%88%A9%E6%AF%9B%E5%88%A9%E9%A4%A8) | 12階/RC21階地下1階建 | 229戸 | B |  | - | - | - | 22.3万円/月 | 39分（36-44分） | 30分（27-35分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20807172/) |
-| ザ・ガーデンタワーズ サンライズタワー | 1億1780万円 | 3LDK | 89.8㎡ | 築1997年 | 住吉 徒歩9分 | 江東区大島1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%BA%20%E3%82%B5%E3%83%B3%E3%83%A9%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC) | 18階/RC39階建 | 233戸 | B |  | - | - | - | 29.6万円/月 | 44分（41-49分） | 35分（32-40分） | [詳細](https://www.nomu.com/mansion/id/R5471120/) |
 | クレヴィア住吉扇橋 | 1億1780万円 | 2LDK | 66.1㎡ | 築2019年 | 住吉 徒歩7分 | 江東区扇橋２－４－８ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%83%B4%E3%82%A3%E3%82%A2%E4%BD%8F%E5%90%89%E6%89%87%E6%A9%8B) | 6階/RC12階建 | 55戸 | B |  | - | - | - | 29.6万円/月 | 42分（39-47分） | 33分（30-38分） | [詳細](https://www.nomu.com/mansion/id/F54BZ017/) |
+| ザ・ガーデンタワーズ サンライズタワー | 1億1780万円 | 3LDK | 89.8㎡ | 築1997年 | 住吉 徒歩9分 | 江東区大島1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%BA%20%E3%82%B5%E3%83%B3%E3%83%A9%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC) | 18階/RC39階建 | 233戸 | B |  | - | - | - | 29.6万円/月 | 44分（41-49分） | 35分（32-40分） | [詳細](https://www.nomu.com/mansion/id/R5471120/) |
 | ツインタワー住利住吉館 | 8690万円 | 2LDK | 60.3㎡ | 築1994年 | 住吉 徒歩5分 | 江東区住吉１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%84%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%AF%E3%83%BC%E4%BD%8F%E5%88%A9%E4%BD%8F%E5%90%89%E9%A4%A8) | 5階/RC21階地下1階建 | 229戸 |  |  | - | - | - | 22.8万円/月 | 40分（37-45分） | 31分（28-36分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_21035280/) |
 | メイツ深川住吉 | 1億1980万円 | 2LDK | 60.9㎡ | 築2020年 | 住吉 徒歩8分 | 江東区扇橋１－２１－３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%82%A4%E3%83%84%E6%B7%B1%E5%B7%9D%E4%BD%8F%E5%90%89) | 5階/RC15階建 | 444戸 | B |  | - | - | - | 30.1万円/月 | 43分（40-48分） | 34分（31-39分） | [詳細](https://www.livable.co.jp/mansion/C1325ZG19/) |
 | メイツ深川住吉 | 1億2980万円 | 2LDK | 69.0㎡ | 築2020年 | 住吉 徒歩8分 | 江東区扇橋１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%82%A4%E3%83%84%E6%B7%B1%E5%B7%9D%E4%BD%8F%E5%90%89) | 5階/15階建 | 444戸 |  |  | - | - | - | 32.3万円/月 | 43分（40-48分） | 34分（31-39分） | [詳細](https://www.livable.co.jp/mansion/C13265M59/) |
 
 #### 南砂町
-所在地: 江東区新砂3丁目、江東区新砂３-4-3、江東区南砂６、江東区南砂７丁目、江東区南砂５－１９－１７
+所在地: 江東区新砂3丁目、江東区新砂３-4-3、江東区南砂７丁目、江東区南砂６、江東区南砂５－１９－１７
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1801,7 +1619,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| スカイズタワー＆ガーデン 37階 | 1億1000万円 | 2LDK | 60.7㎡ | 築2014年 | 新豊洲駅 徒歩5分 | 江東区豊洲6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%86%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%2037%E9%9A%8E) | 37階/45階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 18分 | 26分 | [詳細](https://www.homes.co.jp/mansion/b-1449550000027/) |
+| スカイズタワー＆ガーデン 37階 | 1億1000万円 | 2LDK | 60.7㎡ | 築2014年 | 新豊洲駅 徒歩5分 | 江東区豊洲6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%86%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%2037%E9%9A%8E) | 37階/45階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 43分（40-48分） | 49分（46-54分） | [詳細](https://www.homes.co.jp/mansion/b-1449550000027/) |
 
 #### 新交通ゆりかもめ 有明テニスの森駅
 所在地: 江東区有明1丁目
@@ -1819,12 +1637,12 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ベイズタワー＆ガーデン | 1億1480万円 | 2LDK | 55.6㎡ | 築2016年 | 新豊洲 徒歩7分 | 江東区豊洲６－２－２９ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%99%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%86%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3) | 19階/RC32階地下1階建 | 550戸 | B |  | - | - | - | 28.9万円/月 | 18分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20881886/) |
+| ベイズタワー＆ガーデン | 1億1480万円 | 2LDK | 55.6㎡ | 築2016年 | 新豊洲 徒歩7分 | 江東区豊洲６－２－２９ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%99%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%86%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3) | 19階/RC32階地下1階建 | 550戸 | B |  | - | - | - | 28.9万円/月 | 41分（38-46分） | 47分（44-52分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20881886/) |
 | ベイズタワー＆ガーデン | 1億1980万円 | 2LDK | 59.8㎡ | 築2016年 | 新豊洲 徒歩6分 | 江東区豊洲６-2-29 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%99%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%86%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3) | 6階/RC32階地下1階建 | 550戸 | B |  | - | - | - | 30.1万円/月 | 32分（29-37分） | 38分（35-43分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20986508/) |
 | ベイズタワー＆ガーデン | 1億2800万円 | 2LDK | 58.3㎡ | 築2016年 | 新豊洲 徒歩5分 | 江東区豊洲6丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%99%E3%82%A4%E3%82%BA%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%86%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3) | 21階/32階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 30分（27-35分） | 36分（33-41分） | [詳細](https://www.nomu.com/mansion/id/R8647760/) |
 
 #### 有明
-所在地: 江東区有明２-1-3、江東区有明2丁目、江東区有明２
+所在地: 江東区有明２-1-3、江東区有明２、江東区有明2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1834,12 +1652,12 @@
 | シティタワーズ東京ベイ ウエストタワー | 1億1180万円 | 2LDK | 55.3㎡ | 築2019年 | 有明 徒歩3分 | 江東区有明2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%BA%E6%9D%B1%E4%BA%AC%E3%83%99%E3%82%A4%20%E3%82%A6%E3%82%A8%E3%82%B9%E3%83%88%E3%82%BF%E3%83%AF%E3%83%BC) | 9階/RC32階建 | 1539戸 | B |  | - | - | - | 28.3万円/月 | 21分（18-26分） | 29分（26-34分） | [詳細](https://www.nomu.com/mansion/id/RC370230/) |
 
 #### 有明テニスの森
-所在地: 江東区有明１－４－２０、江東区有明１、江東区有明1丁目、江東区有明１－１－１７、江東区有明１－５－２ 他
+所在地: 江東区有明１－５－２、江東区有明１-5-2、江東区有明1丁目4-11、江東区有明１－４－２０、江東区有明１ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ブリリア有明スカイタワー | 9490万円 | 2LDK | 61.2㎡ | 築2010年 | 有明テニスの森 徒歩6分 | 江東区有明１－４－２０ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC) | 4階/RC33階地下1階建 | 1089戸 | B |  | - | - | - | 24.5万円/月 | 16分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20700766/) |
 | ブリリア有明スカイタワー　Ｂｒｉｌｌｉａ有明ＳｋｙＴ… | 9490万円 | 2LDK | 61.2㎡ | 築2010年 | 有明テニスの森 徒歩6分 | 江東区有明１－４－２０ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC%E3%80%80%EF%BC%A2%EF%BD%92%EF%BD%89%EF%BD%8C%EF%BD%8C%EF%BD%89%EF%BD%81%E6%9C%89%E6%98%8E%EF%BC%B3%EF%BD%8B%EF%BD%99%EF%BC%B4%E2%80%A6) | 4階/RC33階地下1階建 | 1089戸 | B |  | - | - | - | 24.5万円/月 | 16分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20700766/) |
+| ブリリア有明スカイタワー | 9490万円 | 2LDK | 61.2㎡ | 築2010年 | 有明テニスの森 徒歩6分 | 江東区有明１－４－２０ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC) | 4階/RC33階地下1階建 | 1089戸 | B |  | - | - | - | 24.5万円/月 | 16分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20700766/) |
 | ブリリア有明シティタワー（Brillia有明CityTowe | 9860万円 | 2LDK | 55.9㎡ | 築2014年 | 有明テニスの森 徒歩9分 | 江東区有明１－５－２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%88Brillia%E6%9C%89%E6%98%8ECityTower%EF%BC%89) | 7階/RC33階地下1階建 | 600戸 | B |  | - | - | - | 25.4万円/月 | 50分（47-55分） | 56分（53-61分） | [詳細](https://www.nomu.com/mansion/id/KC370156/) |
 | ブリリア有明シティタワー | 1億80万円 | 2LDK | 55.9㎡ | 築2014年 | 有明テニスの森 徒歩9分 | 江東区有明１－５－２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC) | 22階/RC33階地下1階建 | 600戸 | B |  | - | - | - | 25.9万円/月 | 50分（47-55分） | 56分（53-61分） | [詳細](https://www.nomu.com/mansion/id/KC370151/) |
 | シティタワー有明 | 1億100万円 | 2LDK | 63.7㎡ | 築2009年 | 有明テニスの森 徒歩9分 | 江東区有明１－１－１７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%E6%9C%89%E6%98%8E) | 10階/RC33階建 | 483戸 | B |  | - | - | - | 25.9万円/月 | 18分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_79029412/) |
@@ -1855,11 +1673,11 @@
 | ブリリア有明シティタワー | 1億1650万円 | 2LDK | 61.6㎡ | 築2014年 | 有明テニスの森 徒歩9分 | 江東区有明１-5-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC) | 31階/RC33階地下1階建 | 戸数:不明 | B |  | - | - | - | 29.3万円/月 | 18分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20776235/) |
 | ブリリア有明スカイタワー | 1億1780万円 | 2LDK | 63.4㎡ | 築2010年 | 有明テニスの森 徒歩6分 | 江東区有明1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC) | 16階/33階建 | 戸数:不明 | B |  | - | - | - | 29.6万円/月 | 50分（47-55分） | 56分（53-61分） | [詳細](https://www.nomu.com/mansion/id/KC370158/) |
 | ブリリア有明スカイタワー／2LDK＋DEN＋SIC／… | 1億1800万円 | 2LDK+S（納戸） | 63.4㎡ | 築2010年 | 有明テニスの森 徒歩6分 | 江東区有明１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%8F2LDK%EF%BC%8BDEN%EF%BC%8BSIC%EF%BC%8F%E2%80%A6) | 14階/RC33階地下1階建 | 戸数:不明 | B |  | - | - | - | 29.7万円/月 | 12分 | 18分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20994580/) |
-| ブリリア有明スカイタワー（Brillia有明SkyT… | 1億1980万円 | 2LDK | 63.6㎡ | 築2010年 | 有明テニスの森 徒歩6分 | 江東区有明１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%88Brillia%E6%9C%89%E6%98%8ESkyT%E2%80%A6) | 26階/RC33階地下1階建 | 1089戸 | B |  | - | - | - | 30.1万円/月 | 18分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20363348/) |
 | ガレリアグランデ | 1億1980万円 | 2LDK | 68.1㎡ | 築2006年 | 有明テニスの森 徒歩9分 | 江東区有明１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AC%E3%83%AC%E3%83%AA%E3%82%A2%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%87) | 17階/27階建 | 413戸 | B |  | - | - | - | 30.1万円/月 | 50分（47-55分） | 56分（53-61分） | [詳細](https://www.livable.co.jp/mansion/C13246W36/) |
+| ブリリア有明スカイタワー（Brillia有明SkyT… | 1億1980万円 | 2LDK | 63.6㎡ | 築2010年 | 有明テニスの森 徒歩6分 | 江東区有明１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9C%89%E6%98%8E%E3%82%B9%E3%82%AB%E3%82%A4%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%88Brillia%E6%9C%89%E6%98%8ESkyT%E2%80%A6) | 26階/RC33階地下1階建 | 1089戸 | B |  | - | - | - | 30.1万円/月 | 18分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20363348/) |
 | オリゾンマーレ | 1億980万円 | 2LDK | 68.8㎡ | 築2004年 | 有明テニスの森 徒歩4分 | 江東区有明１－３－１４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%AA%E3%82%BE%E3%83%B3%E3%83%9E%E3%83%BC%E3%83%AC) | 16階/RC27階地下1階建 | 396戸 | B |  | - | - | - | 27.8万円/月 | 18分 | 24分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20185501/) |
 | オリゾンマーレ | 1億1000万円 | 2LDK | 64.8㎡ | 築2004年 | 有明テニスの森 徒歩4分 | 江東区有明1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%AA%E3%82%BE%E3%83%B3%E3%83%9E%E3%83%BC%E3%83%AC) | 11階/RC27階地下1階建一部鉄骨 | 398戸 | B |  | - | - | - | 27.9万円/月 | 14分 | 22分 | [詳細](https://www.nomu.com/mansion/id/RC370229/) |
-| オリゾンマーレ | 1億1980万円 | 2LDK | 71.2㎡ | 築2004年 | 有明テニスの森 徒歩4分 | 江東区有明１－３－１４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%AA%E3%82%BE%E3%83%B3%E3%83%9E%E3%83%BC%E3%83%AC) | 12階/RC27階地下1階建 | 398戸 | B |  | - | - | - | 30.1万円/月 | 45分（41-51分） | 50分（46-56分） | [1](https://www.nomu.com/mansion/id/VC370021/) [2](https://www.nomu.com/mansion/id/RC370165/) |
+| オリゾンマーレ | 1億1980万円 | 2LDK | 77.6㎡ | 築2004年 | 有明テニスの森 徒歩4分 | 江東区有明1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%AA%E3%82%BE%E3%83%B3%E3%83%9E%E3%83%BC%E3%83%AC) | 11階/RC27階地下1階建一部鉄骨 | 398戸 | B |  | - | - | - | 30.1万円/月 | 14分 | 20分 | [1](https://www.nomu.com/mansion/id/RC370165/) [2](https://www.nomu.com/mansion/id/VC370021/) |
 | ブリリアマーレ有明タワーガーデン 13階 | 1億2980万円 | 2LDK | 65.8㎡ | 築2008年 | 有明テニスの森 徒歩5分 | 江東区有明1丁目4-11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E3%83%9E%E3%83%BC%E3%83%AC%E6%9C%89%E6%98%8E%E3%82%BF%E3%83%AF%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%2013%E9%9A%8E) | 13階/33階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 18分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1548200002540/) |
 | プレミスト有明ガーデンズ | 1億2280万円 | 2LDK | 56.7㎡ | 築2020年 | 有明テニスの森 徒歩2分 | 江東区有明1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AC%E3%83%9F%E3%82%B9%E3%83%88%E6%9C%89%E6%98%8E%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%82%BA) | 14階/RC15階建 | 258戸 | B |  | - | - | - | 30.7万円/月 | 14分 | 20分 | [詳細](https://www.nomu.com/mansion/id/R8670750/) |
 
@@ -1872,15 +1690,15 @@
 | デュオシティ木場公園 | 1億1480万円 | 3LDK | 70.6㎡ | 築2002年 | 木場 徒歩5分 | 江東区東陽1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%83%A5%E3%82%AA%E3%82%B7%E3%83%86%E3%82%A3%E6%9C%A8%E5%A0%B4%E5%85%AC%E5%9C%92) | 5階/9階建 | 29戸 |  |  | - | - | - | 28.9万円/月 | 41分（38-46分） | 35分（32-40分） | [詳細](https://www.nomu.com/mansion/id/F54C5010/) |
 
 #### 東京メトロ半蔵門線 住吉駅
-所在地: 江東区扇橋1丁目21-5、江東区扇橋1丁目、江東区扇橋3丁目、江東区大島1丁目2-2、江東区扇橋3丁目10-7
+所在地: 江東区扇橋1丁目、江東区扇橋3丁目、江東区大島1丁目2-2、江東区扇橋3丁目10-7、江東区扇橋1丁目21-5
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| エストビエント住吉ラフィナート 1階 | 9680万円 | 3SLDK | 91.7㎡ | 築2005年 | 住吉駅 徒歩10分 | 江東区扇橋3丁目10-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%B9%E3%83%88%E3%83%93%E3%82%A8%E3%83%B3%E3%83%88%E4%BD%8F%E5%90%89%E3%83%A9%E3%83%95%E3%82%A3%E3%83%8A%E3%83%BC%E3%83%88%201%E9%9A%8E) | 1階/9階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1496680000675/) |
-|  | 1億980万円 | 3LDK | 69.7㎡ | 築2015年 | 住吉駅 徒歩10分 | 江東区扇橋3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%89%87%E6%A9%8B3%E4%B8%81%E7%9B%AE) | 6階/14階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1004590048530/) |
+| エストビエント住吉ラフィナート 1階 | 9680万円 | 3SLDK | 91.7㎡ | 築2005年 | 住吉駅 徒歩10分 | 江東区扇橋3丁目10-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%82%B9%E3%83%88%E3%83%93%E3%82%A8%E3%83%B3%E3%83%88%E4%BD%8F%E5%90%89%E3%83%A9%E3%83%95%E3%82%A3%E3%83%8A%E3%83%BC%E3%83%88%201%E9%9A%8E) | 1階/9階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 45分（42-50分） | 36分（33-41分） | [詳細](https://www.homes.co.jp/mansion/b-1496680000675/) |
+|  | 1億980万円 | 3LDK | 69.7㎡ | 築2015年 | 住吉駅 徒歩10分 | 江東区扇橋3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%89%87%E6%A9%8B3%E4%B8%81%E7%9B%AE) | 6階/14階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 47分（44-52分） | 38分（35-43分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048530/) |
 |  | 1億1190万円 | 2SLDK | 63.0㎡ | 築2020年 | 住吉駅 徒歩8分 | 江東区扇橋1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%89%87%E6%A9%8B1%E4%B8%81%E7%9B%AE) | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 28.3万円/月 | 47分（44-52分） | 38分（35-43分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048634/) |
-| メイツ深川住吉 2階 | 1億1580万円 | 2LDK | 63.0㎡ | 築2020年 | 住吉駅 徒歩7分 | 江東区扇橋1丁目21-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%82%A4%E3%83%84%E6%B7%B1%E5%B7%9D%E4%BD%8F%E5%90%89%202%E9%9A%8E) | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1468140013978/) |
-|  | 1億1590万円 | 3LDK | 89.8㎡ | 築1997年 | 住吉駅 徒歩7分 | 江東区大島1丁目2-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E5%A4%A7%E5%B3%B61%E4%B8%81%E7%9B%AE2-2) | 16階/39階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 44分 | 34分 | [詳細](https://www.homes.co.jp/mansion/b-1354210002486/) |
+| メイツ深川住吉 2階 | 1億1580万円 | 2LDK | 63.0㎡ | 築2020年 | 住吉駅 徒歩7分 | 江東区扇橋1丁目21-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A1%E3%82%A4%E3%83%84%E6%B7%B1%E5%B7%9D%E4%BD%8F%E5%90%89%202%E9%9A%8E) | 2階/15階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 45分（42-50分） | 36分（33-41分） | [詳細](https://www.homes.co.jp/mansion/b-1468140013978/) |
+|  | 1億1590万円 | 3LDK | 89.8㎡ | 築1997年 | 住吉駅 徒歩7分 | 江東区大島1丁目2-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E5%A4%A7%E5%B3%B61%E4%B8%81%E7%9B%AE2-2) | 16階/39階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 52分（49-57分） | 42分（39-47分） | [詳細](https://www.homes.co.jp/mansion/b-1354210002486/) |
 
 #### 東京メトロ半蔵門線 住吉駅 徒歩10分
 所在地: 江東区扇橋３丁目
@@ -1897,7 +1715,7 @@
 | コスモ住吉扇橋 | 1億980万円 | 3LDK | 64.7㎡ | 築1998年 | 住吉駅 徒歩6分 | 江東区扇橋３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B3%E3%82%B9%E3%83%A2%E4%BD%8F%E5%90%89%E6%89%87%E6%A9%8B) | 8階/13階建 | 141戸 |  |  | - | - | - | 27.8万円/月 | 49分（46-54分） | 40分（37-45分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FLBBGA13/) |
 
 #### 東京メトロ半蔵門線 住吉駅 徒歩7分
-所在地: 江東区扇橋１－２１－３、江東区扇橋１丁目
+所在地: 江東区扇橋１丁目、江東区扇橋１－２１－３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1952,7 +1770,7 @@
 | パークホームズ豊洲ザレジデンス | 1億2680万円 | 2LDK | 56.5㎡ | 築2016年 | 豊洲駅 徒歩5分 | 江東区豊洲５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E8%B1%8A%E6%B4%B2%E3%82%B6%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 13階/RC22階建 | 693戸 | B |  | - | - | - | 31.6万円/月 | 30分（27-35分） | 36分（33-41分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FBPBEA0E/) |
 
 #### 東京メトロ有楽町線 豊洲駅 徒歩6分
-所在地: 江東区豊洲３丁目、江東区豊洲４丁目
+所在地: 江東区豊洲４丁目、江東区豊洲３丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -1964,7 +1782,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ビーコンタワーレジデンス 18階 | 1億1980万円 | 3LDK | 77.3㎡ | 築2009年 | 辰巳駅 徒歩10分 | 江東区東雲1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%93%E3%83%BC%E3%82%B3%E3%83%B3%E3%82%BF%E3%83%AF%E3%83%BC%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2018%E9%9A%8E) | 18階/41階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 24分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1542990000005/) |
+| ビーコンタワーレジデンス 18階 | 1億1980万円 | 3LDK | 77.3㎡ | 築2009年 | 辰巳駅 徒歩10分 | 江東区東雲1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%93%E3%83%BC%E3%82%B3%E3%83%B3%E3%82%BF%E3%83%AF%E3%83%BC%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%2018%E9%9A%8E) | 18階/41階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1542990000005/) |
 
 #### 東京メトロ有楽町線 辰巳駅 徒歩8分
 所在地: 江東区東雲１－９－４１、江東区東雲１丁目
@@ -1999,12 +1817,12 @@
 | ニューライズシティ東京ベイハイライズ | 9880万円 | 2LDK | 71.5㎡ | 築2006年 | 南砂町駅 徒歩5分 | 江東区新砂３－４－３５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%82%A4%E3%82%BA%E3%82%B7%E3%83%86%E3%82%A3%E6%9D%B1%E4%BA%AC%E3%83%99%E3%82%A4%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%82%BA) | 13階/20階建 | 357戸 | B |  | - | - | - | 25.4万円/月 | 48分（45-53分） | 43分（40-48分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FM5ARA08/) |
 
 #### 東京メトロ東西線 木場駅
-所在地: 江東区東陽1丁目8-12、江東区東陽1丁目
+所在地: 江東区東陽1丁目、江東区東陽1丁目8-12
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 |  | 1億1480万円 | 3LDK | 70.6㎡ | 築2002年 | 木場駅 徒歩5分 | 江東区東陽1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%9D%B1%E9%99%BD1%E4%B8%81%E7%9B%AE) | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 41分（38-46分） | 35分（32-40分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048638/) |
-| デュオシティ木場公園 5階 | 1億1990万円 | 3LDK | 70.6㎡ | 築2002年 | 木場駅 徒歩5分 | 江東区東陽1丁目8-12 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%83%A5%E3%82%AA%E3%82%B7%E3%83%86%E3%82%A3%E6%9C%A8%E5%A0%B4%E5%85%AC%E5%9C%92%205%E9%9A%8E) | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 24分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1391790007296/) |
+| デュオシティ木場公園 5階 | 1億1990万円 | 3LDK | 70.6㎡ | 築2002年 | 木場駅 徒歩5分 | 江東区東陽1丁目8-12 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%83%A5%E3%82%AA%E3%82%B7%E3%83%86%E3%82%A3%E6%9C%A8%E5%A0%B4%E5%85%AC%E5%9C%92%205%E9%9A%8E) | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 36分（33-41分） | 30分（27-35分） | [詳細](https://www.homes.co.jp/mansion/b-1391790007296/) |
 
 #### 東京メトロ東西線 木場駅 徒歩7分
 所在地: 江東区木場３－４－１５
@@ -2014,13 +1832,13 @@
 | アデニウムコート木場 | 1億900万円 | 3LDK | 70.3㎡ | 築2013年 | 木場駅 徒歩7分 | 江東区木場３－４－１５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%87%E3%83%8B%E3%82%A6%E3%83%A0%E3%82%B3%E3%83%BC%E3%83%88%E6%9C%A8%E5%A0%B4) | 2階/RC8階建 | 72戸 | B |  | - | - | - | 27.7万円/月 | 47分（44-52分） | 41分（38-46分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FM5BFA03/) |
 
 #### 東京メトロ東西線 東陽町駅
-所在地: 江東区塩浜2丁目29-4、江東区南砂2丁目、江東区塩浜2丁目
+所在地: 江東区塩浜2丁目、江東区南砂2丁目、江東区塩浜2丁目29-4
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億290万円 | 3LDK | 78.5㎡ | 築2006年 | 東陽町駅 徒歩9分 | 江東区塩浜2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E5%A1%A9%E6%B5%9C2%E4%B8%81%E7%9B%AE) | 9階/14階建 | 戸数:不明 |  |  | - | - | - | 26.3万円/月 | 28分 | 26分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037184/) |
-| レクセルプラザ東陽町 9階 | 1億490万円 | 3LDK | 78.5㎡ | 築2006年 | 東陽町駅 徒歩9分 | 江東区塩浜2丁目29-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%AF%E3%82%BB%E3%83%AB%E3%83%97%E3%83%A9%E3%82%B6%E6%9D%B1%E9%99%BD%E7%94%BA%209%E9%9A%8E) | 9階/14階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 30分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1552210003351/) |
-| ガーデンフラッグシティ 9階 | 1億2998万円 | 3LDK | 72.8㎡ | 築2002年 | 東陽町駅 徒歩4分 | 江東区南砂2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0%E3%82%B7%E3%83%86%E3%82%A3%209%E9%9A%8E) | 9階/14階建 | 391戸 |  |  | - | - | - | 32.3万円/月 | 34分（31-39分） | 28分（25-33分） | [詳細](https://www.homes.co.jp/mansion/b-1338830000030/) |
+|  | 1億290万円 | 3LDK | 78.5㎡ | 築2006年 | 東陽町駅 徒歩9分 | 江東区塩浜2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E5%A1%A9%E6%B5%9C2%E4%B8%81%E7%9B%AE) | 9階/14階建 | 戸数:不明 |  |  | - | - | - | 26.3万円/月 | 45分（42-50分） | 39分（36-44分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037184/) |
+| レクセルプラザ東陽町 9階 | 1億490万円 | 3LDK | 78.5㎡ | 築2006年 | 東陽町駅 徒歩9分 | 江東区塩浜2丁目29-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%AF%E3%82%BB%E3%83%AB%E3%83%97%E3%83%A9%E3%82%B6%E6%9D%B1%E9%99%BD%E7%94%BA%209%E9%9A%8E) | 9階/14階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 43分（40-48分） | 43分（40-48分） | [詳細](https://www.homes.co.jp/mansion/b-1552210003351/) |
+| ガーデンフラッグシティ 9階 | 1億2998万円 | 3LDK | 72.8㎡ | 築2002年 | 東陽町駅 徒歩4分 | 江東区南砂2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%83%95%E3%83%A9%E3%83%83%E3%82%B0%E3%82%B7%E3%83%86%E3%82%A3%209%E9%9A%8E) | 9階/14階建 | 391戸 |  |  | - | - | - | 32.3万円/月 | 40分（37-45分） | 34分（31-39分） | [詳細](https://www.homes.co.jp/mansion/b-1338830000030/) |
 
 #### 東京メトロ東西線 東陽町駅 徒歩10分
 所在地: 江東区塩浜２－２９－４
@@ -2045,7 +1863,7 @@
 | ルイシャトレ門前仲町 | 1億1980万円 | 3LDK | 64.8㎡ | 築2000年 | 門前仲町駅 徒歩8分 | 江東区冬木 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%82%A4%E3%82%B7%E3%83%A3%E3%83%88%E3%83%AC%E9%96%80%E5%89%8D%E4%BB%B2%E7%94%BA) | 7階/10階建 | 46戸 |  |  | - | - | - | 30.1万円/月 | 36分（33-41分） | 30分（27-35分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FLBBGA11/) |
 
 #### 東京臨海高速鉄道 東雲駅 徒歩7分
-所在地: 江東区東雲１－９－４、江東区東雲１丁目
+所在地: 江東区東雲１丁目、江東区東雲１－９－４
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2061,12 +1879,12 @@
 | ブランズ東雲 | 1億980万円 | 3LDK | 66.5㎡ | 築2012年 | 東雲駅 徒歩9分 | 江東区東雲１－６－１５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%A9%E3%83%B3%E3%82%BA%E6%9D%B1%E9%9B%B2) | 14階/15階建 | 144戸 | A |  | - | - | - | 27.8万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FBPBBA01/) |
 
 #### 東京臨海高速鉄道りんかい線 東雲駅
-所在地: 江東区東雲1丁目9-4、江東区東雲1丁目、江東区東雲1丁目6-15
+所在地: 江東区東雲1丁目、江東区東雲1丁目9-4、江東区東雲1丁目6-15
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億480万円 | 2LDK | 60.9㎡ | 築2014年 | 東雲駅 徒歩7分 | 江東区東雲1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%9D%B1%E9%9B%B21%E4%B8%81%E7%9B%AE) | 6階/43階建 | 戸数:不明 |  |  | - | - | - | 26.7万円/月 | 20分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037756/) |
-| BRANZ東雲 14階 | 1億980万円 | 3LDK | 66.5㎡ | 築2012年 | 東雲駅 徒歩9分 | 江東区東雲1丁目6-15 | [Google Map](https://www.google.com/maps/search/?api=1&query=BRANZ%E6%9D%B1%E9%9B%B2%2014%E9%9A%8E) | 14階/15階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 22分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1354210002481/) |
+|  | 1億480万円 | 2LDK | 60.9㎡ | 築2014年 | 東雲駅 徒歩7分 | 江東区東雲1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%9D%B1%E9%9B%B21%E4%B8%81%E7%9B%AE) | 6階/43階建 | 戸数:不明 |  |  | - | - | - | 26.7万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037756/) |
+| BRANZ東雲 14階 | 1億980万円 | 3LDK | 66.5㎡ | 築2012年 | 東雲駅 徒歩9分 | 江東区東雲1丁目6-15 | [Google Map](https://www.google.com/maps/search/?api=1&query=BRANZ%E6%9D%B1%E9%9B%B2%2014%E9%9A%8E) | 14階/15階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1354210002481/) |
 | パークタワー東雲 29階 | 1億1580万円 | 2LDK | 60.9㎡ | 築2014年 | 東雲駅 徒歩7分 | 江東区東雲1丁目9-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2%2029%E9%9A%8E) | 29階/43階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1420270002738/) |
 
 #### 東武亀戸線 亀戸水神駅
@@ -2074,7 +1892,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| シャリエ亀戸リ−ディングイ−スト 8階 | 1億1680万円 | 3LDK | 70.8㎡ | 築2016年 | 亀戸水神駅 徒歩10分 | 江東区亀戸7丁目63-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%A3%E3%83%AA%E3%82%A8%E4%BA%80%E6%88%B8%E3%83%AA%E2%88%92%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A4%E2%88%92%E3%82%B9%E3%83%88%208%E9%9A%8E) | 8階/12階建 | 戸数:不明 |  |  | - | - | - | 29.4万円/月 | 45分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1552210002547/) |
+| シャリエ亀戸リ−ディングイ−スト 8階 | 1億1680万円 | 3LDK | 70.8㎡ | 築2016年 | 亀戸水神駅 徒歩10分 | 江東区亀戸7丁目63-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%A3%E3%83%AA%E3%82%A8%E4%BA%80%E6%88%B8%E3%83%AA%E2%88%92%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A4%E2%88%92%E3%82%B9%E3%83%88%208%E9%9A%8E) | 8階/12階建 | 戸数:不明 |  |  | - | - | - | 29.4万円/月 | 48分（45-53分） | 38分（35-43分） | [詳細](https://www.homes.co.jp/mansion/b-1552210002547/) |
 
 #### 東武亀戸線 亀戸駅
 所在地: 江東区亀戸5丁目
@@ -2095,12 +1913,12 @@
 | シティテラス東陽町 | 1億1990万円 | 3LDK | 64.7㎡ | 築2016年 | 東陽町 徒歩5分 | 江東区東陽２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%83%86%E3%83%A9%E3%82%B9%E6%9D%B1%E9%99%BD%E7%94%BA) | 7階/RC15階建 | 522戸 | A |  | - | - | - | 30.1万円/月 | 35分（32-40分） | 29分（26-34分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20559012/) |
 
 #### 東雲
-所在地: 江東区東雲２－２－１４、江東区東雲１－６－１５、江東区東雲１丁目、江東区東雲1丁目9-4、江東区東雲１－９－４ 他
+所在地: 江東区東雲1丁目9-4、江東区東雲１－９－４、江東区東雲１-9-4、江東区東雲２－２－１４、江東区東雲１－６－１５ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | パークタワー東雲 | 9780万円 | 2LDK+S（納戸） | 56.2㎡ | 築2014年 | 東雲 徒歩7分 | 江東区東雲１－９－４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2) | 8階/RC43階建 | 戸数:不明 | B |  | - | - | - | 25.2万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_21042384/) |
-| パークタワー東雲 | 1億800万円 | 2LDK | 60.1㎡ | 築2014年 | 東雲 徒歩7分 | 江東区東雲１－９－４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2) | 12階/RC43階建 | 585戸 | B |  | - | - | - | 27.4万円/月 | 22分 | 28分 | [詳細](https://www.nomu.com/mansion/id/FC3C5008/) |
+| パークタワー東雲 | 1億800万円 | 2LDK | 60.1㎡ | 築2014年 | 東雲 徒歩7分 | 江東区東雲１－９－４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2) | 12階/RC43階建 | 585戸 | B |  | - | - | - | 27.4万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.nomu.com/mansion/id/FC3C5008/) |
 | ブランズ東雲 | 1億980万円 | 3LDK | 75.5㎡ | 築2012年 | 東雲 徒歩9分 | 江東区東雲１－６－１５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%A9%E3%83%B3%E3%82%BA%E6%9D%B1%E9%9B%B2) | 5階/RC15階建 | 144戸 | A |  | - | - | - | 27.8万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.livable.co.jp/mansion/C48264121/) |
 | パークタワー東雲 | 1億1180万円 | 2LDK | 62.7㎡ | 築2014年 | 東雲 徒歩7分 | 江東区東雲１-9-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2) | 38階/RC43階建 | 585戸 | B |  | - | - | - | 28.3万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20378917/) |
 | パークタワー東雲 28階 | 1億1480万円 | 2LDK | 60.9㎡ | 築2014年 | 東雲 徒歩7分 | 江東区東雲1丁目9-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%9D%B1%E9%9B%B2%2028%E9%9A%8E) | 28階/43階建 | 戸数:不明 | B |  | - | - | - | 28.9万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-35007210000210/) |
@@ -2120,7 +1938,7 @@
 | ドルフ新大橋リバーサイド | 8980万円 | 2LDK | 63.1㎡ | 築2002年 | 森下 徒歩4分 | 江東区新大橋１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%89%E3%83%AB%E3%83%95%E6%96%B0%E5%A4%A7%E6%A9%8B%E3%83%AA%E3%83%90%E3%83%BC%E3%82%B5%E3%82%A4%E3%83%89) | 4階/12階建 | 33戸 |  |  | - | - | - | 23.4万円/月 | 30分（27-35分） | 27分（24-32分） | [詳細](https://www.livable.co.jp/mansion/C48264E15/) |
 
 #### 清澄白河
-所在地: 江東区福住２、江東区福住２丁目、江東区白河３丁目、江東区福住2丁目
+所在地: 江東区福住２丁目、江東区福住２、江東区白河３丁目、江東区福住2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2141,7 +1959,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億1000万円 | 3LDK | 78.4㎡ | 築1999年 | 潮見駅 徒歩3分 | 江東区潮見2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%BD%AE%E8%A6%8B2%E4%B8%81%E7%9B%AE) | 10階/15階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 30分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037954/) |
+|  | 1億1000万円 | 3LDK | 78.4㎡ | 築1999年 | 潮見駅 徒歩3分 | 江東区潮見2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%BD%AE%E8%A6%8B2%E4%B8%81%E7%9B%AE) | 10階/15階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 48分（45-53分） | 45分（42-50分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037954/) |
 
 #### 菊川
 所在地: 江東区猿江１
@@ -2158,7 +1976,7 @@
 | バウス西大島 | 1億480万円 | 3LDK | 73.7㎡ | 築2022年 | 西大島 徒歩7分 | 江東区北砂３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%90%E3%82%A6%E3%82%B9%E8%A5%BF%E5%A4%A7%E5%B3%B6) | 2階/RC13階建 | 183戸 | C |  | - | - | - | 26.7万円/月 | 47分（44-52分） | 37分（34-42分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20873039/) |
 
 #### 豊洲
-所在地: 江東区豊洲3丁目、江東区豊洲３－６－５、江東区豊洲１－３－２、江東区東雲１、江東区豊洲４ 他
+所在地: 江東区豊洲３丁目、江東区東雲１、江東区豊洲４、江東区枝川１丁目、江東区枝川1丁目 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2193,7 +2011,7 @@
 | プラウドシティ越中島ブライトテラス | 1億1980万円 | 3LDK | 70.1㎡ | 築2019年 | 越中島 徒歩6分 | 江東区越中島３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E8%B6%8A%E4%B8%AD%E5%B3%B6%E3%83%96%E3%83%A9%E3%82%A4%E3%83%88%E3%83%86%E3%83%A9%E3%82%B9) | 5階/RC12階建 | 83戸 | B |  | - | - | - | 30.1万円/月 | 36分（33-41分） | 42分（39-47分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_koto/nc_20945014/) |
 
 #### 辰巳
-所在地: 江東区東雲１－９－４１、江東区東雲１、江東区東雲１－９－３２、江東区辰巳１－５－６、江東区東雲１－９－４２ 他
+所在地: 江東区東雲１－９－４１、江東区東雲１－９－３２、江東区東雲１、江東区辰巳１－５－６、江東区東雲１－９－４２ 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2238,7 +2056,7 @@
 | 東京錦糸町シティタワー | 8790万円 | 3LDK | 62.2㎡ | 築2000年 | 錦糸町 徒歩7分 | 江東区亀戸１－６－６ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%8C%A6%E7%B3%B8%E7%94%BA%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC) | 10階/SRC14階地下1階建 | 91戸 | B |  | - | - | - | 23.0万円/月 | 40分（37-45分） | 35分（32-40分） | [詳細](https://www.nomu.com/mansion/id/RF770210/) |
 
 #### 門前仲町
-所在地: 江東区古石場１、江東区冬木、江東区古石場２－１４－１、江東区福住２
+所在地: 江東区冬木、江東区古石場１、江東区福住２、江東区古石場２－１４－１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2261,7 +2079,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ルイシャトレ五反田 13階 | 1億2500万円 | 2LDK | 64.9㎡ | 築1997年 | 五反田駅 徒歩5分 | 品川区東五反田2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%82%A4%E3%82%B7%E3%83%A3%E3%83%88%E3%83%AC%E4%BA%94%E5%8F%8D%E7%94%B0%2013%E9%9A%8E) | 13階/13階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 24分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-37052640002009/) |
+| ルイシャトレ五反田 13階 | 1億2500万円 | 2LDK | 64.9㎡ | 築1997年 | 五反田駅 徒歩5分 | 品川区東五反田2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%82%A4%E3%82%B7%E3%83%A3%E3%83%88%E3%83%AC%E4%BA%94%E5%8F%8D%E7%94%B0%2013%E9%9A%8E) | 13階/13階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 37分（34-42分） | 43分（40-48分） | [詳細](https://www.homes.co.jp/mansion/b-37052640002009/) |
 
 #### 不動前
 所在地: 品川区西五反田５丁目
@@ -2289,7 +2107,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ミサワホームズ東大井 5階 | 1億690万円 | 3LDK | 61.9㎡ | 築1996年 | 鮫洲駅 徒歩6分 | 品川区東大井1丁目9-27 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9F%E3%82%B5%E3%83%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E6%9D%B1%E5%A4%A7%E4%BA%95%205%E9%9A%8E) | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 27.2万円/月 | 28分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1552210004122/) |
+| ミサワホームズ東大井 5階 | 1億690万円 | 3LDK | 61.9㎡ | 築1996年 | 鮫洲駅 徒歩6分 | 品川区東大井1丁目9-27 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9F%E3%82%B5%E3%83%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E6%9D%B1%E5%A4%A7%E4%BA%95%205%E9%9A%8E) | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 27.2万円/月 | 41分（38-46分） | 47分（44-52分） | [詳細](https://www.homes.co.jp/mansion/b-1552210004122/) |
 
 #### 京浜東北・根岸線 大井町駅 徒歩9分
 所在地: 品川区大井３－９－９、品川区南品川５丁目
@@ -2342,7 +2160,7 @@
 | オーベルグランディオ品川勝島 | 9990万円 | 3LDK | 71.9㎡ | 築2017年 | 大井競馬場前 徒歩7分 | 品川区勝島１－３－７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%99%E3%83%AB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%87%E3%82%A3%E3%82%AA%E5%93%81%E5%B7%9D%E5%8B%9D%E5%B3%B6) | 9階/RC20階建 | 452戸 | B |  | - | - | - | 25.6万円/月 | 45分（42-50分） | 51分（48-56分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20884263/) |
 
 #### 大崎
-所在地: 品川区大崎１、品川区大崎１-１９－１３
+所在地: 品川区大崎１-１９－１３、品川区大崎１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2368,7 +2186,7 @@
 | シティタワー品川パークフロント | 1億3000万円 | 2LDK | 70.2㎡ | 築2018年 | 大森海岸 徒歩5分 | 品川区南大井２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%82%BF%E3%83%AF%E3%83%BC%E5%93%81%E5%B7%9D%E3%83%91%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88) | 7階/23階建 | 312戸 |  |  | - | - | - | 32.3万円/月 | 31分（28-36分） | 35分（32-40分） | [詳細](https://www.livable.co.jp/mansion/C48261R83/) |
 
 #### 天王洲アイル
-所在地: 品川区東品川５－９－１５、品川区東品川３、品川区東品川2丁目、品川区東品川２－３－１５、品川区東品川3丁目
+所在地: 品川区東品川５－９－１５、品川区東品川3丁目、品川区東品川３、品川区東品川2丁目、品川区東品川２－３－１５
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2446,6 +2264,13 @@
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | ジェイパーク戸越公園アーキテクト | 1億2998万円 | 2LDK | 76.0㎡ | 築2000年 | 戸越公園駅 徒歩3分 | 品川区戸越６丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B8%E3%82%A7%E3%82%A4%E3%83%91%E3%83%BC%E3%82%AF%E6%88%B8%E8%B6%8A%E5%85%AC%E5%9C%92%E3%82%A2%E3%83%BC%E3%82%AD%E3%83%86%E3%82%AF%E3%83%88) | 7階/10階建 | 28戸 |  |  | - | - | - | 32.3万円/月 | 41分（38-46分） | 45分（42-50分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FKXBGA3B/) |
 
+#### 東急池上線 荏原中延駅
+所在地: 品川区東中延1丁目
+
+| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
+|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
+| センチュリーハイツ品川戸越 3階 | 1億2500万円 | 2LDK | 75.1㎡ | 築2002年 | 荏原中延駅 徒歩5分 | 品川区東中延1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%BB%E3%83%B3%E3%83%81%E3%83%A5%E3%83%AA%E3%83%BC%E3%83%8F%E3%82%A4%E3%83%84%E5%93%81%E5%B7%9D%E6%88%B8%E8%B6%8A%203%E9%9A%8E) | 3階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 18分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-35006240000136/) |
+
 #### 東急池上線 荏原中延駅 徒歩6分
 所在地: 品川区西中延２丁目
 
@@ -2461,7 +2286,7 @@
 | マイキャッスル目黒不動前 | 1億1300万円 | 2LDK | 60.1㎡ | 築2001年 | 不動前駅 徒歩4分 | 品川区西五反田３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E7%9B%AE%E9%BB%92%E4%B8%8D%E5%8B%95%E5%89%8D) | 7階/12階建 | 64戸 |  |  | - | - | - | 28.6万円/月 | 28分（25-33分） | 32分（29-37分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FSDBDA06/) |
 
 #### 武蔵小山
-所在地: 品川区小山４丁目、品川区小山台１－１－１１、品川区小山１丁目
+所在地: 品川区小山台１－１－１１、品川区小山１丁目、品川区小山４丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2567,7 +2392,7 @@
 | パークホームズ目黒中町 | 1億2980万円 | 3LDK | 73.5㎡ | 築2009年 | 目黒 徒歩3分 | 目黒区中町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E7%9B%AE%E9%BB%92%E4%B8%AD%E7%94%BA) | 1階/5階建 | 83戸 |  |  | - | - | - | 32.3万円/月 | 17分（14-22分） | 21分（18-26分） | [詳細](https://www.nomu.com/mansion/id/FB7C2011/) |
 
 #### 祐天寺
-所在地: 目黒区祐天寺１－１４－３、目黒区五本木１－２４２４－１３
+所在地: 目黒区五本木１－２４２４－１３、目黒区祐天寺１－１４－３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2591,7 +2416,7 @@
 | パークタワー山王 15階 | 1億2980万円 | 3LDK | 67.1㎡ | 築2014年 | 大森駅 徒歩8分 | 大田区山王3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E5%B1%B1%E7%8E%8B%2015%E9%9A%8E) | 15階/24階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 44分（41-49分） | 48分（45-53分） | [詳細](https://www.homes.co.jp/mansion/b-1514960000040/) |
 
 #### 下丸子
-所在地: 大田区下丸子４、大田区下丸子４丁目
+所在地: 大田区下丸子４丁目、大田区下丸子４
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2625,7 +2450,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9680万円 | 3LDK | 63.2㎡ | 築2011年 | 大森海岸駅 徒歩3分 | 大田区大森本町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A4%A7%E7%94%B0%E5%8C%BA%E5%A4%A7%E6%A3%AE%E6%9C%AC%E7%94%BA1%E4%B8%81%E7%9B%AE) | 7階/12階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 26分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037167/) |
+|  | 9680万円 | 3LDK | 63.2㎡ | 築2011年 | 大森海岸駅 徒歩3分 | 大田区大森本町1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A4%A7%E7%94%B0%E5%8C%BA%E5%A4%A7%E6%A3%AE%E6%9C%AC%E7%94%BA1%E4%B8%81%E7%9B%AE) | 7階/12階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 36分（33-41分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037167/) |
 
 #### 京急本線 大森海岸駅 徒歩3分
 所在地: 大田区大森本町１丁目
@@ -2664,7 +2489,7 @@
 | イニシア蒲田アイリスフォート | 1億2500万円 | 2LDK | 62.5㎡ | 築2014年 | 蒲田駅 徒歩4分 | 大田区蒲田５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%8B%E3%82%B7%E3%82%A2%E8%92%B2%E7%94%B0%E3%82%A2%E3%82%A4%E3%83%AA%E3%82%B9%E3%83%95%E3%82%A9%E3%83%BC%E3%83%88) | 15階/15階建 | 48戸 |  |  | - | - | - | 31.2万円/月 | 43分（40-48分） | 49分（46-54分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/F06ATA15/) |
 
 #### 千鳥町
-所在地: 大田区千鳥１－２３、大田区千鳥１－２－１９、大田区久が原５
+所在地: 大田区千鳥１－２－１９、大田区久が原５、大田区千鳥１－２３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2673,12 +2498,12 @@
 | アールブラン久が原レジデンス | 9480万円 | 3LDK | 67.0㎡ | 築2014年 | 千鳥町 徒歩2分 | 大田区千鳥１－２－１９ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%BC%E3%83%AB%E3%83%96%E3%83%A9%E3%83%B3%E4%B9%85%E3%81%8C%E5%8E%9F%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 3階/RC6階建 | 26戸 | A |  | - | - | - | 24.5万円/月 | 39分（36-44分） | 44分（41-49分） | [詳細](https://www.nomu.com/mansion/id/FE1C3006/) |
 
 #### 大森
-所在地: 大田区大森北１丁目、大田区大森北２丁目、大田区山王1丁目、大田区山王１
+所在地: 大田区山王1丁目、大田区大森北１丁目、大田区大森北２丁目、大田区山王１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | ウェリスシティ大森タワー | 1億1980万円 | 2LDK | 67.5㎡ | 築2008年 | 大森 徒歩4分 | 大田区大森北１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A6%E3%82%A7%E3%83%AA%E3%82%B9%E3%82%B7%E3%83%86%E3%82%A3%E5%A4%A7%E6%A3%AE%E3%82%BF%E3%83%AF%E3%83%BC) | 19階/RC25階地下1階建 | 173戸 | A |  | - | - | - | 30.1万円/月 | 34分（31-39分） | 39分（36-44分） | [詳細](https://www.livable.co.jp/mansion/C1325Y258/) |
-| ディアナコート大森山王空と光を独占する、ダブルテラスの私邸。 | 1億1900万円 | 2LDK | 69.8㎡ | 築2021年 | 大森 徒歩9分 | 大田区山王1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%82%A3%E3%82%A2%E3%83%8A%E3%82%B3%E3%83%BC%E3%83%88%E5%A4%A7%E6%A3%AE%E5%B1%B1%E7%8E%8B%E7%A9%BA%E3%81%A8%E5%85%89%E3%82%92%E7%8B%AC%E5%8D%A0%E3%81%99%E3%82%8B%E3%80%81%E3%83%80%E3%83%96%E3%83%AB%E3%83%86%E3%83%A9%E3%82%B9%E3%81%AE%E7%A7%81%E9%82%B8%E3%80%82%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 30分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1545890000138/) |
+| ディアナコート大森山王空と光を独占する、ダブルテラスの私邸。 | 1億1900万円 | 2LDK | 69.8㎡ | 築2021年 | 大森 徒歩9分 | 大田区山王1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%82%A3%E3%82%A2%E3%83%8A%E3%82%B3%E3%83%BC%E3%83%88%E5%A4%A7%E6%A3%AE%E5%B1%B1%E7%8E%8B%E7%A9%BA%E3%81%A8%E5%85%89%E3%82%92%E7%8B%AC%E5%8D%A0%E3%81%99%E3%82%8B%E3%80%81%E3%83%80%E3%83%96%E3%83%AB%E3%83%86%E3%83%A9%E3%82%B9%E3%81%AE%E7%A7%81%E9%82%B8%E3%80%82%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 39分（36-44分） | 46分（43-51分） | [詳細](https://www.homes.co.jp/mansion/b-1545890000138/) |
 | ディアナコート大森山王 | 1億1900万円 | 2LDK | 69.8㎡ | 築2021年 | 大森 徒歩9分 | 大田区山王１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%87%E3%82%A3%E3%82%A2%E3%83%8A%E3%82%B3%E3%83%BC%E3%83%88%E5%A4%A7%E6%A3%AE%E5%B1%B1%E7%8E%8B) | 1階/RC3階地下1階建 | 1戸 | B |  | - | - | - | 29.9万円/月 | 30分 | 35分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_ota/nc_20600857/) |
 | 大森プロストシティレジデンス | 1億1800万円 | 2LDK | 73.2㎡ | 築2005年 | 大森 徒歩8分 | 大田区大森北２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E6%A3%AE%E3%83%97%E3%83%AD%E3%82%B9%E3%83%88%E3%82%B7%E3%83%86%E3%82%A3%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 4階/25階建 | 565戸 |  |  | - | - | - | 29.7万円/月 | 30分（27-35分） | 34分（31-39分） | [詳細](https://www.livable.co.jp/mansion/C48264432/) |
 | ガーデンホーム大森 | 1億1480万円 | 2LDK | 74.5㎡ | 築2000年 | 大森 徒歩4分 | 大田区大森北１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%83%9B%E3%83%BC%E3%83%A0%E5%A4%A7%E6%A3%AE) | 9階/13階建 | 43戸 |  |  | - | - | - | 28.9万円/月 | 34分（31-39分） | 39分（36-44分） | [詳細](https://www.livable.co.jp/mansion/C1325XK52/) |
@@ -2732,7 +2557,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| パラッシオ池上 4階 | 9800万円 | 3LDK | 100.0㎡ | 築2002年 | 池上駅 徒歩4分 | 大田区池上3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%A9%E3%83%83%E3%82%B7%E3%82%AA%E6%B1%A0%E4%B8%8A%204%E9%9A%8E) | 4階/RC4階建 | 14戸 |  |  | - | - | - | 25.2万円/月 | 35分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1358090021373/) |
+| パラッシオ池上 4階 | 9800万円 | 3LDK | 100.0㎡ | 築2002年 | 池上駅 徒歩4分 | 大田区池上3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%A9%E3%83%83%E3%82%B7%E3%82%AA%E6%B1%A0%E4%B8%8A%204%E9%9A%8E) | 4階/RC4階建 | 14戸 |  |  | - | - | - | 25.2万円/月 | 44分（41-49分） | 49分（46-54分） | [詳細](https://www.homes.co.jp/mansion/b-1358090021373/) |
 
 #### 東急池上線 洗足池駅 徒歩2分
 所在地: 大田区上池台２－１１３０－１
@@ -2822,7 +2647,7 @@
 | 南雪谷テラス | 9580万円 | 3LDK | 80.0㎡ | 築2004年 | 雪が谷大塚 徒歩6分 | 大田区南雪谷４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%8D%97%E9%9B%AA%E8%B0%B7%E3%83%86%E3%83%A9%E3%82%B9) | 1階/3階建 | 12戸 |  |  | - | - | - | 24.7万円/月 | 35分 | 40分 | [詳細](https://www.livable.co.jp/mansion/C48263D15/) |
 
 #### 馬込
-所在地: 大田区中馬込２-8-8、大田区中馬込１－１８－２、大田区東馬込２
+所在地: 大田区中馬込１－１８－２、大田区中馬込２-8-8、大田区東馬込２
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2837,7 +2662,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9430万円 | 3LDK | 76.4㎡ | 築2003年 | 渋谷駅 徒歩3分 | 世田谷区上用賀4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E4%B8%8A%E7%94%A8%E8%B3%804%E4%B8%81%E7%9B%AE) | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 24.4万円/月 | 45分 | 45分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037130/) |
+|  | 9430万円 | 3LDK | 76.4㎡ | 築2003年 | 渋谷駅 徒歩3分 | 世田谷区上用賀4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E4%B8%8A%E7%94%A8%E8%B3%804%E4%B8%81%E7%9B%AE) | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 24.4万円/月 | 59分（56-64分） | 51分（48-56分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037130/) |
 
 #### 三軒茶屋
 所在地: 世田谷区太子堂5丁目
@@ -2892,11 +2717,11 @@
 | 奥沢レジデンス | 1億2980万円 | 3LDK | 64.7㎡ | 築2013年 | 九品仏 徒歩7分 | 世田谷区奥沢６丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%A5%A5%E6%B2%A2%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 3階/5階建 | 77戸 |  |  | - | - | - | 32.3万円/月 | 35分 | 40分 | [詳細](https://www.livable.co.jp/mansion/C48262049/) |
 
 #### 二子玉川
-所在地: 世田谷区上野毛３、世田谷区瀬田4丁目15-36
+所在地: 世田谷区瀬田4丁目15-36、世田谷区上野毛３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ザ・パークハウス 二子玉川ガーデン 6階 | 1億2200万円 | 2LDK | 62.8㎡ | 築2015年 | 二子玉川 徒歩10分 | 世田谷区瀬田4丁目15-36 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%20%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%206%E9%9A%8E) | 6階/9階建 | 戸数:不明 |  |  | - | - | - | 30.6万円/月 | 45分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1388970017758/) |
+| ザ・パークハウス 二子玉川ガーデン 6階 | 1億2200万円 | 2LDK | 62.8㎡ | 築2015年 | 二子玉川 徒歩10分 | 世田谷区瀬田4丁目15-36 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%20%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%206%E9%9A%8E) | 6階/9階建 | 戸数:不明 |  |  | - | - | - | 30.6万円/月 | 54分（51-59分） | 46分（43-51分） | [詳細](https://www.homes.co.jp/mansion/b-1388970017758/) |
 | サウススクエア | 1億1000万円 | 2LDK | 72.2㎡ | 築2002年 | 二子玉川 徒歩8分 | 世田谷区上野毛３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%82%A6%E3%82%B9%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2) | 2階/RC6階地下1階建 | 165戸 | B |  | - | - | - | 27.9万円/月 | 67分（64-72分） | 59分（56-64分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_20268902/) |
 
 #### 京王線 下高井戸駅
@@ -2907,13 +2732,13 @@
 |  | 1億2999万円 | 3LDK | 85.2㎡ | 築2003年 | 下高井戸駅 徒歩6分 | 世田谷区松原3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E6%9D%BE%E5%8E%9F3%E4%B8%81%E7%9B%AE) | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 59分（56-64分） | 56分（53-61分） | [詳細](https://www.homes.co.jp/mansion/b-1216390038248/) |
 
 #### 京王線 千歳烏山駅
-所在地: 世田谷区北烏山6丁目11-3<仲介ゼロ円・キャンペ-ン>対象物件、世田谷区給田3丁目9、世田谷区北烏山6丁目11
+所在地: 世田谷区北烏山6丁目11-3、世田谷区給田3丁目9、世田谷区北烏山6丁目11
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| エルザ世田谷 29階 | 1億2980万円 | 3LDK | 98.6㎡ | 築2005年 | 千歳烏山駅 徒歩7分 | 世田谷区北烏山6丁目11-3<仲介ゼロ円・キャンペ-ン>対象物件 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%2029%E9%9A%8E) | 29階/29階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 45分 | 45分 | [詳細](https://www.homes.co.jp/mansion/b-1392830001457/) |
-| エルザ世田谷 24階 | 1億2480万円 | 3LDK | 81.1㎡ | 築2005年 | 千歳烏山駅 徒歩7分 | 世田谷区北烏山6丁目11-3<仲介ゼロ円・キャンペ-ン>対象物件 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%2024%E9%9A%8E) | 24階/29階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 40分 | 45分 | [詳細](https://www.homes.co.jp/mansion/b-1102010000652/) |
-| エルザ世田谷ザタワー 14階 | 1億1480万円 | 3LDK | 81.1㎡ | 築2006年 | 千歳烏山駅 徒歩7分 | 世田谷区北烏山6丁目11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%E3%82%B6%E3%82%BF%E3%83%AF%E3%83%BC%2014%E9%9A%8E) | 14階/29階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 45分 | 45分 | [詳細](https://www.homes.co.jp/mansion/b-1491240002071/) |
+| エルザ世田谷 29階 | 1億2980万円 | 3LDK | 98.6㎡ | 築2005年 | 千歳烏山駅 徒歩7分 | 世田谷区北烏山6丁目11-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%2029%E9%9A%8E) | 29階/29階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 62分（59-67分） | 62分（59-67分） | [詳細](https://www.homes.co.jp/mansion/b-1392830001457/) |
+| エルザ世田谷 24階 | 1億2480万円 | 3LDK | 81.1㎡ | 築2005年 | 千歳烏山駅 徒歩7分 | 世田谷区北烏山6丁目11-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%2024%E9%9A%8E) | 24階/29階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 62分（59-67分） | 62分（59-67分） | [詳細](https://www.homes.co.jp/mansion/b-1102010000652/) |
+| エルザ世田谷ザタワー 14階 | 1億1480万円 | 3LDK | 81.1㎡ | 築2006年 | 千歳烏山駅 徒歩7分 | 世田谷区北烏山6丁目11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A8%E3%83%AB%E3%82%B6%E4%B8%96%E7%94%B0%E8%B0%B7%E3%82%B6%E3%82%BF%E3%83%AF%E3%83%BC%2014%E9%9A%8E) | 14階/29階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 62分（59-67分） | 62分（59-67分） | [詳細](https://www.homes.co.jp/mansion/b-1491240002071/) |
 | アトラスシティ千歳烏山グランスイート　杜ノ棟 4階 | 9990万円 | 3LDK | 62.7㎡ | 築2025年 | 千歳烏山駅 徒歩10分 | 世田谷区給田3丁目9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%88%E3%83%A9%E3%82%B9%E3%82%B7%E3%83%86%E3%82%A3%E5%8D%83%E6%AD%B3%E7%83%8F%E5%B1%B1%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88%E3%80%80%E6%9D%9C%E3%83%8E%E6%A3%9F%204%E9%9A%8E) | 4階/4階建 | 戸数:不明 | B |  | - | - | - | 25.6万円/月 | 67分（64-72分） | 67分（64-72分） | [詳細](https://www.homes.co.jp/mansion/b-1491240001987/) |
 | アトラスシティ千歳烏山グランスイート　風の棟 4階 | 9990万円 | 3LDK | 62.7㎡ | 築2025年 | 千歳烏山駅 徒歩10分 | 世田谷区給田3丁目9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%88%E3%83%A9%E3%82%B9%E3%82%B7%E3%83%86%E3%82%A3%E5%8D%83%E6%AD%B3%E7%83%8F%E5%B1%B1%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88%E3%80%80%E9%A2%A8%E3%81%AE%E6%A3%9F%204%E9%9A%8E) | 4階/4階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 67分（64-72分） | 67分（64-72分） | [詳細](https://www.homes.co.jp/mansion/b-1491240001987/) |
 
@@ -2932,7 +2757,7 @@
 | セボン千歳烏山 | 9290万円 | 3LDK | 95.4㎡ | 築2000年 | 千歳烏山駅 徒歩10分 | 世田谷区上祖師谷２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%BB%E3%83%9C%E3%83%B3%E5%8D%83%E6%AD%B3%E7%83%8F%E5%B1%B1) | 1階/2階建 | 7戸 |  |  | - | - | - | 24.1万円/月 | 58分（55-63分） | 54分（51-59分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FKKBDA04/) |
 
 #### 京王電鉄京王線 千歳烏山駅 徒歩7分
-所在地: 世田谷区北烏山６－１１－３、世田谷区北烏山６丁目
+所在地: 世田谷区北烏山６丁目、世田谷区北烏山６－１１－３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2977,7 +2802,7 @@
 | アトラスシティ千歳烏山グランスイート | 9990万円 | 3LDK | 62.7㎡ | 築2025年 | 千歳烏山 徒歩10分 | 世田谷区給田３－９４４－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%88%E3%83%A9%E3%82%B9%E3%82%B7%E3%83%86%E3%82%A3%E5%8D%83%E6%AD%B3%E7%83%8F%E5%B1%B1%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88) | 4階/RC4階地下1階建 | 248戸 | B |  | - | - | - | 25.6万円/月 | 30分 | 28分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_20970425/) |
 
 #### 千歳船橋
-所在地: 世田谷区船橋５、世田谷区経堂4丁目、世田谷区桜丘５－３８－１
+所在地: 世田谷区経堂4丁目、世田谷区船橋５、世田谷区桜丘５－３８－１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -2998,22 +2823,22 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 成城テラス 1階 | 1億1480万円 | 2LDK | 99.5㎡ | 築2006年 | 成城学園前駅 徒歩6分 | 世田谷区成城2丁目6-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%88%90%E5%9F%8E%E3%83%86%E3%83%A9%E3%82%B9%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 49分 | 41分 | [詳細](https://www.homes.co.jp/mansion/b-1533000000463/) |
+| 成城テラス 1階 | 1億1480万円 | 2LDK | 99.5㎡ | 築2006年 | 成城学園前駅 徒歩6分 | 世田谷区成城2丁目6-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%88%90%E5%9F%8E%E3%83%86%E3%83%A9%E3%82%B9%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 63分（60-68分） | 59分（56-64分） | [詳細](https://www.homes.co.jp/mansion/b-1533000000463/) |
 
 #### 小田急小田原線 祖師ヶ谷大蔵駅
 所在地: 世田谷区砧3丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 〜最上階ルーフバルコニー付き3方面角〜テラッツァ祖師ヶ谷大蔵 | 1億1980万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵駅 徒歩9分 | 世田谷区砧3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%80%9C%E6%9C%80%E4%B8%8A%E9%9A%8E%E3%83%AB%E3%83%BC%E3%83%95%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E4%BB%98%E3%81%8D3%E6%96%B9%E9%9D%A2%E8%A7%92%E3%80%9C%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A1%E7%A5%96%E5%B8%AB%E3%83%B6%E8%B0%B7%E5%A4%A7%E8%94%B5%203%E9%9A%8E) | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 35分 | 34分 | [詳細](https://www.homes.co.jp/mansion/b-1417040006841/) |
-| 〜最上階ルーフバルコニー付き3方面角〜テラッツァ祖師ヶ谷大蔵 | 1億580万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵駅 徒歩9分 | 世田谷区砧3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%80%9C%E6%9C%80%E4%B8%8A%E9%9A%8E%E3%83%AB%E3%83%BC%E3%83%95%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E4%BB%98%E3%81%8D3%E6%96%B9%E9%9D%A2%E8%A7%92%E3%80%9C%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A1%E7%A5%96%E5%B8%AB%E3%83%B6%E8%B0%B7%E5%A4%A7%E8%94%B5%203%E9%9A%8E) | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 27.0万円/月 | 35分 | 34分 | [詳細](https://www.homes.co.jp/mansion/b-1557720000131/) |
+| 〜最上階ルーフバルコニー付き3方面角〜テラッツァ祖師ヶ谷大蔵 | 1億1980万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵駅 徒歩9分 | 世田谷区砧3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%80%9C%E6%9C%80%E4%B8%8A%E9%9A%8E%E3%83%AB%E3%83%BC%E3%83%95%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E4%BB%98%E3%81%8D3%E6%96%B9%E9%9D%A2%E8%A7%92%E3%80%9C%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A1%E7%A5%96%E5%B8%AB%E3%83%B6%E8%B0%B7%E5%A4%A7%E8%94%B5%203%E9%9A%8E) | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 56分（53-61分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-1417040006841/) |
+| 〜最上階ルーフバルコニー付き3方面角〜テラッツァ祖師ヶ谷大蔵 | 1億580万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵駅 徒歩9分 | 世田谷区砧3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%80%9C%E6%9C%80%E4%B8%8A%E9%9A%8E%E3%83%AB%E3%83%BC%E3%83%95%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E4%BB%98%E3%81%8D3%E6%96%B9%E9%9D%A2%E8%A7%92%E3%80%9C%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A1%E7%A5%96%E5%B8%AB%E3%83%B6%E8%B0%B7%E5%A4%A7%E8%94%B5%203%E9%9A%8E) | 3階/3階建 | 戸数:不明 |  |  | - | - | - | 27.0万円/月 | 56分（53-61分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-1557720000131/) |
 
 #### 小田急小田原線 経堂駅 バス7分 経堂赤堤通り団地
 所在地: 世田谷区桜上水1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億2490万円 | 3LDK | 67.9㎡ | 築2016年 | 経堂駅 徒歩2分 | 世田谷区桜上水1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E6%A1%9C%E4%B8%8A%E6%B0%B41%E4%B8%81%E7%9B%AE) | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 35分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1216390038337/) |
+|  | 1億2490万円 | 3LDK | 67.9㎡ | 築2016年 | 経堂駅 徒歩2分 | 世田谷区桜上水1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E6%A1%9C%E4%B8%8A%E6%B0%B41%E4%B8%81%E7%9B%AE) | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 70分（67-75分） | 67分（64-72分） | [詳細](https://www.homes.co.jp/mansion/b-1216390038337/) |
 
 #### 小田急電鉄小田原線 下北沢駅 徒歩7分
 所在地: 世田谷区北沢４丁目
@@ -3102,13 +2927,13 @@
 | 東急ドエル・アルス世田谷ネクステージ | 9690万円 | 3LDK | 70.5㎡ | 築1998年 | 松陰神社前駅 徒歩3分 | 世田谷区世田谷４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E6%80%A5%E3%83%89%E3%82%A8%E3%83%AB%E3%83%BB%E3%82%A2%E3%83%AB%E3%82%B9%E4%B8%96%E7%94%B0%E8%B0%B7%E3%83%8D%E3%82%AF%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8) | 2階/8階建 | 46戸 |  |  | - | - | - | 25.0万円/月 | 55分（52-60分） | 52分（49-57分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP6BGA12/) |
 
 #### 東急大井町線 上野毛駅
-所在地: 世田谷区上野毛2丁目、世田谷区上野毛2丁目22-9
+所在地: 世田谷区上野毛2丁目22-9、世田谷区上野毛2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | ヴェレーナグラン二子玉川 3階 | 1億2500万円 | 2SLDK | 64.4㎡ | 築2024年 | 上野毛駅 徒歩10分 | 世田谷区上野毛2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%B4%E3%82%A7%E3%83%AC%E3%83%BC%E3%83%8A%E3%82%B0%E3%83%A9%E3%83%B3%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D%203%E9%9A%8E) | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 50分 | 50分 | [詳細](https://www.homes.co.jp/mansion/b-1020740089389/) |
-|  | 1億980万円 | 3LDK | 80.2㎡ | 築1998年 | 上野毛駅 徒歩8分 | 世田谷区上野毛2丁目22-9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E4%B8%8A%E9%87%8E%E6%AF%9B2%E4%B8%81%E7%9B%AE22-9) | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 48分 | 50分 | [詳細](https://www.homes.co.jp/mansion/b-1388970017950/) |
-| 上野毛シティハウスサウステラス 4階 | 1億500万円 | 3LDK | 79.6㎡ | 築1998年 | 上野毛駅 徒歩8分 | 世田谷区上野毛2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%8A%E9%87%8E%E6%AF%9B%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E3%82%B5%E3%82%A6%E3%82%B9%E3%83%86%E3%83%A9%E3%82%B9%204%E9%9A%8E) | 4階/RC5階地下1階建 | 15戸 |  |  | - | - | - | 26.8万円/月 | 48分 | 50分 | [詳細](https://www.homes.co.jp/mansion/b-35007290000237/) |
+|  | 1億980万円 | 3LDK | 80.2㎡ | 築1998年 | 上野毛駅 徒歩8分 | 世田谷区上野毛2丁目22-9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E4%B8%8A%E9%87%8E%E6%AF%9B2%E4%B8%81%E7%9B%AE22-9) | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 65分（62-70分） | 57分（54-62分） | [詳細](https://www.homes.co.jp/mansion/b-1388970017950/) |
+| 上野毛シティハウスサウステラス 4階 | 1億500万円 | 3LDK | 79.6㎡ | 築1998年 | 上野毛駅 徒歩8分 | 世田谷区上野毛2丁目22-9 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%8A%E9%87%8E%E6%AF%9B%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E3%82%B5%E3%82%A6%E3%82%B9%E3%83%86%E3%83%A9%E3%82%B9%204%E9%9A%8E) | 4階/RC5階地下1階建 | 15戸 |  |  | - | - | - | 26.8万円/月 | 65分（62-70分） | 57分（54-62分） | [詳細](https://www.homes.co.jp/mansion/b-35007290000237/) |
 
 #### 東急大井町線 九品仏駅
 所在地: 世田谷区尾山台1丁目
@@ -3129,7 +2954,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| プラティーク三軒茶屋 13階 | 1億1498万円 | 2LDK | 63.8㎡ | 築2003年 | 三軒茶屋駅 徒歩4分 | 世田谷区三軒茶屋1丁目32-8 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AF%E4%B8%89%E8%BB%92%E8%8C%B6%E5%B1%8B%2013%E9%9A%8E) | 13階/14階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 22分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1465310000321/) |
+| プラティーク三軒茶屋 13階 | 1億1498万円 | 2LDK | 63.8㎡ | 築2003年 | 三軒茶屋駅 徒歩4分 | 世田谷区三軒茶屋1丁目32-8 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AF%E4%B8%89%E8%BB%92%E8%8C%B6%E5%B1%8B%2013%E9%9A%8E) | 13階/14階建 | 戸数:不明 |  |  | - | - | - | 29.0万円/月 | 54分（51-59分） | 51分（48-56分） | [詳細](https://www.homes.co.jp/mansion/b-1465310000321/) |
 
 #### 東急田園都市線 二子玉川駅 徒歩10分
 所在地: 世田谷区瀬田４丁目
@@ -3152,8 +2977,8 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| リムテラスコート桜新町一丁目 1階 | 1億2800万円 | 2SLDK | 77.2㎡ | 築2016年 | 桜新町駅 徒歩4分 | 世田谷区桜新町1丁目8-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%88%E6%A1%9C%E6%96%B0%E7%94%BA%E4%B8%80%E4%B8%81%E7%9B%AE%201%E9%9A%8E) | 1階/2階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 35分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1461210002249/) |
-| リムテラスコート桜新町一丁目 2階 | 1億2800万円 | 3LDK | 77.2㎡ | 築2016年 | 桜新町駅 徒歩4分 | 世田谷区桜新町1丁目8-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%88%E6%A1%9C%E6%96%B0%E7%94%BA%E4%B8%80%E4%B8%81%E7%9B%AE%202%E9%9A%8E) | 2階/2階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 35分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1364890000417/) |
+| リムテラスコート桜新町一丁目 2階 | 1億2800万円 | 3LDK | 77.2㎡ | 築2016年 | 桜新町駅 徒歩4分 | 世田谷区桜新町1丁目8-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%88%E6%A1%9C%E6%96%B0%E7%94%BA%E4%B8%80%E4%B8%81%E7%9B%AE%202%E9%9A%8E) | 2階/2階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 38分（35-43分） | 31分（28-36分） | [詳細](https://www.homes.co.jp/mansion/b-1364890000417/) |
+| リムテラスコート桜新町一丁目 1階 | 1億2800万円 | 2SLDK | 77.2㎡ | 築2016年 | 桜新町駅 徒歩4分 | 世田谷区桜新町1丁目8-7 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%83%A0%E3%83%86%E3%83%A9%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%88%E6%A1%9C%E6%96%B0%E7%94%BA%E4%B8%80%E4%B8%81%E7%9B%AE%201%E9%9A%8E) | 1階/2階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 38分（35-43分） | 31分（28-36分） | [詳細](https://www.homes.co.jp/mansion/b-1461210002249/) |
 
 #### 東急田園都市線 桜新町駅 徒歩6分
 所在地: 世田谷区桜新町１丁目
@@ -3197,9 +3022,9 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| Ｄ’グランセ駒沢公園 2階 | 1億2980万円 | 3LDK | 82.9㎡ | 築2004年 | 駒沢大学駅 徒歩4分 | 世田谷区駒沢5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%A4%E2%80%99%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%BB%E9%A7%92%E6%B2%A2%E5%85%AC%E5%9C%92%202%E9%9A%8E) | 2階/3階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1371630000479/) |
-| フォーリア駒沢公園パークサイド 2階 | 1億1550万円 | 3LDK | 77.6㎡ | 築1996年 | 駒沢大学駅 徒歩2分 | 世田谷区深沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AA%E3%82%A2%E9%A7%92%E6%B2%A2%E5%85%AC%E5%9C%92%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B5%E3%82%A4%E3%83%89%202%E9%9A%8E) | 2階/9階建 | 戸数:不明 |  |  | - | - | - | 29.1万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1534560001309/) |
-|  | 1億1198万円 | 3LDK | 77.2㎡ | 築2004年 | 駒沢大学駅 徒歩10分 | 世田谷区野沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E9%87%8E%E6%B2%A22%E4%B8%81%E7%9B%AE) | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 28.3万円/月 | 28分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037862/) |
+| Ｄ’グランセ駒沢公園 2階 | 1億2980万円 | 3LDK | 82.9㎡ | 築2004年 | 駒沢大学駅 徒歩4分 | 世田谷区駒沢5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%A4%E2%80%99%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%BB%E9%A7%92%E6%B2%A2%E5%85%AC%E5%9C%92%202%E9%9A%8E) | 2階/3階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 48分（45-53分） | 45分（42-50分） | [詳細](https://www.homes.co.jp/mansion/b-1371630000479/) |
+| フォーリア駒沢公園パークサイド 2階 | 1億1550万円 | 3LDK | 77.6㎡ | 築1996年 | 駒沢大学駅 徒歩2分 | 世田谷区深沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%95%E3%82%A9%E3%83%BC%E3%83%AA%E3%82%A2%E9%A7%92%E6%B2%A2%E5%85%AC%E5%9C%92%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B5%E3%82%A4%E3%83%89%202%E9%9A%8E) | 2階/9階建 | 戸数:不明 |  |  | - | - | - | 29.1万円/月 | 52分（49-57分） | 49分（46-54分） | [詳細](https://www.homes.co.jp/mansion/b-1534560001309/) |
+|  | 1億1198万円 | 3LDK | 77.2㎡ | 築2004年 | 駒沢大学駅 徒歩10分 | 世田谷区野沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E9%87%8E%E6%B2%A22%E4%B8%81%E7%9B%AE) | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 28.3万円/月 | 41分（38-46分） | 38分（35-43分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037862/) |
 
 #### 東松原
 所在地: 世田谷区松原６、世田谷区羽根木2丁目、世田谷区羽根木1丁目21-13
@@ -3207,7 +3032,7 @@
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | 羽根木ガーデンテラス | 1億1680万円 | 2LDK+S（納戸） | 72.7㎡ | 築2014年 | 東松原 徒歩4分 | 世田谷区松原６ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%BE%BD%E6%A0%B9%E6%9C%A8%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%83%86%E3%83%A9%E3%82%B9) | 2階/RC5階地下1階建 | 19戸 | B |  | - | - | - | 29.4万円/月 | 45分（42-50分） | 42分（39-47分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_20987178/) |
-| 羽根木の森レジデンス 1階 | 9980万円 | 2SLDK | 81.8㎡ | 築2012年 | 東松原 徒歩4分 | 世田谷区羽根木1丁目21-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%BE%BD%E6%A0%B9%E6%9C%A8%E3%81%AE%E6%A3%AE%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 30分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1130740003659/) |
+| 羽根木の森レジデンス 1階 | 9980万円 | 2SLDK | 81.8㎡ | 築2012年 | 東松原 徒歩4分 | 世田谷区羽根木1丁目21-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%BE%BD%E6%A0%B9%E6%9C%A8%E3%81%AE%E6%A3%AE%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 41分（38-46分） | 41分（38-46分） | [詳細](https://www.homes.co.jp/mansion/b-1130740003659/) |
 | ベルジュール東松原 | 9480万円 | 2LDK | 66.9㎡ | 築2004年 | 東松原 徒歩1分 | 世田谷区羽根木2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%99%E3%83%AB%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E6%9D%B1%E6%9D%BE%E5%8E%9F) | 4階/5階建 | 30戸 |  |  | - | - | - | 24.5万円/月 | 35分 | 35分 | [詳細](https://www.nomu.com/mansion/id/B8570063/) |
 
 #### 東松原駅徒歩4分
@@ -3215,7 +3040,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億980万円 | 2SLDK | 81.8㎡ | 築2012年 | 東松原駅 徒歩4分 | 世田谷区羽根木1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E7%BE%BD%E6%A0%B9%E6%9C%A81%E4%B8%81%E7%9B%AE) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 30分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037562/) |
+|  | 1億980万円 | 2SLDK | 81.8㎡ | 築2012年 | 東松原駅 徒歩4分 | 世田谷区羽根木1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E7%BE%BD%E6%A0%B9%E6%9C%A81%E4%B8%81%E7%9B%AE) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 27.8万円/月 | 40分（37-45分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037562/) |
 
 #### 松原
 所在地: 世田谷区松原６－２０－１４
@@ -3239,7 +3064,7 @@
 | オーベル桜上水 | 1億400万円 | 3LDK | 88.5㎡ | 築2001年 | 桜上水 徒歩7分 | 世田谷区桜上水５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%99%E3%83%AB%E6%A1%9C%E4%B8%8A%E6%B0%B4) | 1階/RC3階地下1階建 | 31戸 | B |  | - | - | - | 26.6万円/月 | 57分（54-62分） | 57分（54-62分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_79108134/) |
 
 #### 桜新町
-所在地: 世田谷区桜新町１－２５、世田谷区弦巻４丁目、世田谷区駒沢3丁目
+所在地: 世田谷区弦巻４丁目、世田谷区桜新町１－２５、世田谷区駒沢3丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -3267,7 +3092,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億1250万円 | 2SLDK | 70.3㎡ | 築2000年 | 用賀駅 徒歩5分 | 世田谷区用賀2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E7%94%A8%E8%B3%802%E4%B8%81%E7%9B%AE) | 2階/8階建 | 戸数:不明 |  |  | - | - | - | 28.4万円/月 | 35分 | 39分 | [詳細](https://www.homes.co.jp/mansion/b-1216390038298/) |
+|  | 1億1250万円 | 2SLDK | 70.3㎡ | 築2000年 | 用賀駅 徒歩5分 | 世田谷区用賀2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA%E7%94%A8%E8%B3%802%E4%B8%81%E7%9B%AE) | 2階/8階建 | 戸数:不明 |  |  | - | - | - | 28.4万円/月 | 47分（44-52分） | 39分（36-44分） | [詳細](https://www.homes.co.jp/mansion/b-1216390038298/) |
 
 #### 祖師ヶ谷大蔵
 所在地: 世田谷区砧３、世田谷区千歳台１丁目
@@ -3275,8 +3100,8 @@
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | 世田谷千歳台ガーデン＆レジデンス | 1億1890万円 | 3LDK | 74.0㎡ | 築2015年 | 祖師ヶ谷大蔵 徒歩10分 | 世田谷区千歳台１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8D%83%E6%AD%B3%E5%8F%B0%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%EF%BC%86%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 5階/5階建 | 102戸 | B |  | - | - | - | 29.9万円/月 | 54分（51-59分） | 50分（47-55分） | [詳細](https://www.livable.co.jp/mansion/C13264R55/) |
-| テラッツア祖師谷大蔵 | 1億580万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵 徒歩9分 | 世田谷区砧３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A2%E7%A5%96%E5%B8%AB%E8%B0%B7%E5%A4%A7%E8%94%B5) | 3階/RC3階建 | 31戸 | B |  | - | - | - | 27.0万円/月 | 53分（50-58分） | 49分（46-54分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_20207162/) |
 | ～最上階ルーフバルコニー付き3方面角～テラッツァ祖師… | 1億580万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵 徒歩9分 | 世田谷区砧３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BD%9E%E6%9C%80%E4%B8%8A%E9%9A%8E%E3%83%AB%E3%83%BC%E3%83%95%E3%83%90%E3%83%AB%E3%82%B3%E3%83%8B%E3%83%BC%E4%BB%98%E3%81%8D3%E6%96%B9%E9%9D%A2%E8%A7%92%EF%BD%9E%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A1%E7%A5%96%E5%B8%AB%E2%80%A6) | 3階/RC3階建 | 戸数:不明 |  |  | - | - | - | 27.0万円/月 | 53分（50-58分） | 49分（46-54分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_20182972/) |
+| テラッツア祖師谷大蔵 | 1億580万円 | 3LDK | 79.0㎡ | 築2002年 | 祖師ヶ谷大蔵 徒歩9分 | 世田谷区砧３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%86%E3%83%A9%E3%83%83%E3%83%84%E3%82%A2%E7%A5%96%E5%B8%AB%E8%B0%B7%E5%A4%A7%E8%94%B5) | 3階/RC3階建 | 31戸 | B |  | - | - | - | 27.0万円/月 | 53分（50-58分） | 49分（46-54分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_setagaya/nc_20207162/) |
 
 #### 自由が丘
 所在地: 世田谷区深沢４丁目、世田谷区等々力７丁目
@@ -3288,7 +3113,7 @@
 | パルテール深沢 | 9880万円 | 2LDK | 63.4㎡ | 築1998年 | 自由が丘 徒歩1分 | 世田谷区深沢４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%AB%E3%83%86%E3%83%BC%E3%83%AB%E6%B7%B1%E6%B2%A2) | 3階/5階建 | 76戸 |  |  | - | - | - | 25.4万円/月 | 55分（52-60分） | 52分（49-57分） | [詳細](https://www.livable.co.jp/mansion/C13264W60/) |
 
 #### 芦花公園
-所在地: 世田谷区南烏山3丁目、世田谷区粕谷２－２４、世田谷区粕谷２丁目、世田谷区南烏山１
+所在地: 世田谷区粕谷２－２４、世田谷区粕谷２丁目、世田谷区南烏山１、世田谷区南烏山3丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -3354,13 +3179,6 @@
 | ガーデンホーム幡ケ谷 | 1億680万円 | 3LDK | 74.0㎡ | 築1997年 | 幡ヶ谷 徒歩9分 | 渋谷区幡ヶ谷３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%83%9B%E3%83%BC%E3%83%A0%E5%B9%A1%E3%82%B1%E8%B0%B7) | 5階/RC5階建 | 40戸 | B |  | - | - | - | 27.2万円/月 | 35分（32-40分） | 35分（32-40分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_shibuya/nc_78209023/) |
 | ガーデンホーム幡ヶ谷 | 9880万円 | 3LDK | 74.4㎡ | 築1997年 | 幡ヶ谷 徒歩10分 | 渋谷区幡ヶ谷３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%83%9B%E3%83%BC%E3%83%A0%E5%B9%A1%E3%83%B6%E8%B0%B7) | 1階/RC5階建 | 40戸 | B |  | - | - | - | 25.4万円/月 | 35分（32-40分） | 35分（32-40分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_shibuya/nc_20963848/) |
 
-#### 広尾
-所在地: 渋谷区恵比寿2丁目
-
-| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
-|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ライオンズマンション広尾南 3階 | 1億2980万円 | 3LDK | 62.1㎡ | 築1997年 | 広尾 徒歩8分 | 渋谷区恵比寿2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%B3%E3%82%BA%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E5%BA%83%E5%B0%BE%E5%8D%97%203%E9%9A%8E) | 3階/8階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 38分（35-43分） | 42分（39-47分） | [詳細](https://www.homes.co.jp/mansion/b-1392840001363/) |
-
 #### 恵比寿
 所在地: 渋谷区恵比寿２丁目
 
@@ -3374,7 +3192,14 @@
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | パークコート神宮前 | 1億2800万円 | 2LDK | 67.0㎡ | 築2009年 | 明治神宮前駅 徒歩7分 | 渋谷区神宮前１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B3%E3%83%BC%E3%83%88%E7%A5%9E%E5%AE%AE%E5%89%8D) | 10階/16階建 | 385戸 |  |  | - | - | - | 31.9万円/月 | 27分（24-32分） | 25分（22-30分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FN5BFA04/) |
-| モアクレスト神宮前 | 1億1400万円 | 3SLDK | 120.7㎡ | 築1998年 | 明治神宮前駅 徒歩7分 | 渋谷区神宮前５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A2%E3%82%A2%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E7%A5%9E%E5%AE%AE%E5%89%8D) | 2階/5階建 | 24戸 |  |  | - | - | - | 28.8万円/月 | 18分 | 18分 | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FBIZ7A08/) |
+| モアクレスト神宮前 | 1億1400万円 | 3SLDK | 120.7㎡ | 築1998年 | 明治神宮前駅 徒歩7分 | 渋谷区神宮前５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A2%E3%82%A2%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E7%A5%9E%E5%AE%AE%E5%89%8D) | 2階/5階建 | 24戸 |  |  | - | - | - | 28.8万円/月 | 31分（28-36分） | 29分（26-34分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FBIZ7A08/) |
+
+#### 東京メトロ日比谷線 広尾駅 徒歩8分
+所在地: 渋谷区恵比寿２丁目
+
+| 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
+|--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
+| ライオンズマンション広尾南 | 1億2980万円 | 3LDK | 62.1㎡ | 築1997年 | 広尾駅 徒歩8分 | 渋谷区恵比寿２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%B3%E3%82%BA%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E5%BA%83%E5%B0%BE%E5%8D%97) | 3階/8階建 | 53戸 |  |  | - | - | - | 32.3万円/月 | 38分（35-43分） | 42分（39-47分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FEUBGA0E/) |
 
 #### 神泉
 所在地: 渋谷区松濤２丁目
@@ -3415,7 +3240,7 @@
 | パークハウス東中野リヴゴーシュ | 1億2980万円 | 2SLDK | 73.8㎡ | 築2011年 | 東中野駅 徒歩9分 | 中野区東中野５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%B1%E4%B8%AD%E9%87%8E%E3%83%AA%E3%83%B4%E3%82%B4%E3%83%BC%E3%82%B7%E3%83%A5) | 4階/9階建 | 136戸 |  |  | - | - | - | 32.3万円/月 | 35分（32-40分） | 34分（31-39分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FKJAGA95/) |
 
 #### 中野
-所在地: 中野区中央４丁目、中野区中野３－２３、中野区新井２-26-10、中野区中野５
+所在地: 中野区新井２-26-10、中野区中野３－２３、中野区中野５、中野区中央４丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -3432,12 +3257,12 @@
 | アルシオン中野坂上 | 1億1980万円 | 2LDK | 68.3㎡ | 築2004年 | 中野坂上 徒歩7分 | 中野区中央１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%AB%E3%82%B7%E3%82%AA%E3%83%B3%E4%B8%AD%E9%87%8E%E5%9D%82%E4%B8%8A) | 2階/RC6階建 | 29戸 | B |  | - | - | - | 30.1万円/月 | 34分（31-39分） | 36分（33-41分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20863557/) |
 
 #### 中野新橋
-所在地: 中野区弥生町１－４３－２３、中野区弥生町１
+所在地: 中野区弥生町１、中野区弥生町１－４３－２３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | クレストフォルム中野弥生町 | 9990万円 | 2LDK+S（納戸） | 67.0㎡ | 築2007年 | 中野新橋 徒歩8分 | 中野区弥生町１－４３－２３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E3%83%95%E3%82%A9%E3%83%AB%E3%83%A0%E4%B8%AD%E9%87%8E%E5%BC%A5%E7%94%9F%E7%94%BA) | 1階/RC7階建一部RC | 54戸 | B |  | - | - | - | 25.6万円/月 | 43分（40-48分） | 43分（40-48分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20826896/) |
-| クレストフォルム中野弥生町 | 9380万円 | 2LDK+S（納戸） | 67.2㎡ | 築2007年 | 中野新橋 徒歩8分 | 中野区弥生町１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E3%83%95%E3%82%A9%E3%83%AB%E3%83%A0%E4%B8%AD%E9%87%8E%E5%BC%A5%E7%94%9F%E7%94%BA) | 1階/RC7階建 | 54戸 | B |  | - | - | - | 24.3万円/月 | 43分（40-48分） | 43分（40-48分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20927594/) |
+| クレストフォルム中野弥生町 | 9380万円 | 2LDK+S（納戸） | 67.2㎡ | 築2007年 | 中野新橋 徒歩8分 | 中野区弥生町１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%B9%E3%83%88%E3%83%95%E3%82%A9%E3%83%AB%E3%83%A0%E4%B8%AD%E9%87%8E%E5%BC%A5%E7%94%9F%E7%94%BA) | 1階/RC7階建 | 54戸 | B |  | - | - | - | 24.3万円/月 | 34分（31-39分） | 36分（33-41分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20927594/) |
 
 #### 富士見台
 所在地: 中野区上鷺宮３－８－２２
@@ -3460,7 +3285,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 中野坂上パークホームズ 5階 | 1億2780万円 | 3LDK | 71.5㎡ | 築2000年 | 中野坂上駅 徒歩8分 | 中野区中央1丁目50 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E9%87%8E%E5%9D%82%E4%B8%8A%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%205%E9%9A%8E) | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 31.8万円/月 | 24分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1541220001207/) |
+| 中野坂上パークホームズ 5階 | 1億2780万円 | 3LDK | 71.5㎡ | 築2000年 | 中野坂上駅 徒歩8分 | 中野区中央1丁目50 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E9%87%8E%E5%9D%82%E4%B8%8A%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%205%E9%9A%8E) | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 31.8万円/月 | 39分（36-44分） | 41分（38-46分） | [詳細](https://www.homes.co.jp/mansion/b-1541220001207/) |
 
 #### 東京メトロ丸ノ内線 中野坂上駅 徒歩4分
 所在地: 中野区本町１丁目
@@ -3475,7 +3300,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ライオンズステージ中野中央 1階 | 9980万円 | 3LDK | 72.0㎡ | 築2004年 | 新中野駅 徒歩6分 | 中野区中央5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%B3%E3%82%BA%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E4%B8%AD%E9%87%8E%E4%B8%AD%E5%A4%AE%201%E9%9A%8E) | 1階/10階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 35分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1392830001452/) |
+| ライオンズステージ中野中央 1階 | 9980万円 | 3LDK | 72.0㎡ | 築2004年 | 新中野駅 徒歩6分 | 中野区中央5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%B3%E3%82%BA%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E4%B8%AD%E9%87%8E%E4%B8%AD%E5%A4%AE%201%E9%9A%8E) | 1階/10階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 35分（32-40分） | 37分（34-42分） | [詳細](https://www.homes.co.jp/mansion/b-1392830001452/) |
 
 #### 東京メトロ方南支線 中野新橋駅 徒歩1分
 所在地: 中野区弥生町２丁目
@@ -3489,7 +3314,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| パークハウス東中野リヴゴーシュ 5階 | 1億2980万円 | 3LDK | 70.7㎡ | 築2011年 | 落合駅 徒歩7分 | 中野区東中野5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%B1%E4%B8%AD%E9%87%8E%E3%83%AA%E3%83%B4%E3%82%B4%E3%83%BC%E3%82%B7%E3%83%A5%205%E9%9A%8E) | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1219650013275/) |
+| パークハウス東中野リヴゴーシュ 5階 | 1億2980万円 | 3LDK | 70.7㎡ | 築2011年 | 落合駅 徒歩7分 | 中野区東中野5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%B1%E4%B8%AD%E9%87%8E%E3%83%AA%E3%83%B4%E3%82%B4%E3%83%BC%E3%82%B7%E3%83%A5%205%E9%9A%8E) | 5階/9階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 35分（32-40分） | 34分（31-39分） | [詳細](https://www.homes.co.jp/mansion/b-1219650013275/) |
 
 #### 沼袋
 所在地: 中野区新井４丁目
@@ -3504,7 +3329,7 @@
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | パーク・ネスタ落合 | 1億2698万円 | 3LDK | 74.8㎡ | 築1998年 | 落合 徒歩1分 | 中野区東中野３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%BB%E3%83%8D%E3%82%B9%E3%82%BF%E8%90%BD%E5%90%88) | 7階/12階建 | 47戸 |  |  | - | - | - | 31.6万円/月 | 29分（26-34分） | 28分（25-33分） | [詳細](https://www.livable.co.jp/mansion/C13264L54/) |
-| クレッセント東中野レジデンス | 1億2490万円 | 3LDK | 77.1㎡ | 築2002年 | 落合 徒歩7分 | 中野区東中野２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%83%83%E3%82%BB%E3%83%B3%E3%83%88%E6%9D%B1%E4%B8%AD%E9%87%8E%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 3階/4階建 | 72戸 |  |  | - | - | - | 31.2万円/月 | 35分（32-40分） | 34分（31-39分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FKJBGA37/) |
+| クレッセント東中野レジデンス | 1億2490万円 | 3LDK | 77.1㎡ | 築2002年 | 落合 徒歩7分 | 中野区東中野２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%83%83%E3%82%BB%E3%83%B3%E3%83%88%E6%9D%B1%E4%B8%AD%E9%87%8E%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9) | 3階/4階建 | 72戸 |  |  | - | - | - | 31.2万円/月 | 28分（25-33分） | 30分（27-35分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FKJBGA37/) |
 | ブリリア東中野パークサイドヒルズ（Brillia東中… | 1億980万円 | 3LDK | 65.2㎡ | 築2020年 | 落合 徒歩5分 | 中野区東中野５－３１－３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9D%B1%E4%B8%AD%E9%87%8E%E3%83%91%E3%83%BC%E3%82%AF%E3%82%B5%E3%82%A4%E3%83%89%E3%83%92%E3%83%AB%E3%82%BA%EF%BC%88Brillia%E6%9D%B1%E4%B8%AD%E2%80%A6) | 1階/RC8階建 | 97戸 | A |  | - | - | - | 27.8万円/月 | 33分（30-38分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20333960/) |
 
 #### 西新宿五丁目
@@ -3526,8 +3351,8 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| グランドメゾン江古田の杜 8階 | 1億680万円 | 3LDK | 76.6㎡ | 築2018年 | 新江古田駅 徒歩10分 | 中野区江古田3丁目14-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%89%E3%83%A1%E3%82%BE%E3%83%B3%E6%B1%9F%E5%8F%A4%E7%94%B0%E3%81%AE%E6%9D%9C%208%E9%9A%8E) | 8階/15階建 | 戸数:不明 |  |  | - | - | - | 27.2万円/月 | 50分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1559200000002/) |
-| グランドメゾン江古田の杜 1階 | 9190万円 | 3LDK | 71.8㎡ | 築2018年 | 新江古田駅 徒歩10分 | 中野区江古田3丁目14-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%89%E3%83%A1%E3%82%BE%E3%83%B3%E6%B1%9F%E5%8F%A4%E7%94%B0%E3%81%AE%E6%9D%9C%201%E9%9A%8E) | 1階/15階建 | 戸数:不明 |  |  | - | - | - | 23.9万円/月 | 50分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1559200000003/) |
+| グランドメゾン江古田の杜 8階 | 1億680万円 | 3LDK | 76.6㎡ | 築2018年 | 新江古田駅 徒歩10分 | 中野区江古田3丁目14-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%89%E3%83%A1%E3%82%BE%E3%83%B3%E6%B1%9F%E5%8F%A4%E7%94%B0%E3%81%AE%E6%9D%9C%208%E9%9A%8E) | 8階/15階建 | 戸数:不明 |  |  | - | - | - | 27.2万円/月 | 55分（52-60分） | 54分（51-59分） | [詳細](https://www.homes.co.jp/mansion/b-1559200000002/) |
+| グランドメゾン江古田の杜 1階 | 9190万円 | 3LDK | 71.8㎡ | 築2018年 | 新江古田駅 徒歩10分 | 中野区江古田3丁目14-13 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%89%E3%83%A1%E3%82%BE%E3%83%B3%E6%B1%9F%E5%8F%A4%E7%94%B0%E3%81%AE%E6%9D%9C%201%E9%9A%8E) | 1階/15階建 | 戸数:不明 |  |  | - | - | - | 23.9万円/月 | 55分（52-60分） | 54分（51-59分） | [詳細](https://www.homes.co.jp/mansion/b-1559200000003/) |
 
 #### 都営大江戸線 新江古田駅 徒歩10分
 所在地: 中野区江古田３丁目
@@ -3539,33 +3364,32 @@
 ### 杉並区
 
 #### JR中央線 荻窪駅
-所在地: 杉並区荻窪2丁目、杉並区荻窪5丁目21-10
+所在地: 杉並区荻窪2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| LEXIA 7階 | 1億1480万円 | 3LDK | 61.8㎡ | 築2018年 | 荻窪駅 徒歩3分 | 杉並区荻窪5丁目21-10 | [Google Map](https://www.google.com/maps/search/?api=1&query=LEXIA%207%E9%9A%8E) | 7階/7階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 47分 | 41分 | [詳細](https://www.homes.co.jp/mansion/b-1552210003804/) |
-|  | 9980万円 | 2SLDK | 65.4㎡ | 築2017年 | 荻窪駅 徒歩5分 | 杉並区荻窪2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E8%8D%BB%E7%AA%AA2%E4%B8%81%E7%9B%AE) | 1階/4階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 55分 | 51分 | [詳細](https://www.homes.co.jp/mansion/b-1216390036873/) |
+|  | 9980万円 | 2SLDK | 65.4㎡ | 築2017年 | 荻窪駅 徒歩5分 | 杉並区荻窪2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E8%8D%BB%E7%AA%AA2%E4%B8%81%E7%9B%AE) | 1階/4階建 | 戸数:不明 |  |  | - | - | - | 25.6万円/月 | 66分（63-71分） | 62分（59-67分） | [詳細](https://www.homes.co.jp/mansion/b-1216390036873/) |
 
 #### JR中央線 荻窪駅 バス8分 荻窪四丁目下車
 所在地: 杉並区荻窪2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億998万円 | 3LDK | 70.0㎡ | 築1997年 | 荻窪駅 徒歩2分 | 杉並区荻窪2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E8%8D%BB%E7%AA%AA2%E4%B8%81%E7%9B%AE) | 3階/10階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 55分 | 51分 | [詳細](https://www.homes.co.jp/mansion/b-1216390038099/) |
+|  | 1億998万円 | 3LDK | 70.0㎡ | 築1997年 | 荻窪駅 徒歩2分 | 杉並区荻窪2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E8%8D%BB%E7%AA%AA2%E4%B8%81%E7%9B%AE) | 3階/10階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 66分（63-71分） | 62分（59-67分） | [詳細](https://www.homes.co.jp/mansion/b-1216390038099/) |
 
-#### ■西荻窪駅 徒歩10分
-所在地: 杉並区松庵2丁目18-20
+#### JR総武線 荻窪駅
+所在地: 杉並区荻窪5丁目21-10
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ローレルコート杉並松庵 1階 | 1億2490万円 | 3LDK | 70.8㎡ | 築2017年 | ■西荻窪駅 徒歩10分 | 杉並区松庵2丁目18-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AD%E3%83%BC%E3%83%AC%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%88%E6%9D%89%E4%B8%A6%E6%9D%BE%E5%BA%B5%201%E9%9A%8E) | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 50分 | 50分 | [詳細](https://www.homes.co.jp/mansion/b-1421770027582/) |
+| ＬＥＸＩＡ 7階 | 1億1480万円 | 3LDK | 61.8㎡ | 築2018年 | 荻窪駅 徒歩4分 | 杉並区荻窪5丁目21-10 | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%AC%EF%BC%A5%EF%BC%B8%EF%BC%A9%EF%BC%A1%207%E9%9A%8E) | 7階/7階建 | 戸数:不明 |  |  | - | - | - | 28.9万円/月 | 64分（61-69分） | 60分（57-65分） | [詳細](https://www.homes.co.jp/mansion/b-1552210003804/) |
 
 #### プラウドシティシリーズ
 所在地: 杉並区堀ノ内1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| プラウドシティ方南町 1階 | 1億2800万円 | 3LDK | 71.4㎡ | 築2024年 | プラウドシティシリーズ 徒歩5分 | 杉並区堀ノ内1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E6%96%B9%E5%8D%97%E7%94%BA%201%E9%9A%8E) | 1階/14階建 | 371戸 |  |  | - | - | - | 31.9万円/月 | 35分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-35007220000245/) |
+| プラウドシティ方南町 1階 | 1億2800万円 | 3LDK | 71.4㎡ | 築2024年 | プラウドシティシリーズ 徒歩5分 | 杉並区堀ノ内1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E6%96%B9%E5%8D%97%E7%94%BA%201%E9%9A%8E) | 1階/14階建 | 371戸 |  |  | - | - | - | 31.9万円/月 | 56分（53-61分） | 56分（53-61分） | [詳細](https://www.homes.co.jp/mansion/b-35007220000245/) |
 
 #### 上井草
 所在地: 杉並区上井草２丁目
@@ -3579,8 +3403,8 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| パークハウス上北沢スクエアテラス | 9980万円 | 3LDK | 74.9㎡ | 築2006年 | 上北沢 徒歩8分 | 杉並区下高井戸５－９－３５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E4%B8%8A%E5%8C%97%E6%B2%A2%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%86%E3%83%A9%E3%82%B9) | 1階/4階建 | 81戸 | A |  | - | - | - | 25.6万円/月 | 35分 | 35分 | [詳細](https://www.nomu.com/mansion/id/F61C5020/) |
 | （不明） | 9980万円 | 3LDK | 74.9㎡ | 築2006年 | 上北沢 徒歩8分 | 杉並区下高井戸５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%88%E4%B8%8D%E6%98%8E%EF%BC%89) | 1階/RC4階地下1階建 | 81戸 |  |  | - | - | - | 25.6万円/月 | 52分（49-57分） | 52分（49-57分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20884705/) |
+| パークハウス上北沢スクエアテラス | 9980万円 | 3LDK | 74.9㎡ | 築2006年 | 上北沢 徒歩8分 | 杉並区下高井戸５－９－３５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E4%B8%8A%E5%8C%97%E6%B2%A2%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%86%E3%83%A9%E3%82%B9) | 1階/4階建 | 81戸 | A |  | - | - | - | 25.6万円/月 | 35分 | 35分 | [詳細](https://www.nomu.com/mansion/id/F61C5020/) |
 | パークハウス上北沢スクエアテラス | 9280万円 | 3LDK | 76.0㎡ | 築2006年 | 上北沢 徒歩8分 | 杉並区下高井戸５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E4%B8%8A%E5%8C%97%E6%B2%A2%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2%E3%83%86%E3%83%A9%E3%82%B9) | 3階/RC4階地下1階建 | 81戸 | A |  | - | - | - | 24.1万円/月 | 52分（49-57分） | 52分（49-57分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20826589/) |
 
 #### 中央・総武緩行線 西荻窪駅 徒歩9分
@@ -3635,19 +3459,19 @@
 | 藤和シティホームズ高円寺 | 1億298万円 | 3LDK | 68.1㎡ | 築1996年 | 高円寺駅 徒歩4分 | 杉並区高円寺南４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E9%AB%98%E5%86%86%E5%AF%BA) | 4階/10階建 | 26戸 |  |  | - | - | - | 26.3万円/月 | 46分（43-51分） | 48分（45-53分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FEDBGA2C/) |
 
 #### 京王井の頭線 浜田山駅
-所在地: 杉並区浜田山1丁目22-5、杉並区高井戸東3丁目
+所在地: 杉並区高井戸東3丁目、杉並区浜田山1丁目22-5
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ザ・パークハウス浜田山季の杜 2階 | 1億2480万円 | 2LDK | 75.0㎡ | 築2017年 | 浜田山駅 徒歩7分 | 杉並区高井戸東3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%B5%9C%E7%94%B0%E5%B1%B1%E5%AD%A3%E3%81%AE%E6%9D%9C%202%E9%9A%8E) | 2階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 40分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-35006040000103/) |
-| プラウド浜田山 4階 | 1億1000万円 | 2LDK | 63.3㎡ | 築2004年 | 浜田山駅 徒歩6分 | 杉並区浜田山1丁目22-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E6%B5%9C%E7%94%B0%E5%B1%B1%204%E9%9A%8E) | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 35分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1445580000203/) |
+| ザ・パークハウス浜田山季の杜 2階 | 1億2480万円 | 2LDK | 75.0㎡ | 築2017年 | 浜田山駅 徒歩7分 | 杉並区高井戸東3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%B5%9C%E7%94%B0%E5%B1%B1%E5%AD%A3%E3%81%AE%E6%9D%9C%202%E9%9A%8E) | 2階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 51分（48-56分） | 51分（48-56分） | [詳細](https://www.homes.co.jp/mansion/b-35006040000103/) |
+| プラウド浜田山 4階 | 1億1000万円 | 2LDK | 63.3㎡ | 築2004年 | 浜田山駅 徒歩6分 | 杉並区浜田山1丁目22-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E6%B5%9C%E7%94%B0%E5%B1%B1%204%E9%9A%8E) | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 45分（42-50分） | 45分（42-50分） | [詳細](https://www.homes.co.jp/mansion/b-1445580000203/) |
 
 #### 京王井の頭線 西永福駅
 所在地: 杉並区浜田山1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9480万円 | 3LDK | 74.1㎡ | 築1997年 | 西永福駅 徒歩6分 | 杉並区浜田山1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E6%B5%9C%E7%94%B0%E5%B1%B11%E4%B8%81%E7%9B%AE) | 4階/4階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 40分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1421770025991/) |
+|  | 9480万円 | 3LDK | 74.1㎡ | 築1997年 | 西永福駅 徒歩6分 | 杉並区浜田山1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E6%B5%9C%E7%94%B0%E5%B1%B11%E4%B8%81%E7%9B%AE) | 4階/4階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 39分（36-44分） | 39分（36-44分） | [詳細](https://www.homes.co.jp/mansion/b-1421770025991/) |
 
 #### 京王電鉄井の頭線 三鷹台駅 徒歩10分
 所在地: 杉並区松庵１丁目
@@ -3699,12 +3523,12 @@
 | シアンズテラス下高井戸 | 9980万円 | 3LDK | 70.1㎡ | 築2008年 | 下高井戸駅 徒歩9分 | 杉並区下高井戸２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%82%A2%E3%83%B3%E3%82%BA%E3%83%86%E3%83%A9%E3%82%B9%E4%B8%8B%E9%AB%98%E4%BA%95%E6%88%B8) | 1階/RC3階地下1階建 | 22戸 | B |  | - | - | - | 25.6万円/月 | 53分（50-58分） | 53分（50-58分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/F34BEA0C/) |
 
 #### 南阿佐ケ谷
-所在地: 杉並区成田東５、杉並区成田東５丁目、杉並区成田東5丁目、杉並区成田東５－１７－１８
+所在地: 杉並区成田東5丁目、杉並区成田東５、杉並区成田東５丁目、杉並区成田東５－１７－１８
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | グローリオ南阿佐ヶ谷 | 1億1780万円 | 2LDK | 87.5㎡ | 築2003年 | 南阿佐ケ谷 徒歩7分 | 杉並区成田東５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%AA%E3%82%AA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7) | 2階/5階建 | 108戸 |  |  | - | - | - | 29.6万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://www.livable.co.jp/mansion/C48264L51/) |
-| 藤和シティホームズ南阿佐ヶ谷 | 1億1780万円 | 2LDK | 72.7㎡ | 築1996年 | 南阿佐ケ谷 徒歩4分 | 杉並区成田東5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7) | 4階/11階建 | 42戸 |  |  | - | - | - | 29.6万円/月 | 49分（46-54分） | 45分（42-50分） | [詳細](https://www.nomu.com/mansion/id/R7770471/) |
+| 藤和シティホームズ南阿佐ヶ谷 | 1億1580万円 | 2LDK | 72.7㎡ | 築1996年 | 南阿佐ケ谷 徒歩4分 | 杉並区成田東5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7) | 4階/11階建 | 42戸 |  |  | - | - | - | 29.2万円/月 | 49分（46-54分） | 45分（42-50分） | [詳細](https://www.nomu.com/mansion/id/R7770471/) |
 | グローリオ南阿佐ヶ谷 | 1億980万円 | 2LDK+S（納戸） | 82.8㎡ | 築2003年 | 南阿佐ケ谷 徒歩7分 | 杉並区成田東５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%AA%E3%82%AA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7) | 1階/RC5階建 | 108戸 |  |  | - | - | - | 27.8万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20869675/) |
 | パークホームズ阿佐ヶ谷サウス | 1億800万円 | 3LDK | 70.3㎡ | 築2012年 | 南阿佐ケ谷 徒歩7分 | 杉並区成田東５－１７－１８ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%E3%82%B5%E3%82%A6%E3%82%B9) | 1階/RC12階建 | 67戸 | B |  | - | - | - | 27.4万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20443900/) |
 
@@ -3721,19 +3545,19 @@
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | プラウド杉並方南町 | 1億980万円 | 2LDK | 64.5㎡ | 築2021年 | 方南町 徒歩7分 | 杉並区方南1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E6%9D%89%E4%B8%A6%E6%96%B9%E5%8D%97%E7%94%BA) | 2階/4階建 | 87戸 | C |  | - | - | - | 27.8万円/月 | 38分（35-43分） | 38分（35-43分） | [詳細](https://www.nomu.com/mansion/id/FE6C5004/) |
-| ルフォン杉並方南町 | 9980万円 | 3LDK | 63.4㎡ | 築2013年 | 方南町 徒歩4分 | 杉並区堀ノ内１－８－２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%95%E3%82%A9%E3%83%B3%E6%9D%89%E4%B8%A6%E6%96%B9%E5%8D%97%E7%94%BA) | 7階/RC8階建 | 37戸 | A |  | - | - | - | 25.6万円/月 | 30分 | 30分 | [詳細](https://www.nomu.com/mansion/id/F77C6014/) |
-| プラウドシティ方南町 | 1億1500万円 | 3LDK | 65.3㎡ | 築2024年 | 方南町 徒歩5分 | 杉並区堀ノ内１－４６２－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E6%96%B9%E5%8D%97%E7%94%BA) | 12階/RC14階建 | 371戸 | A |  | - | - | - | 29.0万円/月 | 28分 | 28分 | [詳細](https://www.nomu.com/mansion/id/F77C5007/) |
+| ルフォン杉並方南町 | 9980万円 | 3LDK | 63.4㎡ | 築2013年 | 方南町 徒歩4分 | 杉並区堀ノ内１－８－２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AB%E3%83%95%E3%82%A9%E3%83%B3%E6%9D%89%E4%B8%A6%E6%96%B9%E5%8D%97%E7%94%BA) | 7階/RC8階建 | 37戸 | A |  | - | - | - | 25.6万円/月 | 56分（53-61分） | 56分（53-61分） | [詳細](https://www.nomu.com/mansion/id/F77C6014/) |
+| プラウドシティ方南町 | 1億1500万円 | 3LDK | 65.3㎡ | 築2024年 | 方南町 徒歩5分 | 杉並区堀ノ内１－４６２－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E6%96%B9%E5%8D%97%E7%94%BA) | 12階/RC14階建 | 371戸 | A |  | - | - | - | 29.0万円/月 | 56分（53-61分） | 56分（53-61分） | [詳細](https://www.nomu.com/mansion/id/F77C5007/) |
 
 #### 東京メトロ丸ノ内線 南阿佐ケ谷駅
 所在地: 杉並区成田東5丁目、杉並区成田東5丁目34-20、杉並区成田東4丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 藤和シティホームズ南阿佐ヶ谷 5階 | 1億2700万円 | 3LDK | 76.4㎡ | 築1996年 | 南阿佐ケ谷駅 徒歩3分 | 杉並区成田東5丁目34-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%205%E9%9A%8E) | 5階/11階建 | 戸数:不明 |  |  | - | - | - | 31.7万円/月 | 45分 | 44分 | [詳細](https://www.homes.co.jp/mansion/b-1261160003566/) |
-| プラウドシティ阿佐ヶ谷ヴィラ 1階 | 1億2500万円 | 3LDK | 76.5㎡ | 築2016年 | 南阿佐ケ谷駅 徒歩7分 | 杉並区成田東4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%E3%83%B4%E3%82%A3%E3%83%A9%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 45分 | 45分 | [詳細](https://www.homes.co.jp/mansion/b-37052640001996/) |
+| 藤和シティホームズ南阿佐ヶ谷 5階 | 1億2700万円 | 3LDK | 76.4㎡ | 築1996年 | 南阿佐ケ谷駅 徒歩3分 | 杉並区成田東5丁目34-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%205%E9%9A%8E) | 5階/11階建 | 戸数:不明 |  |  | - | - | - | 31.7万円/月 | 58分（55-63分） | 57分（54-62分） | [詳細](https://www.homes.co.jp/mansion/b-1261160003566/) |
+| プラウドシティ阿佐ヶ谷ヴィラ 1階 | 1億2500万円 | 3LDK | 76.5㎡ | 築2016年 | 南阿佐ケ谷駅 徒歩7分 | 杉並区成田東4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%E3%83%B4%E3%82%A3%E3%83%A9%201%E9%9A%8E) | 1階/3階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 54分（51-59分） | 50分（47-55分） | [詳細](https://www.homes.co.jp/mansion/b-37052640001996/) |
 | グローリオ南阿佐ヶ谷 1階 | 1億2480万円 | 3LDK | 93.2㎡ | 築2003年 | 南阿佐ケ谷駅 徒歩7分 | 杉並区成田東5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%AA%E3%82%AA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%201%E9%9A%8E) | 1階/5階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://www.homes.co.jp/mansion/b-1392830001432/) |
 |  | 1億1980万円 | 2LDK | 72.7㎡ | 築1996年 | 南阿佐ケ谷駅 徒歩4分 | 杉並区成田東5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E6%88%90%E7%94%B0%E6%9D%B15%E4%B8%81%E7%9B%AE) | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037956/) |
-| 藤和シティホームズ南阿佐ヶ谷 4階 | 1億1580万円 | 2LDK | 72.7㎡ | 築1996年 | 南阿佐ケ谷駅 徒歩3分 | 杉並区成田東5丁目34-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%204%E9%9A%8E) | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 29.2万円/月 | 45分 | 44分 | [詳細](https://www.homes.co.jp/mansion/b-1424730001075/) |
+| 藤和シティホームズ南阿佐ヶ谷 4階 | 1億1780万円 | 2LDK | 72.7㎡ | 築1996年 | 南阿佐ケ谷駅 徒歩3分 | 杉並区成田東5丁目34-20 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%97%E9%98%BF%E4%BD%90%E3%83%B6%E8%B0%B7%204%E9%9A%8E) | 4階/11階建 | 戸数:不明 |  |  | - | - | - | 29.6万円/月 | 58分（55-63分） | 57分（54-62分） | [詳細](https://www.homes.co.jp/mansion/b-1552210003860/) |
 
 #### 東京メトロ方南支線 方南町駅 徒歩9分
 所在地: 杉並区堀ノ内２丁目
@@ -3754,7 +3578,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| プレステージ浜田山ジヴェルニー | 1億1480万円 | 2LDK | 62.8㎡ | 築2003年 | 浜田山 徒歩5分 | 杉並区浜田山２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E6%B5%9C%E7%94%B0%E5%B1%B1%E3%82%B8%E3%83%B4%E3%82%A7%E3%83%AB%E3%83%8B%E3%83%BC) | 2階/4階建 | 105戸 |  |  | - | - | - | 28.9万円/月 | 35分 | 35分 | [詳細](https://www.livable.co.jp/mansion/C13259K28/) |
+| プレステージ浜田山ジヴェルニー | 1億1480万円 | 2LDK | 62.8㎡ | 築2003年 | 浜田山 徒歩5分 | 杉並区浜田山２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E6%B5%9C%E7%94%B0%E5%B1%B1%E3%82%B8%E3%83%B4%E3%82%A7%E3%83%AB%E3%83%8B%E3%83%BC) | 2階/4階建 | 105戸 |  |  | - | - | - | 28.9万円/月 | 45分（42-50分） | 45分（42-50分） | [詳細](https://www.livable.co.jp/mansion/C13259K28/) |
 | ハイコート浜田山壱丁目　南向き住戸 | 1億1480万円 | 3LDK | 81.3㎡ | 築2005年 | 浜田山 徒歩9分 | 杉並区浜田山１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%8F%E3%82%A4%E3%82%B3%E3%83%BC%E3%83%88%E6%B5%9C%E7%94%B0%E5%B1%B1%E5%A3%B1%E4%B8%81%E7%9B%AE%E3%80%80%E5%8D%97%E5%90%91%E3%81%8D%E4%BD%8F%E6%88%B8) | 1階/RC4階建 | 25戸 | B |  | - | - | - | 28.9万円/月 | 39分（36-44分） | 39分（36-44分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20995916/) |
 
 #### 浜田山駅徒歩6分
@@ -3762,10 +3586,10 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億500万円 | 2LDK | 63.3㎡ | 築2004年 | 浜田山駅 徒歩6分 | 杉並区浜田山1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E6%B5%9C%E7%94%B0%E5%B1%B11%E4%B8%81%E7%9B%AE) | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 35分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037636/) |
+|  | 1億500万円 | 2LDK | 63.3㎡ | 築2004年 | 浜田山駅 徒歩6分 | 杉並区浜田山1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E6%B5%9C%E7%94%B0%E5%B1%B11%E4%B8%81%E7%9B%AE) | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 39分（36-44分） | 39分（36-44分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037636/) |
 
 #### 荻窪
-所在地: 杉並区南荻窪１－４３－１１、杉並区荻窪5丁目、杉並区荻窪５
+所在地: 杉並区荻窪5丁目、杉並区南荻窪１－４３－１１、杉並区荻窪５
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -3779,7 +3603,7 @@
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | クラッシィハウス浜田山 | 9780万円 | 2LDK | 67.0㎡ | 築2013年 | 西永福 徒歩5分 | 杉並区浜田山４－１－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%A9%E3%83%83%E3%82%B7%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E6%B5%9C%E7%94%B0%E5%B1%B1) | 2階/RC6階建 | 64戸 | A |  | - | - | - | 25.2万円/月 | 37分（34-42分） | 37分（34-42分） | [詳細](https://www.nomu.com/mansion/id/R7770463/) |
-| 東急ドエル・プレステージ浜田山ガーデンズ | 9480万円 | 3LDK | 74.1㎡ | 築1997年 | 西永福 徒歩7分 | 杉並区浜田山1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E6%80%A5%E3%83%89%E3%82%A8%E3%83%AB%E3%83%BB%E3%83%97%E3%83%AC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E6%B5%9C%E7%94%B0%E5%B1%B1%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%82%BA) | 4階/4階建 | 50戸 |  |  | - | - | - | 24.5万円/月 | 35分 | 35分 | [詳細](https://www.nomu.com/mansion/id/R7770233/) |
+| 東急ドエル・プレステージ浜田山ガーデンズ | 9480万円 | 3LDK | 74.1㎡ | 築1997年 | 西永福 徒歩7分 | 杉並区浜田山1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E6%80%A5%E3%83%89%E3%82%A8%E3%83%AB%E3%83%BB%E3%83%97%E3%83%AC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E6%B5%9C%E7%94%B0%E5%B1%B1%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%82%BA) | 4階/4階建 | 50戸 |  |  | - | - | - | 24.5万円/月 | 39分（36-44分） | 39分（36-44分） | [詳細](https://www.nomu.com/mansion/id/R7770233/) |
 
 #### 西荻窪
 所在地: 杉並区上荻4丁目、杉並区上荻４、杉並区西荻南3丁目
@@ -3788,10 +3612,10 @@
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | ラ・メールパレ西荻 | 1億800万円 | 3LDK | 61.7㎡ | 築2001年 | 西荻窪 徒歩4分 | 杉並区西荻南3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%A9%E3%83%BB%E3%83%A1%E3%83%BC%E3%83%AB%E3%83%91%E3%83%AC%E8%A5%BF%E8%8D%BB) | 3階/8階建 | 21戸 |  |  | - | - | - | 27.4万円/月 | 49分 | 46分 | [詳細](https://www.nomu.com/mansion/id/F77C5016/) |
 | テラス西荻窪 | 1億480万円 | 3LDK | 85.1㎡ | 築1998年 | 西荻窪 徒歩10分 | 杉並区上荻4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%86%E3%83%A9%E3%82%B9%E8%A5%BF%E8%8D%BB%E7%AA%AA) | 2階/3階建 | 22戸 |  |  | - | - | - | 26.7万円/月 | 54分（51-59分） | 50分（47-55分） | [詳細](https://www.nomu.com/mansion/id/R7770423/) |
-| テラス西荻窪 | 9480万円 | 3LDK | 85.0㎡ | 築1998年 | 西荻窪 徒歩9分 | 杉並区上荻４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%86%E3%83%A9%E3%82%B9%E8%A5%BF%E8%8D%BB%E7%AA%AA) | 1階/RC3階建 | 22戸 |  |  | - | - | - | 24.5万円/月 | 47分（44-52分） | 44分（41-49分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20884102/) |
+| テラス西荻窪 | 9480万円 | 3LDK | 85.0㎡ | 築1998年 | 西荻窪 徒歩9分 | 杉並区上荻４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%86%E3%83%A9%E3%82%B9%E8%A5%BF%E8%8D%BB%E7%AA%AA) | 1階/RC3階建 | 22戸 |  |  | - | - | - | 24.5万円/月 | 53分（50-58分） | 49分（46-54分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_suginami/nc_20884102/) |
 
 #### 高井戸
-所在地: 杉並区高井戸東３、杉並区高井戸東3丁目、杉並区高井戸西２
+所在地: 杉並区高井戸西２、杉並区高井戸東3丁目、杉並区高井戸東３
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -3805,7 +3629,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億180万円 | 3LDK | 78.9㎡ | 築1998年 | 高井戸駅 徒歩5分 | 杉並区高井戸東3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E9%AB%98%E4%BA%95%E6%88%B8%E6%9D%B13%E4%B8%81%E7%9B%AE) | 6階/9階建 | 戸数:不明 |  |  | - | - | - | 26.1万円/月 | 40分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037812/) |
+|  | 1億180万円 | 3LDK | 78.9㎡ | 築1998年 | 高井戸駅 徒歩5分 | 杉並区高井戸東3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%9D%89%E4%B8%A6%E5%8C%BA%E9%AB%98%E4%BA%95%E6%88%B8%E6%9D%B13%E4%B8%81%E7%9B%AE) | 6階/9階建 | 戸数:不明 |  |  | - | - | - | 26.1万円/月 | 51分（48-56分） | 51分（48-56分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037812/) |
 
 ### 豊島区
 
@@ -3814,7 +3638,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億1000万円 | 2SLDK | 72.9㎡ | 築2003年 | 池袋駅 徒歩9分 | 豊島区上池袋2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E4%B8%8A%E6%B1%A0%E8%A2%8B2%E4%B8%81%E7%9B%AE) | 10階/14階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 35分 | 26分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037614/) |
+|  | 1億1000万円 | 2SLDK | 72.9㎡ | 築2003年 | 池袋駅 徒歩9分 | 豊島区上池袋2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E4%B8%8A%E6%B1%A0%E8%A2%8B2%E4%B8%81%E7%9B%AE) | 10階/14階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 54分（51-59分） | 47分（44-52分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037614/) |
 
 #### JR山手線 目白駅
 所在地: 豊島区目白４－４３－１６７他
@@ -3828,7 +3652,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| マイキャッスル駒込パークヒルズ 5階 | 1億499万円 | 2LDK | 61.5㎡ | 築2002年 | 駒込駅 徒歩2分 | 豊島区駒込1丁目31-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E9%A7%92%E8%BE%BC%E3%83%91%E3%83%BC%E3%82%AF%E3%83%92%E3%83%AB%E3%82%BA%205%E9%9A%8E) | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 40分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1267650036171/) |
+| マイキャッスル駒込パークヒルズ 5階 | 1億499万円 | 2LDK | 61.5㎡ | 築2002年 | 駒込駅 徒歩2分 | 豊島区駒込1丁目31-3 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%9E%E3%82%A4%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B9%E3%83%AB%E9%A7%92%E8%BE%BC%E3%83%91%E3%83%BC%E3%82%AF%E3%83%92%E3%83%AB%E3%82%BA%205%E9%9A%8E) | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 34分（31-39分） | 30分（27-35分） | [詳細](https://www.homes.co.jp/mansion/b-1267650036171/) |
 
 #### ■シスナブ池袋本町■ペット飼育2匹飼育◎板橋駅徒歩
 所在地: 豊島区池袋本町4丁目
@@ -3838,7 +3662,7 @@
 |  | 9790万円 | 3LDK | 70.3㎡ | 築1997年 | ■シスナブ池袋本町■ペット飼育2匹飼育◎板橋駅 徒歩5分 | 豊島区池袋本町4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E6%B1%A0%E8%A2%8B%E6%9C%AC%E7%94%BA4%E4%B8%81%E7%9B%AE) | 5階/19階建 | 563戸 |  |  | - | - | - | 25.2万円/月 | 47分（44-52分） | 42分（39-47分） | [詳細](https://www.homes.co.jp/mansion/b-1216390036839/) |
 
 #### 北池袋
-所在地: 豊島区西巣鴨１－１２－１、豊島区上池袋4丁目
+所在地: 豊島区上池袋4丁目、豊島区西巣鴨１－１２－１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -3860,7 +3684,7 @@
 | セレナハイム上池袋 | 1億1499万円 | 3LDK | 69.4㎡ | 築1998年 | 板橋駅 徒歩3分 | 豊島区上池袋４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%BB%E3%83%AC%E3%83%8A%E3%83%8F%E3%82%A4%E3%83%A0%E4%B8%8A%E6%B1%A0%E8%A2%8B) | 5階/10階建 | 73戸 |  |  | - | - | - | 29.0万円/月 | 46分（43-51分） | 39分（36-44分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FLGBGA31/) |
 
 #### 大塚
-所在地: 豊島区西巣鴨１丁目、豊島区東池袋２丁目、豊島区南大塚３
+所在地: 豊島区西巣鴨１丁目、豊島区南大塚３、豊島区東池袋２丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -3873,7 +3697,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| クリオ大塚弐番館 | 1億999万円 | 3LDK | 68.5㎡ | 築2001年 | 大塚駅 徒歩5分 | 豊島区北大塚３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E5%A4%A7%E5%A1%9A%E5%BC%90%E7%95%AA%E9%A4%A8) | 4階/15階建 | 70戸 |  |  | - | - | - | 27.9万円/月 | 54分（51-59分） | 47分（44-52分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BGA1A/) |
+| クリオ大塚弐番館 | 1億499万円 | 3LDK | 68.5㎡ | 築2001年 | 大塚駅 徒歩5分 | 豊島区北大塚３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E5%A4%A7%E5%A1%9A%E5%BC%90%E7%95%AA%E9%A4%A8) | 4階/15階建 | 70戸 |  |  | - | - | - | 26.8万円/月 | 54分（51-59分） | 47分（44-52分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BGA1A/) |
 
 #### 山手線 池袋駅 徒歩2分
 所在地: 豊島区西池袋１丁目
@@ -3947,13 +3771,13 @@
 | Brillia City西早稲田 | 1億190万円 | 3LDK | 72.0㎡ | 築2022年 | 雑司が谷駅 徒歩8分 | 豊島区高田１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=Brillia%20City%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0) | 3階/15階建 | 454戸 | A |  | - | - | - | 26.1万円/月 | 36分（33-41分） | 30分（27-35分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BDA0F/) |
 
 #### 東京メトロ有楽町線 東池袋駅
-所在地: 豊島区東池袋5丁目、豊島区東池袋5丁目8-17
+所在地: 豊島区東池袋5丁目8-17、豊島区東池袋5丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| イトーピアマイズ池袋 11階 | 1億2900万円 | 3LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 豊島区東池袋5丁目8-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%88%E3%83%BC%E3%83%94%E3%82%A2%E3%83%9E%E3%82%A4%E3%82%BA%E6%B1%A0%E8%A2%8B%2011%E9%9A%8E) | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 26分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1421770026658/) |
-|  | 1億2480万円 | 3LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 豊島区東池袋5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E6%9D%B1%E6%B1%A0%E8%A2%8B5%E4%B8%81%E7%9B%AE) | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 28分 | 22分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037458/) |
-| イトーピアマイズ池袋 8階 | 1億1900万円 | 2LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 豊島区東池袋5丁目8-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%88%E3%83%BC%E3%83%94%E3%82%A2%E3%83%9E%E3%82%A4%E3%82%BA%E6%B1%A0%E8%A2%8B%208%E9%9A%8E) | 8階/14階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 26分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1404770001838/) |
+| イトーピアマイズ池袋 11階 | 1億2900万円 | 3LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 豊島区東池袋5丁目8-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%88%E3%83%BC%E3%83%94%E3%82%A2%E3%83%9E%E3%82%A4%E3%82%BA%E6%B1%A0%E8%A2%8B%2011%E9%9A%8E) | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 32.1万円/月 | 46分（43-51分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1421770026658/) |
+|  | 1億2480万円 | 3LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 豊島区東池袋5丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E6%9D%B1%E6%B1%A0%E8%A2%8B5%E4%B8%81%E7%9B%AE) | 11階/14階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 44分（41-49分） | 38分（35-43分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037458/) |
+| イトーピアマイズ池袋 8階 | 1億1900万円 | 2LDK | 66.8㎡ | 築2003年 | 東池袋駅 徒歩1分 | 豊島区東池袋5丁目8-17 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%88%E3%83%BC%E3%83%94%E3%82%A2%E3%83%9E%E3%82%A4%E3%82%BA%E6%B1%A0%E8%A2%8B%208%E9%9A%8E) | 8階/14階建 | 戸数:不明 |  |  | - | - | - | 29.9万円/月 | 46分（43-51分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-1404770001838/) |
 
 #### 東京メトロ有楽町線 東池袋駅 徒歩1分
 所在地: 豊島区東池袋５丁目
@@ -3967,7 +3791,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| パークタワー池袋イーストプレイス | 1億2800万円 | 2LDK | 64.3㎡ | 築2008年 | 東池袋駅 徒歩8分 | 豊島区東池袋３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%B1%A0%E8%A2%8B%E3%82%A4%E3%83%BC%E3%82%B9%E3%83%88%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B9) | 17階/31階建 | 204戸 |  |  | - | - | - | 31.9万円/月 | 26分 | 20分 | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BFA05/) |
+| パークタワー池袋イーストプレイス | 1億2800万円 | 2LDK | 64.3㎡ | 築2008年 | 東池袋駅 徒歩8分 | 豊島区東池袋３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%B1%A0%E8%A2%8B%E3%82%A4%E3%83%BC%E3%82%B9%E3%83%88%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B9) | 17階/31階建 | 204戸 |  |  | - | - | - | 31.9万円/月 | 47分（44-52分） | 41分（38-46分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BFA05/) |
 
 #### 東京メトロ有楽町線 要町駅
 所在地: 豊島区池袋2丁目28-5
@@ -3988,7 +3812,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億3000万円 | 3LDK | 73.6㎡ | 築2001年 | 護国寺駅 徒歩6分 | 豊島区雑司が谷1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E9%9B%91%E5%8F%B8%E3%81%8C%E8%B0%B71%E4%B8%81%E7%9B%AE) | 9階/15階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 26分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037824/) |
+|  | 1億3000万円 | 3LDK | 73.6㎡ | 築2001年 | 護国寺駅 徒歩6分 | 豊島区雑司が谷1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E9%9B%91%E5%8F%B8%E3%81%8C%E8%B0%B71%E4%B8%81%E7%9B%AE) | 9階/15階建 | 戸数:不明 |  |  | - | - | - | 32.3万円/月 | 37分（34-42分） | 31分（28-36分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037824/) |
 
 #### 東京メトロ有楽町線 護国寺駅 徒歩6分
 所在地: 豊島区雑司が谷１丁目
@@ -3998,10 +3822,11 @@
 | 菱和パレス目白台グラーサ | 1億3000万円 | 3LDK | 73.6㎡ | 築2001年 | 護国寺駅 徒歩6分 | 豊島区雑司が谷１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%8F%B1%E5%92%8C%E3%83%91%E3%83%AC%E3%82%B9%E7%9B%AE%E7%99%BD%E5%8F%B0%E3%82%B0%E3%83%A9%E3%83%BC%E3%82%B5) | 9階/15階建 | 96戸 |  |  | - | - | - | 32.3万円/月 | 42分（39-47分） | 36分（33-41分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BGA48/) |
 
 #### 東武東上線 北池袋駅
-所在地: 豊島区上池袋4丁目
+所在地: 豊島区上池袋4丁目、豊島区上池袋4丁目31-28
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
+| プラウドシティ上池袋 13階 | 1億2380万円 | 3LDK | 80.7㎡ | 築2005年 | 北池袋駅 徒歩3分 | 豊島区上池袋4丁目31-28 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E4%B8%8A%E6%B1%A0%E8%A2%8B%2013%E9%9A%8E) | 13階/15階建 | 227戸 |  |  | - | - | - | 30.9万円/月 | 35分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1272640001783/) |
 |  | 1億598万円 | 3LDK | 95.5㎡ | 築1997年 | 北池袋駅 徒歩9分 | 豊島区上池袋4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E4%B8%8A%E6%B1%A0%E8%A2%8B4%E4%B8%81%E7%9B%AE) | 6階/14階建 | 120戸 |  |  | - | - | - | 27.0万円/月 | 46分（43-51分） | 39分（36-44分） | [詳細](https://www.homes.co.jp/mansion/b-1004590047971/) |
 
 #### 東武東上線 北池袋駅 徒歩9分
@@ -4019,25 +3844,25 @@
 | アトラス雑司が谷 | 8980万円 | 2LDK | 60.1㎡ | 築2009年 | 東池袋 徒歩6分 | 豊島区雑司が谷１－４８－９ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%88%E3%83%A9%E3%82%B9%E9%9B%91%E5%8F%B8%E3%81%8C%E8%B0%B7) | 9階/RC12階建 | 59戸 | B |  | - | - | - | 23.4万円/月 | 30分（27-35分） | 26分（23-31分） | [詳細](https://www.nomu.com/mansion/id/FC9C4005/) |
 
 #### 板橋
-所在地: 豊島区池袋本町４丁目、豊島区池袋本町4丁目47-12、豊島区池袋本町４、豊島区上池袋４丁目
+所在地: 豊島区池袋本町4丁目47-12、豊島区池袋本町４丁目、豊島区池袋本町４、豊島区上池袋４丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | プラウドシティ上池袋 | 1億1990万円 | 3LDK | 74.9㎡ | 築2005年 | 板橋 徒歩6分 | 豊島区上池袋４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E4%B8%8A%E6%B1%A0%E8%A2%8B) | 3階/15階建 | 277戸 |  |  | - | - | - | 30.1万円/月 | 43分（40-48分） | 36分（33-41分） | [詳細](https://www.livable.co.jp/mansion/C48263529/) |
 | シスナブ池袋本町 | 9790万円 | 3LDK | 70.3㎡ | 築1997年 | 板橋 徒歩5分 | 豊島区池袋本町４丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%82%B9%E3%83%8A%E3%83%96%E6%B1%A0%E8%A2%8B%E6%9C%AC%E7%94%BA) | 5階/19階建 | 563戸 |  |  | - | - | - | 25.2万円/月 | 42分（39-47分） | 35分（32-40分） | [詳細](https://www.livable.co.jp/mansion/C48262M44/) |
-| シスナブ池袋本町 19階 | 9480万円 | 3LDK | 70.3㎡ | 築1997年 | 板橋 徒歩6分 | 豊島区池袋本町4丁目47-12 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%82%B9%E3%83%8A%E3%83%96%E6%B1%A0%E8%A2%8B%E6%9C%AC%E7%94%BA%2019%E9%9A%8E) | 19階/19階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 35分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-35006120000104/) |
+| シスナブ池袋本町 19階 | 9480万円 | 3LDK | 70.3㎡ | 築1997年 | 板橋 徒歩6分 | 豊島区池袋本町4丁目47-12 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%82%B9%E3%83%8A%E3%83%96%E6%B1%A0%E8%A2%8B%E6%9C%AC%E7%94%BA%2019%E9%9A%8E) | 19階/19階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 43分（40-48分） | 36分（33-41分） | [詳細](https://www.homes.co.jp/mansion/b-35006120000104/) |
 | シスナブ池袋本町 | 9280万円 | 2LDK | 74.0㎡ | 築1997年 | 板橋 徒歩7分 | 豊島区池袋本町４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%82%B9%E3%83%8A%E3%83%96%E6%B1%A0%E8%A2%8B%E6%9C%AC%E7%94%BA) | 4階/SRC19階地下1階建一部RC | 563戸 |  |  | - | - | - | 24.1万円/月 | 44分（41-49分） | 37分（34-42分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20716835/) |
 
 #### 池袋
-所在地: 豊島区上池袋１－１３－８、豊島区上池袋２、豊島区上池袋２-28-5、豊島区池袋３、豊島区池袋本町１
+所在地: 豊島区上池袋２、豊島区上池袋１－１３－８、豊島区上池袋２-28-5、豊島区池袋３、豊島区池袋本町１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | 【サンクレイドルレヴィール】 | 1億500万円 | 2LDK+S（納戸） | 72.9㎡ | 築2003年 | 池袋 徒歩10分 | 豊島区上池袋２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%80%90%E3%82%B5%E3%83%B3%E3%82%AF%E3%83%AC%E3%82%A4%E3%83%89%E3%83%AB%E3%83%AC%E3%83%B4%E3%82%A3%E3%83%BC%E3%83%AB%E3%80%91) | 10階/SRC14階建 | 92戸 |  |  | - | - | - | 26.8万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20931924/) |
 | サンクレイドルレヴィ―ル池袋 ■□■ ～池袋… | 1億500万円 | 2LDK+S（納戸） | 72.9㎡ | 築2003年 | 池袋 徒歩10分 | 豊島区上池袋２-28-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%AF%E3%83%AC%E3%82%A4%E3%83%89%E3%83%AB%E3%83%AC%E3%83%B4%E3%82%A3%E2%80%95%E3%83%AB%E6%B1%A0%E8%A2%8B%20%E2%96%A0%E2%96%A1%E2%96%A0%20%EF%BD%9E%E6%B1%A0%E8%A2%8B%E2%80%A6) | 10階/SRC14階建 | 92戸 | A |  | - | - | - | 26.8万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21002580/) |
-| 豊島区上池袋２丁目 マンション | 1億500万円 | 2LDK+S（納戸） | 72.9㎡ | 築2003年 | 池袋 徒歩10分 | 豊島区上池袋２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%B1%8A%E5%B3%B6%E5%8C%BA%E4%B8%8A%E6%B1%A0%E8%A2%8B%EF%BC%92%E4%B8%81%E7%9B%AE%20%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3) | 10階/SRC14階建 | 92戸 | A |  | - | - | - | 26.8万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20398525/) |
 | サンクレイドルレヴィール池袋 | 1億500万円 | 2LDK+S（納戸） | 72.9㎡ | 築2003年 | 池袋 徒歩10分 | 豊島区上池袋２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%AF%E3%83%AC%E3%82%A4%E3%83%89%E3%83%AB%E3%83%AC%E3%83%B4%E3%82%A3%E3%83%BC%E3%83%AB%E6%B1%A0%E8%A2%8B) | 10階/SRC14階建 | 93戸 | A |  | - | - | - | 26.8万円/月 | 37分（34-42分） | 31分（28-36分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20503409/) |
 | サンクレイドルレヴィ－ル池袋 | 1億500万円 | 2LDK+S（納戸） | 72.9㎡ | 築2003年 | 池袋 徒歩10分 | 豊島区上池袋２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B5%E3%83%B3%E3%82%AF%E3%83%AC%E3%82%A4%E3%83%89%E3%83%AB%E3%83%AC%E3%83%B4%E3%82%A3%EF%BC%8D%E3%83%AB%E6%B1%A0%E8%A2%8B) | 10階/SRC14階建 | 92戸 | A |  | - | - | - | 26.8万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20617941/) |
+| 豊島区上池袋２丁目 マンション | 1億500万円 | 2LDK+S（納戸） | 72.9㎡ | 築2003年 | 池袋 徒歩10分 | 豊島区上池袋２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%B1%8A%E5%B3%B6%E5%8C%BA%E4%B8%8A%E6%B1%A0%E8%A2%8B%EF%BC%92%E4%B8%81%E7%9B%AE%20%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3) | 10階/SRC14階建 | 92戸 | A |  | - | - | - | 26.8万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20398525/) |
 | リストレジデンス池袋 | 9980万円 | 2LDK | 60.5㎡ | 築2013年 | 池袋 徒歩10分 | 豊島区上池袋１－１３－８ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AA%E3%82%B9%E3%83%88%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%E6%B1%A0%E8%A2%8B) | 11階/RC14階建 | 41戸 | B |  | - | - | - | 25.6万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20474410/) |
 | ドラゴンマンション池袋壱番館 | 8999万円 | 2LDK+S（納戸） | 75.0㎡ | 築1999年 | 池袋 徒歩9分 | 豊島区池袋本町１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%89%E3%83%A9%E3%82%B4%E3%83%B3%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E6%B1%A0%E8%A2%8B%E5%A3%B1%E7%95%AA%E9%A4%A8) | 4階/SRC14階建一部RC | 67戸 | A |  | - | - | - | 23.4万円/月 | 37分（34-42分） | 31分（28-36分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20695645/) |
 | FT池袋 | 7980万円 | 2LDK+S（納戸） | 65.7㎡ | 築2026年 | 池袋 徒歩9分 | 豊島区池袋３ | [Google Map](https://www.google.com/maps/search/?api=1&query=FT%E6%B1%A0%E8%A2%8B) | 1階/鉄骨3階建 | 5戸 | B |  | - | - | - | 21.2万円/月 | 28分 | 22分 | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20538025/) |
@@ -4061,30 +3886,30 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| グローリオタワー巣鴨 | 1億1000万円 | 2LDK | 68.1㎡ | 築2006年 | 西巣鴨 徒歩5分 | 豊島区巣鴨４－４４－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%AA%E3%82%AA%E3%82%BF%E3%83%AF%E3%83%BC%E5%B7%A3%E9%B4%A8) | 15階/RC29階地下1階建 | 190戸 | B |  | - | - | - | 27.9万円/月 | 53分（50-58分） | 46分（43-51分） | [詳細](https://www.nomu.com/mansion/id/FC9C5003/) |
+| グローリオタワー巣鴨 | 1億1000万円 | 2LDK | 68.1㎡ | 築2006年 | 西巣鴨 徒歩5分 | 豊島区巣鴨４－４４－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%AA%E3%82%AA%E3%82%BF%E3%83%AF%E3%83%BC%E5%B7%A3%E9%B4%A8) | 15階/RC29階地下1階建 | 190戸 | B |  | - | - | - | 27.9万円/月 | 55分（52-60分） | 51分（48-56分） | [詳細](https://www.nomu.com/mansion/id/FC9C5003/) |
 | ソネット上池袋　豊島区上池袋４丁目 | 1億598万円 | 3LDK | 95.5㎡ | 築1997年 | 西巣鴨 徒歩10分 | 豊島区上池袋４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%BD%E3%83%8D%E3%83%83%E3%83%88%E4%B8%8A%E6%B1%A0%E8%A2%8B%E3%80%80%E8%B1%8A%E5%B3%B6%E5%8C%BA%E4%B8%8A%E6%B1%A0%E8%A2%8B%EF%BC%94%E4%B8%81%E7%9B%AE) | 6階/SRC14階地下2階建 | 127戸 | A |  | - | - | - | 27.0万円/月 | 46分（43-51分） | 39分（36-44分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_79230554/) |
 
 #### 要町
-所在地: 豊島区西池袋４、豊島区要町１
+所在地: 豊島区要町１、豊島区西池袋４
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | オーベル池袋立教通り | 1億980万円 | 2LDK | 66.6㎡ | 築1998年 | 要町 徒歩5分 | 豊島区西池袋４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AA%E3%83%BC%E3%83%99%E3%83%AB%E6%B1%A0%E8%A2%8B%E7%AB%8B%E6%95%99%E9%80%9A%E3%82%8A) | 1階/SRC10階建 | 117戸 | B |  | - | - | - | 27.8万円/月 | 45分（42-50分） | 38分（35-43分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20887936/) |
-| トゥールロワイヤル池袋要町 | 9999万円 | 3LDK | 62.0㎡ | 築2002年 | 要町 徒歩2分 | 豊島区要町１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%88%E3%82%A5%E3%83%BC%E3%83%AB%E3%83%AD%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AB%E6%B1%A0%E8%A2%8B%E8%A6%81%E7%94%BA) | 5階/RC10階建 | 30戸 | B |  | - | - | - | 25.7万円/月 | 56分（53-61分） | 49分（46-54分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20975344/) |
+| トゥールロワイヤル池袋要町 | 9999万円 | 3LDK | 62.0㎡ | 築2002年 | 要町 徒歩2分 | 豊島区要町１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%88%E3%82%A5%E3%83%BC%E3%83%AB%E3%83%AD%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AB%E6%B1%A0%E8%A2%8B%E8%A6%81%E7%94%BA) | 5階/RC10階建 | 30戸 | B |  | - | - | - | 25.7万円/月 | 51分（48-56分） | 44分（41-49分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20975344/) |
 
 #### 護国寺
 所在地: 豊島区雑司が谷1丁目49-11
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 菱和パレス目白台グラーサ 9階 | 1億2500万円 | 3LDK | 73.6㎡ | 築2001年 | 護国寺 徒歩6分 | 豊島区雑司が谷1丁目49-11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%8F%B1%E5%92%8C%E3%83%91%E3%83%AC%E3%82%B9%E7%9B%AE%E7%99%BD%E5%8F%B0%E3%82%B0%E3%83%A9%E3%83%BC%E3%82%B5%209%E9%9A%8E) | 9階/15階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 26分 | 18分 | [詳細](https://www.homes.co.jp/mansion/b-1535990004526/) |
+| 菱和パレス目白台グラーサ 9階 | 1億2500万円 | 3LDK | 73.6㎡ | 築2001年 | 護国寺 徒歩6分 | 豊島区雑司が谷1丁目49-11 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%8F%B1%E5%92%8C%E3%83%91%E3%83%AC%E3%82%B9%E7%9B%AE%E7%99%BD%E5%8F%B0%E3%82%B0%E3%83%A9%E3%83%BC%E3%82%B5%209%E9%9A%8E) | 9階/15階建 | 戸数:不明 |  |  | - | - | - | 31.2万円/月 | 28分（25-33分） | 24分（21-29分） | [詳細](https://www.homes.co.jp/mansion/b-1535990004526/) |
 
 #### 都営三田線 西巣鴨駅 徒歩1分
 所在地: 豊島区西巣鴨３丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 朝日メトロステージ西巣鴨 | 1億2000万円 | 3LDK | 94.4㎡ | 築2000年 | 西巣鴨駅 徒歩1分 | 豊島区西巣鴨３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9C%9D%E6%97%A5%E3%83%A1%E3%83%88%E3%83%AD%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E8%A5%BF%E5%B7%A3%E9%B4%A8) | 6階/14階建 | 200戸 |  |  | - | - | - | 30.1万円/月 | 50分（47-55分） | 45分（42-50分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FLGBDA08/) |
+| 朝日メトロステージ西巣鴨 | 1億2000万円 | 3LDK | 94.4㎡ | 築2000年 | 西巣鴨駅 徒歩1分 | 豊島区西巣鴨３丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9C%9D%E6%97%A5%E3%83%A1%E3%83%88%E3%83%AD%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E8%A5%BF%E5%B7%A3%E9%B4%A8) | 6階/14階建 | 200戸 |  |  | - | - | - | 30.1万円/月 | 53分（50-58分） | 46分（43-51分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FLGBDA08/) |
 
 #### 都電荒川線 向原駅 38
 所在地: 豊島区東池袋4丁目10 38
@@ -4098,7 +3923,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| クリオ大塚弐番館 4階 | 1億499万円 | 3LDK | 68.5㎡ | 築2001年 | 巣鴨新田駅 徒歩4分 | 豊島区北大塚3丁目22-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E5%A4%A7%E5%A1%9A%E5%BC%90%E7%95%AA%E9%A4%A8%204%E9%9A%8E) | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 26.8万円/月 | 30分 | 24分 | [詳細](https://www.homes.co.jp/mansion/b-1192950012922/) |
+| クリオ大塚弐番館 4階 | 1億999万円 | 3LDK | 68.5㎡ | 築2001年 | 巣鴨新田駅 徒歩4分 | 豊島区北大塚3丁目22-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E5%A4%A7%E5%A1%9A%E5%BC%90%E7%95%AA%E9%A4%A8%204%E9%9A%8E) | 4階/15階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 55分（52-60分） | 50分（47-55分） | [詳細](https://www.homes.co.jp/mansion/b-1267650035242/) |
 | TOKYOシティトリエ 9階 | 9998万円 | 3LDK | 62.1㎡ | 築2005年 | 巣鴨新田駅 徒歩8分 | 豊島区西巣鴨1丁目12-1 | [Google Map](https://www.google.com/maps/search/?api=1&query=TOKYO%E3%82%B7%E3%83%86%E3%82%A3%E3%83%88%E3%83%AA%E3%82%A8%209%E9%9A%8E) | 9階/25階建 | 戸数:不明 |  |  | - | - | - | 25.7万円/月 | 51分（48-56分） | 44分（41-49分） | [詳細](https://www.homes.co.jp/mansion/b-1514880000196/) |
 
 #### 都電荒川線 庚申塚駅
@@ -4106,15 +3931,15 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ParkHOMES巣鴨 Central avenue 3階 | 1億2800万円 | 2SLDK | 73.4㎡ | 築2005年 | 庚申塚駅 徒歩2分 | 豊島区巣鴨4丁目29-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=ParkHOMES%E5%B7%A3%E9%B4%A8%20Central%20avenue%203%E9%9A%8E) | 3階/8階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 35分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1354210002485/) |
+| ParkHOMES巣鴨 Central avenue 3階 | 1億2800万円 | 2SLDK | 73.4㎡ | 築2005年 | 庚申塚駅 徒歩2分 | 豊島区巣鴨4丁目29-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=ParkHOMES%E5%B7%A3%E9%B4%A8%20Central%20avenue%203%E9%9A%8E) | 3階/8階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://www.homes.co.jp/mansion/b-1354210002485/) |
 
 #### 都電荒川線 新庚申塚駅
 所在地: 豊島区巣鴨4丁目、豊島区巣鴨5丁目15-8
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億1000万円 | 2LDK | 68.1㎡ | 築2006年 | 新庚申塚駅 徒歩3分 | 豊島区巣鴨4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E5%B7%A3%E9%B4%A84%E4%B8%81%E7%9B%AE) | 15階/29階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 40分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1004590048625/) |
-| レヂオンス巣鴨 4階 | 9680万円 | 3LDK | 63.1㎡ | 築1998年 | 新庚申塚駅 徒歩3分 | 豊島区巣鴨5丁目15-8 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%83%82%E3%82%AA%E3%83%B3%E3%82%B9%E5%B7%A3%E9%B4%A8%204%E9%9A%8E) | 4階/14階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 35分 | 28分 | [詳細](https://www.homes.co.jp/mansion/b-1072760000648/) |
+|  | 1億1000万円 | 2LDK | 68.1㎡ | 築2006年 | 新庚申塚駅 徒歩3分 | 豊島区巣鴨4丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B1%8A%E5%B3%B6%E5%8C%BA%E5%B7%A3%E9%B4%A84%E4%B8%81%E7%9B%AE) | 15階/29階建 | 戸数:不明 |  |  | - | - | - | 27.9万円/月 | 55分（52-60分） | 51分（48-56分） | [詳細](https://www.homes.co.jp/mansion/b-1004590048625/) |
+| レヂオンス巣鴨 4階 | 9680万円 | 3LDK | 63.1㎡ | 築1998年 | 新庚申塚駅 徒歩3分 | 豊島区巣鴨5丁目15-8 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%83%82%E3%82%AA%E3%83%B3%E3%82%B9%E5%B7%A3%E9%B4%A8%204%E9%9A%8E) | 4階/14階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://www.homes.co.jp/mansion/b-1072760000648/) |
 
 #### 雑司が谷
 所在地: 豊島区高田１－１７６－２、豊島区高田2丁目
@@ -4136,7 +3961,7 @@
 | ブリリアシティ西早稲田 | 9890万円 | 3LDK | 72.0㎡ | 築2022年 | 面影橋 徒歩1分 | 豊島区高田１-18-6 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E3%82%B7%E3%83%86%E3%82%A3%E8%A5%BF%E6%97%A9%E7%A8%B2%E7%94%B0) | 2階/RC15階建 | 454戸 |  |  | - | - | - | 25.4万円/月 | 34分（31-39分） | 28分（25-33分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20975366/) |
 
 #### 駒込
-所在地: 豊島区駒込1丁目、豊島区駒込４
+所在地: 豊島区駒込４、豊島区駒込1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4150,29 +3975,29 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 1億1880万円 | 3LDK | 70.3㎡ | 築1999年 | 赤羽駅 徒歩4分 | 北区赤羽西1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8C%97%E5%8C%BA%E8%B5%A4%E7%BE%BD%E8%A5%BF1%E4%B8%81%E7%9B%AE) | 14階/20階建 | 戸数:不明 |  |  | - | - | - | 29.8万円/月 | 45分 | 40分 | [詳細](https://www.homes.co.jp/mansion/b-1337110001829/) |
+|  | 1億1880万円 | 3LDK | 70.3㎡ | 築1999年 | 赤羽駅 徒歩4分 | 北区赤羽西1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8C%97%E5%8C%BA%E8%B5%A4%E7%BE%BD%E8%A5%BF1%E4%B8%81%E7%9B%AE) | 14階/20階建 | 戸数:不明 |  |  | - | - | - | 29.8万円/月 | 45分（42-50分） | 45分（42-50分） | [詳細](https://www.homes.co.jp/mansion/b-1337110001829/) |
 
 #### JR埼京線 板橋駅
 所在地: 北区滝野川7丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| クレアホームズ滝野川　オートロック付・ペット飼育可 2階 | 9680万円 | 3LDK | 73.4㎡ | 築2005年 | 板橋駅 徒歩8分 | 北区滝野川7丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%A2%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E6%BB%9D%E9%87%8E%E5%B7%9D%E3%80%80%E3%82%AA%E3%83%BC%E3%83%88%E3%83%AD%E3%83%83%E3%82%AF%E4%BB%98%E3%83%BB%E3%83%9A%E3%83%83%E3%83%88%E9%A3%BC%E8%82%B2%E5%8F%AF%202%E9%9A%8E) | 2階/9階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 35分 | 26分 | [詳細](https://www.homes.co.jp/mansion/b-1500010000879/) |
+| クレアホームズ滝野川　オートロック付・ペット飼育可 2階 | 9680万円 | 3LDK | 73.4㎡ | 築2005年 | 板橋駅 徒歩8分 | 北区滝野川7丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AC%E3%82%A2%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E6%BB%9D%E9%87%8E%E5%B7%9D%E3%80%80%E3%82%AA%E3%83%BC%E3%83%88%E3%83%AD%E3%83%83%E3%82%AF%E4%BB%98%E3%83%BB%E3%83%9A%E3%83%83%E3%83%88%E9%A3%BC%E8%82%B2%E5%8F%AF%202%E9%9A%8E) | 2階/9階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 43分（40-48分） | 36分（33-41分） | [詳細](https://www.homes.co.jp/mansion/b-1500010000879/) |
 
 #### JR山手線 駒込駅
 所在地: 北区西ケ原1丁目6-4、北区中里3丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| シティハウス駒込ステーションコート 10階 | 1億2800万円 | 3SLDK | 70.4㎡ | 築2018年 | 駒込駅 徒歩6分 | 北区西ケ原1丁目6-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E9%A7%92%E8%BE%BC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%88%2010%E9%9A%8E) | 10階/12階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 40分 | 34分 | [詳細](https://www.homes.co.jp/mansion/b-1565410000027/) |
-| 藤和シティホームズ駒込古河庭園 4階 | 1億2800万円 | 3LDK | 73.6㎡ | 築2002年 | 駒込駅 徒歩10分 | 北区中里3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E9%A7%92%E8%BE%BC%E5%8F%A4%E6%B2%B3%E5%BA%AD%E5%9C%92%204%E9%9A%8E) | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-35006110000087/) |
+| シティハウス駒込ステーションコート 10階 | 1億2800万円 | 3SLDK | 70.4㎡ | 築2018年 | 駒込駅 徒歩6分 | 北区西ケ原1丁目6-4 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%83%8F%E3%82%A6%E3%82%B9%E9%A7%92%E8%BE%BC%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%88%2010%E9%9A%8E) | 10階/12階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://www.homes.co.jp/mansion/b-1565410000027/) |
+| 藤和シティホームズ駒込古河庭園 4階 | 1億2800万円 | 3LDK | 73.6㎡ | 築2002年 | 駒込駅 徒歩10分 | 北区中里3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E8%97%A4%E5%92%8C%E3%82%B7%E3%83%86%E3%82%A3%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E9%A7%92%E8%BE%BC%E5%8F%A4%E6%B2%B3%E5%BA%AD%E5%9C%92%204%E9%9A%8E) | 4階/6階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 44分（41-49分） | 40分（37-45分） | [詳細](https://www.homes.co.jp/mansion/b-35006110000087/) |
 
 #### JR高崎線 尾久駅
 所在地: 北区昭和町2丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| 尾久駅2分「アネシア東京尾久」 14階 | 1億880万円 | 3LDK | 68.0㎡ | 築2018年 | 尾久駅 徒歩1分 | 北区昭和町2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%B0%BE%E4%B9%85%E9%A7%852%E5%88%86%E3%80%8C%E3%82%A2%E3%83%8D%E3%82%B7%E3%82%A2%E6%9D%B1%E4%BA%AC%E5%B0%BE%E4%B9%85%E3%80%8D%2014%E9%9A%8E) | 14階/14階建 | 戸数:不明 |  |  | - | - | - | 27.6万円/月 | 39分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1385320004482/) |
+| 尾久駅2分「アネシア東京尾久」 14階 | 1億880万円 | 3LDK | 68.0㎡ | 築2018年 | 尾久駅 徒歩1分 | 北区昭和町2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E5%B0%BE%E4%B9%85%E9%A7%852%E5%88%86%E3%80%8C%E3%82%A2%E3%83%8D%E3%82%B7%E3%82%A2%E6%9D%B1%E4%BA%AC%E5%B0%BE%E4%B9%85%E3%80%8D%2014%E9%9A%8E) | 14階/14階建 | 戸数:不明 |  |  | - | - | - | 27.6万円/月 | 55分（52-60分） | 51分（48-56分） | [詳細](https://www.homes.co.jp/mansion/b-1385320004482/) |
 
 #### ◇22階からの開けた眺望・全室からスカイツリーが望
 所在地: 北区滝野川6丁目
@@ -4186,7 +4011,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| GENOVIA駒込駅green veil 11階 | 1億2660万円 | 3LDK | 85.0㎡ | 築2017年 | 【駒込駅 徒歩7分 | 北区西ケ原1丁目27-52 | [Google Map](https://www.google.com/maps/search/?api=1&query=GENOVIA%E9%A7%92%E8%BE%BC%E9%A7%85green%20veil%2011%E9%9A%8E) | 11階/11階建 | 戸数:不明 |  |  | - | - | - | 31.6万円/月 | 40分 | 30分 | [詳細](https://www.homes.co.jp/mansion/b-1445460001073/) |
+| GENOVIA駒込駅green veil 11階 | 1億2660万円 | 3LDK | 85.0㎡ | 築2017年 | 【駒込駅 徒歩7分 | 北区西ケ原1丁目27-52 | [Google Map](https://www.google.com/maps/search/?api=1&query=GENOVIA%E9%A7%92%E8%BE%BC%E9%A7%85green%20veil%2011%E9%9A%8E) | 11階/11階建 | 戸数:不明 |  |  | - | - | - | 31.6万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://www.homes.co.jp/mansion/b-1445460001073/) |
 
 #### 京浜東北・根岸線 王子駅 徒歩4分
 所在地: 北区王子１丁目
@@ -4203,7 +4028,7 @@
 | ザ・パークハウス赤羽 ウエストウイング | 1億1800万円 | 3LDK | 70.1㎡ | 築2012年 | 赤羽駅 徒歩4分 | 北区赤羽南１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E8%B5%A4%E7%BE%BD%20%E3%82%A6%E3%82%A8%E3%82%B9%E3%83%88%E3%82%A6%E3%82%A4%E3%83%B3%E3%82%B0) | 8階/15階建 | 56戸 | B |  | - | - | - | 29.7万円/月 | 47分（44-52分） | 47分（44-52分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FP8BDA04/) |
 
 #### 北赤羽
-所在地: 北区浮間１、北区浮間１丁目
+所在地: 北区浮間１丁目、北区浮間１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4211,14 +4036,14 @@
 | ヴェレーナグラン北赤羽マスタープレイス | 9180万円 | 3LDK | 68.8㎡ | 築2025年 | 北赤羽 徒歩5分 | 北区浮間１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%B4%E3%82%A7%E3%83%AC%E3%83%BC%E3%83%8A%E3%82%B0%E3%83%A9%E3%83%B3%E5%8C%97%E8%B5%A4%E7%BE%BD%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B9) | 8階/RC19階建 | 253戸 | B |  | - | - | - | 23.9万円/月 | 55分（52-60分） | 50分（47-55分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20952658/) |
 
 #### 十条
-所在地: 北区中十条１－１９－７、北区上十条２丁目、北区上十条1丁目、北区上十条１－８－３４
+所在地: 北区上十条1丁目、北区上十条１－８－３４、北区中十条１－１９－７、北区上十条２丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ザ・パークハウス十条 11階 | 1億2800万円 | 3LDK | 73.5㎡ | 築2023年 | 十条 徒歩4分 | 北区上十条1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E5%8D%81%E6%9D%A1%2011%E9%9A%8E) | 11階/11階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-35005460001354/) |
+| ザ・パークハウス十条 11階 | 1億2800万円 | 3LDK | 73.5㎡ | 築2023年 | 十条 徒歩4分 | 北区上十条1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E5%8D%81%E6%9D%A1%2011%E9%9A%8E) | 11階/11階建 | 戸数:不明 |  |  | - | - | - | 31.9万円/月 | 51分（48-56分） | 46分（43-51分） | [詳細](https://www.homes.co.jp/mansion/b-35005460001354/) |
 | パークホームズ十条 | 9800万円 | 2LDK | 60.1㎡ | 築2024年 | 十条 徒歩8分 | 北区中十条１－１９－７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%81%E6%9D%A1) | 10階/RC14階建 | 27戸 | B |  | - | - | - | 25.2万円/月 | 50分（47-55分） | 45分（42-50分） | [詳細](https://www.livable.co.jp/mansion/C48264948/) |
-| パークホームズ十条 | 9480万円 | 3LDK | 74.7㎡ | 築2024年 | 十条 徒歩8分 | 北区中十条１－１９－７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%81%E6%9D%A1) | 3階/RC14階建 | 27戸 | B |  | - | - | - | 24.5万円/月 | 50分（47-55分） | 45分（42-50分） | [詳細](https://www.livable.co.jp/mansion/C1325Y451/) |
 | ザ・パークハウス十条 | 9480万円 | 2LDK＋2S | 63.2㎡ | 築2023年 | 十条 徒歩4分 | 北区上十条１－８－３４ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E5%8D%81%E6%9D%A1) | 2階/11階建 | 64戸 | B |  | - | - | - | 24.5万円/月 | 52分（49-57分） | 48分（45-53分） | [詳細](https://www.nomu.com/mansion/id/RE670304/) |
+| パークホームズ十条 | 9480万円 | 3LDK | 74.7㎡ | 築2024年 | 十条 徒歩8分 | 北区中十条１－１９－７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%83%9B%E3%83%BC%E3%83%A0%E3%82%BA%E5%8D%81%E6%9D%A1) | 3階/RC14階建 | 27戸 | B |  | - | - | - | 24.5万円/月 | 50分（47-55分） | 45分（42-50分） | [詳細](https://www.livable.co.jp/mansion/C1325Y451/) |
 | ザ・タワー十条 | 1億2200万円 | 2LDK | 62.5㎡ | 築2024年 | 十条 徒歩1分 | 北区上十条２丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%82%BF%E3%83%AF%E3%83%BC%E5%8D%81%E6%9D%A1) | 18階/39階建 | 578戸 |  |  | - | - | - | 30.6万円/月 | 51分（48-56分） | 47分（44-52分） | [詳細](https://www.livable.co.jp/mansion/C13262348/) |
 
 #### 山手線 田端駅 徒歩8分
@@ -4233,7 +4058,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9599万円 | 3LDK | 70.5㎡ | 築2001年 | 王子駅 徒歩2分 | 北区王子1丁目19-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8C%97%E5%8C%BA%E7%8E%8B%E5%AD%901%E4%B8%81%E7%9B%AE19-2) | 2階/11階建 | 戸数:不明 |  |  | - | - | - | 24.8万円/月 | 40分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1421770027762/) |
+|  | 9599万円 | 3LDK | 70.5㎡ | 築2001年 | 王子駅 徒歩2分 | 北区王子1丁目19-2 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8C%97%E5%8C%BA%E7%8E%8B%E5%AD%901%E4%B8%81%E7%9B%AE19-2) | 2階/11階建 | 戸数:不明 |  |  | - | - | - | 24.8万円/月 | 40分（37-45分） | 35分（32-40分） | [詳細](https://www.homes.co.jp/mansion/b-1421770027762/) |
 
 #### 東十条
 所在地: 北区王子５
@@ -4248,12 +4073,12 @@
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
 | ウィルローズ王子 | 1億780万円 | 2LDK | 62.8㎡ | 築2018年 | 王子 徒歩4分 | 北区王子2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A6%E3%82%A3%E3%83%AB%E3%83%AD%E3%83%BC%E3%82%BA%E7%8E%8B%E5%AD%90) | 13階/RC15階建 | 32戸 | B |  | - | - | - | 27.4万円/月 | 41分（38-46分） | 36分（33-41分） | [詳細](https://www.nomu.com/mansion/id/WD970015/) |
-| ダイアパレス飛鳥山 | 1億500万円 | 3LDK | 83.6㎡ | 築2006年 | 王子 徒歩9分 | 北区滝野川１－６６－７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%80%E3%82%A4%E3%82%A2%E3%83%91%E3%83%AC%E3%82%B9%E9%A3%9B%E9%B3%A5%E5%B1%B1) | 19階/RC19階地下2階建 | 156戸 | B |  | - | - | - | 26.8万円/月 | 42分（39-47分） | 35分（32-40分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20465581/) |
+| ダイアパレス飛鳥山 | 1億500万円 | 3LDK | 83.6㎡ | 築2006年 | 王子 徒歩9分 | 北区滝野川１－６６－７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%80%E3%82%A4%E3%82%A2%E3%83%91%E3%83%AC%E3%82%B9%E9%A3%9B%E9%B3%A5%E5%B1%B1) | 19階/RC19階地下2階建 | 156戸 | B |  | - | - | - | 26.8万円/月 | 46分（43-51分） | 41分（38-46分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20465581/) |
 | 王子飛鳥山ザ・ファーストタワー＆レジデンス　タワー棟 | 1億1300万円 | 3LDK | 69.9㎡ | 築2016年 | 王子 徒歩1分 | 北区堀船１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%8E%8B%E5%AD%90%E9%A3%9B%E9%B3%A5%E5%B1%B1%E3%82%B6%E3%83%BB%E3%83%95%E3%82%A1%E3%83%BC%E3%82%B9%E3%83%88%E3%82%BF%E3%83%AF%E3%83%BC%EF%BC%86%E3%83%AC%E3%82%B8%E3%83%87%E3%83%B3%E3%82%B9%E3%80%80%E3%82%BF%E3%83%AF%E3%83%BC%E6%A3%9F) | 5階/RC29階地下1階建 | 230戸 | A |  | - | - | - | 28.6万円/月 | 38分（35-43分） | 33分（30-38分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20753097/) |
 | ガーデンクロス東京王子 | 9980万円 | 3LDK+S（納戸） | 70.1㎡ | 築2021年 | 王子 徒歩10分 | 北区堀船２－２０－１７ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%82%AF%E3%83%AD%E3%82%B9%E6%9D%B1%E4%BA%AC%E7%8E%8B%E5%AD%90) | 4階/RC14階建一部鉄骨 | 300戸 | B |  | - | - | - | 25.6万円/月 | 47分（44-52分） | 42分（39-47分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_kita/nc_20240983/) |
 
 #### 王子神谷
-所在地: 北区王子５、北区東十条１-13-3、北区王子５－１１－４０、北区王子5丁目
+所在地: 北区王子５、北区王子５－１１－４０、北区王子5丁目、北区東十条１-13-3
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4287,7 +4112,7 @@
 | パークタワー滝野川 | 1億2900万円 | 3LDK | 70.4㎡ | 築2013年 | 西巣鴨 徒歩3分 | 北区滝野川６丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%BC%E3%82%AF%E3%82%BF%E3%83%AF%E3%83%BC%E6%BB%9D%E9%87%8E%E5%B7%9D) | 8階/28階建 | 245戸 |  |  | - | - | - | 32.1万円/月 | 45分（42-50分） | 38分（35-43分） | [詳細](https://www.livable.co.jp/mansion/C48265U74/) |
 
 #### 赤羽
-所在地: 北区赤羽南１、北区神谷２丁目、北区神谷２、北区赤羽西１
+所在地: 北区赤羽西１、北区神谷２丁目、北区神谷２、北区赤羽南１
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4315,7 +4140,7 @@
 ### 荒川区
 
 #### JR山手線 日暮里駅
-所在地: 荒川区東日暮里５－５４、荒川区東日暮里5丁目
+所在地: 荒川区東日暮里5丁目、荒川区東日暮里５－５４
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4396,7 +4221,7 @@
 | コスモ西日暮里ロイヤルフォルム | 1億999万円 | 3LDK | 78.0㎡ | 築2003年 | 西日暮里駅 徒歩9分 | 荒川区西日暮里１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B3%E3%82%B9%E3%83%A2%E8%A5%BF%E6%97%A5%E6%9A%AE%E9%87%8C%E3%83%AD%E3%82%A4%E3%83%A4%E3%83%AB%E3%83%95%E3%82%A9%E3%83%AB%E3%83%A0) | 11階/11階建 | 49戸 |  |  | - | - | - | 27.9万円/月 | 40分（37-45分） | 38分（35-43分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FX4BGA0E/) |
 
 #### 日暮里
-所在地: 荒川区西日暮里２、荒川区東日暮里5丁目、荒川区東日暮里５丁目、荒川区東日暮里6丁目
+所在地: 荒川区東日暮里6丁目、荒川区西日暮里２、荒川区東日暮里５丁目、荒川区東日暮里5丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4439,7 +4264,7 @@
 ### 板橋区
 
 #### ときわ台
-所在地: 板橋区前野町２、板橋区前野町2丁目
+所在地: 板橋区前野町2丁目、板橋区前野町２
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4461,7 +4286,7 @@
 | プラウドシティ加賀学園通り | 9980万円 | 3SLDK | 74.1㎡ | 築2016年 | 十条駅 徒歩10分 | 板橋区加賀１－２１－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B7%E3%83%86%E3%82%A3%E5%8A%A0%E8%B3%80%E5%AD%A6%E5%9C%92%E9%80%9A%E3%82%8A) | 4階/15階建 | 363戸 | A |  | - | - | - | 25.6万円/月 | 44分（41-49分） | 40分（37-45分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FLGBGA2B/) |
 
 #### 大山
-所在地: 板橋区大山町５４－５、板橋区大山町、板橋区幸町５－１３、板橋区大山東町、板橋区大山東町６０－６ 他
+所在地: 板橋区幸町５－１３、板橋区大山東町、板橋区大山東町６０－６、板橋区大山西町、板橋区大山西町1-2 他
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4471,8 +4296,8 @@
 | プレミスト大山 | 9780万円 | 3LDK | 73.0㎡ | 築2012年 | 大山 徒歩2分 | 板橋区大山東町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AC%E3%83%9F%E3%82%B9%E3%83%88%E5%A4%A7%E5%B1%B1) | 4階/RC15階建 | 84戸 | A |  | - | - | - | 25.2万円/月 | 34分（31-39分） | 28分（25-33分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_21014079/) |
 | ザ・パークハウス板橋大山大楠ノ杜楠館 | 9680万円 | 2LDK | 62.7㎡ | 築2023年 | 大山 徒歩7分 | 板橋区大山町５４－５ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%BF%E6%A9%8B%E5%A4%A7%E5%B1%B1%E5%A4%A7%E6%A5%A0%E3%83%8E%E6%9D%9C%E6%A5%A0%E9%A4%A8) | 1階/RC14階地下2階建 | 187戸 | A |  | - | - | - | 25.0万円/月 | 39分（36-44分） | 33分（30-38分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20855824/) |
 | ザ・パークハウス板橋大山大楠ノ杜 | 9680万円 | 2LDK | 62.7㎡ | 築2023年 | 大山 徒歩7分 | 板橋区大山町54-5 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%BF%E6%A9%8B%E5%A4%A7%E5%B1%B1%E5%A4%A7%E6%A5%A0%E3%83%8E%E6%9D%9C) | 1階/SRC14階地下2階建 | 187戸 | A |  | - | - | - | 25.0万円/月 | 39分（36-44分） | 33分（30-38分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20980826/) |
-| ザ・パークハウス板橋大山大楠ノ杜楠館 | 9480万円 | 2LDK | 62.7㎡ | 築2023年 | 大山 徒歩7分 | 板橋区大山町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%BF%E6%A9%8B%E5%A4%A7%E5%B1%B1%E5%A4%A7%E6%A5%A0%E3%83%8E%E6%9D%9C%E6%A5%A0%E9%A4%A8) | 1階/14階建 | 187戸 | B |  | - | - | - | 24.5万円/月 | 39分（36-44分） | 33分（30-38分） | [詳細](https://www.livable.co.jp/mansion/C13265165/) |
 | プレミスト大山 | 9480万円 | 2LDK | 69.0㎡ | 築2012年 | 大山 徒歩2分 | 板橋区大山東町６０－６ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%AC%E3%83%9F%E3%82%B9%E3%83%88%E5%A4%A7%E5%B1%B1) | 5階/15階建 | 84戸 | A |  | - | - | - | 24.5万円/月 | 34分（31-39分） | 28分（25-33分） | [詳細](https://www.livable.co.jp/mansion/C13263W60/) |
+| ザ・パークハウス板橋大山大楠ノ杜楠館 | 9480万円 | 2LDK | 62.7㎡ | 築2023年 | 大山 徒歩7分 | 板橋区大山町 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B6%E3%83%BB%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9%E6%9D%BF%E6%A9%8B%E5%A4%A7%E5%B1%B1%E5%A4%A7%E6%A5%A0%E3%83%8E%E6%9D%9C%E6%A5%A0%E9%A4%A8) | 1階/14階建 | 187戸 | B |  | - | - | - | 24.5万円/月 | 39分（36-44分） | 33分（30-38分） | [詳細](https://www.livable.co.jp/mansion/C13265165/) |
 | Ｂｒｉｌｌｉａ板橋大山 | 9280万円 | 2LDK | 70.0㎡ | 築2012年 | 大山 徒歩6分 | 板橋区幸町５－１３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%EF%BC%A2%EF%BD%92%EF%BD%89%EF%BD%8C%EF%BD%8C%EF%BD%89%EF%BD%81%E6%9D%BF%E6%A9%8B%E5%A4%A7%E5%B1%B1) | 13階/RC15階建 | 42戸 | A |  | - | - | - | 24.1万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20895994/) |
 | ブリリア板橋大山 | 9280万円 | 2LDK | 70.0㎡ | 築2012年 | 大山 徒歩6分 | 板橋区幸町５－１３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%AA%E3%83%AA%E3%82%A2%E6%9D%BF%E6%A9%8B%E5%A4%A7%E5%B1%B1) | 13階/RC15階建 | 42戸 | B |  | - | - | - | 24.1万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_itabashi/nc_20997872/) |
 | ジオ板橋大山 | 9480万円 | 3LDK | 68.6㎡ | 築2025年 | 大山 徒歩6分 | 板橋区仲町２－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B8%E3%82%AA%E6%9D%BF%E6%A9%8B%E5%A4%A7%E5%B1%B1) | 10階/RC10階建 | 285戸 | C |  | - | - | - | 24.5万円/月 | 38分（35-43分） | 32分（29-37分） | [詳細](https://www.nomu.com/mansion/id/F93C4013/) |
@@ -4570,10 +4395,10 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9680万円 | 3LDK | 87.1㎡ | 築1997年 | ■エクセルシオール新桜台■専用面積87平米！ルーフバルコニー 徒歩2分 / 新桜台駅 徒歩2分 | 練馬区羽沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%B7%B4%E9%A6%AC%E5%8C%BA%E7%BE%BD%E6%B2%A22%E4%B8%81%E7%9B%AE) | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 45分 | 35分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037308/) |
+|  | 9680万円 | 3LDK | 87.1㎡ | 築1997年 | ■エクセルシオール新桜台■専用面積87平米！ルーフバルコニー 徒歩2分 / 新桜台駅 徒歩2分 | 練馬区羽沢2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%B7%B4%E9%A6%AC%E5%8C%BA%E7%BE%BD%E6%B2%A22%E4%B8%81%E7%9B%AE) | 4階/5階建 | 戸数:不明 |  |  | - | - | - | 25.0万円/月 | 79分（76-84分） | 74分（71-79分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037308/) |
 
 #### 中村橋
-所在地: 練馬区中村北２丁目、練馬区中村北２
+所在地: 練馬区中村北２、練馬区中村北２丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4588,7 +4413,7 @@
 | ウェリス光が丘公園パークハウス | 9980万円 | 3LDK | 84.9㎡ | 築2004年 | 地下鉄赤塚 徒歩6分 | 練馬区田柄2丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A6%E3%82%A7%E3%83%AA%E3%82%B9%E5%85%89%E3%81%8C%E4%B8%98%E5%85%AC%E5%9C%92%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8F%E3%82%A6%E3%82%B9) | 6階/RC7階建 | 78戸 | B |  | - | - | - | 25.6万円/月 | 73分（70-78分） | 64分（61-69分） | [詳細](https://www.nomu.com/mansion/id/F87C6001/) |
 
 #### 大泉学園
-所在地: 練馬区東大泉1丁目、練馬区東大泉１－３７－２０
+所在地: 練馬区東大泉１－３７－２０、練馬区東大泉1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4600,14 +4425,14 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9480万円 | 3LDK | 67.9㎡ | 築2010年 | 大泉学園駅 徒歩2分 | 練馬区東大泉1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%B7%B4%E9%A6%AC%E5%8C%BA%E6%9D%B1%E5%A4%A7%E6%B3%891%E4%B8%81%E7%9B%AE) | 10階/26階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 69分 | 66分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037823/) |
+|  | 9480万円 | 3LDK | 67.9㎡ | 築2010年 | 大泉学園駅 徒歩2分 | 練馬区東大泉1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E7%B7%B4%E9%A6%AC%E5%8C%BA%E6%9D%B1%E5%A4%A7%E6%B3%891%E4%B8%81%E7%9B%AE) | 10階/26階建 | 戸数:不明 |  |  | - | - | - | 24.5万円/月 | 72分（69-77分） | 61分（58-66分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037823/) |
 
 #### 東京メトロ有楽町線 氷川台駅
 所在地: 練馬区桜台3丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| クリオ氷川台シーズンテラス 3階 | 1億1980万円 | 3LDK | 74.8㎡ | 築2024年 | 氷川台駅 徒歩3分 | 練馬区桜台3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E6%B0%B7%E5%B7%9D%E5%8F%B0%E3%82%B7%E3%83%BC%E3%82%BA%E3%83%B3%E3%83%86%E3%83%A9%E3%82%B9%203%E9%9A%8E) | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 50分 | 44分 | [詳細](https://www.homes.co.jp/mansion/b-1535080000595/) |
+| クリオ氷川台シーズンテラス 3階 | 1億1980万円 | 3LDK | 74.8㎡ | 築2024年 | 氷川台駅 徒歩3分 | 練馬区桜台3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E6%B0%B7%E5%B7%9D%E5%8F%B0%E3%82%B7%E3%83%BC%E3%82%BA%E3%83%B3%E3%83%86%E3%83%A9%E3%82%B9%203%E9%9A%8E) | 3階/5階建 | 戸数:不明 |  |  | - | - | - | 30.1万円/月 | 76分（73-81分） | 71分（68-76分） | [詳細](https://www.homes.co.jp/mansion/b-1535080000595/) |
 
 #### 桜台
 所在地: 練馬区桜台１、練馬区桜台１-1-10
@@ -4626,7 +4451,7 @@
 | クリオ氷川台シーズンテラス 2024年築マンション | 1億1980万円 | 3LDK | 74.8㎡ | 築2024年 | 氷川台 徒歩3分 | 練馬区桜台３ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%AF%E3%83%AA%E3%82%AA%E6%B0%B7%E5%B7%9D%E5%8F%B0%E3%82%B7%E3%83%BC%E3%82%BA%E3%83%B3%E3%83%86%E3%83%A9%E3%82%B9%202024%E5%B9%B4%E7%AF%89%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3) | 3階/RC5階建 | 54戸 | B |  | - | - | - | 30.1万円/月 | 51分（48-56分） | 41分（38-46分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_79001814/) |
 
 #### 石神井公園
-所在地: 練馬区高野台５、練馬区高野台５丁目、練馬区石神井町２、練馬区石神井町3丁目、練馬区高野台５－２２４０－１
+所在地: 練馬区高野台５、練馬区高野台５丁目、練馬区高野台５－２２４０－１、練馬区石神井町２、練馬区石神井町3丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4659,11 +4484,11 @@
 | 練馬桜台ガーデンハウス | 1億980万円 | 3LDK | 81.4㎡ | 築2002年 | 桜台駅 徒歩5分 | 練馬区桜台１丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E7%B7%B4%E9%A6%AC%E6%A1%9C%E5%8F%B0%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3%E3%83%8F%E3%82%A6%E3%82%B9) | 3階/9階建 | 46戸 |  |  | - | - | - | 27.8万円/月 | 67分（64-72分） | 62分（59-67分） | [詳細](https://www.rehouse.co.jp/buy/mansion/bkdetail/FK5BGA2F/) |
 
 #### 西武池袋・豊島線 石神井公園駅 徒歩7分
-所在地: 練馬区高野台５丁目、練馬区高野台５－２２３８－４３外７筆
+所在地: 練馬区高野台５－２２３８－４３外７筆、練馬区高野台５丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| ジオ石神井公園 | 9480万円 | 3LDK | 65.5㎡ | 築2023年 | 石神井公園駅 徒歩7分 | 練馬区高野台５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B8%E3%82%AA%E7%9F%B3%E7%A5%9E%E4%BA%95%E5%85%AC%E5%9C%92) | 1階/6階建 | 68戸 | B |  | - | - | - | 24.5万円/月 | 66分（63-71分） | 60分（57-65分） | [1](https://www.rehouse.co.jp/buy/mansion/bkdetail/F22BEA04/) [2](https://www.rehouse.co.jp/buy/mansion/bkdetail/F22BBA0C/) |
+| ジオ石神井公園 | 9480万円 | 3LDK | 65.1㎡ | 築2023年 | 石神井公園駅 徒歩7分 | 練馬区高野台５－２２３８－４３外７筆 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B8%E3%82%AA%E7%9F%B3%E7%A5%9E%E4%BA%95%E5%85%AC%E5%9C%92) | 1階/6階建 | 68戸 | B |  | - | - | - | 24.5万円/月 | 66分（63-71分） | 60分（57-65分） | [1](https://www.rehouse.co.jp/buy/mansion/bkdetail/F22BBA0C/) [2](https://www.rehouse.co.jp/buy/mansion/bkdetail/F22BEA04/) |
 
 #### 西武池袋・豊島線 練馬駅 徒歩4分
 所在地: 練馬区豊玉北６丁目
@@ -4722,7 +4547,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-|  | 9280万円 | 3LDK | 77.1㎡ | 築1997年 | 北千住駅 徒歩2分 | 足立区千住1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B6%B3%E7%AB%8B%E5%8C%BA%E5%8D%83%E4%BD%8F1%E4%B8%81%E7%9B%AE) | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 24.1万円/月 | 40分 | 42分 | [詳細](https://www.homes.co.jp/mansion/b-1216390037880/) |
+|  | 9280万円 | 3LDK | 77.1㎡ | 築1997年 | 北千住駅 徒歩2分 | 足立区千住1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E8%B6%B3%E7%AB%8B%E5%8C%BA%E5%8D%83%E4%BD%8F1%E4%B8%81%E7%9B%AE) | 5階/8階建 | 戸数:不明 |  |  | - | - | - | 24.1万円/月 | 45分（42-50分） | 44分（41-49分） | [詳細](https://www.homes.co.jp/mansion/b-1216390037880/) |
 
 #### 京成本線 京成関屋駅
 所在地: 足立区千住曙町４０－１
@@ -4740,7 +4565,7 @@
 | イニシア千住曙町 | 9890万円 | 3LDK | 77.5㎡ | 築2009年 | 京成関屋 徒歩5分 | 足立区千住曙町４０－１ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%83%8B%E3%82%B7%E3%82%A2%E5%8D%83%E4%BD%8F%E6%9B%99%E7%94%BA) | 17階/RC24階地下1階建 | 515戸 | B |  | - | - | - | 25.4万円/月 | 59分（56-64分） | 58分（55-63分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_20245104/) |
 
 #### 北千住
-所在地: 足立区千住旭町45-6、足立区千住３－９８、足立区千住1丁目、足立区千住寿町３５－１
+所在地: 足立区千住旭町45-6、足立区千住３－９８、足立区千住寿町３５－１、足立区千住1丁目
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4750,7 +4575,7 @@
 | ロワール北千住 | 9280万円 | 3LDK | 77.1㎡ | 築1997年 | 北千住 徒歩4分 | 足立区千住1丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AD%E3%83%AF%E3%83%BC%E3%83%AB%E5%8C%97%E5%8D%83%E4%BD%8F) | 5階/8階建 | 27戸 |  |  | - | - | - | 24.1万円/月 | 42分（39-47分） | 41分（38-46分） | [詳細](https://www.nomu.com/mansion/id/FB9C5006/) |
 
 #### 千住大橋
-所在地: 足立区千住橋戸町、足立区千住橋戸町１－５、足立区千住緑町１－２－１、足立区千住橋戸町１－２０
+所在地: 足立区千住橋戸町１－５、足立区千住橋戸町、足立区千住緑町１－２－１、足立区千住橋戸町１－２０
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4773,7 +4598,7 @@
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
-| レクセルマンション北綾瀬第2 6階 | 9200万円 | 3LDK | 87.7㎡ | 築1997年 | 北綾瀬駅 徒歩8分 | 足立区谷中3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%AF%E3%82%BB%E3%83%AB%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E5%8C%97%E7%B6%BE%E7%80%AC%E7%AC%AC2%206%E9%9A%8E) | 6階/8階建 | 戸数:不明 |  |  | - | - | - | 23.9万円/月 | 54分 | 50分 | [詳細](https://www.homes.co.jp/mansion/b-1542520000920/) |
+| レクセルマンション北綾瀬第2 6階 | 9200万円 | 3LDK | 87.7㎡ | 築1997年 | 北綾瀬駅 徒歩8分 | 足立区谷中3丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%AC%E3%82%AF%E3%82%BB%E3%83%AB%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E5%8C%97%E7%B6%BE%E7%80%AC%E7%AC%AC2%206%E9%9A%8E) | 6階/8階建 | 戸数:不明 |  |  | - | - | - | 23.9万円/月 | 53分（50-58分） | 52分（49-57分） | [詳細](https://www.homes.co.jp/mansion/b-1542520000920/) |
 
 #### 東武伊勢崎・大師線 牛田駅 徒歩3分
 所在地: 足立区千住東２丁目
@@ -4838,7 +4663,7 @@
 | シティテラス新小岩 | 9480万円 | 3LDK | 70.0㎡ | 築2022年 | 新小岩 徒歩3分 | 葛飾区新小岩２－６５８－１２ | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%82%B7%E3%83%86%E3%82%A3%E3%83%86%E3%83%A9%E3%82%B9%E6%96%B0%E5%B0%8F%E5%B2%A9) | 1階/RC15階建 | 268戸 | B |  | - | - | - | 24.5万円/月 | 42分（39-47分） | 38分（35-43分） | [詳細](https://suumo.jp/ms/chuko/tokyo/sc_katsushika/nc_78819636/) |
 
 #### 金町
-所在地: 葛飾区金町６－７０００、葛飾区金町6丁目
+所在地: 葛飾区金町6丁目、葛飾区金町６－７０００
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4904,7 +4729,7 @@
 | プラウドタワー平井 | 1億2980万円 | 3LDK | 72.1㎡ | 築2025年 | 平井 徒歩2分 | 江戸川区平井５丁目 | [Google Map](https://www.google.com/maps/search/?api=1&query=%E3%83%97%E3%83%A9%E3%82%A6%E3%83%89%E3%82%BF%E3%83%AF%E3%83%BC%E5%B9%B3%E4%BA%95) | 20階/29階建 | 374戸 |  |  | - | - | - | 32.3万円/月 | 48分（45-53分） | 42分（39-47分） | [詳細](https://www.livable.co.jp/mansion/C13265L21/) |
 
 #### 東京メトロ東西線 西葛西駅 徒歩7分
-所在地: 江戸川区西葛西２－２２－４５、江戸川区西葛西２丁目
+所在地: 江戸川区西葛西２丁目、江戸川区西葛西２－２２－４５
 
 | 物件名 | 価格 | 間取り | 専有 | 築年 | 駅徒歩 | 所在地 | Google Map | 階 | 総戸数 | 資産性(S/A/B/C) | 資産性根拠 | 楽観10年後 | 中立10年後 | 悲観10年後 | 月額(50年・諸経費3.5万) | エムスリーキャリア | playground(一番町) | 詳細 |
 |--------|------|--------|------|------|--------|--------|------------|-----|--------|----------------|------------|------------|------------|------------|------------------------|------|------|------|
@@ -4948,4 +4773,4 @@
 
 ---
 
-*レポート生成日時: 2026年06月11日 19:05（JST）*
+*レポート生成日時: 2026年06月11日 21:30（JST）*
