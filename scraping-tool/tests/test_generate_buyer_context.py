@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import importlib.util
+import os
+import sys
 from pathlib import Path
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 def _load_generator():
@@ -11,6 +15,8 @@ def _load_generator():
     spec = importlib.util.spec_from_file_location("generate_buyer_context", script_path)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
+    # dataclass デコレータが sys.modules[cls.__module__] を参照するため登録が必須
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -25,20 +31,57 @@ def test_buyer_profile_doc_is_up_to_date():
 def test_sql_generation_is_deterministic():
     """out/ は gitignore（PII含むSupabase適用用生成物）。コミット比較ではなく決定論を検証する。"""
     gen = _load_generator()
-    assert gen.generate_ai_prompts_sql() == gen.generate_ai_prompts_sql()
+    for spec in gen.PROMPT_SPECS:
+        assert gen.generate_ai_prompts_sql(spec) == gen.generate_ai_prompts_sql(spec)
     assert gen.generate_buyer_profiles_sql() == gen.generate_buyer_profiles_sql()
 
 
-def test_ai_prompts_sql_is_transactional_and_ordered():
-    """INSERT(v2,is_active=true) → UPDATE(旧無効化) の順でトランザクション内にある。"""
+def test_ai_prompts_sql_is_idempotent_and_transactional():
+    """idempotent パターン（UPDATE非活性化→UPDATE再活性化→INSERT WHERE NOT EXISTS）かつ
+    BEGIN/COMMIT トランザクション内にある。"""
     gen = _load_generator()
-    sql = gen.generate_ai_prompts_sql()
-    assert sql.strip().startswith("--")
-    assert "BEGIN;" in sql and sql.rstrip().endswith("COMMIT;")
-    insert_idx = sql.index("INSERT INTO ai_prompts")
-    update_idx = sql.index("UPDATE ai_prompts SET is_active = false")
-    assert insert_idx < update_idx, "INSERT は UPDATE より前でなければならない"
-    assert '"max_items_per_run":80' in sql
+    for spec in gen.PROMPT_SPECS:
+        sql = gen.generate_ai_prompts_sql(spec)
+        assert sql.strip().startswith("--")
+        assert "BEGIN;" in sql and sql.rstrip().endswith("COMMIT;")
+        # Step 1: 非アクティブ化
+        assert "UPDATE ai_prompts SET is_active = false" in sql
+        # Step 3: idempotent INSERT（同一コンテンツが既存なら挿入しない）
+        assert "WHERE NOT EXISTS" in sql
+        # 動的 version 採番（ハードコードなし）
+        assert "COALESCE(MAX(version), 0) + 1" in sql
+        # INSERT は WHERE NOT EXISTS より後（Step 3 パターン）
+        insert_idx = sql.index("INSERT INTO ai_prompts")
+        not_exists_idx = sql.index("WHERE NOT EXISTS")
+        assert not_exists_idx > insert_idx, "WHERE NOT EXISTS は INSERT の後でなければならない"
+        # idempotent パス（Step 2）でも config/notes を上書きする（単独変更のサイレント無視防止）
+        step2 = sql[sql.index("Step 2") : insert_idx]
+        assert "config =" in step2 and "notes =" in step2
+
+
+def test_ai_prompts_configs_preserve_production():
+    """本番 config（max_items_per_run / rescore_min_score）が退行しないことを検証する。"""
+    gen = _load_generator()
+    specs = {s.module: s for s in gen.PROMPT_SPECS}
+    # version フィールドは動的採番のため PromptSpec には存在しない
+    assert not hasattr(specs["investment_summary"], "version")
+
+    sql_summary = gen.generate_ai_prompts_sql(specs["investment_summary"])
+    assert '"max_items_per_run": 50' in sql_summary
+    assert '"rescore_min_score": 4' in sql_summary
+
+    sql_scoring = gen.generate_ai_prompts_sql(specs["ai_scoring"])
+    assert '"max_items_per_run": 100' in sql_scoring
+    assert '"rescore_min_score": 65' in sql_scoring
+    assert "バイヤープロファイル" in sql_scoring  # ai_scoring 既存テンプレートを踏襲
+
+
+def test_generated_system_prompt_matches_runtime_fallback():
+    """SQL に入る system_prompt がランタイムのフォールバック合成と完全一致する（乖離防止）。"""
+    import claude_investment_summarizer as cis
+
+    gen = _load_generator()
+    assert gen.compose_system_prompt("investment_summary") == cis.build_fallback_system_prompt()
 
 
 def test_buyer_profiles_sql_uses_upsert_rpc():
