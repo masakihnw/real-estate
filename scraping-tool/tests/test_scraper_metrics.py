@@ -144,6 +144,67 @@ class TestSaveLoad:
 
         loaded = scraper_metrics.load(target)
         assert loaded["metrics"]["homes"]["finish_reasons"] == {"timeout": 1}
+        assert "saved_at" in loaded
+
+
+class TestSourceScanTruncated:
+    """掲載終了判定（grace period）のゲートに使う打ち切り検出のテスト。"""
+
+    def _data(self, reasons: dict, saved_at: str | None = "fresh") -> dict:
+        from datetime import datetime, timezone, timedelta
+        if saved_at == "fresh":
+            saved_at = datetime.now(timezone.utc).isoformat()
+        elif saved_at == "stale":
+            saved_at = (datetime.now(timezone.utc) - timedelta(hours=48)).isoformat()
+        data = {"metrics": {"homes": {"parsed": 100, "finish_reasons": reasons}}, "alerts": []}
+        if saved_at:
+            data["saved_at"] = saved_at
+        return data
+
+    def test_timeout_detected_as_truncation(self):
+        result = scraper_metrics.source_scan_truncated("homes", self._data({"timeout": 1}))
+        assert result == {"timeout": 1}
+
+    def test_normal_finish_not_truncation(self):
+        result = scraper_metrics.source_scan_truncated(
+            "homes", self._data({"completed": 1, "early_exit": 22}))
+        assert result == {}
+
+    def test_unknown_source_not_truncation(self):
+        result = scraper_metrics.source_scan_truncated("athome", self._data({"timeout": 1}))
+        assert result == {}
+
+    def test_stale_file_does_not_gate(self, tmp_path, monkeypatch):
+        """前回ラン以前の古いメトリクスで掲載終了判定が永久に止まらない。"""
+        target = tmp_path / "metrics.json"
+        import json
+        target.write_text(json.dumps(self._data({"timeout": 1}, saved_at="stale")), encoding="utf-8")
+        monkeypatch.setattr(scraper_metrics, "METRICS_PATH", target)
+        assert scraper_metrics.source_scan_truncated("homes") == {}
+
+    def test_missing_saved_at_does_not_gate(self, tmp_path, monkeypatch):
+        target = tmp_path / "metrics.json"
+        import json
+        target.write_text(json.dumps(self._data({"timeout": 1}, saved_at=None)), encoding="utf-8")
+        monkeypatch.setattr(scraper_metrics, "METRICS_PATH", target)
+        assert scraper_metrics.source_scan_truncated("homes") == {}
+
+    def test_fresh_file_gates(self, tmp_path, monkeypatch):
+        target = tmp_path / "metrics.json"
+        import json
+        target.write_text(json.dumps(self._data({"waf_abort": 2})), encoding="utf-8")
+        monkeypatch.setattr(scraper_metrics, "METRICS_PATH", target)
+        assert scraper_metrics.source_scan_truncated("homes") == {"waf_abort": 2}
+
+    def test_stale_metrics_data_arg_does_not_gate(self):
+        """引数渡しでも古いデータ（saved_at が24h超）はゲートしない。"""
+        stale = self._data({"timeout": 1}, saved_at="stale")
+        assert scraper_metrics.source_scan_truncated("homes", stale) == {}
+
+    def test_missing_saved_at_arg_does_not_gate(self):
+        """引数渡しで saved_at 欠落のデータはゲートしない。"""
+        no_ts = self._data({"timeout": 1}, saved_at=None)
+        assert scraper_metrics.source_scan_truncated("homes", no_ts) == {}
 
     def test_load_missing_file(self, tmp_path):
         loaded = scraper_metrics.load(tmp_path / "nonexistent.json")

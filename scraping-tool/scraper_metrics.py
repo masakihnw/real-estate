@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 from logger import get_logger
@@ -36,6 +37,14 @@ ABNORMAL_FINISH_REASONS = frozenset(
     {"safety_limit", "timeout", "waf_abort", "empty_parse_abort", "fetch_error"}
 )
 FINISH_REASONS = NORMAL_FINISH_REASONS | ABNORMAL_FINISH_REASONS
+
+# 「一覧を最後まで巡回できなかった」ことを意味する終端理由。
+# これらが記録されたランでは未巡回ページの物件が「見つからなかった」扱いになるため、
+# 掲載終了判定（grace period の miss 加算）に使ってはいけない（フェイルクローズ）。
+TRUNCATED_FINISH_REASONS = ABNORMAL_FINISH_REASONS
+
+# 古いメトリクスファイルで掲載終了判定をゲートしないための鮮度上限
+METRICS_MAX_AGE_HOURS = 24
 
 METRICS_PATH = Path(__file__).resolve().parent / "results" / "scraper_metrics.json"
 
@@ -132,10 +141,14 @@ def health_alerts(metrics: dict[str, dict] | None = None) -> list[str]:
 
 
 def save(path: Path | None = None) -> None:
-    """メトリクスを JSON に書き出す（slack_notify が読む）。"""
+    """メトリクスを JSON に書き出す（slack_notify / 掲載終了判定が読む）。"""
     target = path or METRICS_PATH
     target.parent.mkdir(parents=True, exist_ok=True)
-    data = {"metrics": get_all(), "alerts": health_alerts()}
+    data = {
+        "metrics": get_all(),
+        "alerts": health_alerts(),
+        "saved_at": datetime.now(timezone.utc).isoformat(),
+    }
     with open(target, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     if data["alerts"]:
@@ -156,3 +169,35 @@ def load(path: Path | None = None) -> dict:
     except (json.JSONDecodeError, OSError) as e:
         logger.warning("scraper_metrics 読み込み失敗: %s", e)
         return {"metrics": {}, "alerts": []}
+
+
+def _is_fresh(data: dict) -> bool:
+    """メトリクスが今回のラン由来とみなせる鮮度か（saved_at が24時間以内）。"""
+    saved_at = data.get("saved_at")
+    if not saved_at:
+        return False
+    try:
+        ts = datetime.fromisoformat(saved_at)
+    except ValueError:
+        return False
+    age = datetime.now(timezone.utc) - ts
+    return age.total_seconds() < METRICS_MAX_AGE_HOURS * 3600
+
+
+def source_scan_truncated(source: str, metrics_data: dict | None = None) -> dict[str, int]:
+    """ソースの一覧巡回が途中で打ち切られた形跡（終端理由→回数）を返す。
+
+    空 dict = 完走（または判定材料なし）。打ち切りが記録されたランでは、
+    未巡回ページの物件を「掲載終了」と誤判定しないよう、呼び出し側
+    （db.py / supabase_sync.py の grace period）は miss 加算をスキップする。
+
+    メトリクスファイルが古い（前回ラン以前の）場合はゲートしない
+    （古い打ち切り記録で掲載終了判定が永久に止まるのを防ぐ）。
+    鮮度チェックは引数渡し（metrics_data 指定）でも一貫して適用する。
+    """
+    data = metrics_data if metrics_data is not None else load()
+    if not _is_fresh(data):
+        return {}
+    entry = (data.get("metrics") or {}).get(source) or {}
+    reasons = entry.get("finish_reasons") or {}
+    return {r: int(n) for r, n in reasons.items() if r in TRUNCATED_FINISH_REASONS and n}
