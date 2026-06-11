@@ -8666,45 +8666,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1639694.html",
       "deviation_score": 0,
-      "estimated_price_man": 12966,
-      "estimated_tsubo_price_man": 572,
-      "estimated_m2_price_man": 173,
+      "estimated_price_man": 12504,
+      "estimated_tsubo_price_man": 567,
+      "estimated_m2_price_man": 172,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 28,
+      "chuko_history_count": 29,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
           "area_m2": 73.48,
-          "price_man": 13296,
-          "tsubo_price_man": 597.0
+          "price_man": 13234,
+          "tsubo_price_man": 594.0
         }
       ]
     },
-    "cached_at": "2026-05-28T04:15:44.709298"
+    "cached_at": "2026-06-11T04:44:56.713459"
   },
   "クレヴィア新宿中落合": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1639694.html",
       "deviation_score": 0,
-      "estimated_price_man": 12966,
-      "estimated_tsubo_price_man": 572,
-      "estimated_m2_price_man": 173,
+      "estimated_price_man": 12504,
+      "estimated_tsubo_price_man": 567,
+      "estimated_m2_price_man": 172,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 28,
+      "chuko_history_count": 29,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
           "area_m2": 73.48,
-          "price_man": 13296,
-          "tsubo_price_man": 597.0
+          "price_man": 13234,
+          "tsubo_price_man": 594.0
         }
       ]
     },
-    "cached_at": "2026-05-28T04:15:44.709298"
+    "cached_at": "2026-06-11T04:44:56.713459"
   },
   "ブランズ東中野プレシアス": {
     "data": {
@@ -9014,23 +9014,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1639694.html",
       "deviation_score": 0,
-      "estimated_price_man": 12966,
-      "estimated_tsubo_price_man": 572,
-      "estimated_m2_price_man": 173,
+      "estimated_price_man": 12504,
+      "estimated_tsubo_price_man": 567,
+      "estimated_m2_price_man": 172,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 28,
+      "chuko_history_count": 29,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
           "area_m2": 73.48,
-          "price_man": 13296,
-          "tsubo_price_man": 597.0
+          "price_man": 13234,
+          "tsubo_price_man": 594.0
         }
       ]
     },
-    "cached_at": "2026-05-28T04:15:44.709298"
+    "cached_at": "2026-06-11T04:44:56.713459"
   },
   "ガレリアグランデ": {
     "data": {
@@ -17891,5 +17891,49 @@
       ]
     },
     "cached_at": "2026-06-10T17:30:46.879347"
+  },
+  "ライオンズマンション広尾南3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/14825.html",
+      "deviation_score": 53,
+      "estimated_price_man": 15424,
+      "estimated_tsubo_price_man": 810,
+      "estimated_m2_price_man": 245,
+      "shinchiku_history_count": 53,
+      "chuko_history_count": 54,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 54.05,
+          "price_man": 8687,
+          "tsubo_price_man": 522.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-11T04:45:06.368002"
+  },
+  "ライオンズマンション広尾南": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/14825.html",
+      "deviation_score": 53,
+      "estimated_price_man": 15424,
+      "estimated_tsubo_price_man": 810,
+      "estimated_m2_price_man": 245,
+      "shinchiku_history_count": 53,
+      "chuko_history_count": 54,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 54.05,
+          "price_man": 8687,
+          "tsubo_price_man": 522.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-11T04:45:06.368002"
   }
 }
