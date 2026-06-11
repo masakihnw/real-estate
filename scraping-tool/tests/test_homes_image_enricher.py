@@ -249,3 +249,80 @@ class TestNeedsImageEnrichment:
 
         assert _needs_image_enrichment("not a dict") is False
         assert _needs_image_enrichment(None) is False
+
+
+# ──────────────────────────── HomesDetailFetcher のテスト ────────────────────────────
+
+from types import SimpleNamespace
+
+import floor_plan_enricher as fpe
+
+
+class _FakeResponse:
+    def __init__(self, text: str, status_code: int = 200):
+        self.text = text
+        self.status_code = status_code
+        self.apparent_encoding = "utf-8"
+        self.encoding = "utf-8"
+        self.headers = {}
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise RuntimeError(f"HTTP {self.status_code}")
+
+
+class TestHomesDetailFetcher:
+    def _make(self, monkeypatch, cached=None, response=None, has_playwright=False):
+        monkeypatch.setattr(fpe, "HAS_PLAYWRIGHT", has_playwright)
+        monkeypatch.setattr(fpe, "_load_manifest", lambda: {})
+        monkeypatch.setattr(fpe, "_read_cached_html", lambda url, m: cached)
+        writes: list[tuple[str, str]] = []
+        monkeypatch.setattr(
+            fpe, "_write_html_cache", lambda url, html, m: writes.append((url, html)))
+        if response is not None:
+            fake_session = SimpleNamespace(get=lambda url, timeout=None: response)
+            monkeypatch.setattr(fpe, "create_session", lambda: fake_session)
+        fetcher = fpe.HomesDetailFetcher(delay_sec=0)
+        return fetcher, writes
+
+    def test_cache_hit_returns_without_fetch(self, monkeypatch):
+        fetcher, writes = self._make(monkeypatch, cached="<html>cached</html>")
+        # フェッチ経路が呼ばれたら失敗させる
+        monkeypatch.setattr(
+            fetcher, "_fetch_requests",
+            lambda url: (_ for _ in ()).throw(AssertionError("fetch called")))
+
+        html, from_cache = fetcher.fetch("https://www.homes.co.jp/mansion/b-1/")
+        assert html == "<html>cached</html>"
+        assert from_cache is True
+        assert writes == []
+
+    def test_requests_success_writes_cache(self, monkeypatch):
+        body = "<html><body>" + "x" * 2000 + "</body></html>"
+        fetcher, writes = self._make(monkeypatch, response=_FakeResponse(body))
+
+        html, from_cache = fetcher.fetch("https://www.homes.co.jp/mansion/b-1/")
+        assert html == body
+        assert from_cache is False
+        assert len(writes) == 1
+
+    def test_waf_challenge_returns_none_without_retry_or_cache(self, monkeypatch):
+        """WAFチャレンジは待機リトライせず即 None（旧実装は最大7.5分/URL浪費）。"""
+        waf_html = "<html>awsWafCookieDomainList</html>"  # is_waf_challenge が真になる
+        fetcher, writes = self._make(monkeypatch, response=_FakeResponse(waf_html))
+
+        html, from_cache = fetcher.fetch("https://www.homes.co.jp/mansion/b-1/")
+        assert html is None
+        assert from_cache is False
+        assert writes == [], "WAFチャレンジページがキャッシュされている"
+
+    def test_http_error_returns_none(self, monkeypatch):
+        fetcher, writes = self._make(monkeypatch, response=_FakeResponse("err", status_code=503))
+
+        html, _ = fetcher.fetch("https://www.homes.co.jp/mansion/b-1/")
+        assert html is None
+        assert writes == []
+
+    def test_close_without_open_is_safe(self, monkeypatch):
+        fetcher, _ = self._make(monkeypatch)
+        fetcher.close()  # 例外が出ないこと
