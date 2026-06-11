@@ -4,14 +4,7 @@
       "parsed": 4270,
       "parse_failures": 0,
       "empty_pages": 0
-    },
-    "livable": {
-      "parsed": 0,
-      "parse_failures": 0,
-      "empty_pages": 46
     }
   },
-  "alerts": [
-    "livable: パース0件ページが 46 回 — botブロック/構造変更の可能性"
-  ]
+  "alerts": []
 }
