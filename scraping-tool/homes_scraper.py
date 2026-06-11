@@ -13,7 +13,7 @@ import re
 import time
 from dataclasses import dataclass, asdict
 from typing import Any, Iterator, Optional
-from urllib.parse import urljoin
+from urllib.parse import urlencode, urljoin
 
 from bs4 import BeautifulSoup
 
@@ -45,12 +45,14 @@ import scraper_metrics
 from scraper_common import (
     dump_debug_html,
     is_waf_challenge,
+    sleep_with_jitter,
     load_station_passengers,
     station_passengers_ok,
     line_ok,
     lower_tier_station_ok,
     is_tokyo_23_by_address,
     get_effective_area_min_m2,
+    AREA_MIN_M2_FETCH,
 )
 
 from logger import get_logger
@@ -69,13 +71,58 @@ BASE_URL = "https://www.homes.co.jp"
 
 # 東京23区・中古マンション一覧（全ページ /tokyo/23ku/list/?page=N）
 # ※2026年2月確認: /tokyo/23ku/ はナビゲーションページに変更されたため /list/ パスを使用
-LIST_URL_FIRST = "https://www.homes.co.jp/mansion/chuko/tokyo/23ku/list/"
-LIST_URL_PAGE = "https://www.homes.co.jp/mansion/chuko/tokyo/23ku/list/?page={page}"
+LIST_URL_BASE = "https://www.homes.co.jp/mansion/chuko/tokyo/23ku/list/"
+LIST_URL_FIRST = LIST_URL_BASE
+LIST_URL_PAGE = LIST_URL_BASE + "?page={page}"
+
+# サーバーサイドフィルタの選択肢（HOME'S 検索フォーム由来。2026-06 確認）。
+# 価格(万円, cond[moneyroom])と面積(m², cond[housearea])のみ適用する。
+# 築年・徒歩分は値が欠損した物件を誤って除外しうるためローカル側に委ねる
+# （フェイルクローズ: サーバー側フィルタは必ずローカル条件より緩くする）。
+_HOMES_PRICE_OPTIONS = (0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500,
+                        5000, 5500, 6000, 6500, 7000, 8000, 9000, 10000)
+_HOMES_AREA_OPTIONS = (0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70,
+                       75, 80, 85, 90, 95, 100, 110, 120, 130, 140, 150, 200)
+
+
+def _snap_down(value: int, options: tuple[int, ...]) -> int:
+    """value 以下で最大の選択肢を返す（下限を緩める方向に丸める）。"""
+    candidates = [o for o in options if o <= value]
+    return max(candidates) if candidates else 0
+
+
+def _build_list_url(page: int, *, apply_filter: bool) -> str:
+    """一覧ページURLを組み立てる。apply_filter 時は価格・面積のサーバーフィルタを付ける。
+
+    ページ総数を削減して30分タイムアウト打ち切り（実測: 全件12,296件を82ページで
+    打ち切り）を防ぐのが目的。フィルタは取りこぼし防止のため下限を緩めに丸める。
+    """
+    params: dict[str, int] = {}
+    if apply_filter:
+        price_floor = _snap_down(PRICE_MIN_MAN, _HOMES_PRICE_OPTIONS)
+        area_floor = _snap_down(int(AREA_MIN_M2_FETCH), _HOMES_AREA_OPTIONS)
+        if price_floor > 0:
+            params["cond[moneyroom]"] = price_floor
+        if area_floor > 0:
+            params["cond[housearea]"] = area_floor
+    if page > 1:
+        params["page"] = page
+    return LIST_URL_BASE + ("?" + urlencode(params) if params else "")
+
+
 # 全ページ取得時の安全上限（無限ループ防止）
 HOMES_MAX_PAGES_SAFETY = 100
 
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
 HOMES_EARLY_EXIT_PAGES = 20
+
+# パース0件ページの許容回数。botブロック・一時メンテで1ページだけ空に
+# なった場合に残ページを取りこぼさないためのフェイルセーフ
+# （suumo / livable と同じパターン）。連続でこの回数に達したら停止する。
+HOMES_EMPTY_PARSE_TOLERANCE = 2
+
+# パース0件時の再試行前ウェイト秒数
+HOMES_EMPTY_PARSE_BACKOFF_SEC = 10
 
 # スクレイピング全体のタイムリミット（秒）。HOME'S は WAF が厳しく、
 # 1ページに最大7分（WAF リトライ30+60+90+120秒）かかることがあるため、
@@ -583,6 +630,7 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
         total_parsed = 0
         total_passed = 0
         pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
+        consecutive_empty_parses = 0
         start_time = time.monotonic()
         while page <= limit:
             # タイムリミットチェック
@@ -595,11 +643,11 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
                 finish_reason = "timeout"
                 break
 
-            url = LIST_URL_FIRST if page == 1 else LIST_URL_PAGE.format(page=page)
+            url = _build_list_url(page, apply_filter=apply_filter)
 
             # ページ間のディレイ（初回以外）
             if page > 1:
-                time.sleep(HOMES_REQUEST_DELAY_SEC)
+                sleep_with_jitter(HOMES_REQUEST_DELAY_SEC)
 
             html = fetch_list_page(context, url)
             if not html:
@@ -610,16 +658,29 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
             rows = parse_list_html(html)
             scraper_metrics.record("homes", parsed=len(rows))
             if not rows:
-                if total_parsed == 0:
-                    # 1ページ目から0件 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
-                    scraper_metrics.record("homes", empty_pages=1)
-                    dump_debug_html("homes", f"p{page}", html)
-                    finish_reason = "empty_parse_abort"
-                else:
-                    logger.info(f"HOME'S: ページ{page}で0件パース（一覧の終端）")
-                    finish_reason = "completed"
-                break
+                consecutive_empty_parses += 1
+                if consecutive_empty_parses >= HOMES_EMPTY_PARSE_TOLERANCE:
+                    if total_parsed == 0:
+                        # 全ページ空 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
+                        scraper_metrics.record("homes", empty_pages=consecutive_empty_parses)
+                        dump_debug_html("homes", f"p{page}", html)
+                        finish_reason = "empty_parse_abort"
+                    else:
+                        logger.info(f"HOME'S: ページ{page}で連続{consecutive_empty_parses}回0件パース（一覧の終端）")
+                        finish_reason = "completed"
+                    break
+                logger.warning(
+                    f"HOME'S: ページ{page}でパース0件 (HTML: {len(html)}B, 連続: "
+                    f"{consecutive_empty_parses}/{HOMES_EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
+                )
+                time.sleep(HOMES_EMPTY_PARSE_BACKOFF_SEC)
+                page += 1
+                continue
 
+            if consecutive_empty_parses > 0:
+                # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
+                scraper_metrics.record("homes", empty_pages=consecutive_empty_parses)
+            consecutive_empty_parses = 0
             total_parsed += len(rows)
             passed = 0
             for row in rows:
