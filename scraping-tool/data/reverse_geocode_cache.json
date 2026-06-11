@@ -1862,5 +1862,21 @@
     "quarter": "中町",
     "neighbourhood": "中町二丁目",
     "city_district": ""
+  },
+  "35.697757,139.659951": {
+    "display_name": "青梅街道, 和田三丁目, 和田, 杉並区, 東京都, 164-0011, 日本",
+    "city": "杉並区",
+    "suburb": "",
+    "quarter": "和田",
+    "neighbourhood": "和田三丁目",
+    "city_district": ""
+  },
+  "35.683182,139.739792": {
+    "display_name": "東京FM通り, 平河町一丁目, 平河町, 千代田区, 東京都, 102-0093, 日本",
+    "city": "千代田区",
+    "suburb": "",
+    "quarter": "平河町",
+    "neighbourhood": "平河町一丁目",
+    "city_district": ""
   }
 }
