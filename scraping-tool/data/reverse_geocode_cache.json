@@ -1798,5 +1798,69 @@
     "quarter": "深沢",
     "neighbourhood": "深沢六丁目",
     "city_district": ""
+  },
+  "35.684145,139.680656": {
+    "display_name": "本町二丁目, 本町, 渋谷区, 東京都, 151-0071, 日本",
+    "city": "渋谷区",
+    "suburb": "",
+    "quarter": "本町",
+    "neighbourhood": "本町二丁目",
+    "city_district": ""
+  },
+  "35.626742,139.716661": {
+    "display_name": "西五反田三丁目, 西五反田, 品川区, 東京都, 141-0031, 日本",
+    "city": "品川区",
+    "suburb": "",
+    "quarter": "西五反田",
+    "neighbourhood": "西五反田三丁目",
+    "city_district": ""
+  },
+  "35.694240,139.668000": {
+    "display_name": "本町五丁目, 本町, 高円寺, 中野区, 東京都, 164-8601, 日本",
+    "city": "中野区",
+    "suburb": "高円寺",
+    "quarter": "本町",
+    "neighbourhood": "本町五丁目",
+    "city_district": ""
+  },
+  "35.697913,139.659172": {
+    "display_name": "青梅街道, 和田三丁目, 和田, 杉並区, 東京都, 164-0011, 日本",
+    "city": "杉並区",
+    "suburb": "",
+    "quarter": "和田",
+    "neighbourhood": "和田三丁目",
+    "city_district": ""
+  },
+  "35.674746,139.821885": {
+    "display_name": "南砂二丁目, 南砂, 江東区, 東京都, 136-0076, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "南砂",
+    "neighbourhood": "南砂二丁目",
+    "city_district": ""
+  },
+  "35.668408,139.818930": {
+    "display_name": "東陽二丁目, 東陽, 江東区, 東京都, 135-0016, 日本",
+    "city": "江東区",
+    "suburb": "",
+    "quarter": "東陽",
+    "neighbourhood": "東陽二丁目",
+    "city_district": ""
+  },
+  "35.627546,139.690243": {
+    "display_name": "中央町一丁目, 中央町, 目黒区, 東京都, 152-0001, 日本",
+    "city": "目黒区",
+    "suburb": "",
+    "quarter": "中央町",
+    "neighbourhood": "中央町一丁目",
+    "city_district": ""
+  },
+  "35.632327,139.695908": {
+    "display_name": "中町二丁目, 中町, 目黒区, 東京都, 153-0065, 日本",
+    "city": "目黒区",
+    "suburb": "",
+    "quarter": "中町",
+    "neighbourhood": "中町二丁目",
+    "city_district": ""
   }
 }
