@@ -1,0 +1,8 @@
+id,name,normalized_name,address,issue,area_m2,built_year,property_type
+1847,（不明）,,東京都杉並区下高井戸５,address_only_name,74.89,2006,chuko
+1878,（不明）,,東京都台東区松が谷２,address_only_name,73.16,2011,chuko
+1982,,,東京都港区赤坂7丁目,address_only_name,63.4,2011,chuko
+2648,荻窪5丁目,荻窪,東京都杉並区荻窪５,address_only_name,61.8,2018,chuko
+3198,南麻布,南麻布,東京都港区南麻布２,address_only_name,58.08,2013,chuko
+3483,,,東京都江東区東雲2丁目2-14,address_only_name,57.88,2012,chuko
+3558,,,東京都江東区扇橋1丁目,address_only_name,63.01,2020,chuko
