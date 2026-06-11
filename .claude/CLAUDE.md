@@ -98,6 +98,20 @@ cd scraping-tool && python suumo_scraper.py
 - ランタイム上書きは Supabase `scraping_config` テーブル（`supabase_config_loader.py`）が現行。
   `firestore_config_loader.py` は旧実装。新規機能を足さない。
 
+### 買い手コンテキスト（AI購入分析）
+
+- ドメインごとに**正準ソースは1ファイル**。片側だけ変更しない:
+  - 買い手プロフィール（事実データ）= `scraping-tool/config/buyer_profile.json`
+  - AI購入戦略プロンプト（分析ポリシー・築年/価格判断）= `scraping-tool/config/investment_strategy_prompt.md`
+- いずれかを変更したら `cd scraping-tool && python3 scripts/generate_buyer_context.py --write` で
+  `docs/BUYER_PROFILE.md` と `scraping-tool/out/*.sql` を再生成する（テストが同期を検証）。
+- 実運用の正は Supabase（`buyer_profiles` / `ai_prompts`）。反映は生成された `out/*.sql` を
+  ユーザーがレビューして適用する（Claude は直接適用しない）。`ai_prompts` の本文変更は
+  全 enrichment の再分析を誘発するため、`config.max_items_per_run` でバッチ制御する。
+- `claude_investment_summarizer.py` の `_FALLBACK_SYSTEM_PROMPT` は
+  `investment_strategy_prompt.md` から構築する（ハードコードしない）。
+- iOS `BuyerProfile.swift` の `preset` は手動同期（機械生成しない）。
+
 ## スクレイパー・エチケット / フェイルセーフ
 
 - リクエスト間隔は `config.py` の `*_REQUEST_DELAY_SEC` を下回らない。新サイトは3秒以上から。

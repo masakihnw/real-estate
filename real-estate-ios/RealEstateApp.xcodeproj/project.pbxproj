@@ -95,6 +95,7 @@
 		91A953A5ABA5978CEDFEA29E /* TimelineFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D38C8A0B75616C0B53405590 /* TimelineFeedTests.swift */; };
 		948D0660EF2CF57D6812BC9F /* ScrapingLogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */; };
 		9565CB22F8F354C845B24ACF /* ScrapingConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C320640BB97A0C9698B93CCE /* ScrapingConfigView.swift */; };
+		957A74210CB053BB60651835 /* BuyerProfilePresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBD762384B1D93EB9AFAA29 /* BuyerProfilePresetTests.swift */; };
 		96ABAE9EF05BF8EDD9F2D690 /* AlternateSourcesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742E3C7D8B3D192B64D5E18C /* AlternateSourcesSection.swift */; };
 		9A14A66302216E03F2C22E2D /* MarketDataSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE6DA3D07E981F3E46C50FC /* MarketDataSectionView.swift */; };
 		9ADBC2C61259A3B927778797 /* RealEstateAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0291B37863ADE9217F18FD55 /* RealEstateAppApp.swift */; };
@@ -291,6 +292,7 @@
 		D4E40B0DFA748273273B0346 /* ScrapingLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrapingLogService.swift; sourceTree = "<group>"; };
 		D67A9EA849D127C80B00F383 /* WatchlistFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchlistFilter.swift; sourceTree = "<group>"; };
 		D771B189D37C2ADF6ADBF6BC /* ExtractedFeaturesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractedFeaturesSection.swift; sourceTree = "<group>"; };
+		DCBD762384B1D93EB9AFAA29 /* BuyerProfilePresetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyerProfilePresetTests.swift; sourceTree = "<group>"; };
 		E077CAC08921E24541D9707D /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		E0CBBCC70E4EDE0F6D9D2869 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		E11A42F09A01947A9DC57B37 /* ThumbnailFallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailFallbackTests.swift; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 			isa = PBXGroup;
 			children = (
 				1E714836421730EE37D7DA1F /* ApplyDelistingsTests.swift */,
+				DCBD762384B1D93EB9AFAA29 /* BuyerProfilePresetTests.swift */,
 				F79EC324143F3EA32E49539E /* CleanListingNameTests.swift */,
 				B7383C0353C4BC1411D012D4 /* CommuteDataDowngradeTests.swift */,
 				3CCD79C9A26F8A84A4F4FD34 /* ComparisonHighlightTests.swift */,
@@ -803,6 +806,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4169833A7741F973FBF7F6B3 /* ApplyDelistingsTests.swift in Sources */,
+				957A74210CB053BB60651835 /* BuyerProfilePresetTests.swift in Sources */,
 				B04F77A79D4C50D084377E1C /* CleanListingNameTests.swift in Sources */,
 				1D0E0C7EA99360594D5D29E0 /* CommuteDataDowngradeTests.swift in Sources */,
 				000169EF441C8A665C954226 /* ComparisonHighlightTests.swift in Sources */,
