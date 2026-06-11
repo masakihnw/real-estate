@@ -1,6 +1,6 @@
 #!/bin/bash
 # WF2 enrich ジョブ用スクリプト
-# --property-type chuko|shinchiku で中古/新築を切替
+# --property-type chuko（新築は 2026-06 に全面廃止）
 # Phase 1: embed_geocode (< 1min)
 # Phase 2: 全 enricher を完全並列実行 (各 enricher が独自ファイルコピーで動作)
 # Phase 3: merge_enrichments.py でフィールドレベルマージ + upload_floor_plans
@@ -43,8 +43,8 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -z "$PROPERTY_TYPE" ]; then
-    echo "使い方: run_enrich.sh --property-type chuko|shinchiku [--tracks core|sumai|mansion|all] [--exclude-tracks sumai]" >&2
+if [ "$PROPERTY_TYPE" != "chuko" ]; then
+    echo "使い方: run_enrich.sh --property-type chuko [--tracks core|sumai|mansion|all] [--exclude-tracks sumai]" >&2
     exit 1
 fi
 
@@ -68,11 +68,7 @@ echo "日時: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')（JST）" >&2
 
 # ──────────────────────────── ファイルパス設定 ────────────────────────────
 
-if [ "$PROPERTY_TYPE" = "chuko" ]; then
-    INPUT="results/latest.json"
-else
-    INPUT="results/latest_shinchiku.json"
-fi
+INPUT="results/latest.json"
 
 if [ ! -f "$INPUT" ]; then
     echo "エラー: 入力ファイルが存在しません: $INPUT" >&2
@@ -131,14 +127,8 @@ if _should_run_track core; then
     cp "$INPUT" "$WORK_DIR/track_uc.json"
     (
         _t=$(date +%s)
-        if [ "$PROPERTY_TYPE" = "chuko" ]; then
-            python3 scripts/build_units_cache.py "$WORK_DIR/track_uc.json" || true
-            python3 scripts/merge_detail_cache.py "$WORK_DIR/track_uc.json" || true
-        else
-            python3 shinchiku_detail_enricher.py \
-                --input "$WORK_DIR/track_uc.json" \
-                --output "$WORK_DIR/track_uc.json" || true
-        fi
+        python3 scripts/build_units_cache.py "$WORK_DIR/track_uc.json" || true
+        python3 scripts/merge_detail_cache.py "$WORK_DIR/track_uc.json" || true
         echo "[TIMING] track_prep: $(( ($(date +%s) - _t) ))s" >&2
     ) &
     PIDS="$PIDS $!"
@@ -225,19 +215,17 @@ if _should_run_track core; then
     ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_gm.json"
 
     # Track G: HOME'S 画像（間取り図+物件写真）
-    if [ "$PROPERTY_TYPE" = "chuko" ]; then
-        cp "$INPUT" "$WORK_DIR/track_hi.json"
-        (
-            _t=$(date +%s)
-            python3 floor_plan_enricher.py \
-                --input "$WORK_DIR/track_hi.json" \
-                --output "$WORK_DIR/track_hi.json" \
-                --limit 50 || true
-            echo "[TIMING] homes_images: $(( ($(date +%s) - _t) ))s" >&2
-        ) &
-        PIDS="$PIDS $!"
-        ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_hi.json"
-    fi
+    cp "$INPUT" "$WORK_DIR/track_hi.json"
+    (
+        _t=$(date +%s)
+        python3 floor_plan_enricher.py \
+            --input "$WORK_DIR/track_hi.json" \
+            --output "$WORK_DIR/track_hi.json" \
+            --limit 50 || true
+        echo "[TIMING] homes_images: $(( ($(date +%s) - _t) ))s" >&2
+    ) &
+    PIDS="$PIDS $!"
+    ENRICHED_FILES="$ENRICHED_FILES $WORK_DIR/track_hi.json"
 
 fi
 
@@ -269,14 +257,10 @@ if _should_run_track mansion; then
     cp "$INPUT" "$WORK_DIR/track_mr.json"
     (
         _t=$(date +%s)
-        if [ "$PROPERTY_TYPE" = "chuko" ]; then
-            python3 mansion_review_scraper.py \
-                --input "$WORK_DIR/track_mr.json" \
-                --output "$WORK_DIR/track_mr.json" \
-                --max-time 40 || true
-        else
-            echo "mansion_review: 新築はスキップ" >&2
-        fi
+        python3 mansion_review_scraper.py \
+            --input "$WORK_DIR/track_mr.json" \
+            --output "$WORK_DIR/track_mr.json" \
+            --max-time 40 || true
         echo "[TIMING] mansion_review: $(( ($(date +%s) - _t) ))s" >&2
     ) &
     PIDS="$PIDS $!"

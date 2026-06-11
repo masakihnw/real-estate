@@ -3,7 +3,7 @@ name: Enrich and Report
 # WF2: 加工+レポートワークフロー
 # WF1 (Scrape Listings) 完了時に自動起動。
 # 中古 enrichment を core/mansion に分割し、
-# 新築/成約実績と合わせて並列実行。finalize でマージ・レポート生成・コミット。
+# 成約実績と合わせて並列実行。finalize でマージ・レポート生成・コミット。
 # claude トラック (dedup/text_enricher) は Routine① に一元化済み。
 # sumai enrichment は enrich-sumai.yml に分離（レートリミット対策）。
 # cancel-in-progress: false — 実行中のジョブは完了まで走り切り、
@@ -239,110 +239,7 @@ jobs:
           if-no-files-found: warn
 
   # enrich-chuko-claude は廃止（dedup/text_enricher は Routine① に一元化）
-
-  # ──────────────────────────── Job 2: enrich-shinchiku ────────────────────────────
-  enrich-shinchiku:
-    needs: check
-    if: needs.check.outputs.has_changes == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    continue-on-error: true
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-
-      - name: Setup environment
-        uses: ./.github/actions/setup-scraping
-        with:
-          install-playwright: 'true'
-
-      - name: Download scrape results
-        uses: actions/download-artifact@v4
-        with:
-          name: scrape-results
-          run-id: ${{ needs.check.outputs.run_id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: scraping-tool/results/
-
-      - name: Download cache files
-        uses: actions/download-artifact@v4
-        with:
-          name: scrape-caches
-          run-id: ${{ needs.check.outputs.run_id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: scraping-tool/data/
-        continue-on-error: true
-
-      - name: Restore commute gmaps cache
-        uses: actions/cache/restore@v4
-        with:
-          path: scraping-tool/commute_gmaps_cache
-          key: commute-gmaps-shinchiku-${{ github.run_id }}
-          restore-keys: |
-            commute-gmaps-shinchiku-
-            commute-gmaps-
-
-      - name: Restore Claude response cache (shinchiku)
-        uses: actions/cache/restore@v4
-        with:
-          path: scraping-tool/data/claude_cache.db
-          key: claude-cache-shinchiku-${{ github.run_id }}
-          restore-keys: |
-            claude-cache-shinchiku-
-
-      - name: Prepare input
-        working-directory: scraping-tool
-        run: |
-          if [ -f results/latest_shinchiku_raw.json ]; then
-            cp results/latest_shinchiku_raw.json results/latest_shinchiku.json
-          else
-            echo "新築データなし: スキップ"
-            exit 0
-          fi
-
-      - name: Run enrichment (sumai は独立ワークフローで実行)
-        working-directory: scraping-tool
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: |
-          if [ -f results/latest_shinchiku.json ]; then
-            chmod +x scripts/run_enrich.sh
-            ./scripts/run_enrich.sh --property-type shinchiku --exclude-tracks sumai
-          fi
-
-      - name: Save commute gmaps cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: scraping-tool/commute_gmaps_cache
-          key: commute-gmaps-shinchiku-${{ github.run_id }}
-
-      - name: Save Claude response cache (shinchiku)
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: scraping-tool/data/claude_cache.db
-          key: claude-cache-shinchiku-${{ github.run_id }}
-
-      - name: Upload enriched results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: enriched-shinchiku
-          path: |
-            scraping-tool/results/latest_shinchiku.json
-            scraping-tool/data/geocode_cache.json
-            scraping-tool/data/floor_plan_storage_manifest.json
-            scraping-tool/data/station_cache.json
-            scraping-tool/data/reverse_geocode_cache.json
-          retention-days: 1
-          if-no-files-found: warn
+  # enrich-shinchiku は廃止（新築は 2026-06 に全面廃止 dd1bdb4）
 
   # ──────────────────────────── Job 3: build-transaction-feed ────────────────────────────
   build-transaction-feed:
@@ -384,9 +281,8 @@ jobs:
       - name: Prepare references
         working-directory: scraping-tool
         run: |
-          # build_transaction_feed が参照する latest/latest_shinchiku を配置
+          # build_transaction_feed が参照する latest を配置
           [ -f results/latest_raw.json ] && cp results/latest_raw.json results/latest.json || true
-          [ -f results/latest_shinchiku_raw.json ] && cp results/latest_shinchiku_raw.json results/latest_shinchiku.json || true
 
       - name: Build transaction feed
         working-directory: scraping-tool
@@ -410,7 +306,7 @@ jobs:
 
   # ──────────────────────────── Job 4: finalize ────────────────────────────
   finalize:
-    needs: [check, enrich-chuko-core, enrich-chuko-mansion, enrich-shinchiku, build-transaction-feed]
+    needs: [check, enrich-chuko-core, enrich-chuko-mansion, build-transaction-feed]
     if: "!cancelled() && (needs.check.outputs.has_changes == 'true' || needs.check.outputs.is_slack_time == 'true')"
     runs-on: ubuntu-latest
     timeout-minutes: 75
@@ -448,13 +344,6 @@ jobs:
         with:
           name: enriched-chuko-mansion
           path: scraping-tool/enriched-chuko-mansion/
-        continue-on-error: true
-
-      - name: Download enriched shinchiku
-        uses: actions/download-artifact@v4
-        with:
-          name: enriched-shinchiku
-          path: scraping-tool/enriched-shinchiku/
         continue-on-error: true
 
       - name: Download transactions
@@ -532,12 +421,8 @@ jobs:
         timeout-minutes: 15
         continue-on-error: true
         run: |
-          SHINCHIKU_FLAG=""
-          if [ -s results/latest_shinchiku.json ]; then
-            SHINCHIKU_FLAG="--shinchiku results/latest_shinchiku.json"
-          fi
           echo "--- 地図生成 ---" >&2
-          python3 scripts/build_map_viewer.py results/latest.json $SHINCHIKU_FLAG
+          python3 scripts/build_map_viewer.py results/latest.json
           echo "--- geocode キャッシュクリーンアップ ---" >&2
           python3 scripts/geocode.py || true
           if [ ! -f results/risk_geojson/building_collapse_risk.geojson ]; then

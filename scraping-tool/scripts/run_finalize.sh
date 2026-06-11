@@ -47,7 +47,7 @@ echo "--- キャッシュマージ ---" >&2
 # 各ジョブが更新した可能性のあるキャッシュをマージ
 for cache_file in geocode_cache.json sumai_surfin_cache.json floor_plan_storage_manifest.json station_cache.json reverse_geocode_cache.json building_units.json mansion_review_cache.json; do
     UPDATES=""
-    for job_dir in enriched-chuko-core enriched-chuko-mansion enriched-shinchiku; do
+    for job_dir in enriched-chuko-core enriched-chuko-mansion; do
         if [ -f "${job_dir}/data/${cache_file}" ]; then
             UPDATES="${UPDATES} ${job_dir}/data/${cache_file}"
         fi
@@ -132,24 +132,6 @@ send_slack_message(os.environ['SLACK_WEBHOOK_URL'], msg)
     fi
 fi
 
-# enriched-shinchiku の latest_shinchiku.json を配置
-cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/previous_shinchiku.json" 2>/dev/null || true
-
-SHINCHIKU_ENRICHED=""
-for candidate in "enriched-shinchiku/latest_shinchiku.json" "enriched-shinchiku/results/latest_shinchiku.json"; do
-    if [ -f "$candidate" ]; then
-        SHINCHIKU_ENRICHED="$candidate"
-        break
-    fi
-done
-if [ -n "$SHINCHIKU_ENRICHED" ]; then
-    cp "$SHINCHIKU_ENRICHED" "${OUTPUT_DIR}/latest_shinchiku.json"
-    echo "新築: enriched データを配置 (from ${SHINCHIKU_ENRICHED})" >&2
-else
-    echo "警告: enriched-shinchiku の latest_shinchiku.json が見つかりません（前回データを維持）" >&2
-    ls -R enriched-shinchiku/ 2>/dev/null || echo "  enriched-shinchiku/ ディレクトリ自体が存在しません" >&2
-fi
-
 # ── Step 2: Supabase listings 事前同期（USE_SUPABASE_EXPORT 時） ──
 # JSON merge 結果をもとに listings テーブルを更新してから export する
 # SUPABASE_PRESYNC=1: listings のみ同期（enrichments はスキップ、後で最終同期で書き込む）
@@ -195,24 +177,6 @@ if [ "${USE_SUPABASE_EXPORT:-}" = "1" ] && [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}"
         echo "Supabase export (中古) 失敗: JSON merge 結果をそのまま使用" >&2
     fi
     rm -f "${OUTPUT_DIR}/latest_preexport.json"
-
-    cp "${OUTPUT_DIR}/latest_shinchiku.json" "${OUTPUT_DIR}/latest_shinchiku_preexport.json" 2>/dev/null || true
-    if python3 scripts/export_supabase_snapshot.py \
-        --output "${OUTPUT_DIR}/latest_shinchiku.json" \
-        --property-type shinchiku; then
-        echo "Supabase export (新築) 成功" >&2
-        if [ -f "${OUTPUT_DIR}/latest_shinchiku_preexport.json" ]; then
-            python3 scripts/merge_enrichments.py \
-                --base "${OUTPUT_DIR}/latest_shinchiku.json" \
-                --enriched "${OUTPUT_DIR}/latest_shinchiku_preexport.json" \
-                --output "${OUTPUT_DIR}/latest_shinchiku.json" \
-                && echo "Supabase export 後の enrichment 補完(新築)完了" >&2 \
-                || echo "enrichment 補完(新築)失敗（Supabase export 結果をそのまま使用）" >&2
-        fi
-    else
-        echo "Supabase export (新築) 失敗: JSON merge 結果をそのまま使用" >&2
-    fi
-    rm -f "${OUTPUT_DIR}/latest_shinchiku_preexport.json"
 fi
 
 # transactions
@@ -233,13 +197,6 @@ if [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
             --output "${OUTPUT_DIR}/latest.json" \
             --max-time 20 || echo "upload_floor_plans（中古）失敗（続行）" >&2
     fi
-
-    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-        python3 upload_floor_plans.py \
-            --input "${OUTPUT_DIR}/latest_shinchiku.json" \
-            --output "${OUTPUT_DIR}/latest_shinchiku.json" \
-            --max-time 10 || echo "upload_floor_plans（新築）失敗（続行）" >&2
-    fi
 else
     echo "SUPABASE_SERVICE_ROLE_KEY 未設定のためスキップ" >&2
 fi
@@ -253,7 +210,6 @@ _t=$(date +%s)
 
 python3 scripts/post_enrich_dedup.py \
     "${OUTPUT_DIR}/latest.json" \
-    "${OUTPUT_DIR}/latest_shinchiku.json" \
     || echo "post_enrich_dedup 失敗（続行）" >&2
 
 echo "[TIMING] post_enrich_dedup: $(( ($(date +%s) - _t) ))s" >&2
@@ -287,18 +243,9 @@ echo "[TIMING] sync_db: $(( ($(date +%s) - _t) ))s" >&2
 
 echo "--- 供給トレンド生成 ---" >&2
 
-SHINCHIKU_TREND_ARGS=""
-if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    SHINCHIKU_TREND_ARGS="--current-shinchiku ${OUTPUT_DIR}/latest_shinchiku.json"
-    if [ -f "${OUTPUT_DIR}/previous_shinchiku.json" ]; then
-        SHINCHIKU_TREND_ARGS="${SHINCHIKU_TREND_ARGS} --previous-shinchiku ${OUTPUT_DIR}/previous_shinchiku.json"
-    fi
-fi
-
 python3 build_supply_trends.py \
     --current "${OUTPUT_DIR}/latest.json" \
     --previous "${OUTPUT_DIR}/previous.json" \
-    $SHINCHIKU_TREND_ARGS \
     --output "${OUTPUT_DIR}/supply_trends.json" \
     || echo "供給トレンド生成失敗（続行）" >&2
 
@@ -332,9 +279,9 @@ echo "[TIMING] report: $(( ($(date +%s) - _t) ))s" >&2
 if [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
     echo "プッシュ通知送信中..." >&2
     read NEW_CHUKO NEW_BUILDING NEW_ROOM NEW_SHINCHIKU <<< $(python3 scripts/finalize_helpers.py count-new --output-dir "${OUTPUT_DIR}" 2>/dev/null || echo "0 0 0 0")
-    python3 scripts/send_push.py --new-count "$NEW_CHUKO" --shinchiku-count "$NEW_SHINCHIKU" \
+    python3 scripts/send_push.py --new-count "$NEW_CHUKO" \
         --new-building-count "$NEW_BUILDING" --new-room-count "$NEW_ROOM" \
-        --latest "${OUTPUT_DIR}/latest.json" --latest-shinchiku "${OUTPUT_DIR}/latest_shinchiku.json" \
+        --latest "${OUTPUT_DIR}/latest.json" \
         || echo "プッシュ通知送信失敗（続行）" >&2
 fi
 
@@ -367,11 +314,7 @@ if [ "$SKIP_MAPS" != "true" ] && [ "$HAS_CHANGES" = "true" ]; then
     echo "--- 地図生成 ---" >&2
     _t=$(date +%s)
 
-    SHINCHIKU_FLAG=""
-    if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-        SHINCHIKU_FLAG="--shinchiku ${OUTPUT_DIR}/latest_shinchiku.json"
-    fi
-    python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" $SHINCHIKU_FLAG \
+    python3 scripts/build_map_viewer.py "${OUTPUT_DIR}/latest.json" \
         || echo "地図生成失敗（続行）" >&2
 
     echo "--- geocode キャッシュクリーンアップ ---" >&2
@@ -412,7 +355,7 @@ for f in "${REPORT_DIR}"/report_*.md; do
 done
 
 # enriched-* ワーキングディレクトリを削除
-rm -rf enriched-chuko-core enriched-chuko-mansion enriched-shinchiku transactions scrape-results
+rm -rf enriched-chuko-core enriched-chuko-mansion transactions scrape-results
 
 # ──────────────────────────── データ品質検証 ────────────────────────────
 
@@ -420,11 +363,6 @@ echo "--- データ品質検証 ---" >&2
 python3 scripts/validate_data.py "${OUTPUT_DIR}/latest.json" \
     --previous "${OUTPUT_DIR}/previous.json" --label "中古" \
     || echo "データ品質検証（中古）で問題が検出されました" >&2
-if [ -s "${OUTPUT_DIR}/latest_shinchiku.json" ]; then
-    python3 scripts/validate_data.py "${OUTPUT_DIR}/latest_shinchiku.json" \
-        --previous "${OUTPUT_DIR}/previous_shinchiku.json" --label "新築" \
-        || echo "データ品質検証（新築）で問題が検出されました" >&2
-fi
 
 # ──────────────────────────── キャッシュクリーンアップ ────────────────────────────
 

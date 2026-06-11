@@ -1,7 +1,7 @@
 """
 共通パーサー関数。
 
-suumo_scraper / suumo_shinchiku_scraper / homes_scraper / homes_shinchiku_scraper で
+suumo_scraper / homes_scraper などの各スクレイパーで
 共有するテキスト解析ユーティリティ。純粋関数のみ（副作用なし）。
 """
 
