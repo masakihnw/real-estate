@@ -150,10 +150,11 @@ def _is_promising(listing: dict) -> bool:
     return False
 
 
-_STRATEGY_PROMPT_PATH = Path(__file__).resolve().parent / "config" / "investment_strategy_prompt.md"
+_STRATEGY_PROMPT_PATH = Path(__file__).resolve().parent / "config" / "purchase_strategy.md"
+_TASK_PROMPT_PATH = Path(__file__).resolve().parent / "config" / "prompts" / "investment_summary.md"
 
-# 戦略プロンプトの正準ソースは investment_strategy_prompt.md（リポジトリ同梱）。
-# 本番は Supabase の system_prompt を優先するため、ここは不通時フォールバック。
+# 正準ソースは purchase_strategy.md（共有戦略）＋ prompts/investment_summary.md（タスク定義）。
+# 本番は Supabase の system_prompt + purchase_strategy 注入を優先するため、ここは不通時フォールバック。
 # import を絶対に落とさないための最小限の安全網（.md 不在・読込失敗時のみ使用）。
 _EMBEDDED_SAFETY_PROMPT = (
     "あなたは冷静で率直な不動産購入エージェントです。\n"
@@ -163,18 +164,23 @@ _EMBEDDED_SAFETY_PROMPT = (
 
 
 def build_fallback_system_prompt() -> str:
-    """戦略プロンプトの正準ソース investment_strategy_prompt.md を読み込む。
+    """購入戦略（purchase_strategy.md）＋タスク定義（prompts/investment_summary.md）を決定論的に合成する。
 
-    本番は Supabase の system_prompt を優先するため、これは不通時フォールバック。
+    合成順は「戦略 → タスク定義」で固定（JSON スキーマがプロンプト末尾に来るようにする）。
+    Supabase 経路（system_prompt=タスク定義、user 側に戦略注入）と同等の情報構成。
+    本番は Supabase を優先するため、これは不通時フォールバック。
     import を落とさないため、ファイル不在・読込失敗・空ファイル時は安全網プロンプトを返す。
     """
     try:
-        text = _STRATEGY_PROMPT_PATH.read_text(encoding="utf-8").rstrip("\n")
-        if text:
-            return text
-        logger.warning("investment_strategy_prompt.md が空です: %s", _STRATEGY_PROMPT_PATH)
+        strategy = _STRATEGY_PROMPT_PATH.read_text(encoding="utf-8").rstrip("\n")
+        task = _TASK_PROMPT_PATH.read_text(encoding="utf-8").rstrip("\n")
+        if strategy and task:
+            return f"## 購入戦略コンテキスト\n{strategy}\n\n{task}"
+        logger.warning(
+            "戦略/タスク定義 md が空です: %s, %s", _STRATEGY_PROMPT_PATH, _TASK_PROMPT_PATH
+        )
     except OSError as e:
-        logger.warning("investment_strategy_prompt.md 読み込み失敗（安全網使用）: %s", e)
+        logger.warning("戦略/タスク定義 md 読み込み失敗（安全網使用）: %s", e)
     return _EMBEDDED_SAFETY_PROMPT
 
 

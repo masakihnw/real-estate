@@ -19,13 +19,35 @@ _BUYER_PROFILE_PATH = _CONFIG_DIR / "buyer_profile.json"
 
 # ─────────────────────── 戦略プロンプト（正準ソース） ───────────────────────
 def test_fallback_prompt_reflects_mtg_policy():
-    """MTG（2026/6/8）で更新した二段構え予算・築年緩和・値下げ待ちが反映されている。"""
+    """MTG（2026/6/8）の築年緩和・値下げ待ち・管理重視が戦略プロンプトに反映されている。
+
+    予算の具体数値（1.3億/30万）はプロンプトに持たせず buyer_profile の予算シナリオで
+    1元管理する（本番v4のデータ駆動設計を踏襲）。数値の検証は test_budget_scenarios_* で行う。
+    """
     prompt = cis.build_fallback_system_prompt()
-    for marker in ["1.3億", "30万円", "築30年", "流動性", "管理", "値下げ"]:
+    for marker in ["築30年", "流動性", "管理", "値下げ", "二段構え"]:
         assert marker in prompt, f"戦略プロンプトに {marker!r} が含まれていない"
     # 旧方針の文言が残っていないこと（退行防止）
-    assert "本命2010〜2018年" not in prompt
-    assert "（金額）〜（金額）" not in prompt
+    assert "築年: 2006年以降、本命2010〜2018年" not in prompt
+
+
+def test_fallback_prompt_preserves_v4_logic():
+    """本番v4由来の面積ルール・スコア緩和を退行させていないこと（戦略参照に一般化済み）。"""
+    prompt = cis.build_fallback_system_prompt()
+    assert "面積が戦略の本命ライン未満の場合のシナリオ分析ルール" in prompt
+    assert "面積不足だけを理由にスコア1にしない" in prompt
+    assert "65㎡以上が本命" in prompt  # 本命ラインの実値は戦略側が持つ
+
+
+def test_fallback_prompt_composes_strategy_and_task():
+    """フォールバックは「購入戦略コンテキスト → タスク定義」の順で合成される。"""
+    prompt = cis.build_fallback_system_prompt()
+    assert prompt.startswith("## 購入戦略コンテキスト")
+    strategy_idx = prompt.index("## 予算判断（二段構え）")
+    task_idx = prompt.index("## シナリオ適合分析（必須）")
+    assert strategy_idx < task_idx, "戦略がタスク定義より前に来ること"
+    # JSON 出力指示がプロンプト末尾側にあること（タスク定義が後段）
+    assert "JSON形式で回答" in prompt[task_idx:]
 
 
 def test_prompt_version_is_deterministic():
@@ -51,6 +73,13 @@ def test_build_fallback_never_raises_when_md_missing(monkeypatch):
     assert prompt  # 空でない
 
 
+def test_build_fallback_never_raises_when_task_md_missing(monkeypatch):
+    """戦略は存在するがタスク定義 .md だけ欠損した場合も安全網を返す。"""
+    monkeypatch.setattr(cis, "_TASK_PROMPT_PATH", Path("/nonexistent/task.md"))
+    prompt = cis.build_fallback_system_prompt()
+    assert prompt == cis._EMBEDDED_SAFETY_PROMPT
+
+
 # ─────────────────────── 買い手プロフィール（budget_scenarios） ───────────────────────
 def _load_profile() -> dict:
     return json.loads(_BUYER_PROFILE_PATH.read_text(encoding="utf-8"))
@@ -63,6 +92,14 @@ def test_buyer_profile_has_budget_scenarios():
     labels = {s.get("label") for s in scenarios}
     assert "探索上限" in labels
     assert "実質アンカー" in labels
+
+
+def test_budget_scenarios_carry_mtg_figures():
+    """MTGの二段構え数値（1.3億・1.1億・30万）は buyer_profile に1元化されている。"""
+    blob = json.dumps(_load_profile().get("budget_scenarios", []), ensure_ascii=False)
+    assert "1.3億" in blob
+    assert "1.1億" in blob
+    assert "30万" in blob
 
 
 def test_budget_scenarios_values_are_all_strings():
