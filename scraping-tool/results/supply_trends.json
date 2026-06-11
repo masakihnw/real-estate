@@ -15298,8 +15298,8 @@
     },
     {
       "date": "2026-06-11",
-      "total_listings": 1119,
-      "new_count": 11,
+      "total_listings": 1118,
+      "new_count": 10,
       "removed_count": 2,
       "updated_count": 4,
       "price_changed_count": 0,
@@ -15308,7 +15308,7 @@
       "price_distribution": {
         "under_10000": 304,
         "10000_11000": 235,
-        "11000_12000": 316,
+        "11000_12000": 315,
         "over_12000": 264,
         "undecided": 0
       },
