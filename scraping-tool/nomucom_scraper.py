@@ -41,6 +41,7 @@ from report_utils import clean_listing_name
 import scraper_metrics
 from scraper_common import (
     create_session,
+    sleep_with_jitter,
     dump_debug_html,
     load_station_passengers,
     station_passengers_ok,
@@ -73,6 +74,12 @@ MAX_PAGES_SAFETY = 100
 
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
 EARLY_EXIT_PAGES = 20
+
+# パース0件ページの許容回数（suumo / livable と同じフェイルセーフ）
+EMPTY_PARSE_TOLERANCE = 2
+
+# パース0件時の再試行前ウェイト秒数
+EMPTY_PARSE_BACKOFF_SEC = 10
 
 
 @dataclass
@@ -109,7 +116,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
     """一覧ページのHTMLを取得。5xx/429/タイムアウト・接続エラー時はリトライする。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
-        time.sleep(NOMUCOM_REQUEST_DELAY_SEC)
+        sleep_with_jitter(NOMUCOM_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
@@ -310,6 +317,7 @@ def scrape_nomucom(max_pages: Optional[int] = 2, apply_filter: bool = True) -> I
     total_parsed = 0
     total_passed = 0
     pages_since_last_pass = 0
+    consecutive_empty_parses = 0
     finish_reason = None
     try:
         while page <= limit:
@@ -323,15 +331,29 @@ def scrape_nomucom(max_pages: Optional[int] = 2, apply_filter: bool = True) -> I
             rows = parse_list_html(html)
             scraper_metrics.record("nomucom", parsed=len(rows))
             if not rows:
-                if total_parsed == 0:
-                    # 1ページ目から0件 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
-                    scraper_metrics.record("nomucom", empty_pages=1)
-                    dump_debug_html("nomucom", f"p{page}", html)
-                    finish_reason = "empty_parse_abort"
-                else:
-                    logger.info(f"nomucom: ページ{page}で0件パース（一覧の終端）")
-                    finish_reason = "completed"
-                break
+                consecutive_empty_parses += 1
+                if consecutive_empty_parses >= EMPTY_PARSE_TOLERANCE:
+                    if total_parsed == 0:
+                        # 全ページ空 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
+                        scraper_metrics.record("nomucom", empty_pages=consecutive_empty_parses)
+                        dump_debug_html("nomucom", f"p{page}", html)
+                        finish_reason = "empty_parse_abort"
+                    else:
+                        logger.info(f"nomucom: ページ{page}で連続{consecutive_empty_parses}回0件パース（一覧の終端）")
+                        finish_reason = "completed"
+                    break
+                logger.warning(
+                    f"nomucom: ページ{page}でパース0件 (HTML: {len(html)}B, 連続: "
+                    f"{consecutive_empty_parses}/{EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
+                )
+                time.sleep(EMPTY_PARSE_BACKOFF_SEC)
+                page += 1
+                continue
+
+            if consecutive_empty_parses > 0:
+                # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
+                scraper_metrics.record("nomucom", empty_pages=consecutive_empty_parses)
+            consecutive_empty_parses = 0
             total_parsed += len(rows)
             passed = 0
             for row in rows:
@@ -559,7 +581,7 @@ def enrich_nomucom_listings(listings: list[NomucomListing], session=None) -> lis
         if cached:
             detail = cached
         else:
-            time.sleep(NOMUCOM_REQUEST_DELAY_SEC)
+            sleep_with_jitter(NOMUCOM_REQUEST_DELAY_SEC)
             html = _fetch_detail_page(session, listing.url)
             detail = parse_nomucom_detail_html(html, listing.url)
             detail["cached_at"] = datetime.now(timezone.utc).isoformat()

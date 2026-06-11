@@ -1,5 +1,9 @@
 name: Backfill HOME'S Images
 
+# HOME'S 詳細ページの取得・パースの正は scraping-tool/floor_plan_enricher.py
+# （HomesDetailFetcher / parse_homes_*）。このワークフローはそれを呼ぶだけにする
+# （以前はインラインPythonでパーサを再実装しており、三重管理になっていた）。
+
 on:
   schedule:
     - cron: '30 19 * * *'  # 毎日 JST 4:30（UTC 19:30）
@@ -35,7 +39,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11'
           cache: 'pip'
 
       - name: Cache Playwright browsers
@@ -44,9 +48,19 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-chromium-${{ runner.os }}
 
+      # 詳細ページHTMLキャッシュをラン間で共有（同一ページの再取得を防ぐ。
+      # 特に「画像なし」と判定されたページを毎日叩き直さないため）
+      - name: Cache HOME'S detail HTML
+        uses: actions/cache@v4
+        with:
+          path: scraping-tool/data/homes_html_cache
+          key: homes-html-cache-${{ github.run_id }}
+          restore-keys: |
+            homes-html-cache-
+
       - name: Install dependencies
         run: |
-          pip install playwright beautifulsoup4 lxml supabase
+          pip install -r requirements.txt
           python -m playwright install --with-deps chromium
 
       - name: Run backfill
@@ -56,148 +70,4 @@ jobs:
           BACKFILL_LIMIT: ${{ inputs.limit || (github.event_name == 'workflow_run' && '20') || '50' }}
           BACKFILL_DELAY: ${{ inputs.delay || '10' }}
         run: |
-          python3 << 'PYEOF'
-          import json, os, re, sys, time
-          from bs4 import BeautifulSoup
-          from playwright.sync_api import sync_playwright
-          from supabase import create_client
-
-          sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_ROLE_KEY"])
-          limit = int(os.environ.get("BACKFILL_LIMIT", "0"))
-          delay = float(os.environ.get("BACKFILL_DELAY", "8"))
-
-          _DOMAIN_RE = re.compile(r"^https?://image\d?\.homes\.jp/")
-          _SIZE_PARAMS = re.compile(r"[&?](width|height|modify_date)=[^&]*")
-          _TRAILING = re.compile(r"[&?]$")
-          _PATH_PATTERNS = ("/sale/image/", "%2Fsale%2Fimage%2F", "/premium/image/", "%2Fsale%2F")
-          _JUNK = frozenset({"HOME'S", "LIFULL HOME'S", "ホームズ", ""})
-
-          def norm(url):
-              if not url or url.startswith("data:") or not _DOMAIN_RE.search(url):
-                  return None
-              return _TRAILING.sub("", _SIZE_PARAMS.sub("", url))
-
-          def parse_props(html):
-              soup = BeautifulSoup(html, "lxml")
-              imgs, seen = [], set()
-              rel = {id(i) for c in soup.find_all(class_=re.compile(r"splide")) for i in c.find_all("img")}
-              for i in soup.find_all("img"):
-                  if id(i) in rel: continue
-                  raw = (i.get("data-src") or i.get("src") or "").strip()
-                  alt = (i.get("alt") or "").strip()
-                  n = norm(raw)
-                  if n is None or n in seen: continue
-                  if "間取" in alt or "_madori" in raw: continue
-                  if not any(p in raw for p in _PATH_PATTERNS): continue
-                  seen.add(n)
-                  imgs.append({"url": raw, "label": alt if alt and alt not in _JUNK else "外観"})
-              return imgs
-
-          def parse_fps(html):
-              soup = BeautifulSoup(html, "lxml")
-              urls, seen = [], set()
-              for i in soup.find_all("img"):
-                  alt = (i.get("alt") or "").strip()
-                  src = i.get("data-src") or i.get("src") or ""
-                  if "間取" in alt or re.search(r"floorplan|madori|floor_plan", src, re.I) or "_madori" in src:
-                      u = src.strip()
-                      if u and not u.startswith("data:") and "noimage" not in u.lower() and u not in seen:
-                          seen.add(u); urls.append(u)
-              return urls
-
-          _WAF_MARKERS = ("human verification", "awswafcookie", "gokuprops")
-
-          def is_waf(html):
-              if not html or len(html) < 1000: return True
-              low = html.lower()
-              return any(m in low for m in _WAF_MARKERS)
-
-          print("対象物件を取得中...")
-          all_rows = []
-          offset = 0
-          while True:
-              resp = sb.table("listing_facts").select("id, sources_json").eq("status", "active").is_("suumo_images", "null").order("first_seen_at", desc=True).range(offset, offset + 499).execute()
-              if not resp.data: break
-              all_rows.extend(resp.data)
-              if len(resp.data) < 500: break
-              offset += 500
-
-          targets = []
-          for r in all_rows:
-              for s in (r.get("sources_json") or []):
-                  if s.get("source") == "homes" and s.get("is_active"):
-                      targets.append({"id": r["id"], "url": s["url"]})
-                      break
-          if limit > 0:
-              targets = targets[:limit]
-          print(f"対象: {len(targets)}件")
-          if not targets:
-              print("バックフィル対象なし"); sys.exit(0)
-
-          stats = {"ok": 0, "waf": 0, "error": 0, "no_img": 0}
-          consecutive_waf = 0
-
-          with sync_playwright() as pw:
-              browser = pw.chromium.launch(headless=True)
-              ctx = browser.new_context(
-                  user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-                  locale="ja-JP",
-                  extra_http_headers={"Accept-Language": "ja,en;q=0.9"},
-              )
-
-              for idx, t in enumerate(targets):
-                  if consecutive_waf >= 5:
-                      print(f"WAF連続5回: 残り{len(targets)-idx}件を中断")
-                      stats["waf"] += len(targets) - idx
-                      break
-
-                  lid, url = t["id"], t["url"]
-                  page = ctx.new_page()
-                  try:
-                      page.goto(url, wait_until="domcontentloaded", timeout=30000)
-                      try:
-                          page.wait_for_selector("img[src*='homes.jp']", timeout=10000)
-                      except Exception:
-                          pass
-                      html = page.content()
-
-                      if is_waf(html):
-                          consecutive_waf += 1
-                          stats["waf"] += 1
-                          print(f"  [{idx+1}] WAF id={lid}")
-                          continue
-
-                      consecutive_waf = 0
-                      props = parse_props(html)
-                      fps = parse_fps(html)
-
-                      if not props and not fps:
-                          stats["no_img"] += 1
-                          print(f"  [{idx+1}] 画像なし id={lid}")
-                          continue
-
-                      row = {"listing_id": lid}
-                      if props: row["suumo_images"] = props
-                      if fps: row["floor_plan_images"] = fps
-                      sb.table("enrichments").upsert(row, on_conflict="listing_id", returning="minimal").execute()
-                      stats["ok"] += 1
-                      print(f"  [{idx+1}] ✓ id={lid} 写真{len(props)}枚 間取り{len(fps)}枚")
-
-                  except Exception as e:
-                      stats["error"] += 1
-                      print(f"  [{idx+1}] ERROR id={lid}: {e}")
-                  finally:
-                      page.close()
-                      time.sleep(delay)
-
-                  if (idx + 1) % 20 == 0:
-                      print(f"  === 進捗: {idx+1}/{len(targets)} ok={stats['ok']} waf={stats['waf']} ===")
-
-              browser.close()
-
-          print(f"\n=== 完了 ===")
-          print(f"成功: {stats['ok']}件")
-          print(f"WAF: {stats['waf']}件")
-          print(f"画像なし: {stats['no_img']}件")
-          print(f"エラー: {stats['error']}件")
-          PYEOF
+          python3 homes_image_backfill.py --limit "$BACKFILL_LIMIT" --delay "$BACKFILL_DELAY"

@@ -27,14 +27,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from floor_plan_enricher import (
-    fetch_homes_detail,
+    HomesDetailFetcher,
     parse_homes_floor_plan_images,
     parse_homes_property_images,
-    _read_cached_html,
-    _write_html_cache,
-    _load_manifest,
 )
-from scraper_common import create_session
 from supabase_client import get_client
 from logger import get_logger
 
@@ -141,55 +137,50 @@ def main() -> None:
         logger.info("バックフィル対象なし")
         return
 
-    session = create_session()
-    manifest = _load_manifest()
+    fetcher = HomesDetailFetcher(delay_sec=args.delay)
     stats = {"success": 0, "cached": 0, "waf_fail": 0, "error": 0, "no_images": 0}
     consecutive_waf = 0
     start_time = time.monotonic()
 
-    for idx, target in enumerate(targets):
-        if consecutive_waf >= 5:
-            logger.warning(f"WAF 連続{consecutive_waf}回: 残り{len(targets) - idx}件を中断")
-            break
+    try:
+        for idx, target in enumerate(targets):
+            if consecutive_waf >= 5:
+                logger.warning(f"WAF 連続{consecutive_waf}回: 残り{len(targets) - idx}件を中断")
+                break
 
-        listing_id = target["id"]
-        url = target["url"]
-        logger.info(f"[{idx + 1}/{len(targets)}] id={listing_id} {url}")
+            listing_id = target["id"]
+            url = target["url"]
+            logger.info(f"[{idx + 1}/{len(targets)}] id={listing_id} {url}")
 
-        html = _read_cached_html(url, manifest)
-        if html is not None:
-            stats["cached"] += 1
-            consecutive_waf = 0
-        else:
-            time.sleep(args.delay)
-            try:
-                html = fetch_homes_detail(session, url)
-                _write_html_cache(url, html, manifest)
-                consecutive_waf = 0
-            except Exception as e:
-                logger.error(f"  取得失敗: {e}")
+            html, from_cache = fetcher.fetch(url)
+            if html is None:
                 consecutive_waf += 1
                 stats["waf_fail"] += 1
                 continue
+            consecutive_waf = 0
+            if from_cache:
+                stats["cached"] += 1
 
-        prop_images = parse_homes_property_images(html)
-        fp_images = parse_homes_floor_plan_images(html)
+            prop_images = parse_homes_property_images(html)
+            fp_images = parse_homes_floor_plan_images(html)
 
-        if not prop_images and not fp_images:
-            logger.info(f"  画像なし（ページに画像要素がない）")
-            stats["no_images"] += 1
-            continue
+            if not prop_images and not fp_images:
+                logger.info("  画像なし（ページに画像要素がない）")
+                stats["no_images"] += 1
+                continue
 
-        ok = _upsert_images(client, listing_id, prop_images, fp_images, args.dry_run)
-        if ok:
-            stats["success"] += 1
-            logger.info(f"  ✓ 写真{len(prop_images)}枚, 間取り{len(fp_images)}枚")
-        else:
-            stats["error"] += 1
+            ok = _upsert_images(client, listing_id, prop_images, fp_images, args.dry_run)
+            if ok:
+                stats["success"] += 1
+                logger.info(f"  ✓ 写真{len(prop_images)}枚, 間取り{len(fp_images)}枚")
+            else:
+                stats["error"] += 1
 
-        if (idx + 1) % 20 == 0:
-            elapsed = int(time.monotonic() - start_time)
-            logger.info(f"  === 進捗: {idx + 1}/{len(targets)}件, {elapsed}秒経過 ===")
+            if (idx + 1) % 20 == 0:
+                elapsed = int(time.monotonic() - start_time)
+                logger.info(f"  === 進捗: {idx + 1}/{len(targets)}件, {elapsed}秒経過 ===")
+    finally:
+        fetcher.close()
 
     elapsed = int(time.monotonic() - start_time)
     logger.info(

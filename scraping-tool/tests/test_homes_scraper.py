@@ -277,8 +277,7 @@ def _run_scrape_homes(monkeypatch, pages: dict[int, int], max_pages: int = 0) ->
         homes_scraper, "_launch_browser",
         lambda: (MagicMock(), MagicMock(), MagicMock()),
     )
-    monkeypatch.setattr(homes_scraper, "LIST_URL_FIRST", "page=1")
-    monkeypatch.setattr(homes_scraper, "LIST_URL_PAGE", "page={page}")
+    monkeypatch.setattr(homes_scraper, "_build_list_url", lambda page, apply_filter: f"page={page}")
     monkeypatch.setattr(homes_scraper, "fetch_list_page", lambda context, url: url)
     monkeypatch.setattr(homes_scraper, "HOMES_REQUEST_DELAY_SEC", 0)
 
@@ -288,6 +287,7 @@ def _run_scrape_homes(monkeypatch, pages: dict[int, int], max_pages: int = 0) ->
 
     monkeypatch.setattr(homes_scraper, "parse_list_html", fake_parse)
     monkeypatch.setattr(homes_scraper, "dump_debug_html", lambda *a: None)
+    monkeypatch.setattr(homes_scraper, "HOMES_EMPTY_PARSE_BACKOFF_SEC", 0)
     return list(homes_scraper.scrape_homes(max_pages=max_pages, apply_filter=False))
 
 
@@ -322,12 +322,22 @@ class TestScrapeHomesFinishReasons:
         assert entry["finish_reasons"] == {"waf_abort": 1}
 
     def test_empty_first_page_records_abort(self, monkeypatch):
+        """全ページ空のときは連続2回（tolerance）試した上で全損として記録。"""
         results = _run_scrape_homes(monkeypatch, {1: 0})
         assert results == []
         entry = scraper_metrics.get_all()["homes"]
         assert entry["finish_reasons"] == {"empty_parse_abort": 1}
-        assert entry["empty_pages"] == 1
+        assert entry["empty_pages"] == 2  # HOMES_EMPTY_PARSE_TOLERANCE 回分
         assert any("媒体全損" in a for a in scraper_metrics.health_alerts())
+
+    def test_single_empty_page_does_not_abort(self, monkeypatch):
+        """空ページ1回では打ち切らず、後続ページの物件を取りこぼさない（HOME'S実事故対策）。"""
+        results = _run_scrape_homes(monkeypatch, {1: 3, 2: 0, 3: 2})
+        assert len(results) == 5, "空ページ1回で残ページが打ち切られている"
+        entry = scraper_metrics.get_all()["homes"]
+        assert entry["parsed"] == 5
+        assert entry["empty_pages"] == 1  # 途中ギャップのみ（終端の連続空は正常終端）
+        assert entry["finish_reasons"] == {"completed": 1}
 
     def test_safety_limit_full_run(self, monkeypatch):
         monkeypatch.setattr(homes_scraper, "HOMES_MAX_PAGES_SAFETY", 2)
@@ -348,8 +358,7 @@ class TestScrapeHomesFinishReasons:
             homes_scraper, "_launch_browser",
             lambda: (MagicMock(), MagicMock(), MagicMock()),
         )
-        monkeypatch.setattr(homes_scraper, "LIST_URL_FIRST", "page=1")
-        monkeypatch.setattr(homes_scraper, "LIST_URL_PAGE", "page={page}")
+        monkeypatch.setattr(homes_scraper, "_build_list_url", lambda page, apply_filter: f"page={page}")
         monkeypatch.setattr(homes_scraper, "fetch_list_page", lambda context, url: url)
         monkeypatch.setattr(homes_scraper, "HOMES_REQUEST_DELAY_SEC", 0)
         monkeypatch.setattr(
@@ -364,3 +373,46 @@ class TestScrapeHomesFinishReasons:
         entry = scraper_metrics.get_all()["homes"]
         assert entry["finish_reasons"] == {"completed": 1}
         assert scraper_metrics.health_alerts() == []
+
+
+class TestBuildListUrl:
+    """サーバーサイドフィルタURL生成のテスト（30分タイムアウト対策）。"""
+
+    def test_no_filter_returns_base(self):
+        assert homes_scraper._build_list_url(1, apply_filter=False) == homes_scraper.LIST_URL_BASE
+
+    def test_no_filter_page_2(self):
+        url = homes_scraper._build_list_url(2, apply_filter=False)
+        assert url == homes_scraper.LIST_URL_BASE + "?page=2"
+
+    def test_filter_adds_price_and_area(self):
+        url = homes_scraper._build_list_url(1, apply_filter=True)
+        assert "cond%5Bmoneyroom%5D=" in url
+        assert "cond%5Bhousearea%5D=" in url
+
+    def test_filter_with_page(self):
+        url = homes_scraper._build_list_url(3, apply_filter=True)
+        assert "page=3" in url
+        assert "cond%5Bmoneyroom%5D=" in url
+
+    def test_price_snaps_down_to_option(self):
+        """下限は取りこぼし防止のため value 以下の最大選択肢に丸める。"""
+        # PRICE_MIN_MAN=7500 → 選択肢 7000（7500以下の最大）
+        assert homes_scraper._snap_down(7500, homes_scraper._HOMES_PRICE_OPTIONS) == 7000
+        # ちょうど一致する値はそのまま
+        assert homes_scraper._snap_down(7000, homes_scraper._HOMES_PRICE_OPTIONS) == 7000
+        # 全選択肢より小さい→0（フィルタなし）
+        assert homes_scraper._snap_down(100, homes_scraper._HOMES_PRICE_OPTIONS) == 0
+
+    def test_area_snaps_down_to_option(self):
+        assert homes_scraper._snap_down(55, homes_scraper._HOMES_AREA_OPTIONS) == 55
+        assert homes_scraper._snap_down(58, homes_scraper._HOMES_AREA_OPTIONS) == 55
+
+    def test_snapped_filter_is_looser_than_local(self):
+        """サーバーフィルタは必ずローカル条件以下（フェイルクローズ）。"""
+        from config import PRICE_MIN_MAN
+        from scraper_common import AREA_MIN_M2_FETCH
+        price_floor = homes_scraper._snap_down(PRICE_MIN_MAN, homes_scraper._HOMES_PRICE_OPTIONS)
+        area_floor = homes_scraper._snap_down(int(AREA_MIN_M2_FETCH), homes_scraper._HOMES_AREA_OPTIONS)
+        assert price_floor <= PRICE_MIN_MAN
+        assert area_floor <= AREA_MIN_M2_FETCH

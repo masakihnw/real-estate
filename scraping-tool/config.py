@@ -317,12 +317,18 @@ USER_AGENT = (
 
 # ボット検知で取得不能なスクレイパーを一時的に無効化。
 # 環境変数 DISABLED_SCRAPERS（カンマ区切り）で上書き可能。空文字列で全て有効化。
-# "athome" → chuko/shinchiku 両方無効, "homes_shinchiku" → shinchiku の homes のみ無効
+# "athome" → athome を無効化, "homes_chuko" → homes の中古のみ無効
+#
+# - stepon: ボット検知で取得不能（従来から）
+# - athome: GHA のデータセンター IP が bot 判定され全23区0件が継続（2026-06 確定。
+#   パーサ・HTML構造は正常で、ローカル住宅IPでは取得可能）。毎サイクル27分の
+#   空振り実行と媒体全損アラートのノイズを止めるため正式に無効化。
+#   再開はプロキシ等のIP対策とセット（試験取得で固有純増を実測してから判断）。
 _disabled_env = os.environ.get("DISABLED_SCRAPERS")
 if _disabled_env is not None:
     DISABLED_SCRAPERS: tuple[str, ...] = tuple(s.strip() for s in _disabled_env.split(",") if s.strip())
 else:
-    DISABLED_SCRAPERS: tuple[str, ...] = ("stepon",)
+    DISABLED_SCRAPERS: tuple[str, ...] = ("stepon", "athome")
 
 
 def _normalize_runtime_config() -> None:

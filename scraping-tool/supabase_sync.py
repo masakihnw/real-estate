@@ -19,6 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import scraper_metrics
 from supabase_client import get_client
 
 logger = logging.getLogger(__name__)
@@ -571,6 +572,17 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     _grouped_batch_insert(client, "listing_events", plan.event_rows)
 
     # --- 掲載終了（grace period）: 計画 → バッチ実行 ---
+    # 一覧巡回が打ち切られたランでは未巡回ページの物件を「掲載終了」と
+    # 誤判定しうるため、miss 加算・deactivate をスキップする（フェイルクローズ。
+    # db.py の sync_scrape_results と同じゲート）
+    truncated = scraper_metrics.source_scan_truncated(source)
+    if truncated:
+        logger.warning(
+            "[supabase] %s: 打ち切り終端 %s を検出 — このランの掲載終了判定（miss加算）をスキップ",
+            source, truncated,
+        )
+        return summary
+
     grace_threshold = int(os.environ.get("GRACE_PERIOD_RUNS", "2"))
     gplan = _plan_grace_period(
         existing_listings, seen_identity_keys, existing_sources, grace_threshold, source,

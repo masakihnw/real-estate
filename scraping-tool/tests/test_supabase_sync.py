@@ -6,9 +6,20 @@ import math
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import scraper_metrics
 from supabase_sync import _sanitize_value
+
+
+@pytest.fixture(autouse=True)
+def _no_truncation_gate(monkeypatch):
+    """既存の同期テストは「完走したラン」を前提とする。
+    実環境の results/scraper_metrics.json に依存しないよう打ち切り検出を無効化。"""
+    monkeypatch.setattr(scraper_metrics, "source_scan_truncated", lambda source, data=None: {})
+    yield
 
 
 class TestSanitizeValue:
@@ -408,3 +419,31 @@ class TestSyncSourceListingsIntegration:
         summary = _sync_source_listings(client, [], "suumo", "chuko")
         assert summary["removed"] == 0
         assert inserts["listing_events"] == []
+
+    def test_truncated_run_skips_grace_period(self, monkeypatch):
+        """一覧巡回が打ち切られたランでは欠落物件を deactivate しない（誤deactivate防止）。
+
+        HOME'S 30分タイムアウト等で巡回が途中終了した場合、未巡回ページの
+        物件が「見つからなかった」扱いになるため掲載終了判定を丸ごとスキップする。
+        """
+        from supabase_sync import _sync_source_listings
+
+        # 既存物件が閾値到達直前（miss=1）。通常なら欠落で deactivate されるケース
+        old_ik = "既存マンション|2LDK|60.0|東京都江東区東雲1-1|2010|None|3"
+        client, upserts, inserts = self._make_client(
+            existing_listing_rows=[{"id": 50, "identity_key": old_ik, "is_active": True}],
+            existing_source_rows=[{"id": 9, "listing_id": 50, "source": "homes",
+                                   "price_man": 6000, "is_active": True,
+                                   "consecutive_misses": 1}],
+        )
+        # このランは timeout で打ち切られたと報告する
+        monkeypatch.setattr(
+            scraper_metrics, "source_scan_truncated",
+            lambda source, data=None: {"timeout": 1} if source == "homes" else {},
+        )
+        items = [self._make_item("新規マンション", 5000, "https://example.com/new")]
+        summary = _sync_source_listings(client, items, "homes", "chuko")
+
+        assert summary["removed"] == 0, "打ち切りランで欠落物件が deactivate されている"
+        event_rows = [r for batch in inserts["listing_events"] for r in batch]
+        assert "removed" not in [e["event_type"] for e in event_rows]

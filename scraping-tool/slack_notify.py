@@ -495,6 +495,82 @@ def _get_noped_building_names(client) -> set[str]:
         return set()
 
 
+def _get_data_quality_issues(client) -> list[dict]:
+    """建物名が空または極端に短いアクティブ物件を返す（データ品質アラート用）。"""
+    try:
+        resp = (client.table("listings")
+                .select("id, name, normalized_name, address")
+                .eq("is_active", True)
+                .execute())
+
+        issues = []
+        for r in (resp.data or []):
+            name = (r.get("name") or "").strip()
+            normalized = (r.get("normalized_name") or "").strip()
+            if not name or len(normalized) <= 3:
+                issues.append(r)
+
+        if not issues:
+            return []
+
+        listing_ids = [r["id"] for r in issues]
+        url_by_id: dict[int, tuple[str, str]] = {}
+        for i in range(0, len(listing_ids), 100):
+            batch = listing_ids[i:i + 100]
+            src_resp = (client.table("listing_sources")
+                        .select("listing_id, source, url")
+                        .in_("listing_id", batch)
+                        .eq("is_active", True)
+                        .execute())
+            for s in (src_resp.data or []):
+                lid = s["listing_id"]
+                if lid not in url_by_id:
+                    url_by_id[lid] = (s["source"], s["url"])
+
+        result = []
+        for r in issues:
+            source, url = url_by_id.get(r["id"], ("", ""))
+            result.append({
+                "id": r["id"],
+                "name": r.get("name") or "",
+                "normalized_name": r.get("normalized_name") or "",
+                "address": (r.get("address") or "").replace("東京都", ""),
+                "source": source,
+                "url": url,
+            })
+
+        logger.info("データ品質問題: %d件検出", len(result))
+        return result
+    except Exception as e:
+        logger.warning("データ品質チェック失敗: %s", e)
+        return []
+
+
+def build_data_quality_alert_section(issues: list[dict]) -> Optional[str]:
+    """建物名なし物件の手動調査依頼セクションを組み立てる。"""
+    if not issues:
+        return None
+
+    lines = [
+        "",
+        "🔧 *建物名データ品質アラート*",
+        f"建物名が空または不正な物件が {len(issues)} 件あります。掲載ページで確認し Supabase を更新してください。",
+        "",
+    ]
+
+    for r in issues:
+        name_display = r["name"] or "（空）"
+        address = r["address"] or "住所不明"
+        source = r["source"] or "不明"
+        url = r["url"]
+
+        lines.append(f"  • *ID {r['id']}* | {name_display} | {address} | ソース: {source}")
+        if url:
+            lines.append(f"    <{url}|掲載ページを確認>")
+
+    return "\n".join(lines)
+
+
 def _update_notification_state(client, channel: str = "slack", expected_last: str | None = None) -> None:
     """通知成功後に last_notified_at を更新する。
     expected_last が指定された場合は CAS: 値が一致する場合のみ更新する。"""
@@ -859,6 +935,11 @@ def main() -> None:
     if supabase_client and last_notified_at:
         watchlist_drops = _get_watchlist_price_drops(supabase_client, last_notified_at)
 
+    # --- データ品質問題の取得（建物名なし物件） ---
+    data_quality_issues: list[dict] = []
+    if supabase_client:
+        data_quality_issues = _get_data_quality_issues(supabase_client)
+
     # --- 通知判定 ---
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
@@ -872,7 +953,7 @@ def main() -> None:
         digest_text, digest_draft_id = _pop_morning_digest(supabase_client)
     has_pending_digest = bool(digest_text)
 
-    has_content = diff_new_a or diff_removed_a or has_pending_digest or watchlist_drops
+    has_content = diff_new_a or diff_removed_a or has_pending_digest or watchlist_drops or data_quality_issues
 
     if not has_content:
         if supabase_client:
@@ -914,6 +995,11 @@ def main() -> None:
             message = message + "\n" + "\n".join(lines)
     except Exception as e:
         logger.warning("スクレイパー健全性アラートの取得失敗: %s", e)
+
+    # データ品質アラート（建物名なし物件）
+    dq_section = build_data_quality_alert_section(data_quality_issues)
+    if dq_section:
+        message = message + dq_section
 
     # pending な AI ダイジェストを本文末尾に統合（Routine 2 が1日1回生成。上で取得済み）
     if digest_text:

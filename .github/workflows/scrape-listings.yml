@@ -1,7 +1,7 @@
 name: Scrape Listings
 
 # WF1: スクレイピング専用ワークフロー
-# 中古+新築を並列取得し、artifact 経由で WF2 (Enrich & Report) にデータを渡す。
+# 中古物件を取得し、artifact 経由で WF2 (Enrich & Report) にデータを渡す。
 # 20-40分で完了するため、2時間スケジュールでキャンセルされない。
 
 on:
@@ -91,9 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: scrape-results
-          path: |
-            scraping-tool/results/latest_raw.json
-            scraping-tool/results/latest_shinchiku_raw.json
+          path: scraping-tool/results/latest_raw.json
           retention-days: 1
           if-no-files-found: error
 
@@ -105,7 +103,6 @@ jobs:
           name: scrape-previous
           path: |
             scraping-tool/results/latest.json
-            scraping-tool/results/latest_shinchiku.json
             scraping-tool/results/scraper_metrics.json
           retention-days: 1
           if-no-files-found: warn
