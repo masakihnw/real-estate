@@ -17,6 +17,7 @@ import urllib.parse
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from commute_offices import load_office_locations
 from logger import get_logger
 logger = get_logger(__name__)
 
@@ -25,14 +26,13 @@ DATA_DIR = ROOT / "data"
 
 # ---------------------------------------------------------------------------
 # オフィス定義
+# 住所・座標・名称は commute_offices（環境変数 COMMUTE_OFFICES_JSON）から注入。
+# 最寄駅リストは監査用の固定メタデータとしてここに保持する。
 # ---------------------------------------------------------------------------
+_LOC = load_office_locations()
 OFFICES = {
     "playground": {
-        "name": "Playground株式会社",
-        "short": "PG",
-        "address": "千代田区一番町4-6 一番町中央ビル",
-        "lat": 35.688449,
-        "lon": 139.743415,
+        **_LOC["playground"],
         "nearby_stations": [
             {"name": "半蔵門", "lines": "半蔵門線", "walk": 5},
             {"name": "九段下", "lines": "半蔵門線/東西線/都営新宿線", "walk": 7},
@@ -41,11 +41,7 @@ OFFICES = {
         ],
     },
     "m3career": {
-        "name": "エムスリーキャリア株式会社",
-        "short": "M3",
-        "address": "港区虎ノ門4丁目1-28 虎ノ門タワーズオフィス",
-        "lat": 35.666018,
-        "lon": 139.743807,
+        **_LOC["m3career"],
         "nearby_stations": [
             {"name": "神谷町", "lines": "日比谷線", "walk": 7},
             {"name": "溜池山王", "lines": "銀座線/南北線", "walk": 12},
