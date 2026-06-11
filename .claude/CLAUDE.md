@@ -102,14 +102,18 @@ cd scraping-tool && python suumo_scraper.py
 
 - ドメインごとに**正準ソースは1ファイル**。片側だけ変更しない:
   - 買い手プロフィール（事実データ）= `scraping-tool/config/buyer_profile.json`
-  - AI購入戦略プロンプト（分析ポリシー・築年/価格判断）= `scraping-tool/config/investment_strategy_prompt.md`
+  - 購入戦略（全AIモジュール共有の判断ポリシー・築年/価格判断）= `scraping-tool/config/purchase_strategy.md`
+  - モジュール別タスク定義（出力形式・評価手順）= `scraping-tool/config/prompts/<module>.md`
+- ai_prompts の system_prompt は「購入戦略 → タスク定義」の合成。判断基準（予算・築年・NG条件等）は
+  `purchase_strategy.md` だけに書き、タスク定義側にハードコードしない。
 - いずれかを変更したら `cd scraping-tool && python3 scripts/generate_buyer_context.py --write` で
   `docs/BUYER_PROFILE.md` と `scraping-tool/out/*.sql` を再生成する（テストが同期を検証）。
-- 実運用の正は Supabase（`buyer_profiles` / `ai_prompts`）。反映は生成された `out/*.sql` を
-  ユーザーがレビューして適用する（Claude は直接適用しない）。`ai_prompts` の本文変更は
-  全 enrichment の再分析を誘発するため、`config.max_items_per_run` でバッチ制御する。
-- `claude_investment_summarizer.py` の `_FALLBACK_SYSTEM_PROMPT` は
-  `investment_strategy_prompt.md` から構築する（ハードコードしない）。
+- 実運用の正は Supabase（`buyer_profiles` / `ai_prompts`）。反映SQLの version は本番の
+  max(version)+1 に採番する（`generate_buyer_context.py` の PROMPT_SPECS）。
+  `ai_prompts` の本文変更は全 enrichment の再分析を誘発するため、
+  `config.max_items_per_run` でバッチ制御する。
+- `claude_investment_summarizer.py` のフォールバックは `purchase_strategy.md`＋
+  `prompts/investment_summary.md` から合成する（ハードコードしない）。
 - iOS `BuyerProfile.swift` の `preset` は手動同期（機械生成しない）。
 
 ## スクレイパー・エチケット / フェイルセーフ

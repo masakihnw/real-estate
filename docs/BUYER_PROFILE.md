@@ -4,7 +4,8 @@
 >
 > 正準ソース（編集点）:
 > - `scraping-tool/config/buyer_profile.json` … 買い手プロフィール（事実データ）
-> - `scraping-tool/config/investment_strategy_prompt.md` … AI購入戦略プロンプト
+> - `scraping-tool/config/purchase_strategy.md` … 購入戦略（全AIモジュール共有）
+> - `scraping-tool/config/prompts/<module>.md` … モジュール別タスク定義
 >
 > 再生成: `cd scraping-tool && python3 scripts/generate_buyer_context.py --write`
 > 実運用データは Supabase（`buyer_profiles` / `ai_prompts`）。反映は `out/*.sql` を適用する。
@@ -43,10 +44,10 @@
 
 ## 戦略ポリシー（築年・価格判断）
 
-AI分析の判断軸は `scraping-tool/config/investment_strategy_prompt.md` が正準。予算は二段構え（探索上限1.3億／実質アンカー物件1.1億前後・月返済30万円以内）、築年は立地・管理を本質とし築30年程度まで許容（長期修繕計画・総会議事録・修繕積立金の確認必須）。
+AI分析の判断軸は `scraping-tool/config/purchase_strategy.md` が正準。予算は二段構え（探索上限1.3億／実質アンカー物件1.1億前後・月返済30万円以内）、築年は立地・管理を本質とし築30年程度まで許容（長期修繕計画・総会議事録・修繕積立金の確認必須）。
 
 ## データソースの優先順位
 
 1. **Supabase `buyer_profiles` / `ai_prompts`** — 実運用の正（Routine / iOS が参照）
-2. **`scraping-tool/config/buyer_profile.json` / `investment_strategy_prompt.md`** — リポジトリ正準（Supabase 不通時フォールバック＆反映元）
+2. **`scraping-tool/config/buyer_profile.json` / `purchase_strategy.md` / `prompts/*.md`** — リポジトリ正準（Supabase 不通時フォールバック＆反映元）
 3. **`BuyerProfile.swift` preset** — iOS 新規インストール時のデフォルト（手動同期）
