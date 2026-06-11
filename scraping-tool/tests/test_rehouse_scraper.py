@@ -96,6 +96,7 @@ def _run_ward(monkeypatch, pages: dict[int, int]) -> list:
 
     monkeypatch.setattr(rehouse_scraper, "parse_list_html", fake_parse)
     monkeypatch.setattr(rehouse_scraper, "dump_debug_html", lambda *a: None)
+    monkeypatch.setattr(rehouse_scraper, "EMPTY_PARSE_BACKOFF_SEC", 0)
     return rehouse_scraper._scrape_ward("13101", False, set(), threading.Lock())
 
 
@@ -117,14 +118,25 @@ class TestScrapeWardFinishReasons:
         results = _run_ward(monkeypatch, {1: 0})
         assert results == []
         entry = scraper_metrics.get_all()["rehouse"]
-        assert entry["empty_pages"] == 1
+        assert entry["empty_pages"] == 2  # EMPTY_PARSE_TOLERANCE 回分
         assert entry["finish_reasons"] == {"completed": 1}
         # この時点ではソース全体で parsed=0 なので全損扱い（フェイルセーフ方向）
         assert any("媒体全損" in a for a in scraper_metrics.health_alerts())
 
-        # 別の区でパース実績が出れば全損アラートは消える
+        # 別の区でパース実績が出れば全損アラートは消える…が、empty_pages の
+        # 累積（2+2=4 ≥ 閾値3）による空ページアラートは残る設計（フェイルセーフ方向）
         _run_ward(monkeypatch, {1: 3, 2: 0})
-        assert scraper_metrics.health_alerts() == []
+        alerts = scraper_metrics.health_alerts()
+        assert not any("媒体全損" in a for a in alerts)
+
+    def test_single_empty_page_does_not_abort(self, monkeypatch):
+        """空ページ1回では打ち切らず、後続ページの物件を取りこぼさない。"""
+        results = _run_ward(monkeypatch, {1: 3, 2: 0, 3: 2})
+        assert len(results) == 5, "空ページ1回で残ページが打ち切られている"
+        entry = scraper_metrics.get_all()["rehouse"]
+        assert entry["parsed"] == 5
+        assert entry["empty_pages"] == 1  # 途中ギャップのみ
+        assert entry["finish_reasons"] == {"completed": 1}
 
     def test_ward_limit_reached_records_safety_limit(self, monkeypatch):
         monkeypatch.setattr(rehouse_scraper, "MAX_PAGES_PER_WARD", 2)

@@ -19,6 +19,42 @@ def _isolated_dump_dir(tmp_path, monkeypatch):
     yield
 
 
+class TestSleepWithJitter:
+    @pytest.fixture(autouse=True)
+    def _no_real_sleep(self, monkeypatch):
+        slept: list[float] = []
+        monkeypatch.setattr(scraper_common.time, "sleep", lambda s: slept.append(s))
+        self.slept = slept
+        yield
+
+    def test_returns_zero_for_nonpositive_base(self):
+        assert scraper_common.sleep_with_jitter(0) == 0.0
+        assert scraper_common.sleep_with_jitter(-1) == 0.0
+        assert self.slept == []
+
+    def test_waits_at_least_base(self, monkeypatch):
+        """ジッターは上乗せのみ。base を下回らない（エチケット原則）。"""
+        monkeypatch.setattr(scraper_common.random, "uniform", lambda a, b: 0.0)
+        waited = scraper_common.sleep_with_jitter(3.0)
+        assert waited == 3.0
+        assert self.slept == [3.0]
+
+    def test_adds_jitter_up_to_ratio(self, monkeypatch):
+        """ジッター最大時は base*(1+ratio)。"""
+        monkeypatch.setattr(scraper_common.random, "uniform", lambda a, b: b)
+        waited = scraper_common.sleep_with_jitter(2.0, jitter_ratio=0.5)
+        assert waited == 3.0  # 2.0 + 2.0*0.5
+        assert self.slept == [3.0]
+
+    def test_jitter_within_bounds(self, monkeypatch):
+        """実乱数でも base 〜 base*(1+ratio) の範囲に収まる。"""
+        import random as _r
+        monkeypatch.setattr(scraper_common.random, "uniform", _r.uniform)
+        for _ in range(50):
+            w = scraper_common.sleep_with_jitter(3.0, jitter_ratio=0.3)
+            assert 3.0 <= w <= 3.0 * 1.3
+
+
 class TestDumpDebugHtml:
     def test_saves_html_and_returns_path(self):
         html = "<html><title>認証中</title><body>captcha</body></html>"

@@ -13,6 +13,8 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
 
+import scraper_metrics
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_DB_PATH = str(Path(__file__).resolve().parent / "data" / "listings.db")
@@ -543,6 +545,23 @@ def sync_scrape_results(
             summary["reappeared"] += 1
         else:
             summary["unchanged"] += 1
+
+    # 一覧巡回が打ち切られたラン（タイムアウト・WAF放棄・安全上限到達等）では、
+    # 未巡回ページの物件が「見つからなかった」扱いになるため掲載終了判定をスキップする
+    # （HOME'S が30分タイムアウトで82ページ打ち切り→83ページ目以降の現役物件が
+    #   2ラン連続missで誤deactivateされていた問題への対策。フェイルクローズ）
+    truncated = scraper_metrics.source_scan_truncated(source)
+    if truncated:
+        logger.warning(
+            "sync_scrape_results(%s): 打ち切り終端 %s を検出 — このランの掲載終了判定（miss加算）をスキップ",
+            source, truncated,
+        )
+        conn.commit()
+        logger.info(
+            "sync_scrape_results(%s): new=%d updated=%d removed=0 unchanged=%d reappeared=%d (grace判定スキップ)",
+            source, summary["new"], summary["updated"], summary["unchanged"], summary["reappeared"],
+        )
+        return summary
 
     # Mark listings from this source that were not in the current batch as inactive
     if property_type:

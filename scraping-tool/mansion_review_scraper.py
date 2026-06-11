@@ -110,12 +110,21 @@ def _make_session() -> requests.Session:
     return session
 
 
+class SearchUnavailable(Exception):
+    """検索が一時的に不能（HTTPエラー・bot判定・JSONパース失敗等）。
+
+    「物件が存在しない（該当なし）」とは区別する。これを「該当なし」として
+    14日キャッシュすると、403/429/5xx や一時的なブロックで弾かれた物件が
+    2週間再検索されなくなるため、呼び出し側はキャッシュせず未取得のまま残す。
+    """
+
+
 def search_building(
     session: requests.Session, name: str
 ) -> Optional[str]:
     """
     マンション名でマンションレビューの AJAX API を検索し、建物ページ URL を返す。
-    見つからなければ None。
+    物件が存在しない場合は None。一時的に検索不能な場合は SearchUnavailable を送出。
     """
     params = {"name": name}
     try:
@@ -123,21 +132,28 @@ def search_building(
             AJAX_SEARCH_URL, params=params, timeout=30
         )
         if resp.status_code != 200:
+            # 非200は「該当なし」ではなく一時的な取得失敗（bot判定/レート制限/障害）
             logger.error(f"  検索エラー: {resp.status_code} ({name})")
-            return None
+            raise SearchUnavailable(f"HTTP {resp.status_code}")
 
         data = resp.json()
-        for item in data.get("list", []):
-            building_id = item.get("id")
-            if building_id:
-                return f"{BASE_URL}/mansion/{building_id}.html"
-
     except (requests.ConnectionError, requests.Timeout) as e:
         logger.warning(f"  検索接続エラー: {name} — {e}")
         raise
-    except (requests.RequestException, ValueError) as e:
-        logger.warning(f"  検索例外: {name} — {e}")
+    except ValueError as e:
+        # JSON パース失敗 = チャレンジページ等を返された可能性。該当なし扱いにしない
+        logger.warning(f"  検索レスポンス解析失敗（取得不能扱い）: {name} — {e}")
+        raise SearchUnavailable(str(e)) from e
+    except requests.RequestException as e:
+        logger.warning(f"  検索例外（取得不能扱い）: {name} — {e}")
+        raise SearchUnavailable(str(e)) from e
 
+    for item in data.get("list", []):
+        building_id = item.get("id")
+        if building_id:
+            return f"{BASE_URL}/mansion/{building_id}.html"
+
+    # API は正常応答したが候補なし = 真の「該当なし」
     return None
 
 
@@ -416,9 +432,10 @@ def enrich_listings(
 
         try:
             data = enrich_single(session, name, cache)
-        except (requests.ConnectionError, requests.Timeout) as e:
+        except (requests.ConnectionError, requests.Timeout, SearchUnavailable) as e:
+            # 一時的な取得失敗。「該当なし」とせずキャッシュも残さない（次回再試行）
             consecutive_errors += 1
-            logger.warning("  [%d/%d] %s: 接続エラー (%d/%d): %s",
+            logger.warning("  [%d/%d] %s: 取得失敗 (%d/%d): %s",
                            i + 1, total, name, consecutive_errors,
                            CIRCUIT_BREAKER_THRESHOLD, e)
             continue

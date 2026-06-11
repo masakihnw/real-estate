@@ -15,7 +15,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from slack_notify import (
     _send_notification_drafts,
     _get_watchlist_price_drops,
+    _get_data_quality_issues,
     build_watchlist_price_drop_section,
+    build_data_quality_alert_section,
 )
 
 
@@ -392,3 +394,91 @@ class TestGetWatchlistPriceDrops:
             "p_min_drop_pct": WATCHLIST_MIN_DROP_PCT,
         })
         assert 0 < WATCHLIST_MIN_DROP_PCT < 5.0
+
+
+class TestGetDataQualityIssues:
+    def _make_client(
+        self,
+        listings_data: list[dict],
+        sources_data: list[dict],
+    ) -> MagicMock:
+        client = MagicMock()
+
+        def table_side_effect(name: str):
+            tbl = MagicMock()
+            if name == "listings":
+                tbl.select.return_value.eq.return_value.execute.return_value.data = listings_data
+            elif name == "listing_sources":
+                tbl.select.return_value.in_.return_value.eq.return_value.execute.return_value.data = sources_data
+            return tbl
+
+        client.table.side_effect = table_side_effect
+        return client
+
+    def test_empty_name_is_detected(self):
+        client = self._make_client(
+            listings_data=[{"id": 1, "name": "", "normalized_name": "", "address": "東京都港区赤坂7丁目"}],
+            sources_data=[{"listing_id": 1, "source": "homes", "url": "https://www.homes.co.jp/mansion/b-x/"}],
+        )
+        result = _get_data_quality_issues(client)
+        assert len(result) == 1
+        assert result[0]["id"] == 1
+        assert result[0]["source"] == "homes"
+
+    def test_short_normalized_name_is_detected(self):
+        client = self._make_client(
+            listings_data=[{"id": 2, "name": "南麻布", "normalized_name": "南麻布", "address": "東京都港区南麻布"}],
+            sources_data=[{"listing_id": 2, "source": "suumo", "url": "https://suumo.jp/ms/chuko/nc_99/"}],
+        )
+        result = _get_data_quality_issues(client)
+        assert len(result) == 1
+        assert result[0]["normalized_name"] == "南麻布"
+
+    def test_valid_name_is_not_detected(self):
+        client = self._make_client(
+            listings_data=[{"id": 3, "name": "クレヴィア住吉", "normalized_name": "クレヴィア住吉", "address": "東京都江東区"}],
+            sources_data=[],
+        )
+        result = _get_data_quality_issues(client)
+        assert result == []
+
+    def test_address_prefix_stripped(self):
+        client = self._make_client(
+            listings_data=[{"id": 4, "name": "", "normalized_name": "", "address": "東京都杉並区下高井戸５"}],
+            sources_data=[{"listing_id": 4, "source": "suumo", "url": "https://suumo.jp/ms/chuko/nc_abc/"}],
+        )
+        result = _get_data_quality_issues(client)
+        assert result[0]["address"] == "杉並区下高井戸５"
+
+    def test_failure_returns_empty(self):
+        client = MagicMock()
+        client.table.side_effect = Exception("connection error")
+        result = _get_data_quality_issues(client)
+        assert result == []
+
+
+class TestBuildDataQualityAlertSection:
+    def test_returns_none_for_empty_list(self):
+        assert build_data_quality_alert_section([]) is None
+
+    def test_contains_listing_id_and_url(self):
+        issues = [{"id": 173506, "name": "", "normalized_name": "", "address": "港区赤坂7丁目", "source": "homes", "url": "https://www.homes.co.jp/mansion/b-1216390036914/"}]
+        section = build_data_quality_alert_section(issues)
+        assert section is not None
+        assert "173506" in section
+        assert "https://www.homes.co.jp/mansion/b-1216390036914/" in section
+
+    def test_multiple_issues_all_listed(self):
+        issues = [
+            {"id": 1, "name": "", "normalized_name": "", "address": "港区", "source": "homes", "url": "https://a.com/"},
+            {"id": 2, "name": "南麻布", "normalized_name": "南麻布", "address": "港区", "source": "suumo", "url": "https://b.com/"},
+        ]
+        section = build_data_quality_alert_section(issues)
+        assert "ID 1" in section
+        assert "ID 2" in section
+
+    def test_missing_url_does_not_crash(self):
+        issues = [{"id": 99, "name": "", "normalized_name": "", "address": "住所不明", "source": "", "url": ""}]
+        section = build_data_quality_alert_section(issues)
+        assert section is not None
+        assert "99" in section

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 SUUMO / HOME'S / アットホーム / リハウス / ノムコム / 住友不動産販売 / 東急リバブル
-から10年住み替え前提の中古・新築マンション条件に合う候補をスクレイピングし、
+から10年住み替え前提の中古マンション条件に合う候補をスクレイピングし、
 CSV/JSON で出力する。
 
 ※ HOME'S は WAF が厳しく実用的な取得が困難なため、現在は無効化。
@@ -11,7 +11,6 @@ CSV/JSON で出力する。
 
   python main.py                                  # 中古 SUUMO のみ（デフォルト）
   python main.py --source all                     # 全ソースから中古取得
-  python main.py --property-type shinchiku        # 新築 SUUMO のみ
   python main.py --max-pages 2 --no-filter        # フィルタなしで2ページ取得
   python main.py --output result.json
 """
@@ -247,24 +246,6 @@ def _scrape_homes_chuko(max_pages: int, apply_filter: bool) -> list[dict]:
         d = row.to_dict()
         d["property_type"] = "chuko"
         rows.append(d)
-    return rows
-
-
-def _scrape_suumo_shinchiku(max_pages: int, apply_filter: bool) -> list[dict]:
-    """SUUMO 新築スクレイピング（スレッド用）"""
-    from suumo_shinchiku_scraper import scrape_suumo_shinchiku
-    rows = []
-    for row in scrape_suumo_shinchiku(max_pages=max_pages, apply_filter=apply_filter):
-        rows.append(row.to_dict())
-    return rows
-
-
-def _scrape_homes_shinchiku(max_pages: int, apply_filter: bool) -> list[dict]:
-    """HOME'S 新築スクレイピング（スレッド用）"""
-    from homes_shinchiku_scraper import scrape_homes_shinchiku
-    rows = []
-    for row in scrape_homes_shinchiku(max_pages=max_pages, apply_filter=apply_filter):
-        rows.append(row.to_dict())
     return rows
 
 

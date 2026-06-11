@@ -46,6 +46,7 @@ def _make_parse(pages: dict[int, int], monkeypatch):
         page = int(html)  # fetch_fn にはページ番号を文字列で返す str を渡す約束
         return [_row(f"https://example.com/{page}-{i}") for i in range(pages.get(page, 0))]
     monkeypatch.setattr(athome_scraper, "parse_list_html", fake_parse)
+    monkeypatch.setattr(athome_scraper, "EMPTY_PARSE_BACKOFF_SEC", 0)
 
 
 class TestScrapeWardPages:
@@ -63,7 +64,7 @@ class TestScrapeWardPages:
         assert entry["finish_reasons"] == {"completed": 1}
 
     def test_zero_parse_ward_records_empty_page_and_dumps(self, monkeypatch, _no_dump):
-        """1ページ目から0件の区は空ページ計上 + HTML保全（全損切り分け用）。"""
+        """全ページ0件の区は連続2回試した上で空ページ計上 + HTML保全（全損切り分け用）。"""
         _make_parse({1: 0}, monkeypatch)
         results = athome_scraper._scrape_ward_pages(
             str, "chuo-city", limit=50, apply_filter=False, is_full_run=True,
@@ -72,9 +73,22 @@ class TestScrapeWardPages:
         assert results == []
         entry = scraper_metrics.get_all()["athome"]
         assert entry["parsed"] == 0
-        assert entry["empty_pages"] == 1
+        assert entry["empty_pages"] == 2  # EMPTY_PARSE_TOLERANCE 回分
         assert entry["finish_reasons"] == {"completed": 1}
-        assert _no_dump == [("athome", "chuo-city", "1")]
+        assert _no_dump == [("athome", "chuo-city", "2")]
+
+    def test_single_empty_page_does_not_abort(self, monkeypatch):
+        """空ページ1回では打ち切らず、後続ページの物件を取りこぼさない（途中ギャップ記録）。"""
+        _make_parse({1: 3, 2: 0, 3: 2, 4: 0, 5: 0}, monkeypatch)
+        results = athome_scraper._scrape_ward_pages(
+            str, "chiyoda-city", limit=50, apply_filter=False, is_full_run=True,
+        )
+
+        assert len(results) == 5, "空ページ1回で残ページが打ち切られている"
+        entry = scraper_metrics.get_all()["athome"]
+        assert entry["parsed"] == 5
+        assert entry["empty_pages"] == 1  # 途中ギャップのみ（終端の連続空は正常終端）
+        assert entry["finish_reasons"] == {"completed": 1}
 
     def test_all_zero_wards_trigger_total_loss_alert(self, monkeypatch):
         """全区0件なら媒体全損アラートが発火する（E2E: ループ→health_alerts）。"""

@@ -17,6 +17,12 @@ __pycache__/
 venv/
 .env
 
+# バックアップファイル（一時退避用。コミットしない — CLAUDE.md リポジトリ衛生ルール）
+*.bak
+
+# Supabase CLI の一時ディレクトリ
+supabase/.temp/
+
 # Large data files (risk_geojson は CI でのハザード判定に必要なため追跡対象)
 # scraping-tool/results/risk_geojson/
 
