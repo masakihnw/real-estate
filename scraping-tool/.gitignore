@@ -46,3 +46,7 @@ enriched-chuko-sumai/
 
 # 過去レポートの死蔵防止（履歴は Git に残る。old/ ディレクトリは作らない）
 results/**/old/
+
+# 買い手コンテキスト生成物（generate_buyer_context.py --write が再生成。
+# 個人情報を含む Supabase 適用用SQL。コミットせずユーザーがレビューして適用する）
+out/
