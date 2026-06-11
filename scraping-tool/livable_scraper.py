@@ -45,6 +45,7 @@ from report_utils import clean_listing_name
 import scraper_metrics
 from scraper_common import (
     create_session,
+    sleep_with_jitter,
     load_station_passengers,
     station_passengers_ok,
     line_ok,
@@ -150,7 +151,7 @@ def fetch_list_page(session: requests.Session, url: str) -> str:
     """一覧ページのHTMLを取得。5xx/429/タイムアウト・接続エラー時はリトライする。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
-        time.sleep(LIVABLE_REQUEST_DELAY_SEC)
+        sleep_with_jitter(LIVABLE_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
@@ -653,7 +654,7 @@ def _fetch_detail_page(session: requests.Session, url: str) -> str:
     """livable 詳細ページの HTML を取得する。リトライ付き。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
-        time.sleep(LIVABLE_REQUEST_DELAY_SEC)
+        sleep_with_jitter(LIVABLE_REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:

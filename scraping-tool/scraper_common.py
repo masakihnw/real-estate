@@ -11,6 +11,7 @@ import random
 import re
 import sys
 import threading
+import time
 from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
@@ -43,6 +44,24 @@ def create_session() -> requests.Session:
     s.headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
     s.headers["Accept-Language"] = "ja,en;q=0.9"
     return s
+
+
+# ──────────────────────────── リクエスト間隔 ────────────────────────────
+
+
+def sleep_with_jitter(base_sec: float, jitter_ratio: float = 0.3) -> float:
+    """base_sec を基準に ±jitter_ratio のランダムジッターを乗せて sleep する。
+
+    完全な等間隔アクセスは行動分析型 bot 検知の典型シグナルになるため、
+    各リクエスト前の待機をわずかにばらつかせる。base_sec は config の
+    *_REQUEST_DELAY_SEC を下回らない下限として扱い、ジッターは上乗せのみ
+    （= エチケット原則「下限を下回らない」を守る）。実際に sleep した秒数を返す。
+    """
+    if base_sec <= 0:
+        return 0.0
+    wait = base_sec + random.uniform(0, base_sec * jitter_ratio)
+    time.sleep(wait)
+    return wait
 
 
 # ──────────────────────────── WAF 検出 ────────────────────────────

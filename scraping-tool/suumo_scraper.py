@@ -52,6 +52,7 @@ from parse_utils import (
 )
 from scraper_common import (
     create_session,
+    sleep_with_jitter,
     load_station_passengers,
     station_passengers_ok,
     line_ok,
@@ -182,7 +183,7 @@ def fetch_list_page(
             url = f"{url}&pn={page}"
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
-        time.sleep(REQUEST_DELAY_SEC)
+        sleep_with_jitter(REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
@@ -749,7 +750,7 @@ def _fetch_detail_page(session: requests.Session, url: str) -> str:
     """SUUMO 詳細ページの HTML を取得する。"""
     last_error: Optional[Exception] = None
     for attempt in range(REQUEST_RETRIES):
-        time.sleep(REQUEST_DELAY_SEC)
+        sleep_with_jitter(REQUEST_DELAY_SEC)
         try:
             r = session.get(url, timeout=REQUEST_TIMEOUT_SEC)
             if r.status_code == 429:
