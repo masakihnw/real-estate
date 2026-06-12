@@ -2,7 +2,7 @@ import SwiftUI
 
 /// 物件価格の統一表示コンポーネント。
 ///
-/// フォーマットロジックは `Listing.formatPriceCompact` と同一アルゴリズムを使用。
+/// フォーマットは `Listing.formatPriceMan` に委譲する（単一ソース）。
 /// `format(_:)` / `formatShort(_:)` は static で公開しているため、
 /// View 以外（テスト・ViewModel）からも呼べる。
 struct PriceText: View {
@@ -35,30 +35,16 @@ struct PriceText: View {
     }
 
     // MARK: - Static formatters
-
-    private static let decimalStyle = IntegerFormatStyle<Int>.number
-        .locale(Locale(identifier: "en_US_POSIX"))
+    // フォーマットロジックは Listing.formatPriceMan に一元化（重複実装しない）。
 
     /// "万円" 付き表示。`Listing.formatPriceCompact` と同一結果を返す。
     static func format(_ priceMan: Int) -> String {
-        formatInternal(priceMan, unit: "万円")
+        Listing.formatPriceCompact(priceMan)
     }
 
     /// "万" のみ（円なし）。一覧カード等のコンパクト表示用。
     static func formatShort(_ priceMan: Int) -> String {
-        formatInternal(priceMan, unit: "万")
-    }
-
-    private static func formatInternal(_ man: Int, unit: String) -> String {
-        if man >= 10_000 {
-            let oku = man / 10_000
-            let remainder = man % 10_000
-            if remainder == 0 {
-                return "\(oku)億"
-            }
-            return "\(oku)億\(remainder.formatted(decimalStyle))\(unit)"
-        }
-        return "\(man.formatted(decimalStyle))\(unit)"
+        Listing.formatPriceMan(priceMan, unit: "万")
     }
 }
 
