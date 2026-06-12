@@ -33,16 +33,8 @@ struct ScrapingLog: Sendable {
     var formattedTimestamp: String {
         // ISO 8601 形式（例: 2026-02-12T06:30:00+09:00）をパース
         // Python の isoformat() はマイクロ秒付き/なしの両方を出力しうる
-        let withFrac = ISO8601DateFormatter()
-        withFrac.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        let withoutFrac = ISO8601DateFormatter()
-        withoutFrac.formatOptions = [.withInternetDateTime]
-
-        if let date = withFrac.date(from: timestamp) ?? withoutFrac.date(from: timestamp) {
-            let display = DateFormatter()
-            display.dateFormat = "yyyy/MM/dd HH:mm:ss"
-            display.timeZone = TimeZone(identifier: "Asia/Tokyo")
-            return display.string(from: date)
+        if let date = DateFormatting.parseISO8601(timestamp) {
+            return DateFormatting.displayDateTimeSecondsJST.string(from: date)
         }
         // フォールバック: そのまま返す
         return timestamp
