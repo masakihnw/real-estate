@@ -1,22 +1,24 @@
--- 046: 同一建物の売出全戸スペック（building_units）を enrichments + 軽量ビューに追加
+-- 047: 同一建物の売出全戸スペック（building_units）を enrichments + 軽量ビューに追加
 --
 -- 背景:
 --   同一マンションで複数戸が売り出されている場合、AI分析（★/グレード/コメント）は
 --   その中の1戸についてしか言及できていなかった。棟内の他戸スペックを保持し、
 --   「他の部屋だったらどうか」を踏まえて棟内ベスト戸基準で評価できるようにする。
---   また iOS 側で同一建物をベスト戸代表1行に集約するためのグルーピングキーを提供する。
 --
--- 変更:
---   1. enrichments に building_group_key (TEXT) / building_units (JSONB) を追加
---   2. listings_feed_light ビューに2カラムを追加（DROP CASCADE → 再作成）
---   3. CASCADE で削除された依存 RPC を再作成（045 と同一）
+-- 採番: 本番DBには既に 046（listings_merged_into）が適用済みのため 047 を採用。
+--
+-- 設計（非破壊）:
+--   - enrichments への列追加は ADD COLUMN IF NOT EXISTS（冪等）。
+--   - listings_feed_light は DROP CASCADE せず CREATE OR REPLACE VIEW で末尾に2列を追記する。
+--     これにより依存 RPC（get_listings_since_light / get_liked_inactive_listings ×2）は
+--     再作成不要で、追加列を自動的に取り込む。046 が加えた listings.merged_into 等にも触れない。
 --
 -- データ仕様（building_units の各要素）:
 --   { floor, area_m2, layout, price_man, direction, price_per_m2_man, url, is_current }
 --   価格昇順。is_current=true がその行（listing）自身の戸。単戸物件では NULL。
 
 -- ============================================================
--- 1. enrichments に列追加
+-- 1. enrichments に列追加（冪等）
 -- ============================================================
 ALTER TABLE enrichments
 ADD COLUMN IF NOT EXISTS building_group_key TEXT;
@@ -30,11 +32,10 @@ COMMENT ON COLUMN enrichments.building_units IS
     '同一建物で売出中の全戸スペック配列（価格昇順、is_current が自戸）。単戸物件では NULL。';
 
 -- ============================================================
--- 2. listings_feed_light ビュー再作成（045 + building_group_key / building_units）
+-- 2. listings_feed_light に2列を末尾追記（CREATE OR REPLACE = 非破壊）
+--    既存の列順・型はそのまま、building_group_key / building_units を末尾に追加する。
 -- ============================================================
-DROP VIEW IF EXISTS listings_feed_light CASCADE;
-
-CREATE VIEW listings_feed_light AS
+CREATE OR REPLACE VIEW listings_feed_light AS
 SELECT
     l.id,
     l.identity_key,
@@ -127,21 +128,19 @@ SELECT
     e.key_risks,
     e.is_cheapest_in_building,
     e.competing_price_range,
-    e.building_group_key,
-    e.building_units,
     e.near_miss,
     e.near_miss_reasons,
-    -- 画像有無フラグ（軽量ビューで pendingCount フィルタに使用）
     COALESCE(e.has_floor_plan_images, false) AS has_floor_plan_images,
     COALESCE(e.has_property_images, false) AS has_property_images,
-    -- カードサムネのフォールバック（best_thumbnail_url 未設定の間に使う）。
-    -- iOS の thumbnailURL と同じ優先順: 外観/エントランス → 先頭画像
     COALESCE(
         jsonb_path_query_first(
             e.suumo_images, '$[*] ? (@.label like_regex "外観|エントランス")'
         ) ->> 'url',
         e.suumo_images -> 0 ->> 'url'
-    ) AS first_image_url
+    ) AS first_image_url,
+    -- 末尾追記（CREATE OR REPLACE VIEW の制約上、新規列は末尾のみ）
+    e.building_group_key,
+    e.building_units
 FROM listings l
 LEFT JOIN LATERAL (
     SELECT * FROM listing_sources s
@@ -151,34 +150,6 @@ LEFT JOIN LATERAL (
 LEFT JOIN enrichments e ON e.listing_id = l.id
 WHERE NOT l.spec_excluded
   AND ls.price_man IS NOT NULL;
-
--- ============================================================
--- 3. CASCADE で削除された依存 RPC を再作成（045 と同一）
--- ============================================================
-CREATE OR REPLACE FUNCTION get_listings_since_light(since_ts TIMESTAMPTZ)
-RETURNS SETOF listings_feed_light AS $$
-    SELECT * FROM listings_feed_light WHERE updated_at > since_ts;
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
-
-ALTER FUNCTION get_listings_since_light(TIMESTAMPTZ) SET statement_timeout = '30s';
-
-CREATE OR REPLACE FUNCTION get_liked_inactive_listings()
-RETURNS SETOF listings_feed_light AS $$
-  SELECT lf.*
-  FROM listings_feed_light lf
-  JOIN user_building_preferences ubp
-    ON lf.identity_key LIKE ubp.identity_key || '|%'
-  WHERE lf.is_active = false
-    AND ubp.preference = 'like';
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
-
-ALTER FUNCTION get_liked_inactive_listings() SET statement_timeout = '30s';
-
-CREATE OR REPLACE FUNCTION get_liked_inactive_listings(p_listing_ids BIGINT[])
-RETURNS SETOF listings_feed_light AS $$
-  SELECT lf.* FROM listings_feed_light lf
-  WHERE lf.id = ANY(p_listing_ids) AND lf.is_active = false;
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
 
 -- PostgREST スキーマキャッシュをリロード
 NOTIFY pgrst, 'reload schema';
