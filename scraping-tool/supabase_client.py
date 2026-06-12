@@ -42,6 +42,27 @@ def get_client():
     return _client
 
 
+FETCH_PAGE_SIZE = 1000
+
+
+def fetch_paginated(client, table: str, columns: str,
+                    page_size: int = FETCH_PAGE_SIZE) -> list[dict]:
+    """テーブル全行をページングで取得する（storage GC / R2 移行で共用）。"""
+    rows: list[dict] = []
+    offset = 0
+    while True:
+        resp = (client.table(table)
+                .select(columns)
+                .range(offset, offset + page_size - 1)
+                .execute())
+        batch = resp.data or []
+        rows.extend(batch)
+        if len(batch) < page_size:
+            break
+        offset += page_size
+    return rows
+
+
 # identity_key は日本語を含み URL エンコード後1件150B超になるため、
 # PostgREST の URL 長制限（~20KB）を超えないようチャンクは20件に抑える
 RESOLVE_CHUNK_SIZE = 20
