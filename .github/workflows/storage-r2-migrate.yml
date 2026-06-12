@@ -1,0 +1,92 @@
+name: Storage R2 Migration
+
+# Supabase Storage (listing-images) → Cloudflare R2 の移行を GitHub Actions 上で実行する。
+# 手順・フェーズの詳細は docs/STORAGE_R2_MIGRATION.md を参照。
+# 実行順: copy → verify → rewrite (execute) → ※1パイプラインサイクル後 → delete-source (execute)
+# rewrite フェーズはマニフェストを書き換えるため、変更をコミットする。
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: '移行フェーズ'
+        type: choice
+        options:
+          - copy
+          - verify
+          - rewrite
+          - delete-source
+        required: true
+      execute:
+        description: '実変更を行う（rewrite / delete-source 用。未チェックは dry-run）'
+        type: boolean
+        default: false
+
+concurrency:
+  group: storage-r2-migration
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scraping-tool/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: pip install -r requirements.txt
+
+      - name: Run migration phase
+        working-directory: scraping-tool
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+        run: |
+          ARGS="--phase ${{ github.event.inputs.phase }}"
+          if [ "${{ github.event.inputs.execute }}" = "true" ]; then
+            ARGS="$ARGS --execute"
+          fi
+          if [ -f results/latest.json ]; then
+            ARGS="$ARGS --rewrite-file results/latest.json"
+          fi
+          python3 scripts/migrate_storage_to_r2.py $ARGS
+
+      - name: Commit rewritten manifest
+        if: github.event.inputs.phase == 'rewrite' && github.event.inputs.execute == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          git add scraping-tool/data/floor_plan_storage_manifest.json
+
+          if git diff --cached --quiet; then
+            echo "マニフェスト変更なし"
+            exit 0
+          fi
+
+          git commit -m "chore: R2 移行によるマニフェスト URL 書き換え
+
+          storage-r2-migration workflow (rewrite)"
+
+          git pull --rebase --autostash origin main
+          git push origin HEAD:refs/heads/main
