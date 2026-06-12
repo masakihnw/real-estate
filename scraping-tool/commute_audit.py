@@ -33,20 +33,16 @@ _LOC = load_office_locations()
 OFFICES = {
     "playground": {
         **_LOC["playground"],
+        # オフィス最寄駅は個人特定を避けるためプレースホルダ。実値は監査時に
+        # offices.local.yaml / COMMUTE_OFFICES_JSON 側で各自管理する。
         "nearby_stations": [
-            {"name": "半蔵門", "lines": "半蔵門線", "walk": 5},
-            {"name": "九段下", "lines": "半蔵門線/東西線/都営新宿線", "walk": 7},
-            {"name": "麹町", "lines": "有楽町線", "walk": 11},
-            {"name": "市ヶ谷", "lines": "JR/有楽町線/南北線/都営新宿線", "walk": 15},
+            {"name": "最寄駅A1", "lines": "路線", "walk": 5},
         ],
     },
     "m3career": {
         **_LOC["m3career"],
         "nearby_stations": [
-            {"name": "神谷町", "lines": "日比谷線", "walk": 7},
-            {"name": "溜池山王", "lines": "銀座線/南北線", "walk": 12},
-            {"name": "国会議事堂前", "lines": "丸ノ内線/千代田線", "walk": 16},
-            {"name": "御成門", "lines": "都営三田線", "walk": 18},
+            {"name": "最寄駅B1", "lines": "路線", "walk": 7},
         ],
     },
 }

@@ -192,8 +192,8 @@ final class Listing: @unchecked Sendable {
 
     // MARK: - 通勤時間
     /// 通勤時間情報 JSON 文字列（MKDirections で計算、ローカルキャッシュ）
-    /// フォーマット: {"playground":{"minutes":25,"summary":"東京メトロ半蔵門線→半蔵門駅","calculatedAt":"ISO8601"},
-    ///              "m3career":{"minutes":30,"summary":"東京メトロ日比谷線→虎ノ門ヒルズ駅","calculatedAt":"ISO8601"}}
+    /// フォーマット: {"playground":{"minutes":25,"summary":"（路線→最寄駅の経路概要）","calculatedAt":"ISO8601"},
+    ///              "m3career":{"minutes":30,"summary":"（路線→最寄駅の経路概要）","calculatedAt":"ISO8601"}}
     var commuteInfoJSON: String?
     /// 通勤時間情報 v2 JSON 文字列（Station Master ベースの事前計算結果）
     var commuteInfoV2JSON: String?

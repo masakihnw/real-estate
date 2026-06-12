@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  通勤先オフィスの実値テンプレート。
+  これを CommuteOffices.plist に複製し、id（playground/m3career 等のslug）・name・
+  latitude・longitude を実値で記載する。CommuteOffices.plist は .gitignore 対象（PII）。
+  未配置時はアプリは座標0,0のプレースホルダ（オフィスA/B）で動作する。
+-->
+<plist version="1.0">
+<array>
+    <dict>
+        <key>id</key><string>playground</string>
+        <key>name</key><string>オフィスA</string>
+        <key>latitude</key><real>0.0</real>
+        <key>longitude</key><real>0.0</real>
+    </dict>
+    <dict>
+        <key>id</key><string>m3career</string>
+        <key>name</key><string>オフィスB</string>
+        <key>latitude</key><real>0.0</real>
+        <key>longitude</key><real>0.0</real>
+    </dict>
+</array>
+</plist>

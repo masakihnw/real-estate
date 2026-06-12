@@ -41,6 +41,10 @@ scraping-tool/data/claude_cache.db
 docs/initial-consultation.md
 # 通勤先オフィスのローカル実値（実住所・座標。コミット禁止）
 configs/commute/offices.local.yaml
+# 認証許可メールアドレスの実値（PII。コミット禁止。AllowedEmails.sample.plist を複製して作成）
+real-estate-ios/RealEstateApp/AllowedEmails.plist
+# 通勤先オフィスの実値（実住所・座標・社名。PII。CommuteOffices.sample.plist を複製して作成）
+real-estate-ios/RealEstateApp/CommuteOffices.plist
 # 通勤先オフィスに紐づく再生成可能な算出データ・キャッシュ（オフィス座標/社名が漏れるためコミット禁止）
 scraping-tool/data/commute_playground.json
 scraping-tool/data/commute_m3career.json
