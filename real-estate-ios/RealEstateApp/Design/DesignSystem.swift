@@ -200,3 +200,102 @@ struct ListingObjectStyle {
     static let detailValue = Font.subheadline
     static let detailLabel = Font.caption
 }
+
+// MARK: - Design Tokens v2 (DS namespace)
+
+/// DesignSystem v2 のトークン。
+/// 新規コードは DesignSystem（旧）ではなく DS を参照すること。
+/// 既存コードは画面単位で順次移行。
+enum DS {
+
+    // MARK: Spacing — 4pt グリッド
+
+    enum Spacing {
+        static let xs: CGFloat  =  4
+        static let sm: CGFloat  =  8
+        static let md: CGFloat  = 12
+        static let lg: CGFloat  = 16
+        static let xl: CGFloat  = 24
+        static let xxl: CGFloat = 32
+    }
+
+    // MARK: Corner Radius
+
+    enum Radius {
+        /// バッジ・チップ
+        static let chip: CGFloat  =  8
+        /// カード（旧 cornerRadius 12 から拡大）
+        static let card: CGFloat  = 16
+        /// モーダル上端
+        static let sheet: CGFloat = 24
+    }
+
+    // MARK: Opacity
+
+    enum Opacity {
+        static let tintBg:   Double = 0.08
+        static let border:   Double = 0.16
+        static let disabled: Double = 0.40
+        static let overlay:  Double = 0.60
+    }
+
+    // MARK: Shadow
+
+    struct ShadowStyle {
+        let opacity: Double
+        let radius: CGFloat
+        let x: CGFloat
+        let y: CGFloat
+    }
+
+    enum Shadow {
+        static let card     = ShadowStyle(opacity: 0.08, radius: 8,  x: 0, y: 4)
+        static let floating = ShadowStyle(opacity: 0.16, radius: 16, x: 0, y: 8)
+    }
+
+    // MARK: Typography — Dynamic Type 対応（.system(size:) 禁止）
+
+    enum Typography {
+        /// 価格・主役数値
+        static let hero:         Font = .largeTitle.bold()
+        static let sectionTitle: Font = .headline
+        static let body:         Font = .subheadline
+        static let label:        Font = .caption
+        static let badge:        Font = .caption2.weight(.semibold)
+    }
+}
+
+// MARK: - DS View Extensions
+
+extension View {
+    /// DS.Shadow.card を適用する。
+    func cardShadow() -> some View {
+        let s = DS.Shadow.card
+        return self.shadow(
+            color: .black.opacity(s.opacity),
+            radius: s.radius, x: s.x, y: s.y
+        )
+    }
+
+    /// DS.Shadow.floating を適用する（FAB・モーダル等）。
+    func floatingShadow() -> some View {
+        let s = DS.Shadow.floating
+        return self.shadow(
+            color: .black.opacity(s.opacity),
+            radius: s.radius, x: s.x, y: s.y
+        )
+    }
+
+    /// DS.Radius.card のカード背景。iOS 26+ は Liquid Glass。
+    @ViewBuilder
+    func cardGlassBackground() -> some View {
+        if #available(iOS 26, *) {
+            self.glassEffect(.regular, in: .rect(cornerRadius: DS.Radius.card))
+        } else {
+            self.background(
+                RoundedRectangle(cornerRadius: DS.Radius.card, style: .continuous)
+                    .fill(Color(.secondarySystemGroupedBackground))
+            )
+        }
+    }
+}
