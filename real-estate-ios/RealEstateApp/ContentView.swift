@@ -206,7 +206,7 @@ struct ContentView: View {
 
     private var compactLayout: some View {
         TabView(selection: $selectedTab) {
-            DashboardView()
+            TodayView()
                 .tabItem { Label("今日", systemImage: "sun.max") }
                 .tag(0)
                 .accessibilityLabel("今日の動き")
@@ -244,7 +244,7 @@ struct ContentView: View {
         } detail: {
             switch SidebarItem(rawValue: selectedSidebarRaw) ?? .today {
             case .today:
-                DashboardView()
+                TodayView()
             case .browse:
                 BrowseTabView()
             case .favorites:
