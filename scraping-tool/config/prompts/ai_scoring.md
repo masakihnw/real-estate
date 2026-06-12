@@ -95,7 +95,7 @@ JSON で回答:
   "asset_grade": "A",
   "grade_override_reason": null,
   "reasoning": {
-    "budget": {"score": 85, "note": "9,800万、実質アンカー圏内。管理費+修繕月2.8万で問題なし"},
+    "budget": {"score": 85, "note": "実質アンカー圏内の価格。管理費+修繕月2.8万で問題なし"},
     "living": {"score": 42, "note": "2LDK 55㎡。子2人で未就学まで。3人は厳しい。面積不足が最大の弱点"},
     "location": {"score": 82, "note": "東陽町5分、優先Aエリア。買い物・保育園◎。playground 22分, m3career 28分"},
     "building": {"score": 78, "note": "築2015年、総戸数120戸、長期修繕計画あり、管理良好"},
