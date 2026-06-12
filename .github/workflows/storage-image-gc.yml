@@ -15,6 +15,14 @@ on:
         description: 'dry-run（削除せずに対象件数のみ表示）'
         type: boolean
         default: false
+      backend:
+        description: '対象バックエンド（auto: R2設定済みならR2。R2移行完了前のSupabase掃除には supabase を指定）'
+        type: choice
+        options:
+          - auto
+          - supabase
+          - r2
+        default: auto
 
 concurrency:
   group: storage-image-gc
@@ -56,10 +64,15 @@ jobs:
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
           R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
         run: |
+          ARGS=""
+          BACKEND="${{ github.event.inputs.backend }}"
+          if [ -n "$BACKEND" ] && [ "$BACKEND" != "auto" ]; then
+            ARGS="--backend $BACKEND"
+          fi
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            python3 scripts/storage_image_gc.py
+            python3 scripts/storage_image_gc.py $ARGS
           else
-            python3 scripts/storage_image_gc.py --execute
+            python3 scripts/storage_image_gc.py $ARGS --execute
           fi
 
       - name: Commit pruned manifest
