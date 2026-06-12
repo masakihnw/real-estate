@@ -11,7 +11,6 @@ enum NopedFilter {
     ///   - nopedKeys: `BuildingPreferenceStore.nopedKeys`（identityKey の集合）
     /// - Returns: noped な物件のみ（入力順を保持）
     static func filter(listings: [Listing], nopedKeys: Set<String>) -> [Listing] {
-        guard !nopedKeys.isEmpty else { return [] }
-        return listings.filter { nopedKeys.contains($0.identityKey) }
+        listings.filter { nopedKeys.contains($0.identityKey) }
     }
 }

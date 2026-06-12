@@ -9,6 +9,7 @@ struct NopedListingsView: View {
     @State private var selectedListing: Listing?
     @State private var showClearAllConfirm = false
     @State private var isClearing = false
+    @State private var clearError: String?
 
     var body: some View {
         Group {
@@ -57,6 +58,14 @@ struct NopedListingsView: View {
             Button("キャンセル", role: .cancel) { }
         } message: {
             Text("解除した物件は一覧・スワイプに再び表示されます")
+        }
+        .alert("一括解除エラー", isPresented: Binding(
+            get: { clearError != nil },
+            set: { if !$0 { clearError = nil } }
+        )) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(clearError ?? "")
         }
         .onAppear { loadNoped() }
         .fullScreenCover(item: $selectedListing) { listing in
@@ -121,8 +130,13 @@ struct NopedListingsView: View {
         guard !keys.isEmpty else { return }
         isClearing = true
         Task {
-            await BuildingPreferenceStore.shared.removePreferences(keys)
-            HapticManager.success()
+            let failedCount = await BuildingPreferenceStore.shared.removePreferences(keys)
+            if failedCount == 0 {
+                HapticManager.success()
+            } else {
+                HapticManager.error()
+                clearError = "\(failedCount)件の解除に失敗しました。通信状況を確認して再試行してください。"
+            }
             loadNoped()
             isClearing = false
         }

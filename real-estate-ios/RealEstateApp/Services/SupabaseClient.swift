@@ -140,6 +140,16 @@ final class SupabaseClient {
         return data
     }
 
+    /// PostgREST クエリ値の percent-encoding。
+    /// identityKey は日本語・空白・記号（| , # & +）を含み得るため、
+    /// 素の文字列補間では URL(string:) が nil になるか誤ったフィルタになる。
+    /// `+` はサーバー側で空白と解釈され得るため明示的に除外する。
+    static func encodeQueryValue(_ value: String) -> String {
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.remove(charactersIn: "+&=#")
+        return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
+    }
+
     /// PostgREST DELETE
     func delete(
         from table: String,
@@ -147,7 +157,9 @@ final class SupabaseClient {
     ) async throws {
         var urlString = "\(baseURL)/rest/v1/\(table)"
         if !filters.isEmpty {
-            urlString += "?" + filters.map { "\($0.0)=\($0.1)" }.joined(separator: "&")
+            urlString += "?" + filters
+                .map { "\($0.0)=\(Self.encodeQueryValue($0.1))" }
+                .joined(separator: "&")
         }
         guard let url = URL(string: urlString) else {
             throw SupabaseError.invalidURL

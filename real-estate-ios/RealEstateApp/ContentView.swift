@@ -65,8 +65,9 @@ struct ContentView: View {
     @Environment(TransactionStore.self) private var transactionStore
     @Environment(SaveErrorHandler.self) private var saveErrorHandler
     private let networkMonitor = NetworkMonitor.shared
-    @SceneStorage("selectedTab") private var selectedTab = 0
-    @SceneStorage("selectedSidebar") private var selectedSidebarRaw = SidebarItem.today.rawValue
+    // キー名 V2: 旧6タブ構成の保存値（tag 0-5 / dashboard 等の rawValue）を引き継がない
+    @SceneStorage("selectedTabV2") private var selectedTab = 0
+    @SceneStorage("selectedSidebarV2") private var selectedSidebarRaw = SidebarItem.today.rawValue
     /// 通知タップで詳細表示する物件
     @State private var notificationListing: Listing?
     /// Spotlight 検索から開く物件（URL で受け取り、該当物件を表示）
@@ -148,11 +149,11 @@ struct ContentView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didTapPushNotification)) { notification in
-            if let tab = notification.userInfo?["tab"] as? Int {
-                selectedTab = tab
-                if let item = SidebarItem(tabIndex: tab) {
-                    selectedSidebarRaw = item.rawValue
-                }
+            if let tab = notification.userInfo?["tab"] as? Int,
+               let item = SidebarItem(tabIndex: tab) {
+                // 範囲外の tab（旧6タブ構成のペイロード等）は無視する
+                selectedTab = item.tabIndex
+                selectedSidebarRaw = item.rawValue
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didTapCommentNotification)) { notification in
@@ -224,8 +225,8 @@ struct ContentView: View {
         }
         .tint(.accentColor)
         .onAppear {
-            // 旧6タブ構成の @SceneStorage 値（4=成約, 5=設定）を救済
-            if selectedTab > 3 { selectedTab = 0 }
+            // 防御: 範囲外の保存値はホームに戻す（存在しない tag を選択すると空表示になるため）
+            if !(0...3).contains(selectedTab) { selectedTab = 0 }
         }
         .onChange(of: selectedTab) { _, _ in
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)

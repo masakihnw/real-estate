@@ -154,7 +154,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 userInfo: ["listingIdentityKey": identityKey]
             )
         }
-        // その他 → 中古タブに遷移
+        // その他 → 「今日」タブ（デイリーダイジェスト）に遷移
         else {
             NotificationCenter.default.post(
                 name: .didTapPushNotification,

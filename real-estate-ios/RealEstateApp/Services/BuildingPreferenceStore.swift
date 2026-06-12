@@ -82,16 +82,27 @@ final class BuildingPreferenceStore {
 
     /// 複数キーの一括解除（Nope一括解除用）。
     /// チャンクごとに1リクエストで削除し、失敗したチャンクはローカル状態を巻き戻す。
-    func removePreferences(_ identityKeys: [String]) async {
+    /// - Returns: 削除に失敗したキー数（0 なら全件成功）
+    @discardableResult
+    func removePreferences(_ identityKeys: [String]) async -> Int {
         let chunkSize = 50
+        var failedCount = 0
         for chunkStart in stride(from: 0, to: identityKeys.count, by: chunkSize) {
             let chunk = Array(identityKeys[chunkStart..<min(chunkStart + chunkSize, identityKeys.count)])
             let removedNoped = chunk.filter { nopedKeys.remove($0) != nil }
             let removedLiked = chunk.filter { likedKeys.remove($0) != nil }
 
             do {
-                // PostgREST in 句。建物名にカンマが含まれ得るため各値をダブルクオートする
-                let quoted = chunk.map { "\"\($0)\"" }.joined(separator: ",")
+                // PostgREST in 句。建物名にカンマが含まれ得るため各値をダブルクオートし、
+                // 値中の \ と " は PostgREST 仕様に従いバックスラッシュでエスケープする
+                let quoted = chunk
+                    .map { key in
+                        let escaped = key
+                            .replacingOccurrences(of: "\\", with: "\\\\")
+                            .replacingOccurrences(of: "\"", with: "\\\"")
+                        return "\"\(escaped)\""
+                    }
+                    .joined(separator: ",")
                 try await client.delete(
                     from: "user_building_preferences",
                     filters: [("identity_key", "in.(\(quoted))")]
@@ -100,9 +111,11 @@ final class BuildingPreferenceStore {
             } catch {
                 removedNoped.forEach { nopedKeys.insert($0) }
                 removedLiked.forEach { likedKeys.insert($0) }
+                failedCount += chunk.count
                 logger.error("Bulk remove failed: \(error.localizedDescription, privacy: .public)")
             }
         }
+        return failedCount
     }
 
     func isNoped(_ identityKey: String) -> Bool {

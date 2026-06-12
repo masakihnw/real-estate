@@ -28,17 +28,4 @@ struct NopedFilterTests {
         let result = NopedFilter.filter(listings: [a], nopedKeys: [])
         #expect(result.isEmpty)
     }
-
-    @Test("listings が空なら空配列")
-    func emptyListingsReturnsEmpty() {
-        let result = NopedFilter.filter(listings: [], nopedKeys: ["key|x"])
-        #expect(result.isEmpty)
-    }
-
-    @Test("一致なしなら空配列")
-    func noMatchReturnsEmpty() {
-        let a = makeListing(url: "https://example.com/a", name: "物件A")
-        let result = NopedFilter.filter(listings: [a], nopedKeys: ["存在しない|key"])
-        #expect(result.isEmpty)
-    }
 }

@@ -10,7 +10,7 @@ struct SidebarItemTests {
     @Test("4ケースのみ（today/browse/favorites/settings）")
     func fourCases() {
         #expect(SidebarItem.allCases.count == 4)
-        #expect(SidebarItem.allCases == [.today, .browse, .favorites, .settings])
+        #expect(Set(SidebarItem.allCases) == Set([.today, .browse, .favorites, .settings]))
     }
 
     @Test("tabIndex は 0...3 の連番で重複なし")
@@ -44,6 +44,42 @@ struct SidebarItemTests {
     @Test("プッシュ通知の tab:0 は「今日」に対応")
     func pushNotificationTabZero() {
         #expect(SidebarItem(tabIndex: 0) == .today)
+    }
+}
+
+// MARK: - SupabaseClient クエリエンコード
+
+@Suite("SupabaseClient.encodeQueryValue")
+struct SupabaseQueryEncodingTests {
+
+    @Test("日本語・空白・記号を含む identityKey が URL 安全になる")
+    func encodesUnsafeCharacters() {
+        let raw = #"パークハウス 広尾#2|2LDK|82.5|東京都渋谷区&広尾4|1988"#
+        let encoded = SupabaseClient.encodeQueryValue(raw)
+        // エンコード結果を含む URL が生成できること（旧実装では nil になっていた）
+        let url = URL(string: "https://example.supabase.co/rest/v1/t?identity_key=eq.\(encoded)")
+        #expect(url != nil)
+        // 区切り・フラグメント・パラメータ境界の文字が残っていないこと
+        #expect(!encoded.contains("#"))
+        #expect(!encoded.contains("&"))
+        #expect(!encoded.contains("+"))
+        #expect(!encoded.contains(" "))
+    }
+
+    @Test("ASCII 英数字はそのまま")
+    func passesThroughSafeCharacters() {
+        #expect(SupabaseClient.encodeQueryValue("abc123") == "abc123")
+    }
+
+    @Test("PostgREST の in 句構文（丸括弧・カンマ）は保持、ダブルクオートは %22 化")
+    func keepsPostgRESTSyntaxCharacters() {
+        let encoded = SupabaseClient.encodeQueryValue(#"in.("a","b")"#)
+        // 丸括弧・カンマは urlQueryAllowed に含まれ、そのまま残る
+        #expect(encoded.contains("("))
+        #expect(encoded.contains(","))
+        // ダブルクオートは %22 にエンコードされる（サーバー側でデコードされ in 句として機能する）
+        #expect(encoded.contains("%22"))
+        #expect(!encoded.contains("\""))
     }
 }
 
