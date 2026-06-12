@@ -188,7 +188,6 @@ private struct RootView: View {
                 // 認証済み + アクセス許可 → メイン画面
                 ContentView()
                     .task {
-                        let context = sharedModelContainer.mainContext
                         await withTaskGroup(of: Void.self) { group in
                             group.addTask { await BuyerProfileSyncService.shared.syncOnLaunch() }
                             group.addTask {
