@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -39,8 +40,9 @@ DOC_PATH = ROOT / "docs" / "BUYER_PROFILE.md"
 OUT_DIR = SCRAPING_ROOT / "out"
 BUYER_PROFILES_SQL_PATH = OUT_DIR / "buyer_profiles_upsert.sql"
 
-# Supabase 反映パラメータ
-BUYER_USER_ID = "[USER_ID]"
+# Supabase 反映パラメータ。実 user_id はリポジトリにハードコードせず環境変数で注入する。
+# 未設定時はプレースホルダを出力する（生成 SQL は適用前にレビューする運用）。
+BUYER_USER_ID = os.environ.get("BUYER_PROFILE_USER_ID", "<BUYER_PROFILE_USER_ID>")
 
 _SUMMARY_OUTPUT_SCHEMA = (
     '{"type": "object", "required": ["score", "conclusion", "flags", "scenarios", "action"], '
@@ -187,7 +189,8 @@ def generate_buyer_profile_md() -> str:
     lines.append("")
     lines.append(
         "AI分析の判断軸は `scraping-tool/config/purchase_strategy.md` が正準。"
-        "予算は二段構え（探索上限1.3億／実質アンカー物件1.1億前後・月返済30万円以内）、"
+        "予算は二段構え（探索上限／実質アンカー／月返済上限）で、具体額は上記の予算シナリオ"
+        "（実値は Supabase `buyer_profiles` が正）を参照する。"
         "築年は立地・管理を本質とし築30年程度まで許容（長期修繕計画・総会議事録・修繕積立金の確認必須）。"
     )
     lines.append("")
