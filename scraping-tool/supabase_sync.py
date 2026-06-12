@@ -662,6 +662,7 @@ def _sync_enrichments(client, listings: list[dict]) -> int:
         "ai_recommendation_scenarios",
         "near_miss", "near_miss_reasons",
         "is_cheapest_in_building", "competing_price_range",
+        "building_group_key", "building_units",
     ]
 
     count = 0

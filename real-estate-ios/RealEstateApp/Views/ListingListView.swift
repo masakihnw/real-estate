@@ -509,7 +509,10 @@ struct ListingListView: View {
         }
         return orderedKeys.compactMap { key in
             guard let units = grouped[key], let first = units.first else { return nil }
-            return ListingGroup(id: key, representative: first, units: units)
+            // 棟内の代表は「現在のソート順で最初の戸」ではなく、棟内ベスト戸を選ぶ。
+            // 一覧に表示する物件名・階数・価格・★はベスト戸のものになる。
+            let representative = BuildingAggregator.bestRepresentative(from: units) ?? first
+            return ListingGroup(id: key, representative: representative, units: units)
         }
     }
 

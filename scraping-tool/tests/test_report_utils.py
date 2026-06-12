@@ -19,6 +19,7 @@ from report_utils import (
     google_maps_url,
     identity_key,
     identity_key_str,
+    inject_building_units,
     listing_key,
     normalize_listing_name,
 )
@@ -412,3 +413,65 @@ def test_google_maps_link():
     assert google_maps_link("   ") == "-"
     assert "[Google Map]" in google_maps_link("東京都練馬区東大泉１")
     assert "google.com/maps" in google_maps_link("東京都練馬区東大泉１")
+
+# --- inject_building_units ---
+
+
+def _bu_listing(name, ward_addr, url, price=None, floor=None, area=None, layout=None, direction=None):
+    return {
+        "name": name,
+        "address": ward_addr,
+        "url": url,
+        "price_man": price,
+        "floor_position": floor,
+        "area_m2": area,
+        "layout": layout,
+        "direction": direction,
+    }
+
+
+def test_inject_building_units_single_unit_is_none():
+    rows = [_bu_listing("パークタワー", "東京都江東区豊洲1", "u1", price=8000, area=60)]
+    inject_building_units(rows)
+    assert rows[0]["building_units"] is None
+    assert rows[0]["building_group_key"] is None
+
+
+def test_inject_building_units_groups_same_building():
+    rows = [
+        _bu_listing("パークタワー", "東京都江東区豊洲1", "u1", price=9000, floor=10, area=70, layout="3LDK"),
+        _bu_listing("パークタワー", "東京都江東区豊洲1", "u2", price=8000, floor=3, area=60, layout="2LDK"),
+        _bu_listing("別マンション", "東京都江東区豊洲1", "u3", price=8500, floor=5, area=65),
+    ]
+    inject_building_units(rows)
+
+    # 同一建物の2戸は building_units を持ち、別マンションは None
+    assert rows[0]["building_units"] is not None
+    assert rows[1]["building_units"] is not None
+    assert rows[2]["building_units"] is None
+    assert rows[0]["building_group_key"] == rows[1]["building_group_key"]
+
+    # 全戸（自分含む）が価格昇順で入る
+    units = rows[0]["building_units"]
+    assert len(units) == 2
+    assert [u["price_man"] for u in units] == [8000, 9000]
+    # is_current は評価対象の戸だけ True
+    current = [u for u in units if u["is_current"]]
+    assert len(current) == 1
+    assert current[0]["url"] == "u1"
+    # ㎡単価が計算される
+    assert units[1]["price_per_m2_man"] == round(9000 / 70, 1)
+
+
+def test_inject_building_units_self_always_included_when_capped():
+    # 上限(12)を超える戸数でも、評価対象の自分は必ず含まれる
+    rows = [
+        _bu_listing("メガタワー", "東京都港区港南2", f"u{i}", price=7000 + i * 100, floor=i, area=60)
+        for i in range(15)
+    ]
+    inject_building_units(rows)
+    # 最高価格（自分が末尾）の戸でも is_current が必ず1つ存在する
+    target = max(rows, key=lambda r: r["price_man"])
+    units = target["building_units"]
+    assert any(u["is_current"] for u in units)
+    assert sum(1 for u in units if u["is_current"]) == 1

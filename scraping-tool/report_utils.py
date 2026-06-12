@@ -883,6 +883,80 @@ def inject_competing_count(listings: list[dict]) -> list[dict]:
     return listings
 
 
+# 1建物あたり building_units に含める最大戸数（トークン/データ量の上限）。
+_BUILDING_UNITS_CAP = 12
+
+
+def _unit_spec(r: dict) -> dict:
+    """building_units 用に1戸分のスペックを抽出する。"""
+    price = r.get("price_man")
+    area = r.get("area_m2")
+    ppm2: Optional[float] = None
+    if isinstance(price, (int, float)) and isinstance(area, (int, float)) and area:
+        ppm2 = round(price / area, 1)
+    return {
+        "floor": r.get("floor_position"),
+        "area_m2": area,
+        "layout": r.get("layout"),
+        "price_man": price,
+        "direction": r.get("direction"),
+        "price_per_m2_man": ppm2,
+        "url": r.get("url"),
+    }
+
+
+def inject_building_units(listings: list[dict]) -> list[dict]:
+    """同一マンション（正規化物件名+区名）で売出中の全戸スペックを各戸に付与する。
+    competing_listings_count / is_cheapest_in_building と同一粒度で、AIが「他の部屋だったら
+    どうか」を踏まえて棟内ベスト戸基準で評価できるようにする。
+
+    各 listing に以下を追加する（複数戸ある場合のみ。単戸なら None）:
+      - building_group_key: 建物グルーピング用の安定キー "<正規化名>|<区>"
+      - building_units: 同一建物の全戸スペック配列（自分を含む。価格昇順）。各要素は
+        {floor, area_m2, layout, price_man, direction, price_per_m2_man, url, is_current}
+    """
+    from collections import defaultdict
+    groups: dict[tuple, list[dict]] = defaultdict(list)
+    for r in listings:
+        name = normalize_listing_name(r.get("name") or "")
+        ward = get_ward_from_address(r.get("address") or "")
+        if name and ward:
+            groups[(name, ward)].append(r)
+
+    for r in listings:
+        name = normalize_listing_name(r.get("name") or "")
+        ward = get_ward_from_address(r.get("address") or "")
+        group = groups.get((name, ward))
+        if not group or len(group) < 2:
+            r["building_group_key"] = None
+            r["building_units"] = None
+            continue
+
+        # 価格昇順（None は末尾）で安定ソートし、上限戸数までに制限する。
+        ordered = sorted(
+            group,
+            key=lambda g: (g.get("price_man") is None, g.get("price_man") or 0,
+                           g.get("floor_position") or 0),
+        )[:_BUILDING_UNITS_CAP]
+
+        units: list[dict] = []
+        for g in ordered:
+            spec = _unit_spec(g)
+            spec["is_current"] = (g.get("url") == r.get("url"))
+            units.append(spec)
+
+        # 上限超過で自分が漏れた場合は必ず自分を含める（評価対象の取りこぼし防止）。
+        if not any(u["is_current"] for u in units):
+            self_spec = _unit_spec(r)
+            self_spec["is_current"] = True
+            units.append(self_spec)
+
+        r["building_group_key"] = f"{name}|{ward}"
+        r["building_units"] = units
+
+    return listings
+
+
 def inject_days_on_market(listings: list[dict]) -> list[dict]:
     """first_seen_at から掲載日数を計算し days_on_market, is_long_listed を付与。"""
     from datetime import date

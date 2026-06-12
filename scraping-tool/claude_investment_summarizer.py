@@ -225,13 +225,34 @@ def _load_system_prompt() -> tuple[str, str]:
     return _FALLBACK_SYSTEM_PROMPT, _FALLBACK_PROMPT_VERSION
 
 
+def _building_units_signature(listing: dict) -> Optional[list]:
+    """棟内他戸の構成シグネチャ（階・面積・価格）。構成が変われば再分析させる。"""
+    units = _parse_json_field(listing.get("building_units"))
+    if not units or not isinstance(units, list) or len(units) < 2:
+        return None
+    # floor/area/price は None を含みうるため、None 安全なキーで決定的にソートする
+    # （None と数値の混在で sorted が TypeError になるのを防ぐ）。
+    def _key(u: dict) -> tuple:
+        return tuple(
+            (v is None, v if v is not None else 0)
+            for v in (u.get("floor"), u.get("area_m2"), u.get("price_man"))
+        )
+    sig = [
+        [u.get("floor"), u.get("area_m2"), u.get("price_man")]
+        for u in sorted((u for u in units if isinstance(u, dict)), key=_key)
+    ]
+    return sig
+
+
 def _listing_stable_key(listing: dict) -> str:
-    """キャッシュキー用の安定ハッシュ。派生スコアの変動でキャッシュミスしない。"""
+    """キャッシュキー用の安定ハッシュ。派生スコアの変動でキャッシュミスしない。
+    棟内他戸の構成（building_units）はコメント・スコアに影響するためキーに含める。"""
     fields = json.dumps({
         "name": listing.get("name"), "price_man": listing.get("price_man"),
         "area_m2": listing.get("area_m2"), "layout": listing.get("layout"),
         "built_year": listing.get("built_year"), "walk_min": listing.get("walk_min"),
         "address": listing.get("address"),
+        "building_units": _building_units_signature(listing),
     }, sort_keys=True)
     return hashlib.sha256(fields.encode()).hexdigest()[:16]
 
@@ -313,6 +334,27 @@ def _build_score_context(listing: dict) -> str:
 
     _add("棟内競合数", listing.get("competing_listings_count"), "件")
     _add("競合価格帯", listing.get("competing_price_range"))
+
+    building_units = _parse_json_field(listing.get("building_units"))
+    if building_units and isinstance(building_units, list) and len(building_units) >= 2:
+        lines = ["棟内の売出全戸（★=この物件、他戸も踏まえて棟内ベスト戸基準で評価すること）:"]
+        for u in building_units:
+            if not isinstance(u, dict):
+                continue
+            mark = "★" if u.get("is_current") else "・"
+            floor = u.get("floor")
+            floor_s = f"{floor}階" if floor is not None else "階不明"
+            area = u.get("area_m2")
+            area_s = f"{area}m²" if area is not None else "面積不明"
+            layout = u.get("layout") or "間取り不明"
+            price = u.get("price_man")
+            price_s = f"{price}万円" if price is not None else "価格不明"
+            ppm2 = u.get("price_per_m2_man")
+            ppm2_s = f"、㎡単価{ppm2}万" if ppm2 is not None else ""
+            direction = u.get("direction")
+            dir_s = f"、{direction}向き" if direction else ""
+            lines.append(f"  {mark} {floor_s}/{area_s}/{layout}/{price_s}{ppm2_s}{dir_s}")
+        sections.append("\n".join(lines))
 
     hazard = _parse_json_field(listing.get("hazard_info"))
     if hazard and isinstance(hazard, dict):
