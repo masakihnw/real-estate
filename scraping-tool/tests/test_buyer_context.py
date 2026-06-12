@@ -94,12 +94,19 @@ def test_buyer_profile_has_budget_scenarios():
     assert "実質アンカー" in labels
 
 
-def test_budget_scenarios_carry_mtg_figures():
-    """MTGの二段構え数値（1.3億・1.1億・30万）は buyer_profile に1元化されている。"""
+def test_budget_scenarios_carry_no_real_figures():
+    """買い手の実予算（家計PII）はリポジトリに置かず Supabase が正。
+
+    公開リポジトリのため budget_scenarios は構造のみのプレースホルダとし、
+    具体的な金額（億・万円の実値）を含めない（PII再混入の退行防止）。
+    """
+    import re
+
     blob = json.dumps(_load_profile().get("budget_scenarios", []), ensure_ascii=False)
-    assert "1.3億" in blob
-    assert "1.1億" in blob
-    assert "30万" in blob
+    # 実数値を含む金額表現（例: 1.3億, 1,200万, 30万円）が無いこと。
+    assert not re.search(r"[0-9０-９][.,]?[0-9０-９]*\s*[億万]", blob), (
+        f"budget_scenarios に実額らしき数値が含まれている: {blob!r}"
+    )
 
 
 def test_budget_scenarios_values_are_all_strings():
@@ -117,10 +124,22 @@ def test_format_buyer_profile_renders_budget_scenarios():
     rendered = cis._format_buyer_profile(profile)
     assert "予算シナリオ:" in rendered
     assert "探索上限" in rendered
-    assert "1.3億" in rendered
+    assert "実質アンカー" in rendered
 
 
 def test_no_stale_calculation_example():
     """旧試算例（26.94万円）が残っていないこと（退行防止）。"""
     raw = _BUYER_PROFILE_PATH.read_text(encoding="utf-8")
     assert "26.94" not in raw
+
+
+def test_strategy_prompt_has_no_real_budget_pii():
+    """購入戦略プロンプトに買い手の実予算（家計PII）が再混入していないこと。
+
+    公開リポジトリのため、戦略 .md には方法論のみを置き、具体的な実額
+    （探索上限・アンカー・月返済・ペア借入・FP試算）は持たせない。
+    実値は Supabase `buyer_profiles` の予算シナリオが正。
+    """
+    strategy = (_CONFIG_DIR / "purchase_strategy.md").read_text(encoding="utf-8")
+    for leaked in ("1.3億", "1.1億", "1.17億", "1,200", "24.5万", "27.7", "30.8万", "9,300", "9,800"):
+        assert leaked not in strategy, f"purchase_strategy.md に実予算 {leaked!r} が残存"
