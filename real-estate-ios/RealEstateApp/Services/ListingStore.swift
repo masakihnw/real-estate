@@ -499,7 +499,8 @@ final class ListingStore {
     /// チップバッジの isRecentlyAdded（2日窓）と異なり isNew（サーバー判定・
     /// 次回同期でリセット）を使うことで、refresh のたびに同じ物件が
     /// 通知累積へ再加算される二重計上を防ぐ。
-    private static func matchedTemplateCounts(modelContext: ModelContext) -> [UUID: Int] {
+    /// サイレントプッシュ経路（PushNotificationService）からも参照する。
+    static func matchedTemplateCounts(modelContext: ModelContext) -> [UUID: Int] {
         let templates = FilterTemplateStore.loadPersisted()
         guard !templates.isEmpty else { return [:] }
         let descriptor = FetchDescriptor<Listing>(

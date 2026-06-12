@@ -2080,5 +2080,6 @@ extension View {
 #Preview {
     ListingListView()
         .environment(ListingStore.shared)
+        .environment(FilterTemplateStore())
         .modelContainer(for: Listing.self, inMemory: true)
 }
