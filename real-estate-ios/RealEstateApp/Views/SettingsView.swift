@@ -24,6 +24,11 @@ struct SettingsView: View {
     @State private var showScrapingConfig = false
     @State private var showScrapingLog = false
     @State private var showWalkthrough = false
+    @State private var showTransactions = false
+
+    // 開発者モード（バージョン行7回タップで解錠、UserDefaults 永続）
+    @AppStorage("developerModeEnabled") private var developerModeEnabled = false
+    @State private var devUnlock = DeveloperModeUnlock()
 
     // カスタム URL
     @State private var chukoURLInput: String = ""
@@ -56,14 +61,19 @@ struct SettingsView: View {
                 // MARK: - My指標
                 customMetricSection
 
-                // MARK: - 詳細設定
-                advancedSection
+                // MARK: - 検討サポート
+                supportSection
 
                 // MARK: - アカウント
                 accountSection
 
                 // MARK: - このアプリについて
                 aboutSection
+
+                // MARK: - 開発者（7回タップで解錠）
+                if developerModeEnabled {
+                    developerSection
+                }
             }
             .navigationTitle("設定")
             .onAppear {
@@ -78,6 +88,9 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showScrapingLog) {
                 ScrapingLogView()
+            }
+            .sheet(isPresented: $showTransactions) {
+                TransactionTabView()
             }
             .fullScreenCover(isPresented: $showWalkthrough) {
                 WalkthroughView {
@@ -194,10 +207,27 @@ struct SettingsView: View {
             } label: {
                 Label("最近見た物件", systemImage: "clock.arrow.circlepath")
             }
+            // 成約タブ廃止に伴う暫定導線（Phase 4 で地図レイヤー・詳細セクションに吸収予定）
+            Button {
+                showTransactions = true
+            } label: {
+                HStack {
+                    Label("成約事例", systemImage: "chart.bar.doc.horizontal")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
             HStack {
                 Text("中古マンション")
                 Spacer()
                 Text("\(chukoListings.count)件")
+            }
+            if !store.useSupabase {
+                Label("データ取得元: カスタム（GitHub JSON）", systemImage: "exclamationmark.triangle")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
             }
 
 
@@ -333,10 +363,10 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - 詳細設定
+    // MARK: - 検討サポート（旧・詳細設定から昇格）
 
     @ViewBuilder
-    private var advancedSection: some View {
+    private var supportSection: some View {
         Section {
             NavigationLink {
                 PurchaseReadinessView()
@@ -349,7 +379,16 @@ struct SettingsView: View {
             } label: {
                 Label("通勤先設定", systemImage: "building.2")
             }
+        } header: {
+            Text("検討サポート")
+        }
+    }
 
+    // MARK: - 開発者（バージョン行7回タップで出現）
+
+    @ViewBuilder
+    private var developerSection: some View {
+        Section {
             Button {
                 Task {
                     await ScrapingConfigService.shared.fetch(force: true)
@@ -433,10 +472,42 @@ struct SettingsView: View {
                     }
                 }
             }
+            Button {
+                showDiagnostics.toggle()
+            } label: {
+                Label("診断情報", systemImage: "wrench.and.screwdriver")
+            }
+            if showDiagnostics {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(diagnosticsText)
+                        .font(.caption2.monospaced())
+                        .foregroundStyle(.secondary)
+                    Button {
+                        UIPasteboard.general.string = diagnosticsText
+                        diagnosticsCopied = true
+                        Task {
+                            try? await Task.sleep(for: .seconds(2))
+                            diagnosticsCopied = false
+                        }
+                    } label: {
+                        Label(
+                            diagnosticsCopied ? "コピーしました" : "クリップボードにコピー",
+                            systemImage: diagnosticsCopied ? "checkmark" : "doc.on.doc"
+                        )
+                        .font(.caption)
+                    }
+                }
+            }
+
+            Button(role: .destructive) {
+                developerModeEnabled = false
+            } label: {
+                Label("開発者モードを隠す", systemImage: "eye.slash")
+            }
         } header: {
-            Text("詳細設定")
+            Text("開発者")
         } footer: {
-            Text("スクレイピング条件で価格・専有面積などを編集できます。ログから最新の実行結果を確認・コピーできます。")
+            Text("スクレイピング条件・ログ・データ取得元の切り替えなど、開発・検証用の機能です。")
         }
         .alert("カスタム URL 設定について", isPresented: $showCustomURLInfo) {
             Button("OK", role: .cancel) { }
@@ -479,30 +550,12 @@ struct SettingsView: View {
                 Spacer()
                 Text("\(appVersion) (\(buildNumber))")
             }
-            Button {
-                showDiagnostics.toggle()
-            } label: {
-                Label("診断情報", systemImage: "wrench.and.screwdriver")
-            }
-            if showDiagnostics {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(diagnosticsText)
-                        .font(.caption2.monospaced())
-                        .foregroundStyle(.secondary)
-                    Button {
-                        UIPasteboard.general.string = diagnosticsText
-                        diagnosticsCopied = true
-                        Task {
-                            try? await Task.sleep(for: .seconds(2))
-                            diagnosticsCopied = false
-                        }
-                    } label: {
-                        Label(
-                            diagnosticsCopied ? "コピーしました" : "クリップボードにコピー",
-                            systemImage: diagnosticsCopied ? "checkmark" : "doc.on.doc"
-                        )
-                        .font(.caption)
-                    }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                guard !developerModeEnabled else { return }
+                if devUnlock.register() {
+                    developerModeEnabled = true
+                    HapticManager.success()
                 }
             }
         } header: {

@@ -2,7 +2,7 @@ import Foundation
 
 /// ウォッチリスト（いいね済み or 高評価 S/A）物件の値下げ抽出ロジック。
 ///
-/// DashboardView の表示とユニットテストの両方から参照する単一実装。
+/// TodayDigest・WatchlistView とユニットテストから参照する単一実装。
 /// View の private computed property に直接書くとテストが実装のコピーを
 /// 検証することになるため、必ずここに集約する。
 enum WatchlistFilter {

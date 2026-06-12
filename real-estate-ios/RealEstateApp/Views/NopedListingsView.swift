@@ -1,10 +1,15 @@
 import SwiftUI
 import SwiftData
 
+/// Nope（見送り）した物件の管理画面。マイリストのツールバーから到達する。
+/// 個別解除と一括解除（確認ダイアログ付き）を提供。
 struct NopedListingsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var nopedListings: [Listing] = []
     @State private var selectedListing: Listing?
+    @State private var showClearAllConfirm = false
+    @State private var isClearing = false
+    @State private var clearError: String?
 
     var body: some View {
         Group {
@@ -26,6 +31,42 @@ struct NopedListingsView: View {
             }
         }
         .navigationTitle("Nopeした物件")
+        .toolbar {
+            if !nopedListings.isEmpty {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(role: .destructive) {
+                        showClearAllConfirm = true
+                    } label: {
+                        if isClearing {
+                            ProgressView()
+                        } else {
+                            Text("すべて解除")
+                        }
+                    }
+                    .disabled(isClearing)
+                }
+            }
+        }
+        .confirmationDialog(
+            "\(nopedListings.count)件のNopeをすべて解除しますか？",
+            isPresented: $showClearAllConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("すべて解除", role: .destructive) {
+                clearAll()
+            }
+            Button("キャンセル", role: .cancel) { }
+        } message: {
+            Text("解除した物件は一覧・スワイプに再び表示されます")
+        }
+        .alert("一括解除エラー", isPresented: Binding(
+            get: { clearError != nil },
+            set: { if !$0 { clearError = nil } }
+        )) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(clearError ?? "")
+        }
         .onAppear { loadNoped() }
         .fullScreenCover(item: $selectedListing) { listing in
             ListingDetailView(listing: listing)
@@ -79,12 +120,25 @@ struct NopedListingsView: View {
 
     private func loadNoped() {
         let nopedKeys = BuildingPreferenceStore.shared.nopedKeys
-        guard !nopedKeys.isEmpty else {
-            nopedListings = []
-            return
-        }
         let descriptor = FetchDescriptor<Listing>()
         let all = (try? modelContext.fetch(descriptor)) ?? []
-        nopedListings = all.filter { nopedKeys.contains($0.identityKey) }
+        nopedListings = NopedFilter.filter(listings: all, nopedKeys: nopedKeys)
+    }
+
+    private func clearAll() {
+        let keys = nopedListings.map(\.identityKey)
+        guard !keys.isEmpty else { return }
+        isClearing = true
+        Task {
+            let failedCount = await BuildingPreferenceStore.shared.removePreferences(keys)
+            if failedCount == 0 {
+                HapticManager.success()
+            } else {
+                HapticManager.error()
+                clearError = "\(failedCount)件の解除に失敗しました。通信状況を確認して再試行してください。"
+            }
+            loadNoped()
+            isClearing = false
+        }
     }
 }

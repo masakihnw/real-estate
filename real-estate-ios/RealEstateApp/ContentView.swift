@@ -13,51 +13,43 @@ import SwiftData
 // MARK: - サイドバー項目（iPad / Mac）
 
 enum SidebarItem: String, CaseIterable, Identifiable {
-    case dashboard, listings, map, favorites, transactions, settings
+    case today, browse, favorites, settings
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .dashboard:    "概況"
-        case .listings:     "物件"
-        case .map:          "地図"
-        case .favorites:    "マイリスト"
-        case .transactions: "成約"
-        case .settings:     "設定"
+        case .today:     "今日"
+        case .browse:    "さがす"
+        case .favorites: "マイリスト"
+        case .settings:  "設定"
         }
     }
 
     var icon: String {
         switch self {
-        case .dashboard:    "chart.line.uptrend.xyaxis"
-        case .listings:     "building.2"
-        case .map:          "map"
-        case .favorites:    "list.star"
-        case .transactions: "chart.bar.doc.horizontal"
-        case .settings:     "gearshape"
+        case .today:     "sun.max"
+        case .browse:    "magnifyingglass"
+        case .favorites: "heart"
+        case .settings:  "gearshape"
         }
     }
 
     var tabIndex: Int {
         switch self {
-        case .dashboard:    0
-        case .listings:     1
-        case .map:          2
-        case .favorites:    3
-        case .transactions: 4
-        case .settings:     5
+        case .today:     0
+        case .browse:    1
+        case .favorites: 2
+        case .settings:  3
         }
     }
 
     init?(tabIndex: Int) {
         switch tabIndex {
-        case 0: self = .dashboard
-        case 1: self = .listings
-        case 2: self = .map
-        case 3: self = .favorites
-        case 4: self = .transactions
-        case 5: self = .settings
+        case 0: self = .today
+        case 1: self = .browse
+        case 2: self = .favorites
+        case 3: self = .settings
         default: return nil
         }
     }
@@ -73,8 +65,9 @@ struct ContentView: View {
     @Environment(TransactionStore.self) private var transactionStore
     @Environment(SaveErrorHandler.self) private var saveErrorHandler
     private let networkMonitor = NetworkMonitor.shared
-    @SceneStorage("selectedTab") private var selectedTab = 0
-    @SceneStorage("selectedSidebar") private var selectedSidebarRaw = SidebarItem.dashboard.rawValue
+    // キー名 V2: 旧6タブ構成の保存値（tag 0-5 / dashboard 等の rawValue）を引き継がない
+    @SceneStorage("selectedTabV2") private var selectedTab = 0
+    @SceneStorage("selectedSidebarV2") private var selectedSidebarRaw = SidebarItem.today.rawValue
     /// 通知タップで詳細表示する物件
     @State private var notificationListing: Listing?
     /// Spotlight 検索から開く物件（URL で受け取り、該当物件を表示）
@@ -89,7 +82,7 @@ struct ContentView: View {
     private var selectedSidebarItem: Binding<SidebarItem?> {
         Binding(
             get: { SidebarItem(rawValue: selectedSidebarRaw) },
-            set: { selectedSidebarRaw = ($0 ?? .dashboard).rawValue }
+            set: { selectedSidebarRaw = ($0 ?? .today).rawValue }
         )
     }
 
@@ -156,11 +149,11 @@ struct ContentView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didTapPushNotification)) { notification in
-            if let tab = notification.userInfo?["tab"] as? Int {
-                selectedTab = tab
-                if let item = SidebarItem(tabIndex: tab) {
-                    selectedSidebarRaw = item.rawValue
-                }
+            if let tab = notification.userInfo?["tab"] as? Int,
+               let item = SidebarItem(tabIndex: tab) {
+                // 範囲外の tab（旧6タブ構成のペイロード等）は無視する
+                selectedTab = item.tabIndex
+                selectedSidebarRaw = item.rawValue
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didTapCommentNotification)) { notification in
@@ -213,32 +206,28 @@ struct ContentView: View {
 
     private var compactLayout: some View {
         TabView(selection: $selectedTab) {
-            DashboardView()
-                .tabItem { Label("概況", systemImage: "chart.line.uptrend.xyaxis") }
+            TodayView()
+                .tabItem { Label("今日", systemImage: "sun.max") }
                 .tag(0)
-                .accessibilityLabel("マーケット概況")
-            PropertyListingTabView()
-                .tabItem { Label("物件", systemImage: "building.2") }
+                .accessibilityLabel("今日の動き")
+            BrowseTabView()
+                .tabItem { Label("さがす", systemImage: "magnifyingglass") }
                 .tag(1)
-                .accessibilityLabel("物件一覧")
-            MapTabView()
-                .tabItem { Label("地図", systemImage: "map") }
-                .tag(2)
-                .accessibilityLabel("地図で探す")
+                .accessibilityLabel("物件をさがす")
             ListingListView(favoritesOnly: true)
-                .tabItem { Label("マイリスト", systemImage: "list.star") }
-                .tag(3)
+                .tabItem { Label("マイリスト", systemImage: "heart") }
+                .tag(2)
                 .accessibilityLabel("マイリスト")
-            TransactionTabView()
-                .tabItem { Label("成約", systemImage: "chart.bar.doc.horizontal") }
-                .tag(4)
-                .accessibilityLabel("成約実績")
             SettingsView()
                 .tabItem { Label("設定", systemImage: "gearshape") }
-                .tag(5)
+                .tag(3)
                 .accessibilityLabel("アプリ設定")
         }
         .tint(.accentColor)
+        .onAppear {
+            // 防御: 範囲外の保存値はホームに戻す（存在しない tag を選択すると空表示になるため）
+            if !(0...3).contains(selectedTab) { selectedTab = 0 }
+        }
         .onChange(of: selectedTab) { _, _ in
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
@@ -253,17 +242,13 @@ struct ContentView: View {
             }
             .navigationTitle("物件情報")
         } detail: {
-            switch SidebarItem(rawValue: selectedSidebarRaw) ?? .dashboard {
-            case .dashboard:
-                DashboardView()
-            case .listings:
-                PropertyListingTabView()
-            case .map:
-                MapTabView()
+            switch SidebarItem(rawValue: selectedSidebarRaw) ?? .today {
+            case .today:
+                TodayView()
+            case .browse:
+                BrowseTabView()
             case .favorites:
                 ListingListView(favoritesOnly: true)
-            case .transactions:
-                TransactionTabView()
             case .settings:
                 SettingsView()
             }
