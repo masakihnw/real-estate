@@ -1,19 +1,30 @@
 {
-  "family_composition": "夫（YYYY年生まれ）・妻（YYYY年生まれ）、子ども○人",
+  "family_composition": "夫（YYYY年生）・妻（YYYY年生）、子ども○人",
+  "child_plan": "人数・想定時期・教育方針",
   "household_income": "○○○○万円",
   "self_funds": "○○○万円（または「なし（フルローン）」）",
-  "planned_borrowing": "借入方針の説明（例: 諸費用＋物件価格全額、ペア借入の有無など）",
-  "interest_type": "変動 または 固定",
+  "planned_borrowing": "借入方針（諸費用・物件価格・ペア借入の有無など）",
+  "interest_type": "変動 / 固定",
   "estimated_rate": "○.○%",
   "repayment_years": "○○年",
-  "monthly_payment_limit": "月返済・月総額の上限や制約条件の説明",
-  "work_style": "夫：勤務形態 妻：勤務形態（勤務地は環境変数/Supabaseで管理）",
-  "child_plan": "子ども計画の説明（人数・想定時期・教育方針など）",
-  "relocation_reason": "住み替え理由の説明",
-  "post_sale_strategy": "売却前提 / 賃貸化 など",
-  "priorities": "優先順位（資産性・間取り・広さ・エリア等）",
-  "current_housing": "賃貸 / 持ち家 など",
+  "monthly_payment_limit": "月返済・月総額の上限や制約条件",
+  "work_style": "各人の勤務形態（勤務地は環境変数 `COMMUTE_OFFICES_JSON` / Supabase で管理）",
   "commute_quality": "通勤に関する希望の説明",
+  "priorities": "資産性・間取り・広さ・エリア等の優先順位",
+  "relocation_reason": "住み替え理由・サイクル・売却/賃貸方針",
+  "current_housing": "賃貸 / 持ち家 など",
   "timeline": "購入時期の目安",
-  "risk_tolerance": "リスク許容度の説明"
+  "risk_tolerance": "リスク許容度の説明",
+  "budget_scenarios": [
+    {
+      "label": "探索上限",
+      "value": "1.3億円",
+      "note": "値下げ待ち前提で広く拾う上限"
+    },
+    {
+      "label": "実質アンカー",
+      "value": "1.1億円前後",
+      "note": "月返済30万円以内（金利1.5%想定）"
+    }
+  ]
 }
