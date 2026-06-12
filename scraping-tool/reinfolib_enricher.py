@@ -59,7 +59,6 @@ from functools import lru_cache
 import os
 import re
 import statistics
-import sys
 import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -563,15 +562,11 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
     all_transactions: List[dict] = []
     if raw_tx_data:
         all_transactions = raw_tx_data.get("transactions", [])
-        print(
-            f"個別取引レコード: {len(all_transactions)} 件読み込み",
-            file=sys.stderr,
-        )
+        logger.info("個別取引レコード: %d 件読み込み", len(all_transactions))
     else:
-        print(
-            "警告: reinfolib_raw_transactions.json が見つかりません。"
-            "区全体の比較にフォールバックします。",
-            file=sys.stderr,
+        logger.warning(
+            "reinfolib_raw_transactions.json が見つかりません。"
+            "区全体の比較にフォールバックします。"
         )
 
     # ward 別にインデックス化（高速化）
@@ -620,15 +615,11 @@ def enrich_reinfolib(listings: list, force: bool = False) -> int:
                     })
             ward_yearly_prices[w] = yearly
 
-        print(
-            f"駅レベル価格データ: {len(by_station)} 駅読み込み",
-            file=sys.stderr,
-        )
+        logger.info("駅レベル価格データ: %d 駅読み込み", len(by_station))
     else:
-        print(
-            "注意: station_price_history.json が見つかりません。"
-            "駅レベル比較はスキップされます。",
-            file=sys.stderr,
+        logger.warning(
+            "station_price_history.json が見つかりません。"
+            "駅レベル比較はスキップされます。"
         )
 
     enriched_count = 0
@@ -821,9 +812,9 @@ def main() -> None:
     from enrichment_writer import write_enrichments
     write_enrichments(listings, ["reinfolib_market_data"], "reinfolib")
 
-    print(
-        f"不動産情報ライブラリ enrichment 完了: {count}/{len(listings)} 件に相場データを付与",
-        file=sys.stderr,
+    logger.info(
+        "不動産情報ライブラリ enrichment 完了: %d/%d 件に相場データを付与",
+        count, len(listings),
     )
 
 

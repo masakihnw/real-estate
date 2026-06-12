@@ -143,10 +143,8 @@ extension Listing {
         let comments = parsedComments
         if !comments.isEmpty {
             md += "\n## 内見メモ・コメント\n\n"
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy/MM/dd HH:mm"
             for c in comments {
-                md += "- **\(c.authorName)**（\(formatter.string(from: c.createdAt))）: \(c.text)\n"
+                md += "- **\(c.authorName)**（\(DateFormatting.displayDateTime.string(from: c.createdAt))）: \(c.text)\n"
             }
         }
 

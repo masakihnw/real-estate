@@ -116,7 +116,7 @@ def _init_storage():
     from supabase_client import get_client
     client = get_client()
     if client is None:
-        print("Supabase クライアントが利用できないためスキップ", file=sys.stderr)
+        logger.warning("Supabase クライアントが利用できないためスキップ")
         return None
     try:
         return client.storage.from_(SUPABASE_BUCKET_NAME)
@@ -236,10 +236,7 @@ def _parallel_upload(
     total = len(urls_to_upload)
     processed = 0
 
-    print(
-        f"  新規アップロード対象: {total}件 ({MAX_WORKERS}並列)",
-        file=sys.stderr,
-    )
+    logger.info("  新規アップロード対象: %d件 (%d並列)", total, MAX_WORKERS)
 
     def worker(url: str, storage_dir: str) -> tuple[str, str | None, str]:
         if deadline and time.time() > deadline:
@@ -288,10 +285,7 @@ def _parallel_upload(
                 remaining = ""
                 if deadline:
                     remaining = f" (残り{int(deadline - time.time())}秒)"
-                print(
-                    f"  ...{processed}/{total}件処理済{remaining}",
-                    file=sys.stderr,
-                )
+                logger.info("  ...%d/%d件処理済%s", processed, total, remaining)
 
     return results
 
@@ -370,16 +364,13 @@ def main() -> None:
     storage = _init_storage()
     if storage is None:
         backend = "R2" if image_storage.r2_configured() else "Supabase Storage"
-        print(
-            f"画像ストレージ（{backend}）が利用できないため、URL の置き換えをスキップします",
-            file=sys.stderr,
-        )
+        logger.warning("画像ストレージ（%s）が利用できないため、URL の置き換えをスキップします", backend)
         sys.exit(0)
 
     manifest = _load_manifest()
     purged = _purge_dead_firebase_urls(manifest)
     if purged:
-        print(f"  Firebase URL をパージ: {purged}件 → 再アップロード対象", file=sys.stderr)
+        logger.info("  Firebase URL をパージ: %d件 → 再アップロード対象", purged)
 
     all_urls = _collect_urls(listings)
 
@@ -394,11 +385,9 @@ def main() -> None:
             to_upload[url] = storage_dir
 
     total = len(all_urls)
-    print(
-        f"画像 URL: 全{total}件 "
-        f"(新規{len(to_upload)}, キャッシュ{stats['cached']}, "
-        f"既存Storage{stats['skipped']})",
-        file=sys.stderr,
+    logger.info(
+        "画像 URL: 全%d件 (新規%d, キャッシュ%d, 既存Storage%d)",
+        total, len(to_upload), stats["cached"], stats["skipped"],
     )
 
     new_mappings = _parallel_upload(to_upload, stats, deadline)
@@ -413,12 +402,10 @@ def main() -> None:
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp.replace(output_path)
 
-    print(
-        f"Storage アップロード完了: "
-        f"新規{stats['uploaded']}, キャッシュ{stats['cached']}, "
-        f"既存Storage{stats['skipped']}, 失敗{stats['failed']}, "
-        f"タイムアウト{stats['timeout']}",
-        file=sys.stderr,
+    logger.info(
+        "Storage アップロード完了: 新規%d, キャッシュ%d, 既存Storage%d, 失敗%d, タイムアウト%d",
+        stats["uploaded"], stats["cached"], stats["skipped"],
+        stats["failed"], stats["timeout"],
     )
 
 
