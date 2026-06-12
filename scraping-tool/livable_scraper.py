@@ -44,6 +44,7 @@ from parse_utils import (
 from report_utils import clean_listing_name
 import scraper_metrics
 from scraper_common import (
+    EmptyParseGuard,
     create_session,
     sleep_with_jitter,
     load_station_passengers,
@@ -450,7 +451,7 @@ def _scrape_ward(
     ward_total_parsed = 0
     ward_total_passed = 0
     pages_since_last_pass = 0
-    consecutive_empty_parses = 0
+    empty_guard = EmptyParseGuard(EMPTY_PARSE_TOLERANCE)
     finish_reason = None
 
     while p <= limit:
@@ -486,33 +487,33 @@ def _scrape_ward(
         rows = parse_list_html(html)
         scraper_metrics.record("livable", parsed=len(rows))
         if not rows:
-            consecutive_empty_parses += 1
+            should_stop = empty_guard.record_empty()
             html_size = len(html)
             logger.warning(
                 "livable: %s (a%s) ページ%d パース0件 (HTML: %dB, 連続: %d/%d)",
                 ward_name, ward_code, p, html_size,
-                consecutive_empty_parses, EMPTY_PARSE_TOLERANCE,
+                empty_guard.consecutive, EMPTY_PARSE_TOLERANCE,
             )
-            if consecutive_empty_parses >= EMPTY_PARSE_TOLERANCE:
+            if should_stop:
                 logger.info(
                     "livable: %s (a%s) ページ%d 連続%d回パース0件のため停止"
                     " (累計パース: %d件, 累計通過: %d件)",
-                    ward_name, ward_code, p, consecutive_empty_parses,
+                    ward_name, ward_code, p, empty_guard.consecutive,
                     ward_total_parsed, ward_total_passed,
                 )
                 # 区全体0件の終了のみ異常として記録（終端の空ページは正常なため記録しない）
                 if ward_total_parsed == 0:
-                    scraper_metrics.record("livable", empty_pages=consecutive_empty_parses)
+                    scraper_metrics.record("livable", empty_pages=empty_guard.consecutive)
                 finish_reason = "completed"
                 break
             time.sleep(EMPTY_PARSE_BACKOFF_SEC)
             p += 1
             continue
 
-        if consecutive_empty_parses > 0:
+        empty_gap = empty_guard.record_success()
+        if empty_gap:
             # 途中の空ページ（後続で復活）= 異常なギャップとして記録
-            scraper_metrics.record("livable", empty_pages=consecutive_empty_parses)
-        consecutive_empty_parses = 0
+            scraper_metrics.record("livable", empty_pages=empty_gap)
         ward_total_parsed += len(rows)
         passed = 0
         for row in rows:
