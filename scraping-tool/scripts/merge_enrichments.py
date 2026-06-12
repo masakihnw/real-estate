@@ -56,6 +56,7 @@ ENRICHER_EXACT: dict[str, set[str]] = {
     "investment": {
         "price_fairness_score", "resale_liquidity_score", "listing_score",
         "competing_listings_count", "investment_summary", "highlight_badge",
+        "building_group_key", "building_units",
     },
     "ai_recommendation": {
         "ai_recommendation_score", "ai_recommendation_summary",
