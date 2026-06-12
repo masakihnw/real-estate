@@ -96,7 +96,8 @@ struct DeveloperModeUnlockTests {
             let unlocked = unlock.register(now: base.addingTimeInterval(Double(i) * 0.3))
             #expect(!unlocked, "\(i + 1)回目で解錠されてしまった")
         }
-        #expect(unlock.register(now: base.addingTimeInterval(1.8)))
+        let unlockedAtSeven = unlock.register(now: base.addingTimeInterval(1.8))
+        #expect(unlockedAtSeven)
     }
 
     @Test("6回では解錠しない")
@@ -128,7 +129,8 @@ struct DeveloperModeUnlockTests {
         var unlock = DeveloperModeUnlock(tapsRequired: 2, timeout: 2.0)
         let base = Date(timeIntervalSince1970: 1_000_000)
         _ = unlock.register(now: base)
-        #expect(unlock.register(now: base.addingTimeInterval(0.1)))
+        let unlockedAtTwo = unlock.register(now: base.addingTimeInterval(0.1))
+        #expect(unlockedAtTwo)
         #expect(unlock.count == 0)
         #expect(unlock.remainingTaps == 2)
     }
