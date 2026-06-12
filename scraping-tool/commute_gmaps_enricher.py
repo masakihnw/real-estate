@@ -26,6 +26,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
 
+from commute_offices import load_office_locations
 from logger import get_logger
 logger = get_logger(__name__)
 
@@ -56,21 +57,9 @@ CACHE_DIR = ROOT / "commute_gmaps_cache"
 
 # ---------------------------------------------------------------------------
 # オフィス定義（commute_auto_audit.py と統一）
+# 住所・座標・名称は commute_offices（環境変数 COMMUTE_OFFICES_JSON）から注入。
 # ---------------------------------------------------------------------------
-OFFICES = {
-    "playground": {
-        "name": "Playground",
-        "address": "千代田区一番町4-6",
-        "lat": 35.688449,
-        "lon": 139.743415,
-    },
-    "m3career": {
-        "name": "M3Career",
-        "address": "港区虎ノ門4丁目1-28",
-        "lat": 35.666018,
-        "lon": 139.743807,
-    },
-}
+OFFICES = load_office_locations()
 
 ARRIVAL_TIME = "09:00"
 

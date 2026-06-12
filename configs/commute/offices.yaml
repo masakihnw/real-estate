@@ -1,13 +1,15 @@
+# 実運用の office_name・座標は環境変数 COMMUTE_OFFICES_JSON / Supabase が正。
+# リポジトリには個人を特定しないプレースホルダ既定値のみを保持する。
 playground:
-  office_name: Playground株式会社
-  entrance_lat: 35.688449
-  entrance_lng: 139.743415
-  entrance_label: 一番町オフィス入口
+  office_name: オフィスA
+  entrance_lat: 0.0
+  entrance_lng: 0.0
+  entrance_label: オフィスA入口
   last_walk_minutes: 6
 
 m3career:
-  office_name: エムスリーキャリア株式会社
-  entrance_lat: 35.666018
-  entrance_lng: 139.743807
-  entrance_label: 虎ノ門オフィス入口
+  office_name: オフィスB
+  entrance_lat: 0.0
+  entrance_lng: 0.0
+  entrance_label: オフィスB入口
   last_walk_minutes: 6
