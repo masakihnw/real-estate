@@ -31,7 +31,7 @@ enum BuildingAggregator {
         let rPrice = rhs.priceMan ?? Int.max
         if lPrice != rPrice { return lPrice < rPrice }
 
-        return (lhs.url ?? "") < (rhs.url ?? "")
+        return lhs.url < rhs.url
     }
 
     /// 棟内の戸群からベスト戸を返す。空配列なら nil。
