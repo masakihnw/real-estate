@@ -154,7 +154,6 @@ struct RealEstateAppApp: App {
             RootView(sharedModelContainer: sharedModelContainer)
                 .environment(ListingStore.shared)
                 .environment(TransactionStore.shared)
-                .environment(FirebaseSyncService.shared)
                 .environment(AuthService.shared)
                 .environment(SaveErrorHandler.shared)
                 .environment(PhotoSyncService.shared)
@@ -173,7 +172,6 @@ struct RealEstateAppApp: App {
 
 private struct RootView: View {
     @Environment(AuthService.self) private var authService
-    @Environment(FirebaseSyncService.self) private var syncService
     let sharedModelContainer: ModelContainer
 
     /// ウォークスルー表示フラグ
@@ -192,10 +190,6 @@ private struct RootView: View {
                     .task {
                         let context = sharedModelContainer.mainContext
                         await withTaskGroup(of: Void.self) { group in
-                            // Supabase モード時は Firebase 同期をスキップ（ContentView 側で Supabase 同期が走る）
-                            if !ListingStore.shared.useSupabase {
-                                group.addTask { await syncService.pullAnnotations(modelContext: context) }
-                            }
                             group.addTask { await BuyerProfileSyncService.shared.syncOnLaunch() }
                             group.addTask {
                                 try? await Task.sleep(for: .seconds(15))
