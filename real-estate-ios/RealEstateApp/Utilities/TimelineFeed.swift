@@ -42,6 +42,27 @@ struct TimelineFeedItem: Identifiable, Equatable {
 }
 
 enum TimelineFeed {
+
+    /// 直近 `days` 日以内に確定した価格変動（履歴の最終エントリ基準）。
+    /// 「最近の価格変動」の定義は TodayDigest と本フィードで共有する単一実装。
+    /// - Returns: (変動額, 変動日)。期間外・履歴不足・変動なしは nil。
+    static func recentPriceChange(
+        of listing: Listing,
+        days: Int = 7,
+        now: Date = Date()
+    ) -> (change: Int, date: Date)? {
+        guard let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: now) else {
+            return nil
+        }
+        let history = listing.parsedPriceHistory
+        guard history.count >= 2,
+              let lastDate = history.last?.parsedDate,
+              lastDate >= cutoff,
+              let change = listing.latestPriceChange,
+              change != 0 else { return nil }
+        return (change, lastDate)
+    }
+
     /// 直近 `days` 日以内のイベントを日付降順で最大 `limit` 件返す。
     static func build(
         from listings: [Listing],
@@ -67,16 +88,13 @@ enum TimelineFeed {
             }
 
             // 直近の価格変動（履歴の最終エントリが期間内の場合）
-            let history = listing.parsedPriceHistory
-            if history.count >= 2,
-               let lastDate = history.last?.parsedDate,
-               lastDate >= cutoff,
-               let change = listing.latestPriceChange,
-               change != 0 {
+            if let recent = recentPriceChange(of: listing, days: days, now: now) {
                 items.append(TimelineFeedItem(
                     id: "\(listing.url)#price",
-                    date: lastDate,
-                    kind: change < 0 ? .priceDrop(amount: abs(change)) : .priceRaise(amount: change),
+                    date: recent.date,
+                    kind: recent.change < 0
+                        ? .priceDrop(amount: abs(recent.change))
+                        : .priceRaise(amount: recent.change),
                     listing: listing
                 ))
             }

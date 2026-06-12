@@ -111,8 +111,12 @@ struct TodayDigestTests {
 
     @Test("カードは最大5枚")
     func maxFiveCards() {
-        let listings = (1...8).map {
-            makeListing(url: "https://x/\($0)", name: "物件\($0)号棟", addedDaysAgo: 1)
+        // 注意: 「N号棟」等の棟名は cleanListingName で除去され同一建物に
+        // 集約されるため、明確に異なる建物名を使う
+        let names = ["アルファ", "ブラボー", "チャーリー", "デルタ",
+                     "エコー", "フォックス", "ゴルフ", "ホテル"]
+        let listings = names.enumerated().map { index, name in
+            makeListing(url: "https://x/\(index)", name: "\(name)マンション", addedDaysAgo: 1)
         }
         let digest = TodayDigest(listings: listings, now: now)
         #expect(digest.changeCards.count == TodayDigest.maxCards)

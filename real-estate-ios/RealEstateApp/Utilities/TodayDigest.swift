@@ -87,10 +87,6 @@ struct TodayDigest {
         pendingSwipeCount: Int = 0,
         now: Date = Date()
     ) {
-        let dropCutoff = Calendar.current.date(
-            byAdding: .day, value: -Self.priceDropWindowDays, to: now
-        ) ?? .distantPast
-
         var newBuildings = Set<String>()
         var newSGradeCount = 0
         var dropCount = 0
@@ -120,23 +116,18 @@ struct TodayDigest {
                 }
             }
 
-            // 値下げ: 履歴の最終エントリが期間内のものだけを「最近の変化」とする
-            let history = listing.parsedPriceHistory
-            let recentDrop: Int? = {
-                guard history.count >= 2,
-                      let lastDate = history.last?.parsedDate,
-                      lastDate >= dropCutoff,
-                      let change = listing.latestPriceChange,
-                      change < 0 else { return nil }
-                return change
-            }()
-
-            if let change = recentDrop {
-                dropCount += 1
+            // 値下げ: 期間内の価格変動のみ（定義は TimelineFeed.recentPriceChange と共有）
+            if let recent = TimelineFeed.recentPriceChange(
+                of: listing, days: Self.priceDropWindowDays, now: now
+            ), recent.change < 0 {
+                let change = recent.change
                 if WatchlistFilter.isWatchlisted(listing) {
+                    // ウォッチ値下げはブリーフで専用文（▼N万）になるため
+                    // 「値下げN件」には数えない（二重表現の防止）
                     classified.append((.watchDrop, listing))
                     biggestWatchDrop = min(biggestWatchDrop, change)
                 } else {
+                    dropCount += 1
                     classified.append((.priceDrop, listing))
                 }
                 continue
