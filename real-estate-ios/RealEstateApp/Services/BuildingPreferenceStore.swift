@@ -80,6 +80,31 @@ final class BuildingPreferenceStore {
         }
     }
 
+    /// 複数キーの一括解除（Nope一括解除用）。
+    /// チャンクごとに1リクエストで削除し、失敗したチャンクはローカル状態を巻き戻す。
+    func removePreferences(_ identityKeys: [String]) async {
+        let chunkSize = 50
+        for chunkStart in stride(from: 0, to: identityKeys.count, by: chunkSize) {
+            let chunk = Array(identityKeys[chunkStart..<min(chunkStart + chunkSize, identityKeys.count)])
+            let removedNoped = chunk.filter { nopedKeys.remove($0) != nil }
+            let removedLiked = chunk.filter { likedKeys.remove($0) != nil }
+
+            do {
+                // PostgREST in 句。建物名にカンマが含まれ得るため各値をダブルクオートする
+                let quoted = chunk.map { "\"\($0)\"" }.joined(separator: ",")
+                try await client.delete(
+                    from: "user_building_preferences",
+                    filters: [("identity_key", "in.(\(quoted))")]
+                )
+                logger.info("Bulk removed \(chunk.count) preferences")
+            } catch {
+                removedNoped.forEach { nopedKeys.insert($0) }
+                removedLiked.forEach { likedKeys.insert($0) }
+                logger.error("Bulk remove failed: \(error.localizedDescription, privacy: .public)")
+            }
+        }
+    }
+
     func isNoped(_ identityKey: String) -> Bool {
         nopedKeys.contains(identityKey)
     }

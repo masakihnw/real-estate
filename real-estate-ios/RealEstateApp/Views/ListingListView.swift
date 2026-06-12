@@ -711,6 +711,14 @@ struct ListingListView: View {
                     }
                     .accessibilityLabel("エクスポート")
                 }
+                if favoritesOnly {
+                    NavigationLink {
+                        NopedListingsView()
+                    } label: {
+                        Image(systemName: "hand.thumbsdown")
+                    }
+                    .accessibilityLabel("Nopeした物件の管理")
+                }
                 if favoritesOnly && !filteredAndSorted.isEmpty {
                     EditButton()
                 }
