@@ -112,6 +112,19 @@ struct BuyerProfile: Codable, Equatable {
             }
         }
 
+        if !budgetScenarios.isEmpty {
+            md += "\n### 予算シナリオ\n\n"
+            for scenario in budgetScenarios {
+                let label = scenario["label"] ?? ""
+                let value = scenario["value"] ?? ""
+                let note = scenario["note"] ?? ""
+                if !label.isEmpty {
+                    let suffix = note.isEmpty ? "" : "（\(note)）"
+                    md += "- **\(label)**: \(value)\(suffix)\n"
+                }
+            }
+        }
+
         return md
     }
 
@@ -141,7 +154,10 @@ struct BuyerProfile: Codable, Equatable {
         communityPreference: "",
         dealBreakers: "",
         lifeScenarios: [],
-        budgetScenarios: [],
+        budgetScenarios: [
+            ["label": "探索上限", "value": "1.3億円", "note": "値下げ待ち前提で広く拾う上限"],
+            ["label": "実質アンカー", "value": "1.1億円前後", "note": "月返済30万円以内（金利1.5%想定）"]
+        ],
         preferredAreas: [],
         mustHaveFeatures: [],
         timeline: "購入時期の目安",
