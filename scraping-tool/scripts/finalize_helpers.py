@@ -22,6 +22,7 @@ logger = get_logger(__name__)
 
 from investment_enricher import enrich_investment_scores
 from report_utils import (
+    inject_building_units,
     inject_competing_count,
     inject_first_seen_at,
     inject_is_new,
@@ -81,6 +82,7 @@ def inject_investment_fields(output_dir: Path) -> None:
     inject_price_history(cur, prev or None)
     inject_first_seen_at(cur, prev or None, history_path=history_path)
     inject_competing_count(cur)
+    inject_building_units(cur)
 
     tx_data = _build_tx_ward_counts(p["transactions"])
     enrich_investment_scores(cur, tx_data)
@@ -95,6 +97,7 @@ def inject_investment_fields(output_dir: Path) -> None:
         inject_price_history(cur_s, prev_s or None)
         inject_first_seen_at(cur_s, prev_s or None, history_path=history_path)
         inject_competing_count(cur_s)
+        inject_building_units(cur_s)
         enrich_investment_scores(cur_s, tx_data)
         p["latest_shinchiku"].write_text(json.dumps(cur_s, ensure_ascii=False), encoding="utf-8")
         logger.info(f"新築: {len(cur_s)}件")

@@ -15,5 +15,10 @@
   "current_housing": "賃貸 / 持ち家 など",
   "commute_quality": "通勤に関する希望の説明",
   "timeline": "購入時期の目安",
-  "risk_tolerance": "リスク許容度の説明"
+  "risk_tolerance": "リスク許容度の説明",
+  "budget_scenarios": [
+    {"label": "探索上限", "value": "○.○億円", "note": "値下げ待ちでマークする上限（具体額は Supabase buyer_profiles が正）"},
+    {"label": "実質アンカー", "value": "○.○億円前後", "note": "月返済上限以内で成立する安心圏"},
+    {"label": "月返済上限", "value": "○○万円/月以内", "note": "金利1.5%想定。管理費・修繕積立金・固定資産税込みの総額制約は別途"}
+  ]
 }
