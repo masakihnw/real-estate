@@ -155,8 +155,9 @@ struct BuyerProfile: Codable, Equatable {
         dealBreakers: "",
         lifeScenarios: [],
         budgetScenarios: [
-            ["label": "探索上限", "value": "1.3億円", "note": "値下げ待ち前提で広く拾う上限"],
-            ["label": "実質アンカー", "value": "1.1億円前後", "note": "月返済30万円以内（金利1.5%想定）"]
+            ["label": "探索上限", "value": "1.3億円", "note": "売出は査定より割高が常のため、値下げ待ちでマークする上限として網を広げる"],
+            ["label": "実質アンカー", "value": "物件価格1.1億円前後", "note": "月返済30万円以内（金利1.5%想定）で成立する安心圏"],
+            ["label": "月返済上限", "value": "ローン返済30万円/月以内", "note": "金利1.5%想定。管理費・修繕積立金・固定資産税を含む総額の上限感は別途設定"]
         ],
         preferredAreas: [],
         mustHaveFeatures: [],

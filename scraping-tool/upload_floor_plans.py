@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
-間取り図画像を Supabase Storage にアップロードし、listings JSON 内の URL を置き換える。
+間取り図画像を画像ストレージにアップロードし、listings JSON 内の URL を置き換える。
 
-スクレイピングで取得した SUUMO/HOME'S の画像 URL を Supabase Storage に保存することで、
+スクレイピングで取得した SUUMO/HOME'S の画像 URL を自前ストレージに保存することで、
 物件が掲載終了した後も間取り図を表示可能にする。
 
 設計:
+  - R2_* 環境変数が設定済みなら Cloudflare R2、未設定なら Supabase Storage に保存
+    （image_storage.py 参照。容量逼迫のため R2 へ移行中）
   - 元 URL の SHA256 ハッシュをファイル名に使い、同一画像の重複アップロードを回避
   - マニフェスト（data/floor_plan_storage_manifest.json）で元 URL → Storage URL のマッピングを保持
-  - SUPABASE_SERVICE_ROLE_KEY 環境変数が未設定の場合はスキップ（ローカル開発時）
+  - 接続情報が未設定の場合はスキップ（ローカル開発時）
   - ThreadPoolExecutor による並列ダウンロード+アップロードで高速化
   - --max-time で最大実行時間を指定し、超過時は未処理分をスキップ
 
@@ -33,12 +35,12 @@ from urllib.parse import urlparse
 
 import requests
 
+import image_storage
+from image_storage import SUPABASE_BUCKET_NAME
 from logger import get_logger
 logger = get_logger(__name__)
 
 
-SUPABASE_BUCKET_NAME = "listing-images"
-SUPABASE_STORAGE_HOST = "supabase.co/storage"
 FIREBASE_STORAGE_HOST = "firebasestorage.googleapis.com"
 
 ROOT = Path(__file__).resolve().parent
@@ -104,7 +106,13 @@ def _content_type_to_ext(content_type: str) -> str:
 
 
 def _init_storage():
-    """Supabase Storage クライアントを初期化。"""
+    """画像ストレージへの接続を初期化。R2 設定済みなら R2、なければ Supabase。"""
+    if image_storage.r2_configured():
+        try:
+            return image_storage.get_r2_client()
+        except Exception as e:
+            logger.error("R2 クライアント初期化失敗: %s", e)
+            return None
     from supabase_client import get_client
     client = get_client()
     if client is None:
@@ -247,8 +255,11 @@ def _parallel_upload(
         blob_path = f"{storage_dir}/{_url_to_hash(url)}{ext}"
 
         try:
-            thread_storage = _get_thread_storage()
-            storage_url = upload_to_storage(thread_storage, blob_path, data, content_type)
+            if image_storage.r2_configured():
+                storage_url = image_storage.upload_image_r2(blob_path, data, content_type)
+            else:
+                thread_storage = _get_thread_storage()
+                storage_url = upload_to_storage(thread_storage, blob_path, data, content_type)
             return url, storage_url, "uploaded"
         except Exception as e:
             logger.error("  アップロード失敗: %s", e)
@@ -286,8 +297,8 @@ def _parallel_upload(
 
 
 def _is_already_stored(url: str) -> bool:
-    """URL が既に Supabase Storage に格納済みか判定。Firebase URL は死んでいるため対象外。"""
-    return SUPABASE_STORAGE_HOST in url
+    """URL が既に自前ストレージ（Supabase/R2）に格納済みか判定。Firebase URL は死んでいるため対象外。"""
+    return image_storage.is_stored_url(url)
 
 
 def _apply_urls(listings: list[dict], manifest: dict[str, str]) -> None:
@@ -358,8 +369,9 @@ def main() -> None:
 
     storage = _init_storage()
     if storage is None:
+        backend = "R2" if image_storage.r2_configured() else "Supabase Storage"
         print(
-            "Supabase Storage が利用できないため、URL の置き換えをスキップします",
+            f"画像ストレージ（{backend}）が利用できないため、URL の置き換えをスキップします",
             file=sys.stderr,
         )
         sys.exit(0)
