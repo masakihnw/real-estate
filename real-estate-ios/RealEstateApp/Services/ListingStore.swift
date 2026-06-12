@@ -58,12 +58,6 @@ final class ListingStore {
         set { defaults.set(newValue, forKey: chukoURLKey) }
     }
 
-    /// レガシー互換: shinchikuListURL プロパティ（設定画面で参照される可能性）
-    var shinchikuListURL: String {
-        get { "" }
-        set { }
-    }
-
     /// 実際に使用される中古 URL（カスタム URL が必要。Supabase がデフォルト）
     var effectiveChukoURL: String {
         listURL.trimmingCharacters(in: .whitespaces)

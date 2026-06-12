@@ -112,7 +112,40 @@ struct BuyerProfile: Codable, Equatable {
             }
         }
 
+        if !budgetScenarios.isEmpty {
+            md += "\n### 予算シナリオ\n\n"
+            for scenario in budgetScenarios {
+                let label = scenario["label"] ?? ""
+                let value = scenario["value"] ?? ""
+                let note = scenario["note"] ?? ""
+                if !label.isEmpty { md += "- **\(label)**: \(value)（\(note)）\n" }
+            }
+        }
+
         return md
+    }
+
+    // MARK: - Export helpers
+
+    /// AI 相談プロンプトの戦略ブロックに差し込む「価格基準」1行。
+    /// 実額は本プロフィール（実運用は Supabase `buyer_profiles`）由来。
+    /// リポジトリには実額をハードコードせず、未設定時は汎用文言にフォールバックする。
+    func budgetCriteriaInline() -> String {
+        let order = ["探索上限", "実質アンカー", "月返済上限"]
+        let parts = order.compactMap { label -> String? in
+            guard let s = budgetScenarios.first(where: { $0["label"] == label }),
+                  let value = s["value"], !value.isEmpty else { return nil }
+            return "\(label) \(value)"
+        }
+        if parts.isEmpty {
+            return "予算シナリオに従う（買い手プロフィール参照）"
+        }
+        return parts.joined(separator: " ／ ")
+    }
+
+    /// 金利耐性ブロックの「月額上限」基準文。実運用は Supabase 由来、未設定時は汎用文言。
+    func monthlyLimitInline() -> String {
+        monthlyPaymentLimit.isEmpty ? "予算シナリオの月返済上限" : monthlyPaymentLimit
     }
 
     // MARK: - Presets
@@ -141,7 +174,12 @@ struct BuyerProfile: Codable, Equatable {
         communityPreference: "",
         dealBreakers: "",
         lifeScenarios: [],
-        budgetScenarios: [],
+        // プレースホルダ構造のみ。実額は入れない（実運用の予算は Supabase `buyer_profiles` が正）。
+        budgetScenarios: [
+            ["label": "探索上限", "value": "○.○億円", "note": "値下げ待ちでマークする上限"],
+            ["label": "実質アンカー", "value": "○.○億円前後", "note": "月返済上限以内で成立する安心圏"],
+            ["label": "月返済上限", "value": "○○万円/月以内", "note": "金利1.5%想定。総額制約は別途"],
+        ],
         preferredAreas: [],
         mustHaveFeatures: [],
         timeline: "購入時期の目安",
