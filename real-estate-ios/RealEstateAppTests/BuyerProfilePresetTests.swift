@@ -44,14 +44,15 @@ struct BuyerProfilePresetTests {
 
     @Test("budgetCriteriaInline は予算シナリオの値を注入する")
     func budgetCriteriaInjectsScenarioValues() {
+        // 注入機構の検証なので実PIIではなく合成値を使う（公開リポジトリ対策）
         var profile = BuyerProfile.empty
         profile.budgetScenarios = [
-            ["label": "探索上限", "value": "1.3億円"],
-            ["label": "実質アンカー", "value": "1.1億円前後"],
+            ["label": "探索上限", "value": "9.9億円"],
+            ["label": "実質アンカー", "value": "8.8億円前後"],
         ]
         let line = profile.budgetCriteriaInline()
-        #expect(line.contains("探索上限 1.3億円"))
-        #expect(line.contains("実質アンカー 1.1億円前後"))
+        #expect(line.contains("探索上限 9.9億円"))
+        #expect(line.contains("実質アンカー 8.8億円前後"))
     }
 
     @Test("budgetCriteriaInline はシナリオ未設定時に汎用文言へフォールバック")
@@ -65,8 +66,8 @@ struct BuyerProfilePresetTests {
     @Test("monthlyLimitInline は月額上限を注入し、未設定時はフォールバック")
     func monthlyLimitInjectsAndFallsBack() {
         var profile = BuyerProfile.empty
-        profile.monthlyPaymentLimit = "ローン返済30万円/月以内"
-        #expect(profile.monthlyLimitInline() == "ローン返済30万円/月以内")
+        profile.monthlyPaymentLimit = "ローン返済99万円/月以内"
+        #expect(profile.monthlyLimitInline() == "ローン返済99万円/月以内")
         #expect(BuyerProfile.empty.monthlyLimitInline() == "予算シナリオの月返済上限")
     }
 
