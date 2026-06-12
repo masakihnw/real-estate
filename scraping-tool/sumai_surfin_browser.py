@@ -1248,7 +1248,7 @@ def browser_enrich_listings(
                             f" → ss_value_judgment={best_judgment or '?'}")
                     else:
                         error_count += 1
-                        print(f"  ✗ {name} — 割安判定データ取得失敗")
+                        logger.warning("  ✗ %s — 割安判定データ取得失敗", name)
 
                 else:
                     # ── 新築: カスタムシミュレーション ──
@@ -1268,7 +1268,7 @@ def browser_enrich_listings(
                         logger.info(f"  ✓ {name} — シミュレーション({sim_price}万): {', '.join(parts)}")
                     else:
                         error_count += 1
-                        print(f"  ✗ {name} — シミュレーションデータ取得失敗")
+                        logger.warning("  ✗ %s — シミュレーションデータ取得失敗", name)
 
             except Exception as e:
                 error_count += 1
@@ -1292,10 +1292,9 @@ def browser_enrich_listings(
     # ── 最終出力 ──
     _save_json(listings, output_path_p)
 
-    print(
-        f"ブラウザ enrichment 完了: {enriched_count}件成功, {error_count}件失敗 "
-        f"({len(targets)}件中)",
-        file=sys.stderr,
+    logger.info(
+        "ブラウザ enrichment 完了: %d件成功, %d件失敗 (%d件中)",
+        enriched_count, error_count, len(targets),
     )
 
 
@@ -1303,8 +1302,7 @@ def browser_enrich_listings(
 
 def main() -> None:
     if not PLAYWRIGHT_AVAILABLE:
-        print("エラー: playwright が必要です")
-        logger.info("  pip install playwright && playwright install chromium")
+        logger.error("playwright が必要です: pip install playwright && playwright install chromium")
         sys.exit(1)
 
     ap = argparse.ArgumentParser(
