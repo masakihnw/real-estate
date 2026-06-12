@@ -157,14 +157,13 @@ real-estate/
 | 項目 | 仕様 |
 |------|------|
 | **方式** | Firebase Auth + Google Sign-In |
-| **許可ユーザー** | メールアドレスホワイトリスト（`AuthService.allowedEmails`） |
+| **許可ユーザー** | メールアドレスホワイトリスト（実値は環境変数/Supabaseで管理。リポジトリには記載しない） |
 | **フロー** | LoginView → GIDSignIn → Firebase Auth → ホワイトリストチェック → 許可/拒否 |
 | **未許可時** | 自動サインアウト + エラー表示 |
 | **URL ハンドリング** | `onOpenURL` → `AuthService.handle(url:)` で Google Sign-In コールバック処理 |
 
 #### 許可メールアドレス
-- `masaki.hanawa.417@gmail.com`
-- `nogura.yuka.kf@gmail.com`
+- 実値はリポジトリに記載しない（環境変数 / Supabase で管理）。
 
 ### 3.3 画面構成
 
@@ -647,7 +646,7 @@ Sheet で表示/非表示を切替。以下のレイヤーを国土地理院 WMS
 |------|------|
 | **一覧表示** | 設定済み通勤先の名前・座標を表示。スワイプで削除 |
 | **追加** | 名前＋住所を入力し、CLGeocoder でジオコーディングして追加。最大3箇所まで |
-| **デフォルト復元** | Playground株式会社・エムスリーキャリアの2箇所に戻す |
+| **デフォルト復元** | 通勤先2拠点（オフィスA・オフィスB。実値は端末設定/Supabase）に戻す |
 | **永続化** | UserDefaults（`commuteDestinations`）に JSON で保存。CommuteData 構造は従来のまま（playground/m3career）で、MKDirections 計算は固定2箇所を継続使用 |
 
 #### 3.3.11 成約実績一覧（TransactionListView）
@@ -2159,7 +2158,7 @@ reinfolib API（不動産情報ライブラリ）の成約価格情報から、c
 
 | 項目 | 説明 |
 |------|------|
-| `defaults` | デフォルト2箇所（Playground株式会社、エムスリーキャリア） |
+| `defaults` | デフォルト2箇所（オフィスA・オフィスB のプレースホルダ。実値は端末設定/Supabase） |
 | `load()` | UserDefaults から読み込み。空なら defaults を返す |
 | `save(_:)` | UserDefaults に保存 |
 | `coordinate` | CLLocationCoordinate2D を返す computed property |
