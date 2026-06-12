@@ -30,7 +30,6 @@ import json
 import math
 import os
 import re
-import sys
 import time
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
@@ -568,9 +567,11 @@ def main() -> None:
     logger.info("=== 東京23区 成約実績フィード構築開始 ===")
     logger.info(f"  対象区: {len(cities)} 区（東京23区）")
     logger.info(f"  対象期間: {period_labels}")
-    print(f"  フィルタ: {PRICE_MIN_MAN}〜{PRICE_MAX_MAN}万, {AREA_MIN_M2}㎡+, "
-          f"間取り{LAYOUT_PREFIX_OK}, 築{BUILT_YEAR_MIN}年以降, "
-          f"徒歩{WALK_MIN_MAX}分以内", file=sys.stderr)
+    logger.info(
+        "  フィルタ: %s〜%s万, %s㎡+, 間取り%s, 築%s年以降, 徒歩%s分以内",
+        PRICE_MIN_MAN, PRICE_MAX_MAN, AREA_MIN_M2,
+        LAYOUT_PREFIX_OK, BUILT_YEAR_MIN, WALK_MIN_MAX,
+    )
 
     # --- Phase 1: API からデータ取得 + フィルタ ---
     all_matched: List[Tuple[dict, Dict[str, str], str]] = []  # (item, city_info, period)
@@ -593,8 +594,8 @@ def main() -> None:
             time.sleep(REQUEST_DELAY_SEC)
 
         if city_matched > 0:
-            print(f"  [{ci+1}/{len(cities)}] {city['pref_name']}{city['name']}: "
-                  f"{city_matched} 件マッチ", file=sys.stderr)
+            logger.info("  [%d/%d] %s%s: %d 件マッチ",
+                        ci + 1, len(cities), city["pref_name"], city["name"], city_matched)
         elif (ci + 1) % 50 == 0:
             logger.info(f"  [{ci+1}/{len(cities)}] 進捗...")
 
@@ -658,8 +659,8 @@ def main() -> None:
     ]
     walk_filtered = pre_walk_count - len(transactions)
     if walk_filtered > 0:
-        print(f"  徒歩{WALK_MIN_MAX}分超フィルタ: {walk_filtered} 件除外 "
-              f"→ 残 {len(transactions)} 件", file=sys.stderr)
+        logger.info("  徒歩%s分超フィルタ: %d 件除外 → 残 %d 件",
+                    WALK_MIN_MAX, walk_filtered, len(transactions))
 
     # 建物グループ構築
     building_groups = build_building_groups(transactions)
