@@ -928,10 +928,9 @@ def _validate_parsed_data(result: dict, url: str) -> dict:
         val = result.get(key)
         if val is not None and isinstance(val, (int, float)):
             if val < min_val or val > max_val:
-                print(
-                    f"  [SumaiSurfin] バリデーション失敗 ({url}): "
-                    f"{key}={val} — {desc} → 除外",
-                    file=sys.stderr,
+                logger.warning(
+                    "[SumaiSurfin] バリデーション失敗 (%s): %s=%s — %s → 除外",
+                    url, key, val, desc,
                 )
                 del result[key]
 
@@ -948,10 +947,9 @@ def _validate_parsed_data(result: dict, url: str) -> dict:
         vals = [result.get(k) for k in sim_keys if result.get(k) is not None]
         if len(vals) == 3 and len(set(vals)) == 1:
             # ベスト/標準/ワーストが全て同じ値 → 異常データ
-            print(
-                f"  [SumaiSurfin] シミュレーション整合性エラー ({url}): "
-                f"全ケース同値={vals[0]} → 除外",
-                file=sys.stderr,
+            logger.warning(
+                "[SumaiSurfin] シミュレーション整合性エラー (%s): 全ケース同値=%s → 除外",
+                url, vals[0],
             )
             for k in sim_keys:
                 result.pop(k, None)
@@ -1437,9 +1435,9 @@ def _extract_surrounding_properties(soup: BeautifulSoup, html: str) -> Optional[
                 rate_text = cells[1].get_text(strip=True)
                 if "XX" in rate_text:
                     # "XX%" はマスク値 → ログイン状態に問題がある可能性
-                    print(
-                        f"⚠ 周辺物件の値上がり率がマスク値(XX%)です。ログイン状態を確認してください: {entry.get('name', '?')}",
-                        file=sys.stderr,
+                    logger.warning(
+                        "周辺物件の値上がり率がマスク値(XX%%)です。ログイン状態を確認してください: %s",
+                        entry.get("name", "?"),
                     )
                 else:
                     rate_m = re.search(r"(\d+(?:\.\d+)?)\s*[%％]", rate_text)
@@ -2204,8 +2202,11 @@ def enrich_listings(input_path: str, output_path: str, session: requests.Session
         "ss_forecast_change_rate",
     ], "sumai_surfin")
 
-    print(f"住まいサーフィン enrichment 完了: スキップ: {skip_count}件, enrichment対象: {target_count}件 — "
-          f"成功: {enriched_count}, 未発見: {not_found_count}, データなし: {no_data_count}", file=sys.stderr)
+    logger.info(
+        "住まいサーフィン enrichment 完了: スキップ: %d件, enrichment対象: %d件 — "
+        "成功: %d, 未発見: %d, データなし: %d",
+        skip_count, target_count, enriched_count, not_found_count, no_data_count,
+    )
 
 
 def finalize_radar_only(input_path: str, output_path: str,
@@ -2331,16 +2332,15 @@ def main() -> None:
                 session=session if not args.browser_only else None,
             )
         except ImportError:
-            print(
-                "ブラウザ enrichment: playwright が未インストールのためスキップ\n"
-                "  pip install playwright && playwright install chromium",
-                file=sys.stderr,
+            logger.warning(
+                "ブラウザ enrichment: playwright が未インストールのためスキップ"
+                "（pip install playwright && playwright install chromium）"
             )
         except Exception as e:
-            print(
-                f"ブラウザ enrichment: 実行時エラーのためスキップ: {e}\n"
-                "  ブラウザバイナリ未インストールの可能性: playwright install chromium",
-                file=sys.stderr,
+            logger.warning(
+                "ブラウザ enrichment: 実行時エラーのためスキップ: %s"
+                "（ブラウザバイナリ未インストールの可能性: playwright install chromium）",
+                e,
             )
 
 
