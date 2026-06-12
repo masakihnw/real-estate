@@ -142,7 +142,10 @@ final class ListingStore {
         }
 
         if totalNew > 0 {
-            NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
+            NotificationScheduleService.shared.accumulateAndReschedule(
+                newCount: totalNew,
+                matchedTemplateCounts: Self.matchedTemplateCounts(modelContext: modelContext)
+            )
         }
 
         // バックグラウンド時はアノテーション同期・通勤時間計算をスキップ（実行時間制限のため）
@@ -492,6 +495,21 @@ final class ListingStore {
         update(existing, from: new)
     }
 
+    /// 今回同期分（isNew）の新着に対する保存フィルタ別マッチ件数。
+    /// チップバッジの isRecentlyAdded（2日窓）と異なり isNew（サーバー判定・
+    /// 次回同期でリセット）を使うことで、refresh のたびに同じ物件が
+    /// 通知累積へ再加算される二重計上を防ぐ。
+    private static func matchedTemplateCounts(modelContext: ModelContext) -> [UUID: Int] {
+        let templates = FilterTemplateStore.loadPersisted()
+        guard !templates.isEmpty else { return [:] }
+        let descriptor = FetchDescriptor<Listing>(
+            predicate: #Predicate { $0.isNew && !$0.isDelisted }
+        )
+        let newListings = (try? modelContext.fetch(descriptor)) ?? []
+        guard !newListings.isEmpty else { return [:] }
+        return FilterMatchCounter.matchCounts(newListings: newListings, templates: templates)
+    }
+
     /// Supabase 経由でデータ取得・同期
     private func refreshFromSupabase(modelContext: ModelContext, isBackground: Bool = false) async {
         do {
@@ -507,7 +525,10 @@ final class ListingStore {
             }
 
             if totalNew > 0 {
-                NotificationScheduleService.shared.accumulateAndReschedule(newCount: totalNew)
+                NotificationScheduleService.shared.accumulateAndReschedule(
+                    newCount: totalNew,
+                    matchedTemplateCounts: Self.matchedTemplateCounts(modelContext: modelContext)
+                )
             }
 
             // バックグラウンド時はアノテーション同期・通勤時間計算をスキップ（実行時間制限のため）

@@ -25,12 +25,16 @@ struct ListingGroup: Identifiable {
 struct ListingListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ListingStore.self) private var store
+    @Environment(FilterTemplateStore.self) private var templateStore
     private let networkMonitor = NetworkMonitor.shared
     @Query private var listings: [Listing]
     @State private var sortOrder: SortOrder = .addedDesc
     @State private var selectedListing: Listing?
     /// OOUI: タブごとに独立したフィルタ状態を持つ（中古/新築/お気に入りで干渉しない）
     @State private var filterStore = FilterStore()
+    /// 保存フィルタチップの新着マッチ件数（テンプレートID → 件数）。
+    /// body 内での都度計算を避け、baseList / templates 変化時のみ再計算する
+    @State private var templateBadges: [UUID: Int] = [:]
     @State private var showErrorAlert = false
     @State private var comparisonListings: [Listing] = []
     @State private var showComparison = false
@@ -597,6 +601,7 @@ struct ListingListView: View {
             .environment(\.editMode, favoritesOnly ? $editMode : .constant(.inactive))
             .onAppear {
                 recomputeFiltered()
+                recomputeTemplateBadges()
                 if baseList.count > 0 || !store.isRefreshing { isInitialLoadComplete = true }
             }
             .onChange(of: store.isRefreshing) { _, isRefreshing in
@@ -605,10 +610,19 @@ struct ListingListView: View {
             .onChange(of: baseList.count) { _, count in
                 if count > 0 { isInitialLoadComplete = true }
                 recomputeFiltered()
+                recomputeTemplateBadges()
             }
             .onChange(of: searchText) { _, _ in recomputeFiltered() }
             .onChange(of: sortOrder) { _, _ in recomputeFiltered() }
-            .onChange(of: filterStore.filter) { _, _ in recomputeFiltered() }
+            .onChange(of: filterStore.filter) { _, newFilter in
+                recomputeFiltered()
+                // シート等で条件が編集されテンプレートと一致しなくなったら適用中表示を解除
+                if let id = filterStore.appliedTemplateID,
+                   templateStore.templates.first(where: { $0.id == id })?.filter != newFilter {
+                    filterStore.appliedTemplateID = nil
+                }
+            }
+            .onChange(of: templateStore.templates) { _, _ in recomputeTemplateBadges() }
             .onChange(of: delistFilter) { _, newFilter in
                 if newFilter == .liked || newFilter == .noped { loadPrefListings() }
                 recomputeFiltered()
@@ -857,18 +871,95 @@ struct ListingListView: View {
     }
 
     private var filterEmptyState: some View {
-        ContentUnavailableView {
-            Label("条件に一致する物件がありません", systemImage: "line.3.horizontal.decrease.circle")
-        } description: {
-            Text("フィルタ条件を変更するか、リセットしてください。")
-        } actions: {
-            Button("フィルタをリセット") {
-                filterStore.filter.reset()
+        // テンプレート適用で0件になった時こそ解除チップが必要なため、
+        // 空状態でもチップ行を表示する
+        VStack(spacing: 0) {
+            if !favoritesOnly && !templateStore.templates.isEmpty {
+                templateChipBar
             }
-            .buttonStyle(.bordered)
+            ContentUnavailableView {
+                Label("条件に一致する物件がありません", systemImage: "line.3.horizontal.decrease.circle")
+            } description: {
+                Text("フィルタ条件を変更するか、リセットしてください。")
+            } actions: {
+                Button("フィルタをリセット") {
+                    filterStore.filter.reset()
+                    filterStore.appliedTemplateID = nil
+                }
+                .buttonStyle(.bordered)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .accessibilityElement(children: .combine)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .accessibilityElement(children: .combine)
+    }
+
+    // MARK: - 保存フィルタチップ（さがす側）
+
+    /// 保存フィルタを1タップで適用するチップ行。新着マッチ件数をバッジ表示する。
+    private var templateChipBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: DS.Spacing.sm) {
+                ForEach(templateStore.templates) { template in
+                    templateChip(template)
+                }
+            }
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.vertical, DS.Spacing.sm)
+        }
+    }
+
+    private func templateChip(_ template: FilterTemplate) -> some View {
+        let isApplied = filterStore.appliedTemplateID == template.id
+        let badge = templateBadges[template.id] ?? 0
+        return Button {
+            HapticManager.soft()
+            if isApplied {
+                filterStore.filter.reset()
+                filterStore.appliedTemplateID = nil
+            } else {
+                filterStore.filter = template.filter
+                filterStore.appliedTemplateID = template.id
+            }
+        } label: {
+            HStack(spacing: DS.Spacing.xs) {
+                Text(template.name)
+                    .font(DS.Typography.label)
+                    .lineLimit(1)
+                if badge > 0 {
+                    Text("\(badge)")
+                        .font(DS.Typography.badge)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, DS.Spacing.xs + 1)
+                        .padding(.vertical, 1)
+                        .background(isApplied ? Color.white.opacity(DS.Opacity.overlay) : Color.accentColor, in: Capsule())
+                }
+            }
+            .foregroundStyle(isApplied ? .white : .primary)
+            .padding(.horizontal, DS.Spacing.md)
+            .padding(.vertical, DS.Spacing.xs + 2)
+            .background(
+                isApplied ? Color.accentColor : Color(.secondarySystemBackground),
+                in: Capsule()
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(
+            badge > 0
+                ? "保存フィルタ \(template.name)、新着\(badge)件\(isApplied ? "、適用中" : "")"
+                : "保存フィルタ \(template.name)\(isApplied ? "、適用中" : "")"
+        )
+    }
+
+    /// 新着マッチバッジを再計算する（baseList / templates 変化時のみ）
+    private func recomputeTemplateBadges() {
+        guard !favoritesOnly, !templateStore.templates.isEmpty else {
+            templateBadges = [:]
+            return
+        }
+        templateBadges = FilterMatchCounter.matchCounts(
+            newListings: FilterMatchCounter.newListings(in: baseList),
+            templates: templateStore.templates
+        )
     }
 
     private var delistFilterEmptyState: some View {
@@ -969,6 +1060,13 @@ struct ListingListView: View {
             if favoritesOnly {
                 Section {
                     delistChipBar
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                }
+            } else if !templateStore.templates.isEmpty {
+                Section {
+                    templateChipBar
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)

@@ -12,7 +12,7 @@ struct FilterMatchCounterTests {
         addedDaysAgo: Double = 1,
         isDelisted: Bool = false
     ) -> Listing {
-        let l = Listing(url: url, name: name, propertyType: "chuko", priceMan: priceMan)
+        let l = Listing(url: url, name: name, priceMan: priceMan, propertyType: "chuko")
         l.addedAt = Date().addingTimeInterval(-addedDaysAgo * 24 * 3600)
         l.isDelisted = isDelisted
         return l
@@ -71,6 +71,23 @@ struct FilterMatchCounterTests {
         let l = makeListing(url: "https://x/1", name: "A", priceMan: 8_000)
         let counts = FilterMatchCounter.matchCounts(newListings: [l], templates: [])
         #expect(counts.isEmpty)
+    }
+
+    // MARK: - 通知本文（NotificationScheduleService.composeBody）
+
+    @Test("テンプレートヒットなしは従来文のみ")
+    func composeBodyWithoutHits() {
+        let body = NotificationScheduleService.composeBody(totalNew: 3, templateHits: [])
+        #expect(body == "前回の通知から 3件 の新規物件が追加されました。")
+    }
+
+    @Test("テンプレートヒットは上位2件まで付記")
+    func composeBodyWithHits() {
+        let body = NotificationScheduleService.composeBody(
+            totalNew: 5,
+            templateHits: [("予算内S評価", 3), ("広尾エリア", 2), ("駅近", 1)]
+        )
+        #expect(body == "前回の通知から 5件 の新規物件が追加されました。保存フィルタ「予算内S評価」に3件、「広尾エリア」に2件ヒット。")
     }
 
     // MARK: - matchSummaries
