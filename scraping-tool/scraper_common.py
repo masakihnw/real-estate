@@ -37,6 +37,44 @@ logger = get_logger(__name__)
 # ──────────────────────────── セッション ────────────────────────────
 
 
+class EmptyParseGuard:
+    """連続パース0件の停止判定（EMPTY_PARSE_TOLERANCE パターンの共通核）。
+
+    「正常な終端」と「botブロック/構造変更」を区別するため、パース0件が
+    連続 tolerance 回続いたときのみ停止する。ログ文言・metrics 記録・
+    debug HTML 保全などのサイト固有処理は呼び出し側に残す。
+
+    使い方:
+        guard = EmptyParseGuard(EMPTY_PARSE_TOLERANCE)
+        if not rows:
+            if guard.record_empty():
+                ...  # 停止（guard.consecutive で連続回数を参照）
+                break
+            ...  # 警告して次ページへ
+            continue
+        gap = guard.record_success()
+        if gap:
+            ...  # ページ列の途中に空ページ（後続で復活）= 異常なギャップ
+    """
+
+    def __init__(self, tolerance: int = 2):
+        if tolerance < 1:
+            raise ValueError(f"tolerance は1以上: {tolerance}")
+        self.tolerance = tolerance
+        self.consecutive = 0
+
+    def record_empty(self) -> bool:
+        """パース0件を記録し、連続回数が tolerance に達したら True（停止）。"""
+        self.consecutive += 1
+        return self.consecutive >= self.tolerance
+
+    def record_success(self) -> int:
+        """パース成功を記録。直前までの連続空ページ数（ギャップ）を返してリセットする。"""
+        gap = self.consecutive
+        self.consecutive = 0
+        return gap
+
+
 def create_session() -> requests.Session:
     """共通の HTTP セッションを生成。全スクレイパーで同一のヘッダーを使用。"""
     s = requests.Session()
