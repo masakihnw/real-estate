@@ -44,6 +44,8 @@ jobs:
       # Mac Catalyst ビルドは Mac 版廃止（2026-05-16）に伴い削除済み。
       # destination はハードコードせず、実在する iPhone シミュレータを動的解決する
       # （ランナーイメージ更新で特定のデバイス名/OSが消えても壊れないように）。
+      # xcpretty は Swift Testing の失敗詳細を出力しないため、生ログを tee で保存し
+      # 失敗時に該当行を抽出して表示する。
       - name: Build & Test (iOS)
         working-directory: real-estate-ios
         run: |
@@ -64,5 +66,24 @@ jobs:
             -scheme RealEstateApp \
             -destination "platform=iOS Simulator,name=$DEVICE" \
             -configuration Debug \
+            -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO \
-            | xcpretty
+            2>&1 | tee xcodebuild-raw.log | xcpretty
+
+      - name: Show test failures
+        if: failure()
+        working-directory: real-estate-ios
+        run: |
+          echo "--- 失敗したテスト（生ログ抽出） ---"
+          grep -E "(Test Case .* (failed|passed with warnings)|✘|✗|recorded an issue|Expectation failed|Fatal error|error:|failing tests|Restarting after unexpected exit|Crash:)" \
+            xcodebuild-raw.log | head -120 || echo "(該当行なし — xcodebuild-raw.log アーティファクトを確認)"
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            real-estate-ios/TestResults.xcresult
+            real-estate-ios/xcodebuild-raw.log
+          retention-days: 7

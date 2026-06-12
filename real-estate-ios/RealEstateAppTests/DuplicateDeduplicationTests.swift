@@ -48,7 +48,7 @@ struct DuplicateDeduplicationTests {
             makeListing(url: "u2", name: "B", address: "中央区1"),
             makeListing(url: "u3", name: "C", address: "港区1"),
         ]
-        let result = DashboardView.deduplicatedNewListings(listings)
+        let result = ListingDeduplication.deduplicatedNewListings(listings)
         #expect(result.count == 3)
     }
 
@@ -67,7 +67,7 @@ struct DuplicateDeduplicationTests {
             addedAt: Date()
         )
         #expect(floor3.buildingGroupKey == floor5.buildingGroupKey)
-        let result = DashboardView.deduplicatedNewListings([floor3, floor5])
+        let result = ListingDeduplication.deduplicatedNewListings([floor3, floor5])
         #expect(result.count == 1)
         #expect(result[0].url == "u2")
     }
@@ -76,13 +76,13 @@ struct DuplicateDeduplicationTests {
     func differentBuildingsKeptBoth() {
         let a = makeListing(url: "u1", name: "マンションA", address: "千代田区1")
         let b = makeListing(url: "u2", name: "マンションB", address: "千代田区2")
-        let result = DashboardView.deduplicatedNewListings([a, b])
+        let result = ListingDeduplication.deduplicatedNewListings([a, b])
         #expect(result.count == 2)
     }
 
     @Test("空配列: パニックしない")
     func emptyArrayNoPanic() {
-        let result = DashboardView.deduplicatedNewListings([])
+        let result = ListingDeduplication.deduplicatedNewListings([])
         #expect(result.isEmpty)
     }
 
@@ -90,7 +90,7 @@ struct DuplicateDeduplicationTests {
     func newestAddedAtIsRepresentative() {
         let older = makeListing(url: "u1", name: "テスト", addedAt: Date().addingTimeInterval(-3600))
         let newer = makeListing(url: "u2", name: "テスト", addedAt: Date())
-        let result = DashboardView.deduplicatedNewListings([older, newer])
+        let result = ListingDeduplication.deduplicatedNewListings([older, newer])
         #expect(result.count == 1)
         #expect(result[0].url == "u2")
     }
@@ -105,7 +105,7 @@ struct DuplicateDeduplicationTests {
         prefStore.setLocalOnly(key, preference: .like)
         defer { prefStore.removeLocalOnly(key) }
 
-        let result = DashboardView.deduplicatedNewListings([listing], prefStore: prefStore)
+        let result = ListingDeduplication.deduplicatedNewListings([listing], prefStore: prefStore)
         #expect(result.isEmpty)
     }
 
@@ -117,7 +117,7 @@ struct DuplicateDeduplicationTests {
         prefStore.setLocalOnly(key, preference: .nope)
         defer { prefStore.removeLocalOnly(key) }
 
-        let result = DashboardView.deduplicatedNewListings([listing], prefStore: prefStore)
+        let result = ListingDeduplication.deduplicatedNewListings([listing], prefStore: prefStore)
         #expect(result.isEmpty)
     }
 
@@ -130,7 +130,7 @@ struct DuplicateDeduplicationTests {
         prefStore.setLocalOnly(liked.identityKey, preference: .like)
         defer { prefStore.removeLocalOnly(liked.identityKey) }
 
-        let result = DashboardView.deduplicatedNewListings([liked, unreviewed], prefStore: prefStore)
+        let result = ListingDeduplication.deduplicatedNewListings([liked, unreviewed], prefStore: prefStore)
         #expect(result.count == 1)
         #expect(result[0].url == "u2")
     }
@@ -138,7 +138,7 @@ struct DuplicateDeduplicationTests {
     @Test("prefStore nil ならフィルタなし（後方互換）")
     func nilPrefStoreNoFilter() {
         let listing = makeListing(url: "u1", name: "テスト")
-        let result = DashboardView.deduplicatedNewListings([listing], prefStore: nil)
+        let result = ListingDeduplication.deduplicatedNewListings([listing], prefStore: nil)
         #expect(result.count == 1)
     }
 
@@ -156,7 +156,7 @@ struct DuplicateDeduplicationTests {
         prefStore.setLocalOnly(unitA.identityKey, preference: .nope)
         defer { prefStore.removeLocalOnly(unitA.identityKey) }
 
-        let result = DashboardView.deduplicatedNewListings(
+        let result = ListingDeduplication.deduplicatedNewListings(
             [unitA, unitB, unitC, other], prefStore: prefStore
         )
         #expect(result.count == 1)
@@ -172,7 +172,7 @@ struct DuplicateDeduplicationTests {
         prefStore.setLocalOnly(unitA.identityKey, preference: .like)
         defer { prefStore.removeLocalOnly(unitA.identityKey) }
 
-        let result = DashboardView.deduplicatedNewListings(
+        let result = ListingDeduplication.deduplicatedNewListings(
             [unitA, unitB], prefStore: prefStore
         )
         #expect(result.isEmpty)
@@ -191,7 +191,7 @@ struct DuplicateDeduplicationTests {
         // identityKeyが変わっているので直接マッチしない
         #expect(unit.identityKey != staleKey)
         // だがbuilding名（最初の|まで）は一致する
-        let result = DashboardView.deduplicatedNewListings([unit], prefStore: prefStore)
+        let result = ListingDeduplication.deduplicatedNewListings([unit], prefStore: prefStore)
         #expect(result.isEmpty)
     }
 

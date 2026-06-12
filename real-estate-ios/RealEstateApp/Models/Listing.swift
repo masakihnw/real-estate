@@ -759,7 +759,7 @@ final class Listing: @unchecked Sendable {
         formatPriceMan(man, unit: "万円")
     }
 
-    private static func formatPriceMan(_ man: Int, unit: String = "万") -> String {
+    static func formatPriceMan(_ man: Int, unit: String = "万") -> String {
         if man >= 10000 {
             let oku = man / 10000
             let remainder = man % 10000

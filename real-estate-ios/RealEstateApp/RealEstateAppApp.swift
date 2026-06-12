@@ -174,8 +174,6 @@ private struct RootView: View {
     @Environment(AuthService.self) private var authService
     let sharedModelContainer: ModelContainer
 
-    /// ウォークスルー表示フラグ
-    @State private var showWalkthrough = false
     /// Spotlight 検索から開く物件（アプリ起動時に受け取る）
     @State private var spotlightListing: Listing?
 
@@ -204,17 +202,7 @@ private struct RootView: View {
                     .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                         BackgroundRefreshManager.shared.scheduleNextRefresh()
                     }
-                    .onAppear {
-                        // 初回ログイン時にウォークスルーを表示
-                        if !UserDefaults.standard.walkthroughCompleted {
-                            showWalkthrough = true
-                        }
-                    }
-                    .fullScreenCover(isPresented: $showWalkthrough) {
-                        WalkthroughView {
-                            showWalkthrough = false
-                        }
-                    }
+                    // ウォークスルーの初回自動表示は廃止（設定 > 使い方ガイド から手動表示）
             } else {
                 // 未ログイン → ログイン画面
                 LoginView()
