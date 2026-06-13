@@ -3,12 +3,13 @@ import SwiftUI
 /// 住宅ローン減税シミュレーション
 struct MortgageTaxBenefitView: View {
     let listing: Listing
+    /// 金利・期間・借入額は共有前提から。金利は % 単位でそのまま使う（C1: 単位変換不要）。
+    let assumptions: LoanAssumptions
     @State private var annualIncome: Double = 7000000
-    @State private var loanRate: Double = 0.5
-    @State private var loanYears: Double = 35
 
-    private var priceYen: Double { Double(listing.priceMan ?? 5000) * 10000 }
-    private var loanAmount: Double { priceYen * 0.9 }
+    private var loanRate: Double { assumptions.interestRatePercent }
+    private var loanYears: Double { Double(assumptions.loanYears) }
+    private var loanAmount: Double { assumptions.loanAmountYen }
 
     private var isEligible: Bool {
         let area = listing.areaM2 ?? 0
@@ -44,80 +45,67 @@ struct MortgageTaxBenefitView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section("条件") {
-                    HStack {
-                        Text("物件価格")
-                        Spacer()
-                        Text(Listing.formatPriceCompact(listing.priceMan ?? 0))
-                            .foregroundStyle(.secondary)
-                    }
-                    HStack {
-                        Text("借入額（90%）")
-                        Spacer()
-                        Text(Listing.formatPriceCompact(Int(loanAmount / 10000)))
-                            .foregroundStyle(.secondary)
-                    }
-                    sliderRow("年収", value: $annualIncome, range: 3000000...30000000, step: 500000) {
-                        formatYenSimple(Int(annualIncome))
-                    }
-                    sliderRow("ローン金利", value: $loanRate, range: 0.1...3.0, step: 0.1) {
-                        String(format: "%.1f%%", loanRate)
-                    }
-                    HStack {
-                        Text("種別")
-                        Spacer()
-                        Text("中古（控除期間10年）")
-                            .foregroundStyle(.secondary)
-                    }
+        Group {
+            Section("条件") {
+                HStack {
+                    Text("借入額")
+                    Spacer()
+                    Text(Listing.formatPriceCompact(Int(loanAmount / 10000)))
+                        .foregroundStyle(.secondary)
                 }
-
-                if !isEligible {
-                    Section {
-                        HStack {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(.orange)
-                            Text("住宅ローン減税の適用条件を満たしていない可能性があります")
-                                .font(.caption)
-                        }
-                    }
+                sliderRow("年収", value: $annualIncome, range: 3000000...30000000, step: 500000) {
+                    formatYenSimple(Int(annualIncome))
                 }
-
-                Section("年別控除額") {
-                    ForEach(yearlyDeductions, id: \.year) { item in
-                        HStack {
-                            Text("\(item.year)年目")
-                                .font(.caption)
-                                .frame(width: 50, alignment: .leading)
-                            Text("残高 \(Listing.formatPriceCompact(item.balance / 10000))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .frame(width: 110, alignment: .leading)
-                            Spacer()
-                            Text(formatYenSimple(item.deduction))
-                                .font(.caption.weight(.semibold).monospacedDigit())
-                                .foregroundStyle(.green)
-                        }
-                    }
-                }
-
-                Section {
-                    HStack {
-                        Text("控除合計額")
-                            .font(.headline)
-                        Spacer()
-                        Text(formatYenSimple(totalDeduction))
-                            .font(.headline)
-                            .foregroundStyle(.green)
-                    }
-                    Text("※ 実際の控除額は所得税・住民税の納税額が上限となります")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
+                HStack {
+                    Text("種別")
+                    Spacer()
+                    Text("中古（控除期間10年）")
+                        .foregroundStyle(.secondary)
                 }
             }
-            .navigationTitle("住宅ローン減税")
-            .navigationBarTitleDisplayMode(.inline)
+
+            if !isEligible {
+                Section {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Text("住宅ローン減税の適用条件を満たしていない可能性があります")
+                            .font(.caption)
+                    }
+                }
+            }
+
+            Section("年別控除額") {
+                ForEach(yearlyDeductions, id: \.year) { item in
+                    HStack {
+                        Text("\(item.year)年目")
+                            .font(.caption)
+                            .frame(width: 50, alignment: .leading)
+                        Text("残高 \(Listing.formatPriceCompact(item.balance / 10000))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 110, alignment: .leading)
+                        Spacer()
+                        Text(formatYenSimple(item.deduction))
+                            .font(.caption.weight(.semibold).monospacedDigit())
+                            .foregroundStyle(.green)
+                    }
+                }
+            }
+
+            Section {
+                HStack {
+                    Text("控除合計額")
+                        .font(.headline)
+                    Spacer()
+                    Text(formatYenSimple(totalDeduction))
+                        .font(.headline)
+                        .foregroundStyle(.green)
+                }
+                Text("※ 実際の控除額は所得税・住民税の納税額が上限となります")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
         }
     }
 

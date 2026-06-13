@@ -56,85 +56,81 @@ struct RenovationEstimateView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section("物件情報") {
+        Group {
+            Section("物件情報") {
+                HStack {
+                    Text("専有面積")
+                    Spacer()
+                    Text(String(format: "%.1f m²", areaM2))
+                        .foregroundStyle(.secondary)
+                }
+                if let builtYear = listing.builtYear {
                     HStack {
-                        Text("専有面積")
+                        Text("築年数")
                         Spacer()
-                        Text(String(format: "%.1f m²", areaM2))
+                        Text("\(Calendar.current.component(.year, from: Date()) - builtYear)年")
                             .foregroundStyle(.secondary)
-                    }
-                    if let builtYear = listing.builtYear {
-                        HStack {
-                            Text("築年数")
-                            Spacer()
-                            Text("\(Calendar.current.component(.year, from: Date()) - builtYear)年")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-
-                Section("リノベーション項目を選択") {
-                    ForEach(Self.renovationItems, id: \.id) { item in
-                        Button {
-                            if selectedItems.contains(item.id) {
-                                selectedItems.remove(item.id)
-                                if item.id == "full" {
-                                    selectedItems.subtract(["floor", "wall", "kitchen", "bath", "toilet"])
-                                }
-                            } else {
-                                selectedItems.insert(item.id)
-                                if item.id == "full" {
-                                    selectedItems.subtract(["floor", "wall", "kitchen", "bath", "toilet"])
-                                }
-                            }
-                        } label: {
-                            HStack {
-                                Image(systemName: selectedItems.contains(item.id) ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(selectedItems.contains(item.id) ? .blue : .secondary)
-                                VStack(alignment: .leading) {
-                                    Text(item.name)
-                                        .font(.subheadline)
-                                    Text(item.unitCostRange)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                            }
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-
-                if !selectedItems.isEmpty {
-                    Section("概算") {
-                        HStack {
-                            Text("費用レンジ")
-                                .font(.headline)
-                            Spacer()
-                            VStack(alignment: .trailing) {
-                                Text("\(formatMan(estimateLow)) 〜 \(formatMan(estimateHigh))")
-                                    .font(.headline)
-                                    .foregroundStyle(.blue)
-                                if let price = listing.priceMan {
-                                    let totalLow = price + estimateLow / 10000
-                                    let totalHigh = price + estimateHigh / 10000
-                                    Text("取得総額: \(Listing.formatPriceCompact(totalLow))〜\(Listing.formatPriceCompact(totalHigh))")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-
-                        Text("※ 概算値です。実際の費用は施工会社の見積もりをご確認ください")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
                     }
                 }
             }
-            .navigationTitle("リノベーション費用")
-            .navigationBarTitleDisplayMode(.inline)
+
+            Section("リノベーション項目を選択") {
+                ForEach(Self.renovationItems, id: \.id) { item in
+                    Button {
+                        if selectedItems.contains(item.id) {
+                            selectedItems.remove(item.id)
+                            if item.id == "full" {
+                                selectedItems.subtract(["floor", "wall", "kitchen", "bath", "toilet"])
+                            }
+                        } else {
+                            selectedItems.insert(item.id)
+                            if item.id == "full" {
+                                selectedItems.subtract(["floor", "wall", "kitchen", "bath", "toilet"])
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: selectedItems.contains(item.id) ? "checkmark.circle.fill" : "circle")
+                                .foregroundStyle(selectedItems.contains(item.id) ? .blue : .secondary)
+                            VStack(alignment: .leading) {
+                                Text(item.name)
+                                    .font(.subheadline)
+                                Text(item.unitCostRange)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            if !selectedItems.isEmpty {
+                Section("概算") {
+                    HStack {
+                        Text("費用レンジ")
+                            .font(.headline)
+                        Spacer()
+                        VStack(alignment: .trailing) {
+                            Text("\(formatMan(estimateLow)) 〜 \(formatMan(estimateHigh))")
+                                .font(.headline)
+                                .foregroundStyle(.blue)
+                            if let price = listing.priceMan {
+                                let totalLow = price + estimateLow / 10000
+                                let totalHigh = price + estimateHigh / 10000
+                                Text("取得総額: \(Listing.formatPriceCompact(totalLow))〜\(Listing.formatPriceCompact(totalHigh))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+
+                    Text("※ 概算値です。実際の費用は施工会社の見積もりをご確認ください")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
         }
     }
 
