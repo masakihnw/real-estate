@@ -254,8 +254,9 @@ struct SwipeSessionView: View {
         guard !needsFetch.isEmpty else { return }
 
         for listing in needsFetch {
+            // DB の identity_key（supabaseIdentityKey）で引く。computed identityKey は別キー。
             try? await store.fetchDetail(
-                identityKey: listing.identityKey,
+                identityKey: listing.supabaseIdentityKey ?? listing.identityKey,
                 modelContext: modelContext
             )
         }
