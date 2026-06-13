@@ -261,5 +261,6 @@ struct ContentView: View {
     ContentView()
         .environment(ListingStore.shared)
         .environment(TransactionStore.shared)
+        .environment(FilterTemplateStore())
         .modelContainer(for: [Listing.self, TransactionRecord.self], inMemory: true)
 }

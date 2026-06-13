@@ -34,9 +34,9 @@ logger = get_logger(__name__)
 try:
     from playwright.async_api import async_playwright, Page, Browser
 except ImportError:
-    print(
-        "[commute_gmaps] playwright が必要です: pip install playwright && python3 -m playwright install chromium",
-        file=sys.stderr,
+    logger.error(
+        "[commute_gmaps] playwright が必要です: "
+        "pip install playwright && python3 -m playwright install chromium"
     )
     # enricher として呼ばれた場合は入出力をスルーして正常終了
     if "--input" in sys.argv:
@@ -616,7 +616,6 @@ async def run_enrichment(
     logger.info(f"  ワーカー数:   {actual_workers}")
     logger.info(f"  推定所要時間: 約{est_sec // 60}分{est_sec % 60}秒")
     logger.info("=" * 60)
-    print(file=sys.stderr)
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(
@@ -700,9 +699,9 @@ def main() -> None:
     from enrichment_writer import write_enrichments
     write_enrichments(listings, ["commute_info"], "commute_gmaps")
 
-    print(
-        f"[commute_gmaps] enrichment 完了: {updated}/{len(listings)} 件に Google Maps 通勤時間を付与",
-        file=sys.stderr,
+    logger.info(
+        "[commute_gmaps] enrichment 完了: %d/%d 件に Google Maps 通勤時間を付与",
+        updated, len(listings),
     )
 
 

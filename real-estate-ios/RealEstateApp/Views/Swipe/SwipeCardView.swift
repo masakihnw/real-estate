@@ -4,6 +4,8 @@ struct SwipeCardView: View {
     let listing: Listing
     let dragOffset: CGSize
     let isTopCard: Bool
+    /// ボタン/ジェスチャ確定時に強制表示するスタンプ（dragOffset 駆動と OR）。
+    var forcedStamp: SwipeDecision?
 
     @State private var imageIndex = 0
     @State private var cardImages: [CardImage] = []
@@ -37,17 +39,23 @@ struct SwipeCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.15), radius: 8, y: 4)
         .overlay(alignment: .topLeading) {
-            if swipeProgress > 0.3 {
+            if swipeProgress > 0.3 || forcedStamp == .like {
                 stampLabel("LIKE", color: .green, rotation: -15)
-                    .opacity(min(1, swipeProgress))
+                    .opacity(forcedStamp == .like ? 1 : min(1, swipeProgress))
                     .padding(24)
             }
         }
         .overlay(alignment: .topTrailing) {
-            if swipeProgress < -0.3 {
+            if swipeProgress < -0.3 || forcedStamp == .nope {
                 stampLabel("NOPE", color: .orange, rotation: 15)
-                    .opacity(min(1, -swipeProgress))
+                    .opacity(forcedStamp == .nope ? 1 : min(1, -swipeProgress))
                     .padding(24)
+            }
+        }
+        .overlay(alignment: .top) {
+            if forcedStamp == .skip {
+                stampLabel("あとで", color: .gray, rotation: -8)
+                    .padding(.top, 40)
             }
         }
         .onAppear { buildImagesIfNeeded() }

@@ -25,6 +25,7 @@ final class NotificationScheduleService {
     private let presetKey = "notification.schedule.preset"
     private let customTimesKey = "notification.schedule.customTimes"
     private let accumulatedCountKey = "notification.accumulatedNewCount"
+    private let templateHitsKey = "notification.accumulatedTemplateHits"
     private let commentNotifKey = "notification.comment.enabled"
 
     // MARK: - 定義
@@ -188,10 +189,58 @@ final class NotificationScheduleService {
     }
 
     /// データ更新で新着が見つかった時に呼ぶ。カウントを累積し、通知を再スケジュールする。
-    func accumulateAndReschedule(newCount: Int) {
+    /// - Parameter matchedTemplateCounts: 保存フィルタ（テンプレートID）ごとの
+    ///   今回新着のマッチ件数。テンプレート別に累積し、通知本文に上位を付記する。
+    func accumulateAndReschedule(newCount: Int, matchedTemplateCounts: [UUID: Int] = [:]) {
         guard newCount > 0 else { return }
         accumulatedNewCount += newCount
+        if !matchedTemplateCounts.isEmpty {
+            var hits = accumulatedTemplateHits
+            for (id, count) in matchedTemplateCounts {
+                hits[id.uuidString, default: 0] += count
+            }
+            accumulatedTemplateHits = hits
+        }
         rescheduleNotifications()
+    }
+
+    /// 保存フィルタ別の累積ヒット数（キー = FilterTemplate.id.uuidString）。
+    /// 名前でなく ID で持つことで、リネーム・同名重複・削除に対して頑健にする。
+    private(set) var accumulatedTemplateHits: [String: Int] {
+        get {
+            guard let data = defaults.data(forKey: templateHitsKey),
+                  let decoded = try? JSONDecoder().decode([String: Int].self, from: data) else { return [:] }
+            return decoded
+        }
+        set {
+            if let data = try? JSONEncoder().encode(newValue) {
+                defaults.set(data, forKey: templateHitsKey)
+            }
+        }
+    }
+
+    /// 通知本文を合成する（純関数・テスト可能）。
+    /// templateHits はマッチ数降順を仮定し、上位2件まで付記する。
+    static func composeBody(totalNew: Int, templateHits: [(name: String, count: Int)]) -> String {
+        var body = "前回の通知から \(totalNew)件 の新規物件が追加されました。"
+        let top = templateHits.prefix(2)
+        if !top.isEmpty {
+            let parts = top.map { "「\($0.name)」に\($0.count)件" }
+            body += "保存フィルタ\(parts.joined(separator: "、"))ヒット。"
+        }
+        return body
+    }
+
+    /// 累積テンプレートヒットを、現存するテンプレートの名前に解決して降順で返す。
+    /// 削除済みテンプレート（ID が見つからない）は除外する。
+    private func resolvedTemplateHits() -> [(name: String, count: Int)] {
+        let hits = accumulatedTemplateHits
+        guard !hits.isEmpty else { return [] }
+        return FilterTemplateStore.loadPersisted()
+            .compactMap { template in
+                hits[template.id.uuidString].map { (name: template.name, count: $0) }
+            }
+            .sorted { $0.count > $1.count }
     }
 
     /// 通知が表示/タップされた時、またはアプリがフォアグラウンドに復帰した時に呼ぶ。
@@ -199,6 +248,7 @@ final class NotificationScheduleService {
     /// デリバリー済みの通知とバッジもクリアする。
     func resetAccumulatedCount() {
         accumulatedNewCount = 0
+        accumulatedTemplateHits = [:]
         cancelAllScheduledNotifications()
         // デリバリー済みのスケジュール通知を通知センターから除去
         let deliveredIDs = (0..<10).map { "scheduled-listing-\($0)" }
@@ -235,7 +285,10 @@ final class NotificationScheduleService {
 
         let content = UNMutableNotificationContent()
         content.title = "新着物件"
-        content.body = "前回の通知から \(accumulatedNewCount)件 の新規物件が追加されました。"
+        content.body = Self.composeBody(
+            totalNew: accumulatedNewCount,
+            templateHits: resolvedTemplateHits()
+        )
         content.sound = .default
         content.badge = NSNumber(value: accumulatedNewCount)
         content.categoryIdentifier = Self.categoryID

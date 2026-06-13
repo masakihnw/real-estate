@@ -14,6 +14,11 @@ final class SwipeSessionViewModel {
     private(set) var swipeResults: [(listing: Listing, decision: SwipeDecision)] = []
     private(set) var undoStack: [(listing: Listing, decision: SwipeDecision)] = []
     private var pendingTasks: [String: Task<Void, Never>] = [:]
+    private let progressStore: SwipeProgressStore
+
+    init(progressStore: SwipeProgressStore = .shared) {
+        self.progressStore = progressStore
+    }
 
     var isComplete: Bool { currentIndex >= cards.count }
     var currentCard: Listing? { cards.indices.contains(currentIndex) ? cards[currentIndex] : nil }
@@ -46,17 +51,26 @@ final class SwipeSessionViewModel {
         undoStack.append((card, decision))
         currentIndex += 1
 
-        guard decision != .skip else {
+        let key = card.identityKey
+        switch decision {
+        case .skip:
+            // 「あとで」: 次回デッキの先頭に再登場させる
+            if !progressStore.skippedKeys.contains(key) {
+                progressStore.skippedKeys.append(key)
+            }
             logger.info("Skipped: \(card.name, privacy: .public)")
-            return
+        case .like, .nope:
+            // 確定したら「あとで」リストから外す
+            progressStore.skippedKeys.removeAll { $0 == key }
+            let pref: BuildingPreferenceStore.Preference = decision == .like ? .like : .nope
+            pendingTasks[key] = Task {
+                await BuildingPreferenceStore.shared.setPreference(key, preference: pref)
+            }
+            logger.info("\(decision == .like ? "Liked" : "Noped", privacy: .public): \(card.name, privacy: .public)")
         }
 
-        let key = card.identityKey
-        let pref: BuildingPreferenceStore.Preference = decision == .like ? .like : .nope
-        pendingTasks[key] = Task {
-            await BuildingPreferenceStore.shared.setPreference(key, preference: pref)
-        }
-        logger.info("\(decision == .like ? "Liked" : "Noped", privacy: .public): \(card.name, privacy: .public)")
+        // 残りデッキの永続化は commitSwipe 内で同期的に行う（exit アニメ完了に従属させない）
+        persistRemaining()
     }
 
     func undo() {
@@ -68,12 +82,28 @@ final class SwipeSessionViewModel {
         pendingTasks[key]?.cancel()
         pendingTasks.removeValue(forKey: key)
 
-        if last.decision != .skip {
+        if last.decision == .skip {
+            // 直前の skip を取り消す
+            progressStore.skippedKeys.removeAll { $0 == key }
+        } else {
             Task {
                 await BuildingPreferenceStore.shared.removePreference(key)
             }
+            // 注: like/nope の取り消しでは、その物件が前回 skip 由来だった場合でも
+            // skippedKeys へは戻さない（直前1手の取り消しという undo の責務を超えるため）。
+            // eligible 内に留まるのでデッキからは消えず、新規扱いに降格するのみ。
         }
+        persistRemaining()
         logger.info("Undid swipe on: \(last.listing.name, privacy: .public)")
+    }
+
+    /// 現在の未消化デッキを永続化する。完走時は残りをクリアする。
+    private func persistRemaining() {
+        if isComplete {
+            progressStore.clearRemaining()
+        } else {
+            progressStore.remainingKeys = cards[currentIndex...].map(\.identityKey)
+        }
     }
 
     /// prefetchEnrichment 完了後に呼ぶ。外観写真+間取り図がない物件を除外する。
@@ -84,6 +114,24 @@ final class SwipeSessionViewModel {
         if cards.count < before {
             logger.info("Filtered \(before - self.cards.count) cards without images, \(self.cards.count) remaining")
         }
+    }
+
+    /// filterCardsWithoutImages() の後に呼ぶ。保存済み進捗でデッキを再構成する。
+    /// 画像剪定後の実デッキを eligible として SwipeDeckBuilder に渡すことで、
+    /// build の入力と永続化対象（commitSwipe 時の cards）の対称性を保つ。
+    /// 「あとで」キーは eligible 内に剪定して1回だけ再保存する。
+    func restoreDeckOrder() {
+        let eligibleKeys = Set(cards.map(\.identityKey))
+        let prunedSkipped = progressStore.skippedKeys.filter { eligibleKeys.contains($0) }
+        cards = SwipeDeckBuilder.build(
+            eligible: cards,
+            savedRemainingKeys: progressStore.remainingKeys,
+            skippedKeys: prunedSkipped
+        )
+        currentIndex = 0
+        progressStore.skippedKeys = prunedSkipped
+        progressStore.remainingKeys = cards.map(\.identityKey)
+        logger.info("Restored deck order: \(self.cards.count) cards, \(prunedSkipped.count) skipped re-surfaced")
     }
 
     /// enrichment の再フェッチが必要な物件を判定する。

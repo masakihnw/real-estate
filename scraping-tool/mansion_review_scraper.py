@@ -20,7 +20,6 @@ import argparse
 import json
 import os
 import re
-import sys
 import time
 import unicodedata
 from datetime import datetime, timedelta
@@ -394,10 +393,7 @@ def enrich_listings(
         ]
         for k in keys_to_remove:
             del cache[k]
-        print(
-            f"not-found キャッシュ {len(keys_to_remove)} 件クリア",
-            file=sys.stderr,
-        )
+        logger.info("not-found キャッシュ %d 件クリア", len(keys_to_remove))
 
     enriched = 0
     skipped = 0
@@ -416,9 +412,9 @@ def enrich_listings(
 
         if deadline and time.time() > deadline:
             timed_out = total - i
-            print(
-                f"  [{i + 1}/{total}] 残り{timed_out}件: 時間切れ（{max_time_min}分）",
-                file=sys.stderr,
+            logger.warning(
+                "  [%d/%d] 残り%d件: 時間切れ（%s分）",
+                i + 1, total, timed_out, max_time_min,
             )
             break
 
@@ -446,15 +442,9 @@ def enrich_listings(
             )
             enriched += 1
             consecutive_errors = 0
-            print(
-                f"  [{i + 1}/{total}] {name}: 取得成功",
-                file=sys.stderr,
-            )
+            logger.info("  [%d/%d] %s: 取得成功", i + 1, total, name)
         else:
-            print(
-                f"  [{i + 1}/{total}] {name}: 該当なし",
-                file=sys.stderr,
-            )
+            logger.info("  [%d/%d] %s: 該当なし", i + 1, total, name)
 
         if (i + 1) % 10 == 0:
             save_cache(cache)
@@ -468,10 +458,9 @@ def enrich_listings(
     write_enrichments(listings, ["mansion_review_data"], "mansion_review")
 
     timeout_msg = f", タイムアウト: {timed_out}" if timed_out else ""
-    print(
-        f"\nマンションレビュー enrichment 完了: "
-        f"{enriched}/{total} 件取得 (スキップ: {skipped}{timeout_msg})",
-        file=sys.stderr,
+    logger.info(
+        "マンションレビュー enrichment 完了: %d/%d 件取得 (スキップ: %d%s)",
+        enriched, total, skipped, timeout_msg,
     )
 
 

@@ -46,6 +46,7 @@ from parse_utils import (
 from report_utils import clean_listing_name
 import scraper_metrics
 from scraper_common import (
+    EmptyParseGuard,
     create_session,
     sleep_with_jitter,
     dump_debug_html,
@@ -320,7 +321,7 @@ def _scrape_ward(ward_code: str, apply_filter: bool,
     area_min = int(AREA_MIN_M2_FETCH) if AREA_MIN_M2_FETCH else 0
     pages_no_pass = 0
     ward_parsed = 0
-    consecutive_empty_parses = 0
+    empty_guard = EmptyParseGuard(EMPTY_PARSE_TOLERANCE)
     finish_reason = None
 
     try:
@@ -343,27 +344,26 @@ def _scrape_ward(ward_code: str, apply_filter: bool,
             rows = parse_list_html(html)
             scraper_metrics.record("rehouse", parsed=len(rows))
             if not rows:
-                consecutive_empty_parses += 1
-                if consecutive_empty_parses >= EMPTY_PARSE_TOLERANCE:
+                if empty_guard.record_empty():
                     if ward_parsed == 0:
                         # 区の全ページが0件 = botブロック / 構造変更 / 正規の0件区 のいずれか。
                         # 切り分け用にHTMLを保全（複数区で発生すると媒体全損アラートが発火）
-                        scraper_metrics.record("rehouse", empty_pages=consecutive_empty_parses)
+                        scraper_metrics.record("rehouse", empty_pages=empty_guard.consecutive)
                         dump_debug_html("rehouse", ward_code, html)
                     finish_reason = "completed"
                     break
                 logger.warning(
                     f"rehouse: ward={ward_code} page={page} パース0件 (HTML: {len(html)}B, 連続: "
-                    f"{consecutive_empty_parses}/{EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
+                    f"{empty_guard.consecutive}/{EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
                 )
                 time.sleep(EMPTY_PARSE_BACKOFF_SEC)
                 page += 1
                 continue
 
-            if consecutive_empty_parses > 0:
+            empty_gap = empty_guard.record_success()
+            if empty_gap:
                 # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
-                scraper_metrics.record("rehouse", empty_pages=consecutive_empty_parses)
-            consecutive_empty_parses = 0
+                scraper_metrics.record("rehouse", empty_pages=empty_gap)
             ward_parsed += len(rows)
 
             passed = 0

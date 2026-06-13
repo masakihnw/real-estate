@@ -14,6 +14,8 @@ struct TodayView: View {
     @Query(filter: #Predicate<Listing> { !$0.isDelisted && $0.propertyType == "chuko" })
     private var activeListings: [Listing]
     @State private var selectedListing: Listing?
+    /// AIデイリーブリーフ（当日分のみ。なければ TodayDigest のローカル合成を表示）
+    @State private var aiBrief: DailyBrief?
 
     var body: some View {
         // 単一パス集計を body 先頭で1度だけ実行（旧 DashboardStats と同じパターン）
@@ -43,26 +45,51 @@ struct TodayView: View {
             .fullScreenCover(item: $selectedListing) { listing in
                 ListingDetailPagerView(listings: [listing], initialIndex: 0)
             }
+            // 日跨ぎで id が変わると再フェッチされる（body 再評価時に評価）。
+            // 表示側でも isFresh を再判定するため、stale なブリーフは表示されない
+            .task(id: DailyBriefService.todayKey()) {
+                aiBrief = await DailyBriefService.fetchLatest()
+            }
         }
     }
 
     // MARK: - ブリーフ（今日のひとこと）
 
+    /// 表示時点で当日分（JST）の AI ブリーフ。stale なら nil → ローカル合成へフォールバック
+    private var freshAIBrief: DailyBrief? {
+        guard let brief = aiBrief,
+              DailyBriefService.isFresh(briefDate: brief.briefDate) else { return nil }
+        return brief
+    }
+
     private func briefHeader(_ digest: TodayDigest) -> some View {
-        HStack(alignment: .top, spacing: DS.Spacing.sm) {
-            Image(systemName: digest.hasNoChanges ? "moon.zzz" : "sun.max.fill")
+        let ai = freshAIBrief
+        return HStack(alignment: .top, spacing: DS.Spacing.sm) {
+            Image(systemName: briefIcon(digest, hasAI: ai != nil))
                 .font(DS.Typography.sectionTitle)
-                .foregroundStyle(digest.hasNoChanges ? Color.secondary : Color.accentColor)
-            Text(digest.briefText)
-                .font(DS.Typography.body)
-                .foregroundStyle(.primary)
-                .fixedSize(horizontal: false, vertical: true)
+                .foregroundStyle(ai != nil || !digest.hasNoChanges ? Color.accentColor : Color.secondary)
+            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+                Text(ai?.summaryText ?? digest.briefText)
+                    .font(DS.Typography.body)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+                if ai != nil {
+                    Text("AIブリーフ")
+                        .font(DS.Typography.badge)
+                        .foregroundStyle(Color.accentColor)
+                }
+            }
             Spacer(minLength: 0)
         }
         .padding(DS.Spacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
         .cardGlassBackground()
-        .accessibilityLabel("今日のひとこと: \(digest.briefText)")
+        .accessibilityLabel("今日のひとこと: \(ai?.summaryText ?? digest.briefText)")
+    }
+
+    private func briefIcon(_ digest: TodayDigest, hasAI: Bool) -> String {
+        if hasAI { return "sparkles" }
+        return digest.hasNoChanges ? "moon.zzz" : "sun.max.fill"
     }
 
     // MARK: - 変化カード

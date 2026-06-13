@@ -15,6 +15,7 @@ on:
           - copy
           - verify
           - rewrite
+          - recover-image-categories
           - delete-source
         required: true
       execute:

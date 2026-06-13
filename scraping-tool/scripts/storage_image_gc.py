@@ -89,7 +89,7 @@ def main() -> None:
     listings = fetch_paginated(client, "listings", "id, is_active")
     enrichments = fetch_paginated(
         client, "enrichments",
-        "listing_id, suumo_images, floor_plan_images, best_thumbnail_url",
+        "listing_id, suumo_images, image_categories, floor_plan_images, best_thumbnail_url",
     )
     if not listings or not enrichments:
         logger.error("listings/enrichments の取得が空。フェイルクローズで中止 "

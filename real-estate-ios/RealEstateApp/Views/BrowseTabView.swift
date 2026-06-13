@@ -57,4 +57,5 @@ struct BrowseTabView: View {
 #Preview {
     BrowseTabView()
         .environment(ListingStore.shared)
+        .environment(FilterTemplateStore())
 }

@@ -91,3 +91,42 @@ class TestDumpDebugHtml:
         )
         result = scraper_common.dump_debug_html("athome", "w1", "<html></html>")
         assert result is None
+
+
+# ─────────────────────── EmptyParseGuard ───────────────────────
+from scraper_common import EmptyParseGuard  # noqa: E402
+
+
+def test_empty_parse_guard_stops_at_tolerance():
+    guard = EmptyParseGuard(2)
+    assert guard.record_empty() is False  # 1回目: 続行
+    assert guard.consecutive == 1
+    assert guard.record_empty() is True   # 2回目: 停止
+    assert guard.consecutive == 2
+
+
+def test_empty_parse_guard_success_resets_and_returns_gap():
+    guard = EmptyParseGuard(2)
+    assert guard.record_empty() is False
+    gap = guard.record_success()
+    assert gap == 1          # 途中の空ページ = 異常ギャップとして呼び出し側が記録できる
+    assert guard.consecutive == 0
+    # リセット後はまた tolerance 回まで許容
+    assert guard.record_empty() is False
+    assert guard.record_empty() is True
+
+
+def test_empty_parse_guard_success_without_gap_returns_zero():
+    guard = EmptyParseGuard(2)
+    assert guard.record_success() == 0
+
+
+def test_empty_parse_guard_tolerance_one_stops_immediately():
+    guard = EmptyParseGuard(1)
+    assert guard.record_empty() is True
+
+
+def test_empty_parse_guard_rejects_invalid_tolerance():
+    import pytest
+    with pytest.raises(ValueError):
+        EmptyParseGuard(0)
