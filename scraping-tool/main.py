@@ -377,6 +377,22 @@ def main() -> None:
             cleaned = clean_listing_name(row["name"])
             row["name"] = cleaned if cleaned else "（不明）"
 
+    # 物件名カバレッジをソース別に集計してログ出力（取得品質を可視化）。
+    # 空名が多いソースはパース不具合（例: HOME'S の textFeatureComment 取り違え）の兆候。
+    from collections import Counter
+    name_total: Counter = Counter()
+    name_empty: Counter = Counter()
+    for row in all_rows:
+        src = row.get("source", "unknown")
+        name_total[src] += 1
+        if not (row.get("name") or "").strip():
+            name_empty[src] += 1
+    for src in sorted(name_total):
+        total = name_total[src]
+        empty = name_empty[src]
+        msg = "[NAME COVERAGE] %s: 物件名 %d/%d 件取得（空名 %d 件）" % (src, total - empty, total, empty)
+        (logger.warning if empty else logger.info)(msg)
+
     # 同一物件（名前・間取り・広さ・価格・住所・築年・駅徒歩が全て一致）を1件にまとめる
     all_rows = dedupe_listings(all_rows)
 
