@@ -159,10 +159,6 @@ struct RealEstateAppApp: App {
                 .environment(PhotoSyncService.shared)
                 .environment(filterTemplateStore)
                 .preferredColorScheme(.light) // ライトモード固定
-                .onOpenURL { url in
-                    // Google Sign-In のコールバック URL を処理
-                    _ = AuthService.shared.handle(url)
-                }
         }
         .modelContainer(sharedModelContainer)
     }
@@ -210,15 +206,26 @@ private struct RootView: View {
         }
         .onContinueUserActivity(CSSearchableItemActionType) { activity in
             if let identifier = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
-                let context = ModelContext(sharedModelContainer)
-                let descriptor = FetchDescriptor<Listing>(predicate: #Predicate<Listing> { $0.url == identifier })
-                if let results = try? context.fetch(descriptor), let listing = results.first {
-                    spotlightListing = listing
-                }
+                spotlightListing = resolveListing(url: identifier)
+            }
+        }
+        .onOpenURL { url in
+            // 1ハンドラに集約（複数 onOpenURL の発火順あいまいさを避ける）。
+            // Google Sign-In のコールバックを最優先、続いてウィジェットのディープリンク。
+            if AuthService.shared.handle(url) { return }
+            if let listingURL = WidgetDeepLink.listingURL(from: url) {
+                spotlightListing = resolveListing(url: listingURL)
             }
         }
         .fullScreenCover(item: $spotlightListing) { listing in
             ListingDetailView(listing: listing)
         }
+    }
+
+    /// listing.url（Spotlight・ウィジェット共通の識別子）から Listing を引く。
+    private func resolveListing(url: String) -> Listing? {
+        let context = ModelContext(sharedModelContainer)
+        let descriptor = FetchDescriptor<Listing>(predicate: #Predicate<Listing> { $0.url == url })
+        return (try? context.fetch(descriptor))?.first
     }
 }

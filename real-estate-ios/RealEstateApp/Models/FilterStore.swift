@@ -18,6 +18,12 @@ final class FilterStore {
     /// フィルタシートの表示状態
     var showFilterSheet = false
 
+    /// 適用中の保存フィルタ（チップのハイライト用）。
+    /// filter がテンプレートと一致しなくなったら View 側で nil に戻す。
+    /// Equatable 全比較でなく ID で判定する（同一条件のテンプレート重複や
+    /// ローン設定差分による偽陰性を避けるため）。
+    var appliedTemplateID: UUID?
+
     /// OOUI: タブごとに独立したフィルタ状態を持てるように init を公開
     init() {}
 }
@@ -69,10 +75,17 @@ final class FilterTemplateStore {
         persist()
     }
 
+    /// 永続化済みテンプレートを読み出す（environment 外からの読み取り用。
+    /// 例: ListingStore の条件マッチ通知判定）。書き込みは environment 側
+    /// インスタンスに限定する。
+    static func loadPersisted() -> [FilterTemplate] {
+        guard let data = UserDefaults.standard.data(forKey: storageKey),
+              let decoded = try? JSONDecoder().decode([FilterTemplate].self, from: data) else { return [] }
+        return decoded
+    }
+
     private func load() {
-        guard let data = UserDefaults.standard.data(forKey: Self.storageKey),
-              let decoded = try? JSONDecoder().decode([FilterTemplate].self, from: data) else { return }
-        templates = decoded
+        templates = Self.loadPersisted()
     }
 
     private func persist() {

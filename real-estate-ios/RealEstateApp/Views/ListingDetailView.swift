@@ -1274,9 +1274,9 @@ struct ListingDetailView: View {
             // スコアカード
             if let score = listing.listingScore {
                 let breakdown = listing.scoreBreakdown
-                VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
                     HStack(spacing: 16) {
-                        VStack(spacing: 4) {
+                        VStack(alignment: .leading, spacing: 4) {
                             Text("\(score)")
                                 .font(.system(size: 36, weight: .bold, design: .rounded))
                                 .foregroundStyle(DesignSystem.scoreColor(for: score))
@@ -1284,7 +1284,7 @@ struct ListingDetailView: View {
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
-                        .frame(width: 80)
+                        .frame(width: 80, alignment: .leading)
 
                         if !breakdown.isEmpty {
                             VStack(alignment: .leading, spacing: 6) {
@@ -1349,7 +1349,7 @@ struct ListingDetailView: View {
                                             .font(.caption)
                                             .foregroundStyle(.primary.opacity(0.7))
                                             .fixedSize(horizontal: false, vertical: true)
-                                            .padding(.leading, 22)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
                                     }
                                 }
                             }
