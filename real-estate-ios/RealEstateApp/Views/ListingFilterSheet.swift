@@ -42,6 +42,8 @@ struct ListingFilterSheet: View {
     let availableNumericFields: [ListingNumericField]
     let filteredCount: Int
     var showPriceUndecidedToggle: Bool = false
+    /// 各数値フィールドのデータ充足率（0...1）。未設定セクションの summary に「データあり N%」を出す。
+    var numericFillRates: [ListingNumericField: Double] = [:]
 
     @State private var originalFilter = ListingFilter()
     @State private var didApply = false
@@ -475,12 +477,16 @@ struct ListingFilterSheet: View {
 
     private func numericSummary(for field: ListingNumericField) -> String {
         let range = numericRange(for: field)
+        // 絞り込み設定時は条件を、未設定時はデータ充足率を表示（0件遭遇の予防, 提案 §3.4）
         if let min = range.min, let max = range.max {
             return "\(field.format(min))〜\(field.format(max))"
         } else if let min = range.min {
             return "\(field.format(min))〜"
         } else if let max = range.max {
             return "〜\(field.format(max))"
+        }
+        if let rate = numericFillRates[field] {
+            return "データあり \(Int((rate * 100).rounded()))%"
         }
         return "指定なし"
     }
