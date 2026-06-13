@@ -5,7 +5,7 @@ import Foundation
 /// like/nope（BuildingPreferenceStore の排他 preference）とは独立させる。
 /// いいね済みの物件も内見予定にできる必要があるため。identityKey 単位で
 /// UserDefaults に保持し、SwiftData スキーマは変更しない。
-@Observable
+@MainActor @Observable
 final class InspectionScheduleStore {
     static let shared = InspectionScheduleStore()
 

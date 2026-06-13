@@ -29,6 +29,18 @@ final class TransactionStore {
         defaults.object(forKey: "realestate.useSupabase") as? Bool ?? true
     }
 
+    /// 住所から区を抽出し、同一区の直近成約を新しい順で取得する（内見モード・詳細画面で共有）。
+    static func nearby(address: String?, limit: Int = 5, in context: ModelContext) -> [TransactionRecord] {
+        let ward = Listing.extractWardFromAddress(address ?? "")
+        guard !ward.isEmpty else { return [] }
+        var descriptor = FetchDescriptor<TransactionRecord>(
+            predicate: #Predicate { $0.ward == ward },
+            sortBy: [SortDescriptor(\TransactionRecord.tradePeriod, order: .reverse)]
+        )
+        descriptor.fetchLimit = limit
+        return (try? context.fetch(descriptor)) ?? []
+    }
+
     init() {
         if let ts = defaults.object(forKey: lastFetchedKey) as? Date {
             lastFetchedAt = ts
