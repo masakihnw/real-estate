@@ -156,6 +156,9 @@ struct ListingDetailView: View {
                 }
             }
             .scrollDismissesKeyboard(.interactively)
+            .navigationDestination(isPresented: $showInspectionMode) {
+                InspectionModeView(listing: listing)
+            }
             .sheet(isPresented: Binding(
                 get: { safariURL != nil },
                 set: { if !$0 { safariURL = nil } }
@@ -461,6 +464,8 @@ struct ListingDetailView: View {
     /// メモ: AI相談・コメント・内見チェックリスト
     @ViewBuilder
     private var notesTab: some View {
+        inspectionModeEntry
+        Divider()
         AIConsultationSectionView(listing: listing)
         Divider()
         notesCompactButton
@@ -914,11 +919,9 @@ struct ListingDetailView: View {
     }
 
     private func toggleChecklistItem(_ itemId: String) {
-        var items = listing.parsedChecklist.isEmpty ? Listing.ChecklistItem.defaultTemplate : listing.parsedChecklist
-        if let index = items.firstIndex(where: { $0.id == itemId }) {
-            items[index].isChecked.toggle()
-        }
-        if let data = try? JSONEncoder().encode(items), let json = String(data: data, encoding: .utf8) {
+        // InspectionModeView と共通の純ロジックを使用（トグル仕様の二系統分岐を防ぐ）
+        let updated = ChecklistMutation.toggled(listing.parsedChecklist, itemId: itemId)
+        if let json = ChecklistMutation.encode(updated) {
             listing.checklistJSON = json
             saveContext()
         }
@@ -1208,6 +1211,44 @@ struct ListingDetailView: View {
     // MARK: - お金の統合シミュレーター
 
     @State private var showMoneySimulator = false
+
+    // MARK: - 内見モード
+
+    @State private var showInspectionMode = false
+
+    /// notes タブ先頭: 内見予定トグル＋内見モード起動（提案 §5.6）
+    @ViewBuilder
+    private var inspectionModeEntry: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Toggle(isOn: Binding(
+                get: { InspectionScheduleStore.shared.isScheduled(listing) },
+                set: { InspectionScheduleStore.shared.setScheduled($0, for: listing) }
+            )) {
+                Label("内見予定", systemImage: "calendar.badge.clock")
+                    .font(.subheadline.weight(.semibold))
+            }
+            Button {
+                showInspectionMode = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "camera.viewfinder")
+                        .foregroundStyle(Color.accentColor)
+                    Text("内見モードを開く")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .buttonStyle(.plain)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
 
     // MARK: - 総合スコアセクション
 
