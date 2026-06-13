@@ -35,10 +35,8 @@ struct ListingDetailView: View {
     @State private var deletingCommentId: String?
     /// 通勤時間計算中フラグ
     @State private var isCalculatingCommute = false
-    /// セクションナビゲーション用 ScrollViewProxy
-    @State private var scrollProxy: ScrollViewProxy?
-    /// 現在アクティブなセクションID（将来のハイライト用）
-    @State private var activeSection: String = "info"
+    /// 詳細タブの選択状態（概要/お金/資産/環境/メモ）
+    @State private var selectedTab: DetailTab = .overview
     /// 類似物件タップ時に表示するシート用（詳細画面を開く）
     @State private var selectedSimilarListing: Listing?
 
@@ -53,9 +51,8 @@ struct ListingDetailView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing) {
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing, pinnedViews: .sectionHeaders) {
                     // 掲載終了バナー
                     delistedBanner
 
@@ -93,9 +90,12 @@ struct ListingDetailView: View {
                     // ③ スタットストリップ（3セル横並び）
                     statStripSection
 
-                    // ④ AI購入推奨度 / 投資サマリー
+                    // ④ AI購入推奨度 / 投資サマリー（ここまでヒーローカード）
                     InvestmentSummaryCard(listing: listing)
 
+                    // ⑤ 以降は5タブ（概要/お金/資産/環境/メモ）。ヘッダーをピン留めし、
+                    // タブ振り分けは次コミット。まずは骨格（全セクションを Section 内に表示）。
+                    Section {
                     // ④-b 総合スコア・価格変動・掲載状況
                     if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
                         Divider()
@@ -228,23 +228,21 @@ struct ListingDetailView: View {
                     } else {
                         externalLinksSection
                     }
+                    } header: {
+                        tabPickerHeader
+                    }
                 }
                 .padding(.horizontal, 14)
-                }
-                .onAppear {
-                    scrollProxy = proxy
-                    listing.viewedAt = Date()
-                    try? modelContext.save()
-                }
-                .task {
-                    similarListings = fetchSimilarListings()
-                    nearbyTransactions = fetchNearbyTransactions()
-                    loadDaysOnMarketComparison()
-                    await loadEnrichmentIfNeeded()
-                }
-                .safeAreaInset(edge: .top) {
-                    sectionNavBar
-                }
+            }
+            .onAppear {
+                listing.viewedAt = Date()
+                try? modelContext.save()
+            }
+            .task {
+                similarListings = fetchSimilarListings()
+                nearbyTransactions = fetchNearbyTransactions()
+                loadDaysOnMarketComparison()
+                await loadEnrichmentIfNeeded()
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -425,48 +423,31 @@ struct ListingDetailView: View {
         }
     }
 
-    // MARK: - セクションナビゲーション（目次）
+    // MARK: - 詳細タブ（5タブ再構成 §3.3）
 
-    private var sectionNavBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                sectionChip("サマリー", id: "summary")
-                sectionChip("情報", id: "info")
-                if listing.priceMan != nil && listing.priceMan! > 0 {
-                    sectionChip("月額", id: "loan")
-                }
-                if listing.hasCommuteInfo || listing.hasCoordinate {
-                    sectionChip("通勤", id: "commute")
-                }
-                if listing.hasHazardData {
-                    sectionChip("ハザード", id: "hazard")
-                }
-                sectionChip("資産性", id: "sumai")
-                sectionChip("AI", id: "ai")
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 6)
-        }
-        .background(.ultraThinMaterial)
+    enum DetailTab: String, CaseIterable, Identifiable {
+        case overview = "概要"
+        case money = "お金"
+        case asset = "資産"
+        case environment = "環境"
+        case notes = "メモ"
+        var id: String { rawValue }
     }
 
-    private func sectionChip(_ label: String, id: String) -> some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                scrollProxy?.scrollTo(id, anchor: .top)
+    /// ピン留めされるタブ切替セグメント。横スワイプの ListingDetailPagerView と
+    /// 競合しないよう segmented（タップのみ）にし、タブ中身は switch で差し替える
+    /// （TabView(.page) は使わない）。
+    private var tabPickerHeader: some View {
+        Picker("セクション", selection: $selectedTab) {
+            ForEach(DetailTab.allCases) { tab in
+                Text(tab.rawValue).tag(tab)
             }
-        } label: {
-            Text(label)
-                .font(.caption)
-                .fontWeight(.medium)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(
-                    Capsule()
-                        .fill(Color.accentColor.opacity(0.12))
-                )
         }
-        .buttonStyle(.plain)
+        .pickerStyle(.segmented)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 6)
+        .frame(maxWidth: .infinity)
+        .background(.ultraThinMaterial)
     }
 
     // MARK: - 掲載終了バナー（画面上部）
