@@ -623,13 +623,13 @@ struct ListingListView: View {
         }
     }
 
-    /// 右下のフィルタ・並び替えオーバーレイ（地図画面の現在地ボタンと同様のスタイル）
-    @ViewBuilder
     /// 代表ソートのうち、現タブで利用可能なもの（提案 §3.4: 1階層8択以内）
     private var representativeSorts: [SortOrder] {
         SortOrder.representatives.filter { availableSortOrders.contains($0) }
     }
 
+    /// 右下のフィルタ・並び替えオーバーレイ（地図画面の現在地ボタンと同様のスタイル）
+    @ViewBuilder
     private var filterSortOverlayButtons: some View {
         VStack(alignment: .trailing, spacing: 8) {
             Menu {
