@@ -96,138 +96,13 @@ struct ListingDetailView: View {
                     // ⑤ 以降は5タブ（概要/お金/資産/環境/メモ）。ヘッダーをピン留めし、
                     // タブ振り分けは次コミット。まずは骨格（全セクションを Section 内に表示）。
                     Section {
-                    // ④-b 総合スコア・価格変動・掲載状況
-                    if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
-                        Divider()
-                        investmentScoreSection
-                    }
-
-                    // ⑤ 月額支払いシミュレーション（中古・新築共通）
-                    if let priceMan = listing.priceMan, priceMan > 0 {
-                        Divider()
-                        MonthlyPaymentSimulationView(listing: listing)
-                            .id("loan")
-
-                        // 財務シミュレーションボタン群
-                        Divider()
-                        financialToolsSection
-                    }
-
-                    Divider()
-
-                    // ⑥ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
-                    propertyInfoSection
-                        .id("info")
-
-                    // ⑥-b AI抽出情報（リノベ・管理・設備）
-                    if let features = listing.parsedExtractedFeatures {
-                        ExtractedFeaturesSection(features: features)
-                    }
-
-                    // ⑥-c 他サイト価格比較
-                    AlternateSourcesSection(listing: listing)
-
-                    // ⑥-d 同一物件候補
-                    DedupCandidateCard(listing: listing)
-
-                    Divider()
-
-                    // ⑦ 通勤時間
-                    if listing.hasCommuteInfo {
-                        commuteSection
-                            .id("commute")
-                    } else if listing.hasCoordinate {
-                        commuteCalculateSection
-                            .id("commute")
-                    }
-
-                    // ⑧ ハザード情報
-                    if listing.hasHazardData {
-                        Divider()
-                        hazardSection
-                            .id("hazard")
-                    }
-
-                    Divider()
-
-                    // ⑨ 資産性（住まいサーフィン評価）
-                    Group {
-                        if listing.hasSumaiSurfinData {
-                            sumaiSurfinSection
-                        } else {
-                            sumaiSurfinUnavailableNotice
+                        switch selectedTab {
+                        case .overview: overviewTab
+                        case .money: moneyTab
+                        case .asset: assetTab
+                        case .environment: environmentTab
+                        case .notes: notesTab
                         }
-                    }
-                    .id("sumai")
-
-                    // ⑨-b 周辺相場（住まいサーフィン）
-                    if listing.hasSurroundingProperties {
-                        Divider()
-                        surroundingPropertiesSection
-                            .padding(14)
-                            .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
-                    }
-
-                    // ⑨-c 値上がり・含み益シミュレーション
-                    if listing.hasSimulationData {
-                        Divider()
-                        SimulationSectionView(listing: listing)
-                            .id("simulation")
-                    }
-
-                    // ⑨-d 成約相場との比較（不動産情報ライブラリ）+ 近隣の成約事例
-                    if listing.hasMarketData || !nearbyTransactions.isEmpty {
-                        Divider()
-                    }
-                    if listing.hasMarketData {
-                        MarketDataSectionView(listing: listing)
-                            .id("market")
-                    }
-                    nearbyTransactionsSection
-                        .id("nearby-tx")
-
-                    // ⑨-e マンションレビュー
-                    if listing.parsedMansionReviewData != nil {
-                        Divider()
-                        mansionReviewSection
-                            .id("mansion-review")
-                    }
-
-                    // ⑨-f エリア人口動態（e-Stat）
-                    if listing.hasPopulationData {
-                        Divider()
-                        PopulationSectionView(listing: listing)
-                            .id("population")
-                    }
-
-                    // ⑨-g 類似物件
-                    if !similarListings.isEmpty {
-                        Divider()
-                        similarListingsSection
-                    }
-
-                    Divider()
-
-                    // ⑩ AI 相談セクション
-                    AIConsultationSectionView(listing: listing)
-                        .id("ai")
-
-                    Divider()
-
-                    // ⑪ 内見メモ（コメント・写真）
-                    notesCompactButton
-
-                    Divider()
-                    inspectionChecklistSection
-
-                    Divider()
-
-                    // ⑫ 外部サイトボタン or 掲載終了メッセージ
-                    if listing.isDelisted {
-                        delistedNotice
-                    } else {
-                        externalLinksSection
-                    }
                     } header: {
                         tabPickerHeader
                     }
@@ -448,6 +323,116 @@ struct ListingDetailView: View {
         .padding(.vertical, 6)
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
+    }
+
+    // MARK: - タブ内容（既存セクションを再利用するだけ・内部は不変）
+
+    /// 概要: スペック・AI抽出特徴・別ソース価格・重複候補・元サイトリンク
+    @ViewBuilder
+    private var overviewTab: some View {
+        propertyInfoSection
+        if let features = listing.parsedExtractedFeatures {
+            Divider()
+            ExtractedFeaturesSection(features: features)
+        }
+        Divider()
+        AlternateSourcesSection(listing: listing)
+        DedupCandidateCard(listing: listing)
+        Divider()
+        if listing.isDelisted {
+            delistedNotice
+        } else {
+            externalLinksSection
+        }
+    }
+
+    /// お金: 月額シミュレーション＋財務ツール（6ツール統合は Phase4-3）
+    @ViewBuilder
+    private var moneyTab: some View {
+        if let priceMan = listing.priceMan, priceMan > 0 {
+            MonthlyPaymentSimulationView(listing: listing)
+            Divider()
+            financialToolsSection
+        } else {
+            ContentUnavailableView("価格情報がありません", systemImage: "yensign.circle")
+        }
+    }
+
+    /// 資産性: 総合スコア・沖式/レーダー・周辺相場・5/10年シミュ・成約・市場比較・
+    /// マンションレビュー・人口動態・類似物件
+    @ViewBuilder
+    private var assetTab: some View {
+        if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
+            investmentScoreSection
+            Divider()
+        }
+        Group {
+            if listing.hasSumaiSurfinData {
+                sumaiSurfinSection
+            } else {
+                sumaiSurfinUnavailableNotice
+            }
+        }
+        if listing.hasSurroundingProperties {
+            Divider()
+            surroundingPropertiesSection
+                .padding(14)
+                .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+        }
+        if listing.hasSimulationData {
+            Divider()
+            SimulationSectionView(listing: listing)
+        }
+        if listing.hasMarketData || !nearbyTransactions.isEmpty {
+            Divider()
+        }
+        if listing.hasMarketData {
+            MarketDataSectionView(listing: listing)
+        }
+        nearbyTransactionsSection
+        if listing.parsedMansionReviewData != nil {
+            Divider()
+            mansionReviewSection
+        }
+        if listing.hasPopulationData {
+            Divider()
+            PopulationSectionView(listing: listing)
+        }
+        if !similarListings.isEmpty {
+            Divider()
+            similarListingsSection
+        }
+    }
+
+    /// 環境: 通勤・ハザード（両方未取得なら空回避のプレースホルダ）
+    @ViewBuilder
+    private var environmentTab: some View {
+        if listing.hasCommuteInfo {
+            commuteSection
+        } else if listing.hasCoordinate {
+            commuteCalculateSection
+        }
+        if listing.hasHazardData {
+            Divider()
+            hazardSection
+        }
+        if !listing.hasCommuteInfo && !listing.hasCoordinate && !listing.hasHazardData {
+            ContentUnavailableView(
+                "環境情報は未取得です",
+                systemImage: "map",
+                description: Text("通勤時間・ハザード情報は取得され次第ここに表示されます")
+            )
+        }
+    }
+
+    /// メモ: AI相談・コメント・内見チェックリスト
+    @ViewBuilder
+    private var notesTab: some View {
+        AIConsultationSectionView(listing: listing)
+        Divider()
+        notesCompactButton
+        Divider()
+        inspectionChecklistSection
     }
 
     // MARK: - 掲載終了バナー（画面上部）
