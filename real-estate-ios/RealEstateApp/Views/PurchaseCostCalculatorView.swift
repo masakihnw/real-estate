@@ -1,18 +1,13 @@
 import SwiftUI
 
-/// 購入諸費用シミュレーション。物件価格に対して諸費用の内訳を計算・表示する。
+/// 購入諸費用シミュレーション。共有前提条件（価格・頭金から導く借入額）に対して諸費用を計算。
+/// MoneySimulatorView の単一 List 内に Section として埋め込まれる（NavigationStack/List は持たない）。
 struct PurchaseCostCalculatorView: View {
     let listing: Listing
-    @State private var priceMan: Double
-    @State private var loanRatio: Double = 1.0
+    let assumptions: LoanAssumptions
 
-    init(listing: Listing) {
-        self.listing = listing
-        self._priceMan = State(initialValue: Double(listing.priceMan ?? 5000))
-    }
-
-    private var priceYen: Double { priceMan * 10000 }
-    private var loanAmount: Double { priceYen * loanRatio }
+    private var priceYen: Double { assumptions.purchasePriceYen }
+    private var loanAmount: Double { assumptions.loanAmountYen }
 
     private var stampTax: Int {
         switch priceYen {
@@ -78,75 +73,55 @@ struct PurchaseCostCalculatorView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section("物件条件") {
-                    HStack {
-                        Text("物件価格")
-                        Spacer()
-                        Text("\(Listing.formatPriceCompact(Int(priceMan)))")
+        Group {
+            Section("諸費用内訳") {
+                costRow("印紙税", stampTax)
+                costRow("登録免許税", registrationTax)
+                costRow("仲介手数料（税込）", agencyFee)
+                costRow("ローン関連費用", loanExpenses)
+                costRow("火災保険料", fireInsurance)
+                costRow("司法書士報酬", judicialScrivenerFee)
+                costRow("固定資産税精算金", fixedPropertyTaxSettlement)
+                costRow("不動産取得税", acquisitionTax)
+            }
+
+            Section {
+                HStack {
+                    Text("諸費用合計")
+                        .font(.headline)
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text(formatYen(totalCost))
+                            .font(.headline)
+                            .foregroundStyle(.blue)
+                        Text(String(format: "物件価格の %.1f%%", totalCostRatio))
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    HStack {
-                        Text("ローン借入比率")
-                        Spacer()
-                        Text("\(Int(loanRatio * 100))%")
-                            .foregroundStyle(.secondary)
-                    }
-                    Slider(value: $loanRatio, in: 0...1, step: 0.05)
                 }
 
-                Section("諸費用内訳") {
-                    costRow("印紙税", stampTax)
-                    costRow("登録免許税", registrationTax)
-                    costRow("仲介手数料（税込）", agencyFee)
-                    costRow("ローン関連費用", loanExpenses)
-                    costRow("火災保険料", fireInsurance)
-                    costRow("司法書士報酬", judicialScrivenerFee)
-                    costRow("固定資産税精算金", fixedPropertyTaxSettlement)
-                    costRow("不動産取得税", acquisitionTax)
-                }
-
-                Section {
-                    HStack {
-                        Text("諸費用合計")
-                            .font(.headline)
-                        Spacer()
-                        VStack(alignment: .trailing) {
-                            Text(formatYen(totalCost))
-                                .font(.headline)
-                                .foregroundStyle(.blue)
-                            Text(String(format: "物件価格の %.1f%%", totalCostRatio))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    HStack {
-                        Text("購入総額")
-                            .font(.headline)
-                        Spacer()
-                        Text(Listing.formatPriceCompact(Int(priceMan) + totalCost / 10000))
-                            .font(.headline)
-                            .foregroundStyle(.red)
-                    }
-                }
-
-                Section("月額管理費・修繕積立金") {
-                    costRow("管理費", listing.managementFee ?? 0)
-                    costRow("修繕積立金", listing.repairReserveFund ?? 0)
-                    HStack {
-                        Text("月額合計")
-                            .font(.subheadline.weight(.semibold))
-                        Spacer()
-                        Text(formatYen(managementFundSettlement))
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.orange)
-                    }
+                HStack {
+                    Text("購入総額")
+                        .font(.headline)
+                    Spacer()
+                    Text(Listing.formatPriceCompact(Int(assumptions.purchasePriceMan) + totalCost / 10000))
+                        .font(.headline)
+                        .foregroundStyle(.red)
                 }
             }
-            .navigationTitle("購入諸費用")
-            .navigationBarTitleDisplayMode(.inline)
+
+            Section("月額管理費・修繕積立金") {
+                costRow("管理費", listing.managementFee ?? 0)
+                costRow("修繕積立金", listing.repairReserveFund ?? 0)
+                HStack {
+                    Text("月額合計")
+                        .font(.subheadline.weight(.semibold))
+                    Spacer()
+                    Text(formatYen(managementFundSettlement))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.orange)
+                }
+            }
         }
     }
 

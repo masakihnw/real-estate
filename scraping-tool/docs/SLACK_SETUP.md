@@ -34,6 +34,18 @@
 
 4. **「Add secret」をクリック**
 
+### Webhook（通知チャンネル）の使い分け
+
+通知は **チャンネルごとに別々の Webhook URL** で送り分けます。チャンネルは Webhook 作成時に紐づくため、別チャンネルへ送りたい場合はそのチャンネル向けの Webhook を発行し、対応する Secret に設定します。
+
+| Secret 名 | 用途 | 未設定時の挙動 |
+|-----------|------|----------------|
+| `SLACK_WEBHOOK_URL` | 物件更新通知（新規・削除・値下げ等）のメインチャンネル | 通知をスキップ（exit 0） |
+| `SLACK_HEALTH_WEBHOOK_URL` | **スクレイパー健全性アラート・建物名データ品質アラート** と `pipeline_health_report` | `SLACK_WEBHOOK_URL` にフォールバック |
+| `SLACK_ALERT_WEBHOOK_URL` | enrichment カバレッジアラート（`check_enrichment_health.py`） | `SLACK_WEBHOOK_URL` にフォールバック |
+
+> スクレイパー健全性アラート・建物名データ品質アラートを物件更新とは別チャンネルへ投稿したい場合は、そのチャンネル向けの Webhook を `SLACK_HEALTH_WEBHOOK_URL` に設定してください（`slack_notify.py` の `_send_health_alerts`）。
+
 ## 3. 投稿する物件のフィルタ条件
 
 Slack に投稿されるのは **資産性ランクが B 以上（S/A/B）の物件のみ** です。
