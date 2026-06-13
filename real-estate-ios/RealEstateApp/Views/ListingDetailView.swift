@@ -347,13 +347,41 @@ struct ListingDetailView: View {
         }
     }
 
-    /// お金: 月額シミュレーション＋財務ツール（6ツール統合は Phase4-3）
+    /// お金: 月額シミュレーション＋統合シミュレーター（5ツールを前提条件共有で1画面に）
     @ViewBuilder
     private var moneyTab: some View {
         if let priceMan = listing.priceMan, priceMan > 0 {
             MonthlyPaymentSimulationView(listing: listing)
             Divider()
-            financialToolsSection
+            Button {
+                showMoneySimulator = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "yensign.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(.blue)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("お金のシミュレーター")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.primary)
+                        Text("諸費用・銀行比較・減税・賃貸/購入・リノベ")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $showMoneySimulator) {
+                MoneySimulatorView(listing: listing)
+            }
         } else {
             ContentUnavailableView("価格情報がありません", systemImage: "yensign.circle")
         }
@@ -1173,61 +1201,9 @@ struct ListingDetailView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
-    // MARK: - 財務ツールセクション
+    // MARK: - お金の統合シミュレーター
 
-    @State private var showPurchaseCost = false
-    @State private var showBankComparison = false
-    @State private var showTaxBenefit = false
-    @State private var showRentVsBuy = false
-    @State private var showRenovation = false
-
-    @ViewBuilder
-    private var financialToolsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("財務シミュレーション", systemImage: "yensign.circle")
-                .font(.headline)
-
-            LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 8) {
-                toolButton("購入諸費用", icon: "doc.text", color: .blue) { showPurchaseCost = true }
-                toolButton("銀行比較", icon: "building.columns", color: .green) { showBankComparison = true }
-                toolButton("ローン減税", icon: "arrow.down.circle", color: .orange) { showTaxBenefit = true }
-                toolButton("賃貸 vs 購入", icon: "arrow.left.arrow.right", color: .purple) { showRentVsBuy = true }
-                toolButton("リノベ費用", icon: "hammer", color: .teal) { showRenovation = true }
-            }
-        }
-        .sheet(isPresented: $showPurchaseCost) {
-            PurchaseCostCalculatorView(listing: listing)
-        }
-        .sheet(isPresented: $showBankComparison) {
-            BankComparisonView(listing: listing)
-        }
-        .sheet(isPresented: $showTaxBenefit) {
-            MortgageTaxBenefitView(listing: listing)
-        }
-        .sheet(isPresented: $showRentVsBuy) {
-            RentVsBuyView(listing: listing)
-        }
-        .sheet(isPresented: $showRenovation) {
-            RenovationEstimateView(listing: listing)
-        }
-    }
-
-    private func toolButton(_ label: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.caption)
-                Text(label)
-                    .font(.caption.weight(.semibold))
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .foregroundStyle(color)
-            .background(color.opacity(0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-        }
-        .buttonStyle(.plain)
-    }
+    @State private var showMoneySimulator = false
 
     // MARK: - 総合スコアセクション
 
