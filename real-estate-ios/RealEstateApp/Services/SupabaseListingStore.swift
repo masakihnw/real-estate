@@ -407,7 +407,9 @@ final class SupabaseListingStore {
             return
         }
 
-        let predicate = #Predicate<Listing> { $0.identityKey == identityKey }
+        // identityKey は DB の identity_key（supabaseIdentityKey に格納される値）。
+        // ローカルレコードもこの値で引く（computed identityKey は別キーなので使わない）。
+        let predicate = #Predicate<Listing> { $0.supabaseIdentityKey == identityKey }
         let descriptor = FetchDescriptor<Listing>(predicate: predicate)
         guard let existing = try modelContext.fetch(descriptor).first else {
             logger.warning("fetchDetail: ローカルに \(identityKey, privacy: .public) が存在しない")
