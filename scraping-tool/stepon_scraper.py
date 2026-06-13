@@ -41,6 +41,8 @@ from parse_utils import (
 )
 from report_utils import clean_listing_name
 from scraper_common import (
+    EmptyParseGuard,
+    dump_debug_html,
     load_station_passengers,
     station_passengers_ok,
     line_ok,
@@ -78,6 +80,11 @@ LIST_URL_PAGE = "https://www.stepon.co.jp/mansion/tokyo/?page={page}"
 MAX_PAGES_SAFETY = 50
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
 EARLY_EXIT_PAGES = 10
+# パース0件ページの許容回数（suumo / livable と同じフェイルセーフ）。
+# 1回の0件で即停止すると、一時的な bot ブロックを「掲載終了」と誤判定する。
+EMPTY_PARSE_TOLERANCE = 2
+# パース0件時の再試行前ウェイト秒数
+EMPTY_PARSE_BACKOFF_SEC = 5
 
 
 @dataclass
@@ -748,6 +755,7 @@ def scrape_stepon(
         total_parsed = 0
         total_passed = 0
         pages_since_last_pass = 0
+        empty_guard = EmptyParseGuard(EMPTY_PARSE_TOLERANCE)
 
         while page_num <= limit:
             url = LIST_URL_FIRST if page_num == 1 else LIST_URL_PAGE.format(page=page_num)
@@ -763,12 +771,29 @@ def scrape_stepon(
 
             rows = parse_list_html(html)
             if not rows:
-                logger.info(
-                    "Stepon: ページ%dで0件パース。一覧のHTML構造が変わったか、最終ページの可能性。",
-                    page_num,
+                if empty_guard.record_empty():
+                    if total_parsed == 0:
+                        # 全ページ空 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
+                        dump_debug_html("stepon", f"p{page_num}", html)
+                        logger.warning(
+                            "Stepon: ページ%dまで連続%d回0件パース（botブロック/構造変更の可能性）。",
+                            page_num, empty_guard.consecutive,
+                        )
+                    else:
+                        logger.info(
+                            "Stepon: ページ%dで連続%d回0件パース（一覧の終端）。",
+                            page_num, empty_guard.consecutive,
+                        )
+                    break
+                logger.warning(
+                    "Stepon: ページ%dで0件パース (連続: %d/%d) — 次ページへ進みます。",
+                    page_num, empty_guard.consecutive, EMPTY_PARSE_TOLERANCE,
                 )
-                break
+                time.sleep(EMPTY_PARSE_BACKOFF_SEC)
+                page_num += 1
+                continue
 
+            empty_guard.record_success()
             total_parsed += len(rows)
             passed = 0
 

@@ -40,6 +40,7 @@ from parse_utils import (
 from report_utils import clean_listing_name
 import scraper_metrics
 from scraper_common import (
+    EmptyParseGuard,
     create_session,
     sleep_with_jitter,
     dump_debug_html,
@@ -317,7 +318,7 @@ def scrape_nomucom(max_pages: Optional[int] = 2, apply_filter: bool = True) -> I
     total_parsed = 0
     total_passed = 0
     pages_since_last_pass = 0
-    consecutive_empty_parses = 0
+    empty_guard = EmptyParseGuard(EMPTY_PARSE_TOLERANCE)
     finish_reason = None
     try:
         while page <= limit:
@@ -331,29 +332,28 @@ def scrape_nomucom(max_pages: Optional[int] = 2, apply_filter: bool = True) -> I
             rows = parse_list_html(html)
             scraper_metrics.record("nomucom", parsed=len(rows))
             if not rows:
-                consecutive_empty_parses += 1
-                if consecutive_empty_parses >= EMPTY_PARSE_TOLERANCE:
+                if empty_guard.record_empty():
                     if total_parsed == 0:
                         # 全ページ空 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
-                        scraper_metrics.record("nomucom", empty_pages=consecutive_empty_parses)
+                        scraper_metrics.record("nomucom", empty_pages=empty_guard.consecutive)
                         dump_debug_html("nomucom", f"p{page}", html)
                         finish_reason = "empty_parse_abort"
                     else:
-                        logger.info(f"nomucom: ページ{page}で連続{consecutive_empty_parses}回0件パース（一覧の終端）")
+                        logger.info(f"nomucom: ページ{page}で連続{empty_guard.consecutive}回0件パース（一覧の終端）")
                         finish_reason = "completed"
                     break
                 logger.warning(
                     f"nomucom: ページ{page}でパース0件 (HTML: {len(html)}B, 連続: "
-                    f"{consecutive_empty_parses}/{EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
+                    f"{empty_guard.consecutive}/{EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
                 )
                 time.sleep(EMPTY_PARSE_BACKOFF_SEC)
                 page += 1
                 continue
 
-            if consecutive_empty_parses > 0:
+            empty_gap = empty_guard.record_success()
+            if empty_gap:
                 # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
-                scraper_metrics.record("nomucom", empty_pages=consecutive_empty_parses)
-            consecutive_empty_parses = 0
+                scraper_metrics.record("nomucom", empty_pages=empty_gap)
             total_parsed += len(rows)
             passed = 0
             for row in rows:
