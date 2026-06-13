@@ -20,13 +20,14 @@ struct ComparisonRowBuilderTests {
         )
     }
 
-    @Test("基本行は常に含まれ、順序は スコア→価格→面積… ")
+    @Test("基本行は常に含まれ、順序は 価格→面積→間取り…（スコアは行でなくヘッダーバッジ）")
     func basicRowsOrder() {
         let a = makeListing(priceMan: 8000, areaM2: 70, listingScore: 80)
         let b = makeListing(priceMan: 9000, areaM2: 60, listingScore: 60)
         let rows = ComparisonRowBuilder.rows(for: [a, b])
         let labels = rows.map(\.label)
-        #expect(labels.prefix(3) == ["投資スコア", "価格", "面積"])
+        #expect(labels.prefix(3) == ["価格", "面積", "間取り"])
+        #expect(!labels.contains("投資スコア"))
         #expect(labels.contains("権利形態"))
         // 各行は2物件分の値を持つ
         #expect(rows.allSatisfy { $0.values.count == 2 })
@@ -52,21 +53,10 @@ struct ComparisonRowBuilderTests {
         #expect(areaRow.bestIndex == 1)   // large
     }
 
-    @Test("投資スコア行はグレード文字を prefix（スコアありの時のみ）")
-    func scoreRowGradePrefix() {
+    @Test("投資スコアは比較行に含めない（ヘッダーカードのバッジで表示）")
+    func scoreNotARow() {
         let a = makeListing(priceMan: 8000, areaM2: 70, listingScore: 85)
         let b = makeListing(priceMan: 9000, areaM2: 70, listingScore: 50)
-        let rows = ComparisonRowBuilder.rows(for: [a, b])
-        let scoreRow = rows.first { $0.label == "投資スコア" }!
-        // 値はグレード文字＋数値（例 "S 85"）。末尾に数値を含む
-        #expect(scoreRow.values[0].contains("85"))
-        #expect(scoreRow.bestIndex == 0)  // 高スコアが best
-    }
-
-    @Test("スコアが全件 nil なら投資スコア行は出ない")
-    func noScoreRowWhenAllNil() {
-        let a = makeListing(priceMan: 8000, areaM2: 70, listingScore: nil)
-        let b = makeListing(priceMan: 9000, areaM2: 70, listingScore: nil)
         let rows = ComparisonRowBuilder.rows(for: [a, b])
         #expect(!rows.contains { $0.label == "投資スコア" })
         #expect(rows.first?.label == "価格")
