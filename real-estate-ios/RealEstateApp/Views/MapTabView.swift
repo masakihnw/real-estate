@@ -570,7 +570,10 @@ struct HazardMapView: UIViewRepresentable {
         // レイヤーが変更されていなければスキップ（P4: 差分更新）
         let currentHazard = activeHazardLayers
         let currentRisk = activeRiskLayers
-        let heatmapKey = heatmapBuckets.map { "\($0.ward):\($0.level)" }.joined(separator: ",")
+        // ward/level に加え 平均価格・件数も含め、値や重心が変わった時に再描画されるようにする
+        let heatmapKey = heatmapBuckets
+            .map { "\($0.ward):\($0.level):\($0.avgM2Price):\($0.count)" }
+            .joined(separator: ",")
         if coordinator.previousHazardLayers == currentHazard
             && coordinator.previousRiskLayers == currentRisk
             && coordinator.previousHeatmapKey == heatmapKey {
@@ -1956,5 +1959,5 @@ struct MapTabView: View {
 #Preview {
     MapTabView()
         .environment(ListingStore.shared)
-        .modelContainer(for: Listing.self, inMemory: true)
+        .modelContainer(for: [Listing.self, TransactionRecord.self], inMemory: true)
 }
