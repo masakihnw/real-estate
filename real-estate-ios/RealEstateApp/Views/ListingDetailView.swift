@@ -919,11 +919,9 @@ struct ListingDetailView: View {
     }
 
     private func toggleChecklistItem(_ itemId: String) {
-        var items = listing.parsedChecklist.isEmpty ? Listing.ChecklistItem.defaultTemplate : listing.parsedChecklist
-        if let index = items.firstIndex(where: { $0.id == itemId }) {
-            items[index].isChecked.toggle()
-        }
-        if let data = try? JSONEncoder().encode(items), let json = String(data: data, encoding: .utf8) {
+        // InspectionModeView と共通の純ロジックを使用（トグル仕様の二系統分岐を防ぐ）
+        let updated = ChecklistMutation.toggled(listing.parsedChecklist, itemId: itemId)
+        if let json = ChecklistMutation.encode(updated) {
             listing.checklistJSON = json
             saveContext()
         }
