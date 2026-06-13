@@ -16,9 +16,16 @@ from image_storage import extract_object_name
 
 
 def collect_image_urls(row: dict[str, Any]) -> list[str]:
-    """enrichments 1行から画像 URL をすべて集める（外部 URL も含む）。"""
+    """enrichments 1行から画像 URL をすべて集める（外部 URL も含む）。
+
+    iOS 詳細画面は image_categories を主ソースに使うため、ここに含めないと
+    GC が「未参照」と誤判定して詳細用画像を削除してしまう（過去に発生）。
+    """
     urls: list[str] = []
     for img in row.get("suumo_images") or []:
+        if isinstance(img, dict) and isinstance(img.get("url"), str):
+            urls.append(img["url"])
+    for img in row.get("image_categories") or []:
         if isinstance(img, dict) and isinstance(img.get("url"), str):
             urls.append(img["url"])
     for url in row.get("floor_plan_images") or []:
@@ -95,6 +102,15 @@ def scrub_enrichment_row(
         ]
         if len(kept) != len(suumo):
             payload["suumo_images"] = kept
+
+    cats = row.get("image_categories")
+    if isinstance(cats, list):
+        kept = [
+            img for img in cats
+            if not (isinstance(img, dict) and _deleted(img.get("url")))
+        ]
+        if len(kept) != len(cats):
+            payload["image_categories"] = kept
 
     floor = row.get("floor_plan_images")
     if isinstance(floor, list):

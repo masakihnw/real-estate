@@ -85,10 +85,11 @@ class TestUploadFloorPlansIsAlreadyStored:
         assert not _is_already_stored("https://img01.suumo.com/a.jpg")
 
 
-def _row(listing_id, suumo=None, floor=None, thumb=None):
+def _row(listing_id, suumo=None, floor=None, thumb=None, cats=None):
     return {
         "listing_id": listing_id,
         "suumo_images": suumo,
+        "image_categories": cats,
         "floor_plan_images": floor,
         "best_thumbnail_url": thumb,
     }
@@ -104,6 +105,24 @@ class TestCollectRefs:
         )
         assert collect_image_urls(row) == [
             "https://a/1.jpg", "https://a/2.jpg", "https://a/3.jpg"]
+
+    def test_collects_image_categories_urls(self):
+        # 詳細画面が使う image_categories も参照に数える（GC 誤削除の回帰防止）
+        row = _row(
+            1,
+            suumo=[{"url": f"{SUPA_BASE}/property_images/a.jpg"}],
+            cats=[{"url": f"{SUPA_BASE}/property_images/b.jpg", "category": "view"}],
+        )
+        assert collect_image_urls(row) == [
+            f"{SUPA_BASE}/property_images/a.jpg",
+            f"{SUPA_BASE}/property_images/b.jpg",
+        ]
+
+    def test_image_categories_counted_as_refs(self):
+        rows = [_row(1, cats=[{"url": f"{SUPA_BASE}/property_images/cat1.jpg"}])]
+        active_refs, all_refs = collect_refs(rows, active_listing_ids={1})
+        assert active_refs == {"property_images/cat1.jpg"}
+        assert all_refs == {"property_images/cat1.jpg"}
 
     def test_active_vs_all_refs(self):
         rows = [
@@ -165,6 +184,21 @@ class TestScrubEnrichmentRow:
             ],
             "floor_plan_images": [],
             "best_thumbnail_url": None,
+        }
+
+    def test_scrubs_image_categories(self):
+        row = _row(
+            1,
+            cats=[
+                {"url": f"{SUPA_BASE}/property_images/gone.jpg", "category": "view"},
+                {"url": f"{SUPA_BASE}/property_images/keep.jpg", "category": "exterior"},
+            ],
+        )
+        payload = scrub_enrichment_row(row, {"property_images/gone.jpg"})
+        assert payload == {
+            "image_categories": [
+                {"url": f"{SUPA_BASE}/property_images/keep.jpg", "category": "exterior"},
+            ],
         }
 
     def test_returns_none_when_unchanged(self):
