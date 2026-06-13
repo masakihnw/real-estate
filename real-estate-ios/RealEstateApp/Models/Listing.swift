@@ -2164,27 +2164,61 @@ final class Listing: @unchecked Sendable {
 
     private static func _parseImageCategories(_ json: String?) -> [ImageCategoryGroup] {
         guard let json, let data = json.data(using: .utf8),
-              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: [[String: Any]]] else {
+              let root = try? JSONSerialization.jsonObject(with: data) else {
             return []
         }
         let categoryOrder = ["exterior", "interior", "water", "floor_plan", "view", "common_area", "surroundings"]
-        var groups: [ImageCategoryGroup] = []
-        for cat in categoryOrder {
-            guard let items = dict[cat] else { continue }
-            let images = items.compactMap { item -> CategorizedImage? in
-                guard let url = item["url"] as? String else { return nil }
-                return CategorizedImage(
-                    url: url,
-                    label: item["label"] as? String,
-                    quality: item["quality"] as? Double,
-                    description: item["description"] as? String
-                )
+
+        // image_categories は2形式を許容する:
+        //  - object形: {"exterior": [{url,label,quality,description}, ...], ...}（旧ポータル画像）
+        //  - array形:  [{url,label,category,is_junk,quality_score,brief_description}, ...]
+        //              （claude_image_analyzer の出力。R2 ストレージ URL）
+        var byCategory: [String: [CategorizedImage]] = [:]
+        var order: [String] = []
+
+        func append(_ image: CategorizedImage, to category: String) {
+            if byCategory[category] == nil {
+                byCategory[category] = []
+                order.append(category)
             }
-            if !images.isEmpty {
-                groups.append(ImageCategoryGroup(category: cat, images: images))
-            }
+            byCategory[category]?.append(image)
         }
-        return groups
+
+        if let dict = root as? [String: [[String: Any]]] {
+            for cat in categoryOrder {
+                guard let items = dict[cat] else { continue }
+                for item in items {
+                    if let img = _categorizedImage(from: item) { append(img, to: cat) }
+                }
+            }
+        } else if let arr = root as? [[String: Any]] {
+            for item in arr {
+                if (item["is_junk"] as? Bool) == true { continue }
+                guard let img = _categorizedImage(from: item) else { continue }
+                append(img, to: (item["category"] as? String) ?? "other")
+            }
+        } else {
+            return []
+        }
+
+        // 既知カテゴリを定義順に、未知カテゴリは出現順で末尾に
+        let known = order.filter { categoryOrder.contains($0) }
+            .sorted { categoryOrder.firstIndex(of: $0)! < categoryOrder.firstIndex(of: $1)! }
+        let unknown = order.filter { !categoryOrder.contains($0) }
+        return (known + unknown).compactMap { cat in
+            guard let imgs = byCategory[cat], !imgs.isEmpty else { return nil }
+            return ImageCategoryGroup(category: cat, images: imgs)
+        }
+    }
+
+    private static func _categorizedImage(from item: [String: Any]) -> CategorizedImage? {
+        guard let url = item["url"] as? String else { return nil }
+        return CategorizedImage(
+            url: url,
+            label: item["label"] as? String,
+            quality: (item["quality"] as? Double) ?? (item["quality_score"] as? Double),
+            description: (item["description"] as? String) ?? (item["brief_description"] as? String)
+        )
     }
 
     var parsedKeyStrengths: [String] {

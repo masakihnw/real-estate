@@ -306,6 +306,33 @@ def _plan_grace_period(
     return plan
 
 
+def _resolve_merged_redirect(
+    ik: str,
+    all_db_listings: dict[str, tuple[int, bool, int | None]],
+    max_depth: int = 5,
+) -> int | None:
+    """identity_key が統合済みレコード（merged_into 付き tombstone）に一致する場合、
+    統合先 listing の id を返す。未統合なら None。
+
+    重複統合された物件のページがサイトに掲載され続ける限り、スクレイパーは
+    同じ identity_key を再計算する。tombstone を再アクティブ化する代わりに
+    統合先へリダイレクトすることで、統合済み物件の蘇生・再作成を防ぐ。
+    merged_into チェーン（A→B→C）は max_depth まで辿る。
+    """
+    entry = all_db_listings.get(ik)
+    if not entry or entry[2] is None:
+        return None
+    by_id = {v[0]: v for v in all_db_listings.values()}
+    target = entry[2]
+    for _ in range(max_depth):
+        nxt = by_id.get(target)
+        if not nxt or nxt[2] is None:
+            # 非tombstone に到達 or 統合先がDBに無い（削除済み）→ 最後に解決できた id を返す
+            return target
+        target = nxt[2]
+    return target
+
+
 def _delete_duplicate_listing(client, listing_id: int) -> None:
     """重複物件を listings への単一 DELETE で削除する。
 
@@ -325,6 +352,9 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     summary = {"new": 0, "updated": 0, "removed": 0, "unchanged": 0, "reappeared": 0}
     seen_identity_keys: set[str] = set()
 
+    # フェイルクローズ: 巡回で見えた ik は無条件に「確認済み」へ入れる
+    # （price_man 欠落や tombstone 一致の ik も含む。余分な ik が混ざっても
+    # 掲載終了判定が保守的になるだけで、誤 deactivate は起きない）
     for item in listings:
         ik = identity_key_str(item)
         if not ik or all(p in ("None", "") for p in ik.split("|")):
@@ -336,12 +366,13 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
 
     # 現在 DB にある物件 (このproperty_type) を全件取得（active/inactive 両方）
     # inactive も取得しないとフォールバック検索で重複が発生する
-    all_db_listings: dict[str, tuple[int, bool]] = {}  # identity_key → (id, is_active)
+    # identity_key → (id, is_active, merged_into)
+    all_db_listings: dict[str, tuple[int, bool, int | None]] = {}
     existing_listings: dict[str, int] = {}  # active のみ: identity_key → id
     offset = 0
     while True:
         resp = (client.table("listings")
-                .select("id, identity_key, is_active")
+                .select("id, identity_key, is_active, merged_into")
                 .eq("property_type", property_type)
                 .range(offset, offset + 999)
                 .execute())
@@ -349,15 +380,18 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             break
         for row in resp.data:
             ik = row["identity_key"]
-            all_db_listings[ik] = (row["id"], row["is_active"])
+            all_db_listings[ik] = (row["id"], row["is_active"], row.get("merged_into"))
             if row["is_active"]:
                 existing_listings[ik] = row["id"]
         if len(resp.data) < 1000:
             break
         offset += 1000
 
+    # 統合先リダイレクト用の逆引き（id → 現在の identity_key）
+    id_to_ik: dict[int, str] = {v[0]: k for k, v in all_db_listings.items()}
+
     existing_sources = {}
-    all_listing_ids = [lid for lid, _ in all_db_listings.values()]
+    all_listing_ids = [v[0] for v in all_db_listings.values()]
     for i in range(0, len(all_listing_ids), 100):
         batch_ids = all_listing_ids[i:i + 100]
         resp = (client.table("listing_sources")
@@ -371,6 +405,8 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
 
     # 重複削除済み ID を記録（同一物件の旧レコードを削除した際に再処理を防ぐ）
     _deleted_ids: set[int] = set()
+    # fuzzy 解決で tombstone のみに一致した場合の統合先通知（1アイテム処理ごとに消費）
+    _fuzzy_redirect_target: list[int] = []
 
     def _resolve_identity_key(ik: str) -> str:
         """新キーが既存DBに無い場合、旧キーや floor=None 版で既存を検索し、あれば更新する。
@@ -380,8 +416,9 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         if ik in existing_listings:
             return ik
         # inactive でも完全一致があればそれを再利用（active に戻す）
+        # ※ merged_into 付き tombstone はここに来ない（呼び出し前にリダイレクト済み）
         if ik in all_db_listings:
-            lid, was_active = all_db_listings[ik]
+            lid, _was_active, _merged = all_db_listings[ik]
             if lid not in _deleted_ids:
                 existing_listings[ik] = lid
                 return ik
@@ -406,8 +443,9 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
 
         # フォールバック候補を収集（active/inactive 両方から）
         candidates: list[tuple[str, int, bool]] = []  # (old_key, id, is_active)
+        merged_candidates: list[tuple[str, int, bool]] = []  # tombstone のみの一致
 
-        for db_ik, (lid, is_active) in list(all_db_listings.items()):
+        for db_ik, (lid, is_active, merged) in list(all_db_listings.items()):
             if lid in _deleted_ids:
                 continue
             old_parts = db_ik.split("|")
@@ -415,14 +453,25 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                 # 旧7要素: name|layout|area|address|built_year|station_name|floor
                 norm_old = _normalize_prefix("|".join(old_parts[:5]))
                 if norm_old == norm_new and old_parts[6] == new_floor:
-                    candidates.append((db_ik, lid, is_active))
+                    (merged_candidates if merged is not None else candidates).append(
+                        (db_ik, lid, is_active))
             elif len(old_parts) == 6 and db_ik != ik:
                 # 同じ6要素だが floor 違い or station入り旧形式
                 norm_old = _normalize_prefix("|".join(old_parts[:5]))
                 if norm_old == norm_new:
-                    candidates.append((db_ik, lid, is_active))
+                    (merged_candidates if merged is not None else candidates).append(
+                        (db_ik, lid, is_active))
 
         if not candidates:
+            # 一致が統合済み tombstone のみ → 再利用/削除はせず統合先へリダイレクト
+            # （除外して新規作成すると3本目の重複が生まれるため）
+            if merged_candidates:
+                merged_candidates.sort(key=lambda c: (c[2], c[1]), reverse=True)
+                target = _resolve_merged_redirect(merged_candidates[0][0], all_db_listings)
+                if target is not None:
+                    logger.info("[supabase] fuzzy一致が tombstone のみ (ik=%s) — 統合先 id=%d へリダイレクト",
+                                ik, target)
+                    _fuzzy_redirect_target.append(target)
             return ik
 
         # 最優先: active なレコードを再利用
@@ -437,12 +486,18 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         existing_listings.pop(best_key, None)
         existing_listings[ik] = best_id
         all_db_listings.pop(best_key, None)
-        all_db_listings[ik] = (best_id, True)
+        all_db_listings[ik] = (best_id, True, None)
+        id_to_ik[best_id] = ik
 
         # 残りの重複レコードを削除（CASCADE で子テーブルごと原子的に削除される）
         for old_key, old_id, _ in candidates[1:]:
             if old_id == best_id:
                 continue
+            # 削除対象を統合先として指している tombstone を best に付け替え
+            # （FK RESTRICT による削除失敗と、SET NULL 的なサイレント蘇生解除の両方を防ぐ）
+            (client.table("listings")
+             .update({"merged_into": best_id}, returning="minimal")
+             .eq("merged_into", old_id).execute())
             _delete_duplicate_listing(client, old_id)
             _deleted_ids.add(old_id)
             existing_listings.pop(old_key, None)
@@ -453,6 +508,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     # --- フェーズ1: 行構築（identity_key 解決はフォールバック時のみネットワーク）---
     resolved_items: list[tuple[dict, str]] = []
     listing_rows_by_ik: dict[str, dict] = {}  # バッチ upsert は同一キー重複不可のため ik ごとに1行
+    redirected_items: list[tuple[dict, int]] = []  # (item, 統合先 listing_id)
     for item in listings:
         if item.get("price_man") is None:
             logger.debug("price_man=None のため除外: source=%s url=%s",
@@ -461,7 +517,27 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         ik = identity_key_str(item)
         if not ik or all(p in ("None", "") for p in ik.split("|")):
             continue
+
+        # 統合済み tombstone への一致は再アクティブ化せず統合先へリダイレクト。
+        # 統合先の ik を「巡回で確認済み」として掲載終了判定（grace period）から守る
+        canonical_id = _resolve_merged_redirect(ik, all_db_listings)
+        if canonical_id is not None:
+            canonical_ik = id_to_ik.get(canonical_id)
+            if canonical_ik:
+                seen_identity_keys.add(canonical_ik)
+            redirected_items.append((item, canonical_id))
+            continue
+
         ik = _resolve_identity_key(ik)
+
+        # fuzzy 解決の結果が「tombstone のみ一致」だった場合も統合先へリダイレクト
+        if _fuzzy_redirect_target:
+            canonical_id = _fuzzy_redirect_target.pop()
+            canonical_ik = id_to_ik.get(canonical_id)
+            if canonical_ik:
+                seen_identity_keys.add(canonical_ik)
+            redirected_items.append((item, canonical_id))
+            continue
 
         normalized_name = normalize_listing_name(item.get("name") or "")
         listing_row = {
@@ -561,6 +637,27 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     skipped = len(resolved_items) - len(planned_items)
     if skipped:
         logger.warning("[supabase] id 解決できず %d 件をスキップ", skipped)
+
+    # リダイレクト分: 統合先が自前ソースで生存中なら何もしない（URL の上書きを防ぐ）。
+    # 統合先のソースが死んでいる場合のみ、この掲載をソースとして付け替える
+    # （統合先 URL の掲載終了後も重複側 URL で価格追従を継続するため）。
+    # 末尾に追加することで、同一 (listing_id, source) は統合先自身の行が優先される。
+    redirect_attached = 0
+    redirect_reactivate: set[int] = set()
+    for item, canonical_id in redirected_items:
+        src = existing_sources.get(canonical_id)
+        if src and src.get("is_active"):
+            continue
+        canonical_ik = id_to_ik.get(canonical_id, "")
+        planned_items.append((item, canonical_ik, canonical_id))
+        redirect_attached += 1
+        # 統合先 listing 自体が非アクティブなら復帰させる（物件はまだ売り出し中）
+        entry = all_db_listings.get(canonical_ik)
+        if entry and not entry[1]:
+            redirect_reactivate.add(canonical_id)
+    if redirected_items:
+        logger.info("[supabase] %s: 統合済み tombstone へのリダイレクト %d 件（ソース付け替え %d 件）",
+                    source, len(redirected_items), redirect_attached)
     plan = _plan_source_sync(planned_items, existing_listings, existing_sources, source)
     for key in summary:
         summary[key] += plan.summary[key]
@@ -570,6 +667,13 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                           on_conflict="listing_id,source")
     _grouped_batch_insert(client, "price_history", plan.price_history_rows)
     _grouped_batch_insert(client, "listing_events", plan.event_rows)
+
+    # リダイレクトでソースを引き継いだ非アクティブな統合先を復帰
+    if redirect_reactivate:
+        (client.table("listings")
+         .update({"is_active": True}, returning="minimal")
+         .in_("id", sorted(redirect_reactivate))
+         .execute())
 
     # --- 掲載終了（grace period）: 計画 → バッチ実行 ---
     # 一覧巡回が打ち切られたランでは未巡回ページの物件を「掲載終了」と

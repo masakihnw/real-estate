@@ -71,7 +71,7 @@ LIST_URL_FIRST = f"https://www.nomu.com/mansion/SearchList/?type=area&wide=13&{_
 LIST_URL_PAGE = LIST_URL_FIRST + "&pager_page={page}"
 
 # 全ページ取得時の安全上限（無限ループ防止）
-MAX_PAGES_SAFETY = 100
+MAX_PAGES_SAFETY = 150
 
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
 EARLY_EXIT_PAGES = 20

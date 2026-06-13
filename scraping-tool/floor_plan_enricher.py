@@ -347,6 +347,58 @@ def parse_homes_property_images(
     return images
 
 
+# 設備・特徴一覧の最大保持件数（異常 HTML で巨大配列になるのを防ぐ）
+_HOMES_FEATURE_TAGS_LIMIT = 60
+
+
+def parse_homes_feature_tags(html: str) -> list[str]:
+    """HOME'S 物件詳細ページから設備・特徴タグを抽出する。
+
+    設備情報セクションの `li.list-dot-brand`（例: システムキッチン / バス・トイレ別 /
+    エレベーター / 駐車場あり 等）を取得する。これは suumo の feature_tags と同質の
+    データで、text_enricher / investment_summary が参照する。
+
+    非 suumo 系（homes / rehouse / livable）は一覧スクレイプで feature_tags を
+    取得できず、AI 分析の対象外になっていた構造的欠落を補う。
+
+    Returns:
+        重複排除済みのタグ文字列リスト。該当なしなら空リスト。
+    """
+    soup = BeautifulSoup(html, "lxml")
+    tags: list[str] = []
+    seen: set[str] = set()
+    for li in soup.select("li.list-dot-brand"):
+        tag = li.get_text(strip=True)
+        if not tag or tag in seen:
+            continue
+        # 入れ子要素を含む見出し等を除外（純粋なタグは子要素を持たない）
+        if li.find(["ul", "ol", "table"]):
+            continue
+        seen.add(tag)
+        tags.append(tag)
+        if len(tags) >= _HOMES_FEATURE_TAGS_LIMIT:
+            logger.warning(
+                "feature_tags が上限 %d 件に到達（異常 HTML の可能性）",
+                _HOMES_FEATURE_TAGS_LIMIT,
+            )
+            break
+    return tags
+
+
+def _needs_feature_tags(listing: dict) -> bool:
+    """HOME'S 物件が特徴タグ補完の対象かどうかを判定する。
+
+    feature_tags が未取得（None / 空配列）の homes 物件のみ対象。
+    """
+    if not isinstance(listing, dict):
+        return False
+    if listing.get("source") != "homes":
+        return False
+    if not listing.get("url"):
+        return False
+    return not listing.get("feature_tags")
+
+
 def _needs_image_enrichment(listing: dict) -> bool:
     """HOME'S 物件が画像エンリッチメントの対象かどうかを判定する。"""
     if not isinstance(listing, dict):
@@ -384,8 +436,12 @@ def main() -> None:
 
     homes_listings = [
         (i, r) for i, r in enumerate(listings)
-        if _needs_image_enrichment(r)
+        if _needs_image_enrichment(r) or _needs_feature_tags(r)
     ]
+
+    # 画像未取得を優先（ユーザー可視で致命度が高い）。タグのみ補完は後回しにし、
+    # --limit でバッチが切られても画像エンリッチが枯渇しないようにする。
+    homes_listings.sort(key=lambda pair: not _needs_image_enrichment(pair[1]))
 
     if args.limit and args.limit > 0:
         homes_listings = homes_listings[:args.limit]
@@ -402,6 +458,7 @@ def main() -> None:
     fetcher = HomesDetailFetcher()
     enriched_fp = 0
     enriched_prop = 0
+    enriched_tags = 0
     fetched = 0
     consecutive_waf = 0
 
@@ -432,6 +489,12 @@ def main() -> None:
                     listings[list_idx]["suumo_images"] = prop_images
                     enriched_prop += 1
 
+            if not listing.get("feature_tags"):
+                tags = parse_homes_feature_tags(html)
+                if tags:
+                    listings[list_idx]["feature_tags"] = tags
+                    enriched_tags += 1
+
             if (idx + 1) % 20 == 0:
                 logger.info(f"  ...{idx + 1}/{len(homes_listings)}件処理済")
     finally:
@@ -442,12 +505,18 @@ def main() -> None:
         json.dump(listings, f, ensure_ascii=False, indent=2)
     tmp_path.replace(output_path)
 
+    # 画像は enrichments テーブル（write_enrichments）へ dual-write する。
+    # feature_tags は listings テーブルの直列カラムのため write_enrichments には
+    # 渡さない。上で JSON へ書き込んだ feature_tags は、後続パイプライン
+    # （run_enrich → merge_enrichments[feature_tags 含む] → run_finalize の
+    #  sync_db → supabase_sync が None 値を除外して listings へ upsert）で
+    # 反映される。enricher 単体実行では Supabase へは反映されない点に注意。
     from enrichment_writer import write_enrichments
     write_enrichments(listings, ["floor_plan_images", "suumo_images"], "homes_images")
 
     print(
-        f"HOME'S 画像: 間取り図 {enriched_fp}件, 物件写真 {enriched_prop}件"
-        f"（HTML新規取得 {fetched}件）",
+        f"HOME'S 画像: 間取り図 {enriched_fp}件, 物件写真 {enriched_prop}件, "
+        f"特徴タグ {enriched_tags}件（HTML新規取得 {fetched}件）",
         file=sys.stderr,
     )
 

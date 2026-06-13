@@ -29,6 +29,7 @@ struct ListingListView: View {
     private let networkMonitor = NetworkMonitor.shared
     @Query private var listings: [Listing]
     @State private var sortOrder: SortOrder = .addedDesc
+    @State private var showSortSheet = false
     @State private var selectedListing: Listing?
     /// OOUI: タブごとに独立したフィルタ状態を持つ（中古/新築/お気に入りで干渉しない）
     @State private var filterStore = FilterStore()
@@ -49,6 +50,8 @@ struct ListingListView: View {
         var availableRouteStations: [RouteStations] = []
         var availableDirections: [String] = []
         var availableNumericFields: [ListingNumericField] = []
+        /// 各数値フィールドのデータ充足率（0...1）。baseSignature キャッシュに相乗り。
+        var numericFillRates: [ListingNumericField: Double] = [:]
         var availableSortOrders: [SortOrder] = []
         /// available* 計算時の baseList の署名（URL 列のハッシュ）。
         /// baseList が変わらない限り available* の全件走査をスキップするために使う
@@ -99,163 +102,9 @@ struct ListingListView: View {
         }
     }
 
-    enum SortOrder: CaseIterable, Hashable {
-        case addedDesc
-        case addedAsc
-        case priceAsc
-        case priceDesc
-        case walkAsc
-        case walkDesc
-        case areaAsc
-        case areaDesc
-        case builtAgeAsc
-        case builtAgeDesc
-        case m2UnitPriceAsc
-        case m2UnitPriceDesc
-        case tsuboUnitPriceAsc
-        case tsuboUnitPriceDesc
-        case managementFeeAsc
-        case managementFeeDesc
-        case repairReserveFundAsc
-        case repairReserveFundDesc
-        case monthlyRunningCostAsc
-        case monthlyRunningCostDesc
-        case floorPositionAsc
-        case floorPositionDesc
-        case floorTotalAsc
-        case floorTotalDesc
-        case totalUnitsAsc
-        case totalUnitsDesc
-        case balconyAreaAsc
-        case balconyAreaDesc
-        case deviationAsc
-        case deviationDesc
-        case appreciationRateAsc
-        case appreciationRateDesc
-        case profitPctAsc
-        case profitPctDesc
-        case favoriteCountAsc
-        case favoriteCountDesc
-        case scoreAsc
-        case scoreDesc
-        case priceFairnessAsc
-        case priceFairnessDesc
-        case resaleLiquidityAsc
-        case resaleLiquidityDesc
-        case competingListingsAsc
-        case competingListingsDesc
-        case forecastChangeRateAsc
-        case forecastChangeRateDesc
-        case recommendationAsc
-        case recommendationDesc
-        case customMetricDesc
-
-        var label: String {
-            switch self {
-            case .addedDesc: return "追加日（新しい順）"
-            case .addedAsc: return "追加日（古い順）"
-            case .priceAsc: return "価格（安い順）"
-            case .priceDesc: return "価格（高い順）"
-            case .walkAsc: return "徒歩（近い順）"
-            case .walkDesc: return "徒歩（遠い順）"
-            case .areaAsc: return "面積（狭い順）"
-            case .areaDesc: return "面積（広い順）"
-            case .builtAgeAsc: return "築年数（浅い順）"
-            case .builtAgeDesc: return "築年数（古い順）"
-            case .m2UnitPriceAsc: return "㎡単価（安い順）"
-            case .m2UnitPriceDesc: return "㎡単価（高い順）"
-            case .tsuboUnitPriceAsc: return "坪単価（安い順）"
-            case .tsuboUnitPriceDesc: return "坪単価（高い順）"
-            case .managementFeeAsc: return "管理費（安い順）"
-            case .managementFeeDesc: return "管理費（高い順）"
-            case .repairReserveFundAsc: return "修繕積立金（安い順）"
-            case .repairReserveFundDesc: return "修繕積立金（高い順）"
-            case .monthlyRunningCostAsc: return "月額維持費（安い順）"
-            case .monthlyRunningCostDesc: return "月額維持費（高い順）"
-            case .floorPositionAsc: return "所在階（低い順）"
-            case .floorPositionDesc: return "所在階（高い順）"
-            case .floorTotalAsc: return "総階数（低い順）"
-            case .floorTotalDesc: return "総階数（高い順）"
-            case .totalUnitsAsc: return "総戸数（少ない順）"
-            case .totalUnitsDesc: return "総戸数（多い順）"
-            case .balconyAreaAsc: return "バルコニー（狭い順）"
-            case .balconyAreaDesc: return "バルコニー（広い順）"
-            case .deviationAsc: return "偏差値（低い順）"
-            case .deviationDesc: return "偏差値（高い順）"
-            case .appreciationRateAsc: return "値上がり率（低い順）"
-            case .appreciationRateDesc: return "値上がり率（高い順）"
-            case .profitPctAsc: return "儲かる確率（低い順）"
-            case .profitPctDesc: return "儲かる確率（高い順）"
-            case .favoriteCountAsc: return "お気に入り数（少ない順）"
-            case .favoriteCountDesc: return "お気に入り数（多い順）"
-            case .scoreAsc: return "総合スコア（低い順）"
-            case .scoreDesc: return "総合スコア（高い順）"
-            case .priceFairnessAsc: return "価格妥当性（低い順）"
-            case .priceFairnessDesc: return "価格妥当性（高い順）"
-            case .resaleLiquidityAsc: return "流動性（低い順）"
-            case .resaleLiquidityDesc: return "流動性（高い順）"
-            case .competingListingsAsc: return "競合売出数（少ない順）"
-            case .competingListingsDesc: return "競合売出数（多い順）"
-            case .forecastChangeRateAsc: return "予測変動率（低い順）"
-            case .forecastChangeRateDesc: return "予測変動率（高い順）"
-            case .recommendationAsc: return "AI推奨度（低い順）"
-            case .recommendationDesc: return "AI推奨度（高い順）"
-            case .customMetricDesc: return "My指標（高い順）"
-            }
-        }
-
-        var availabilityCheck: (Listing) -> Bool {
-            switch self {
-            case .addedDesc, .addedAsc, .priceAsc, .priceDesc, .walkAsc, .walkDesc, .areaAsc, .areaDesc:
-                return { _ in true }
-            case .builtAgeAsc, .builtAgeDesc:
-                return { $0.builtAgeYears != nil }
-            case .m2UnitPriceAsc, .m2UnitPriceDesc:
-                return { $0.m2UnitPrice != nil }
-            case .tsuboUnitPriceAsc, .tsuboUnitPriceDesc:
-                return { $0.tsuboUnitPrice != nil }
-            case .managementFeeAsc, .managementFeeDesc:
-                return { $0.managementFee != nil }
-            case .repairReserveFundAsc, .repairReserveFundDesc:
-                return { $0.repairReserveFund != nil }
-            case .monthlyRunningCostAsc, .monthlyRunningCostDesc:
-                return { $0.monthlyRunningCost != nil }
-            case .floorPositionAsc, .floorPositionDesc:
-                return { $0.floorPosition != nil }
-            case .floorTotalAsc, .floorTotalDesc:
-                return { $0.floorTotal != nil }
-            case .totalUnitsAsc, .totalUnitsDesc:
-                return { $0.totalUnits != nil }
-            case .balconyAreaAsc, .balconyAreaDesc:
-                return { $0.balconyAreaM2 != nil }
-            case .deviationAsc, .deviationDesc:
-                return { $0.averageDeviation != nil }
-            case .appreciationRateAsc, .appreciationRateDesc:
-                return { $0.ssAppreciationRate != nil }
-            case .profitPctAsc, .profitPctDesc:
-                return { $0.ssProfitPct != nil }
-            case .favoriteCountAsc, .favoriteCountDesc:
-                return { $0.ssFavoriteCount != nil }
-            case .scoreAsc, .scoreDesc:
-                return { $0.listingScore != nil }
-            case .priceFairnessAsc, .priceFairnessDesc:
-                return { $0.priceFairnessScore != nil }
-            case .resaleLiquidityAsc, .resaleLiquidityDesc:
-                return { $0.resaleLiquidityScore != nil }
-            case .competingListingsAsc, .competingListingsDesc:
-                return { $0.competingListingsCount != nil }
-            case .forecastChangeRateAsc, .forecastChangeRateDesc:
-                return { $0.ssForecastChangeRate != nil }
-            case .recommendationAsc, .recommendationDesc:
-                return { $0.aiRecommendationScore != nil }
-            case .customMetricDesc:
-                // いずれかのコンポーネントがあれば計算可能。
-                // load() はクロージャ外で1回だけ（全件×UserDefaults読込を避ける）
-                let metric = CustomMetric.load()
-                return { metric.score(for: $0) != nil }
-            }
-        }
-    }
+    // ソート順は top-level の ListingSortOrder に昇格（純ロジック・テストを View 非依存に）。
+    // 既存参照（sortOrder / 49ケース switch / availableSortOrders）は typealias で温存。
+    typealias SortOrder = ListingSortOrder
 
     /// タブの物件種別に応じた利用可能なソート順（filterCache で再計算済みのもの）
     private var availableSortOrders: [SortOrder] {
@@ -472,10 +321,15 @@ struct ListingListView: View {
                     availableRouteStations: filterCache.availableRouteStations,
                     availableDirections: filterCache.availableDirections,
                     availableNumericFields: filterCache.availableNumericFields,
+                    numericFillRates: filterCache.numericFillRates,
                     availableSortOrders: filterCache.availableSortOrders,
                     baseSignature: signature
                 )
             } else {
+                // baseList が変わった時のみ全走査（充足率もここで1回だけ算出）
+                let availFields = ListingFilter.availableNumericFields(from: currentBase)
+                let fillRates = Dictionary(uniqueKeysWithValues:
+                    availFields.map { ($0, $0.fillRate(in: currentBase)) })
                 newCache = FilterCache(
                     filtered: result,
                     grouped: grouped,
@@ -483,7 +337,8 @@ struct ListingListView: View {
                     availableWards: ListingFilter.availableWards(from: currentBase),
                     availableRouteStations: ListingFilter.availableRouteStations(from: currentBase),
                     availableDirections: ListingFilter.availableDirections(from: currentBase),
-                    availableNumericFields: ListingFilter.availableNumericFields(from: currentBase),
+                    availableNumericFields: availFields,
+                    numericFillRates: fillRates,
                     availableSortOrders: SortOrder.allCases.filter { order in
                         currentBase.contains(where: order.availabilityCheck)
                     },
@@ -566,6 +421,7 @@ struct ListingListView: View {
     private var availableRouteStations: [RouteStations] { filterCache.availableRouteStations }
     private var availableDirections: [String] { filterCache.availableDirections }
     private var availableNumericFields: [ListingNumericField] { filterCache.availableNumericFields }
+    private var numericFillRates: [ListingNumericField: Double] { filterCache.numericFillRates }
 
     var body: some View {
         NavigationStack {
@@ -595,8 +451,13 @@ struct ListingListView: View {
                     availableDirections: availableDirections,
                     availableNumericFields: availableNumericFields,
                     filteredCount: filteredAndSorted.count,
-                    showPriceUndecidedToggle: false
+                    showPriceUndecidedToggle: false,
+                    numericFillRates: numericFillRates
                 )
+            }
+            .sheet(isPresented: $showSortSheet) {
+                sortDetailSheet
+                    .presentationDetents([.medium, .large])
             }
             .environment(\.editMode, favoritesOnly ? $editMode : .constant(.inactive))
             .onAppear {
@@ -762,12 +623,17 @@ struct ListingListView: View {
         }
     }
 
+    /// 代表ソートのうち、現タブで利用可能なもの（提案 §3.4: 1階層8択以内）
+    private var representativeSorts: [SortOrder] {
+        SortOrder.representatives.filter { availableSortOrders.contains($0) }
+    }
+
     /// 右下のフィルタ・並び替えオーバーレイ（地図画面の現在地ボタンと同様のスタイル）
     @ViewBuilder
     private var filterSortOverlayButtons: some View {
         VStack(alignment: .trailing, spacing: 8) {
             Menu {
-                ForEach(availableSortOrders, id: \.self) { order in
+                ForEach(representativeSorts, id: \.self) { order in
                     Button {
                         withAnimation { sortOrder = order }
                     } label: {
@@ -777,6 +643,20 @@ struct ListingListView: View {
                             Text(order.label)
                         }
                     }
+                }
+                // 詳細ソートで代表外を選択中なら現在の並び順を表示（現在地の可視性）
+                if !representativeSorts.contains(sortOrder) {
+                    Section {
+                        Button {} label: { Label("現在: \(sortOrder.label)", systemImage: "checkmark") }
+                            .disabled(true)
+                    }
+                }
+                Divider()
+                Button {
+                    filterStore.showFilterSheet = false   // sheet 排他
+                    showSortSheet = true
+                } label: {
+                    Label("詳細ソート…", systemImage: "slider.horizontal.3")
                 }
             } label: {
                 Image(systemName: "arrow.up.arrow.down.circle")
@@ -789,6 +669,7 @@ struct ListingListView: View {
             .accessibilityLabel("並び順")
 
             Button {
+                showSortSheet = false   // sheet 排他
                 filterStore.showFilterSheet = true
             } label: {
                 Image(systemName: filterStore.filter.isActive
@@ -806,6 +687,41 @@ struct ListingListView: View {
         }
         .padding(.trailing, 12)
         .padding(.bottom, 20)
+    }
+
+    /// 詳細ソート: カテゴリ（基本/立地/お金/資産性/AI）ごとにグループ化したピッカー。
+    private var sortDetailSheet: some View {
+        NavigationStack {
+            List {
+                ForEach(SortOrder.grouped(only: availableSortOrders), id: \.category) { group in
+                    Section(group.category.displayName) {
+                        ForEach(group.sorts, id: \.self) { order in
+                            Button {
+                                withAnimation { sortOrder = order }
+                                showSortSheet = false
+                            } label: {
+                                HStack {
+                                    Text(order.label)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    if order == sortOrder {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(Color.accentColor)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("詳細ソート")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("閉じる") { showSortSheet = false }
+                }
+            }
+        }
     }
 
     private var emptyState: some View {
