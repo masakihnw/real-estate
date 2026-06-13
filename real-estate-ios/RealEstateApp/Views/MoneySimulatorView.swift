@@ -49,6 +49,12 @@ struct MoneySimulatorView: View {
             }
             .navigationTitle("お金のシミュレーター")
             .navigationBarTitleDisplayMode(.inline)
+            .onChange(of: assumptions.purchasePriceMan) { _, newPrice in
+                // 価格を下げた時に頭金が価格を超えたまま残り借入額0になるのを防ぐ
+                if assumptions.downPaymentMan > newPrice {
+                    assumptions.downPaymentMan = newPrice
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("閉じる") { dismiss() }
