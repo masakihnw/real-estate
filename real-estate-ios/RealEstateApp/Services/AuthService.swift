@@ -36,12 +36,21 @@ final class AuthService {
 
     // MARK: - Access Control（アクセス制御）
 
-    /// 許可されたメールアドレス一覧（小文字で記載）
-    /// ここに許可する Google アカウントのメールアドレスを追加する。
-    private static let allowedEmails: Set<String> = [
-        "masaki.hanawa.417@gmail.com",
-        "nogura.yuka.kf@gmail.com",
-    ]
+    /// 許可されたメールアドレス一覧（小文字）。
+    /// 実値は公開リポジトリにコミットしない。アプリバンドル内の `AllowedEmails.plist`
+    /// （`.gitignore` 対象、文字列配列）から読み込む。未配置時は空集合＝全拒否（fail-closed）。
+    private static let allowedEmails: Set<String> = loadAllowedEmails()
+
+    private static func loadAllowedEmails() -> Set<String> {
+        guard let url = Bundle.main.url(forResource: "AllowedEmails", withExtension: "plist"),
+              let data = try? Data(contentsOf: url),
+              let list = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String]
+        else {
+            logger.warning("AllowedEmails.plist が見つかりません。許可リストは空（全拒否）です。")
+            return []
+        }
+        return Set(list.map { $0.lowercased() })
+    }
 
     /// 現在のユーザーのメールアドレスが許可リストに含まれるか
     var isEmailAllowed: Bool {

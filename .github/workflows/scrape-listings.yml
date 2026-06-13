@@ -60,12 +60,35 @@ jobs:
         run: |
           python3 -c "import playwright" 2>/dev/null && playwright install chromium --with-deps || echo "playwright インストールスキップ"
 
+      # geocode キャッシュは PII 混入の恐れで .gitignore 化し、git commit から
+      # actions/cache（repo スコープ）へ永続化を移行した。restore-keys の prefix で
+      # 直近のキャッシュ（scrape / finalize いずれかの最新）を取得してウォームスタートする。
+      - name: Restore geocode caches
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            scraping-tool/data/geocode_cache.json
+            scraping-tool/data/reverse_geocode_cache.json
+          key: geocode-cache-${{ github.run_id }}
+          restore-keys: |
+            geocode-cache-
+
       - name: Run scraping
         id: scrape
         working-directory: scraping-tool
         run: |
           chmod +x scripts/run_scrape.sh
           ./scripts/run_scrape.sh
+
+      # スクレイプ中に hazard/neighborhood enricher が追記した geocode 結果を永続化。
+      - name: Save geocode caches
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            scraping-tool/data/geocode_cache.json
+            scraping-tool/data/reverse_geocode_cache.json
+          key: geocode-cache-${{ github.run_id }}
 
       - name: Read metadata
         id: metadata

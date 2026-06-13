@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Optional, Tuple, List
 
 # 未登録駅時の概算: 最寄り駅→会社最寄り駅のデフォルト分数＋会社最寄り駅→会社の徒歩
-# M3: 神谷町駅が会社最寄り（7分）、PG: 半蔵門駅が会社最寄り（5分）
+# 会社最寄り駅・徒歩分数は通勤先ごとの定数（実値は COMMUTE_OFFICES_JSON / Supabase が正）。
 ESTIMATE_STATION_TO_OFFICE_M3_MIN = 30
 ESTIMATE_OFFICE_STATION_WALK_M3_MIN = 7
 ESTIMATE_STATION_TO_OFFICE_PG_MIN = 30
@@ -30,8 +30,8 @@ DATA_DIR = ROOT / "data"
 # 通勤先: key -> (表示ラベル, 最寄駅メモ)
 # 実住所・名称は commute_offices（環境変数 COMMUTE_OFFICES_JSON）が正。
 COMMUTE_DESTINATIONS = {
-    "m3career": ("オフィスB", "虎ノ門"),
-    "playground": ("オフィスA", "半蔵門"),
+    "m3career": ("オフィスB", "最寄駅B"),
+    "playground": ("オフィスA", "最寄駅A"),
 }
 
 _cache: dict[str, dict[str, int]] = {}
