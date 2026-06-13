@@ -70,6 +70,42 @@ struct WidgetFeaturedSelectorTests {
         #expect(featured?.priceText == l.priceDisplayCompact)
         #expect(featured?.gradeLetter == l.scoreGradeLetter)
     }
+
+    // MARK: - selectTop（medium の2物件）
+
+    @Test("selectTop は score 降順で limit 件返す")
+    func selectTopReturnsSortedLimited() {
+        let a = makeListing(score: 40)
+        let b = makeListing(score: 95)
+        let c = makeListing(score: 70)
+        let top = WidgetFeaturedSelector.selectTop(from: [a, b, c], limit: 2)
+        #expect(top.map(\.url) == [b.url, c.url])   // 95, 70（40 は limit 外）
+    }
+
+    @Test("selectTop の同点は addedAt 新しい順")
+    func selectTopTiebreakByRecency() {
+        let older = makeListing(score: 80, addedDaysAgo: 2)
+        let newer = makeListing(score: 80, addedDaysAgo: 0.1)
+        let top = WidgetFeaturedSelector.selectTop(from: [older, newer], limit: 2)
+        #expect(top.map(\.url) == [newer.url, older.url])
+    }
+
+    @Test("selectTop は古い/掲載終了を除外し、候補不足なら件数を切り詰める")
+    func selectTopExcludesAndClamps() {
+        let fresh = makeListing(score: 50, addedDaysAgo: 0)
+        let old = makeListing(score: 99, addedDaysAgo: 10)
+        let delisted = makeListing(score: 90, addedDaysAgo: 0, isDelisted: true)
+        let top = WidgetFeaturedSelector.selectTop(from: [fresh, old, delisted], limit: 2)
+        #expect(top.map(\.url) == [fresh.url])      // 1件のみ
+    }
+
+    @Test("select は selectTop の先頭と一致する")
+    func selectMatchesTopFirst() {
+        let a = makeListing(score: 30)
+        let b = makeListing(score: 88)
+        #expect(WidgetFeaturedSelector.select(from: [a, b])?.url
+                == WidgetFeaturedSelector.selectTop(from: [a, b], limit: 2).first?.url)
+    }
 }
 
 @Suite("WidgetDeepLink URL 往復")

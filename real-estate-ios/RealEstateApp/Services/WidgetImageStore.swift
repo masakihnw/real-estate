@@ -33,6 +33,12 @@ enum WidgetImageStore {
         let name = fileName(forListingURL: listingURL)
         let dest = container.appendingPathComponent(name)
 
+        // 同一物件の画像が保存済みなら再ダウンロードしない（前景更新の度の無駄な通信・遅延を回避）。
+        if FileManager.default.fileExists(atPath: dest.path) {
+            cleanup(keeping: name, in: container)
+            return name
+        }
+
         do {
             var request = URLRequest(url: url)
             request.timeoutInterval = downloadTimeout

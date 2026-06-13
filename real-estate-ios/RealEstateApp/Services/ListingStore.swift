@@ -200,14 +200,15 @@ final class ListingStore {
             }
 
             // ブリーフは前景のみ取得（背景は認証・実行時間の制約で取れないため据え置き）。
-            // 当日分が無ければ古いブリーフを残さないよう nil 設定する。
+            // 取得失敗（nil）は通信不調・認証一時失効の可能性があるため据え置き、
+            // ブリーフが取れたが当日分でない時だけ古い表示を消す（ちらつき防止）。
             let brief: WidgetDataProvider.BriefUpdate
             if isBackground {
                 brief = .keep
-            } else if let b = await DailyBriefService.fetchLatest(), DailyBriefService.isFresh(briefDate: b.briefDate) {
-                brief = .set(b.summaryText)
+            } else if let b = await DailyBriefService.fetchLatest() {
+                brief = DailyBriefService.isFresh(briefDate: b.briefDate) ? .set(b.summaryText) : .set(nil)
             } else {
-                brief = .set(nil)
+                brief = .keep
             }
 
             WidgetDataProvider.update(
