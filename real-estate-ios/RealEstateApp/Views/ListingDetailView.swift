@@ -83,7 +83,6 @@ struct ListingDetailView: View {
                         .fontWeight(.semibold)
                         .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .id("summary")
 
                     addressSection
 
@@ -323,6 +322,8 @@ struct ListingDetailView: View {
         .padding(.vertical, 6)
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
+        // LazyVStack の .padding(.horizontal,14) を打ち消し、ピン留め時に背景を全幅化
+        .padding(.horizontal, -14)
     }
 
     // MARK: - タブ内容（既存セクションを再利用するだけ・内部は不変）
