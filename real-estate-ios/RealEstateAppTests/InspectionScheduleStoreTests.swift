@@ -13,10 +13,13 @@ struct InspectionScheduleStoreTests {
         return (InspectionScheduleStore(defaults: defaults), defaults)
     }
 
+    private nonisolated(unsafe) static var counter = 0
+
     private func listing() -> Listing {
-        // identityKey は URL でなく 名前|間取り|面積|住所|築年 で決まるため、
-        // 別物件として扱うには名前を一意にする
-        Listing(url: "https://x/\(UUID().uuidString)", name: "物件-\(UUID().uuidString.prefix(8))", propertyType: "chuko")
+        // identityKey は URL でなく 名前|間取り|面積|住所|築年 で決まる。名前は cleanListingName で
+        // 正規化され一意サフィックスが消えるため、生のまま含まれる builtYear を物件ごとに変えて分離する。
+        Self.counter += 1
+        return Listing(url: "https://x/\(UUID().uuidString)", name: "物件", builtYear: 1980 + Self.counter, propertyType: "chuko")
     }
 
     @Test("初期状態は未予定")
