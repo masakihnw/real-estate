@@ -571,6 +571,46 @@ def build_data_quality_alert_section(issues: list[dict]) -> Optional[str]:
     return "\n".join(lines)
 
 
+def _build_scraper_health_section() -> Optional[str]:
+    """scraper_metrics の閾値超過アラート（パース失敗率・空ページ）をセクション化。"""
+    try:
+        import scraper_metrics
+        health = scraper_metrics.load()
+        if health.get("alerts"):
+            lines = ["*⚠️ スクレイパー健全性アラート*"]
+            lines += [f"  • {a}" for a in health["alerts"]]
+            return "\n".join(lines)
+    except Exception as e:
+        logger.warning("スクレイパー健全性アラートの取得失敗: %s", e)
+    return None
+
+
+def _send_health_alerts(default_webhook_url: str, data_quality_issues: list[dict]) -> bool:
+    """スクレイパー健全性アラート・建物名データ品質アラートを専用チャンネルへ送信する。
+
+    物件更新通知（SLACK_WEBHOOK_URL）とは別チャンネルに分離する。送信先は
+    SLACK_HEALTH_WEBHOOK_URL。未設定時は取りこぼし防止のため既定 webhook に
+    フォールバックする。送信すべきアラートが無ければ何もせず True を返す。
+    """
+    sections: list[str] = []
+    health_section = _build_scraper_health_section()
+    if health_section:
+        sections.append(health_section)
+    dq_section = build_data_quality_alert_section(data_quality_issues)
+    if dq_section:
+        sections.append(dq_section.strip("\n"))
+    if not sections:
+        return True
+
+    target_url = os.environ.get("SLACK_HEALTH_WEBHOOK_URL") or default_webhook_url
+    message = "\n\n".join(sections)
+    if send_slack_message_chunked_with_retry(target_url, message):
+        logger.info("スクレイパー健全性・データ品質アラートを送信しました")
+        return True
+    logger.error("スクレイパー健全性・データ品質アラートの送信に失敗しました")
+    return False
+
+
 def _update_notification_state(client, channel: str = "slack", expected_last: str | None = None) -> None:
     """通知成功後に last_notified_at を更新する。
     expected_last が指定された場合は CAS: 値が一致する場合のみ更新する。"""
@@ -940,6 +980,12 @@ def main() -> None:
     if supabase_client:
         data_quality_issues = _get_data_quality_issues(supabase_client)
 
+    # --- スクレイパー健全性・建物名データ品質アラートを専用チャンネルへ送信 ---
+    # これらは物件更新通知（SLACK_WEBHOOK_URL）とは別チャンネル
+    # （SLACK_HEALTH_WEBHOOK_URL）に分離する。本文の有無に関わらず、
+    # アラートがあれば独立して送信する。
+    _send_health_alerts(webhook_url, data_quality_issues)
+
     # --- 通知判定 ---
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff_removed_a = [r for r in diff.get("removed", []) if (optional_features.get_asset_score_and_rank(r)[1] or "B") in ("S", "A", "B")]
@@ -953,7 +999,8 @@ def main() -> None:
         digest_text, digest_draft_id = _pop_morning_digest(supabase_client)
     has_pending_digest = bool(digest_text)
 
-    has_content = diff_new_a or diff_removed_a or has_pending_digest or watchlist_drops or data_quality_issues
+    # データ品質アラートは別チャンネルへ送信済みのため、本通知の判定には含めない
+    has_content = diff_new_a or diff_removed_a or has_pending_digest or watchlist_drops
 
     if not has_content:
         if supabase_client:
@@ -985,21 +1032,8 @@ def main() -> None:
     if watchlist_drops:
         message = message + "\n" + build_watchlist_price_drop_section(watchlist_drops)
 
-    # スクレイパー健全性アラート（パース失敗率・空ページの閾値超過）
-    try:
-        import scraper_metrics
-        health = scraper_metrics.load()
-        if health.get("alerts"):
-            lines = ["", "*⚠️ スクレイパー健全性アラート*"]
-            lines += [f"  • {a}" for a in health["alerts"]]
-            message = message + "\n" + "\n".join(lines)
-    except Exception as e:
-        logger.warning("スクレイパー健全性アラートの取得失敗: %s", e)
-
-    # データ品質アラート（建物名なし物件）
-    dq_section = build_data_quality_alert_section(data_quality_issues)
-    if dq_section:
-        message = message + dq_section
+    # ※ スクレイパー健全性アラート・建物名データ品質アラートは別チャンネル
+    #   （SLACK_HEALTH_WEBHOOK_URL）へ _send_health_alerts() で送信済み。
 
     # pending な AI ダイジェストを本文末尾に統合（Routine 2 が1日1回生成。上で取得済み）
     if digest_text:

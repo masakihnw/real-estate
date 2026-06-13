@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from slack_notify import (
     _send_notification_drafts,
+    _send_health_alerts,
     _get_watchlist_price_drops,
     _get_data_quality_issues,
     build_watchlist_price_drop_section,
@@ -482,3 +483,62 @@ class TestBuildDataQualityAlertSection:
         section = build_data_quality_alert_section(issues)
         assert section is not None
         assert "99" in section
+
+
+class TestSendHealthAlerts:
+    """_send_health_alerts: スクレイパー健全性・データ品質アラートの専用チャンネル送信"""
+
+    _ISSUES = [{
+        "id": 1, "name": "", "normalized_name": "",
+        "address": "港区", "source": "homes", "url": "https://a.com/",
+    }]
+
+    @patch("slack_notify._build_scraper_health_section", return_value=None)
+    @patch("slack_notify.send_slack_message_chunked_with_retry", return_value=True)
+    def test_no_alerts_does_not_send(self, mock_send, _mock_health):
+        result = _send_health_alerts("https://main/webhook", [])
+        assert result is True
+        mock_send.assert_not_called()
+
+    @patch("slack_notify._build_scraper_health_section", return_value=None)
+    @patch("slack_notify.send_slack_message_chunked_with_retry", return_value=True)
+    def test_routes_to_health_webhook(self, mock_send, _mock_health, monkeypatch):
+        monkeypatch.setenv("SLACK_HEALTH_WEBHOOK_URL", "https://health/webhook")
+        result = _send_health_alerts("https://main/webhook", self._ISSUES)
+
+        assert result is True
+        url_arg, msg_arg = mock_send.call_args[0]
+        assert url_arg == "https://health/webhook"
+        assert "建物名データ品質アラート" in msg_arg
+
+    @patch("slack_notify._build_scraper_health_section", return_value=None)
+    @patch("slack_notify.send_slack_message_chunked_with_retry", return_value=True)
+    def test_falls_back_to_default_webhook(self, mock_send, _mock_health, monkeypatch):
+        monkeypatch.delenv("SLACK_HEALTH_WEBHOOK_URL", raising=False)
+        _send_health_alerts("https://main/webhook", self._ISSUES)
+
+        url_arg, _ = mock_send.call_args[0]
+        assert url_arg == "https://main/webhook"
+
+    @patch("slack_notify._build_scraper_health_section", return_value="*⚠️ スクレイパー健全性アラート*\n  • parse fail")
+    @patch("slack_notify.send_slack_message_chunked_with_retry", return_value=True)
+    def test_combines_health_and_quality_sections(self, mock_send, _mock_health, monkeypatch):
+        monkeypatch.setenv("SLACK_HEALTH_WEBHOOK_URL", "https://health/webhook")
+        _send_health_alerts("https://main/webhook", self._ISSUES)
+
+        _, msg_arg = mock_send.call_args[0]
+        assert "スクレイパー健全性アラート" in msg_arg
+        assert "建物名データ品質アラート" in msg_arg
+
+    @patch("slack_notify._build_scraper_health_section", return_value="*⚠️ スクレイパー健全性アラート*\n  • parse fail")
+    @patch("slack_notify.send_slack_message_chunked_with_retry", return_value=True)
+    def test_health_only_sends(self, mock_send, _mock_health):
+        result = _send_health_alerts("https://main/webhook", [])
+        assert result is True
+        mock_send.assert_called_once()
+
+    @patch("slack_notify._build_scraper_health_section", return_value=None)
+    @patch("slack_notify.send_slack_message_chunked_with_retry", return_value=False)
+    def test_send_failure_returns_false(self, mock_send, _mock_health):
+        result = _send_health_alerts("https://main/webhook", self._ISSUES)
+        assert result is False
