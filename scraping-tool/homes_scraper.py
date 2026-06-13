@@ -128,7 +128,7 @@ HOMES_EMPTY_PARSE_BACKOFF_SEC = 10
 # スクレイピング全体のタイムリミット（秒）。HOME'S は WAF が厳しく、
 # 1ページに最大7分（WAF リトライ30+60+90+120秒）かかることがあるため、
 # 全体の実行時間を制限して CI/CD パイプライン全体のタイムアウトを防ぐ。
-HOMES_SCRAPE_TIMEOUT_SEC = 30 * 60  # 30分
+HOMES_SCRAPE_TIMEOUT_SEC = 40 * 60  # 40分（在庫増で30分タイムアウト頻発のため拡張）
 
 
 @dataclass

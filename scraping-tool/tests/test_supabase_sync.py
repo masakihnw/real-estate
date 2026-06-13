@@ -447,3 +447,205 @@ class TestSyncSourceListingsIntegration:
         assert summary["removed"] == 0, "打ち切りランで欠落物件が deactivate されている"
         event_rows = [r for batch in inserts["listing_events"] for r in batch]
         assert "removed" not in [e["event_type"] for e in event_rows]
+
+
+class TestResolveMergedRedirect:
+    """_resolve_merged_redirect: 統合済み tombstone の identity_key 一致を統合先 id に解決する。"""
+
+    def test_no_match_returns_none(self):
+        from supabase_sync import _resolve_merged_redirect
+
+        assert _resolve_merged_redirect("未知|3LDK|70.0|港区1|2010|5", {}) is None
+
+    def test_unmerged_listing_returns_none(self):
+        from supabase_sync import _resolve_merged_redirect
+
+        db = {"通常|3LDK|70.0|港区1|2010|5": (100, True, None)}
+        assert _resolve_merged_redirect("通常|3LDK|70.0|港区1|2010|5", db) is None
+
+    def test_tombstone_resolves_to_canonical(self):
+        from supabase_sync import _resolve_merged_redirect
+
+        db = {
+            "junk名|3LDK|70.0|港区1|2010|5": (200, False, 100),
+            "正規名|3LDK|70.0|港区1|2010|5": (100, True, None),
+        }
+        assert _resolve_merged_redirect("junk名|3LDK|70.0|港区1|2010|5", db) == 100
+
+    def test_chain_follows_to_final_canonical(self):
+        """A→B→C のチェーンは最終統合先 C に解決される。"""
+        from supabase_sync import _resolve_merged_redirect
+
+        db = {
+            "ikA": (1, False, 2),
+            "ikB": (2, False, 3),
+            "ikC": (3, True, None),
+        }
+        assert _resolve_merged_redirect("ikA", db) == 3
+
+    def test_cycle_terminates(self):
+        """A→B→A の循環でも max_depth で必ず停止する。"""
+        from supabase_sync import _resolve_merged_redirect
+
+        db = {
+            "ikA": (1, False, 2),
+            "ikB": (2, False, 1),
+        }
+        result = _resolve_merged_redirect("ikA", db)
+        assert result in (1, 2)
+
+    def test_dangling_pointer_returns_last_resolved(self):
+        """統合先が削除済み（id が DB に無い）でもポインタ先 id を返す。"""
+        from supabase_sync import _resolve_merged_redirect
+
+        db = {"junk": (200, False, 999)}
+        assert _resolve_merged_redirect("junk", db) == 999
+
+
+class TestMergedTombstoneSync:
+    """統合済み tombstone の蘇生防止（merged_into リダイレクト）の統合テスト。"""
+
+    _helper = TestSyncSourceListingsIntegration()
+
+    def _make_item(self, name: str, price: int, url: str) -> dict:
+        return self._helper._make_item(name, price, url)
+
+    def _make_client(self, existing_listing_rows, existing_source_rows):
+        return self._helper._make_client(existing_listing_rows, existing_source_rows)
+
+    def _ik(self, item: dict) -> str:
+        from report_utils import identity_key_str
+        return identity_key_str(item)
+
+    def test_tombstone_not_reactivated(self):
+        """tombstone の ik に一致する掲載は listings upsert に含まれない（蘇生しない）。"""
+        from supabase_sync import _sync_source_listings
+
+        junk_item = self._make_item("平置き駐車場専用使用権付", 10480, "https://example.com/junk")
+        canonical_item = self._make_item("クレストフォルム田町", 10480, "https://example.com/real")
+        junk_ik = self._ik(junk_item)
+        canonical_ik = self._ik(canonical_item)
+
+        client, upserts, inserts = self._make_client(
+            existing_listing_rows=[
+                {"id": 100, "identity_key": canonical_ik, "is_active": True,
+                 "merged_into": None},
+                {"id": 200, "identity_key": junk_ik, "is_active": False,
+                 "merged_into": 100},
+            ],
+            existing_source_rows=[
+                {"id": 9, "listing_id": 100, "source": "suumo",
+                 "price_man": 10480, "is_active": True, "consecutive_misses": 0},
+            ],
+        )
+
+        summary = _sync_source_listings(
+            client, [junk_item, canonical_item], "suumo", "chuko")
+
+        # listings upsert は正規レコード1行のみ（tombstone の ik は含まれない）
+        upserted_iks = [r["identity_key"] for batch in upserts["listings"] for r in batch]
+        assert junk_ik not in upserted_iks
+        assert canonical_ik in upserted_iks
+        # 統合先がソース生存中なので listing_sources も正規分のみ
+        source_lids = [r["listing_id"] for batch in upserts["listing_sources"] for r in batch]
+        assert source_lids == [100]
+        assert summary["removed"] == 0
+
+    def test_tombstone_only_run_protects_canonical_from_grace(self):
+        """junk掲載しか巡回されなかったランでも、統合先は掲載終了扱いにならない。"""
+        from supabase_sync import _sync_source_listings
+
+        junk_item = self._make_item("平置き駐車場専用使用権付", 10480, "https://example.com/junk")
+        canonical_item = self._make_item("クレストフォルム田町", 10480, "https://example.com/real")
+        junk_ik = self._ik(junk_item)
+        canonical_ik = self._ik(canonical_item)
+
+        client, upserts, inserts = self._make_client(
+            existing_listing_rows=[
+                {"id": 100, "identity_key": canonical_ik, "is_active": True,
+                 "merged_into": None},
+                {"id": 200, "identity_key": junk_ik, "is_active": False,
+                 "merged_into": 100},
+            ],
+            existing_source_rows=[
+                {"id": 9, "listing_id": 100, "source": "suumo",
+                 "price_man": 10480, "is_active": True, "consecutive_misses": 1},
+            ],
+        )
+
+        summary = _sync_source_listings(client, [junk_item], "suumo", "chuko")
+
+        # リダイレクトの seen マーキングにより grace period の miss 対象にならない
+        assert summary["removed"] == 0
+        event_rows = [r for batch in inserts["listing_events"] for r in batch]
+        assert "removed" not in [e["event_type"] for e in event_rows]
+
+    def test_dead_canonical_source_attaches_redirect(self):
+        """統合先の自前ソースが死んでいる場合、junk掲載のソースが統合先に付け替えられ復帰する。"""
+        from supabase_sync import _sync_source_listings
+
+        junk_item = self._make_item("平置き駐車場専用使用権付", 10480, "https://example.com/junk")
+        canonical_item = self._make_item("クレストフォルム田町", 10480, "https://example.com/real")
+        junk_ik = self._ik(junk_item)
+        canonical_ik = self._ik(canonical_item)
+
+        client, upserts, inserts = self._make_client(
+            existing_listing_rows=[
+                {"id": 100, "identity_key": canonical_ik, "is_active": False,
+                 "merged_into": None},
+                {"id": 200, "identity_key": junk_ik, "is_active": False,
+                 "merged_into": 100},
+            ],
+            existing_source_rows=[
+                {"id": 9, "listing_id": 100, "source": "suumo",
+                 "price_man": 10480, "is_active": False, "consecutive_misses": 0},
+            ],
+        )
+
+        _sync_source_listings(client, [junk_item], "suumo", "chuko")
+
+        # junk掲載のソースが統合先 (id=100) に付く
+        source_lids = [r["listing_id"] for batch in upserts["listing_sources"] for r in batch]
+        assert source_lids == [100]
+        source_urls = [r["url"] for batch in upserts["listing_sources"] for r in batch]
+        assert source_urls == ["https://example.com/junk"]
+        # 統合先 listing が復帰される（update(is_active=True)）
+        listings_tbl = client.table("listings")
+        reactivate_calls = [
+            c for c in listings_tbl.update.call_args_list
+            if c.args and c.args[0].get("is_active") is True
+        ]
+        assert reactivate_calls, "統合先の is_active=True 復帰が呼ばれていない"
+
+    def test_fuzzy_match_only_tombstone_redirects(self):
+        """完全一致なし・fuzzy一致が tombstone のみの場合、新規作成せず統合先へリダイレクト。"""
+        from supabase_sync import _sync_source_listings
+
+        # 同じ name・スペックだが floor 違いの ik（6要素 fuzzy 一致条件）を持つ tombstone
+        junk_item = self._make_item("平置き駐車場専用使用権付", 10480, "https://example.com/junk")
+        junk_ik = self._ik(junk_item)
+        # tombstone は floor だけ異なる ik を持つ（fuzzy (C) 6要素 prefix 一致）
+        tombstone_ik = junk_ik.rsplit("|", 1)[0] + "|9"
+        canonical_item = self._make_item("クレストフォルム田町", 10480, "https://example.com/real")
+        canonical_ik = self._ik(canonical_item)
+
+        client, upserts, inserts = self._make_client(
+            existing_listing_rows=[
+                {"id": 100, "identity_key": canonical_ik, "is_active": True,
+                 "merged_into": None},
+                {"id": 200, "identity_key": tombstone_ik, "is_active": False,
+                 "merged_into": 100},
+            ],
+            existing_source_rows=[
+                {"id": 9, "listing_id": 100, "source": "suumo",
+                 "price_man": 10480, "is_active": True, "consecutive_misses": 0},
+            ],
+        )
+
+        summary = _sync_source_listings(client, [junk_item], "suumo", "chuko")
+
+        # 新規 listing は作成されない（listings upsert 0 行）
+        upserted_iks = [r["identity_key"] for batch in upserts["listings"] for r in batch]
+        assert junk_ik not in upserted_iks
+        assert upserted_iks == []
+        assert summary["new"] == 0
