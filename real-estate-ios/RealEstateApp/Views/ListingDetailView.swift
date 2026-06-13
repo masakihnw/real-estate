@@ -1836,13 +1836,13 @@ struct ListingDetailView: View {
                 .fontWeight(.bold)
                 .foregroundStyle(Color.accentColor)
 
-            // Playground（信頼ソース優先）
+            // オフィスA（playground・信頼ソース優先）
             if let pg = commute.playground, pg.isReliableSource {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
                 } label: {
                     commuteDestinationCard(
-                        name: "オフィスA",
+                        name: CommuteDestinationConfig.displayName("playground", fallback: "オフィスA"),
                         minutes: pg.minutes,
                         summary: pg.summary,
                         secondaryLine: nil,
@@ -1853,13 +1853,13 @@ struct ListingDetailView: View {
                     )
                 }
                 .buttonStyle(CommuteCardButtonStyle())
-                .accessibilityLabel("オフィスAへの通勤経路を Google Maps で開く")
+                .accessibilityLabel("\(CommuteDestinationConfig.displayName("playground", fallback: "オフィスA"))への通勤経路を Google Maps で開く")
             } else if let pgV2 = commuteV2?.offices.playground {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
                 } label: {
                     commuteDestinationCard(
-                        name: "オフィスA",
+                        name: CommuteDestinationConfig.displayName("playground", fallback: "オフィスA"),
                         minutes: pgV2.representativeMinutes,
                         summary: commuteSummaryV2(pgV2),
                         secondaryLine: commuteSecondaryLineV2(pgV2),
@@ -1870,13 +1870,13 @@ struct ListingDetailView: View {
                     )
                 }
                 .buttonStyle(CommuteCardButtonStyle())
-                .accessibilityLabel("オフィスAへの通勤経路を Google Maps で開く")
+                .accessibilityLabel("\(CommuteDestinationConfig.displayName("playground", fallback: "オフィスA"))への通勤経路を Google Maps で開く")
             } else if let pg = commute.playground {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .playground)
                 } label: {
                     commuteDestinationCard(
-                        name: "オフィスA",
+                        name: CommuteDestinationConfig.displayName("playground", fallback: "オフィスA"),
                         minutes: pg.minutes,
                         summary: pg.summary,
                         secondaryLine: nil,
@@ -1887,16 +1887,16 @@ struct ListingDetailView: View {
                     )
                 }
                 .buttonStyle(CommuteCardButtonStyle())
-                .accessibilityLabel("オフィスAへの通勤経路を Google Maps で開く")
+                .accessibilityLabel("\(CommuteDestinationConfig.displayName("playground", fallback: "オフィスA"))への通勤経路を Google Maps で開く")
             }
 
-            // オフィスB（信頼ソース優先）
+            // オフィスB（m3career・信頼ソース優先）
             if let m3 = commute.m3career, m3.isReliableSource {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
                 } label: {
                     commuteDestinationCard(
-                        name: "オフィスB株式会社",
+                        name: CommuteDestinationConfig.displayName("m3career", fallback: "オフィスB"),
                         minutes: m3.minutes,
                         summary: m3.summary,
                         secondaryLine: nil,
@@ -1907,13 +1907,13 @@ struct ListingDetailView: View {
                     )
                 }
                 .buttonStyle(CommuteCardButtonStyle())
-                .accessibilityLabel("オフィスBへの通勤経路を Google Maps で開く")
+                .accessibilityLabel("\(CommuteDestinationConfig.displayName("m3career", fallback: "オフィスB"))への通勤経路を Google Maps で開く")
             } else if let m3V2 = commuteV2?.offices.m3career {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
                 } label: {
                     commuteDestinationCard(
-                        name: "オフィスB株式会社",
+                        name: CommuteDestinationConfig.displayName("m3career", fallback: "オフィスB"),
                         minutes: m3V2.representativeMinutes,
                         summary: commuteSummaryV2(m3V2),
                         secondaryLine: commuteSecondaryLineV2(m3V2),
@@ -1924,13 +1924,13 @@ struct ListingDetailView: View {
                     )
                 }
                 .buttonStyle(CommuteCardButtonStyle())
-                .accessibilityLabel("オフィスBへの通勤経路を Google Maps で開く")
+                .accessibilityLabel("\(CommuteDestinationConfig.displayName("m3career", fallback: "オフィスB"))への通勤経路を Google Maps で開く")
             } else if let m3 = commute.m3career {
                 Button {
                     CommuteTimeService.openGoogleMaps(from: listing, to: .m3career)
                 } label: {
                     commuteDestinationCard(
-                        name: "オフィスB株式会社",
+                        name: CommuteDestinationConfig.displayName("m3career", fallback: "オフィスB"),
                         minutes: m3.minutes,
                         summary: m3.summary,
                         secondaryLine: nil,
@@ -1941,7 +1941,7 @@ struct ListingDetailView: View {
                     )
                 }
                 .buttonStyle(CommuteCardButtonStyle())
-                .accessibilityLabel("オフィスBへの通勤経路を Google Maps で開く")
+                .accessibilityLabel("\(CommuteDestinationConfig.displayName("m3career", fallback: "オフィスB"))への通勤経路を Google Maps で開く")
             }
 
             // フォールバック概算の場合は再計算ボタン

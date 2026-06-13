@@ -38,7 +38,7 @@ class OptionalFeatures:
         return (None, None)
 
     def get_destination_labels(self) -> tuple[str, str]:
-        return "オフィスB", "playground(一番町)"
+        return "オフィスB", "オフィスA"
 
     def format_all_station_walk(self, station_line: str, fallback_walk_min: Optional[int]) -> str:
         return format_walk_stub(fallback_walk_min)

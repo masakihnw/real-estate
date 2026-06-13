@@ -42,7 +42,7 @@ logger = get_logger(__name__)
 # ---------------------------------------------------------------------------
 DESTINATIONS: Dict[str, Dict[str, Any]] = {
     "playground": {
-        "name": "Playground",
+        "name": "オフィスA",
         "estimate_station_min": ESTIMATE_STATION_TO_OFFICE_PG_MIN,
         "estimate_office_walk": ESTIMATE_OFFICE_STATION_WALK_PG_MIN,
     },

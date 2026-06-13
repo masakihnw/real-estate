@@ -128,7 +128,7 @@ def get_search_conditions_md() -> str:
         "| 表示対象 | 資産性B以上（S/A/B）の物件のみ表示。根拠は表の「資産性根拠」列参照。 |",
         "| 10年シミュレーション | FutureEstatePredictor（収益還元・原価法ハイブリッド）による楽観・中立・悲観3シナリオ。各列に「予測金額（含み益/騰落率）」を表示。 |",
         "| ローン試算 | 50年変動金利・頭金なし。諸経費（修繕積立等）月3.5万円を加算した月額支払。 |",
-        "| 通勤時間 | オフィスB（虎ノ門）・playground（千代田区一番町）まで。Station Master の代表値を優先し、レンジがあれば併記。未計算時のみ既存概算を表示。 |",
+        "| 通勤時間 | 通勤先2拠点（オフィスA・オフィスB）まで。Station Master の代表値を優先し、レンジがあれば併記。未計算時のみ既存概算を表示。 |",
     ]
     if ALLOWED_STATIONS:
         station_label = "・".join(ALLOWED_STATIONS[:8]) + (" など" if len(ALLOWED_STATIONS) > 8 else "")

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  許可メールアドレスの実値テンプレート。
+  これを AllowedEmails.plist にコピーし、実際の許可アカウントを記載する。
+  AllowedEmails.plist は .gitignore 対象（PII のためコミット禁止）。
+-->
+<plist version="1.0">
+<array>
+    <string>example.allowed.user@gmail.com</string>
+</array>
+</plist>

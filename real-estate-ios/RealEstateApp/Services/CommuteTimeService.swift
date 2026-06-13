@@ -51,10 +51,30 @@ struct CommuteDestinationConfig: Codable, Identifiable {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 
-    static let defaults: [CommuteDestinationConfig] = [
-        CommuteDestinationConfig(id: "playground", name: "オフィスA", latitude: 0.0, longitude: 0.0),
-        CommuteDestinationConfig(id: "m3career", name: "オフィスB", latitude: 0.0, longitude: 0.0),
+    /// デフォルト通勤先。実値（実住所・座標・社名）は公開リポジトリにコミットせず、
+    /// アプリバンドル内 `CommuteOffices.plist`（`.gitignore` 対象）から読み込む。
+    /// 未配置時は個人を特定しないプレースホルダ（座標 0,0）を返す。実運用では
+    /// 端末の「通勤先設定」または CommuteOffices.plist で実値を与える。
+    static let defaults: [CommuteDestinationConfig] = loadBundledOffices() ?? [
+        CommuteDestinationConfig(id: "playground", name: "オフィスA", latitude: 0, longitude: 0),
+        CommuteDestinationConfig(id: "m3career", name: "オフィスB", latitude: 0, longitude: 0),
     ]
+
+    /// `CommuteOffices.plist`（id/name 文字列・latitude/longitude 数値の辞書配列）を読み込む。
+    private static func loadBundledOffices() -> [CommuteDestinationConfig]? {
+        guard let url = Bundle.main.url(forResource: "CommuteOffices", withExtension: "plist"),
+              let data = try? Data(contentsOf: url),
+              let list = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [[String: Any]]
+        else { return nil }
+        let configs = list.compactMap { dict -> CommuteDestinationConfig? in
+            guard let id = dict["id"] as? String,
+                  let name = dict["name"] as? String,
+                  let lat = (dict["latitude"] as? NSNumber)?.doubleValue,
+                  let lng = (dict["longitude"] as? NSNumber)?.doubleValue else { return nil }
+            return CommuteDestinationConfig(id: id, name: name, latitude: lat, longitude: lng)
+        }
+        return configs.isEmpty ? nil : configs
+    }
 
     private static let storageKey = "commuteDestinations"
 
@@ -72,16 +92,26 @@ struct CommuteDestinationConfig: Codable, Identifiable {
             UserDefaults.standard.set(data, forKey: storageKey)
         }
     }
+
+    /// slug（playground/m3career 等）に対応する通勤先の表示名。実名は端末設定/
+    /// CommuteOffices.plist が正。未設定時は個人を特定しない fallback（オフィスA/B 等）。
+    static func displayName(_ id: String, fallback: String) -> String {
+        defaults.first { $0.id == id }?.name ?? fallback
+    }
 }
 
 // MARK: - 経路計算用の定数
 
 /// 経路計算用の定数（MainActor に依存せずバックグラウンドで参照可能）
 private enum _RouteCoordinates {
-    static let playground = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
-    static let playgroundName = "オフィスA"
-    static let m3career = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
-    static let m3careerName = "オフィスB"
+    private static let zero = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+    private static func office(_ id: String) -> CommuteDestinationConfig? {
+        CommuteDestinationConfig.defaults.first { $0.id == id }
+    }
+    static let playground = office("playground")?.coordinate ?? zero
+    static let playgroundName = office("playground")?.name ?? "オフィスA"
+    static let m3career = office("m3career")?.coordinate ?? zero
+    static let m3careerName = office("m3career")?.name ?? "オフィスB"
 }
 
 @MainActor
@@ -286,7 +316,7 @@ final class CommuteTimeService {
             }
         }
 
-        // オフィスBへの経路
+        // オフィスB（m3career）への経路
         if let m3Result = await Self.calculateRoute(from: origin, to: _RouteCoordinates.m3career, destinationName: _RouteCoordinates.m3careerName) {
             let existingIsBetter = commuteData.m3career.map { !$0.isFallbackEstimate && m3Result.isFallbackEstimate } ?? false
             if !existingIsBetter {

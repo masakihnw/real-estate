@@ -18,7 +18,7 @@ scraping-tool/
 ├── future_estate_predictor.py # 10年後価格予測（3シナリオ・収益還元・原価法ハイブリッド）
 ├── price_predictor.py    # 10年後成約価格予測（FutureEstatePredictor を利用、外部CSV利用）
 ├── loan_calc.py           # ローン月額試算（50年変動・諸経費込）
-├── commute.py             # 通勤時間表示（オフィスB・playground、data/commute_*.json）
+├── commute.py             # 通勤時間表示（通勤先2拠点 オフィスA/B、data/commute_*.json）
 ├── suumo_scraper.py       # SUUMO 中古マンション一覧スクレイパー
 ├── homes_scraper.py       # HOME'S スクレイパー（実装済）
 ├── main.py                # CLI エントリ（取得・重複除去）
@@ -293,9 +293,9 @@ python3 slack_notify.py current.json [previous.json] [report.md]
 - レポート・Slackの物件行に **資産性ランク（S/A/B/C）** を表示する。独自スコア（駅乗降客数・徒歩・築年・総戸数）に基づく参考値。
 - 詳細: [docs/asset-ranking-feasibility.md](./docs/asset-ranking-feasibility.md)
 
-### 通勤時間（オフィスB・playground）
+### 通勤時間（通勤先2拠点）
 
-- レポート・Slackの物件行に **オフィスB**（虎ノ門）・**playground**（千代田区一番町）までの通勤時間を表示する。
+- レポート・Slackの物件行に通勤先2拠点（**オフィスA**・**オフィスB**）までの通勤時間を表示する。実住所・名称は環境変数 `COMMUTE_OFFICES_JSON` / Supabase が正（リポジトリにはプレースホルダのみ）。
 - `data/commute_m3career.json` と `data/commute_playground.json` に「駅名 → 分数」の形式で登録する。東京23区・周辺の主要駅は乗換案内の目安で登録済み。
 - 駅名は「東新宿」「東新宿駅」のどちらでも照合可能（末尾の「駅」を無視して照合）。未登録の駅は「-」。
 - 正確な所要時間が必要な場合は、乗換案内API（例: ジョルダン乗換案内オープンAPI）で取得して JSON を更新するか、手動で編集して利用する。

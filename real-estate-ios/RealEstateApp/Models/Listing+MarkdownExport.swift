@@ -82,23 +82,27 @@ extension Listing {
         }
 
         if hasCommuteInfo {
+            // 通勤先の表示名は設定値（CommuteDestinationConfig）から取得。実名は端末設定/
+            // CommuteOffices.plist が正で、リポジトリにはプレースホルダ（オフィスA/B）のみ。
+            let pgName = CommuteDestinationConfig.defaults.first { $0.id == "playground" }?.name ?? "オフィスA"
+            let m3Name = CommuteDestinationConfig.defaults.first { $0.id == "m3career" }?.name ?? "オフィスB"
             md += "\n## 通勤時間\n\n"
             if let v2 = parsedCommuteInfoV2 {
                 if let pg = v2.offices.playground {
                     let station = pg.selectedStation?.name ?? "駅未設定"
-                    md += "- **オフィスA**: \(pg.representativeMinutes)分（レンジ \(pg.rangeDisplay) / \(station) ベース）\n"
+                    md += "- **\(pgName)**: \(pg.representativeMinutes)分（レンジ \(pg.rangeDisplay) / \(station) ベース）\n"
                 }
                 if let m3 = v2.offices.m3career {
                     let station = m3.selectedStation?.name ?? "駅未設定"
-                    md += "- **オフィスB株式会社**: \(m3.representativeMinutes)分（レンジ \(m3.rangeDisplay) / \(station) ベース）\n"
+                    md += "- **\(m3Name)**: \(m3.representativeMinutes)分（レンジ \(m3.rangeDisplay) / \(station) ベース）\n"
                 }
             } else {
                 let ci = parsedCommuteInfo
                 if let pg = ci.playground {
-                    md += "- **オフィスA**: \(pg.minutes)分（\(pg.summary)）\n"
+                    md += "- **\(pgName)**: \(pg.minutes)分（\(pg.summary)）\n"
                 }
                 if let m3 = ci.m3career {
-                    md += "- **オフィスB株式会社**: \(m3.minutes)分（\(m3.summary)）\n"
+                    md += "- **\(m3Name)**: \(m3.minutes)分（\(m3.summary)）\n"
                 }
             }
         }
