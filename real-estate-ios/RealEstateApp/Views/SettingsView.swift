@@ -21,7 +21,6 @@ struct SettingsView: View {
 
     @State private var showSignOutConfirmation = false
     @State private var showFullRefreshConfirmation = false
-    @State private var showScrapingConfig = false
     @State private var showScrapingLog = false
     @State private var showWalkthrough = false
     @State private var showTransactions = false
@@ -79,12 +78,6 @@ struct SettingsView: View {
             .onAppear {
                 chukoURLInput = store.listURL
                 showAdvancedURL = store.isUsingCustomURL
-            }
-            .task {
-                await ScrapingConfigService.shared.fetch()
-            }
-            .sheet(isPresented: $showScrapingConfig) {
-                ScrapingConfigView(initialConfig: ScrapingConfigService.shared.config)
             }
             .sheet(isPresented: $showScrapingLog) {
                 ScrapingLogView()
@@ -389,25 +382,6 @@ struct SettingsView: View {
     @ViewBuilder
     private var developerSection: some View {
         Section {
-            Button {
-                Task {
-                    await ScrapingConfigService.shared.fetch(force: true)
-                    showScrapingConfig = true
-                }
-            } label: {
-                HStack {
-                    Label("スクレイピング条件", systemImage: "slider.horizontal.3")
-                    Spacer()
-                    if ScrapingConfigService.shared.isLoading {
-                        ProgressView()
-                    }
-                    Image(systemName: "chevron.right")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-            .disabled(ScrapingConfigService.shared.isLoading)
-
             Button {
                 showScrapingLog = true
             } label: {
