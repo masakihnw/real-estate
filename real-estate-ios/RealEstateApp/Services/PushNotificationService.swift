@@ -84,7 +84,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
                 let total = chukoNew
                 print("[SilentPush] 同期完了: \(chukoNew)件")
                 if total > 0 {
-                    NotificationScheduleService.shared.accumulateAndReschedule(newCount: total)
+                    NotificationScheduleService.shared.accumulateAndReschedule(
+                        newCount: total,
+                        matchedTemplateCounts: ListingStore.matchedTemplateCounts(modelContext: context)
+                    )
                 }
                 await ListingStore.shared.markFetched()
                 completionHandler(total > 0 ? .newData : .noData)

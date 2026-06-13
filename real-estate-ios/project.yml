@@ -76,6 +76,8 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLSchemes:
               - "com.googleusercontent.apps.481688023840-pd1prakenbuqgl1phfpdgkf2cghurak6"
+          - CFBundleURLSchemes:
+              - "realestate"
     entitlements:
       path: RealEstateApp/RealEstateApp.entitlements
       properties:

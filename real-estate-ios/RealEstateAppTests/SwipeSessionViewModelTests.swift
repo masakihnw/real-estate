@@ -40,9 +40,18 @@ struct SwipeSessionViewModelTests {
         Calendar.current.date(byAdding: .day, value: -daysAgo, to: Date())!
     }
 
+    /// テストごとに独立した UserDefaults suite を持つ進捗ストア。
+    /// commitSwipe/undo が標準 UserDefaults を汚染しないよう注入する。
+    private static func isolatedStore() -> SwipeProgressStore {
+        let suite = "test.swipe.vm.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removePersistentDomain(forName: suite)
+        return SwipeProgressStore(defaults: defaults)
+    }
+
     @MainActor
     private func vmWithCards(_ count: Int) -> SwipeSessionViewModel {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         let listings = (0..<count).map { i in makeListing(name: "card\(i)") }
         vm.setCardsForTesting(listings)
         return vm
@@ -53,7 +62,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards は isRecentlyAdded かつ !isDelisted の物件のみ含む")
     @MainActor
     func loadCardsFiltersCorrectly() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         let today = makeListing(name: "今日", addedAt: recentDate(daysAgo: 0))
         let yesterday = makeListing(name: "昨日", addedAt: recentDate(daysAgo: 1))
         let old = makeListing(name: "古い", addedAt: recentDate(daysAgo: 5))
@@ -67,7 +76,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards は新築（shinchiku）を除外する")
     @MainActor
     func loadCardsExcludesShinchiku() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         let chuko = makeListing(name: "中古物件")
         let shinchiku = makeListing(name: "新築物件", propertyType: "shinchiku")
         vm.loadCards(from: [chuko, shinchiku])
@@ -78,7 +87,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards は listingScore 降順でソートする")
     @MainActor
     func loadCardsSortsByScore() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         let low = makeListing(name: "低", listingScore: 30)
         let high = makeListing(name: "高", listingScore: 80)
         let mid = makeListing(name: "中", listingScore: 55)
@@ -91,7 +100,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards で空の配列を渡すと cards は空")
     @MainActor
     func loadCardsEmpty() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         vm.loadCards(from: [])
         #expect(vm.cards.isEmpty)
         #expect(vm.isComplete)
@@ -102,7 +111,7 @@ struct SwipeSessionViewModelTests {
     @Test("初期状態のプロパティが正しい")
     @MainActor
     func initialState() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         #expect(vm.cards.isEmpty)
         #expect(vm.currentCard == nil)
         #expect(vm.isComplete)
@@ -159,7 +168,7 @@ struct SwipeSessionViewModelTests {
     @Test("currentCard が nil のとき commitSwipe は何もしない")
     @MainActor
     func commitSwipeOnEmpty() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         vm.commitSwipe(.like)
         #expect(vm.likedCount == 0)
     }
@@ -371,7 +380,7 @@ struct SwipeSessionViewModelTests {
     @Test("filterCardsWithoutImages は画像のない物件を除外する")
     @MainActor
     func filterCardsWithoutImagesRemovesImageless() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         let withImages = makeListing(
             name: "画像あり",
             suumoImagesJSON: #"[{"url":"https://example.com/img.jpg","label":"外観"}]"#,
@@ -393,7 +402,7 @@ struct SwipeSessionViewModelTests {
     @Test("filterCardsWithoutImages は全物件に画像があれば何も除外しない")
     @MainActor
     func filterCardsWithoutImagesKeepsAll() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         let a = makeListing(
             name: "A",
             suumoImagesJSON: #"[{"url":"https://a.com/1.jpg","label":"外観"}]"#,
@@ -412,7 +421,7 @@ struct SwipeSessionViewModelTests {
     @Test("filterCardsWithoutImages で全物件除外されると cards が空になる")
     @MainActor
     func filterCardsWithoutImagesAllFiltered() {
-        let vm = SwipeSessionViewModel()
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
         let noImages1 = makeListing(name: "なし1")
         let noImages2 = makeListing(name: "なし2")
         vm.setCardsForTesting([noImages1, noImages2])
