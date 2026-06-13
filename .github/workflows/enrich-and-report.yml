@@ -444,6 +444,19 @@ jobs:
           path: scraping-tool/data/claude_cache.db
           key: claude-cache-finalize-${{ github.run_id }}
 
+      # geocode キャッシュは PII 混入の恐れで .gitignore 化（commit しない）。
+      # 旧来は git commit で永続化していたが、actions/cache（repo スコープ・
+      # restore-keys の prefix で最新を取得）へ移行。finalize の build_map_viewer 等で
+      # 追記された分をここで保存する。scrape ジョブ側でも restore/save する。
+      - name: Save geocode caches (finalize)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            scraping-tool/data/geocode_cache.json
+            scraping-tool/data/reverse_geocode_cache.json
+          key: geocode-cache-${{ github.run_id }}
+
       - name: Commit and push
         run: |
           git config --local user.email "action@github.com"
@@ -455,7 +468,6 @@ jobs:
           git add scraping-tool/results/
           for f in \
             scraping-tool/data/building_units.json \
-            scraping-tool/data/geocode_cache.json \
             scraping-tool/data/sumai_surfin_cache.json \
             scraping-tool/data/reinfolib_prices.json \
             scraping-tool/data/reinfolib_trends.json \
@@ -463,13 +475,12 @@ jobs:
             scraping-tool/data/estat_population.json \
             scraping-tool/data/floor_plan_storage_manifest.json \
             scraping-tool/data/station_cache.json \
-            scraping-tool/data/reverse_geocode_cache.json \
             scraping-tool/data/first_seen_at.json \
             scraping-tool/data/listings.db \
             scraping-tool/data/mansion_review_cache.json; do
-            # claude_cache.db は .gitignore 対象（actions/cache で永続化するため
-            # コミットしない）。set -e 下で ignored ファイルを git add すると
-            # exit 1 でステップ全体が落ちるため、ここに含めない。
+            # claude_cache.db / geocode_cache.json / reverse_geocode_cache.json は
+            # .gitignore 対象（PII混入の恐れ・actions/cache で永続化）。set -e 下で
+            # ignored ファイルを git add すると exit 1 でステップが落ちるため含めない。
             [ -f "$f" ] && git add "$f"
           done
           [ -d scraping-tool/results/risk_geojson ] && git add scraping-tool/results/risk_geojson/
@@ -485,8 +496,6 @@ jobs:
           レポート: scraping-tool/results/report/report.md
           自動更新: GitHub Actions (enrich-and-report)" || exit 0
 
-          git stash --quiet 2>/dev/null || true
-
           if git pull --rebase -X theirs origin ${{ github.ref_name }}; then
             git push origin HEAD:refs/heads/${{ github.ref_name }}
           else
@@ -494,17 +503,6 @@ jobs:
             git rebase --abort 2>/dev/null || true
             git pull --no-rebase -X ours origin ${{ github.ref_name }}
             git push origin HEAD:refs/heads/${{ github.ref_name }}
-          fi
-
-          # stash に残ったキャッシュ更新をコミット（Build map viewer 等の追加分）
-          if git stash pop --quiet 2>/dev/null; then
-            for f in scraping-tool/data/geocode_cache.json scraping-tool/data/reverse_geocode_cache.json; do
-              [ -f "$f" ] && git add "$f"
-            done
-            if ! git diff --cached --quiet; then
-              git commit -m "chore: update geocode cache"
-              git push origin HEAD:refs/heads/${{ github.ref_name }}
-            fi
           fi
 
       - name: Notify failure to Slack
