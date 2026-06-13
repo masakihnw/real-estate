@@ -233,15 +233,31 @@ LIMIT 30;
      'url', (SELECT ls.url FROM listing_sources ls WHERE ls.listing_id = <remove_id> AND ls.is_active LIMIT 1)
    ))
    WHERE listing_id = <keep_id>;
-   
-   -- マージ元を非アクティブ化
-   UPDATE listings SET is_active = false WHERE id = <remove_id>;
+
+   -- マージ元のソースを無効化し、tombstone 化（merged_into で統合先を指す）
+   UPDATE listing_sources SET is_active = false WHERE listing_id = <remove_id>;
+   UPDATE listings SET is_active = false, merged_into = <keep_id> WHERE id = <remove_id>;
    ```
+
+   **⚠️ tombstone の鉄則（蘇生防止）**:
+   - `merged_into` を必ずセットすること。is_active=false だけでは、掲載元がページを
+     掲載し続ける限りスクレイパー同期が identity_key 完全一致で**毎朝再アクティブ化**する
+     （merged_into 付きならスクレイパーは統合先へリダイレクトする）。
+   - マージ元（tombstone）の `name` / `normalized_name` / `identity_key` は**修正しない**こと。
+     スクレイパーが再計算する identity_key と一致し続けることでリダイレクトが成立する。
+     プロモーション文言の名前を「修正」すると照合が切れ、同じ junk 名で**重複が再作成**される。
+   - 統合URLの記録は `enrichments.alt_sources` を使う。`listings.alt_urls` は
+     スクレイパーが毎回上書きするため手動追加が消える。
 
 4. `same_building` 判定の場合:
    ```sql
    UPDATE listings SET normalized_name = '<統一名>' WHERE id IN (<id_a>, <id_b>);
    ```
+
+   **⚠️ 注意**: `normalized_name` はスクレイパー同期が掲載ページの名前から毎回再計算して
+   上書きするため、掲載元の表記が原因の揺れ（ケ/ヶ等）は次回スクレイプで元に戻る。
+   恒久統一には `normalize_listing_name()`（report_utils.py）側での吸収が必要。
+   揺れが normalize で吸収できないケースは統一を見送り、レポートに記録するだけにする。
 
 対象が0件ならスキップして Step 1 へ。
 
