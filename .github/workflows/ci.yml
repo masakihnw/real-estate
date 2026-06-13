@@ -1,0 +1,176 @@
+name: CI
+
+# PR マージゲートの単一の正。main は「必須チェック = ci-gate が緑」でのみマージ可。
+# paths フィルタの罠（変更パスに該当せず起動しなかった必須チェックが "待ち" のまま
+# PR を永久ブロックする）を避けるため、ワークフロー単位の paths: は使わず、
+# changes ジョブで変更領域を判定し、関係ないジョブは skip、最後に必ず走る
+# ci-gate ジョブが結果を集約して1つのステータスを返す。
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+# concurrency はワークフロー全体ではなく、計算コストの高いジョブ（python-tests /
+# ios-build）に個別付与する。ワークフロー全体に cancel-in-progress を付けると、
+# 必須チェックである ci-gate まで cancelled になり PR が「未完了」で固まる恐れがあるため、
+# changes と ci-gate にはキャンセルを掛けない。
+
+jobs:
+  # ── 変更領域の判定（python / ios のどちらに触れた PR か）─────────────
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.filter.outputs.python }}
+      ios: ${{ steps.filter.outputs.ios }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590  # v3
+        id: filter
+        with:
+          filters: |
+            python:
+              - 'scraping-tool/**'
+            ios:
+              - 'real-estate-ios/**'
+
+  # ── パイプライン（Python）レグレッション: lint + 全ユニット + スモーク ──
+  python-tests:
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ci-python-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: |
+          pip install -r requirements.txt
+          pip install pytest ruff
+
+      - name: Lint (ruff)
+        working-directory: scraping-tool
+        run: ruff check .
+
+      - name: Run tests
+        working-directory: scraping-tool
+        run: pytest tests/ -v
+
+  # ── iOS アプリ レグレッション: ビルド + 全 XCTest/Swift Testing ─────────
+  ios-build:
+    needs: changes
+    if: needs.changes.outputs.ios == 'true'
+    runs-on: macos-15
+    concurrency:
+      group: ci-ios-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+
+      # ランナーにインストール済みの最新 Xcode を選択する。
+      # 以前は Xcode_16.0.app を固定していたが、macos-15 イメージ更新で
+      # この Xcode の iOS シミュレータ runtime が削除され、destination 解決に
+      # 失敗して CI が落ちた（iPhone 16/iOS18 が見つからない）。
+      - name: Select Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)
+          echo "Selecting ${XCODE:-(default)}"
+          [ -n "$XCODE" ] && sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Install xcpretty
+        run: gem install xcpretty
+
+      - name: Generate Xcode Project
+        working-directory: real-estate-ios
+        run: xcodegen generate
+
+      - name: Resolve Package Dependencies
+        working-directory: real-estate-ios
+        run: xcodebuild -resolvePackageDependencies -project RealEstateApp.xcodeproj -scheme RealEstateApp
+
+      # NOTE: 以前は `| xcpretty || true` でビルド失敗が CI 上は常に成功扱いになっていた。
+      # pipefail + || true 削除で失敗を正しく検知する。
+      # Mac Catalyst ビルドは Mac 版廃止（2026-05-16）に伴い削除済み。
+      # destination はハードコードせず、実在する iPhone シミュレータを動的解決する
+      # （ランナーイメージ更新で特定のデバイス名/OSが消えても壊れないように）。
+      # xcpretty は Swift Testing の失敗詳細を出力しないため、生ログを tee で保存し
+      # 失敗時に該当行を抽出して表示する。
+      - name: Build & Test (iOS)
+        working-directory: real-estate-ios
+        run: |
+          set -o pipefail
+          echo "--- 利用可能な iOS シミュレータ ---"
+          xcrun simctl list devices available | grep -E "iPhone" || true
+          DEVICE=$(xcrun simctl list devices available \
+            | grep -oE "iPhone [0-9]+( Pro( Max)?| Plus| Air| mini)?" \
+            | sort -V | tail -1)
+          if [ -z "$DEVICE" ]; then
+            echo "::error::利用可能な iPhone シミュレータが見つかりません"
+            xcrun simctl list runtimes
+            exit 1
+          fi
+          echo "使用シミュレータ: $DEVICE"
+          xcodebuild test \
+            -project RealEstateApp.xcodeproj \
+            -scheme RealEstateApp \
+            -destination "platform=iOS Simulator,name=$DEVICE" \
+            -configuration Debug \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee xcodebuild-raw.log | xcpretty
+
+      - name: Show test failures
+        if: failure()
+        working-directory: real-estate-ios
+        run: |
+          echo "--- 失敗したテスト（生ログ抽出） ---"
+          grep -E "(Test Case .* (failed|passed with warnings)|✘|✗|recorded an issue|Expectation failed|Fatal error|error:|failing tests|Restarting after unexpected exit|Crash:)" \
+            xcodebuild-raw.log | head -120 || echo "(該当行なし — xcodebuild-raw.log アーティファクトを確認)"
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            real-estate-ios/TestResults.xcresult
+            real-estate-ios/xcodebuild-raw.log
+          retention-days: 7
+
+  # ── 必須チェック（branch protection はこのジョブだけを要求する）─────────
+  # 常に走り、関係ジョブの結果を集約する。skip は許容、failure があれば落とす。
+  ci-gate:
+    needs: [changes, python-tests, ios-build]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify required jobs
+        run: |
+          changes_result="${{ needs.changes.result }}"
+          python_result="${{ needs.python-tests.result }}"
+          ios_result="${{ needs.ios-build.result }}"
+          echo "changes:      ${changes_result}"
+          echo "python-tests: ${python_result}"
+          echo "ios-build:    ${ios_result}"
+          # changes の失敗は変更領域を判定できていない＝CI自体の異常なので必ずブロックする
+          # （両ジョブが skipped になり緑に見えてしまう穴を塞ぐ）。
+          # python-tests / ios-build は対象外で skipped なら OK、failure / cancelled は NG。
+          for r in "$changes_result" "$python_result" "$ios_result"; do
+            if [ "$r" = "failure" ] || [ "$r" = "cancelled" ]; then
+              echo "::error::必須CIジョブが失敗しました（デグレの可能性）。マージをブロックします。"
+              exit 1
+            fi
+          done
+          echo "必須CIは全て緑（または対象外でskip）。マージ可。"
