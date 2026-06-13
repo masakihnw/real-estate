@@ -8,6 +8,7 @@ struct InspectionModeView: View {
     let listing: Listing
     @Environment(\.modelContext) private var modelContext
     @State private var newMemo = ""
+    @State private var nearbyTxns: [TransactionRecord] = []
     @FocusState private var memoFocused: Bool
 
     var body: some View {
@@ -23,6 +24,10 @@ struct InspectionModeView: View {
         }
         .navigationTitle("内見モード")
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            // body 再評価ごとの SwiftData fetch を避けキャッシュ（成約レコードは画面内で不変）
+            nearbyTxns = TransactionStore.nearby(address: listing.address, limit: 3, in: modelContext)
+        }
     }
 
     // MARK: - ハザード
@@ -84,7 +89,7 @@ struct InspectionModeView: View {
 
     private var marketCard: some View {
         let market = listing.parsedMarketData
-        let txns = TransactionStore.nearby(address: listing.address, limit: 3, in: modelContext)
+        let txns = nearbyTxns
         return card("周辺相場", icon: "chart.bar") {
             if let market {
                 HStack {
