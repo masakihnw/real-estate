@@ -268,9 +268,47 @@ def _parse_jsonld_itemlist(html: str) -> list[dict[str, Any]]:
     return []
 
 
+# textFeatureComment の装飾記号（建物名を ■…■ / ◆…◆ 等で囲む）
+_FEATURE_DECO = "■□◆◇★☆▼▲●○♪♫◎"
+# 先頭の装飾ブロック（■建物名■…）から建物名候補を取り出す
+_NAME_BLOCK_RE = re.compile(rf"^[\s{_FEATURE_DECO}]*[{_FEATURE_DECO}]([^{_FEATURE_DECO}]+)[{_FEATURE_DECO}]")
+# 「〇〇駅徒歩○分」（装飾記号・区切り（全角/半角スラッシュ・読点等）を跨がない）
+_STATION_WALK_RE = re.compile(rf"[^\s/／・、，！!？?「」{_FEATURE_DECO}]+駅\s*徒歩\s*約?\s*\d+\s*分")
+
+
+def _split_feature_comment(text: str) -> tuple[str, str]:
+    """HOME'S の textFeatureComment から (建物名候補, 駅徒歩文字列) を抽出する。
+
+    HOME'S の一覧カードは建物名を JSON-LD ではなく textFeatureComment に
+    「■建物名■〇〇駅徒歩X分」の形で持つことがある。これを分離し、
+    建物名を name 候補に、駅徒歩部分だけを station_line に振り分ける。
+    駅徒歩パターンが見つからない場合 station は ""（呼び出し側でフォールバック）。
+
+    例:
+      '■レグノ・セレーノ■大久保駅徒歩3分'        → ('レグノ・セレーノ', '大久保駅徒歩3分')
+      '■朝日シティパリオ高輪台■港区高輪・高輪駅徒歩6分' → ('朝日シティパリオ高輪台', '高輪駅徒歩6分')
+      '◆戸建て感覚×オール電化◆赤坂駅徒歩8分'      → ('', '赤坂駅徒歩8分')  # キャッチコピーは建物名ではない
+      '■建物名■（駅徒歩表記なし）'                → ('建物名', '')          # 駅徒歩なしは station 空
+    """
+    text = (text or "").strip()
+    if not text:
+        return "", ""
+    name = ""
+    m = _NAME_BLOCK_RE.match(text)
+    if m:
+        candidate = m.group(1).strip()
+        # マーケ記号（×！？♪等）を含むものはキャッチコピーであって建物名ではない。
+        # clean_listing_name は × 区切りの「全セグメントが条件タグ」しか弾けないため補完する。
+        if not re.search(r"[×✕！!？?♪♫]", candidate):
+            # clean_listing_name が残りの条件タグ・説明文を弾く（建物名でなければ ""）
+            name = clean_listing_name(candidate)
+    sm = _STATION_WALK_RE.search(text)
+    station = sm.group(0).strip() if sm else ""
+    return name, station
+
 
 def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, dict[str, Any]]:
-    """HTML から url → {layout, walk_min, station_line, total_units} を抽出。mod-mergeBuilding と mod-listKks を処理。"""
+    """HTML から url → {layout, walk_min, station_line, total_units, name} を抽出。mod-mergeBuilding と mod-listKks を処理。"""
     by_url: dict[str, dict[str, Any]] = {}
 
     def table_cell_value(vtable, header_text: str) -> str:
@@ -321,9 +359,10 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
                         break
             if floor_position is None:
                 floor_position = parse_floor_position((tr.get_text() or ""))
-            # 同一 tr の次の memberDataRow の textFeatureComment で徒歩・駅名を上書き
+            # 同一 tr の次の memberDataRow の textFeatureComment で徒歩・駅名・建物名を上書き
             next_tr = tr.find_next_sibling("tr", class_=re.compile(r"memberDataRow|prg-memberDataRow"))
             total_units = None
+            name = ""
             if next_tr:
                 tc = next_tr.select_one("p.textFeatureComment")
                 if tc:
@@ -331,10 +370,12 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
                     w = parse_walk_min(t)
                     if w is not None:
                         walk_min = w
-                    # 「〇〇駅徒歩○分」のような部分だけ station_line に使う
-                    station_m = re.search(r"[^\s/]+駅\s*徒歩\s*約?\s*\d+\s*分", t)
-                    if station_m:
-                        station_line = station_m.group(0)
+                    # 「■建物名■〇〇駅徒歩○分」を建物名と駅徒歩に分離
+                    fc_name, fc_station = _split_feature_comment(t)
+                    if fc_name:
+                        name = fc_name
+                    if fc_station:
+                        station_line = fc_station
                     total_units = parse_total_units_strict(t)
             ownership = table_cell_value(vt, "権利") or table_cell_value(vt, "権利形態") if vt else ""
             ownership = (parse_ownership(ownership) or parse_ownership(tr.get_text() or ""))
@@ -348,6 +389,7 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
                 "floor_position": floor_position,
                 "floor_total": building_floor_total,
                 "ownership": ownership,
+                "name": name,
                 "management_fee": parse_monthly_yen(mgmt_str) if mgmt_str else None,
                 "repair_reserve_fund": parse_monthly_yen(repair_str) if repair_str else None,
             }
@@ -363,9 +405,15 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
         text_all = (bloc.get_text() or "")
         walk_min = parse_walk_min(text_all)
         station_line = ""
+        name = ""
         tc = bloc.select_one("p.textFeatureComment")
         if tc:
-            station_line = (tc.get_text() or "").strip()
+            # textFeatureComment は「■建物名■〇〇駅徒歩○分」形式のことがある。
+            # 建物名を name 候補に、駅徒歩部分だけを station_line に振り分ける。
+            tc_text = (tc.get_text() or "").strip()
+            name, fc_station = _split_feature_comment(tc_text)
+            # 駅徒歩が取れなければ従来どおりコメント全文を station_line に（後段で駅名抽出）
+            station_line = fc_station or tc_text
         if not station_line and "駅" in text_all:
             m = re.search(r"[^\s]+駅[^\s]*", text_all)
             if m:
@@ -391,6 +439,7 @@ def _extract_html_layout_walk(soup: BeautifulSoup, base_url: str) -> dict[str, d
             "floor_position": floor_position,
             "floor_total": floor_total,
             "ownership": ownership,
+            "name": name,
             "management_fee": parse_monthly_yen(mgmt_str) if mgmt_str else None,
             "repair_reserve_fund": parse_monthly_yen(repair_str) if repair_str else None,
         }
@@ -542,10 +591,12 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[HomesListing]:
         total_units = extra.get("total_units")
         floor_position = extra.get("floor_position")
         floor_total = extra.get("floor_total")
+        # JSON-LD に建物名が無い場合は HTML（textFeatureComment）から復旧
+        name = clean_listing_name(r.get("name") or "") or (extra.get("name") or "")
         items.append(HomesListing(
             source="homes",
             url=url,
-            name=clean_listing_name(r.get("name") or ""),
+            name=name,
             price_man=r.get("price_man"),
             address=r.get("address") or "",
             station_line=station_line,

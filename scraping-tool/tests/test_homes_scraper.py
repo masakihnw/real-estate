@@ -12,7 +12,14 @@ sys.modules.setdefault("playwright.sync_api", pw_mock)
 import pytest
 from bs4 import BeautifulSoup
 
-from homes_scraper import HomesListing, _extract_card_listings, apply_conditions
+from homes_scraper import (
+    HomesListing,
+    _extract_card_listings,
+    _extract_html_layout_walk,
+    _split_feature_comment,
+    apply_conditions,
+    parse_list_html,
+)
 
 
 BASE_URL = "https://www.homes.co.jp"
@@ -207,6 +214,121 @@ class TestNameOrUrlRequired:
         soup = BeautifulSoup(html, "lxml")
         items = _extract_card_listings(soup, BASE_URL)
         assert all(item.name != "" for item in items)
+
+
+class TestSplitFeatureComment:
+    """textFeatureComment（■建物名■〇〇駅徒歩X分）の分離を検証。"""
+
+    def test_decorated_name_and_station(self):
+        name, station = _split_feature_comment("■レグノ・セレーノ■大久保駅徒歩3分")
+        assert name == "レグノ・セレーノ"
+        assert station == "大久保駅徒歩3分"
+
+    def test_name_with_trailing_area_text_before_station(self):
+        # 建物名の後に「港区高輪・」のようなエリア表記が入っても駅徒歩だけ取る
+        name, station = _split_feature_comment("■朝日シティパリオ高輪台■港区高輪・高輪駅徒歩6分")
+        assert name == "朝日シティパリオ高輪台"
+        assert station == "高輪駅徒歩6分"
+
+    def test_catchphrase_is_not_a_name(self):
+        # ◆…×…◆ はキャッチコピー → 建物名として弾かれる
+        name, station = _split_feature_comment(
+            "◆戸建て感覚のメゾネットタイプ×オール電化◆赤坂駅徒歩8分"
+        )
+        assert name == ""
+        assert station == "赤坂駅徒歩8分"
+
+    def test_no_decoration_station_only(self):
+        name, station = _split_feature_comment("潮見駅徒歩3分")
+        assert name == ""
+        assert station == "潮見駅徒歩3分"
+
+    def test_name_without_station_pattern_returns_empty_station(self):
+        # 駅徒歩表記が無ければ station は "" を返し、呼び出し側のフォールバックに委ねる
+        name, station = _split_feature_comment("■ビュロー平河町■都心の邸宅")
+        assert name == "ビュロー平河町"
+        assert station == ""
+
+    def test_empty(self):
+        assert _split_feature_comment("") == ("", "")
+        assert _split_feature_comment(None) == ("", "")
+
+
+class TestListKksNameRecovery:
+    """mod-listKks カードで JSON-LD に名前が無くても textFeatureComment から復旧する。"""
+
+    def _kks_html(self, url: str, feature_comment: str) -> str:
+        return f"""
+        <html><body>
+          <div class="mod-listKks mod-listKks-sale cMansion">
+            <a class="prg-detailLink" href="{url}">詳細を見る</a>
+            <table class="verticalTable">
+              <tr><th>間取り</th><td>3LDK</td></tr>
+            </table>
+            <p class="textFeatureComment">{feature_comment}</p>
+          </div>
+        </body></html>
+        """
+
+    def test_html_map_recovers_name_and_clean_station(self):
+        soup = BeautifulSoup(
+            self._kks_html("/mansion/b-1001/", "■レグノ・セレーノ■大久保駅徒歩3分"), "lxml"
+        )
+        by_url = _extract_html_layout_walk(soup, BASE_URL)
+        entry = by_url["https://www.homes.co.jp/mansion/b-1001/"]
+        assert entry["name"] == "レグノ・セレーノ"
+        assert entry["station_line"] == "大久保駅徒歩3分"
+
+    def test_mergebuilding_keeps_line_station_when_comment_has_no_walk(self):
+        # mod-mergeBuilding: textFeatureComment に駅徒歩が無い場合、
+        # 建物の交通セル（路線名付き）の station_line を保持する（説明文で潰さない）。
+        html = """
+        <html><body>
+          <div class="mod-mergeBuilding--sale cMansion">
+            <div class="bukkenSpec">
+              <table class="verticalTable">
+                <tr><th>交通</th><td>東京メトロ東西線 東陽町駅 徒歩5分</td></tr>
+              </table>
+            </div>
+            <table class="unitSummary"><tbody>
+              <tr data-href="/mansion/b-2002/">
+                <td class="info"><span>3階</span>
+                  <table class="verticalTable"><tr><th>間取り</th><td>2LDK</td></tr></table>
+                </td>
+              </tr>
+              <tr class="memberDataRow">
+                <td><p class="textFeatureComment">■パークタワー東陽町■都心近接の邸宅</p></td>
+              </tr>
+            </tbody></table>
+          </div>
+        </body></html>
+        """
+        soup = BeautifulSoup(html, "lxml")
+        by_url = _extract_html_layout_walk(soup, BASE_URL)
+        entry = by_url["https://www.homes.co.jp/mansion/b-2002/"]
+        assert entry["name"] == "パークタワー東陽町"
+        # 路線名付きの交通セルが保持される（textFeatureComment 全文で上書きされない）
+        assert "東京メトロ東西線" in entry["station_line"]
+
+    def test_parse_list_html_falls_back_to_html_name(self):
+        # JSON-LD は name 空、HTML（textFeatureComment）に建物名がある状況
+        jsonld = """
+        <script type="application/ld+json">
+        {"@type":"ItemList","itemListElement":[
+          {"item":{"@type":"Product","name":"","url":"https://www.homes.co.jp/mansion/b-1001/",
+            "offers":{"price":101800000,
+              "itemOffered":{"floorSize":{"value":78.9},"yearBuilt":1998,
+                "address":{"name":"東京都新宿区北新宿3丁目"}}}}}
+        ]}
+        </script>
+        """
+        html = self._kks_html("/mansion/b-1001/", "■レグノ・セレーノ■大久保駅徒歩3分").replace(
+            "<body>", f"<body>{jsonld}"
+        )
+        items = parse_list_html(html, BASE_URL)
+        assert len(items) == 1
+        assert items[0].name == "レグノ・セレーノ"
+        assert items[0].station_line == "大久保駅徒歩3分"
 
 
 def _make_homes_listing(**overrides) -> HomesListing:
