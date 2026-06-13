@@ -76,6 +76,9 @@ struct ContentView: View {
     @State private var showSwipeSession = false
     /// 「あとで」で閉じた場合のセッション内抑制フラグ（フォアグラウンド復帰でリセット）
     @State private var swipeDismissedThisSession = false
+    /// スワイプ画面を最後に自動表示した暦日キー（1日1回までに抑制する）。
+    /// 手動導線（didRequestSwipeSession）はこの値を見ないため常に開ける。
+    @AppStorage("lastSwipeAutoPresentDay") private var lastSwipeAutoPresentDay = ""
     /// フォアグラウンド復帰時の自動更新を抑制する最小間隔（秒）
     private let autoRefreshInterval: TimeInterval = 15 * 60  // 15分
 
@@ -198,7 +201,16 @@ struct ContentView: View {
               !showSwipeSession,
               notificationListing == nil else { return }
         let listings = (try? modelContext.fetch(FetchDescriptor<Listing>())) ?? []
-        guard SwipeSessionViewModel.pendingCount(from: listings) > 0 else { return }
+        let pending = SwipeSessionViewModel.pendingCount(from: listings)
+        let today = SwipeAutoPresentGate.dayKey(Date())
+        guard SwipeAutoPresentGate.shouldPresent(
+            pendingCount: pending,
+            lastPresentedDay: lastSwipeAutoPresentDay,
+            today: today
+        ) else { return }
+        // 自動表示は1日1回まで。表示した時点で当日分を消費する
+        // （「あとで」で閉じても当日は自動再表示しない。手動では何度でも開ける）。
+        lastSwipeAutoPresentDay = today
         showSwipeSession = true
     }
 
