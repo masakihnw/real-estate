@@ -29,6 +29,7 @@ struct ListingListView: View {
     private let networkMonitor = NetworkMonitor.shared
     @Query private var listings: [Listing]
     @State private var sortOrder: SortOrder = .addedDesc
+    @State private var showSortSheet = false
     @State private var selectedListing: Listing?
     /// OOUI: タブごとに独立したフィルタ状態を持つ（中古/新築/お気に入りで干渉しない）
     @State private var filterStore = FilterStore()
@@ -49,6 +50,8 @@ struct ListingListView: View {
         var availableRouteStations: [RouteStations] = []
         var availableDirections: [String] = []
         var availableNumericFields: [ListingNumericField] = []
+        /// 各数値フィールドのデータ充足率（0...1）。baseSignature キャッシュに相乗り。
+        var numericFillRates: [ListingNumericField: Double] = [:]
         var availableSortOrders: [SortOrder] = []
         /// available* 計算時の baseList の署名（URL 列のハッシュ）。
         /// baseList が変わらない限り available* の全件走査をスキップするために使う
@@ -318,10 +321,15 @@ struct ListingListView: View {
                     availableRouteStations: filterCache.availableRouteStations,
                     availableDirections: filterCache.availableDirections,
                     availableNumericFields: filterCache.availableNumericFields,
+                    numericFillRates: filterCache.numericFillRates,
                     availableSortOrders: filterCache.availableSortOrders,
                     baseSignature: signature
                 )
             } else {
+                // baseList が変わった時のみ全走査（充足率もここで1回だけ算出）
+                let availFields = ListingFilter.availableNumericFields(from: currentBase)
+                let fillRates = Dictionary(uniqueKeysWithValues:
+                    availFields.map { ($0, $0.fillRate(in: currentBase)) })
                 newCache = FilterCache(
                     filtered: result,
                     grouped: grouped,
@@ -329,7 +337,8 @@ struct ListingListView: View {
                     availableWards: ListingFilter.availableWards(from: currentBase),
                     availableRouteStations: ListingFilter.availableRouteStations(from: currentBase),
                     availableDirections: ListingFilter.availableDirections(from: currentBase),
-                    availableNumericFields: ListingFilter.availableNumericFields(from: currentBase),
+                    availableNumericFields: availFields,
+                    numericFillRates: fillRates,
                     availableSortOrders: SortOrder.allCases.filter { order in
                         currentBase.contains(where: order.availabilityCheck)
                     },
@@ -412,6 +421,7 @@ struct ListingListView: View {
     private var availableRouteStations: [RouteStations] { filterCache.availableRouteStations }
     private var availableDirections: [String] { filterCache.availableDirections }
     private var availableNumericFields: [ListingNumericField] { filterCache.availableNumericFields }
+    private var numericFillRates: [ListingNumericField: Double] { filterCache.numericFillRates }
 
     var body: some View {
         NavigationStack {
@@ -441,8 +451,13 @@ struct ListingListView: View {
                     availableDirections: availableDirections,
                     availableNumericFields: availableNumericFields,
                     filteredCount: filteredAndSorted.count,
-                    showPriceUndecidedToggle: false
+                    showPriceUndecidedToggle: false,
+                    numericFillRates: numericFillRates
                 )
+            }
+            .sheet(isPresented: $showSortSheet) {
+                sortDetailSheet
+                    .presentationDetents([.medium, .large])
             }
             .environment(\.editMode, favoritesOnly ? $editMode : .constant(.inactive))
             .onAppear {
@@ -610,10 +625,15 @@ struct ListingListView: View {
 
     /// 右下のフィルタ・並び替えオーバーレイ（地図画面の現在地ボタンと同様のスタイル）
     @ViewBuilder
+    /// 代表ソートのうち、現タブで利用可能なもの（提案 §3.4: 1階層8択以内）
+    private var representativeSorts: [SortOrder] {
+        SortOrder.representatives.filter { availableSortOrders.contains($0) }
+    }
+
     private var filterSortOverlayButtons: some View {
         VStack(alignment: .trailing, spacing: 8) {
             Menu {
-                ForEach(availableSortOrders, id: \.self) { order in
+                ForEach(representativeSorts, id: \.self) { order in
                     Button {
                         withAnimation { sortOrder = order }
                     } label: {
@@ -623,6 +643,20 @@ struct ListingListView: View {
                             Text(order.label)
                         }
                     }
+                }
+                // 詳細ソートで代表外を選択中なら現在の並び順を表示（現在地の可視性）
+                if !representativeSorts.contains(sortOrder) {
+                    Section {
+                        Button {} label: { Label("現在: \(sortOrder.label)", systemImage: "checkmark") }
+                            .disabled(true)
+                    }
+                }
+                Divider()
+                Button {
+                    filterStore.showFilterSheet = false   // sheet 排他
+                    showSortSheet = true
+                } label: {
+                    Label("詳細ソート…", systemImage: "slider.horizontal.3")
                 }
             } label: {
                 Image(systemName: "arrow.up.arrow.down.circle")
@@ -635,6 +669,7 @@ struct ListingListView: View {
             .accessibilityLabel("並び順")
 
             Button {
+                showSortSheet = false   // sheet 排他
                 filterStore.showFilterSheet = true
             } label: {
                 Image(systemName: filterStore.filter.isActive
@@ -652,6 +687,41 @@ struct ListingListView: View {
         }
         .padding(.trailing, 12)
         .padding(.bottom, 20)
+    }
+
+    /// 詳細ソート: カテゴリ（基本/立地/お金/資産性/AI）ごとにグループ化したピッカー。
+    private var sortDetailSheet: some View {
+        NavigationStack {
+            List {
+                ForEach(SortOrder.grouped(only: availableSortOrders), id: \.category) { group in
+                    Section(group.category.displayName) {
+                        ForEach(group.sorts, id: \.self) { order in
+                            Button {
+                                withAnimation { sortOrder = order }
+                                showSortSheet = false
+                            } label: {
+                                HStack {
+                                    Text(order.label)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    if order == sortOrder {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(Color.accentColor)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("詳細ソート")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("閉じる") { showSortSheet = false }
+                }
+            }
+        }
     }
 
     private var emptyState: some View {
