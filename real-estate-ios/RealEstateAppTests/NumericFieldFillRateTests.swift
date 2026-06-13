@@ -6,7 +6,7 @@ import Foundation
 struct NumericFieldFillRateTests {
 
     private func listing(totalUnits: Int?) -> Listing {
-        Listing(url: "https://x/\(UUID().uuidString)", name: "t", propertyType: "chuko", totalUnits: totalUnits)
+        Listing(url: "https://x/\(UUID().uuidString)", name: "t", totalUnits: totalUnits, propertyType: "chuko")
     }
 
     @Test("全件データありは 1.0")
