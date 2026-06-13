@@ -30,6 +30,12 @@
 				<string>com.googleusercontent.apps.481688023840-pd1prakenbuqgl1phfpdgkf2cghurak6</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>realestate</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
