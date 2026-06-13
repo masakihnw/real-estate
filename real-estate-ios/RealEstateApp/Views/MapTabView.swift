@@ -264,6 +264,22 @@ final class RankedPolygon: MKPolygon {
     var riskLayerID: String = ""
 }
 
+/// 成約価格ヒートマップの円オーバーレイ（区単位）。level=色段。
+final class HeatmapCircle: MKCircle {
+    var level: Int = 0
+}
+
+/// ヒートマップ色段（0=安い緑 … 4=高い赤）。HeatmapBucketer.levelCount=5 に対応。
+func heatmapColor(for level: Int) -> UIColor {
+    switch level {
+    case 0: return UIColor.systemGreen.withAlphaComponent(0.35)
+    case 1: return UIColor.systemTeal.withAlphaComponent(0.38)
+    case 2: return UIColor.systemYellow.withAlphaComponent(0.42)
+    case 3: return UIColor.systemOrange.withAlphaComponent(0.45)
+    default: return UIColor.systemRed.withAlphaComponent(0.50)
+    }
+}
+
 /// 東京都地域危険度 GeoJSON のフェッチ・パース
 @Observable
 final class TokyoRiskService {
@@ -497,6 +513,7 @@ struct HazardMapView: UIViewRepresentable {
     let listings: [Listing]
     let activeHazardLayers: Set<HazardLayer>
     let activeRiskLayers: Set<TokyoRiskLayer>
+    var heatmapBuckets: [HeatmapBucket] = []
     var usePaleBaseMap: Bool = false
     var showsUserLocation: Bool = false
     @Binding var selectedListing: Listing?
@@ -553,11 +570,15 @@ struct HazardMapView: UIViewRepresentable {
         // レイヤーが変更されていなければスキップ（P4: 差分更新）
         let currentHazard = activeHazardLayers
         let currentRisk = activeRiskLayers
-        if coordinator.previousHazardLayers == currentHazard && coordinator.previousRiskLayers == currentRisk {
+        let heatmapKey = heatmapBuckets.map { "\($0.ward):\($0.level)" }.joined(separator: ",")
+        if coordinator.previousHazardLayers == currentHazard
+            && coordinator.previousRiskLayers == currentRisk
+            && coordinator.previousHeatmapKey == heatmapKey {
             return
         }
         coordinator.previousHazardLayers = currentHazard
         coordinator.previousRiskLayers = currentRisk
+        coordinator.previousHeatmapKey = heatmapKey
 
         // 既存のタイルオーバーレイを削除
         let existingTiles = mapView.overlays.compactMap { $0 as? MKTileOverlay }
@@ -566,6 +587,20 @@ struct HazardMapView: UIViewRepresentable {
         // 既存のポリゴンオーバーレイ (RankedPolygon) を削除
         let existingPolygons = mapView.overlays.compactMap { $0 as? RankedPolygon }
         mapView.removeOverlays(existingPolygons)
+
+        // 既存のヒートマップ円を削除
+        let existingHeatmap = mapView.overlays.compactMap { $0 as? HeatmapCircle }
+        mapView.removeOverlays(existingHeatmap)
+
+        // 成約価格ヒートマップ（区単位の色付き円）を追加
+        for bucket in heatmapBuckets {
+            let circle = HeatmapCircle(
+                center: CLLocationCoordinate2D(latitude: bucket.centerLatitude, longitude: bucket.centerLongitude),
+                radius: 1500
+            )
+            circle.level = bucket.level
+            mapView.addOverlay(circle, level: .aboveRoads)
+        }
 
         // アクティブな GSI タイルオーバーレイを追加
         for layer in activeHazardLayers {
@@ -611,6 +646,7 @@ struct HazardMapView: UIViewRepresentable {
         /// 前回のオーバーレイ状態（差分更新用）
         var previousHazardLayers: Set<HazardLayer>?
         var previousRiskLayers: Set<TokyoRiskLayer>?
+        var previousHeatmapKey: String?
 
         init(parent: HazardMapView) {
             self.parent = parent
@@ -629,6 +665,13 @@ struct HazardMapView: UIViewRepresentable {
                 let renderer = MKPolygonRenderer(polygon: rankedPolygon)
                 renderer.fillColor = riskColor(for: rankedPolygon.rank)
                 renderer.strokeColor = riskColor(for: rankedPolygon.rank).withAlphaComponent(0.6)
+                renderer.lineWidth = 0.5
+                return renderer
+            }
+            if let heatmapCircle = overlay as? HeatmapCircle {
+                let renderer = MKCircleRenderer(circle: heatmapCircle)
+                renderer.fillColor = heatmapColor(for: heatmapCircle.level)
+                renderer.strokeColor = heatmapColor(for: heatmapCircle.level).withAlphaComponent(0.7)
                 renderer.lineWidth = 0.5
                 return renderer
             }
@@ -879,6 +922,7 @@ struct MapTabView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ListingStore.self) private var store
     @Query private var listings: [Listing]
+    @Query private var transactions: [TransactionRecord]
     private let networkMonitor = NetworkMonitor.shared
 
     @State private var selectedListing: Listing?
@@ -897,6 +941,9 @@ struct MapTabView: View {
     @State private var showErrorAlert = false
     /// フィルタ結果のキャッシュ（body 再評価時の重計算を避ける）
     @State private var cachedFilteredListings: [Listing] = []
+    /// 成約価格ヒートマップの表示状態とバケットキャッシュ（§3.4c）
+    @State private var showHeatmap = false
+    @State private var cachedHeatmapBuckets: [HeatmapBucket] = []
 
     /// 座標未取得の物件数（ジオコーディング待ち or 失敗）
     private var ungeocodedCount: Int {
@@ -913,6 +960,16 @@ struct MapTabView: View {
     /// キャッシュを再計算（onChange / onAppear から呼ぶ）
     private func recomputeFilteredListings() {
         cachedFilteredListings = computeFilteredListings()
+    }
+
+    /// 成約ヒートマップのバケットを再計算（表示ONかつ座標ありレコードのみ）。
+    private func recomputeHeatmap() {
+        guard showHeatmap else { cachedHeatmapBuckets = []; return }
+        let inputs = transactions.compactMap { tx -> HeatmapBucketer.Input? in
+            guard let lat = tx.latitude, let lon = tx.longitude, !tx.ward.isEmpty else { return nil }
+            return HeatmapBucketer.Input(ward: tx.ward, m2Price: tx.m2Price, latitude: lat, longitude: lon)
+        }
+        cachedHeatmapBuckets = HeatmapBucketer.buckets(from: inputs)
     }
 
     /// 表示用フィルタ結果（キャッシュ。フィルタ・listings 変更時のみ再計算）
@@ -1090,6 +1147,8 @@ struct MapTabView: View {
             .onAppear { recomputeFilteredListings() }
             .onChange(of: filterStore.filter) { _, _ in recomputeFilteredListings() }
             .onChange(of: listingsChangeTrigger) { _, _ in recomputeFilteredListings() }
+            // ヒートマップ表示中に成約データが揃ったら再集計
+            .onChange(of: transactions.count) { _, _ in if showHeatmap { recomputeHeatmap() } }
         }
     }
 
@@ -1101,6 +1160,7 @@ struct MapTabView: View {
             listings: filteredListings,
             activeHazardLayers: activeHazardLayers,
             activeRiskLayers: activeRiskLayers,
+            heatmapBuckets: cachedHeatmapBuckets,
             usePaleBaseMap: usePaleBaseMap,
             showsUserLocation: showsUserLocation,
             selectedListing: $selectedListing,
@@ -1148,6 +1208,10 @@ struct MapTabView: View {
                         activeRiskLayers.insert(.buildingCollapse)
                     }
                 }
+            }
+            quickToggle(title: "成約相場", icon: "yensign.circle.fill", isOn: showHeatmap) {
+                showHeatmap.toggle()
+                recomputeHeatmap()
             }
         }
         .padding(.top, 8)
