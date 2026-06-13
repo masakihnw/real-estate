@@ -179,12 +179,45 @@ final class ListingStore {
             let descriptor = FetchDescriptor<Listing>()
             let listings = try modelContext.fetch(descriptor)
             let active = listings.filter { !$0.isDelisted }
+
+            // 「今日の1枚」候補（小=先頭, 中=先頭2件）。前景では先頭の画像のみ App Group に
+            // 保存（ネットワークを1枚に限定）。背景では画像 DL をスキップし imageFileName=nil。
+            let selected = WidgetFeaturedSelector.selectTop(from: active, limit: 2)
+            var featuredPayload: [WidgetPayload.Featured] = []
+            for (index, item) in selected.enumerated() {
+                var imageFileName: String?
+                if index == 0, !isBackground, let imageURL = item.imageURLString {
+                    imageFileName = await WidgetImageStore.store(fromURLString: imageURL, listingURL: item.url)
+                }
+                featuredPayload.append(WidgetPayload.Featured(
+                    url: item.url,
+                    name: item.name,
+                    priceText: item.priceText,
+                    gradeLetter: item.gradeLetter,
+                    isNew: true,
+                    imageFileName: imageFileName
+                ))
+            }
+
+            // ブリーフは前景のみ取得（背景は認証・実行時間の制約で取れないため据え置き）。
+            // 当日分が無ければ古いブリーフを残さないよう nil 設定する。
+            let brief: WidgetDataProvider.BriefUpdate
+            if isBackground {
+                brief = .keep
+            } else if let b = await DailyBriefService.fetchLatest(), DailyBriefService.isFresh(briefDate: b.briefDate) {
+                brief = .set(b.summaryText)
+            } else {
+                brief = .set(nil)
+            }
+
             WidgetDataProvider.update(
                 totalListings: active.count,
                 newListings: active.filter { $0.isRecentlyAdded }.count,
                 likedCount: listings.filter { $0.isLiked }.count,
                 priceChanges: 0,
-                likedSummaries: listings.filter { $0.isLiked }.prefix(5).map { ($0.name, $0.priceMan, nil) }
+                likedSummaries: listings.filter { $0.isLiked }.prefix(5).map { ($0.name, $0.priceMan, nil) },
+                featuredItems: featuredPayload,
+                brief: brief
             )
             // P6: Spotlight インデックスをいいね済み物件で再構築
             SpotlightIndexer.reindexAll(listings)

@@ -20,22 +20,31 @@ struct FeaturedListing: Equatable {
 /// 同点は addedAt が新しい順で先頭を採る。Today タブの「今日の動き」と整合する。
 enum WidgetFeaturedSelector {
 
+    /// 先頭1件（small ウィジェット用）。
     static func select(from listings: [Listing]) -> FeaturedListing? {
-        let candidates = listings.filter { $0.isRecentlyAdded && !$0.isDelisted }
-        guard let top = candidates.max(by: { lhs, rhs in
-            let ls = lhs.listingScore ?? 0
-            let rs = rhs.listingScore ?? 0
-            if ls != rs { return ls < rs }
-            return lhs.addedAt < rhs.addedAt
-        }) else { return nil }
+        selectTop(from: listings, limit: 1).first
+    }
 
-        return FeaturedListing(
-            url: top.url,
-            name: top.nameWithFloor,
-            priceText: top.priceDisplayCompact,
-            gradeLetter: top.scoreGradeLetter,
-            score: top.listingScore,
-            imageURLString: top.thumbnailURL?.absoluteString
-        )
+    /// 上位 limit 件（medium ウィジェットの「2物件」用）。
+    static func selectTop(from listings: [Listing], limit: Int = 2) -> [FeaturedListing] {
+        listings
+            .filter { $0.isRecentlyAdded && !$0.isDelisted }
+            .sorted { lhs, rhs in
+                let ls = lhs.listingScore ?? 0
+                let rs = rhs.listingScore ?? 0
+                if ls != rs { return ls > rs }
+                return lhs.addedAt > rhs.addedAt
+            }
+            .prefix(limit)
+            .map { top in
+                FeaturedListing(
+                    url: top.url,
+                    name: top.nameWithFloor,
+                    priceText: top.priceDisplayCompact,
+                    gradeLetter: top.scoreGradeLetter,
+                    score: top.listingScore,
+                    imageURLString: top.thumbnailURL?.absoluteString
+                )
+            }
     }
 }
