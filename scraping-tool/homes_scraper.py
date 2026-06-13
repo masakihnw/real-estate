@@ -43,6 +43,7 @@ from parse_utils import (
 from report_utils import clean_listing_name
 import scraper_metrics
 from scraper_common import (
+    EmptyParseGuard,
     dump_debug_html,
     is_waf_challenge,
     sleep_with_jitter,
@@ -630,7 +631,7 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
         total_parsed = 0
         total_passed = 0
         pages_since_last_pass = 0  # 最後の通過からの連続ページ数（早期打ち切り用）
-        consecutive_empty_parses = 0
+        empty_guard = EmptyParseGuard(HOMES_EMPTY_PARSE_TOLERANCE)
         start_time = time.monotonic()
         while page <= limit:
             # タイムリミットチェック
@@ -658,29 +659,28 @@ def scrape_homes(max_pages: Optional[int] = 2, apply_filter: bool = True) -> Ite
             rows = parse_list_html(html)
             scraper_metrics.record("homes", parsed=len(rows))
             if not rows:
-                consecutive_empty_parses += 1
-                if consecutive_empty_parses >= HOMES_EMPTY_PARSE_TOLERANCE:
+                if empty_guard.record_empty():
                     if total_parsed == 0:
                         # 全ページ空 = botブロック/構造変更の可能性。切り分け用にHTMLを保全
-                        scraper_metrics.record("homes", empty_pages=consecutive_empty_parses)
+                        scraper_metrics.record("homes", empty_pages=empty_guard.consecutive)
                         dump_debug_html("homes", f"p{page}", html)
                         finish_reason = "empty_parse_abort"
                     else:
-                        logger.info(f"HOME'S: ページ{page}で連続{consecutive_empty_parses}回0件パース（一覧の終端）")
+                        logger.info(f"HOME'S: ページ{page}で連続{empty_guard.consecutive}回0件パース（一覧の終端）")
                         finish_reason = "completed"
                     break
                 logger.warning(
                     f"HOME'S: ページ{page}でパース0件 (HTML: {len(html)}B, 連続: "
-                    f"{consecutive_empty_parses}/{HOMES_EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
+                    f"{empty_guard.consecutive}/{HOMES_EMPTY_PARSE_TOLERANCE}) — 次ページへ進みます"
                 )
                 time.sleep(HOMES_EMPTY_PARSE_BACKOFF_SEC)
                 page += 1
                 continue
 
-            if consecutive_empty_parses > 0:
+            empty_gap = empty_guard.record_success()
+            if empty_gap:
                 # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
-                scraper_metrics.record("homes", empty_pages=consecutive_empty_parses)
-            consecutive_empty_parses = 0
+                scraper_metrics.record("homes", empty_pages=empty_gap)
             total_parsed += len(rows)
             passed = 0
             for row in rows:
