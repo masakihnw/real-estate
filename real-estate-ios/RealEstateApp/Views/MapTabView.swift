@@ -693,6 +693,20 @@ struct HazardMapView: UIViewRepresentable {
             stack.spacing = 3
             stack.alignment = .leading
 
+            // 投資グレードバッジ（詳細を開かず一次判断, §3.4a）。スコアが無ければ出さない
+            if let grade = listing.scoreGradeLetter {
+                let gradeLabel = UILabel()
+                gradeLabel.text = "  \(grade)  "
+                gradeLabel.font = .systemFont(ofSize: 11, weight: .heavy)
+                gradeLabel.textColor = .white
+                gradeLabel.backgroundColor = Self.scoreColor(listing.listingScore)
+                gradeLabel.layer.cornerRadius = 4
+                gradeLabel.layer.masksToBounds = true
+                let gradeRow = UIStackView(arrangedSubviews: [gradeLabel, UIView()])
+                gradeRow.axis = .horizontal
+                stack.addArrangedSubview(gradeRow)
+            }
+
             // 価格行
             let priceLabel = UILabel()
             priceLabel.text = listing.priceDisplayCompact
@@ -945,6 +959,12 @@ struct MapTabView: View {
                     Spacer()
                 }
 
+                // 上部中央: よく使うハザード2レイヤーのワンタップトグル（§3.4b）
+                VStack {
+                    hazardQuickToggles
+                    Spacer()
+                }
+
                 // 左下: 凡例 + 現在地ボタン
                 VStack(alignment: .leading, spacing: 8) {
                     Spacer()
@@ -1104,6 +1124,52 @@ struct MapTabView: View {
                 ? ""
                 : "、\(activeHazardLayers.count + activeRiskLayers.count)件のハザードレイヤー表示中")
         )
+    }
+
+    // MARK: - ハザード クイックトグル（§3.4b）
+
+    /// よく使う2レイヤー（洪水・地震＝東京都地域危険度）をワンタップ。残りは詳細シート。
+    private var hazardQuickToggles: some View {
+        HStack(spacing: 8) {
+            quickToggle(title: "洪水", icon: "drop.fill", isOn: activeHazardLayers.contains(.flood)) {
+                if activeHazardLayers.contains(.flood) {
+                    activeHazardLayers.remove(.flood)
+                } else {
+                    activeHazardLayers.insert(.flood)
+                }
+            }
+            quickToggle(title: "地震", icon: "house.and.flag.fill", isOn: activeRiskLayers.contains(.buildingCollapse)) {
+                if activeRiskLayers.contains(.buildingCollapse) {
+                    activeRiskLayers.remove(.buildingCollapse)
+                } else {
+                    // ポリゴン取得を待ってからレイヤー追加（差分更新で取りこぼさないため）
+                    Task {
+                        await TokyoRiskService.shared.fetchIfNeeded(.buildingCollapse)
+                        activeRiskLayers.insert(.buildingCollapse)
+                    }
+                }
+            }
+        }
+        .padding(.top, 8)
+    }
+
+    private func quickToggle(title: String, icon: String, isOn: Bool, action: @escaping () -> Void) -> some View {
+        Button {
+            HapticManager.soft()
+            action()
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: icon).font(.caption2)
+                Text(title).font(.caption.weight(.semibold))
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(Capsule().fill(isOn ? Color.accentColor : Color(.systemBackground).opacity(0.92)))
+            .foregroundStyle(isOn ? .white : .primary)
+            .shadow(color: .black.opacity(0.15), radius: 3, y: 1)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(title)ハザード\(isOn ? "を非表示" : "を表示")")
     }
 
     // MARK: - Overlay Buttons
