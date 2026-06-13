@@ -101,7 +101,10 @@ jobs:
     needs: check
     if: needs.check.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # AI再分析バックログ（ai_prompts 改版で全件再分析が誘発される）時に
+    # 90分枠へ張り付き、ジョブが timeout で cancelled になる事象があったため拡張。
+    # GHA のジョブ上限は 360 分。finalize 連鎖を含めても十分収まる。
+    timeout-minutes: 120
     continue-on-error: true
 
     steps:
