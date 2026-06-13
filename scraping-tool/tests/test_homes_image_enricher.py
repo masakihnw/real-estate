@@ -251,6 +251,100 @@ class TestNeedsImageEnrichment:
         assert _needs_image_enrichment(None) is False
 
 
+FEATURE_TAGS_HTML = """
+<html><body>
+<section>
+  <ul class="mt-2 grid grid-cols-2">
+    <li class="list-dot-brand">システムキッチン</li>
+    <li class="list-dot-brand">バス・トイレ別</li>
+    <li class="list-dot-brand">エレベーター</li>
+    <li class="list-dot-brand">駐車場あり</li>
+    <li class="list-dot-brand">システムキッチン</li>
+  </ul>
+</section>
+</body></html>
+"""
+
+
+class TestParseHomesFeatureTags:
+    def test_extracts_feature_tags(self):
+        from floor_plan_enricher import parse_homes_feature_tags
+
+        result = parse_homes_feature_tags(FEATURE_TAGS_HTML)
+        assert result == [
+            "システムキッチン",
+            "バス・トイレ別",
+            "エレベーター",
+            "駐車場あり",
+        ]
+
+    def test_deduplicates_tags(self):
+        from floor_plan_enricher import parse_homes_feature_tags
+
+        result = parse_homes_feature_tags(FEATURE_TAGS_HTML)
+        assert result.count("システムキッチン") == 1
+
+    def test_empty_when_no_tags(self):
+        from floor_plan_enricher import parse_homes_feature_tags
+
+        assert parse_homes_feature_tags(MINIMAL_HTML) == []
+
+    def test_respects_limit(self):
+        from floor_plan_enricher import parse_homes_feature_tags
+
+        items = "".join(
+            f'<li class="list-dot-brand">タグ{i}</li>' for i in range(100)
+        )
+        html = f"<html><body><ul>{items}</ul></body></html>"
+        result = parse_homes_feature_tags(html)
+        assert len(result) == 60
+
+
+class TestNeedsFeatureTags:
+    def test_homes_without_feature_tags(self):
+        from floor_plan_enricher import _needs_feature_tags
+
+        listing = {"source": "homes", "url": "https://www.homes.co.jp/mansion/b-1/"}
+        assert _needs_feature_tags(listing) is True
+
+    def test_homes_with_empty_feature_tags(self):
+        from floor_plan_enricher import _needs_feature_tags
+
+        listing = {
+            "source": "homes",
+            "url": "https://www.homes.co.jp/mansion/b-1/",
+            "feature_tags": [],
+        }
+        assert _needs_feature_tags(listing) is True
+
+    def test_homes_with_feature_tags(self):
+        from floor_plan_enricher import _needs_feature_tags
+
+        listing = {
+            "source": "homes",
+            "url": "https://www.homes.co.jp/mansion/b-1/",
+            "feature_tags": ["エレベーター"],
+        }
+        assert _needs_feature_tags(listing) is False
+
+    def test_non_homes_listing(self):
+        from floor_plan_enricher import _needs_feature_tags
+
+        listing = {"source": "suumo", "url": "https://suumo.jp/ms/123/"}
+        assert _needs_feature_tags(listing) is False
+
+    def test_missing_url(self):
+        from floor_plan_enricher import _needs_feature_tags
+
+        assert _needs_feature_tags({"source": "homes"}) is False
+
+    def test_not_a_dict(self):
+        from floor_plan_enricher import _needs_feature_tags
+
+        assert _needs_feature_tags("x") is False
+        assert _needs_feature_tags(None) is False
+
+
 # ──────────────────────────── HomesDetailFetcher のテスト ────────────────────────────
 
 from types import SimpleNamespace
