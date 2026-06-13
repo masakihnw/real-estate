@@ -112,7 +112,9 @@ def _build_list_url(page: int, *, apply_filter: bool) -> str:
 
 
 # 全ページ取得時の安全上限（無限ループ防止）
-HOMES_MAX_PAGES_SAFETY = 100
+# 2026-06: タイムリミット引き上げ（下記）で全ページ走破できるよう、
+# 取りこぼし回避のため 100→120 に拡大（実測 ~97ページで一覧終端に近い）。
+HOMES_MAX_PAGES_SAFETY = 120
 
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
 HOMES_EARLY_EXIT_PAGES = 20
@@ -128,7 +130,10 @@ HOMES_EMPTY_PARSE_BACKOFF_SEC = 10
 # スクレイピング全体のタイムリミット（秒）。HOME'S は WAF が厳しく、
 # 1ページに最大7分（WAF リトライ30+60+90+120秒）かかることがあるため、
 # 全体の実行時間を制限して CI/CD パイプライン全体のタイムアウトを防ぐ。
-HOMES_SCRAPE_TIMEOUT_SEC = 30 * 60  # 30分
+# 2026-06: 30分だと一覧終端手前（実測 ~3880件/~97ページ）で timeout 異常終端し
+# 残ページを取りこぼしていたため 45分に延長。スクレイパーは並列実行で
+# GHA ジョブ上限60分には十分収まる（main.py ThreadPoolExecutor）。
+HOMES_SCRAPE_TIMEOUT_SEC = 45 * 60  # 45分
 
 
 @dataclass

@@ -92,6 +92,13 @@ def test_normalize_name_year_built_tag():
     assert _is_feature_tag("2015年築")
 
 
+def test_normalize_name_known_typo_nishitoyama():
+    """西戸山タワーホームズ は公式表記「ホウムズ」に統一され、表記揺れ重複を防ぐ"""
+    a = normalize_listing_name("西戸山タワーホームズノースタワー")
+    b = normalize_listing_name("西戸山タワーホウムズノースタワー")
+    assert a == b == "西戸山タワーホウムズノースタワー"
+
+
 # --- clean_listing_name ---
 
 

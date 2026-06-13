@@ -81,12 +81,16 @@ SELECT upsert_ai_enrichment(<listing_id>::bigint, 'investment_summary', '<結果
 
 1. いいね/見送りデータ取得:
 ```sql
+-- 注意: user_building_preferences.identity_key はスワイプ時点の 5要素キー
+--   (name|layout|area|address|built) だが、listings_feed.identity_key は現行 6要素
+--   (…|floor) のため完全一致 JOIN は 0件になる。先頭5要素で突き合わせる。
 SELECT ubp.identity_key, ubp.preference,
        lf.name, lf.price_man, lf.area_m2, lf.layout, lf.walk_min,
        lf.built_year, lf.address, lf.direction, lf.station_line,
        lf.floor_position, lf.total_units
 FROM user_building_preferences ubp
-JOIN listings_feed lf ON lf.identity_key = ubp.identity_key
+JOIN listings_feed lf
+  ON array_to_string((string_to_array(lf.identity_key, '|'))[1:5], '|') = ubp.identity_key
 ORDER BY ubp.preference, ubp.created_at DESC;
 ```
 

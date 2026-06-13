@@ -29,6 +29,9 @@ def best_address(listing: dict) -> str:
 _KNOWN_NAME_TYPOS: list[tuple[str, str]] = [
     ("レジテンス", "レジデンス"),
     ("フォレスコート", "フォレストコート"),
+    # 新宿区百人町の 1988 年築タワー。公式表記は「ホウムズ」（athome / ノムコム /
+    # 東急リバブル等）。SUUMO 掲載に「ホームズ」表記が混在し別物件として重複するため統一。
+    ("西戸山タワーホームズ", "西戸山タワーホウムズ"),
 ]
 
 _DEVELOPER_PREFIXES = (
