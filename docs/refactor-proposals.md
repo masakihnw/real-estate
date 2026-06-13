@@ -8,34 +8,43 @@
 
 ---
 
-## P1. Firebase 設定プッシュ経路の撤去
+## P1. Firebase 設定経路の撤去
 
-### 現状
-- `firestore_config_loader.py` は PR #10 で削除済み（import 0件だった）。
-- `push_scraping_config_to_firestore.py`（約70行）は **温存中**。手動 workflow
-  `sync-firestore-scraping-config.yml`（`workflow_dispatch` のみ）から呼ばれ、
-  `ScrapingConfigMetadata.json` を Firestore に書き込む。
-- iOS `ScrapingConfigService` は Firestore からスクレイピング設定を **読み込む**（現役）。
+### 調査で判明した実態（2026-06-13）
+設定フローに**断絶**がある:
 
-### 提案
-スクレイピング設定の正準は `ScrapingConfigMetadata.json` + Supabase `scraping_config`
-（`supabase_config_loader.py`）に一本化済み。Firestore 経路は iOS 設定画面の読み取り専用途
-のみ。撤去するなら以下を一括で行う:
-1. iOS `ScrapingConfigService` を Supabase 読み取りに移行
-2. `push_scraping_config_to_firestore.py` と `sync-firestore-scraping-config.yml` を削除
+| 経路 | 書き込み先 | 読み取り |
+|---|---|---|
+| iOS `ScrapingConfigService`（設定画面） | Firestore `scraping_config/default` | Firestore |
+| `push_scraping_config_to_firestore.py`（手動WF） | Firestore | — |
+| パイプライン `main.py`（`supabase_config_loader`） | — | **Supabase** `scraping_config` |
 
-### リスク
-- iOS 設定画面（`ScrapingConfigView`）の表示が壊れる。
-- Firestore に依存する他機能（未調査）への波及。
+- Supabase `scraping_config/default` は migration 039 のseed値で投入され、パイプラインが読む。
+  更新は SQL（migration）でのみ可能。
+- **Firestore → Supabase の同期は存在しない**。したがって iOS の設定編集（Firestore書き込み）は
+  パイプライン（Supabase読み取り）に反映されていない。iOS 編集機能は実質的に
+  パイプラインから切り離されている。
 
-### 移行手順
-1. iOS の Supabase `scraping_config` 読み取りクライアントを実装（既存 `SupabaseClient` 流用）。
-2. `ScrapingConfigService` を切り替え、フィーチャーフラグで段階移行。
-3. 旧 Firestore 読み取りを削除 → スクリプト/workflow を削除。
+### Step 1（実施済み・本PR）
+パイプラインと繋がっていない死蔵自動化を撤去:
+- `push_scraping_config_to_firestore.py` を削除（参照は手動WFのみ）
+- `.github/workflows/sync-firestore-scraping-config.yml` を削除
+- iOS の Firestore 読み書きは現状維持（機能削除は別判断）
 
-### 検証
-- iOS: `ScrapingConfigView` の表示・編集が Supabase 経由で動作すること（手動 + UIテスト）。
-- 設定変更がスクレイピングパイプラインに反映されること（`supabase_config_loader` 経路）。
+### Step 2（長期目標・要・明示ゴーサイン）
+CLAUDE.md の方針（設定の単一ソースを Supabase に寄せる）に沿って完全移行:
+1. iOS `ScrapingConfigService` を Supabase `scraping_config` の読み書きに作り替える。
+2. Supabase 側に書き込み用 RLS ポリシー / RPC を追加（**migration → SQL をユーザーに適用依頼**）。
+3. iOS の Firestore 経路（`ScrapingConfigService` の Firestore 依存）を削除。
+
+### リスク（Step 2）
+- iOS は Linux 環境でビルド/テスト不可 → CI（`ios-build.yml`）頼み。
+- Supabase RLS 設計を誤ると設定テーブルが書き換え可能になる（認可境界）。
+- そもそも iOS 設定編集機能を今後使うかの確認が前提（使わないなら機能ごと削除も選択肢）。
+
+### 検証（Step 2）
+- iOS: `ScrapingConfigView` の表示・編集が Supabase 経由で動作（CI + 手動）。
+- 設定変更がパイプライン（`supabase_config_loader`）に反映されること。
 
 ---
 
@@ -71,7 +80,19 @@ PR #10 で `SUPPORTS_MACCATALYST: NO` に変更済み。**追加作業なし。*
 
 ---
 
-## P4. 巨大ファイルの分割
+## P4. 巨大ファイルの分割 — **report_utils 分割はスキップ推奨（2026-06-13）**
+
+### report_utils.py 分割の再評価
+`report_utils.py`（1043行）は **26ファイルが import** する中核モジュールで、最頻出は
+`normalize_listing_name`(10) / `clean_listing_name`(8) / `identity_key_str`(7) など
+dedup・名前キー系。既に `test_report_utils` + Phase 1 特性テストで手厚くカバー済みで
+正常稼働中。分割すると26 importer の更新（または re-export シム追加）が必要で、便益は
+ファイルサイズ縮小という見た目の改善が主。「見た目の綺麗さを目的にしない／証拠なく
+全面書き換えしない」原則に照らし、**report_utils の分割は実施しない**。
+
+iOS 巨大 View の分割（下記）は引き続き有効な提案として残す。
+
+### iOS 巨大 View の分割（有効な提案）
 
 ### 現状（行数は変動するため目安）
 - Python: `sumai_surfin_enricher.py`（約2,300行）、`slack_notify.py`（約1,000行）、
@@ -100,29 +121,39 @@ PR #10 で `SUPPORTS_MACCATALYST: NO` に変更済み。**追加作業なし。*
 
 ---
 
-## P5. スクレイパー基底クラスの導入
+## P5. スクレイパー基底クラスの導入 — **調査の結果スキップ推奨（2026-06-13）**
 
-### 現状
-8スクレイパーが dataclass・ページループ・詳細 enrichment を各自実装。Phase 3 で
-EMPTY_PARSE_TOLERANCE は `EmptyParseGuard` に共通化済み。athome/rehouse/nomucom の
-詳細ページ enrichment（各約200行）に類似構造が残る。
+### 調査結果
+共通化の価値が高い部分は既に抽出済み:
+- `EmptyParseGuard`（連続0件停止判定）= Phase 3 / P6 で7スクレイパーに統一済み
+- セッション生成・ジッター・フィルタ（`station_passengers_ok` 等）・`dump_debug_html`
+  = `scraper_common.py` に集約済み
 
-### 提案
-共通のページ巡回ループ（ward/region イテレーション、ページネーション、fetch→parse→
-filter→empty guard→metrics）をテンプレートメソッド or 関数として抽出。各スクレイパーは
-parse 関数とフィルタ条件のみを差分として渡す。**一斉移行は禁止**、D3 と同じく1スクレイパー
-ずつ。
+残る巡回ループは**本質的に分岐**しており、共通化に耐えない:
 
-### リスク
-- サイトごとに微妙に異なるエラー処理（WAF / HTTPステータス分岐 / debug HTML 保全条件）を
-  共通化で握り潰すと、フェイルセーフ挙動が変わる。
-- 各スクレイパーのゴールデンテストが守りになるが、巡回制御部はテストが薄い。
+| スクレイパー | 区巡回 | fetch方式 |
+|---|---|---|
+| suumo / livable / rehouse | 区別(23区) | requests |
+| nomucom | 単一連番 | requests |
+| homes | 単一連番 | Playwright + WAF |
+| athome | 区別 | requests + Playwright(詳細) |
+| stepon | 単一連番 | Playwright(fetch_list_page_pw) |
 
-### 移行手順
-まず巡回制御部の特性テストを各スクレイパーに追加 → 共通ループを抽出 → 1つずつ移行。
+3軸（区巡回有無 / requests vs Playwright / WAF・bot処理の差）で分岐し、
+さらに metrics 記録条件・early-exit・finish_reason 分岐がサイト固有。
+詳細 enrichment（athome/rehouse/nomucom）も、共通部分はキャッシュ入出力とループの
+薄い定型のみで、キャッシュ無効化条件・パース・フィールドマージは全てサイト固有。
 
-### 検証
-各スクレイパーのテスト + 小データセットのドライラン（本番フルスクレイプ禁止）。
+### 判断
+基底クラス/共通ループ化は **過剰な抽象化**（指示書が負債として挙げる項目そのもの）になり、
+サイトごとに調整されたフェイルセーフ（CLAUDE.md「パース0件は正常終端とbotブロックを区別」
+「フェイルクローズ原則」）を壊すリスクが、得られる便益（行数削減＝見た目改善）を上回る。
+よって **基底クラス化は実施しない**。共通化すべき核は既に抽出済みであり、残りは
+accidental duplication ではなく genuine な domain variation と判断する。
+
+### 将来の再検討トリガー
+新規スクレイパーを追加する際に巡回ループの定型をコピペする場合は、その時点で
+「区別 requests 型」など同型グループ内に限った薄いヘルパー抽出を検討する。
 
 ---
 
