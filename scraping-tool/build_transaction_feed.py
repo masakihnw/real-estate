@@ -280,7 +280,13 @@ def load_station_cache() -> Dict[str, Tuple[float, float]]:
         return {}
     with open(STATION_CACHE_PATH, "r", encoding="utf-8") as f:
         raw = json.load(f)
-    return {name: (coords[0], coords[1]) for name, coords in raw.items()}
+    # geocode_cross_validator はジオコーディング失敗を None でキャッシュする
+    # （再試行防止の仕様）。座標が無い／壊れたエントリは最寄駅推定の対象外。
+    return {
+        name: (coords[0], coords[1])
+        for name, coords in raw.items()
+        if isinstance(coords, (list, tuple)) and len(coords) >= 2
+    }
 
 
 def haversine_m(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
