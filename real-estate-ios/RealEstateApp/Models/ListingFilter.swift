@@ -106,6 +106,16 @@ enum ListingNumericField: String, CaseIterable, Hashable, Codable, Identifiable 
         }
     }
 
+    /// このフィールドにデータが入っている物件の割合（0...1）。
+    /// 数値フィルタで「(データあり 62%)」を表示し、0件遭遇を予防する（提案 §3.4）。
+    func fillRate(in listings: [Listing]) -> Double {
+        guard !listings.isEmpty else { return 0 }
+        let filled = listings.reduce(into: 0) { acc, l in
+            if value(from: l) != nil { acc += 1 }
+        }
+        return Double(filled) / Double(listings.count)
+    }
+
     func value(from listing: Listing) -> Double? {
         switch self {
         case .builtAge:
