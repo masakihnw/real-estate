@@ -51,6 +51,7 @@ from parse_utils import (
     layout_ok,
 )
 from scraper_common import (
+    EmptyParseGuard,
     create_session,
     sleep_with_jitter,
     load_station_passengers,
@@ -973,7 +974,7 @@ def _scrape_ward(
     ward_total_parsed = 0
     ward_total_passed = 0
     pages_since_last_pass = 0
-    consecutive_empty_parses = 0
+    empty_guard = EmptyParseGuard(SUUMO_EMPTY_PARSE_TOLERANCE)
     finish_reason = None
 
     while p <= limit:
@@ -995,30 +996,29 @@ def _scrape_ward(
 
         rows = parse_list_html(html)
         if not rows:
-            consecutive_empty_parses += 1
-            if consecutive_empty_parses >= SUUMO_EMPTY_PARSE_TOLERANCE:
+            if empty_guard.record_empty():
                 if ward_total_parsed > 0 or p > 1:
                     logger.info(
                         "SUUMO: sc_%s ページ%d 連続%d回パース0件のため停止 (累計パース: %d件, 累計通過: %d件)",
-                        ward_roman, p, consecutive_empty_parses, ward_total_parsed, ward_total_passed,
+                        ward_roman, p, empty_guard.consecutive, ward_total_parsed, ward_total_passed,
                     )
                 # 区全体が0件のまま終了 = botブロックの最有力シグナルとして記録。
                 # パース実績ありの終端空ページは正常なページネーション終了なので記録しない
                 if ward_total_parsed == 0:
-                    scraper_metrics.record("suumo", empty_pages=consecutive_empty_parses)
+                    scraper_metrics.record("suumo", empty_pages=empty_guard.consecutive)
                 finish_reason = "completed"
                 break
             logger.warning(
                 "SUUMO: sc_%s ページ%d パース0件 (HTML: %dB, 連続: %d/%d) — botブロック/構造変更の可能性、次ページへ進みます",
-                ward_roman, p, len(html), consecutive_empty_parses, SUUMO_EMPTY_PARSE_TOLERANCE,
+                ward_roman, p, len(html), empty_guard.consecutive, SUUMO_EMPTY_PARSE_TOLERANCE,
             )
             time.sleep(SUUMO_EMPTY_PARSE_BACKOFF_SEC)
             p += 1
             continue
-        if consecutive_empty_parses > 0:
+        empty_gap = empty_guard.record_success()
+        if empty_gap:
             # ページ列の途中に空ページがあり後続で復活 = 異常なギャップとして記録
-            scraper_metrics.record("suumo", empty_pages=consecutive_empty_parses)
-        consecutive_empty_parses = 0
+            scraper_metrics.record("suumo", empty_pages=empty_gap)
         ward_total_parsed += len(rows)
         passed = 0
         for row in rows:
