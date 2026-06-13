@@ -14,7 +14,9 @@ struct InspectionScheduleStoreTests {
     }
 
     private func listing() -> Listing {
-        Listing(url: "https://x/\(UUID().uuidString)", name: "t", propertyType: "chuko")
+        // identityKey は URL でなく 名前|間取り|面積|住所|築年 で決まるため、
+        // 別物件として扱うには名前を一意にする
+        Listing(url: "https://x/\(UUID().uuidString)", name: "物件-\(UUID().uuidString.prefix(8))", propertyType: "chuko")
     }
 
     @Test("初期状態は未予定")
