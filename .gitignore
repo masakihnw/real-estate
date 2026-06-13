@@ -37,6 +37,8 @@ scraping-tool/results/report_*.md
 scraping-tool/commute_audit.html
 scraping-tool/commute_audit_results/
 scraping-tool/data/claude_cache.db
+# 物件DB（AI分析テキスト等を含む大型バイナリ。再生成可能・PII混入リスクのためコミット禁止）
+scraping-tool/data/listings.db
 # 実データを含む個人相談メモ（プレースホルダ以外コミット禁止）
 docs/initial-consultation.md
 # 通勤先オフィスのローカル実値（実住所・座標。コミット禁止）
