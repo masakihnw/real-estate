@@ -31,45 +31,49 @@
 - `.github/workflows/sync-firestore-scraping-config.yml` を削除
 - iOS の Firestore 読み書きは現状維持（機能削除は別判断）
 
-### Step 2（長期目標・要・明示ゴーサイン）
-CLAUDE.md の方針（設定の単一ソースを Supabase に寄せる）に沿って完全移行:
-1. iOS `ScrapingConfigService` を Supabase `scraping_config` の読み書きに作り替える。
-2. Supabase 側に書き込み用 RLS ポリシー / RPC を追加（**migration → SQL をユーザーに適用依頼**）。
-3. iOS の Firestore 経路（`ScrapingConfigService` の Firestore 依存）を削除。
+### Step 2（実施済み・2026-06-13: 機能削除を選択）
+ユーザー確認の結果「iOS 設定編集機能は使わない（設定は migration/SQL で更新）」と判明したため、
+Supabase への移行ではなく **機能削除** で Firestore 設定経路を完全撤去:
+- `ScrapingConfigService.swift` 削除（Firestore `scraping_config` 読み書き）
+- `ScrapingConfigView.swift` 削除（開発者セクションの編集UI）
+- `SettingsView` から呼び出し（state / sheet / 開発者ボタン）を除去
+- バンドル `ScrapingConfigMetadata.json` は **残す**（Python `config.py` フォールバックと
+  `docs/SPECIFICATION.md` 生成の正準ソースのため）
 
-### リスク（Step 2）
-- iOS は Linux 環境でビルド/テスト不可 → CI（`ios-build.yml`）頼み。
-- Supabase RLS 設計を誤ると設定テーブルが書き換え可能になる（認可境界）。
-- そもそも iOS 設定編集機能を今後使うかの確認が前提（使わないなら機能ごと削除も選択肢）。
+これで iOS の Firestore 設定経路は完全に撤去された。パイプライン設定の正準は
+Supabase `scraping_config`（migration で更新）に一本化。**P1 完了。**
 
-### 検証（Step 2）
-- iOS: `ScrapingConfigView` の表示・編集が Supabase 経由で動作（CI + 手動）。
-- 設定変更がパイプライン（`supabase_config_loader`）に反映されること。
+### 残った Firebase 依存（P2 で扱う）
+iOS にはなお Firestore を読む `ScrapingLogService`（ログ閲覧）と、認証・FCM・写真 Storage の
+Firebase 依存が残る。これらは P2 の対象。
 
 ---
 
-## P2. iOS の Firebase/Supabase 二重化の解消
+## P2. iOS の Firebase/Supabase 二重化の解消 — **設計メモのみ（2026-06-13 決定）**
 
-### 現状
-- PR #10 で `FirebaseSyncService.swift`（アノテーション同期）と `shinchikuListURL` は削除済み。
-- 残る Firebase 依存: 認証（Google Sign-In）、FCM、写真 Storage、ScrapingConfig/Log 読み取り。
-- `ListingStore` にカスタム JSON URL フォールバック経路が残置（開発用）。
+ユーザー判断: 認証・FCM・写真Storage は Firebase が妥当なため**撤去しない**。本項は
+将来の参照用ロードマップとして残し、実装は行わない。
 
-### 提案
-Firebase の段階的撤退ロードマップを策定する。優先度は低い（認証・FCM・Storage は
-Firebase が妥当な選択肢で、撤退の必然性は薄い）。少なくとも以下を判断:
-- 認証を Supabase Auth に移すか、Firebase Auth を維持するか（プロダクト判断）。
-- 写真 Storage を R2/Supabase Storage に寄せるか（画像は既に R2 移行が進行中 — PR #11系）。
+### 現状の Firebase 依存（PR #10 / P1 完了後）
+- PR #10 で `FirebaseSyncService.swift`（アノテーション同期）と `shinchikuListURL` 削除済み。
+- P1（PR #24）で iOS の Firestore **設定**経路を撤去済み。
+- 残る Firebase 依存と評価:
 
-### リスク
-- 認証移行はユーザーの再ログインを強制する可能性。
-- 写真 Storage 移行は既存内見写真の移行が必要。
+| ドメイン | 実装 | 評価 |
+|---|---|---|
+| 認証（Google Sign-In） | Firebase Auth | **維持**。移行は全ユーザー再ログイン強制。便益小 |
+| FCM（プッシュ通知） | Firebase Messaging | **維持**。Firebase が妥当な選択肢 |
+| 写真 Storage（内見写真） | Firebase Storage | **維持**。既存写真の移行コスト大。物件画像は別途 R2 移行進行中 |
+| ログ閲覧（`ScrapingLogService`） | Firestore 読み取り | 低〜中リスクで Supabase 化可能だが、書き込み側（`upload_scraping_log.py`）も要変更で中規模。**必要になれば実施** |
 
-### 移行手順（要・別途詳細設計）
-ドメインごとに独立して判断・実施。一括移行は禁止。
+### もし将来撤退する場合の原則
+- ドメインごとに独立して判断・実施。**一括移行は禁止**。
+- 認証移行は再ログイン導線・移行期間の二重認証を設計してから。
+- 写真は R2 移行（進行中）と整合させ、既存 Firebase Storage URL の移行スクリプトを用意。
+- 各ドメインで既存機能の回帰テスト（iOS は CI `ios-build.yml`）。
 
-### 検証
-ドメインごとに既存機能の回帰テスト。
+### 結論
+現時点で P2 の実装は不要。Firebase は「レガシーだが妥当な現役依存」として維持する。
 
 ---
 
