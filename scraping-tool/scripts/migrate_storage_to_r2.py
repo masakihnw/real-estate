@@ -43,7 +43,12 @@ logger = get_logger(__name__)
 
 MAX_WORKERS = 8
 DOWNLOAD_TIMEOUT_SEC = 60
-ENRICHMENT_IMAGE_COLUMNS = "listing_id, suumo_images, floor_plan_images, best_thumbnail_url"
+ENRICHMENT_IMAGE_COLUMNS = (
+    "listing_id, suumo_images, image_categories, floor_plan_images, best_thumbnail_url"
+)
+ENRICHMENT_IMAGE_FIELDS = (
+    "suumo_images", "image_categories", "floor_plan_images", "best_thumbnail_url",
+)
 
 _thread_local = threading.local()
 
@@ -138,8 +143,7 @@ def phase_rewrite(client, rewrite_files: list[str], execute: bool) -> None:
     changed_rows = 0
     for row in rows:
         raw = json.dumps(
-            {k: row.get(k) for k in
-             ("suumo_images", "floor_plan_images", "best_thumbnail_url")},
+            {k: row.get(k) for k in ENRICHMENT_IMAGE_FIELDS},
             ensure_ascii=False,
         )
         if old_base not in raw:
@@ -187,6 +191,59 @@ def phase_rewrite(client, rewrite_files: list[str], execute: bool) -> None:
         logger.info("%s: %d箇所書き換え%s", path, count, "" if execute else "（dry-run）")
 
 
+def phase_recover_image_categories(client, execute: bool) -> None:
+    """image_categories の URL を R2 実在状況に合わせて修復する。
+
+    過去の移行で image_categories 列が書き換え対象から漏れ、かつ GC が
+    この列を参照として数えていなかったため、(1) URL が旧 Supabase のまま
+    残り、(2) 一部の実体は GC 済みで R2 に存在しない、という状態が生じうる。
+    R2 の実在一覧を正として:
+      - R2 に在るオブジェクト → URL を R2 へ書き換え
+      - R2 に無いオブジェクト → そのエントリを削除（404 表示を防ぐ）
+    空になった行は [] にし、iOS 側で suumo 画像ギャラリーへフォールバックさせる。
+    """
+    present = set(image_storage.list_r2_objects().keys())
+    logger.info("R2 実在オブジェクト: %d件", len(present))
+
+    rows = fetch_paginated(client, "enrichments", "listing_id, image_categories")
+    changed_rows = kept = dropped = 0
+    for row in rows:
+        cats = row.get("image_categories")
+        if not isinstance(cats, list) or not cats:
+            continue
+        new_cats: list = []
+        modified = False
+        for elem in cats:
+            url = elem.get("url") if isinstance(elem, dict) else None
+            obj = image_storage.extract_object_name(url) if isinstance(url, str) else None
+            if obj is None:
+                new_cats.append(elem)  # 画像 URL でないエントリは温存
+                continue
+            if obj in present:
+                new_url = image_storage.r2_public_url(obj)
+                if new_url != url:
+                    elem = {**elem, "url": new_url}
+                    modified = True
+                new_cats.append(elem)
+                kept += 1
+            else:
+                modified = True  # R2 に無い → 落とす
+                dropped += 1
+        if modified:
+            changed_rows += 1
+            if execute:
+                try:
+                    (client.table("enrichments")
+                     .update({"image_categories": new_cats})
+                     .eq("listing_id", row["listing_id"])
+                     .execute())
+                except Exception as e:
+                    logger.error("image_categories 修復失敗 (listing_id=%s): %s",
+                                 row.get("listing_id"), e)
+    logger.info("image_categories 修復: %d行 / 保持%d件 / 削除%d件%s",
+                changed_rows, kept, dropped, "" if execute else "（dry-run）")
+
+
 def phase_delete_source(client, execute: bool) -> None:
     missing, src = phase_verify(client)
     if not src:
@@ -207,9 +264,10 @@ def phase_delete_source(client, execute: bool) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="listing-images を R2 へ移行する")
     parser.add_argument("--phase", required=True,
-                        choices=["copy", "verify", "rewrite", "delete-source"])
+                        choices=["copy", "verify", "rewrite",
+                                 "recover-image-categories", "delete-source"])
     parser.add_argument("--execute", action="store_true",
-                        help="rewrite / delete-source で実変更を行う")
+                        help="rewrite / recover-image-categories / delete-source で実変更を行う")
     parser.add_argument("--rewrite-file", action="append", default=[],
                         help="rewrite フェーズで URL を書き換えるファイル（複数指定可）")
     args = parser.parse_args()
@@ -230,6 +288,8 @@ def main() -> None:
         sys.exit(1 if missing else 0)
     elif args.phase == "rewrite":
         phase_rewrite(client, args.rewrite_file, args.execute)
+    elif args.phase == "recover-image-categories":
+        phase_recover_image_categories(client, args.execute)
     elif args.phase == "delete-source":
         phase_delete_source(client, args.execute)
 
