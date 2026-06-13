@@ -8,25 +8,21 @@ struct SwipeActionBar: View {
     let canUndo: Bool
 
     var body: some View {
+        // ハプティクスは確定経路（SwipeSessionView.commitWithAnimation / onUndo）に
+        // 一元化済み。ボタン・ジェスチャ両経路で同一・二重発火しないようここでは鳴らさない。
         HStack(spacing: 24) {
             actionButton(
                 systemImage: "xmark",
                 color: .orange,
                 size: 56,
-                action: {
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    onNope()
-                }
+                action: onNope
             )
 
             actionButton(
                 systemImage: "arrow.down",
                 color: .gray,
                 size: 44,
-                action: {
-                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                    onSkip()
-                }
+                action: onSkip
             )
 
             actionButton(
@@ -35,7 +31,6 @@ struct SwipeActionBar: View {
                 size: 44,
                 action: {
                     guard canUndo else { return }
-                    UINotificationFeedbackGenerator().notificationOccurred(.warning)
                     onUndo()
                 }
             )
@@ -45,10 +40,7 @@ struct SwipeActionBar: View {
                 systemImage: "heart.fill",
                 color: .yellow,
                 size: 56,
-                action: {
-                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                    onLike()
-                }
+                action: onLike
             )
         }
         .padding(.vertical, 12)
@@ -81,7 +73,7 @@ struct SwipeActionBar: View {
     private func accessibilityLabelFor(_ systemImage: String) -> String {
         switch systemImage {
         case "xmark": "Nope"
-        case "arrow.down": "スキップ"
+        case "arrow.down": "あとで"
         case "arrow.uturn.backward": "元に戻す"
         case "heart.fill": "Like"
         default: ""

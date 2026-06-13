@@ -8,6 +8,8 @@ struct SwipeSessionView: View {
     @State private var dragOffset: CGSize = .zero
     @State private var exitOffset: CGSize = .zero
     @State private var isExiting = false
+    /// ボタン/ジェスチャ確定時にスタンプを確実に表示する（特に skip の「あとで」）
+    @State private var forcedStamp: SwipeDecision?
     @State private var selectedListing: Listing?
     @State private var isLoadingEnrichment = true
     @State private var noEligibleListings = false
@@ -56,7 +58,11 @@ struct SwipeSessionView: View {
                 SwipeActionBar(
                     onNope: { animateSwipe(.nope) },
                     onSkip: { animateSwipe(.skip) },
-                    onUndo: { guard !isExiting else { return }; viewModel.undo() },
+                    onUndo: {
+                        guard !isExiting else { return }
+                        HapticManager.soft()
+                        viewModel.undo()
+                    },
                     onLike: { animateSwipe(.like) },
                     canUndo: viewModel.canUndo && !isExiting
                 )
@@ -68,6 +74,8 @@ struct SwipeSessionView: View {
             viewModel.loadCards(from: listings)
             await prefetchEnrichment()
             viewModel.filterCardsWithoutImages()
+            // 画像剪定後の実デッキで保存済み進捗を復元（順序を確定してから空判定）
+            viewModel.restoreDeckOrder()
             noEligibleListings = viewModel.cards.isEmpty
             isLoadingEnrichment = false
         }
@@ -76,7 +84,7 @@ struct SwipeSessionView: View {
         }
         .accessibilityAction(named: "Like") { animateSwipe(.like) }
         .accessibilityAction(named: "Nope") { animateSwipe(.nope) }
-        .accessibilityAction(named: "スキップ") { animateSwipe(.skip) }
+        .accessibilityAction(named: "あとで") { animateSwipe(.skip) }
     }
 
     // MARK: - Header
@@ -121,7 +129,8 @@ struct SwipeSessionView: View {
                 SwipeCardView(
                     listing: card,
                     dragOffset: isTop ? effectiveOffset : .zero,
-                    isTopCard: isTop
+                    isTopCard: isTop,
+                    forcedStamp: isTop ? forcedStamp : nil
                 )
                 .id(card.identityKey)
                 .scaleEffect(scaleFor(offset: offset))
@@ -215,6 +224,10 @@ struct SwipeSessionView: View {
 
     private func commitWithAnimation(_ decision: SwipeDecision, translation: CGSize) {
         isExiting = true
+        // ボタン・ジェスチャ両経路で確定時に1回だけ発火（SwipeActionBar 側の直書きは廃止）
+        HapticManager.impact(decision == .nope ? .medium : .light)
+        // exit アニメ中にスタンプを確実に表示（skip の「あとで」は dragOffset 駆動では出ないため）
+        forcedStamp = decision
         let exitAnimation: Animation = reduceMotion
             ? .easeOut(duration: 0.2)
             : .spring(response: 0.35, dampingFraction: 0.75)
@@ -225,6 +238,7 @@ struct SwipeSessionView: View {
             viewModel.commitSwipe(decision)
             dragOffset = .zero
             exitOffset = .zero
+            forcedStamp = nil
             isExiting = false
         }
     }
