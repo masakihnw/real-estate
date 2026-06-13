@@ -39,7 +39,8 @@ struct WidgetFeaturedSelectorTests {
 
     @Test("同点スコアは addedAt が新しい方を選ぶ")
     func tiebreakByRecency() {
-        let older = makeListing(score: 50, addedDaysAgo: 2)
+        // どちらも 2日以内（isRecentlyAdded の window 内）に収める
+        let older = makeListing(score: 50, addedDaysAgo: 1.5)
         let newer = makeListing(score: 50, addedDaysAgo: 0.2)
         let featured = WidgetFeaturedSelector.select(from: [older, newer])
         #expect(featured?.url == newer.url)
@@ -84,7 +85,9 @@ struct WidgetFeaturedSelectorTests {
 
     @Test("selectTop の同点は addedAt 新しい順")
     func selectTopTiebreakByRecency() {
-        let older = makeListing(score: 80, addedDaysAgo: 2)
+        // どちらも 2日以内（isRecentlyAdded の window 内）に収める。
+        // 2日ちょうどは境界で除外されるため 1.5 日を使う
+        let older = makeListing(score: 80, addedDaysAgo: 1.5)
         let newer = makeListing(score: 80, addedDaysAgo: 0.1)
         let top = WidgetFeaturedSelector.selectTop(from: [older, newer], limit: 2)
         #expect(top.map(\.url) == [newer.url, older.url])
