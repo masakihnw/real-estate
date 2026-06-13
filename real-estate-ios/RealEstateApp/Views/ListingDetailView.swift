@@ -35,10 +35,8 @@ struct ListingDetailView: View {
     @State private var deletingCommentId: String?
     /// 通勤時間計算中フラグ
     @State private var isCalculatingCommute = false
-    /// セクションナビゲーション用 ScrollViewProxy
-    @State private var scrollProxy: ScrollViewProxy?
-    /// 現在アクティブなセクションID（将来のハイライト用）
-    @State private var activeSection: String = "info"
+    /// 詳細タブの選択状態（概要/お金/資産/環境/メモ）
+    @State private var selectedTab: DetailTab = .overview
     /// 類似物件タップ時に表示するシート用（詳細画面を開く）
     @State private var selectedSimilarListing: Listing?
 
@@ -53,9 +51,8 @@ struct ListingDetailView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing) {
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: DesignSystem.detailSectionSpacing, pinnedViews: .sectionHeaders) {
                     // 掲載終了バナー
                     delistedBanner
 
@@ -86,165 +83,40 @@ struct ListingDetailView: View {
                         .fontWeight(.semibold)
                         .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .id("summary")
 
                     addressSection
 
                     // ③ スタットストリップ（3セル横並び）
                     statStripSection
 
-                    // ④ AI購入推奨度 / 投資サマリー
+                    // ④ AI購入推奨度 / 投資サマリー（ここまでヒーローカード）
                     InvestmentSummaryCard(listing: listing)
 
-                    // ④-b 総合スコア・価格変動・掲載状況
-                    if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
-                        Divider()
-                        investmentScoreSection
-                    }
-
-                    // ⑤ 月額支払いシミュレーション（中古・新築共通）
-                    if let priceMan = listing.priceMan, priceMan > 0 {
-                        Divider()
-                        MonthlyPaymentSimulationView(listing: listing)
-                            .id("loan")
-
-                        // 財務シミュレーションボタン群
-                        Divider()
-                        financialToolsSection
-                    }
-
-                    Divider()
-
-                    // ⑥ 物件情報（マージ: 旧「物件情報」+「アクセス・権利」を統合）
-                    propertyInfoSection
-                        .id("info")
-
-                    // ⑥-b AI抽出情報（リノベ・管理・設備）
-                    if let features = listing.parsedExtractedFeatures {
-                        ExtractedFeaturesSection(features: features)
-                    }
-
-                    // ⑥-c 他サイト価格比較
-                    AlternateSourcesSection(listing: listing)
-
-                    // ⑥-d 同一物件候補
-                    DedupCandidateCard(listing: listing)
-
-                    Divider()
-
-                    // ⑦ 通勤時間
-                    if listing.hasCommuteInfo {
-                        commuteSection
-                            .id("commute")
-                    } else if listing.hasCoordinate {
-                        commuteCalculateSection
-                            .id("commute")
-                    }
-
-                    // ⑧ ハザード情報
-                    if listing.hasHazardData {
-                        Divider()
-                        hazardSection
-                            .id("hazard")
-                    }
-
-                    Divider()
-
-                    // ⑨ 資産性（住まいサーフィン評価）
-                    Group {
-                        if listing.hasSumaiSurfinData {
-                            sumaiSurfinSection
-                        } else {
-                            sumaiSurfinUnavailableNotice
+                    // ⑤ 以降は5タブ（概要/お金/資産/環境/メモ）。ヘッダーをピン留めし、
+                    // タブ振り分けは次コミット。まずは骨格（全セクションを Section 内に表示）。
+                    Section {
+                        switch selectedTab {
+                        case .overview: overviewTab
+                        case .money: moneyTab
+                        case .asset: assetTab
+                        case .environment: environmentTab
+                        case .notes: notesTab
                         }
-                    }
-                    .id("sumai")
-
-                    // ⑨-b 周辺相場（住まいサーフィン）
-                    if listing.hasSurroundingProperties {
-                        Divider()
-                        surroundingPropertiesSection
-                            .padding(14)
-                            .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
-                    }
-
-                    // ⑨-c 値上がり・含み益シミュレーション
-                    if listing.hasSimulationData {
-                        Divider()
-                        SimulationSectionView(listing: listing)
-                            .id("simulation")
-                    }
-
-                    // ⑨-d 成約相場との比較（不動産情報ライブラリ）+ 近隣の成約事例
-                    if listing.hasMarketData || !nearbyTransactions.isEmpty {
-                        Divider()
-                    }
-                    if listing.hasMarketData {
-                        MarketDataSectionView(listing: listing)
-                            .id("market")
-                    }
-                    nearbyTransactionsSection
-                        .id("nearby-tx")
-
-                    // ⑨-e マンションレビュー
-                    if listing.parsedMansionReviewData != nil {
-                        Divider()
-                        mansionReviewSection
-                            .id("mansion-review")
-                    }
-
-                    // ⑨-f エリア人口動態（e-Stat）
-                    if listing.hasPopulationData {
-                        Divider()
-                        PopulationSectionView(listing: listing)
-                            .id("population")
-                    }
-
-                    // ⑨-g 類似物件
-                    if !similarListings.isEmpty {
-                        Divider()
-                        similarListingsSection
-                    }
-
-                    Divider()
-
-                    // ⑩ AI 相談セクション
-                    AIConsultationSectionView(listing: listing)
-                        .id("ai")
-
-                    Divider()
-
-                    // ⑪ 内見メモ（コメント・写真）
-                    notesCompactButton
-
-                    Divider()
-                    inspectionChecklistSection
-
-                    Divider()
-
-                    // ⑫ 外部サイトボタン or 掲載終了メッセージ
-                    if listing.isDelisted {
-                        delistedNotice
-                    } else {
-                        externalLinksSection
+                    } header: {
+                        tabPickerHeader
                     }
                 }
                 .padding(.horizontal, 14)
-                }
-                .onAppear {
-                    scrollProxy = proxy
-                    listing.viewedAt = Date()
-                    try? modelContext.save()
-                }
-                .task {
-                    similarListings = fetchSimilarListings()
-                    nearbyTransactions = fetchNearbyTransactions()
-                    loadDaysOnMarketComparison()
-                    await loadEnrichmentIfNeeded()
-                }
-                .safeAreaInset(edge: .top) {
-                    sectionNavBar
-                }
+            }
+            .onAppear {
+                listing.viewedAt = Date()
+                try? modelContext.save()
+            }
+            .task {
+                similarListings = fetchSimilarListings()
+                nearbyTransactions = fetchNearbyTransactions()
+                loadDaysOnMarketComparison()
+                await loadEnrichmentIfNeeded()
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -425,48 +297,171 @@ struct ListingDetailView: View {
         }
     }
 
-    // MARK: - セクションナビゲーション（目次）
+    // MARK: - 詳細タブ（5タブ再構成 §3.3）
 
-    private var sectionNavBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                sectionChip("サマリー", id: "summary")
-                sectionChip("情報", id: "info")
-                if listing.priceMan != nil && listing.priceMan! > 0 {
-                    sectionChip("月額", id: "loan")
-                }
-                if listing.hasCommuteInfo || listing.hasCoordinate {
-                    sectionChip("通勤", id: "commute")
-                }
-                if listing.hasHazardData {
-                    sectionChip("ハザード", id: "hazard")
-                }
-                sectionChip("資産性", id: "sumai")
-                sectionChip("AI", id: "ai")
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 6)
-        }
-        .background(.ultraThinMaterial)
+    enum DetailTab: String, CaseIterable, Identifiable {
+        case overview = "概要"
+        case money = "お金"
+        case asset = "資産"
+        case environment = "環境"
+        case notes = "メモ"
+        var id: String { rawValue }
     }
 
-    private func sectionChip(_ label: String, id: String) -> some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                scrollProxy?.scrollTo(id, anchor: .top)
+    /// ピン留めされるタブ切替セグメント。横スワイプの ListingDetailPagerView と
+    /// 競合しないよう segmented（タップのみ）にし、タブ中身は switch で差し替える
+    /// （TabView(.page) は使わない）。
+    private var tabPickerHeader: some View {
+        Picker("セクション", selection: $selectedTab) {
+            ForEach(DetailTab.allCases) { tab in
+                Text(tab.rawValue).tag(tab)
             }
-        } label: {
-            Text(label)
-                .font(.caption)
-                .fontWeight(.medium)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(
-                    Capsule()
-                        .fill(Color.accentColor.opacity(0.12))
-                )
         }
-        .buttonStyle(.plain)
+        .pickerStyle(.segmented)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 6)
+        .frame(maxWidth: .infinity)
+        .background(.ultraThinMaterial)
+        // LazyVStack の .padding(.horizontal,14) を打ち消し、ピン留め時に背景を全幅化
+        .padding(.horizontal, -14)
+    }
+
+    // MARK: - タブ内容（既存セクションを再利用するだけ・内部は不変）
+
+    /// 概要: スペック・AI抽出特徴・別ソース価格・重複候補・元サイトリンク
+    @ViewBuilder
+    private var overviewTab: some View {
+        propertyInfoSection
+        if let features = listing.parsedExtractedFeatures {
+            Divider()
+            ExtractedFeaturesSection(features: features)
+        }
+        Divider()
+        AlternateSourcesSection(listing: listing)
+        DedupCandidateCard(listing: listing)
+        Divider()
+        if listing.isDelisted {
+            delistedNotice
+        } else {
+            externalLinksSection
+        }
+    }
+
+    /// お金: 月額シミュレーション＋統合シミュレーター（5ツールを前提条件共有で1画面に）
+    @ViewBuilder
+    private var moneyTab: some View {
+        if let priceMan = listing.priceMan, priceMan > 0 {
+            MonthlyPaymentSimulationView(listing: listing)
+            Divider()
+            Button {
+                showMoneySimulator = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "yensign.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(.blue)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("お金のシミュレーター")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.primary)
+                        Text("諸費用・銀行比較・減税・賃貸/購入・リノベ")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $showMoneySimulator) {
+                MoneySimulatorView(listing: listing)
+            }
+        } else {
+            ContentUnavailableView("価格情報がありません", systemImage: "yensign.circle")
+        }
+    }
+
+    /// 資産性: 総合スコア・沖式/レーダー・周辺相場・5/10年シミュ・成約・市場比較・
+    /// マンションレビュー・人口動態・類似物件
+    @ViewBuilder
+    private var assetTab: some View {
+        if listing.listingScore != nil || listing.hasPriceChanges || listing.firstSeenAt != nil {
+            investmentScoreSection
+            Divider()
+        }
+        Group {
+            if listing.hasSumaiSurfinData {
+                sumaiSurfinSection
+            } else {
+                sumaiSurfinUnavailableNotice
+            }
+        }
+        if listing.hasSurroundingProperties {
+            Divider()
+            surroundingPropertiesSection
+                .padding(14)
+                .tintedGlassBackground(tint: Color.accentColor, tintOpacity: 0.03, borderOpacity: 0.08)
+        }
+        if listing.hasSimulationData {
+            Divider()
+            SimulationSectionView(listing: listing)
+        }
+        if listing.hasMarketData || !nearbyTransactions.isEmpty {
+            Divider()
+        }
+        if listing.hasMarketData {
+            MarketDataSectionView(listing: listing)
+        }
+        nearbyTransactionsSection
+        if listing.parsedMansionReviewData != nil {
+            Divider()
+            mansionReviewSection
+        }
+        if listing.hasPopulationData {
+            Divider()
+            PopulationSectionView(listing: listing)
+        }
+        if !similarListings.isEmpty {
+            Divider()
+            similarListingsSection
+        }
+    }
+
+    /// 環境: 通勤・ハザード（両方未取得なら空回避のプレースホルダ）
+    @ViewBuilder
+    private var environmentTab: some View {
+        if listing.hasCommuteInfo {
+            commuteSection
+        } else if listing.hasCoordinate {
+            commuteCalculateSection
+        }
+        if listing.hasHazardData {
+            Divider()
+            hazardSection
+        }
+        if !listing.hasCommuteInfo && !listing.hasCoordinate && !listing.hasHazardData {
+            ContentUnavailableView(
+                "環境情報は未取得です",
+                systemImage: "map",
+                description: Text("通勤時間・ハザード情報は取得され次第ここに表示されます")
+            )
+        }
+    }
+
+    /// メモ: AI相談・コメント・内見チェックリスト
+    @ViewBuilder
+    private var notesTab: some View {
+        AIConsultationSectionView(listing: listing)
+        Divider()
+        notesCompactButton
+        Divider()
+        inspectionChecklistSection
     }
 
     // MARK: - 掲載終了バナー（画面上部）
@@ -1206,61 +1201,9 @@ struct ListingDetailView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
-    // MARK: - 財務ツールセクション
+    // MARK: - お金の統合シミュレーター
 
-    @State private var showPurchaseCost = false
-    @State private var showBankComparison = false
-    @State private var showTaxBenefit = false
-    @State private var showRentVsBuy = false
-    @State private var showRenovation = false
-
-    @ViewBuilder
-    private var financialToolsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("財務シミュレーション", systemImage: "yensign.circle")
-                .font(.headline)
-
-            LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 8) {
-                toolButton("購入諸費用", icon: "doc.text", color: .blue) { showPurchaseCost = true }
-                toolButton("銀行比較", icon: "building.columns", color: .green) { showBankComparison = true }
-                toolButton("ローン減税", icon: "arrow.down.circle", color: .orange) { showTaxBenefit = true }
-                toolButton("賃貸 vs 購入", icon: "arrow.left.arrow.right", color: .purple) { showRentVsBuy = true }
-                toolButton("リノベ費用", icon: "hammer", color: .teal) { showRenovation = true }
-            }
-        }
-        .sheet(isPresented: $showPurchaseCost) {
-            PurchaseCostCalculatorView(listing: listing)
-        }
-        .sheet(isPresented: $showBankComparison) {
-            BankComparisonView(listing: listing)
-        }
-        .sheet(isPresented: $showTaxBenefit) {
-            MortgageTaxBenefitView(listing: listing)
-        }
-        .sheet(isPresented: $showRentVsBuy) {
-            RentVsBuyView(listing: listing)
-        }
-        .sheet(isPresented: $showRenovation) {
-            RenovationEstimateView(listing: listing)
-        }
-    }
-
-    private func toolButton(_ label: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.caption)
-                Text(label)
-                    .font(.caption.weight(.semibold))
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .foregroundStyle(color)
-            .background(color.opacity(0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-        }
-        .buttonStyle(.plain)
-    }
+    @State private var showMoneySimulator = false
 
     // MARK: - 総合スコアセクション
 

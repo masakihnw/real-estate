@@ -11,16 +11,14 @@ struct BankComparisonView: View {
     }
 
     let listing: Listing
-    @State private var loanAmountMan: Double
-    @State private var loanYears: Double = 35
+    /// 借入額・返済期間は共有前提から。金利は各行の表データが主役のため共有金利は使わない（C2）。
+    let assumptions: LoanAssumptions
 
     private static let fullDanshinPremiumRate: Double = 0.4
     private static let extraLongTermPremiumRate: Double = 0.1
 
-    init(listing: Listing) {
-        self.listing = listing
-        self._loanAmountMan = State(initialValue: Double(listing.priceMan ?? 5000) * 0.9)
-    }
+    private var loanAmountMan: Double { assumptions.loanAmountMan }
+    private var loanYears: Int { assumptions.loanYears }
 
     // 2026-04-02 時点で公式サイトを確認しつつ、キャンペーン/審査差をならした比較用の概算値。
     // 実際は借入比率・審査結果・キャンペーンで上下するため、詳細は各行の見積り確認が必要。
@@ -36,62 +34,42 @@ struct BankComparisonView: View {
     ]
 
     private var isLongerThan35Years: Bool {
-        Int(loanYears) > 35
+        loanYears > 35
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section("ローン条件") {
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text("借入額")
-                            Spacer()
-                            Text(Listing.formatPriceCompact(Int(loanAmountMan)))
-                        }
-                        Slider(value: $loanAmountMan, in: 1000...20000, step: 100)
-                    }
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text("返済期間")
-                            Spacer()
-                            Text("\(Int(loanYears))年")
-                        }
-                        Slider(value: $loanYears, in: 10...50, step: 1)
-                    }
-                }
-
-                Section("注意") {
-                    Text("金利は 2026年4月初旬に各行公式サイトを見ながら比較用の概算に更新しています。団信フルは基本金利に +0.4% を上乗せした目安です。")
+        Group {
+            Section("注意") {
+                Text("借入額 \(Listing.formatPriceCompact(Int(loanAmountMan))) ・ 返済 \(loanYears)年 で試算（前提条件パネルで変更）。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("金利は 2026年4月初旬に各行公式サイトを見ながら比較用の概算に更新しています。団信フルは基本金利に +0.4% を上乗せした目安です。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                if isLongerThan35Years {
+                    Text("35年超の借入は銀行によって +0.1% 上乗せになることがあります。特に PayPay 銀行は公式に注意書きがあります。")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
-                    if isLongerThan35Years {
-                        Text("35年超の借入は銀行によって +0.1% 上乗せになることがあります。特に PayPay 銀行は公式に注意書きがあります。")
-                            .font(.caption)
-                            .foregroundStyle(.orange)
-                    }
-                }
-
-                Section("変動金利") {
-                    ForEach(Self.banks, id: \.name) { bank in
-                        bankRow(bank: bank, rate: bank.variableRate, fee: bank.fee)
-                    }
-                }
-
-                Section("固定10年") {
-                    ForEach(Self.banks, id: \.name) { bank in
-                        bankRow(bank: bank, rate: bank.fixedRate10, fee: bank.fee)
-                    }
-                }
-
-                Section("全期間固定") {
-                    ForEach(Self.banks, id: \.name) { bank in
-                        bankRow(bank: bank, rate: bank.fixedRate35, fee: bank.fee)
-                    }
+                        .foregroundStyle(.orange)
                 }
             }
-            .navigationTitle("銀行ローン比較")
-            .navigationBarTitleDisplayMode(.inline)
+
+            Section("変動金利") {
+                ForEach(Self.banks, id: \.name) { bank in
+                    bankRow(bank: bank, rate: bank.variableRate, fee: bank.fee)
+                }
+            }
+
+            Section("固定10年") {
+                ForEach(Self.banks, id: \.name) { bank in
+                    bankRow(bank: bank, rate: bank.fixedRate10, fee: bank.fee)
+                }
+            }
+
+            Section("全期間固定") {
+                ForEach(Self.banks, id: \.name) { bank in
+                    bankRow(bank: bank, rate: bank.fixedRate35, fee: bank.fee)
+                }
+            }
         }
     }
 
@@ -101,14 +79,14 @@ struct BankComparisonView: View {
         let monthly = calculateMonthlyPayment(
             principal: loanAmountMan * 10000,
             annualRate: adjustedRate / 100,
-            years: Int(loanYears)
+            years: loanYears
         )
         let monthlyWithFullDanshin = calculateMonthlyPayment(
             principal: loanAmountMan * 10000,
             annualRate: fullDanshinRate / 100,
-            years: Int(loanYears)
+            years: loanYears
         )
-        let total = monthly * Double(Int(loanYears) * 12)
+        let total = monthly * Double(loanYears * 12)
 
         return VStack(alignment: .leading, spacing: 4) {
             HStack {
