@@ -47,6 +47,24 @@ cd scraping-tool && ruff check . && python3 -m pytest tests/
 cd scraping-tool && python suumo_scraper.py
 ```
 
+## 開発フロー（必ずPR経由・デグレ防止）
+
+直接 main へ push しない。修正・機能追加は必ず以下を踏む:
+
+1. **専用ブランチを切る**（`fix/...` `feat/...` `chore/...`）。1つの変更=1つのブランチ=1つのPR。
+2. **レグレッションテストを用意/更新する**（デグレ検知の自動化が前提）:
+   - iOS: 変更箇所のロジックを `RealEstateAppTests/` のテストで固定する。
+   - パイプライン: パーサ/enricher の純関数テスト＋ステージ間結線の
+     `scraping-tool/tests/test_pipeline_smoke.py` を維持する。
+3. **PR を作成**（`gh pr create`）。`.github/workflows/ci.yml` が自動で
+   ruff + pytest（Python変更時）/ build + 全テスト（iOS変更時）を走らせる。
+4. **`ci-gate` が緑になってからマージ**する。main はブランチ保護で
+   `ci-gate` 必須・直push禁止（レビュー承認は不要なのでソロでも自分でマージ可）。
+
+CI は `ci.yml` の単一ゲートに集約済み。`changes` ジョブが変更領域（python/ios）を
+判定し、関係ジョブのみ実行、`ci-gate` が結果を集約して1ステータスを返す
+（paths フィルタ未起動による必須チェックの永久待ちを回避するため）。
+
 ## Rules
 
 - Verify no Swift compilation errors after iOS changes
