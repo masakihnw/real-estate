@@ -181,8 +181,12 @@ struct ListingDetailView: View {
         isLoadingEnrichment = true
         defer { isLoadingEnrichment = false }
         do {
+            // RPC get_listing_detail は DB の identity_key（6要素・階数含む）で引く。
+            // computed identityKey は user_annotations 用の5要素キーで別物のため、
+            // 必ず supabaseIdentityKey（DB由来）を使う。これを取り違えると常に0件になり
+            // 画像など enrichment が一切ロードされない。
             try await SupabaseListingStore.shared.fetchDetail(
-                identityKey: listing.identityKey,
+                identityKey: listing.supabaseIdentityKey ?? listing.identityKey,
                 modelContext: modelContext
             )
         } catch {
