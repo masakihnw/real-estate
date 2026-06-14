@@ -138,6 +138,11 @@ do_archive() {
         bump_build_number
         BUILD_BUMPED=1
     fi
+
+    # 必須機密リソース（AllowedEmails.plist 等）がソース・pbxproj に存在するか検証。
+    # 欠落のままアーカイブするとログイン不能(fail-closed)/通勤破綻のビルドが出来てしまう。
+    "$SCRIPT_DIR/verify_required_resources.sh"
+
     info "アーカイブ中… (scheme: $SCHEME, configuration: Release)"
 
     # 前回のアーカイブを削除
@@ -155,6 +160,10 @@ do_archive() {
         2>&1 | tail -5
 
     [[ -d "$ARCHIVE_PATH" ]] || fail "アーカイブに失敗しました"
+
+    # 最終防衛線: 生成された .app に必須機密リソースが実際に同梱されているか検証。
+    # ここで欠落を検知したら、壊れたビルドを App Store Connect に上げる前に中止する。
+    "$SCRIPT_DIR/verify_required_resources.sh" --archive "$ARCHIVE_PATH"
 
     # ビルド番号を表示
     local build_num
