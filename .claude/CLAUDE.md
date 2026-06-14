@@ -100,6 +100,27 @@ CI は `ci.yml` の単一ゲートに集約済み。`changes` ジョブが変更
 - Mac 版（Mac Catalyst）は廃止済み。Mac Catalyst 向けコード・ビルド設定を追加しない。
 - `DateFormatter` は `static let` + `Locale(identifier: "en_US_POSIX")` で共有する（和暦端末対策）。
 
+### de-PII 外部 plist（必須機密リソース）— ログイン不能を絶対に再発させない
+
+`AllowedEmails.plist` / `CommuteOffices.plist` は de-PII で外部 plist 化された機密リソース。
+`.gitignore` 対象でローカルにのみ存在し、**ビルドに含めないと事故になる**:
+- `AllowedEmails.plist` 欠落 → 許可リスト空＝全アカウント拒否（fail-closed）→ **誰もログインできない**。
+- `CommuteOffices.plist` 欠落 → 通勤時間が座標0,0で壊れる。
+
+過去の事故: de-PII 時に plist 不在のまま `project.pbxproj` を再生成・コミットし、参照が抜けた
+pbxproj から TestFlight をビルドしてログイン不能になった。再発防止として以下を**厳守**する:
+
+- `project.pbxproj` は **gitignore 対象**でコミット禁止。ビルド前に必ず `xcodegen generate` で再生成する
+  （ビルド番号の正は `project.yml`、生成物 pbxproj ではない）。
+- `project.yml` の `sources` は `path: RealEstateApp`（フォルダ丸ごと）を維持する。**plist を明示ファイル列挙に
+  変えない**（列挙にすると gitignore plist が漏れて参照が抜ける）。
+- de-PII / 機密ファイルの plist 化・移動・削除を行ったら、**同じ作業内で**
+  `cd real-estate-ios && ./scripts/verify_required_resources.sh` を実行して合格させる。
+- TestFlight への配布は必ず `./scripts/deploy.sh --ios` 経由で行う。deploy.sh は
+  アーカイブ前（ソース＋pbxproj 参照）とアップロード前（.app 同梱の最終確認）で
+  `verify_required_resources.sh` を呼び、欠落時はアップロードを中止する。**この検証を迂回しない**。
+- 必須リソースを増減したら `REQUIRED_PLISTS`（`scripts/verify_required_resources.sh`）も更新する。
+
 ## Supabase マイグレーション
 
 - 新規マイグレーションは `supabase/migrations/` の**既存最大番号 + 1**を3桁ゼロ埋めで採番。
