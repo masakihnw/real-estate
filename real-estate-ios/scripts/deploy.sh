@@ -124,8 +124,9 @@ bump_build_number() {
     fi
 
     # ビルド番号をgitにコミットして、Apple側とのずれを防止
+    # project.pbxproj は gitignore 対象（xcodegen で都度再生成）なので add しない
     (cd "$PROJECT_DIR" && \
-        git add project.yml RealEstateApp.xcodeproj/project.pbxproj && \
+        git add project.yml && \
         git commit -m "Bump build number to $next" 2>/dev/null) || true
 
     ok "ビルド番号更新完了 (build $next)"
