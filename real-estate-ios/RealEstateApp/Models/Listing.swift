@@ -2256,6 +2256,31 @@ final class Listing: @unchecked Sendable {
         return String(repeating: "★", count: score) + String(repeating: "☆", count: 5 - score)
     }
 
+    /// 表示用のAIサマリー（結論文）。
+    ///
+    /// 旧 `investmentSummary` には推奨JSON（`{"flags":[...],"score":N,"action":"..."}`）が
+    /// そのまま残っているレガシーデータがあるため、クリーンな `aiRecommendationSummary` を優先する。
+    /// `aiRecommendationSummary` が無く `investmentSummary` が JSON ライクな場合は表示しない。
+    var displayAISummary: String? {
+        if let conclusion = aiRecommendationSummary?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !conclusion.isEmpty {
+            return conclusion
+        }
+        if let legacy = investmentSummary?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !legacy.isEmpty,
+           !Self.looksLikeRawJSON(legacy) {
+            return legacy
+        }
+        return nil
+    }
+
+    /// 文字列が（推奨）JSON オブジェクト/配列の生データに見えるか。
+    /// 前後の空白に依存しないよう内部でトリムしてから判定する。
+    static func looksLikeRawJSON(_ text: String) -> Bool {
+        guard let first = text.trimmingCharacters(in: .whitespacesAndNewlines).first else { return false }
+        return first == "{" || first == "["
+    }
+
     // MARK: - 投資判断支援
 
     /// パース済み価格変動履歴（キャッシュ付き）

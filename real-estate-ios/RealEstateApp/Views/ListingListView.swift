@@ -1353,7 +1353,7 @@ struct ListingRowView: View {
             .buttonStyle(.plain)
 
             // AI評価トグルセクション
-            if listing.aiRecommendationScore != nil || listing.investmentSummary != nil {
+            if listing.aiRecommendationScore != nil || listing.displayAISummary != nil {
                 aiSummarySection
             }
 
@@ -1620,7 +1620,7 @@ struct ListingRowView: View {
                 .foregroundStyle(Color.accentColor)
                 .padding(.top, 2)
             }
-        } else if let summary = listing.investmentSummary {
+        } else if let summary = listing.displayAISummary {
             Text(summary)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
@@ -1629,12 +1629,7 @@ struct ListingRowView: View {
     }
 
     private var aiStarColor: Color {
-        switch listing.aiRecommendationScore {
-        case 5: return .green
-        case 4: return .blue
-        case 3: return .orange
-        default: return .secondary
-        }
+        AIRecommendationStyle.starColor(forScore: listing.aiRecommendationScore)
     }
 
     // MARK: - Expandable Section

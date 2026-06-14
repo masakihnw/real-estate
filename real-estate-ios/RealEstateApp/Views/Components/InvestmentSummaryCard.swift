@@ -6,7 +6,7 @@ struct InvestmentSummaryCard: View {
     @State private var isEvidenceExpanded = false
 
     private var hasRecommendation: Bool { listing.aiRecommendationScore != nil }
-    private var summary: String? { listing.investmentSummary }
+    private var summary: String? { listing.displayAISummary }
     private var badge: String? { listing.highlightBadge }
     private var strengths: [String] { listing.parsedKeyStrengths }
     private var risks: [String] { listing.parsedKeyRisks }
@@ -29,7 +29,7 @@ struct InvestmentSummaryCard: View {
                 AIIndicator()
             }
 
-            if let conclusion = listing.aiRecommendationSummary {
+            if let conclusion = summary {
                 Text(conclusion)
                     .font(.subheadline)
                     .foregroundStyle(.primary)
@@ -126,39 +126,19 @@ struct InvestmentSummaryCard: View {
     }
 
     private var recommendationLabel: String {
-        switch listing.aiRecommendationScore {
-        case 5: return "強く推奨"
-        case 4: return "推奨"
-        case 3: return "条件次第"
-        case 2: return "非推奨"
-        case 1: return "見送り"
-        default: return ""
-        }
+        AIRecommendationStyle.label(forScore: listing.aiRecommendationScore)
     }
 
     private func starColor(for score: Int) -> Color {
-        switch score {
-        case 5: return .green
-        case 4: return .blue
-        case 3: return .orange
-        default: return .secondary
-        }
+        AIRecommendationStyle.starColor(forScore: score)
     }
 
     private func flagColor(for flag: String) -> Color {
-        if flag.hasSuffix("◎") || flag.hasSuffix("○") { return .green }
-        if flag.contains("リスク") || flag.contains("NG") || flag.contains("不足") { return .red }
-        if flag.contains("注意") || flag.contains("不透明") { return .orange }
-        return .secondary
+        AIRecommendationStyle.flagColor(for: flag)
     }
 
     private var recommendationBorderColor: Color {
-        switch listing.aiRecommendationScore {
-        case 5: return .green.opacity(0.3)
-        case 4: return .blue.opacity(0.3)
-        case 3: return .orange.opacity(0.3)
-        default: return Color.secondary.opacity(0.15)
-        }
+        AIRecommendationStyle.borderColor(forScore: listing.aiRecommendationScore)
     }
 
     // MARK: - Legacy Card
