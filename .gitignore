@@ -47,6 +47,10 @@ configs/commute/offices.local.yaml
 real-estate-ios/RealEstateApp/AllowedEmails.plist
 # 通勤先オフィスの実値（実住所・座標・社名。PII。CommuteOffices.sample.plist を複製して作成）
 real-estate-ios/RealEstateApp/CommuteOffices.plist
+# XcodeGen 生成物。gitignore 対象 plist（AllowedEmails 等）への参照を含むため
+# コミットしない（コミットすると参照欠落版で固定されログイン不能を再発させる）。
+# ビルド前に `xcodegen generate` で都度再生成する。ビルド番号は project.yml が正。
+real-estate-ios/RealEstateApp.xcodeproj/project.pbxproj
 # 通勤先オフィスに紐づく再生成可能な算出データ・キャッシュ（オフィス座標/社名が漏れるためコミット禁止）
 scraping-tool/data/commute_playground.json
 scraping-tool/data/commute_m3career.json
