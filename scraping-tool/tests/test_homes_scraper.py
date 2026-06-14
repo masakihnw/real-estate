@@ -467,6 +467,13 @@ class TestScrapeHomesFinishReasons:
         entry = scraper_metrics.get_all()["homes"]
         assert entry["finish_reasons"] == {"safety_limit": 1}
 
+    def test_safety_limit_covers_large_inventory(self):
+        """安全上限は実在庫（2026-06: 100ページ超）を巡回しきれる幅を確保する。
+
+        100 では safety_limit で打ち切られ取りこぼしていたため引き上げた。回帰防止。
+        """
+        assert homes_scraper.HOMES_MAX_PAGES_SAFETY >= 150
+
     def test_user_limit_records_completed(self, monkeypatch):
         _run_scrape_homes(monkeypatch, {1: 2, 2: 2, 3: 2}, max_pages=2)
         entry = scraper_metrics.get_all()["homes"]
@@ -500,17 +507,35 @@ class TestScrapeHomesFinishReasons:
 class TestBuildListUrl:
     """サーバーサイドフィルタURL生成のテスト（30分タイムアウト対策）。"""
 
-    def test_no_filter_returns_base(self):
-        assert homes_scraper._build_list_url(1, apply_filter=False) == homes_scraper.LIST_URL_BASE
+    def test_no_filter_page_1_has_sort_only(self):
+        """フィルタ無しでも並び順（新着順）は常に付く。"""
+        from urllib.parse import urlencode
+        url = homes_scraper._build_list_url(1, apply_filter=False)
+        expected = homes_scraper.LIST_URL_BASE + "?" + urlencode(
+            {"cond[sortby]": homes_scraper.HOMES_SORT_NEWEST}
+        )
+        assert url == expected
+        assert "page=" not in url
 
     def test_no_filter_page_2(self):
         url = homes_scraper._build_list_url(2, apply_filter=False)
-        assert url == homes_scraper.LIST_URL_BASE + "?page=2"
+        assert "cond%5Bsortby%5D=newdate" in url
+        assert "page=2" in url
+        assert "cond%5Bmoneyroom%5D=" not in url
+
+    def test_sort_is_always_newest(self):
+        """全ページ・全モードで新着順固定（安全上限の取りこぼしを古い物件側に寄せる）。"""
+        assert homes_scraper.HOMES_SORT_NEWEST == "newdate"
+        for apply_filter in (True, False):
+            for page in (1, 5):
+                url = homes_scraper._build_list_url(page, apply_filter=apply_filter)
+                assert "cond%5Bsortby%5D=newdate" in url
 
     def test_filter_adds_price_and_area(self):
         url = homes_scraper._build_list_url(1, apply_filter=True)
         assert "cond%5Bmoneyroom%5D=" in url
         assert "cond%5Bhousearea%5D=" in url
+        assert "cond%5Bsortby%5D=newdate" in url
 
     def test_filter_with_page(self):
         url = homes_scraper._build_list_url(3, apply_filter=True)
