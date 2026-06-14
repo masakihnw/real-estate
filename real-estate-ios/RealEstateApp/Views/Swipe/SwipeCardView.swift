@@ -8,26 +8,21 @@ struct SwipeCardView: View {
     var forcedStamp: SwipeDecision?
 
     @State private var imageIndex = 0
-    @State private var cardImages: [CardImage] = []
+    @State private var deck: SwipeCardImageBuilder.Deck = .empty
 
     private var swipeProgress: Double {
         guard isTopCard else { return 0 }
         return Double(dragOffset.width) / 150
     }
 
-    private static func buildCardImages(for listing: Listing) -> [CardImage] {
-        var images: [CardImage] = []
-        if let thumb = listing.thumbnailURL {
-            images.append(CardImage(url: thumb, label: "メイン"))
-        }
-        for img in listing.parsedSuumoImages {
-            guard let url = img.resolvedURL, url != listing.thumbnailURL else { continue }
-            images.append(CardImage(url: url, label: img.label))
-        }
-        for url in listing.parsedFloorPlanImages {
-            images.append(CardImage(url: url, label: "間取り図"))
-        }
-        return images
+    private static func buildDeck(for listing: Listing) -> SwipeCardImageBuilder.Deck {
+        SwipeCardImageBuilder.build(
+            thumbnailURL: listing.thumbnailURL,
+            suumoImages: listing.parsedSuumoImages.compactMap { img in
+                img.resolvedURL.map { (url: $0, label: img.label) }
+            },
+            floorPlanImages: listing.parsedFloorPlanImages
+        )
     }
 
     var body: some View {
@@ -61,19 +56,24 @@ struct SwipeCardView: View {
         .onAppear { buildImagesIfNeeded() }
         .onChange(of: listing.identityKey) { _, _ in
             imageIndex = 0
-            cardImages = Self.buildCardImages(for: listing)
+            deck = Self.buildDeck(for: listing)
         }
-        .onChange(of: listing.suumoImagesJSON) { _, _ in
-            cardImages = Self.buildCardImages(for: listing)
-            if imageIndex >= cardImages.count { imageIndex = 0 }
-        }
+        .onChange(of: listing.suumoImagesJSON) { _, _ in rebuildAfterDetailFetch() }
+        // 軽量フィードは間取り URL を持たず、詳細取得で後追い設定される。
+        // 間取り JSON 更新でも再構築して小窓・カルーセルに反映する。
+        .onChange(of: listing.floorPlanImagesJSON) { _, _ in rebuildAfterDetailFetch() }
+    }
+
+    private func rebuildAfterDetailFetch() {
+        deck = Self.buildDeck(for: listing)
+        if imageIndex >= deck.images.count { imageIndex = 0 }
     }
 
     // MARK: - Image Carousel
 
     private var imageCarousel: some View {
         GeometryReader { geo in
-            let images = cardImages
+            let images = deck.images
             let w = geo.size.width
             let h = w * 0.65
 
@@ -163,8 +163,45 @@ struct SwipeCardView: View {
             .overlay(alignment: .bottomLeading) {
                 badgeOverlay
             }
+            .overlay(alignment: .bottomTrailing) {
+                floorPlanInset(safeIndex: min(imageIndex, max(images.count - 1, 0)))
+            }
         }
         .aspectRatio(1 / 0.65, contentMode: .fit)
+    }
+
+    /// メイン画像に常時併記する間取り図の小窓。タップでカルーセルを間取り図へジャンプする。
+    /// すでに間取り図を表示中のときは重複を避けて隠す。
+    @ViewBuilder
+    private func floorPlanInset(safeIndex: Int) -> some View {
+        if let fpIndex = deck.floorPlanIndex,
+           deck.images.indices.contains(fpIndex),
+           deck.images.indices.contains(safeIndex),
+           !deck.images[safeIndex].isFloorPlan {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) { imageIndex = fpIndex }
+            } label: {
+                VStack(spacing: 0) {
+                    TrimmedAsyncImage(url: deck.images[fpIndex].url, width: 74, height: 56)
+                    Text("間取り")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 2)
+                        .background(.black.opacity(0.6))
+                }
+                .frame(width: 74)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(.white.opacity(0.9), lineWidth: 1.5)
+                )
+                .shadow(color: .black.opacity(0.3), radius: 3, y: 1)
+            }
+            .buttonStyle(.plain)
+            .padding(10)
+            .accessibilityLabel("間取り図を拡大")
+        }
     }
 
     private var placeholder: some View {
@@ -231,8 +268,8 @@ struct SwipeCardView: View {
     // MARK: - Lifecycle
 
     private func buildImagesIfNeeded() {
-        if cardImages.isEmpty {
-            cardImages = Self.buildCardImages(for: listing)
+        if deck.images.isEmpty {
+            deck = Self.buildDeck(for: listing)
         }
     }
 
@@ -269,10 +306,4 @@ struct SwipeCardView: View {
             )
             .rotationEffect(.degrees(rotation))
     }
-}
-
-private struct CardImage: Identifiable {
-    let url: URL
-    let label: String
-    var id: String { url.absoluteString }
 }
