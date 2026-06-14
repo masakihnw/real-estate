@@ -501,12 +501,15 @@ jobs:
           レポート: scraping-tool/results/report/report.md
           自動更新: GitHub Actions (enrich-and-report)" || exit 0
 
-          if git pull --rebase -X theirs origin ${{ github.ref_name }}; then
+          # finalize 中に enricher 等が add 対象外の追跡ファイルを書き換え、
+          # 未ステージ変更で rebase が "cannot pull with rebase" で落ちる事象があったため
+          # --autostash で退避/復元する（コミット対象外なので push 内容には影響しない）。
+          if git pull --rebase --autostash -X theirs origin ${{ github.ref_name }}; then
             git push origin HEAD:refs/heads/${{ github.ref_name }}
           else
             echo "rebase 失敗: merge 方式にフォールバック" >&2
             git rebase --abort 2>/dev/null || true
-            git pull --no-rebase -X ours origin ${{ github.ref_name }}
+            git pull --no-rebase --autostash -X ours origin ${{ github.ref_name }}
             git push origin HEAD:refs/heads/${{ github.ref_name }}
           fi
 
