@@ -320,7 +320,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # main はブランチ保護（ci-gate 必須・直push禁止）。github-actions[bot] は
+          # 非管理者のため GITHUB_TOKEN では push が GH006 で拒否される。個人リポジトリ
+          # では Ruleset の bot バイパスが使えない（org 限定）ため、管理者の PAT で push
+          # する（enforce_admins:false＝管理者の直 push は必須チェックをバイパス可）。
+          # 未設定時は GITHUB_TOKEN にフォールバック（checkout は通り push のみ失敗）。
+          token: ${{ secrets.PAT_FINALIZE_PUSH || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
 
       - name: Setup environment

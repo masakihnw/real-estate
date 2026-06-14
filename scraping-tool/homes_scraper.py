@@ -85,6 +85,12 @@ _HOMES_PRICE_OPTIONS = (0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500,
 _HOMES_AREA_OPTIONS = (0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70,
                        75, 80, 85, 90, 95, 100, 110, 120, 130, 140, 150, 200)
 
+# 一覧の並び順（HOME'S 検索フォーム cond[sortby] 由来。2026-06 確認）。
+# 新着順で固定し、安全上限ページ到達時に取りこぼすのを「古い＝既取得済み」物件側に
+# 寄せる（新規物件は必ず先頭ページに来るため未取得にならない）。
+# 選択肢: recommend(おすすめ順/既定) / fee / -fee / area_house / period / addr / newdate
+HOMES_SORT_NEWEST = "newdate"
+
 
 def _snap_down(value: int, options: tuple[int, ...]) -> int:
     """value 以下で最大の選択肢を返す（下限を緩める方向に丸める）。"""
@@ -97,8 +103,11 @@ def _build_list_url(page: int, *, apply_filter: bool) -> str:
 
     ページ総数を削減して30分タイムアウト打ち切り（実測: 全件12,296件を82ページで
     打ち切り）を防ぐのが目的。フィルタは取りこぼし防止のため下限を緩めに丸める。
+
+    並び順は常に新着順（cond[sortby]=newdate）。安全上限ページ到達で巡回が打ち切られても、
+    取りこぼすのは末尾＝古い既取得済み物件側になり、新規物件は先頭ページで必ず拾える。
     """
-    params: dict[str, int] = {}
+    params: dict[str, int | str] = {"cond[sortby]": HOMES_SORT_NEWEST}
     if apply_filter:
         price_floor = _snap_down(PRICE_MIN_MAN, _HOMES_PRICE_OPTIONS)
         area_floor = _snap_down(int(AREA_MIN_M2_FETCH), _HOMES_AREA_OPTIONS)
@@ -111,8 +120,13 @@ def _build_list_url(page: int, *, apply_filter: bool) -> str:
     return LIST_URL_BASE + ("?" + urlencode(params) if params else "")
 
 
-# 全ページ取得時の安全上限（無限ループ防止）
-HOMES_MAX_PAGES_SAFETY = 100
+# 全ページ取得時の安全上限（無限ループ防止）。
+# 価格・面積のサーバーフィルタ後でも 23区中古マンションは在庫が大きく、
+# 100 では実在庫を巡回しきれず safety_limit で打ち切られ取りこぼしていた
+# （2026-06-14: 100ページで parsed=5412 のまま打ち切り）。新着順固定で取りこぼしは
+# 古い物件側に寄るが、新規取得・掲載終了検知の巡回幅を確保するため上限を広げる。
+# タイムリミット（HOMES_SCRAPE_TIMEOUT_SEC）が別途あるため無限ループの懸念はない。
+HOMES_MAX_PAGES_SAFETY = 150
 
 # 早期打ち切り: 連続 N ページで新規通過0件なら残りをスキップ
 HOMES_EARLY_EXIT_PAGES = 20
