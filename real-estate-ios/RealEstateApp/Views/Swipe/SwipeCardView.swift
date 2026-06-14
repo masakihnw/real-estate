@@ -277,7 +277,11 @@ struct SwipeCardView: View {
 
     @ViewBuilder
     private var aiSummarySection: some View {
-        if let summary = listing.investmentSummary ?? listing.aiRecommendationSummary {
+        if let score = listing.aiRecommendationScore {
+            Divider()
+                .padding(.vertical, 2)
+            recommendationContent(score: score)
+        } else if let summary = listing.displayAISummary {
             Divider()
                 .padding(.vertical, 2)
             HStack(alignment: .top, spacing: 6) {
@@ -287,7 +291,65 @@ struct SwipeCardView: View {
                 Text(summary)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    /// 星＋ラベル＋フラグ＋結論＋アクション（詳細画面 InvestmentSummaryCard と同じ構成）。
+    private func recommendationContent(score: Int) -> some View {
+        let flags = listing.parsedRecommendationFlags
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                HStack(spacing: 2) {
+                    ForEach(1...5, id: \.self) { i in
+                        Image(systemName: i <= score ? "star.fill" : "star")
+                            .font(.system(size: 12))
+                            .foregroundStyle(i <= score
+                                ? AIRecommendationStyle.starColor(forScore: score)
+                                : Color.secondary.opacity(0.3))
+                    }
+                }
+                Text(AIRecommendationStyle.label(forScore: score))
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(AIRecommendationStyle.starColor(forScore: score))
+                Spacer()
+                AIIndicator()
+            }
+
+            if !flags.isEmpty {
+                FlowLayout(spacing: 6) {
+                    ForEach(flags, id: \.self) { flag in
+                        Text(flag)
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(AIRecommendationStyle.flagColor(for: flag).opacity(0.12))
+                            .foregroundStyle(AIRecommendationStyle.flagColor(for: flag))
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                    }
+                }
+            }
+
+            if let conclusion = listing.displayAISummary {
+                Text(conclusion)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            if let action = listing.aiRecommendationAction, !action.isEmpty {
+                HStack(alignment: .top, spacing: 6) {
+                    Image(systemName: "arrow.right.circle.fill")
+                        .font(.caption)
+                    Text(action)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .foregroundStyle(Color.accentColor)
             }
         }
     }
