@@ -50,6 +50,38 @@ def test_fallback_prompt_composes_strategy_and_task():
     assert "JSON形式で回答" in prompt[task_idx:]
 
 
+def test_strategy_includes_okawara_review_axes():
+    """大河原レビュー由来の評価軸が戦略プロンプトに明文化されている（退行防止）。
+
+    追補軸: 坪単価を一次の物差しに割高/割安を定性判断・周辺環境リスク
+    （擁壁/周辺建物/新築タワーの日照眺望毀損）・最上階プレミア・学区の居住年数依存。
+    適正価格の絶対値（万円レンジ）算定は求めない方針（コンプ精度を担保できないため）。
+    """
+    prompt = cis.build_fallback_system_prompt()
+    for marker in [
+        "価格の割高・割安の見方",
+        "坪単価",
+        "周辺環境・近隣リスク",
+        "擁壁",
+        "新築タワー",
+        "最上階",
+        "学区",
+    ]:
+        assert marker in prompt, f"戦略プロンプトに {marker!r} が含まれていない"
+    # 適正価格の絶対値算定を求めない方針の退行防止
+    assert "適正価格レンジ" not in prompt or "算定は求めない" in prompt
+
+
+def test_task_prompts_carry_neighborhood_axes():
+    """周辺リスク軸が両タスク定義に流れていること（割高/割安は定性のみ）。"""
+    scoring = (_CONFIG_DIR / "prompts" / "ai_scoring.md").read_text(encoding="utf-8")
+    summary = (_CONFIG_DIR / "prompts" / "investment_summary.md").read_text(encoding="utf-8")
+    assert "周辺環境・近隣リスク" in scoring
+    assert "新築タワー" in summary  # 周辺環境リスクが summary に反映
+    # 適正価格の万円レンジ算定は不要の方針が明記されていること（退行防止）
+    assert "算定は不要" in summary and "算定は求めない" in scoring
+
+
 def test_prompt_version_is_deterministic():
     """同入力で PROMPT_VERSION が固定（キャッシュキー安定）。"""
     prompt = cis.build_fallback_system_prompt()
