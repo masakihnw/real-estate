@@ -94,11 +94,14 @@ AND (
   OR l.normalized_name ~ '\d+(\.\d+)?平米'
   OR l.normalized_name ~ 'LDK住戸$'
   OR LENGTH(l.normalized_name) <= 2
-  -- name にプロモーション文言（×区切りタグ等）が含まれ、normalized_name と大きく異なる
+  -- name にプロモーション文言（×区切りタグ・【】内修飾語等）が含まれ、normalized_name と異なる
+  -- 「テラス加賀　【リノベ】」のように差分が小さいケースも拾うため文字数差の閾値（+10）は撤廃し、
+  -- 販促マーカーの有無 + normalized_name が非空であることでゲートする
   OR (
-    l.name ~ '[×【】]'
+    l.name ~ '[×【】◆★☆]'
+    AND l.normalized_name != ''
     AND l.name != l.normalized_name
-    AND LENGTH(l.name) > LENGTH(l.normalized_name) + 10
+    AND LENGTH(l.name) > LENGTH(l.normalized_name)
   )
 )
 ORDER BY l.created_at DESC
@@ -133,14 +136,25 @@ LIMIT 30;
    LIMIT 5;
    ```
 
-4. 判断不能のレコードを pipeline_issues に記録:
+4. 判断不能のレコードを `pipeline_issues` に記録する。
+
+   **必ず `upsert_pipeline_issue()` を使い、issue_key は `name_quality_{id}` で一意化すること。**
+   旧版の `INSERT INTO pipeline_issues (source, ...)` は現行スキーマに存在しない列を参照する
+   壊れた書き方で、実行ごとに `r1_name_quality_*` / `routine_1_name_quality_*` と
+   バラバラのキーで重複登録される原因だった（同一物件が複数キーで残る）。
+   `name_quality_{id}` に統一することで、同一物件は1キーに収斂し再検出で upsert される。
+
    ```sql
-   INSERT INTO pipeline_issues (source, severity, message, details, created_at)
-   VALUES ('routine_1_name_quality', 'medium',
-           '物件名の品質チェックで判断不能: <normalized_name> (ID: <id>)',
-           '{"listing_id": <id>, "name": "<name>", "normalized_name": "<normalized_name>"}'::jsonb,
-           NOW())
-   ON CONFLICT DO NOTHING;
+   SELECT upsert_pipeline_issue(
+     'name_quality_' || <id>,          -- issue_key（物件IDで一意化）
+     'medium',                          -- severity
+     'data_quality',                    -- category
+     '物件名の品質低下（手動確認）',    -- title
+     '物件名の品質チェックで判断不能: <normalized_name> (ID: <id>)',  -- description
+     jsonb_build_object('listing_id', <id>, 'name', '<name>', 'normalized_name', '<normalized_name>'),
+     '真の建物名を住所・築年から特定し normalized_name/identity_key を補正。特定不能なら wont_fix。',
+     'manual'                           -- fix_type
+   );
    ```
 
 対象が0件ならスキップして Step 0.7 へ。
@@ -176,11 +190,13 @@ JOIN listings l2
   AND l1.normalized_name != l2.normalized_name
   AND (
     -- (A) ダッシュ系文字を統一して比較（同一間取り・近似面積が前提）
+    -- 長音記号の異体字（ー ｰ － ‐ ‑ ‒ – — ― −）をすべて '-' に畳んで比較する。
+    -- ← U+2015「―」(横棒) が漏れており「レヴィ―ル」が別物件化していた取りこぼしを修正。
     (
       l1.layout = l2.layout
       AND ABS(l1.area_m2 - l2.area_m2) <= 3
-      AND TRANSLATE(l1.normalized_name, 'ー－‐–—', '-----')
-        = TRANSLATE(l2.normalized_name, 'ー－‐–—', '-----')
+      AND TRANSLATE(l1.normalized_name, 'ーｰ－‐‑‒–—―−', '----------')
+        = TRANSLATE(l2.normalized_name, 'ーｰ－‐‑‒–—―−', '----------')
     )
     -- (B) 住所の区が一致し、総戸数も一致（名前が違うが同一建物の可能性）
     OR (
@@ -194,9 +210,11 @@ JOIN listings l2
     )
     -- (C) 住所丁目+築年が一致（英語↔カタカナ等、名前の表記体系が異なるケース）
     -- 間取り・面積の制約を緩和し、同一建物の別表記を広く拾う
+    -- 住所の丁目番号は全角（２）/半角（2）が混在する。\d の全角マッチは
+    -- サーバの lc_ctype 依存で不安定なため、[0-9０-９] で明示的に両対応させる（防御的）。
     OR (
-      SUBSTRING(l1.address FROM '.+?[区市].+?\d+') = SUBSTRING(l2.address FROM '.+?[区市].+?\d+')
-      AND LENGTH(SUBSTRING(l1.address FROM '.+?[区市].+?\d+')) > 3
+      SUBSTRING(l1.address FROM '.+?[区市].+?[0-9０-９]+') = SUBSTRING(l2.address FROM '.+?[区市].+?[0-9０-９]+')
+      AND LENGTH(SUBSTRING(l1.address FROM '.+?[区市].+?[0-9０-９]+')) > 3
       AND LENGTH(l1.normalized_name) > 3
       AND LENGTH(l2.normalized_name) > 3
     )
