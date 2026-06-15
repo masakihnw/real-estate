@@ -72,6 +72,20 @@ def test_strategy_includes_okawara_review_axes():
     assert "適正価格レンジ" not in prompt or "算定は求めない" in prompt
 
 
+def test_first_floor_is_not_absolute_ng():
+    """1階は絶対NG（強制グレードD）ではなく「重めに減点」扱い（買い手の実意向と整合）。
+
+    過去は purchase_strategy.md の絶対NG条件に「1階」があり強制降格していたが、
+    買い手プロフィール（Supabase id=6）の明示「絶対NGではなく総合評価で重めに減点」に合わせて
+    格下げした。絶対NG条件に1階が再混入していないことを固定する（退行防止）。
+    """
+    strategy = (_CONFIG_DIR / "purchase_strategy.md").read_text(encoding="utf-8")
+    ng_section = strategy.split("## 絶対NG条件", 1)[1].split("##", 1)[0]
+    assert "1階" not in ng_section, "1階が絶対NG条件に再混入している（足切りは過剰）"
+    assert "## 重めに減点（足切りではない）" in strategy
+    assert "1階住戸" in strategy
+
+
 def test_task_prompts_carry_neighborhood_axes():
     """周辺リスク軸が両タスク定義に流れていること（割高/割安は定性のみ）。"""
     scoring = (_CONFIG_DIR / "prompts" / "ai_scoring.md").read_text(encoding="utf-8")
