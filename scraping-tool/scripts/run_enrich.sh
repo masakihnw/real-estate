@@ -202,10 +202,15 @@ if _should_run_track core; then
     (
         _t=$(date +%s)
         if [ -n "$BROWSER_FLAG" ]; then
+            # --max-time 1500（=25分）: bot ブロック等で全件失敗しても打ち切り、
+            # core ジョブの 120 分 timeout 張り付き（commute_gmaps が主因）を防ぐ。
+            # 早期アボート（成功0のまま連続失敗）でも中断するため通常はこれより早く抜ける。
+            # 判定は件処理の区切りで行うため、最大で1件分（数分）のオーバーランはあり得る。
             python3 commute_gmaps_enricher.py \
                 --input "$WORK_DIR/track_gm.json" \
                 --output "$WORK_DIR/track_gm.json" \
-                --workers 3 || true
+                --workers 3 \
+                --max-time 1500 || true
         else
             echo "commute_gmaps: Playwright 未検出（スキップ）" >&2
         fi
