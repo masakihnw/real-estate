@@ -88,7 +88,8 @@ struct SwipeSessionViewModelTests {
     @MainActor
     func loadCardsSortsByScore() {
         let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
-        let low = makeListing(name: "低", listingScore: 30)
+        // スコアはいずれも GradeVisibility で除外される D 評価(<35)を避ける（ソート検証が目的）
+        let low = makeListing(name: "低", listingScore: 40)
         let high = makeListing(name: "高", listingScore: 80)
         let mid = makeListing(name: "中", listingScore: 55)
         vm.loadCards(from: [low, high, mid])
