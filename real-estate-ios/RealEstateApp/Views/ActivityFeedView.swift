@@ -15,7 +15,8 @@ struct ActivityFeedView: View {
     @State private var selectedListing: Listing?
 
     var body: some View {
-        let items = TimelineFeed.build(from: activeListings, days: 7, limit: 100)
+        // 発見導線なので D評価は除外（Today の変化カードと整合・単一ソースは GradeVisibility）
+        let items = TimelineFeed.build(from: GradeVisibility.visible(activeListings), days: 7, limit: 100)
         Group {
             if items.isEmpty {
                 ContentUnavailableView(
