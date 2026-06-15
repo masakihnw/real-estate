@@ -133,8 +133,10 @@ struct SwipeSessionView: View {
                     forcedStamp: isTop ? forcedStamp : nil
                 )
                 .id(card.identityKey)
-                .scaleEffect(scaleFor(offset: offset))
-                .offset(y: CGFloat(offset) * 8)
+                // 画面に見えるのは常にトップ1枚だけ。次カードはプリロード目的でマウントするが
+                // 通常時は非表示にする（カード高さが AI 分析の有無で変わり背面がはみ出す問題を防ぐ）。
+                // exit アニメ中だけ直後のカードを背面に出し、トップが飛ぶと下から現れる演出にする。
+                .opacity(cardOpacity(isTop: isTop, offset: offset))
                 .offset(x: isTop ? effectiveOffset.width : 0,
                         y: isTop ? effectiveOffset.height : 0)
                 .rotationEffect(isTop && !reduceMotion
@@ -160,18 +162,26 @@ struct SwipeSessionView: View {
     }
 
     private var visibleCardIndices: [Int] {
-        let start = viewModel.currentIndex
-        let end = min(start + 3, viewModel.cards.count)
-        guard start < end else { return [] }
-        return Array(start..<end)
+        Self.visibleWindow(currentIndex: viewModel.currentIndex, count: viewModel.cards.count)
     }
 
-    private func scaleFor(offset: Int) -> CGFloat {
-        switch offset {
-        case 0: 1.0
-        case 1: 0.95
-        default: 0.90
-        }
+    /// カードの不透明度。表示するのはトップ1枚のみ。
+    /// exit アニメ中だけ直後のカード（offset==1）を背面に出し、トップが飛んだ後の
+    /// めくれ演出にする（通常時は非表示なので高さ可変でもはみ出さない）。
+    private func cardOpacity(isTop: Bool, offset: Int) -> Double {
+        if isTop { return 1 }
+        if offset == 1 && isExiting { return 1 }
+        return 0
+    }
+
+    /// マウントするカードのインデックス範囲。
+    /// 画面に表示するのはトップ1枚のみだが、次カードの画像をプリロードするため
+    /// トップ＋次の計 `maxMounted` 枚をマウントする（背面カードは `opacity(0)` で非表示）。
+    static func visibleWindow(currentIndex: Int, count: Int, maxMounted: Int = 2) -> [Int] {
+        let start = max(0, currentIndex)
+        let end = min(start + max(1, maxMounted), count)
+        guard start < end else { return [] }
+        return Array(start..<end)
     }
 
     // MARK: - Drag Gesture
