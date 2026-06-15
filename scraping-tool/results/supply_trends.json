@@ -15769,50 +15769,50 @@
     },
     {
       "date": "2026-06-15",
-      "total_listings": 1137,
-      "new_count": 1137,
+      "total_listings": 1140,
+      "new_count": 1140,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 11125,
+      "avg_price_man": 11126,
       "median_price_man": 11100,
       "price_distribution": {
-        "under_10000": 305,
-        "10000_11000": 234,
-        "11000_12000": 325,
-        "over_12000": 273,
+        "under_10000": 307,
+        "10000_11000": 235,
+        "11000_12000": 323,
+        "over_12000": 275,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 230,
-          "avg_price_man": 11052,
+          "count": 231,
+          "avg_price_man": 11046,
           "min_price_man": 8180,
           "max_price_man": 13000
         },
         "世田谷区": {
-          "count": 107,
-          "avg_price_man": 11377,
+          "count": 108,
+          "avg_price_man": 11369,
           "min_price_man": 9180,
           "max_price_man": 13000
         },
         "中央区": {
-          "count": 100,
-          "avg_price_man": 11750,
+          "count": 101,
+          "avg_price_man": 11762,
           "min_price_man": 8380,
           "max_price_man": 12999
         },
         "新宿区": {
           "count": 82,
-          "avg_price_man": 11128,
+          "avg_price_man": 11117,
           "min_price_man": 8200,
           "max_price_man": 13000
         },
         "豊島区": {
-          "count": 68,
-          "avg_price_man": 10949,
+          "count": 69,
+          "avg_price_man": 10986,
           "min_price_man": 7980,
-          "max_price_man": 12999
+          "max_price_man": 13000
         },
         "品川区": {
           "count": 68,
@@ -15822,7 +15822,7 @@
         },
         "杉並区": {
           "count": 59,
-          "avg_price_man": 10937,
+          "avg_price_man": 10933,
           "min_price_man": 9180,
           "max_price_man": 13000
         },
@@ -15833,8 +15833,8 @@
           "max_price_man": 12980
         },
         "台東区": {
-          "count": 49,
-          "avg_price_man": 10608,
+          "count": 48,
+          "avg_price_man": 10653,
           "min_price_man": 7980,
           "max_price_man": 12999
         },
@@ -15844,17 +15844,17 @@
           "min_price_man": 7980,
           "max_price_man": 12980
         },
-        "文京区": {
-          "count": 33,
-          "avg_price_man": 12319,
-          "min_price_man": 9580,
-          "max_price_man": 12999
-        },
         "練馬区": {
-          "count": 33,
-          "avg_price_man": 10533,
+          "count": 34,
+          "avg_price_man": 10499,
           "min_price_man": 9080,
           "max_price_man": 12980
+        },
+        "文京区": {
+          "count": 32,
+          "avg_price_man": 12329,
+          "min_price_man": 9580,
+          "max_price_man": 12999
         },
         "板橋区": {
           "count": 30,
