@@ -10,9 +10,14 @@ struct FilterMatchCounterTests {
         name: String,
         priceMan: Int?,
         addedDaysAgo: Double = 1,
-        isDelisted: Bool = false
+        isDelisted: Bool = false,
+        assetGrade: String? = nil,
+        isLiked: Bool = false
     ) -> Listing {
-        let l = Listing(url: url, name: name, priceMan: priceMan, propertyType: "chuko")
+        let l = Listing(
+            url: url, name: name, priceMan: priceMan,
+            isLiked: isLiked, propertyType: "chuko", assetGrade: assetGrade
+        )
         l.addedAt = Date().addingTimeInterval(-addedDaysAgo * 24 * 3600)
         l.isDelisted = isDelisted
         return l
@@ -33,6 +38,15 @@ struct FilterMatchCounterTests {
         let delisted = makeListing(url: "https://x/3", name: "終了", priceMan: 9_000, addedDaysAgo: 1, isDelisted: true)
         let result = FilterMatchCounter.newListings(in: [fresh, old, delisted])
         #expect(result.map(\.url) == [fresh.url])
+    }
+
+    @Test("新着から D評価を除外する（いいね済みD は残す）")
+    func newListingsExcludesGradeD() {
+        let gradeA = makeListing(url: "https://x/a", name: "A新着", priceMan: 9_000, assetGrade: "A")
+        let gradeD = makeListing(url: "https://x/d", name: "D新着", priceMan: 9_000, assetGrade: "D")
+        let likedD = makeListing(url: "https://x/ld", name: "いいねD新着", priceMan: 9_000, assetGrade: "D", isLiked: true)
+        let result = FilterMatchCounter.newListings(in: [gradeA, gradeD, likedD])
+        #expect(Set(result.map(\.url)) == [gradeA.url, likedD.url])
     }
 
     // MARK: - matchCounts

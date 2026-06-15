@@ -116,6 +116,10 @@ struct TodayDigest {
                 }
             }
 
+            // 変化カード（発見導線）からは D 評価を除外する。
+            // 週次相場の集計は上で完了済みなので、分布・区別ランキングには D も反映される。
+            guard GradeVisibility.isVisible(listing) else { continue }
+
             // 値下げ: 期間内の価格変動のみ（定義は TimelineFeed.recentPriceChange と共有）
             if let recent = TimelineFeed.recentPriceChange(
                 of: listing, days: Self.priceDropWindowDays, now: now
@@ -170,6 +174,7 @@ struct TodayDigest {
         }
 
         self.changeCards = cards
+        // classified は D評価を除外済みなので、D の新着/値下げしか無い日は「動きなし」になる（意図的）。
         self.hasNoChanges = classified.isEmpty
         self.scoreGrades = grades
         self.wardRankings = wardData

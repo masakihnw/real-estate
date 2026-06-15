@@ -35,6 +35,7 @@ final class SwipeSessionViewModel {
         let prefStore = BuildingPreferenceStore.shared
         cards = allListings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
+            .filter(GradeVisibility.isVisible)   // D評価は発見導線に出さない
             .filter { !prefStore.isBuildingReviewed($0) }
             .sorted { ($0.listingScore ?? 0) > ($1.listingScore ?? 0) }
         currentIndex = 0
@@ -162,6 +163,7 @@ final class SwipeSessionViewModel {
         let prefStore = BuildingPreferenceStore.shared
         return listings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
+            .filter(GradeVisibility.isVisible)   // デッキ(loadCards)と件数を一致させる
             .filter { $0.hasFloorPlanImagesServer && $0.hasPropertyImagesServer }
             .filter { !prefStore.isBuildingReviewed($0) }
             .count

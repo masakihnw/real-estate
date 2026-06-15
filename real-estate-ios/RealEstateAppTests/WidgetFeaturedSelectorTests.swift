@@ -11,7 +11,9 @@ struct WidgetFeaturedSelectorTests {
         score: Int?,
         addedDaysAgo: Double = 1,
         isDelisted: Bool = false,
-        priceMan: Int? = 8_000
+        priceMan: Int? = 8_000,
+        assetGrade: String? = nil,
+        isLiked: Bool = false
     ) -> Listing {
         WidgetFeaturedSelectorTests.counter += 1
         let unique = "wf_\(WidgetFeaturedSelectorTests.counter)_\(UUID().uuidString.prefix(8))"
@@ -19,8 +21,10 @@ struct WidgetFeaturedSelectorTests {
             url: "https://test.example.com/\(unique)",
             name: unique,
             priceMan: priceMan,
+            isLiked: isLiked,
             propertyType: "chuko",
-            listingScore: score
+            listingScore: score,
+            assetGrade: assetGrade
         )
         l.addedAt = Date().addingTimeInterval(-addedDaysAgo * 24 * 3600)
         l.isDelisted = isDelisted
@@ -100,6 +104,21 @@ struct WidgetFeaturedSelectorTests {
         let delisted = makeListing(score: 90, addedDaysAgo: 0, isDelisted: true)
         let top = WidgetFeaturedSelector.selectTop(from: [fresh, old, delisted], limit: 2)
         #expect(top.map(\.url) == [fresh.url])      // 1件のみ
+    }
+
+    @Test("D評価はスコア最高でも除外する（発見導線フィルタ）")
+    func excludesGradeDEvenIfTopScore() {
+        let gradeD = makeListing(score: 99, assetGrade: "D")   // サーバーグレード D・スコア最高
+        let gradeA = makeListing(score: 60, assetGrade: "A")
+        let featured = WidgetFeaturedSelector.select(from: [gradeD, gradeA])
+        #expect(featured?.url == gradeA.url)
+    }
+
+    @Test("いいね済みの D評価はウィジェットに残る")
+    func keepsLikedGradeD() {
+        let likedD = makeListing(score: 99, assetGrade: "D", isLiked: true)
+        let featured = WidgetFeaturedSelector.select(from: [likedD])
+        #expect(featured?.url == likedD.url)
     }
 
     @Test("select は selectTop の先頭と一致する")

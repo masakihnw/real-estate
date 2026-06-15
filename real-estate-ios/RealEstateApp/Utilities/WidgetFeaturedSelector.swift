@@ -29,6 +29,7 @@ enum WidgetFeaturedSelector {
     static func selectTop(from listings: [Listing], limit: Int = 2) -> [FeaturedListing] {
         listings
             .filter { $0.isRecentlyAdded && !$0.isDelisted }
+            .filter(GradeVisibility.isVisible)   // D評価は発見導線（ウィジェット）に出さない
             .sorted { lhs, rhs in
                 let ls = lhs.listingScore ?? 0
                 let rs = rhs.listingScore ?? 0
