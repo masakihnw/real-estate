@@ -20,6 +20,7 @@ import json
 import random
 import re
 import sys
+import time
 import urllib.parse
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
@@ -71,6 +72,45 @@ MAX_DELAY = 5
 ERROR_DELAY = 15
 MAX_RETRIES = 3
 PAGE_TIMEOUT = 25000
+
+# サーキットブレーカ: 「成功0件のまま全ワーカー合算の失敗数」がこの件数に達したら
+# bot ブロックと判断し track 全体を中断する。GHA データセンター IP が Google Maps に
+# ブロックされると全件「取得失敗」となり、中断条件が無いと job が 120分 timeout まで
+# 張り付くため（athome 全損と同型の事象）。
+# 注: total_success==0 がガード。1件でも成功すれば（到達可能＝非ブロック）発火しない。
+# 失敗数はワーカー横断の合算なので、ワーカー3並列なら「12件失敗で中断」≒各ワーカー4件分。
+# 部分的失敗（一部だけ通る）では必ず success>0 になり中断しないため、過剰中断は起きない。
+BLOCK_FAILURE_THRESHOLD = 12
+
+
+def should_abort_gmaps(
+    *,
+    deadline: Optional[float],
+    now: float,
+    total_success: int,
+    consecutive_failures: int,
+    block_failure_threshold: int = BLOCK_FAILURE_THRESHOLD,
+) -> Optional[str]:
+    """gmaps スクレイピングを中断すべきか判定する純粋関数。
+
+    Args:
+        deadline: 中断する monotonic 時刻（None なら時間制限なし）。
+        now: 現在の monotonic 時刻。
+        total_success: これまでの成功件数（全ワーカー合算）。
+        consecutive_failures: 直近の連続失敗件数（全ワーカー合算・成功でリセット）。
+        block_failure_threshold: ブロック判定の連続失敗閾値。
+
+    Returns:
+        中断理由 ("max_time" / "blocked")。継続すべきなら None。
+        - "max_time": 制限時間を超過した。
+        - "blocked": 1件も成功しないまま連続失敗が閾値に達した（bot ブロックの兆候）。
+          一度でも成功していれば（=到達可能）ブロック判定はしない。
+    """
+    if deadline is not None and now >= deadline:
+        return "max_time"
+    if total_success == 0 and consecutive_failures >= block_failure_threshold:
+        return "blocked"
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -388,8 +428,15 @@ async def _worker(
     cache: dict[str, dict[str, Any]],
     counter: dict,
     lock: asyncio.Lock,
+    deadline: Optional[float] = None,
 ) -> list[str]:
-    """1ワーカーが割り当てられた物件×オフィスを処理する。"""
+    """1ワーカーが割り当てられた物件×オフィスを処理する。
+
+    counter は全ワーカー共有の状態（lock で保護）:
+      done/total/success/consec_fail/aborted。
+    deadline（monotonic）または bot ブロック検知で counter["aborted"] を立て、
+    全ワーカーが残りをスキップして早期終了する。
+    """
     tag = f"[W{worker_id}]"
     context = await browser.new_context(
         locale="ja-JP",
@@ -416,10 +463,27 @@ async def _worker(
         is_first = True
 
         for lkey, origin_text in items:
+            current = 0
+            total = counter["total"]
             async with lock:
-                counter["done"] += 1
-                current = counter["done"]
-                total = counter["total"]
+                if not counter.get("aborted"):
+                    reason = should_abort_gmaps(
+                        deadline=deadline,
+                        now=time.monotonic(),
+                        total_success=counter.get("success", 0),
+                        consecutive_failures=counter.get("consec_fail", 0),
+                    )
+                    if reason:
+                        counter["aborted"] = reason
+                        logger.warning(
+                            "%s ⚠ gmaps 中断 (理由: %s)。残りをスキップ", tag, reason
+                        )
+                stop = bool(counter.get("aborted"))
+                if not stop:
+                    counter["done"] += 1
+                    current = counter["done"]
+            if stop:
+                break
 
             short_name = origin_text[:30] + ("..." if len(origin_text) > 30 else "")
             prefix = f"[{current}/{total}]"
@@ -489,6 +553,14 @@ async def _worker(
                     else:
                         print(f"エラー: {e} ✗")
 
+            # 全ワーカー合算の成功/連続失敗を更新（サーキットブレーカ用）。
+            async with lock:
+                if success:
+                    counter["success"] = counter.get("success", 0) + 1
+                    counter["consec_fail"] = 0
+                else:
+                    counter["consec_fail"] = counter.get("consec_fail", 0) + 1
+
             if not success:
                 failed.append(lkey)
                 consecutive_failures += 1
@@ -500,6 +572,10 @@ async def _worker(
 
             delay = random.uniform(MIN_DELAY, MAX_DELAY)
             await asyncio.sleep(delay)
+
+        # 中断フラグが立っていれば残りのオフィスも処理しない。
+        if counter.get("aborted"):
+            break
 
     await context.close()
     return failed
@@ -560,8 +636,14 @@ async def run_enrichment(
     force: bool = False,
     num_workers: int = 2,
     headless: bool = True,
+    max_time: Optional[float] = None,
 ) -> int:
-    """物件リストの通勤時間を Google Maps からスクレイピングで取得する。"""
+    """物件リストの通勤時間を Google Maps からスクレイピングで取得する。
+
+    max_time（秒）を指定すると、その時間を超過した時点で残りをスキップする。
+    また 1件も成功しないまま連続失敗が続く（bot ブロック）と早期中断する。
+    いずれも取得済みキャッシュは保存・反映する（best-effort）。
+    """
     year, month, day = next_weekday_date()
     arrival_str = f"{year}-{month:02d}-{day:02d} {ARRIVAL_TIME}"
 
@@ -628,11 +710,15 @@ async def run_enrichment(
         for i, item in enumerate(work_items):
             worker_assignments[i % actual_workers].append(item)
 
-        counter = {"done": 0, "total": total}
+        counter = {
+            "done": 0, "total": total,
+            "success": 0, "consec_fail": 0, "aborted": None,
+        }
         lock = asyncio.Lock()
+        deadline = (time.monotonic() + max_time) if max_time and max_time > 0 else None
 
         tasks = [
-            _worker(i, browser, assignment, cache, counter, lock)
+            _worker(i, browser, assignment, cache, counter, lock, deadline)
             for i, assignment in enumerate(worker_assignments)
             if assignment
         ]
@@ -642,8 +728,13 @@ async def run_enrichment(
 
         await browser.close()
 
-    # サマリー
-    success_count = total - len(failed)
+    # サマリー（中断時は未処理分があるため counter の実成功数を使う）
+    success_count = counter.get("success", 0)
+    if counter.get("aborted"):
+        logger.warning(
+            "[commute_gmaps] 早期中断 (理由: %s)。取得済み %d 件のみ反映",
+            counter["aborted"], counter.get("success", 0),
+        )
     logger.info(f"\n[commute_gmaps] 完了: {success_count}/{total} 件成功")
     if failed:
         logger.error(f"[commute_gmaps] 失敗: {len(failed)} 件")
@@ -672,6 +763,10 @@ def main() -> None:
     )
     ap.add_argument("--no-headless", action="store_true", help="ブラウザを表示して実行")
     ap.add_argument("--reset", action="store_true", help="キャッシュをリセット")
+    ap.add_argument(
+        "--max-time", type=float, default=0,
+        help="秒。超過したら残りをスキップして best-effort 終了（0=無制限）",
+    )
     args = ap.parse_args()
 
     headless = not args.no_headless
@@ -690,6 +785,7 @@ def main() -> None:
             force=args.force,
             num_workers=args.workers,
             headless=headless,
+            max_time=args.max_time,
         )
     )
 
