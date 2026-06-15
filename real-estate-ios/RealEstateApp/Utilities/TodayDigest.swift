@@ -138,7 +138,7 @@ struct TodayDigest {
             }
 
             // 新着・再掲載: 評価済み建物は除外（既に判断済みのため）
-            let buildingName = String(listing.identityKey.prefix(while: { $0 != "|" }))
+            let buildingName = String(listing.preferenceKey.prefix(while: { $0 != "|" }))
             guard !reviewedBuildingNames.contains(buildingName) else { continue }
 
             if listing.isRelisted && listing.isRecentlyAdded {

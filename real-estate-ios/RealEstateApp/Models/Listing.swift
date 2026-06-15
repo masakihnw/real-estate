@@ -609,6 +609,17 @@ final class Listing: @unchecked Sendable {
         ].joined(separator: "|")
     }
 
+    /// like/nope の保存・照合に使う安定キー。
+    ///
+    /// サーバー計算の `supabaseIdentityKey` を優先する。端末計算の `identityKey` は
+    /// 物件名の販促文言・表記揺れ・軽量フィードでの欠落などで不安定になり、保存時と
+    /// 次回照合時でキーがズレて「like/nope 済みが何度も再表示される」原因になるため、
+    /// サーバーキーが取れる場合は必ずそちらを使う（取れない場合のみ identityKey に退避）。
+    var preferenceKey: String {
+        if let key = supabaseIdentityKey, !key.isEmpty { return key }
+        return identityKey
+    }
+
     /// station_line から駅名のみを抽出する（report_utils._extract_station_name 相当）。
     /// 例: "ＪＲ総武線（秋葉原～千葉）「錦糸町」徒歩5分" → "錦糸町"
     static func extractStationName(from stationLine: String) -> String {
