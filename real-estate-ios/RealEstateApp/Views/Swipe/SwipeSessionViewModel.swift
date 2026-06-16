@@ -184,7 +184,9 @@ final class SwipeSessionViewModel {
         return listings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
             .filter(GradeVisibility.isVisible)   // デッキ(loadCards)と件数を一致させる
-            .filter { $0.hasFloorPlanImagesServer && $0.hasPropertyImagesServer }
+            // 取得済みは実画像、未取得はサーバーフラグで判定（デッキの hasSwipeableImages と一致させ、
+            // 「件数だけ残ってデッキが空」になる不整合を防ぐ）。
+            .filter { $0.countsAsSwipeableForBadge }
             .filter { !prefStore.isBuildingReviewed($0) }
             // デッキ(filterCardsWithoutImages)と同様に同一建物の重複を1件に集約して数える。
             .filter { seenBuildings.insert($0.buildingGroupKey).inserted }

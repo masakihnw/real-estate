@@ -1943,6 +1943,18 @@ final class Listing: @unchecked Sendable {
         hasSuumoImages && hasFloorPlanImages
     }
 
+    /// 未評価件数(pendingCount)で「スワイプ可能」とみなすか。
+    ///
+    /// 実デッキは enrichment 取得後に `hasSwipeableImages`（クライアントで実際にパースできた画像）
+    /// で絞る。一方サーバーの画像フラグは「画像ありと言うが実画像が無い」ケースがあり、
+    /// 件数だけ残ってデッキが空になる不整合を生む。
+    /// そこで enrichment 取得済みなら実画像を信頼し、未取得のときだけサーバーフラグで
+    /// 楽観カウントする（未取得の新着もバッジに出すため）。これでデッキと件数を一致させる。
+    var countsAsSwipeableForBadge: Bool {
+        if enrichmentFetchedAt != nil { return hasSwipeableImages }
+        return hasFloorPlanImagesServer && hasPropertyImagesServer
+    }
+
     // MARK: - SUUMO 物件写真
 
     /// 価格変動履歴の1エントリ
