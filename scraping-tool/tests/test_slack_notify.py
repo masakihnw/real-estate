@@ -19,7 +19,30 @@ from slack_notify import (
     _get_data_quality_issues,
     build_watchlist_price_drop_section,
     build_data_quality_alert_section,
+    has_property_name,
 )
+
+
+class TestHasPropertyName:
+    """物件名フィルタ（HOME'S 匿名掲載など無名物件を新着通知から除外）。"""
+
+    def test_returns_true_for_normal_name(self):
+        assert has_property_name({"name": "オーベルグランディオ"}) is True
+
+    def test_returns_false_for_none(self):
+        assert has_property_name({"name": None}) is False
+
+    def test_returns_false_for_missing_key(self):
+        assert has_property_name({}) is False
+
+    def test_returns_false_for_empty_string(self):
+        assert has_property_name({"name": ""}) is False
+
+    def test_returns_false_for_whitespace_only(self):
+        assert has_property_name({"name": "  　"}) is False
+
+    def test_returns_true_when_surrounded_by_whitespace(self):
+        assert has_property_name({"name": "  パークコート  "}) is True
 
 
 def _make_draft(
