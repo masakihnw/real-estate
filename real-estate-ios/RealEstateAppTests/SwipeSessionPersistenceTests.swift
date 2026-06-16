@@ -24,7 +24,7 @@ struct SwipeSessionPersistenceTests {
     @Test("commitSwipe で残りデッキ（currentIndex以降）が永続化される")
     func commitPersistsRemaining() {
         let store = makeStore()
-        let vm = SwipeSessionViewModel(progressStore: store)
+        let vm = SwipeSessionViewModel(progressStore: store, preferenceStore: MockPreferenceStore())
         let cards = [makeListing(), makeListing(), makeListing()]
         vm.setCardsForTesting(cards)
 
@@ -35,7 +35,7 @@ struct SwipeSessionPersistenceTests {
     @Test("skip でキーが skippedKeys に追加される")
     func skipAddsToSkippedKeys() {
         let store = makeStore()
-        let vm = SwipeSessionViewModel(progressStore: store)
+        let vm = SwipeSessionViewModel(progressStore: store, preferenceStore: MockPreferenceStore())
         let cards = [makeListing(), makeListing()]
         vm.setCardsForTesting(cards)
 
@@ -46,7 +46,7 @@ struct SwipeSessionPersistenceTests {
     @Test("like/nope は skippedKeys から除去する")
     func decideRemovesFromSkipped() {
         let store = makeStore()
-        let vm = SwipeSessionViewModel(progressStore: store)
+        let vm = SwipeSessionViewModel(progressStore: store, preferenceStore: MockPreferenceStore())
         let cards = [makeListing(), makeListing()]
         store.skippedKeys = [cards[0].identityKey]
         vm.setCardsForTesting(cards)
@@ -58,7 +58,7 @@ struct SwipeSessionPersistenceTests {
     @Test("デッキ完走で remainingKeys がクリアされ skippedKeys は保持")
     func completeClearsRemainingKeepsSkipped() {
         let store = makeStore()
-        let vm = SwipeSessionViewModel(progressStore: store)
+        let vm = SwipeSessionViewModel(progressStore: store, preferenceStore: MockPreferenceStore())
         let cards = [makeListing(), makeListing()]
         vm.setCardsForTesting(cards)
 
@@ -72,7 +72,7 @@ struct SwipeSessionPersistenceTests {
     @Test("undo で残りデッキが戻り、直前 skip は取り消される")
     func undoRestoresRemainingAndSkip() {
         let store = makeStore()
-        let vm = SwipeSessionViewModel(progressStore: store)
+        let vm = SwipeSessionViewModel(progressStore: store, preferenceStore: MockPreferenceStore())
         let cards = [makeListing(), makeListing(), makeListing()]
         vm.setCardsForTesting(cards)
 
@@ -91,7 +91,7 @@ struct SwipeSessionPersistenceTests {
         store.skippedKeys = [cards[2].identityKey]
         store.remainingKeys = [cards[0].identityKey, cards[1].identityKey]
 
-        let vm = SwipeSessionViewModel(progressStore: store)
+        let vm = SwipeSessionViewModel(progressStore: store, preferenceStore: MockPreferenceStore())
         vm.setCardsForTesting(cards)   // eligible = 全3件
         vm.restoreDeckOrder()
 
@@ -108,7 +108,7 @@ struct SwipeSessionPersistenceTests {
         let cards = [makeListing(), makeListing()]
         store.skippedKeys = [cards[0].identityKey, "stale-gone-key"]
 
-        let vm = SwipeSessionViewModel(progressStore: store)
+        let vm = SwipeSessionViewModel(progressStore: store, preferenceStore: MockPreferenceStore())
         vm.setCardsForTesting(cards)
         vm.restoreDeckOrder()
 
