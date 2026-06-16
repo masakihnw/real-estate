@@ -6,9 +6,12 @@ import Foundation
 /// 判定本体は `ListingFilter.apply(to:)` を再利用し、独自の条件解釈を持たない。
 enum FilterMatchCounter {
 
-    /// 「新着」の定義（Today・スワイプと同一: 2日以内追加かつ掲載中）
+    /// 「新着」の定義（Today・スワイプと同一: 2日以内追加かつ掲載中）。
+    /// 発見導線なので D評価は除外する（下流の `apply()` とは冪等・単一ソースは GradeVisibility）。
     static func newListings(in listings: [Listing]) -> [Listing] {
-        listings.filter { $0.isRecentlyAdded && !$0.isDelisted }
+        listings
+            .filter { $0.isRecentlyAdded && !$0.isDelisted }
+            .filter(GradeVisibility.isVisible)
     }
 
     /// テンプレートID → 新着マッチ件数（0件のテンプレートは含まない）

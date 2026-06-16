@@ -55,6 +55,35 @@ struct TodayDigestTests {
         #expect(digest.changeCards.first?.kind == .newListing)
     }
 
+    @Test("D評価の新着は変化カードに出さないが、週次相場の分布には数える")
+    func gradeDExcludedFromCardsButCountedInStats() {
+        let dNew = makeListing(
+            url: "https://x/d", name: "D評価新着",
+            addedDaysAgo: 1, assetGrade: "D", listingScore: 10
+        )
+        let aNew = makeListing(
+            url: "https://x/a", name: "A評価新着",
+            addedDaysAgo: 1, assetGrade: "A", listingScore: 70
+        )
+        let digest = TodayDigest(listings: [dNew, aNew], now: now)
+
+        // 変化カードは A のみ（D は発見導線から除外）
+        #expect(digest.changeCards.map(\.listing.identityKey) == [aNew.identityKey])
+        // 週次相場の分布には D も A も反映される
+        #expect(digest.scoreGrades.d == 1)
+        #expect(digest.scoreGrades.a == 1)
+    }
+
+    @Test("いいね済みの D評価新着は変化カードに残る")
+    func likedGradeDStaysInCards() {
+        let likedD = makeListing(
+            url: "https://x/liked-d", name: "いいねD新着",
+            addedDaysAgo: 1, isLiked: true, assetGrade: "D", listingScore: 10
+        )
+        let digest = TodayDigest(listings: [likedD], now: now)
+        #expect(digest.changeCards.map(\.listing.identityKey) == [likedD.identityKey])
+    }
+
     @Test("値下げ（7日以内）は priceDrop、いいね済みなら watchDrop で先頭")
     func dropKinds() {
         let drop = makeListing(

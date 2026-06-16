@@ -279,7 +279,7 @@ private struct ChangeCardView: View {
             Button {
                 Task {
                     await BuildingPreferenceStore.shared.setPreference(
-                        listing.identityKey, preference: .like
+                        listing.preferenceKey, preference: .like
                     )
                     HapticManager.success()
                 }
@@ -289,7 +289,7 @@ private struct ChangeCardView: View {
             Button(role: .destructive) {
                 Task {
                     await BuildingPreferenceStore.shared.setPreference(
-                        listing.identityKey, preference: .nope
+                        listing.preferenceKey, preference: .nope
                     )
                 }
             } label: {

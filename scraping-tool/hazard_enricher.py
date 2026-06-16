@@ -78,6 +78,48 @@ _tile_cache: dict[str, Optional[bytes]] = {}
 _tile_cache_lock = Lock()
 
 # ────────────────────────────────────────────────────────
+# 永続ハザードキャッシュ（座標キー）
+# ハザード区域は座標に紐づく静的データで、run をまたいで不変。
+# 同一座標は再計算せず JSON キャッシュから復元し、GSI へのタイル取得（≒1物件4秒）を省く。
+# commute_gmaps_cache と同じ作法でディレクトリに保存し、GHA actions/cache で run 間永続化する。
+# 注意: GSI ハザードタイル/東京都地域危険度 GeoJSON が改定された場合はキャッシュが stale になる。
+#       大規模なデータ改定があったら hazard_cache/cache.json を削除して全件再計算すること。
+# ────────────────────────────────────────────────────────
+
+HAZARD_CACHE_DIR = Path(__file__).resolve().parent / "hazard_cache"
+HAZARD_CACHE_PATH = HAZARD_CACHE_DIR / "cache.json"
+
+# キャッシュキーの座標丸め桁数（6 桁 ≒ 0.11m。同一物件・同一建物は同キーに集約される）。
+HAZARD_CACHE_COORD_PRECISION = 6
+
+
+def hazard_cache_key(lat: float, lng: float) -> str:
+    """座標をキャッシュキー文字列に変換する（純粋関数）。"""
+    prec = HAZARD_CACHE_COORD_PRECISION
+    return f"{lat:.{prec}f},{lng:.{prec}f}"
+
+
+def load_hazard_cache(path: Path = HAZARD_CACHE_PATH) -> dict[str, dict[str, Any]]:
+    """永続ハザードキャッシュを読み込む。存在しない/壊れている場合は空 dict を返す。"""
+    if not path.exists():
+        return {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def save_hazard_cache(cache: dict[str, dict[str, Any]], path: Path = HAZARD_CACHE_PATH) -> None:
+    """永続ハザードキャッシュを原子的に書き込む（tmp→rename）。"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_suffix(".json.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False)
+    tmp_path.replace(path)
+
+# ────────────────────────────────────────────────────────
 # 東京都地域危険度 GeoJSON 設定
 # ────────────────────────────────────────────────────────
 
@@ -265,82 +307,129 @@ def check_tokyo_risk(lat: float, lng: float, risk_key: str) -> int:
 # ────────────────────────────────────────────────────────
 
 
-def enrich_hazard(listings: list[dict]) -> list[dict]:
+def _compute_hazard(lat: float, lng: float) -> dict[str, Any]:
+    """指定座標のハザード情報を実計算する（GSI タイル + 東京都地域危険度）。
+
+    座標は静的なハザード区域に紐づくため、結果は永続キャッシュに保存して再利用する。
+    """
+    hazard: dict[str, Any] = {}
+
+    # GSI ハザードタイルチェック（タイル種別ごとに並列取得）
+    def _check_one(key: str) -> tuple[str, bool]:
+        time.sleep(0.05)  # タイルサーバーへの負荷軽減（GSI の利用規約に配慮）
+        try:
+            return (key, check_gsi_hazard(lat, lng, key))
+        except Exception:
+            return (key, False)
+
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        results = list(executor.map(_check_one, GSI_HAZARD_TILES))
+    for key, value in results:
+        hazard[key] = value
+
+    # 東京都地域危険度チェック
+    for key in RISK_TYPES:
+        try:
+            hazard[key] = check_tokyo_risk(lat, lng, key)
+        except Exception:
+            hazard[key] = 0
+
+    return hazard
+
+
+def _has_any_hazard(hazard: dict[str, Any]) -> bool:
+    """ハザード該当の有無を判定する（純粋関数）。"""
+    return bool(
+        hazard.get("flood", False)
+        or hazard.get("sediment", False)
+        or hazard.get("storm_surge", False)
+        or hazard.get("tsunami", False)
+        or hazard.get("liquefaction", False)
+        or hazard.get("inland_water", False)
+        or hazard.get("building_collapse", 0) >= 3
+        or hazard.get("fire", 0) >= 3
+        or hazard.get("combined", 0) >= 3
+    )
+
+
+def _resolve_coords(
+    listing: dict, geocode_cache: dict[str, tuple[float, float]]
+) -> Optional[tuple[float, float]]:
+    """物件の座標を解決する。listing になければジオコードキャッシュ（ss_address 優先）から補完。"""
+    lat = listing.get("latitude")
+    lng = listing.get("longitude")
+    if lat is None or lng is None:
+        for addr_key in ("ss_address", "address"):
+            addr_val = (listing.get(addr_key) or "").strip()
+            if addr_val:
+                cached = geocode_cache.get(addr_val)
+                if cached:
+                    lat, lng = cached
+                    break
+    if lat is None or lng is None:
+        return None
+    try:
+        return float(lat), float(lng)
+    except (TypeError, ValueError):
+        return None
+
+
+def enrich_hazard(listings: list[dict], *, cache_path: Path = HAZARD_CACHE_PATH) -> list[dict]:
     """
     各物件に hazard_info フィールドを追加する。
     座標（latitude, longitude）がない物件はスキップ。
+
+    座標キーの永続キャッシュを利用し、既知座標は再計算せずキャッシュから復元する
+    （ハザード区域は座標に紐づく静的データのため）。新規座標のみ実計算する。
     """
-    # ジオコーディング済みの座標を利用
-    # 座標がない物件はスクレイピング時に geocode.py で付与されている前提
-    # geocode_cache.json からも取得可能
+    # 座標がない物件はスクレイピング時に geocode.py で付与されている前提だが、
+    # geocode_cache.json からも補完する。
     geocode_cache = _load_geocode_cache()
+    hazard_cache = load_hazard_cache(cache_path)
 
     total = len(listings)
     enriched_count = 0
     hazard_count = 0
+    cache_hits = 0
+    computed = 0
 
-    logger.info(f"ハザード enrichment 開始: {total} 件")
+    logger.info(f"ハザード enrichment 開始: {total} 件（既存キャッシュ {len(hazard_cache)} 件）")
 
-    for i, listing in enumerate(listings):
-        lat = listing.get("latitude")
-        lng = listing.get("longitude")
+    # _compute_hazard が途中で落ちても、確定済みの新規座標は finally で必ず永続化する
+    # （次回 run で再計算しないため）。GHA 側 Save ステップの if: always() と同じ思想。
+    try:
+        for i, listing in enumerate(listings):
+            coords = _resolve_coords(listing, geocode_cache)
+            if coords is None:
+                continue
+            lat, lng = coords
 
-        # 座標がなければジオコードキャッシュから取得（ss_address 優先）
-        if lat is None or lng is None:
-            for addr_key in ("ss_address", "address"):
-                addr_val = (listing.get(addr_key) or "").strip()
-                if addr_val:
-                    cached = geocode_cache.get(addr_val)
-                    if cached:
-                        lat, lng = cached
-                        break
+            key = hazard_cache_key(lat, lng)
+            cached_hazard = hazard_cache.get(key)
+            if cached_hazard is not None:
+                hazard = cached_hazard
+                cache_hits += 1
+            else:
+                hazard = _compute_hazard(lat, lng)
+                hazard_cache[key] = hazard
+                computed += 1
 
-        if lat is None or lng is None:
-            continue
+            listing["hazard_info"] = json.dumps(hazard, ensure_ascii=False)
+            enriched_count += 1
+            if _has_any_hazard(hazard):
+                hazard_count += 1
 
-        hazard: dict[str, Any] = {}
-
-        # GSI ハザードタイルチェック（タイル種別ごとに並列取得）
-        def _check_one(key: str) -> tuple[str, bool]:
-            time.sleep(0.05)  # タイルサーバーへの負荷軽減（GSI の利用規約に配慮）
-            try:
-                return (key, check_gsi_hazard(lat, lng, key))
-            except Exception:
-                return (key, False)
-
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            results = list(executor.map(_check_one, GSI_HAZARD_TILES))
-        for key, value in results:
-            hazard[key] = value
-
-        # 東京都地域危険度チェック
-        for key in RISK_TYPES:
-            try:
-                hazard[key] = check_tokyo_risk(lat, lng, key)
-            except Exception:
-                hazard[key] = 0
-
-        listing["hazard_info"] = json.dumps(hazard, ensure_ascii=False)
-        enriched_count += 1
-
-        has_any = (
-            hazard.get("flood", False)
-            or hazard.get("sediment", False)
-            or hazard.get("storm_surge", False)
-            or hazard.get("tsunami", False)
-            or hazard.get("liquefaction", False)
-            or hazard.get("inland_water", False)
-            or hazard.get("building_collapse", 0) >= 3
-            or hazard.get("fire", 0) >= 3
-            or hazard.get("combined", 0) >= 3
-        )
-        if has_any:
-            hazard_count += 1
-
-        if (i + 1) % 10 == 0 or i + 1 == total:
-            logger.info(f"  進捗: {i + 1}/{total} (ハザード該当: {hazard_count}件)")
-
-    logger.info(f"ハザード enrichment 完了: {enriched_count}/{total} 件処理, {hazard_count} 件ハザード該当")
+            if (i + 1) % 50 == 0 or i + 1 == total:
+                logger.info(
+                    f"  進捗: {i + 1}/{total} "
+                    f"(該当 {hazard_count} / 新規計算 {computed} / キャッシュ流用 {cache_hits})"
+                )
+    finally:
+        save_hazard_cache(hazard_cache, cache_path)
+    logger.info(
+        f"ハザード enrichment 完了: {enriched_count}/{total} 件処理, "
+        f"{hazard_count} 件該当, 新規計算 {computed} 件, キャッシュ流用 {cache_hits} 件"
+    )
     return listings
 
 

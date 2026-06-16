@@ -9,6 +9,78 @@
 import Foundation
 import SwiftData
 
+// MARK: - 寛容な JSON デコード
+
+/// 文字列・JSONオブジェクト・JSON配列のいずれでも throw せずに受け取り、JSON文字列として保持する。
+///
+/// `get_listing_detail` は `SETOF listings_feed` を返すため jsonb 列
+/// （extracted_features / image_categories / ai_scoring_reasoning / alt_sources など）が
+/// JSON オブジェクト/配列として返る。一方クライアントは `String?` を期待していたため、
+/// Codable が型不一致で throw し、その物件の enrichment 全体（画像含む）が読めなくなっていた。
+/// このラッパーは値が文字列ならそのまま、オブジェクト/配列なら JSON 文字列に直して保持する。
+struct LenientJSONString: Codable {
+    let value: String?
+
+    init(value: String?) { self.value = value }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if container.decodeNil() {
+            value = nil
+        } else if let s = try? container.decode(String.self) {
+            value = s
+        } else if let json = try? container.decode(AnyJSON.self) {
+            value = json.jsonString
+        } else {
+            value = nil
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        if let value { try container.encode(value) } else { try container.encodeNil() }
+    }
+}
+
+/// 任意の JSON 値を表す最小の Codable 型。再シリアライズして JSON 文字列を得るために使う。
+indirect enum AnyJSON: Codable {
+    case string(String)
+    case number(Double)
+    case bool(Bool)
+    case object([String: AnyJSON])
+    case array([AnyJSON])
+    case null
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if c.decodeNil() { self = .null }
+        else if let b = try? c.decode(Bool.self) { self = .bool(b) }
+        else if let d = try? c.decode(Double.self) { self = .number(d) }
+        else if let s = try? c.decode(String.self) { self = .string(s) }
+        else if let a = try? c.decode([AnyJSON].self) { self = .array(a) }
+        else if let o = try? c.decode([String: AnyJSON].self) { self = .object(o) }
+        else { self = .null }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.singleValueContainer()
+        switch self {
+        case .string(let s): try c.encode(s)
+        case .number(let n): try c.encode(n)
+        case .bool(let b): try c.encode(b)
+        case .object(let o): try c.encode(o)
+        case .array(let a): try c.encode(a)
+        case .null: try c.encodeNil()
+        }
+    }
+
+    /// JSON 文字列表現。
+    var jsonString: String? {
+        guard let data = try? JSONEncoder().encode(self) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
 // MARK: - JSON Decoding (latest.json / latest_shinchiku.json 形式)
 
 struct ListingDTO: Codable {
@@ -113,23 +185,25 @@ struct ListingDTO: Codable {
     var competing_listings_count: Int?
     var listing_score: Int?
     var asset_grade: String?
-    var ai_scoring_reasoning: String?
+    // jsonb 列。get_listing_detail はオブジェクトで返すため String 固定だと throw する。
+    var ai_scoring_reasoning: LenientJSONString?
 
     // サーバーサイドで判定された新着フラグ（前回スクレイピングとの差分比較）
     var is_new: Bool?
     // 新着かつ同一マンション名が前回データに無い＝新規マンション（false＝既存マンションの別部屋）
     var is_new_building: Bool?
 
-    // 複数媒体リンク（dedup 時に集約）
-    var alt_sources: [String]?
+    // 複数媒体リンク（dedup 時に集約）。get_listing_detail はオブジェクト配列で返すため寛容に受ける。
+    var alt_sources: LenientJSONString?
     var alt_urls: [String]?
 
     // Claude AI Enrichment
     var investment_summary: String?
     var highlight_badge: String?
     var best_thumbnail_url: String?
-    var extracted_features: String?
-    var image_categories: String?
+    // jsonb 列。オブジェクト/配列で返るため寛容に受ける。
+    var extracted_features: LenientJSONString?
+    var image_categories: LenientJSONString?
     var dedup_confidence: Double?
     var dedup_candidates: String?
     var key_strengths: [String]?
@@ -348,14 +422,9 @@ extension Listing {
            let data = try? JSONSerialization.data(withJSONObject: tags) {
             featureTagsJSON = String(data: data, encoding: .utf8)
         }
-        // alt_sources + alt_urls → altSourcesJSON に変換
-        var altSourcesJSON: String?
-        if let sources = dto.alt_sources, let urls = dto.alt_urls, !sources.isEmpty {
-            let links = zip(sources, urls).map { ["source": $0, "url": $1] }
-            if let data = try? JSONSerialization.data(withJSONObject: links) {
-                altSourcesJSON = String(data: data, encoding: .utf8)
-            }
-        }
+        // alt_sources → altSourcesJSON。get_listing_detail は [{source,url}] のオブジェクト配列を
+        // 返すため、その JSON 文字列をそのまま使う（LenientJSONString が吸収済み）。
+        let altSourcesJSON: String? = dto.alt_sources?.value
         let listing = Listing(
             source: dto.source,
             url: url,
@@ -443,14 +512,14 @@ extension Listing {
             competingListingsCount: dto.competing_listings_count,
             listingScore: dto.listing_score,
             assetGrade: dto.asset_grade,
-            aiScoringReasoningJSON: dto.ai_scoring_reasoning,
+            aiScoringReasoningJSON: dto.ai_scoring_reasoning?.value,
             altSourcesJSON: altSourcesJSON,
             investmentSummary: dto.investment_summary,
             highlightBadge: dto.highlight_badge,
             bestThumbnailURL: dto.best_thumbnail_url,
             firstImageURL: dto.first_image_url,
-            extractedFeaturesJSON: dto.extracted_features,
-            imageCategoriesJSON: dto.image_categories,
+            extractedFeaturesJSON: dto.extracted_features?.value,
+            imageCategoriesJSON: dto.image_categories?.value,
             dedupConfidence: dto.dedup_confidence,
             dedupCandidatesJSON: dto.dedup_candidates,
             keyStrengthsJSON: {
