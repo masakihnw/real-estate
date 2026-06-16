@@ -11,7 +11,25 @@ final class BuildingPreferenceStore {
     private(set) var likedKeys: Set<String> = []
     private let client = SupabaseClient.shared
 
-    private init() {}
+    // 既読(like/nope)のローカルキャッシュ。サーバー fetch は非同期のため、
+    // これが無いと起動直後は既読が未ロードで「今日」タブの絞り込み・未評価件数がズレ、
+    // fetch 完了後に正しくなるチラつきが出る。ローカルに保存して起動時に同期ロードする。
+    private let defaults: UserDefaults
+    private static let nopedDefaultsKey = "BuildingPreference.nopedKeys"
+    private static let likedDefaultsKey = "BuildingPreference.likedKeys"
+
+    /// 本番は `shared`（UserDefaults.standard）。テストは独立した suite を注入する。
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        nopedKeys = Set(defaults.stringArray(forKey: Self.nopedDefaultsKey) ?? [])
+        likedKeys = Set(defaults.stringArray(forKey: Self.likedDefaultsKey) ?? [])
+    }
+
+    /// 現在の like/nope をローカルに保存する（変更・fetch のたびに呼ぶ）。
+    private func persistLocal() {
+        defaults.set(Array(nopedKeys), forKey: Self.nopedDefaultsKey)
+        defaults.set(Array(likedKeys), forKey: Self.likedDefaultsKey)
+    }
 
     func fetch() async {
         // PostgREST はデフォルトで最大1000行しか返さないため、range で全件をページ取得する。
@@ -43,12 +61,18 @@ final class BuildingPreferenceStore {
             nopedKeys = noped
             likedKeys = liked
             logger.info("Preferences loaded: nope=\(noped.count) like=\(liked.count)")
+            persistLocal()
         } catch {
             logger.error("Preferences fetch failed: \(error.localizedDescription, privacy: .public)")
         }
     }
 
     func setPreference(_ identityKey: String, preference: Preference) async {
+        // 失敗時に正確に巻き戻すため、変更前の所属を記録する
+        // （like→nope の変更失敗で元の like が消える不整合を防ぐ。ローカルキャッシュにも永続化されるため重要）。
+        let wasLiked = likedKeys.contains(identityKey)
+        let wasNoped = nopedKeys.contains(identityKey)
+
         switch preference {
         case .nope:
             nopedKeys.insert(identityKey)
@@ -63,14 +87,12 @@ final class BuildingPreferenceStore {
             _ = try await client.upsert(into: "user_building_preferences", body: body, onConflict: "identity_key")
             logger.info("Set \(preference.rawValue, privacy: .public) for \(identityKey, privacy: .public)")
         } catch {
-            switch preference {
-            case .nope:
-                nopedKeys.remove(identityKey)
-            case .like:
-                likedKeys.remove(identityKey)
-            }
+            // 変更前の状態へ正確に復元する
+            if wasLiked { likedKeys.insert(identityKey) } else { likedKeys.remove(identityKey) }
+            if wasNoped { nopedKeys.insert(identityKey) } else { nopedKeys.remove(identityKey) }
             logger.error("Failed to set preference: \(error.localizedDescription, privacy: .public)")
         }
+        persistLocal()
     }
 
     func removePreference(_ identityKey: String) async {
@@ -88,6 +110,7 @@ final class BuildingPreferenceStore {
             if wasLiked { likedKeys.insert(identityKey) }
             logger.error("Failed to remove preference: \(error.localizedDescription, privacy: .public)")
         }
+        persistLocal()
     }
 
     /// 複数キーの一括解除（Nope一括解除用）。
@@ -125,6 +148,7 @@ final class BuildingPreferenceStore {
                 logger.error("Bulk remove failed: \(error.localizedDescription, privacy: .public)")
             }
         }
+        persistLocal()
         return failedCount
     }
 
@@ -168,6 +192,11 @@ final class BuildingPreferenceStore {
             likedKeys.insert(identityKey)
             nopedKeys.remove(identityKey)
         }
+    }
+
+    /// 現在の in-memory 状態を注入 defaults に保存する（ローカルキャッシュの round-trip テスト用）。
+    func saveLocalForTesting() {
+        persistLocal()
     }
 
     func removeLocalOnly(_ identityKey: String) {
