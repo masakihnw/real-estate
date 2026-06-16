@@ -56,6 +56,8 @@ scraping-tool/data/commute_playground.json
 scraping-tool/data/commute_m3career.json
 scraping-tool/results/latest_commute_v2_preview.json
 scraping-tool/commute_gmaps_cache/
+# ハザード永続キャッシュ（座標→ハザード結果。GHA actions/cache で run 間共有する再生成可能キャッシュ）
+scraping-tool/hazard_cache/
 # ジオコードキャッシュ（買い手の自宅・勤務先住所が混入しうる再生成可能キャッシュ）
 scraping-tool/data/geocode_cache.json
 scraping-tool/data/reverse_geocode_cache.json
