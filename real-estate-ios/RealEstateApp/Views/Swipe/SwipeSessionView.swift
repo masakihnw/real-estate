@@ -41,6 +41,7 @@ struct SwipeSessionView: View {
                     Button("閉じる") { onDismiss() }
                         .buttonStyle(.borderedProminent)
                         .padding(.top, 8)
+                    emptyStateDiagnostic   // TODO(一時計測): 原因特定後に撤去する
                 }
                 .padding()
             } else if viewModel.isComplete {
@@ -251,6 +252,47 @@ struct SwipeSessionView: View {
             forcedStamp = nil
             isExiting = false
         }
+    }
+
+    // MARK: - Empty-state Diagnostic（件数は出るのにデッキ空、の原因可視化・一時計測）
+
+    /// pendingCount が数えるのにデッキに出ない物件を、状態付きで列挙する。
+    private var countedListingDiagnostics: [String] {
+        let prefStore = BuildingPreferenceStore.shared
+        let counted = listings
+            .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
+            .filter(GradeVisibility.isVisible)
+            .filter { $0.countsAsSwipeableForBadge }
+            .filter { !prefStore.isBuildingReviewed($0) }
+        return counted.map { l in
+            "・\(l.name.prefix(16)) | fetched:\(l.enrichmentFetchedAt != nil ? "Y" : "N") swipe:\(l.hasSwipeableImages ? "Y" : "N") (suumo:\(l.hasSuumoImages ? "Y" : "N") floor:\(l.hasFloorPlanImages ? "Y" : "N")) srv(P:\(l.hasPropertyImagesServer ? "Y" : "N") F:\(l.hasFloorPlanImagesServer ? "Y" : "N")) rev:\(prefStore.isBuildingReviewed(l) ? "Y" : "N") sbKey:\(l.supabaseIdentityKey == nil ? "nil" : "set")"
+        }
+    }
+
+    @ViewBuilder
+    private var emptyStateDiagnostic: some View {
+        let diags = countedListingDiagnostics
+        VStack(alignment: .leading, spacing: 4) {
+            Text("DEBUG: 件数に数えられている \(diags.count) 件")
+                .font(.caption.bold())
+                .foregroundStyle(.orange)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 3) {
+                    ForEach(Array(diags.enumerated()), id: \.offset) { _, line in
+                        Text(line)
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .frame(maxHeight: 220)
+        }
+        .padding(8)
+        .background(Color.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .padding(.top, 12)
     }
 
     // MARK: - Enrichment Prefetch
