@@ -6,9 +6,16 @@ name: Scrape Listings
 
 on:
   schedule:
-    # 1日4回実行: JST 9:00, 15:00, 18:00, 22:00（UTC 0:00, 6:00, 9:00, 13:00）
+    # 1日4回実行: JST 9:00, 15:00, 18:00, 20:00（UTC 0:00, 6:00, 9:00, 11:00）
     # UTC 0:00 (JST 9:00) の回で Slack 通知を送信（GHA遅延許容: UTC 0-5）
-    - cron: '0 0,6,9,13 * * *'
+    #
+    # 夜間便を UTC 13(JST22) → UTC 11(JST20) に前倒し。
+    # GHA cron は実測 4〜5h 遅延するため、UTC13 起動だと実際の enrich 完了が JST 3:49 頃となり
+    # Desktop の routine①(データ準備, JST 3:00)に間に合わず、その日の新着が当日採点・朝ダイジェストに
+    # 乗らなかった。UTC11 起動なら 5h 遅延でも JST 2 時台に enrich 完了し routine① 前に入る
+    # （hazard 永続キャッシュ導入で enrich が数分に短縮済みなのが前提。PR #72）。
+    # 稀に 6h 超遅延した日は当日分が翌サイクルに繰り越る（フェイルソフト）。
+    - cron: '0 0,6,9,11 * * *'
   workflow_dispatch:
     inputs:
       send_slack:
