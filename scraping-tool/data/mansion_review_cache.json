@@ -6655,23 +6655,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603788.html",
       "deviation_score": 55,
-      "estimated_price_man": 12823,
-      "estimated_tsubo_price_man": 719,
-      "estimated_m2_price_man": 218,
+      "estimated_price_man": 15073,
+      "estimated_tsubo_price_man": 723,
+      "estimated_m2_price_man": 219,
       "shinchiku_history_count": 550,
-      "chuko_history_count": 434,
+      "chuko_history_count": 437,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 71.66,
-          "price_man": 9208,
-          "tsubo_price_man": 422.0
+          "area_m2": 71.7,
+          "price_man": 9274,
+          "tsubo_price_man": 425.0
         }
       ]
     },
-    "cached_at": "2026-06-02T11:01:18.289773"
+    "cached_at": "2026-06-16T14:12:20.239715"
   },
   "西戸山タワーホウムズサウスタワー": {
     "data": {
@@ -9278,23 +9278,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/756927.html",
       "deviation_score": 24,
-      "estimated_price_man": 6875,
-      "estimated_tsubo_price_man": 345,
-      "estimated_m2_price_man": 105,
+      "estimated_price_man": 7214,
+      "estimated_tsubo_price_man": 356,
+      "estimated_m2_price_man": 108,
       "shinchiku_history_count": 24,
-      "chuko_history_count": 26,
+      "chuko_history_count": 27,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 58.22,
-          "price_man": 5616,
-          "tsubo_price_man": 323.0
+          "area_m2": 58.71,
+          "price_man": 5759,
+          "tsubo_price_man": 327.0
         }
       ]
     },
-    "cached_at": "2026-06-02T11:01:26.801560"
+    "cached_at": "2026-06-16T14:12:42.672353"
   },
   "東京ビューマークス18階(新規内装フルリノベーション...": {
     "data": {
@@ -23991,5 +23991,53 @@
       ]
     },
     "cached_at": "2026-06-16T04:59:21.342504"
+  },
+  "シティタワーズ豊洲ザ・ツインサウスタワー": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13407.html",
+      "deviation_score": 10,
+      "estimated_price_man": 17255,
+      "estimated_tsubo_price_man": 680,
+      "estimated_m2_price_man": 206,
+      "shinchiku_history_count": 1063,
+      "chuko_history_count": 1579,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 28,
+          "layout": "",
+          "area_m2": 74.14,
+          "price_man": 8926,
+          "tsubo_price_man": 393.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-16T14:12:33.867784"
+  },
+  "クレアホームズ滝野川オートロック付・ペット飼育可": {
+    "data": null,
+    "cached_at": "2026-06-11T09:02:09.412667"
+  },
+  "グランリビオ浜田山": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1639698.html",
+      "deviation_score": 83,
+      "estimated_price_man": 12474,
+      "estimated_tsubo_price_man": 590,
+      "estimated_m2_price_man": 179,
+      "shinchiku_history_count": 83,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 70.79,
+          "price_man": 12493,
+          "tsubo_price_man": 584.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-16T14:12:51.981835"
   }
 }
