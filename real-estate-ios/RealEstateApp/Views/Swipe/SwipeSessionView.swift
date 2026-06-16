@@ -265,10 +265,24 @@ struct SwipeSessionView: View {
 
         for listing in needsFetch {
             // DB の identity_key（supabaseIdentityKey）で引く。computed identityKey は別キー。
-            try? await store.fetchDetail(
-                identityKey: listing.supabaseIdentityKey ?? listing.identityKey,
-                modelContext: modelContext
-            )
+            do {
+                try await store.fetchDetail(
+                    identityKey: listing.supabaseIdentityKey ?? listing.identityKey,
+                    modelContext: modelContext
+                )
+            } catch {
+                // 通信エラー等は「試行済み」にせず、次回再取得に委ねる。
+                continue
+            }
+            // 取得は成功したが画像が載らない物件（詳細RPCが空・キー不整合・サーバー側で
+            // 掲載終了済み 等）を「取得試行済み」として記録する。これをしないと
+            // enrichmentFetchedAt が nil のままで、画像が無い＝デッキには出ない物件が
+            // 未評価件数(pendingCount)に永久に残り続ける（「N件と出るのにデッキは空」）。
+            // stale 判定（>6h）により後で画像が付けば再取得・再表示される。
+            if listing.enrichmentFetchedAt == nil {
+                listing.enrichmentFetchedAt = Date()
+                try? modelContext.save()
+            }
         }
     }
 }
