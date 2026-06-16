@@ -394,15 +394,19 @@ final class SupabaseListingStore {
 
     // MARK: - Detail Lazy Loading
 
+    /// 詳細をネットワーク取得・デコードのみ行う（ModelContext に触れない＝並列呼び出し可能）。
+    /// スワイプのプリフェッチで複数物件を並列取得するために分離した。
+    func fetchDetailDTO(identityKey: String) async throws -> ListingDTO? {
+        let params: [String: Any] = ["p_identity_key": identityKey]
+        let data = try await client.rpc("get_listing_detail", params: params)
+        return try Self.decodeDTOs(from: data).first
+    }
+
     /// 個別物件の全 enrichment データを取得し SwiftData に反映する。
     /// 詳細画面を開いた際にレイジーロードで呼ばれる。
     func fetchDetail(identityKey: String, modelContext: ModelContext) async throws {
-        let params: [String: Any] = ["p_identity_key": identityKey]
-        let data = try await client.rpc("get_listing_detail", params: params)
-        let dtos = try Self.decodeDTOs(from: data)
-
-        guard let dto = dtos.first,
-              let incoming = Listing.from(dto: dto, fetchedAt: Date()) else {
+        let dto = try await fetchDetailDTO(identityKey: identityKey)
+        guard let dto, let incoming = Listing.from(dto: dto, fetchedAt: Date()) else {
             logger.warning("get_listing_detail: \(identityKey, privacy: .public) のデータなし")
             return
         }

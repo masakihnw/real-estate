@@ -311,33 +311,54 @@ struct SwipeSessionView: View {
     // MARK: - Enrichment Prefetch
 
     private func prefetchEnrichment() async {
-        let store = SupabaseListingStore.shared
         let staleThreshold = Calendar.current.date(byAdding: .hour, value: -6, to: Date()) ?? .distantPast
         let needsFetch = SwipeSessionViewModel.listingsNeedingEnrichmentFetch(
             viewModel.cards, staleThreshold: staleThreshold
         )
         guard !needsFetch.isEmpty else { return }
 
-        for listing in needsFetch {
-            // DB の identity_key（supabaseIdentityKey）で引く。computed identityKey は別キー。
-            do {
-                try await store.fetchDetail(
-                    identityKey: listing.supabaseIdentityKey ?? listing.identityKey,
-                    modelContext: modelContext
-                )
-            } catch {
-                // 通信エラー等は「試行済み」にせず、次回再取得に委ねる。
-                continue
+        // ネットワーク取得（重い get_listing_detail）を上限付きで並列実行する。
+        // 直列だと eligible 件数ぶん RPC を1件ずつ待つため起動ローディングが長かった。
+        // SwiftData(ModelContext) は MainActor で逐次反映し、ネットワークだけ並列化する。
+        let byKey: [String: Listing] = Dictionary(
+            needsFetch.map { ($0.supabaseIdentityKey ?? $0.identityKey, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        let keys = needsFetch.map { $0.supabaseIdentityKey ?? $0.identityKey }
+        let maxConcurrent = 6
+        var nextIndex = 0
+        var didChange = false
+
+        await withTaskGroup(of: (String, ListingDTO?, Bool).self) { group in
+            func addTask(_ key: String) {
+                group.addTask {
+                    do {
+                        let dto = try await SupabaseListingStore.shared.fetchDetailDTO(identityKey: key)
+                        return (key, dto, true)   // 取得成功（dto が nil でも「試行済み」）
+                    } catch {
+                        return (key, nil, false)  // 通信エラー＝未試行扱い（次回再取得）
+                    }
+                }
             }
-            // 取得は成功したが画像が載らない物件（詳細RPCが空・キー不整合・サーバー側で
-            // 掲載終了済み 等）を「取得試行済み」として記録する。これをしないと
-            // enrichmentFetchedAt が nil のままで、画像が無い＝デッキには出ない物件が
-            // 未評価件数(pendingCount)に永久に残り続ける（「N件と出るのにデッキは空」）。
-            // stale 判定（>6h）により後で画像が付けば再取得・再表示される。
-            if listing.enrichmentFetchedAt == nil {
-                listing.enrichmentFetchedAt = Date()
-                try? modelContext.save()
+            while nextIndex < keys.count && nextIndex < maxConcurrent {
+                addTask(keys[nextIndex]); nextIndex += 1
+            }
+            for await (key, dto, succeeded) in group {
+                if succeeded, let listing = byKey[key] {
+                    if let dto, let incoming = Listing.from(dto: dto, fetchedAt: Date()) {
+                        SupabaseListingStore.updateEnrichmentFields(listing, from: incoming)
+                    }
+                    // 取得試行済みを記録（画像が載らない物件が件数に残り続けるのを防ぐ）。
+                    if listing.enrichmentFetchedAt == nil {
+                        listing.enrichmentFetchedAt = Date()
+                    }
+                    didChange = true
+                }
+                if nextIndex < keys.count {
+                    addTask(keys[nextIndex]); nextIndex += 1
+                }
             }
         }
+        if didChange { try? modelContext.save() }
     }
 }
