@@ -28,4 +28,17 @@ struct NopedFilterTests {
         let result = NopedFilter.filter(listings: [a], nopedKeys: [])
         #expect(result.isEmpty)
     }
+
+    @Test("supabaseIdentityKey で保存された nopedKey は preferenceKey で照合される")
+    func filtersBySupabaseKey() {
+        let a = makeListing(url: "https://example.com/a", name: "物件A")
+        a.supabaseIdentityKey = "物件A|3LDK|62.0|台東区|2003|3"
+        // サーバーキーで保存されたケース。端末計算 identityKey ではヒットしない。
+        let noped: Set<String> = ["物件A|3LDK|62.0|台東区|2003|3"]
+
+        let result = NopedFilter.filter(listings: [a], nopedKeys: noped)
+
+        #expect(result.map(\.url) == [a.url])
+        #expect(!noped.contains(a.identityKey), "前提: 旧 identityKey とは一致しない")
+    }
 }

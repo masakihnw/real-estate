@@ -101,7 +101,7 @@ struct NopedListingsView: View {
             Spacer()
             Button {
                 Task {
-                    await BuildingPreferenceStore.shared.removePreference(listing.identityKey)
+                    await BuildingPreferenceStore.shared.removePreference(listing.preferenceKey)
                     loadNoped()
                 }
             } label: {
@@ -126,7 +126,7 @@ struct NopedListingsView: View {
     }
 
     private func clearAll() {
-        let keys = nopedListings.map(\.identityKey)
+        let keys = nopedListings.map(\.preferenceKey)
         guard !keys.isEmpty else { return }
         isClearing = true
         Task {

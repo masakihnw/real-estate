@@ -52,20 +52,24 @@ final class SwipeSessionViewModel {
         undoStack.append((card, decision))
         currentIndex += 1
 
-        let key = card.identityKey
+        // デッキ並び替え（skip/remaining）は端末ローカル状態なので identityKey を使う。
+        // like/nope の永続化は端末再計算で不安定な identityKey ではなく、サーバー安定キー
+        // preferenceKey を使う（再表示バグの根本対策）。
+        let deckKey = card.identityKey
+        let prefKey = card.preferenceKey
         switch decision {
         case .skip:
             // 「あとで」: 次回デッキの先頭に再登場させる
-            if !progressStore.skippedKeys.contains(key) {
-                progressStore.skippedKeys.append(key)
+            if !progressStore.skippedKeys.contains(deckKey) {
+                progressStore.skippedKeys.append(deckKey)
             }
             logger.info("Skipped: \(card.name, privacy: .public)")
         case .like, .nope:
             // 確定したら「あとで」リストから外す
-            progressStore.skippedKeys.removeAll { $0 == key }
+            progressStore.skippedKeys.removeAll { $0 == deckKey }
             let pref: BuildingPreferenceStore.Preference = decision == .like ? .like : .nope
-            pendingTasks[key] = Task {
-                await BuildingPreferenceStore.shared.setPreference(key, preference: pref)
+            pendingTasks[prefKey] = Task {
+                await BuildingPreferenceStore.shared.setPreference(prefKey, preference: pref)
             }
             logger.info("\(decision == .like ? "Liked" : "Noped", privacy: .public): \(card.name, privacy: .public)")
         }
@@ -79,16 +83,17 @@ final class SwipeSessionViewModel {
         swipeResults.removeLast()
         currentIndex -= 1
 
-        let key = last.listing.identityKey
-        pendingTasks[key]?.cancel()
-        pendingTasks.removeValue(forKey: key)
+        let deckKey = last.listing.identityKey
+        let prefKey = last.listing.preferenceKey
+        pendingTasks[prefKey]?.cancel()
+        pendingTasks.removeValue(forKey: prefKey)
 
         if last.decision == .skip {
             // 直前の skip を取り消す
-            progressStore.skippedKeys.removeAll { $0 == key }
+            progressStore.skippedKeys.removeAll { $0 == deckKey }
         } else {
             Task {
-                await BuildingPreferenceStore.shared.removePreference(key)
+                await BuildingPreferenceStore.shared.removePreference(prefKey)
             }
             // 注: like/nope の取り消しでは、その物件が前回 skip 由来だった場合でも
             // skippedKeys へは戻さない（直前1手の取り消しという undo の責務を超えるため）。

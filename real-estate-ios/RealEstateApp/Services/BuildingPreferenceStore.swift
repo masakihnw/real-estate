@@ -126,7 +126,7 @@ final class BuildingPreferenceStore {
         likedKeys.contains(identityKey)
     }
 
-    /// like/nope済み建物の名前セット（identityKeyの先頭要素）。
+    /// like/nope済み建物の名前セット（preferenceKeyの先頭要素）。
     /// 同一マンション別住戸やstaleキー（レイアウト変更等）でも建物名で除外可能。
     var reviewedBuildingNames: Set<String> {
         Set(
@@ -137,7 +137,7 @@ final class BuildingPreferenceStore {
     }
 
     func isBuildingReviewed(_ listing: Listing) -> Bool {
-        let name = String(listing.identityKey.prefix(while: { $0 != "|" }))
+        let name = String(listing.preferenceKey.prefix(while: { $0 != "|" }))
         return reviewedBuildingNames.contains(name)
     }
 
