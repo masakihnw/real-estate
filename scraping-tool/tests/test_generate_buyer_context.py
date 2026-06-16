@@ -84,9 +84,54 @@ def test_generated_system_prompt_matches_runtime_fallback():
     assert gen.compose_system_prompt("investment_summary") == cis.build_fallback_system_prompt()
 
 
-def test_buyer_profiles_sql_uses_upsert_rpc():
+def _fake_real_profile() -> dict:
+    """de-PII マーカー（○ / YYYY / （金額））を一切含まないダミーの実プロフィール。
+
+    実値ではなく合成のテスト用データ（PII を含まない）。
+    """
+    return {
+        "family_composition": "夫（1990年生まれ）・妻（1991年生まれ）、子ども1人",
+        "household_income": "1,000万円",
+        "self_funds": "なし（フルローン）",
+        "interest_type": "変動",
+        "estimated_rate": "1.0%",
+        "repayment_years": "35年",
+        "budget_scenarios": [
+            {"label": "探索上限", "value": "1.0億円", "note": "テスト"},
+            {"label": "実質アンカー", "value": "9,000万円", "note": "テスト"},
+        ],
+    }
+
+
+def test_buyer_profiles_sql_refuses_on_depii_placeholder():
+    """退行防止（過去事故 2026-06-13）: de-PII 雛形からは実 buyer_profiles を
+    上書きする upsert を生成せず、適用拒否 SQL を出す（フェイルクローズ）。"""
     gen = _load_generator()
+    # リポジトリの buyer_profile.json は de-PII 済み（○ / YYYY を含む）。
+    assert gen._contains_depii_placeholder(gen.load_buyer_profile())
     sql = gen.generate_buyer_profiles_sql()
-    assert "upsert_buyer_profile" in sql
+    assert "SELECT upsert_buyer_profile(" not in sql, "雛形から適用可能な upsert を生成してはならない"
+    assert "RAISE EXCEPTION" in sql
+    assert "de-PII" in sql
+    # 診断用に検出マーカーがSQLコメントに残る（現行ファイルは ○ を含む）。
+    assert "検出マーカー:" in sql and "○" in sql
+
+
+def test_buyer_profiles_sql_emits_upsert_for_real_profile(monkeypatch):
+    """実値（マーカーなし）プロフィールの時のみ通常の upsert を生成する。"""
+    gen = _load_generator()
+    monkeypatch.setattr(gen, "load_buyer_profile", _fake_real_profile)
+    sql = gen.generate_buyer_profiles_sql()
+    assert "SELECT upsert_buyer_profile(" in sql
     assert gen.BUYER_USER_ID in sql
     assert "BEGIN;" in sql and "COMMIT;" in sql
+    assert "1,000万円" in sql  # 実値が反映される
+    assert "RAISE EXCEPTION" not in sql
+
+
+def test_contains_depii_placeholder_detector():
+    gen = _load_generator()
+    assert gen._contains_depii_placeholder({"household_income": "○○○○万円"})
+    assert gen._contains_depii_placeholder({"family_composition": "夫（YYYY年生まれ）"})
+    assert gen._contains_depii_placeholder({"note": "旧試算例（金額）円"})
+    assert not gen._contains_depii_placeholder(_fake_real_profile())
