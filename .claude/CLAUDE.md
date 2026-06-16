@@ -126,7 +126,10 @@ pbxproj から TestFlight をビルドしてログイン不能になった。再
 - 新規マイグレーションは `supabase/migrations/` の**既存最大番号 + 1**を3桁ゼロ埋めで採番。
   採番前に必ず `ls supabase/migrations/ | sort | tail` で最大番号を確認する（過去に 025 が衝突）。
 - 適用済みマイグレーションのファイル名・内容は変更しない。修正は新番号で行う。
-- マイグレーション適用は Claude が直接実行せず、SQL を用意してユーザーに適用を依頼する。
+- マイグレーションは **Claude が Supabase MCP (`execute_sql`) で直接適用する**。採番済みの
+  `supabase/migrations/0XX_*.sql` は正（source of truth）としてコミットし、本番へは MCP で適用する。
+  DDL は `CREATE OR REPLACE` 等で冪等にし、将来の CLI 再適用と衝突しないようにする。適用後は
+  実データで効果を検証する。（旧運用の「ユーザーに適用を依頼」は廃止。）
 
 ## 設定の単一ソース
 

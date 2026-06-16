@@ -236,18 +236,25 @@ SELECT skip_notification_draft('slack', 'price_alert');
 
 直近24時間の新着物件を AI が分析し、バイヤー視点でキュレーションした日次ダイジェストを生成する。GHA の raw 新着通知（1日4回）とは別に、1日1回の AI 視点サマリーとして送信される。
 
-1. 直近24時間の新着物件を取得:
+1. 直近24時間の新着物件を取得（**アプリ表示対象と同じ条件**＝グレードC以上 かつ 物件名あり に限定）:
 ```sql
 SELECT lf.id, lf.name, lf.address, lf.layout, lf.area_m2, lf.price_man,
        lf.walk_min, lf.station_line, lf.built_year, lf.ownership,
-       lf.listing_score, lf.price_fairness_score,
+       lf.listing_score, lf.price_fairness_score, e.asset_grade,
        e.ai_listing_score, e.ai_recommendation_score, e.ai_recommendation_summary
 FROM listings_feed lf
 LEFT JOIN enrichments e ON e.listing_id = lf.id
 WHERE lf.is_active = true
   AND lf.first_seen_at::timestamptz >= now() - interval '24 hours'
+  -- グレードC以上（アプリに表示される物件）だけを通知対象にする
+  AND e.asset_grade IN ('S', 'A', 'B', 'C')
+  -- 物件名が伏せられた物件（HOME'S匿名掲載など）は除外（アプリ表示・通知方針と一致）
+  AND lf.name IS NOT NULL AND btrim(lf.name) <> ''
 ORDER BY COALESCE(e.ai_listing_score, lf.listing_score, 0) DESC;
 ```
+
+> 上記で既に「C以上・名前あり」に絞り込み済み。以下の分類はこの結果セット内で行い、
+> 0件なら `skip_notification_draft('slack', 'new_listing_digest')` を呼ぶ。
 
 2. バイヤープロファイルと照合し、新着物件を AI で以下のように分類・コメント:
 
