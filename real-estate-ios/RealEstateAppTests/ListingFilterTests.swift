@@ -62,6 +62,42 @@ struct ListingFilterTests {
         #expect(ListingFilter.extractWard(from: "晴海2丁目") == nil)
     }
 
+    // MARK: - AIグレード（発見導線フィルタ）
+
+    private func makeGraded(_ grade: String?, listingScore: Int? = nil, isLiked: Bool = false) -> Listing {
+        let key = grade ?? "nil"
+        return Listing(
+            url: "https://example.com/grade-\(key)-\(UUID().uuidString.prefix(6))",
+            name: "物件\(key)",
+            priceMan: 5000,
+            isLiked: isLiked,
+            listingScore: listingScore,
+            assetGrade: grade
+        )
+    }
+
+    @Test("apply は D評価を除外し、S/A/B/C・未分析は通す")
+    func applyExcludesGradeD() {
+        let filter = ListingFilter()
+        let listings = [
+            makeGraded("S"), makeGraded("A"), makeGraded("B"),
+            makeGraded("C"), makeGraded("D"), makeGraded(nil),
+        ]
+        let result = filter.apply(to: listings)
+        let grades = result.map { $0.assetGrade ?? "nil" }
+        #expect(!grades.contains("D"))
+        #expect(grades.contains("nil"))   // 未分析はフェイルセーフで表示
+        #expect(result.count == 5)
+    }
+
+    @Test("apply はいいね済みの D評価を残す")
+    func applyKeepsLikedGradeD() {
+        let filter = ListingFilter()
+        let likedD = makeGraded("D", isLiked: true)
+        let result = filter.apply(to: [likedD])
+        #expect(result.map(\.identityKey) == [likedD.identityKey])
+    }
+
     // MARK: - 価格フィルタ
 
     @Test("価格帯フィルタは範囲内のみ通す")

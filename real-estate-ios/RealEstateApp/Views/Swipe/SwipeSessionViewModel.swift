@@ -15,9 +15,14 @@ final class SwipeSessionViewModel {
     private(set) var undoStack: [(listing: Listing, decision: SwipeDecision)] = []
     private var pendingTasks: [String: Task<Void, Never>] = [:]
     private let progressStore: SwipeProgressStore
+    private let preferenceStore: any SwipePreferenceStoring
 
-    init(progressStore: SwipeProgressStore = .shared) {
+    init(
+        progressStore: SwipeProgressStore = .shared,
+        preferenceStore: any SwipePreferenceStoring = BuildingPreferenceStore.shared
+    ) {
         self.progressStore = progressStore
+        self.preferenceStore = preferenceStore
     }
 
     var isComplete: Bool { currentIndex >= cards.count }
@@ -32,9 +37,10 @@ final class SwipeSessionViewModel {
     var likedListings: [Listing] { swipeResults.filter { $0.decision == .like }.map(\.listing) }
 
     func loadCards(from allListings: [Listing]) {
-        let prefStore = BuildingPreferenceStore.shared
+        let prefStore = preferenceStore
         cards = allListings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
+            .filter(GradeVisibility.isVisible)   // D評価は発見導線に出さない
             .filter { !prefStore.isBuildingReviewed($0) }
             .sorted { ($0.listingScore ?? 0) > ($1.listingScore ?? 0) }
         currentIndex = 0
@@ -51,20 +57,24 @@ final class SwipeSessionViewModel {
         undoStack.append((card, decision))
         currentIndex += 1
 
-        let key = card.identityKey
+        // デッキ並び替え（skip/remaining）は端末ローカル状態なので identityKey を使う。
+        // like/nope の永続化は端末再計算で不安定な identityKey ではなく、サーバー安定キー
+        // preferenceKey を使う（再表示バグの根本対策）。
+        let deckKey = card.identityKey
+        let prefKey = card.preferenceKey
         switch decision {
         case .skip:
             // 「あとで」: 次回デッキの先頭に再登場させる
-            if !progressStore.skippedKeys.contains(key) {
-                progressStore.skippedKeys.append(key)
+            if !progressStore.skippedKeys.contains(deckKey) {
+                progressStore.skippedKeys.append(deckKey)
             }
             logger.info("Skipped: \(card.name, privacy: .public)")
         case .like, .nope:
             // 確定したら「あとで」リストから外す
-            progressStore.skippedKeys.removeAll { $0 == key }
+            progressStore.skippedKeys.removeAll { $0 == deckKey }
             let pref: BuildingPreferenceStore.Preference = decision == .like ? .like : .nope
-            pendingTasks[key] = Task {
-                await BuildingPreferenceStore.shared.setPreference(key, preference: pref)
+            pendingTasks[prefKey] = Task { [preferenceStore] in
+                await preferenceStore.setPreference(prefKey, preference: pref)
             }
             logger.info("\(decision == .like ? "Liked" : "Noped", privacy: .public): \(card.name, privacy: .public)")
         }
@@ -78,16 +88,17 @@ final class SwipeSessionViewModel {
         swipeResults.removeLast()
         currentIndex -= 1
 
-        let key = last.listing.identityKey
-        pendingTasks[key]?.cancel()
-        pendingTasks.removeValue(forKey: key)
+        let deckKey = last.listing.identityKey
+        let prefKey = last.listing.preferenceKey
+        pendingTasks[prefKey]?.cancel()
+        pendingTasks.removeValue(forKey: prefKey)
 
         if last.decision == .skip {
             // 直前の skip を取り消す
-            progressStore.skippedKeys.removeAll { $0 == key }
+            progressStore.skippedKeys.removeAll { $0 == deckKey }
         } else {
-            Task {
-                await BuildingPreferenceStore.shared.removePreference(key)
+            Task { [preferenceStore] in
+                await preferenceStore.removePreference(prefKey)
             }
             // 注: like/nope の取り消しでは、その物件が前回 skip 由来だった場合でも
             // skippedKeys へは戻さない（直前1手の取り消しという undo の責務を超えるため）。
@@ -109,10 +120,19 @@ final class SwipeSessionViewModel {
     /// prefetchEnrichment 完了後に呼ぶ。外観写真+間取り図がない物件を除外する。
     /// loadCards() が先に呼ばれて currentIndex/swipeResults がリセット済みであることを前提とする。
     func filterCardsWithoutImages() {
-        let before = cards.count
+        let beforeImages = cards.count
         cards = cards.filter { $0.hasSwipeableImages }
-        if cards.count < before {
-            logger.info("Filtered \(before - self.cards.count) cards without images, \(self.cards.count) remaining")
+        let afterImages = cards.count
+        // 同一建物の重複（同名・別住戸／別ソースの住所粒度違いなど）を1枚に集約する。
+        // 画像フィルタの後に行うことで、画像のある住戸を代表として残す
+        // （cards は loadCards で listingScore 降順のため、先頭＝最良スコアが残る）。
+        // 注: Brillia↔ブリリア のような表記揺れは buildingGroupKey が別建物扱いのため
+        //     ここでは集約されない（名寄せ/正規化の別対応が必要）。
+        var seenBuildings = Set<String>()
+        cards = cards.filter { seenBuildings.insert($0.buildingGroupKey).inserted }
+        let afterDedup = cards.count
+        if afterDedup < beforeImages {
+            logger.info("Pruned cards: \(beforeImages - afterImages) no-image, \(afterImages - afterDedup) duplicate building, \(afterDedup) remaining")
         }
     }
 
@@ -160,10 +180,16 @@ final class SwipeSessionViewModel {
 
     static func pendingCount(from listings: [Listing]) -> Int {
         let prefStore = BuildingPreferenceStore.shared
+        var seenBuildings = Set<String>()
         return listings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
-            .filter { $0.hasFloorPlanImagesServer && $0.hasPropertyImagesServer }
+            .filter(GradeVisibility.isVisible)   // デッキ(loadCards)と件数を一致させる
+            // 取得済みは実画像、未取得はサーバーフラグで判定（デッキの hasSwipeableImages と一致させ、
+            // 「件数だけ残ってデッキが空」になる不整合を防ぐ）。
+            .filter { $0.countsAsSwipeableForBadge }
             .filter { !prefStore.isBuildingReviewed($0) }
+            // デッキ(filterCardsWithoutImages)と同様に同一建物の重複を1件に集約して数える。
+            .filter { seenBuildings.insert($0.buildingGroupKey).inserted }
             .count
     }
 }

@@ -183,8 +183,9 @@ JOIN listings l2
   AND l1.is_active AND l2.is_active
   AND l1.built_year = l2.built_year
   AND l1.normalized_name != l2.normalized_name
-  AND SUBSTRING(l1.address FROM '.+?[区市].+?\d+') = SUBSTRING(l2.address FROM '.+?[区市].+?\d+')
-  AND LENGTH(SUBSTRING(l1.address FROM '.+?[区市].+?\d+')) > 3
+  -- 丁目番号は全角（２）/半角（2）混在。\d の全角マッチは lc_ctype 依存のため [0-9０-９] で明示対応（防御的）
+  AND SUBSTRING(l1.address FROM '.+?[区市].+?[0-9０-９]+') = SUBSTRING(l2.address FROM '.+?[区市].+?[0-9０-９]+')
+  AND LENGTH(SUBSTRING(l1.address FROM '.+?[区市].+?[0-9０-９]+')) > 3
   AND LENGTH(l1.normalized_name) > 3
   AND LENGTH(l2.normalized_name) > 3
 LIMIT 10;

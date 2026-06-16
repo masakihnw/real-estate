@@ -310,6 +310,12 @@ struct ListingFilter: Equatable, Codable {
                 return total <= maxPaymentYen
             }
         }
+
+        // AI資産グレードによる発見導線フィルタ（D評価は非表示）。
+        // 判定の単一ソースは GradeVisibility（未分析・いいね済みは表示）。
+        // 一覧・地図・新着マッチ通知がこの apply() を共有するため、ここで一括適用する。
+        list = GradeVisibility.visible(list)
+
         return list
     }
 

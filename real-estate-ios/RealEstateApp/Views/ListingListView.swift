@@ -120,10 +120,10 @@ struct ListingListView: View {
             case .delisted: return listings.filter(\.isDelisted)
             case .liked:
                 let keys = BuildingPreferenceStore.shared.likedKeys
-                return prefListings.filter { keys.contains($0.identityKey) }
+                return prefListings.filter { keys.contains($0.preferenceKey) }
             case .noped:
                 let keys = BuildingPreferenceStore.shared.nopedKeys
-                return prefListings.filter { keys.contains($0.identityKey) }
+                return prefListings.filter { keys.contains($0.preferenceKey) }
             }
         }
         return Array(listings)
@@ -136,7 +136,7 @@ struct ListingListView: View {
         if delistFilter != .noped && delistFilter != .liked {
             let noped = BuildingPreferenceStore.shared.nopedKeys
             if !noped.isEmpty {
-                list = list.filter { !noped.contains($0.identityKey) }
+                list = list.filter { !noped.contains($0.preferenceKey) }
             }
         }
 
@@ -968,7 +968,7 @@ struct ListingListView: View {
         }
         let descriptor = FetchDescriptor<Listing>()
         let all = (try? modelContext.fetch(descriptor)) ?? []
-        prefListings = all.filter { allKeys.contains($0.identityKey) }
+        prefListings = all.filter { allKeys.contains($0.preferenceKey) }
     }
 
     private var listContent: some View {
@@ -1103,17 +1103,17 @@ struct ListingListView: View {
                         Button {
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isLiked(listing.identityKey) {
-                                    await prefStore.removePreference(listing.identityKey)
+                                if prefStore.isLiked(listing.preferenceKey) {
+                                    await prefStore.removePreference(listing.preferenceKey)
                                 } else {
                                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                    await prefStore.setPreference(listing.identityKey, preference: .like)
+                                    await prefStore.setPreference(listing.preferenceKey, preference: .like)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isLiked(listing.identityKey) ? "Like解除" : "Like",
-                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.identityKey) ? "star.slash" : "star"
+                                BuildingPreferenceStore.shared.isLiked(listing.preferenceKey) ? "Like解除" : "Like",
+                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.preferenceKey) ? "star.slash" : "star"
                             )
                         }
                         .tint(.yellow)
@@ -1124,17 +1124,17 @@ struct ListingListView: View {
                         Button {
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isNoped(listing.identityKey) {
-                                    await prefStore.removePreference(listing.identityKey)
+                                if prefStore.isNoped(listing.preferenceKey) {
+                                    await prefStore.removePreference(listing.preferenceKey)
                                 } else {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                    await prefStore.setPreference(listing.identityKey, preference: .nope)
+                                    await prefStore.setPreference(listing.preferenceKey, preference: .nope)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isNoped(listing.identityKey) ? "Nope解除" : "Nope",
-                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.identityKey) ? "hand.thumbsup" : "hand.thumbsdown"
+                                BuildingPreferenceStore.shared.isNoped(listing.preferenceKey) ? "Nope解除" : "Nope",
+                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.preferenceKey) ? "hand.thumbsup" : "hand.thumbsdown"
                             )
                         }
                         .tint(.orange)
@@ -1152,31 +1152,31 @@ struct ListingListView: View {
                         Button {
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isLiked(listing.identityKey) {
-                                    await prefStore.removePreference(listing.identityKey)
+                                if prefStore.isLiked(listing.preferenceKey) {
+                                    await prefStore.removePreference(listing.preferenceKey)
                                 } else {
-                                    await prefStore.setPreference(listing.identityKey, preference: .like)
+                                    await prefStore.setPreference(listing.preferenceKey, preference: .like)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isLiked(listing.identityKey) ? "Like解除" : "Like",
-                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.identityKey) ? "star.slash" : "star"
+                                BuildingPreferenceStore.shared.isLiked(listing.preferenceKey) ? "Like解除" : "Like",
+                                systemImage: BuildingPreferenceStore.shared.isLiked(listing.preferenceKey) ? "star.slash" : "star"
                             )
                         }
                         Button {
                             let prefStore = BuildingPreferenceStore.shared
                             Task {
-                                if prefStore.isNoped(listing.identityKey) {
-                                    await prefStore.removePreference(listing.identityKey)
+                                if prefStore.isNoped(listing.preferenceKey) {
+                                    await prefStore.removePreference(listing.preferenceKey)
                                 } else {
-                                    await prefStore.setPreference(listing.identityKey, preference: .nope)
+                                    await prefStore.setPreference(listing.preferenceKey, preference: .nope)
                                 }
                             }
                         } label: {
                             Label(
-                                BuildingPreferenceStore.shared.isNoped(listing.identityKey) ? "Nope解除" : "Nope",
-                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.identityKey) ? "hand.thumbsup" : "hand.thumbsdown"
+                                BuildingPreferenceStore.shared.isNoped(listing.preferenceKey) ? "Nope解除" : "Nope",
+                                systemImage: BuildingPreferenceStore.shared.isNoped(listing.preferenceKey) ? "hand.thumbsup" : "hand.thumbsdown"
                             )
                         }
                         if let url = URL(string: listing.url) {
@@ -1396,7 +1396,7 @@ struct ListingRowView: View {
                         ScoreBadge(grade: grade, value: score)
                     }
 
-                    if BuildingPreferenceStore.shared.isLiked(listing.identityKey) {
+                    if BuildingPreferenceStore.shared.isLiked(listing.preferenceKey) {
                         Image(systemName: "star.fill")
                             .font(.caption)
                             .foregroundStyle(.yellow)

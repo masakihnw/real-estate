@@ -92,6 +92,33 @@ def test_normalize_name_year_built_tag():
     assert _is_feature_tag("2015年築")
 
 
+def test_normalize_name_dash_variant_in_katakana():
+    """カタカナ間の長音異体字（ー/―/-）は「ー」に統一され、別表記重複を吸収する。
+
+    実データ id=174008/174075/174186（サンクレイドルレヴィール池袋）が
+    ー(U+30FC) / ―(U+2015) / -(U+002D) で別物件化していたケース。
+    """
+    canonical = normalize_listing_name("サンクレイドルレヴィール池袋")  # ー U+30FC
+    horizontal_bar = normalize_listing_name("サンクレイドルレヴィ―ル池袋")  # ― U+2015
+    hyphen = normalize_listing_name("サンクレイドルレヴィ-ル池袋")  # - U+002D
+    assert canonical == horizontal_bar == hyphen == "サンクレイドルレヴィール池袋"
+
+
+def test_normalize_name_dash_variant_not_touching_digits():
+    """数字に隣接するハイフンは長音化しない（住所・棟番号を壊さない）。"""
+    assert "ー2" not in normalize_listing_name("ライオンズ-2")
+
+
+def test_normalize_name_strips_promo_between_markers():
+    """※...※ で囲まれた販促コピーは物件名から除去される。
+
+    実データ id=174073「※池袋駅まで直通8分※桜並木沿いに…」のケース。
+    """
+    result = normalize_listing_name("※池袋駅まで直通8分※ パークハウス練馬")
+    assert result == "パークハウス練馬"
+    assert normalize_listing_name("パークハウス練馬 ※即入居可") == "パークハウス練馬"
+
+
 # --- clean_listing_name ---
 
 
