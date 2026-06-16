@@ -345,6 +345,63 @@ def _delete_duplicate_listing(client, listing_id: int) -> None:
     client.table("listings").delete(returning="minimal").eq("id", listing_id).execute()
 
 
+# --- source+URL 突合レイヤ（純関数）---------------------------------------
+# 不変条件: 「同一 (source, url) は同一 listing（中古=同一住戸 / 新築=同一建物）」。
+# identity_key（name|layout|area|address|built_year|floor）はパース値のブレに弱く、
+# 再スクレイプで面積・築年・名前のいずれかがブレると別キーになり新規INSERTされ、
+# 同一URLが複数 listing に増殖する。URL突合をフォールバックの前段に挿入して収束させる。
+
+def _build_url_index(source_rows: list[dict]) -> dict[str, list[int]]:
+    """listing_sources 行群から url → [listing_id, ...] の索引を構築する。
+
+    呼び出し元（_sync_source_listings）は1ソース固定なので source はキーに含めない。
+    同一URLに複数 listing_id がぶら下がる既存重複も全件収集する。
+    url が None/空 の行はスキップ。listing_id は昇順・重複排除。
+    """
+    index: dict[str, set[int]] = {}
+    for row in source_rows:
+        url = row.get("url")
+        lid = row.get("listing_id")
+        if not url or lid is None:
+            continue
+        index.setdefault(url, set()).add(lid)
+    return {url: sorted(ids) for url, ids in index.items()}
+
+
+def _floor_from_identity_key(ik: str | None) -> int | None:
+    """identity_key 文字列の末尾要素（floor_position）を整数で返す。None/不正は None。"""
+    if not ik:
+        return None
+    last = ik.split("|")[-1]
+    if last in ("", "None"):
+        return None
+    try:
+        return int(float(last))
+    except (ValueError, TypeError):
+        return None
+
+
+def _url_merge_allowed(item_floor: int | None, other_floor: int | None) -> bool:
+    """URL突合でのマージ可否。両方に階があり異なる場合のみ不可（別住戸とみなす）。
+
+    片方でも None なら許可（中古=同一住戸/新築=同一建物の前提で収束させる）。
+    """
+    if item_floor is not None and other_floor is not None:
+        return item_floor == other_floor
+    return True
+
+
+def _select_url_survivor(listing_ids: list[int]) -> tuple[int, list[int]]:
+    """同一URLにぶら下がる複数 listing_id から survivor を選定する。
+
+    基準: 最小 listing_id（最古 = first_seen / price_history を最大限保全）。
+    戻り値: (survivor_id, excess_ids)。
+    """
+    survivor = min(listing_ids)
+    excess = [lid for lid in listing_ids if lid != survivor]
+    return survivor, excess
+
+
 def _sync_source_listings(client, listings: list[dict], source: str, property_type: str) -> dict:
     """1ソース分の物件リストを Supabase に同期する。"""
     from report_utils import identity_key_str, normalize_listing_name, _normalize_address_for_key
@@ -395,7 +452,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     for i in range(0, len(all_listing_ids), 100):
         batch_ids = all_listing_ids[i:i + 100]
         resp = (client.table("listing_sources")
-                .select("id, listing_id, source, price_man, is_active, consecutive_misses")
+                .select("id, listing_id, source, url, price_man, is_active, consecutive_misses")
                 .eq("source", source)
                 .in_("listing_id", batch_ids)
                 .execute())
@@ -403,10 +460,17 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             for row in resp.data:
                 existing_sources[row["listing_id"]] = row
 
+    # source+URL 突合用の索引（url → [listing_id, ...]）。同一URLの既存重複も収集。
+    url_index = _build_url_index(list(existing_sources.values()))
+
     # 重複削除済み ID を記録（同一物件の旧レコードを削除した際に再処理を防ぐ）
     _deleted_ids: set[int] = set()
     # fuzzy 解決で tombstone のみに一致した場合の統合先通知（1アイテム処理ごとに消費）
     _fuzzy_redirect_target: list[int] = []
+    # 同一ランで URL 収束済みの (url → (survivor_id, canonical_ik))。
+    # 1スクレイプ内に同一URLが複数 item で出ても survivor の ik を1つに固定し、
+    # 別キーでの3本目作成を防ぐ。
+    _url_claimed: dict[str, tuple[int, str]] = {}
 
     def _resolve_identity_key(ik: str) -> str:
         """新キーが既存DBに無い場合、旧キーや floor=None 版で既存を検索し、あれば更新する。
@@ -505,6 +569,74 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
 
         return ik
 
+    def _reconcile_by_url(url: str | None, item_floor: int | None, new_ik: str) -> tuple[int, str] | None:
+        """source+URL 突合。同一URLの既存 listing があれば survivor に収束し、
+        (survivor_id, canonical_ik) を返す（フェーズ2の upsert で可変フィールドが更新される）。
+
+        - 階が両方非Noneで異なる候補はマージ対象から除外（別住戸として温存）。
+        - 統合済み tombstone（merged_into 付き）は survivor 候補から除外（蘇生防止）。
+        - マージ可能候補が無ければ None（identity_key 突合の既存パスへ委ねる）。
+        - 余剰 listing は merged_into tombstone を付けてから CASCADE 削除（既存統合機構と同一）。
+        - 同一ランで既に収束済みのURLは再付け替えせず、確定済みの canonical_ik を返す
+          （1スクレイプ内に同一URLが複数 item で出ても survivor の ik を1つに固定）。
+        """
+        if not url:
+            return None
+        prior = _url_claimed.get(url)
+        if prior is not None:
+            survivor_id, canonical_ik = prior
+            if survivor_id not in _deleted_ids:
+                return survivor_id, canonical_ik
+        candidates = [lid for lid in url_index.get(url, []) if lid not in _deleted_ids]
+        # 階が item と矛盾せず、かつ統合済み tombstone でない候補のみマージ対象。
+        # 矛盾候補・tombstone は温存して索引に残し、既存の redirect 機構に委ねる。
+        def _is_tombstone(lid: int) -> bool:
+            entry = all_db_listings.get(id_to_ik.get(lid, ""))
+            return bool(entry and entry[2] is not None)
+
+        mergeable = [
+            lid for lid in candidates
+            if _url_merge_allowed(item_floor, _floor_from_identity_key(id_to_ik.get(lid)))
+            and not _is_tombstone(lid)
+        ]
+        if not mergeable:
+            return None
+        survivor_id, excess = _select_url_survivor(mergeable)
+
+        for old_id in excess:
+            if old_id == survivor_id or old_id in _deleted_ids:
+                continue
+            # 削除対象を指す tombstone を survivor に付け替えてから削除
+            (client.table("listings")
+             .update({"merged_into": survivor_id}, returning="minimal")
+             .eq("merged_into", old_id).execute())
+            _delete_duplicate_listing(client, old_id)
+            _deleted_ids.add(old_id)
+            old_ik = id_to_ik.pop(old_id, None)
+            if old_ik:
+                existing_listings.pop(old_ik, None)
+                all_db_listings.pop(old_ik, None)
+
+        # survivor を新しい identity_key に付け替え（_resolve_identity_key 末尾と同一手順）
+        survivor_old_ik = id_to_ik.get(survivor_id)
+        if survivor_old_ik != new_ik:
+            (client.table("listings")
+             .update({"identity_key": new_ik}, returning="minimal")
+             .eq("id", survivor_id).execute())
+            if survivor_old_ik:
+                existing_listings.pop(survivor_old_ik, None)
+                all_db_listings.pop(survivor_old_ik, None)
+            existing_listings[new_ik] = survivor_id
+            all_db_listings[new_ik] = (survivor_id, True, None)
+            id_to_ik[survivor_id] = new_ik
+
+        # 索引を再構築: survivor + 温存した候補（別階の別住戸・tombstone）のみ残す
+        kept = [survivor_id] + [lid for lid in candidates if lid not in mergeable]
+        url_index[url] = sorted(set(kept))
+        canonical_ik = id_to_ik.get(survivor_id, new_ik)
+        _url_claimed[url] = (survivor_id, canonical_ik)
+        return survivor_id, canonical_ik
+
     # --- フェーズ1: 行構築（identity_key 解決はフォールバック時のみネットワーク）---
     resolved_items: list[tuple[dict, str]] = []
     listing_rows_by_ik: dict[str, dict] = {}  # バッチ upsert は同一キー重複不可のため ik ごとに1行
@@ -518,17 +650,27 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         if not ik or all(p in ("None", "") for p in ik.split("|")):
             continue
 
-        # 統合済み tombstone への一致は再アクティブ化せず統合先へリダイレクト。
-        # 統合先の ik を「巡回で確認済み」として掲載終了判定（grace period）から守る
-        canonical_id = _resolve_merged_redirect(ik, all_db_listings)
-        if canonical_id is not None:
-            canonical_ik = id_to_ik.get(canonical_id)
-            if canonical_ik:
-                seen_identity_keys.add(canonical_ik)
-            redirected_items.append((item, canonical_id))
-            continue
+        # (0) source+URL 突合 — identity_key（面積/築年/名前）のブレを無視して
+        # 同一URLは同一 listing に収束させる。ヒットすれば survivor を ik に付け替え済みなので
+        # 以降の tombstone/identity_key 突合をスキップして通常の行構築へ進む。
+        url_match = _reconcile_by_url(item.get("url"), item.get("floor_position"), ik)
+        if url_match is not None:
+            # survivor に確定した canonical_ik を採用（同一ラン内の同一URL重複でも
+            # 1つの ik に固定され、フェーズ2 upsert が survivor に収束する）。
+            _url_survivor_id, ik = url_match
+            seen_identity_keys.add(ik)
+        else:
+            # 統合済み tombstone への一致は再アクティブ化せず統合先へリダイレクト。
+            # 統合先の ik を「巡回で確認済み」として掲載終了判定（grace period）から守る
+            canonical_id = _resolve_merged_redirect(ik, all_db_listings)
+            if canonical_id is not None:
+                canonical_ik = id_to_ik.get(canonical_id)
+                if canonical_ik:
+                    seen_identity_keys.add(canonical_ik)
+                redirected_items.append((item, canonical_id))
+                continue
 
-        ik = _resolve_identity_key(ik)
+            ik = _resolve_identity_key(ik)
 
         # fuzzy 解決の結果が「tombstone のみ一致」だった場合も統合先へリダイレクト
         if _fuzzy_redirect_target:
