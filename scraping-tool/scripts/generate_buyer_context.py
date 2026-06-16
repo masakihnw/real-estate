@@ -216,8 +216,56 @@ def _dollar_quote(text: str, tag: str) -> str:
     return f"{marker}{text}{marker}"
 
 
+# de-PII プレースホルダーマーカー。これらを含む buyer_profile.json は雛形であり、
+# 実 buyer_profiles へ適用すると実 PII を上書きする（過去事故 2026-06-13: 雛形値を
+# 実 user_id で適用し id=1 の実プロフィールを placeholder で上書き）。実プロフィールは
+# これらの記号を含まないため、ファイルレベルの有無で雛形かどうかを判定できる。
+# 現行の de-PII 済み buyer_profile.json は ○ と YYYY を使用。〇（U+3007）と （金額）は
+# 過去の redaction 慣習（例: household_income「（金額）」）に備えた予備マーカー。
+_DEPII_PLACEHOLDER_MARKERS = ("○", "〇", "YYYY", "（金額）")
+
+
+def _find_depii_markers(profile: dict) -> list[str]:
+    """profile に含まれる de-PII プレースホルダーマーカーを返す（ファイルレベル判定）。"""
+    blob = json.dumps(profile, ensure_ascii=False)
+    return [marker for marker in _DEPII_PLACEHOLDER_MARKERS if marker in blob]
+
+
+def _contains_depii_placeholder(profile: dict) -> bool:
+    """profile が de-PII プレースホルダーマーカーを含むか。"""
+    return bool(_find_depii_markers(profile))
+
+
+def _refusal_buyer_profiles_sql(markers: list[str]) -> str:
+    """雛形検出時の適用拒否 SQL（フェイルクローズ）。
+
+    upsert を一切呼ばず、適用されれば必ず失敗する。実 buyer_profiles を雛形で
+    上書きする事故を構造的に防ぐ。検出マーカーをコメントに残し診断を容易にする。
+    """
+    detected = " ".join(markers) if markers else "(none)"
+    return (
+        "-- 自動生成: scripts/generate_buyer_context.py --write\n"
+        "-- 安全版（適用拒否）: buyer_profile.json が de-PII プレースホルダー"
+        "（○ / YYYY / （金額））を含むため、\n"
+        "-- 実 buyer_profiles を上書きする upsert を生成しない。\n"
+        f"-- 検出マーカー: {detected}\n"
+        "-- 過去事故: 雛形値を実 user_id で適用し buyer_profiles の実 PII を上書き（2026-06-13）。\n"
+        "-- 実データ反映は、プレースホルダーを含まない実値の buyer_profile.json を持つ\n"
+        "-- ローカル環境でのみ行うこと（実値はリポジトリにコミットしない）。\n"
+        "DO $$\n"
+        "BEGIN\n"
+        "  RAISE EXCEPTION 'buyer_profile.json is de-PII placeholder; refusing apply to "
+        "avoid clobbering real PII in buyer_profiles. Provide an un-redacted profile locally.';\n"
+        "END $$;\n"
+    )
+
+
 def generate_buyer_profiles_sql() -> str:
     profile = load_buyer_profile()
+    # フェイルクローズ: de-PII 雛形を実 buyer_profiles に適用させない（退行防止）。
+    markers = _find_depii_markers(profile)
+    if markers:
+        return _refusal_buyer_profiles_sql(markers)
     # 決定論のため sort_keys。upsert_buyer_profile は profile->>'key' で参照するためキー順は無関係。
     profile_json = json.dumps(profile, ensure_ascii=False, sort_keys=True, indent=2)
     body = _dollar_quote(profile_json, "profile")
