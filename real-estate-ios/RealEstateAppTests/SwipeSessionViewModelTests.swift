@@ -267,14 +267,16 @@ struct SwipeSessionViewModelTests {
     @Test("pendingCount は isRecentlyAdded かつ画像あり かつ未判定の物件数を返す")
     @MainActor
     func pendingCountFilters() {
+        // 末尾数字違い（新着1/新着2）は cleanListingName で同一建物名に集約され dedup で1件に
+        // なるため、明確に別建物の名前を使う。
         let listings = [
-            makeListing(name: "新着1", addedAt: recentDate(daysAgo: 0), hasFloorPlanImagesServer: true, hasPropertyImagesServer: true),
-            makeListing(name: "新着2", addedAt: recentDate(daysAgo: 1), hasFloorPlanImagesServer: true, hasPropertyImagesServer: true),
-            makeListing(name: "古い", addedAt: recentDate(daysAgo: 5), hasFloorPlanImagesServer: true, hasPropertyImagesServer: true),
-            makeListing(name: "掲載終了", addedAt: recentDate(daysAgo: 0), isDelisted: true, hasFloorPlanImagesServer: true, hasPropertyImagesServer: true),
+            makeListing(name: "アルファタワー", addedAt: recentDate(daysAgo: 0), hasFloorPlanImagesServer: true, hasPropertyImagesServer: true),
+            makeListing(name: "ベータレジデンス", addedAt: recentDate(daysAgo: 1), hasFloorPlanImagesServer: true, hasPropertyImagesServer: true),
+            makeListing(name: "ガンマヒルズ", addedAt: recentDate(daysAgo: 5), hasFloorPlanImagesServer: true, hasPropertyImagesServer: true),
+            makeListing(name: "デルタコート", addedAt: recentDate(daysAgo: 0), isDelisted: true, hasFloorPlanImagesServer: true, hasPropertyImagesServer: true),
         ]
         let count = SwipeSessionViewModel.pendingCount(from: listings)
-        #expect(count >= 2)
+        #expect(count == 2, "recent かつ画像あり かつ未判定の別建物2件のみ")
     }
 
     // MARK: - setCardsForTesting resets state
@@ -429,6 +431,84 @@ struct SwipeSessionViewModelTests {
         vm.filterCardsWithoutImages()
         #expect(vm.cards.isEmpty)
         #expect(vm.isComplete)
+    }
+
+    // MARK: - 同一建物の重複排除（buildingGroupKey）
+
+    /// 同一建物（同名・同区）の住戸を作る。`makeListing` は名前を一意化するため dedup 検証に使えない。
+    private func makeBuildingUnit(building: String, address: String, withImages: Bool = true, listingScore: Int? = nil) -> Listing {
+        Listing(
+            url: "https://test.example.com/\(UUID().uuidString)",
+            name: building,
+            address: address,
+            floorPlanImagesJSON: withImages ? #"["https://example.com/floor.jpg"]"# : nil,
+            suumoImagesJSON: withImages ? #"[{"url":"https://example.com/img.jpg","label":"外観"}]"# : nil,
+            addedAt: Date(),
+            propertyType: "chuko",
+            listingScore: listingScore,
+            hasFloorPlanImagesServer: true,
+            hasPropertyImagesServer: true
+        )
+    }
+
+    @Test("filterCardsWithoutImages は同一建物の重複を1枚に集約する")
+    @MainActor
+    func filterCardsDeduplicatesSameBuilding() {
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        // 同名・同区（住所粒度違い）の別ソース重複
+        let unitA = makeBuildingUnit(building: "重複ビルA", address: "品川区東品川4丁目13")
+        let unitB = makeBuildingUnit(building: "重複ビルA", address: "品川区東品川4")
+        let other = makeBuildingUnit(building: "別ビルB", address: "中央区晴海5")
+        #expect(unitA.buildingGroupKey == unitB.buildingGroupKey)
+        vm.setCardsForTesting([unitA, unitB, other])
+
+        vm.filterCardsWithoutImages()
+
+        #expect(vm.cards.count == 2, "同一建物2件は1枚に集約され、別ビルと合わせて2枚になる")
+        #expect(Set(vm.cards.map(\.buildingGroupKey)).count == 2)
+    }
+
+    @Test("画像なしの重複住戸があっても建物は消えない（画像のある住戸が残る）")
+    @MainActor
+    func dedupDoesNotDropBuildingWhenDuplicateLacksImages() {
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let noImg = makeBuildingUnit(building: "重複ビルC", address: "品川区東品川4", withImages: false)
+        let withImg = makeBuildingUnit(building: "重複ビルC", address: "品川区東品川4丁目1", withImages: true)
+        vm.setCardsForTesting([noImg, withImg])
+
+        vm.filterCardsWithoutImages()
+
+        #expect(vm.cards.count == 1)
+        #expect(vm.cards[0].url == withImg.url, "画像のある住戸が建物の代表として残る")
+    }
+
+    @Test("loadCards→filterCardsWithoutImages の通しで、同一建物は高スコア住戸を代表に残す")
+    @MainActor
+    func pipelineKeepsHighestScoreRepresentative() {
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        // 同一建物・両方画像あり・スコア違い。loadCards がスコア降順に並べ、
+        // filterCardsWithoutImages の dedup が先頭（高スコア）を代表に残す。
+        let high = makeBuildingUnit(building: "通しビルD", address: "品川区東品川4", listingScore: 80)
+        let low = makeBuildingUnit(building: "通しビルD", address: "品川区東品川4丁目1", listingScore: 40)
+        #expect(high.buildingGroupKey == low.buildingGroupKey)
+
+        vm.loadCards(from: [low, high])   // 入力順は low が先でもスコア降順で high が先頭になる
+        vm.filterCardsWithoutImages()
+
+        #expect(vm.cards.count == 1)
+        #expect(vm.cards[0].url == high.url, "高スコア住戸が代表として残る")
+    }
+
+    @Test("pendingCount は同一建物の重複を1件として数える")
+    @MainActor
+    func pendingCountDeduplicatesSameBuilding() {
+        let unique = "件数重複ビル_\(UUID().uuidString.prefix(8))"
+        let listings = [
+            makeBuildingUnit(building: unique, address: "品川区東品川4丁目13"),
+            makeBuildingUnit(building: unique, address: "品川区東品川4"),
+        ]
+        let count = SwipeSessionViewModel.pendingCount(from: listings)
+        #expect(count == 1, "同一建物の重複2件は1件として数える")
     }
 
     // MARK: - listingsNeedingEnrichmentFetch
