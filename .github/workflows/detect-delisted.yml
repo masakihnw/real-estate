@@ -1,7 +1,12 @@
 name: Detect Delisted Listings
 
 # Enrich & Report 完了後に起動し、SUUMO 詳細ページの掲載終了マーカーを検査する。
-# building_units.json を更新し、latest.json から掲載終了物件を除去してコミットする。
+# 入力（対象 SUUMO URL 一覧）は Supabase listings_feed の active 物件から生成する。
+# （results/latest.json は PII 除去で gitignore 化され repo に存在しないため、
+#  チェックアウトだけでは入力を得られない。Supabase が現行の真ソース。）
+# 検査結果は building_units.json の delisted フラグ等として更新・コミットする。
+# 掲載終了の本番反映は、後続 scrape/enrich の merge_detail_cache が building_units.json を
+# 適用して listings から除去 → supabase_sync が is_active を落とす経路で行われる。
 
 on:
   workflow_run:
@@ -50,6 +55,16 @@ jobs:
         working-directory: scraping-tool
         run: pip install -r requirements.txt
 
+      - name: Export active listings from Supabase
+        working-directory: scraping-tool
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          python3 scripts/export_supabase_snapshot.py \
+            --output results/latest.json \
+            --property-type chuko
+
       - name: Restore HTML cache
         uses: actions/cache@v5
         with:
@@ -66,6 +81,9 @@ jobs:
       - name: Run merge_detail_cache
         id: merge
         working-directory: scraping-tool
+        # latest.json から delisted 物件を除去し、除去件数を removed 出力に渡す
+        # （commit メッセージ用の指標）。除去後 JSON は gitignore 対象のため commit
+        # しない。Supabase の is_active 反映は後続 enrich の merge_detail_cache 経由。
         run: |
           BEFORE=$(python3 -c "import json; d=json.load(open('results/latest.json')); print(len([r for r in d if r.get('source')=='suumo']))")
           python3 scripts/merge_detail_cache.py results/latest.json
@@ -80,14 +98,20 @@ jobs:
         with:
           path: |
             scraping-tool/data/html_cache
-          key: suumo-html-cache-${{ hashFiles('scraping-tool/results/latest.json') }}
+          # restore 側の restore-keys: suumo-html-cache- が前方一致で最新を拾うため、
+          # run_id で一意化する。latest.json は Supabase の active 集合次第で毎回変わる
+          # ephemeral ファイルのため、その hashFiles をキーにしない。
+          key: suumo-html-cache-${{ github.run_id }}
 
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-          git add scraping-tool/data/building_units.json scraping-tool/results/latest.json
+          # latest.json は gitignore 対象（PII 除去で repo 管理外）かつ Supabase から
+          # 毎回生成する一時ファイルのため commit しない。永続化するのは
+          # building_units.json（delisted フラグ等の SUUMO 詳細キャッシュ）のみ。
+          git add scraping-tool/data/building_units.json
 
           if git diff --cached --quiet; then
             echo "変更なし"
@@ -95,10 +119,11 @@ jobs:
           fi
 
           REMOVED="${{ steps.merge.outputs.removed }}"
-          git commit -m "fix: 掲載終了${REMOVED}件を検出・除去
+          git commit -m "fix: 掲載終了${REMOVED}件を検出・building_units.json を更新
 
           detect-delisted workflow
-          building_units.json 更新 + latest.json から除去"
+          building_units.json の delisted フラグ等を更新
+          （本番除去は後続 enrich の merge_detail_cache 経由）"
 
           git pull --rebase --autostash origin main
           git push origin HEAD:refs/heads/main
