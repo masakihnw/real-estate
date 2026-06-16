@@ -14,21 +14,31 @@ final class BuildingPreferenceStore {
     private init() {}
 
     func fetch() async {
+        // PostgREST はデフォルトで最大1000行しか返さないため、range で全件をページ取得する。
+        // 単発 select だと like/nope の合計が1000件を超えた時点で末尾（最近の判定）が欠落し、
+        // 「nope済みが再表示される」「未評価件数が0にならない」不具合になる。
+        let pageSize = 1000
+        var noped = Set<String>()
+        var liked = Set<String>()
+        var offset = 0
         do {
-            let (data, _) = try await client.select(
-                from: "user_building_preferences",
-                columns: "identity_key,preference"
-            )
-            let rows = try JSONDecoder().decode([[String: String]].self, from: data)
-            var noped = Set<String>()
-            var liked = Set<String>()
-            for row in rows {
-                guard let key = row["identity_key"], let pref = row["preference"] else { continue }
-                switch pref {
-                case "nope": noped.insert(key)
-                case "like": liked.insert(key)
-                default: break
+            while true {
+                let (data, _) = try await client.select(
+                    from: "user_building_preferences",
+                    columns: "identity_key,preference",
+                    range: offset...(offset + pageSize - 1)
+                )
+                let rows = try JSONDecoder().decode([[String: String]].self, from: data)
+                for row in rows {
+                    guard let key = row["identity_key"], let pref = row["preference"] else { continue }
+                    switch pref {
+                    case "nope": noped.insert(key)
+                    case "like": liked.insert(key)
+                    default: break
+                    }
                 }
+                if rows.count < pageSize { break }
+                offset += pageSize
             }
             nopedKeys = noped
             likedKeys = liked
