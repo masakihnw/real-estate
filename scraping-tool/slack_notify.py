@@ -34,6 +34,14 @@ from logger import get_logger
 logger = get_logger(__name__)
 
 
+def has_property_name(listing: dict[str, Any]) -> bool:
+    """物件名が入っているか（純粋関数）。
+
+    HOME'S 匿名掲載など物件名が伏せられた物件は建物特定が困難なため、
+    新着 Slack 通知の対象から除外する（アプリ表示は listings_feed_light 側で除外）。
+    """
+    return bool((listing.get("name") or "").strip())
+
 
 def format_diff_message(
     diff: dict[str, Any],
@@ -337,7 +345,8 @@ def _get_diff_from_supabase(client, current_listings: list[dict]) -> Optional[di
                         .execute())
                 for row in (rows.data or []):
                     matched = current_by_ik.get(row["identity_key"])
-                    if matched:
+                    # 物件名が伏せられた物件（HOME'S 匿名掲載など）は新着通知から除外する
+                    if matched and has_property_name(matched):
                         new_listings.append(matched)
 
         removed_listings: list[dict] = []
@@ -368,7 +377,10 @@ def _get_diff_from_supabase(client, current_listings: list[dict]) -> Optional[di
                     listing.setdefault("price_man", src.get("price_man"))
                     listing.setdefault("url", src.get("url"))
                     listing.setdefault("source", src.get("source"))
-                    removed_listings.append(listing)
+                    # 無名物件は新着通知していない（表示もしていない）ため、
+                    # 掲載終了も通知しない（新着/削除で一貫して無名は対象外）
+                    if has_property_name(listing):
+                        removed_listings.append(listing)
 
         logger.info("Supabase diff: new=%d removed=%d (since %s)", len(new_listings), len(removed_listings), last_at)
         return {"new": new_listings, "removed": removed_listings, "updated": [], "unchanged": [], "_last_notified_at": last_at}
