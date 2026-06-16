@@ -15,9 +15,14 @@ final class SwipeSessionViewModel {
     private(set) var undoStack: [(listing: Listing, decision: SwipeDecision)] = []
     private var pendingTasks: [String: Task<Void, Never>] = [:]
     private let progressStore: SwipeProgressStore
+    private let preferenceStore: any SwipePreferenceStoring
 
-    init(progressStore: SwipeProgressStore = .shared) {
+    init(
+        progressStore: SwipeProgressStore = .shared,
+        preferenceStore: any SwipePreferenceStoring = BuildingPreferenceStore.shared
+    ) {
         self.progressStore = progressStore
+        self.preferenceStore = preferenceStore
     }
 
     var isComplete: Bool { currentIndex >= cards.count }
@@ -32,7 +37,7 @@ final class SwipeSessionViewModel {
     var likedListings: [Listing] { swipeResults.filter { $0.decision == .like }.map(\.listing) }
 
     func loadCards(from allListings: [Listing]) {
-        let prefStore = BuildingPreferenceStore.shared
+        let prefStore = preferenceStore
         cards = allListings
             .filter { $0.propertyType == "chuko" && $0.isRecentlyAdded && !$0.isDelisted }
             .filter(GradeVisibility.isVisible)   // D評価は発見導線に出さない
@@ -68,8 +73,8 @@ final class SwipeSessionViewModel {
             // 確定したら「あとで」リストから外す
             progressStore.skippedKeys.removeAll { $0 == deckKey }
             let pref: BuildingPreferenceStore.Preference = decision == .like ? .like : .nope
-            pendingTasks[prefKey] = Task {
-                await BuildingPreferenceStore.shared.setPreference(prefKey, preference: pref)
+            pendingTasks[prefKey] = Task { [preferenceStore] in
+                await preferenceStore.setPreference(prefKey, preference: pref)
             }
             logger.info("\(decision == .like ? "Liked" : "Noped", privacy: .public): \(card.name, privacy: .public)")
         }
@@ -92,8 +97,8 @@ final class SwipeSessionViewModel {
             // 直前の skip を取り消す
             progressStore.skippedKeys.removeAll { $0 == deckKey }
         } else {
-            Task {
-                await BuildingPreferenceStore.shared.removePreference(prefKey)
+            Task { [preferenceStore] in
+                await preferenceStore.removePreference(prefKey)
             }
             // 注: like/nope の取り消しでは、その物件が前回 skip 由来だった場合でも
             // skippedKeys へは戻さない（直前1手の取り消しという undo の責務を超えるため）。

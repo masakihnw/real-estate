@@ -51,7 +51,7 @@ struct SwipeSessionViewModelTests {
 
     @MainActor
     private func vmWithCards(_ count: Int) -> SwipeSessionViewModel {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         let listings = (0..<count).map { i in makeListing(name: "card\(i)") }
         vm.setCardsForTesting(listings)
         return vm
@@ -62,7 +62,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards は isRecentlyAdded かつ !isDelisted の物件のみ含む")
     @MainActor
     func loadCardsFiltersCorrectly() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         let today = makeListing(name: "今日", addedAt: recentDate(daysAgo: 0))
         let yesterday = makeListing(name: "昨日", addedAt: recentDate(daysAgo: 1))
         let old = makeListing(name: "古い", addedAt: recentDate(daysAgo: 5))
@@ -76,7 +76,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards は新築（shinchiku）を除外する")
     @MainActor
     func loadCardsExcludesShinchiku() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         let chuko = makeListing(name: "中古物件")
         let shinchiku = makeListing(name: "新築物件", propertyType: "shinchiku")
         vm.loadCards(from: [chuko, shinchiku])
@@ -87,7 +87,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards は listingScore 降順でソートする")
     @MainActor
     func loadCardsSortsByScore() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         // スコアはいずれも GradeVisibility で除外される D 評価(<35)を避ける（ソート検証が目的）
         let low = makeListing(name: "低", listingScore: 40)
         let high = makeListing(name: "高", listingScore: 80)
@@ -101,7 +101,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards で空の配列を渡すと cards は空")
     @MainActor
     func loadCardsEmpty() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         vm.loadCards(from: [])
         #expect(vm.cards.isEmpty)
         #expect(vm.isComplete)
@@ -112,7 +112,7 @@ struct SwipeSessionViewModelTests {
     @Test("初期状態のプロパティが正しい")
     @MainActor
     func initialState() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         #expect(vm.cards.isEmpty)
         #expect(vm.currentCard == nil)
         #expect(vm.isComplete)
@@ -169,7 +169,7 @@ struct SwipeSessionViewModelTests {
     @Test("currentCard が nil のとき commitSwipe は何もしない")
     @MainActor
     func commitSwipeOnEmpty() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         vm.commitSwipe(.like)
         #expect(vm.likedCount == 0)
     }
@@ -383,7 +383,7 @@ struct SwipeSessionViewModelTests {
     @Test("filterCardsWithoutImages は画像のない物件を除外する")
     @MainActor
     func filterCardsWithoutImagesRemovesImageless() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         let withImages = makeListing(
             name: "画像あり",
             suumoImagesJSON: #"[{"url":"https://example.com/img.jpg","label":"外観"}]"#,
@@ -405,7 +405,7 @@ struct SwipeSessionViewModelTests {
     @Test("filterCardsWithoutImages は全物件に画像があれば何も除外しない")
     @MainActor
     func filterCardsWithoutImagesKeepsAll() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         let a = makeListing(
             name: "A",
             suumoImagesJSON: #"[{"url":"https://a.com/1.jpg","label":"外観"}]"#,
@@ -424,7 +424,7 @@ struct SwipeSessionViewModelTests {
     @Test("filterCardsWithoutImages で全物件除外されると cards が空になる")
     @MainActor
     func filterCardsWithoutImagesAllFiltered() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         let noImages1 = makeListing(name: "なし1")
         let noImages2 = makeListing(name: "なし2")
         vm.setCardsForTesting([noImages1, noImages2])
@@ -454,7 +454,7 @@ struct SwipeSessionViewModelTests {
     @Test("filterCardsWithoutImages は同一建物の重複を1枚に集約する")
     @MainActor
     func filterCardsDeduplicatesSameBuilding() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         // 同名・同区（住所粒度違い）の別ソース重複
         let unitA = makeBuildingUnit(building: "重複ビルA", address: "品川区東品川4丁目13")
         let unitB = makeBuildingUnit(building: "重複ビルA", address: "品川区東品川4")
@@ -471,7 +471,7 @@ struct SwipeSessionViewModelTests {
     @Test("画像なしの重複住戸があっても建物は消えない（画像のある住戸が残る）")
     @MainActor
     func dedupDoesNotDropBuildingWhenDuplicateLacksImages() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         let noImg = makeBuildingUnit(building: "重複ビルC", address: "品川区東品川4", withImages: false)
         let withImg = makeBuildingUnit(building: "重複ビルC", address: "品川区東品川4丁目1", withImages: true)
         vm.setCardsForTesting([noImg, withImg])
@@ -485,7 +485,7 @@ struct SwipeSessionViewModelTests {
     @Test("loadCards→filterCardsWithoutImages の通しで、同一建物は高スコア住戸を代表に残す")
     @MainActor
     func pipelineKeepsHighestScoreRepresentative() {
-        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore())
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
         // 同一建物・両方画像あり・スコア違い。loadCards がスコア降順に並べ、
         // filterCardsWithoutImages の dedup が先頭（高スコア）を代表に残す。
         let high = makeBuildingUnit(building: "通しビルD", address: "品川区東品川4", listingScore: 80)
