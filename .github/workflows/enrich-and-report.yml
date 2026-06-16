@@ -144,6 +144,15 @@ jobs:
             commute-gmaps-chuko-
             commute-gmaps-
 
+      - name: Restore hazard cache
+        uses: actions/cache/restore@v4
+        with:
+          path: scraping-tool/hazard_cache
+          key: hazard-chuko-${{ github.run_id }}
+          restore-keys: |
+            hazard-chuko-
+            hazard-
+
       - name: Prepare input
         working-directory: scraping-tool
         run: cp results/latest_raw.json results/latest.json
@@ -164,6 +173,13 @@ jobs:
         with:
           path: scraping-tool/commute_gmaps_cache
           key: commute-gmaps-chuko-${{ github.run_id }}
+
+      - name: Save hazard cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: scraping-tool/hazard_cache
+          key: hazard-chuko-${{ github.run_id }}
 
       - name: Upload enriched results
         if: always()
