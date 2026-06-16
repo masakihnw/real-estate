@@ -584,10 +584,53 @@ struct SwipeSessionViewModelTests {
     @Test("pendingCount: 全物件に画像フラグありなら全カウント")
     @MainActor
     func pendingCountAllWithImages() {
+        // makeListing は名前を一意化するため別建物として2件カウントされる
         let a = makeListing(name: "A", hasFloorPlanImagesServer: true, hasPropertyImagesServer: true)
         let b = makeListing(name: "B", hasFloorPlanImagesServer: true, hasPropertyImagesServer: true)
         let count = SwipeSessionViewModel.pendingCount(from: [a, b])
         #expect(count == 2)
+    }
+
+    // MARK: - pendingCount とデッキの画像判定の一致
+
+    @Test("pendingCount: enrichment取得済みで実画像が無い物件はサーバーフラグがあっても数えない")
+    @MainActor
+    func pendingCountExcludesFetchedWithoutClientImages() {
+        // サーバーは画像ありと言うが、取得後にクライアント画像が無い＝デッキでは出ない物件。
+        // これを件数に数えると「未評価N件なのにデッキが空」になる。
+        let fetchedNoImages = makeListing(
+            name: "取得済み実画像なし",
+            hasFloorPlanImagesServer: true,
+            hasPropertyImagesServer: true
+        )
+        fetchedNoImages.enrichmentFetchedAt = Date()
+        #expect(SwipeSessionViewModel.pendingCount(from: [fetchedNoImages]) == 0)
+    }
+
+    @Test("pendingCount: enrichment取得済みで実画像ありは数える")
+    @MainActor
+    func pendingCountIncludesFetchedWithClientImages() {
+        let fetchedWithImages = makeListing(
+            name: "取得済み実画像あり",
+            suumoImagesJSON: #"[{"url":"https://e.com/i.jpg","label":"外観"}]"#,
+            floorPlanImagesJSON: #"["https://e.com/f.jpg"]"#,
+            hasFloorPlanImagesServer: true,
+            hasPropertyImagesServer: true
+        )
+        fetchedWithImages.enrichmentFetchedAt = Date()
+        #expect(SwipeSessionViewModel.pendingCount(from: [fetchedWithImages]) == 1)
+    }
+
+    @Test("pendingCount: 未取得はサーバーフラグで楽観カウント（新着バッジ用）")
+    @MainActor
+    func pendingCountIncludesUnfetchedWithServerFlags() {
+        let unfetched = makeListing(
+            name: "未取得サーバーフラグあり",
+            hasFloorPlanImagesServer: true,
+            hasPropertyImagesServer: true
+        )
+        // enrichmentFetchedAt は nil（未取得）
+        #expect(SwipeSessionViewModel.pendingCount(from: [unfetched]) == 1)
     }
 
     @Test("pendingCount: 古い物件と delisted は除外される")
