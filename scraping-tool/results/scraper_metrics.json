@@ -1,7 +1,7 @@
 {
   "metrics": {
     "rehouse": {
-      "parsed": 4505,
+      "parsed": 4501,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -9,7 +9,7 @@
       }
     },
     "suumo": {
-      "parsed": 4302,
+      "parsed": 4308,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -33,7 +33,7 @@
       }
     },
     "homes": {
-      "parsed": 5590,
+      "parsed": 5566,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -44,5 +44,5 @@
   "alerts": [
     "homes: 異常終端 timeout×1 — 残ページ取りこぼしの可能性"
   ],
-  "saved_at": "2026-06-16T14:10:55.714233+00:00"
+  "saved_at": "2026-06-17T04:54:43.728216+00:00"
 }

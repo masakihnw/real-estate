@@ -6677,23 +6677,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11320.html",
       "deviation_score": 0,
-      "estimated_price_man": 11165,
-      "estimated_tsubo_price_man": 451,
-      "estimated_m2_price_man": 137,
+      "estimated_price_man": 10932,
+      "estimated_tsubo_price_man": 447,
+      "estimated_m2_price_man": 135,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 373,
+      "chuko_history_count": 374,
       "sales_history": [
         {
           "end_date": "",
           "floor": 12,
           "layout": "",
           "area_m2": 78.65,
-          "price_man": 7715,
+          "price_man": 7716,
           "tsubo_price_man": 322.0
         }
       ]
     },
-    "cached_at": "2026-06-03T04:43:49.490614"
+    "cached_at": "2026-06-17T04:55:55.519087"
   },
   "南東向きテラス40.95平米ある3LDK住戸": {
     "data": null,
@@ -24039,5 +24039,71 @@
       ]
     },
     "cached_at": "2026-06-16T14:12:51.981835"
+  },
+  "ファミールグラン高井戸デュープレックス6階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/26735.html",
+      "deviation_score": 22,
+      "estimated_price_man": 9888,
+      "estimated_tsubo_price_man": 425,
+      "estimated_m2_price_man": 129,
+      "shinchiku_history_count": 229,
+      "chuko_history_count": 164,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 81.44,
+          "price_man": 8161,
+          "tsubo_price_man": 332.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-10T11:54:41.087352"
+  },
+  "モダ・ビエント中板橋プラシア": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/602490.html",
+      "deviation_score": 32,
+      "estimated_price_man": 7135,
+      "estimated_tsubo_price_man": 307,
+      "estimated_m2_price_man": 93,
+      "shinchiku_history_count": 32,
+      "chuko_history_count": 21,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 69.34,
+          "price_man": 6422,
+          "tsubo_price_man": 304.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-17T04:56:05.294357"
+  },
+  "レクセルマンション北千住": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/34459.html",
+      "deviation_score": 13,
+      "estimated_price_man": 7544,
+      "estimated_tsubo_price_man": 316,
+      "estimated_m2_price_man": 96,
+      "shinchiku_history_count": 137,
+      "chuko_history_count": 105,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 75.37,
+          "price_man": 4203,
+          "tsubo_price_man": 183.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-17T04:56:14.258686"
   }
 }
