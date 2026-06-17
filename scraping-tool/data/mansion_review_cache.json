@@ -24105,5 +24105,49 @@
       ]
     },
     "cached_at": "2026-06-17T04:56:14.258686"
+  },
+  "パークホームズ弦巻ヴェリール1階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43018.html",
+      "deviation_score": 36,
+      "estimated_price_man": 11013,
+      "estimated_tsubo_price_man": 506,
+      "estimated_m2_price_man": 153,
+      "shinchiku_history_count": 36,
+      "chuko_history_count": 23,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 70.33,
+          "price_man": 8010,
+          "tsubo_price_man": 374.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-17T11:39:48.170698"
+  },
+  "パークホームズ弦巻ヴェリール": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43018.html",
+      "deviation_score": 36,
+      "estimated_price_man": 11013,
+      "estimated_tsubo_price_man": 506,
+      "estimated_m2_price_man": 153,
+      "shinchiku_history_count": 36,
+      "chuko_history_count": 23,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 70.33,
+          "price_man": 8010,
+          "tsubo_price_man": 374.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-17T11:39:48.170698"
   }
 }
