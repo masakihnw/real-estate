@@ -33,7 +33,7 @@
       }
     },
     "homes": {
-      "parsed": 5451,
+      "parsed": 5392,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -44,5 +44,5 @@
   "alerts": [
     "homes: 異常終端 timeout×1 — 残ページ取りこぼしの可能性"
   ],
-  "saved_at": "2026-06-17T11:38:32.392299+00:00"
+  "saved_at": "2026-06-17T15:10:04.259606+00:00"
 }

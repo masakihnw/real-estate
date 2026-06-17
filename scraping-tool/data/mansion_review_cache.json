@@ -605,9 +605,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/534139.html",
       "deviation_score": 52,
-      "estimated_price_man": 6110,
-      "estimated_tsubo_price_man": 493,
-      "estimated_m2_price_man": 150,
+      "estimated_price_man": 6156,
+      "estimated_tsubo_price_man": 474,
+      "estimated_m2_price_man": 144,
       "shinchiku_history_count": 52,
       "chuko_history_count": 35,
       "sales_history": [
@@ -621,7 +621,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-03T11:44:47.433734"
+    "cached_at": "2026-06-17T15:11:31.480145"
   },
   "ライトコート四谷": {
     "data": {
