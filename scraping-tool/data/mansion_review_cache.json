@@ -24464,5 +24464,65 @@
       ]
     },
     "cached_at": "2026-06-18T11:16:26.498198"
+  },
+  "ザ・パークハウス二子玉川ガーデン4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/753749.html",
+      "deviation_score": 13,
+      "estimated_price_man": 11742,
+      "estimated_tsubo_price_man": 617,
+      "estimated_m2_price_man": 187,
+      "shinchiku_history_count": 130,
+      "chuko_history_count": 81,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 70.62,
+          "price_man": 10203,
+          "tsubo_price_man": 479.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-11T17:55:37.622782"
+  },
+  "アクタージュ新御徒町8階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/882133.html",
+      "deviation_score": 0,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 52.55,
+          "price_man": 4663,
+          "tsubo_price_man": 298.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-18T14:56:38.731899"
+  },
+  "アクタージュ新御徒町": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/882133.html",
+      "deviation_score": 0,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 52.55,
+          "price_man": 4663,
+          "tsubo_price_man": 298.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-18T14:56:38.731899"
   }
 }
