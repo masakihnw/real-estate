@@ -142,7 +142,11 @@ HOMES_EMPTY_PARSE_BACKOFF_SEC = 10
 # スクレイピング全体のタイムリミット（秒）。HOME'S は WAF が厳しく、
 # 1ページに最大7分（WAF リトライ30+60+90+120秒）かかることがあるため、
 # 全体の実行時間を制限して CI/CD パイプライン全体のタイムアウトを防ぐ。
-HOMES_SCRAPE_TIMEOUT_SEC = 40 * 60  # 40分（在庫増で30分タイムアウト頻発のため拡張）
+# 2026-06: 在庫増（フィルタ後 ~5,560件 / ~140ページ）で 40分でも一覧終端手前で
+# timeout 異常終端し続ける（7日連続）ため 45分に延長。実測 ~17s/ページ ⇒
+# ~145ページの終端（連続2空ページ）に到達でき "completed" で正常終了できる。
+# scrape ジョブ上限は 60分（並列実行・他ステップ ~10-13分）で 45分は収まる。
+HOMES_SCRAPE_TIMEOUT_SEC = 45 * 60  # 45分
 
 
 @dataclass
@@ -205,11 +209,15 @@ def fetch_list_page(context: BrowserContext, url: str, *, max_retries: int = 3) 
             page.goto(url, wait_until="domcontentloaded", timeout=45000)
 
             try:
+                # 主パース対象の JSON-LD は server-rendered で domcontentloaded 時点で
+                # 取得済みのため、待機は遅延ロードの保険にすぎない。15s は遅い/不一致
+                # ページで毎回フルに消費され ~140ページで数分の budget を浪費していたため
+                # 6s に短縮（欠落しても下の except で続行＝パースは JSON-LD で成立する）。
                 page.wait_for_selector(
                     "div.mod-mergeBuilding--sale, div.mod-listKks, "
                     "script[type='application/ld+json'], "
                     "a[href*='/mansion/b-']",
-                    timeout=15000,
+                    timeout=6000,
                 )
             except Exception:
                 logger.debug("HOME'S: 物件セレクタの待機タイムアウト（コンテンツ全体は取得済み）")
