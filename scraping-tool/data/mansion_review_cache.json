@@ -24706,5 +24706,109 @@
       ]
     },
     "cached_at": "2026-06-19T11:14:43.857637"
+  },
+  "東京ビューマークス20階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13309.html",
+      "deviation_score": 25,
+      "estimated_price_man": 11108,
+      "estimated_tsubo_price_man": 460,
+      "estimated_m2_price_man": 139,
+      "shinchiku_history_count": 257,
+      "chuko_history_count": 203,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 77.58,
+          "price_man": 6382,
+          "tsubo_price_man": 271.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-11T17:48:35.314685"
+  },
+  "クリオ葛西シーズンテラス5階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1642681.html",
+      "deviation_score": 3,
+      "estimated_price_man": 9531,
+      "estimated_tsubo_price_man": 376,
+      "estimated_m2_price_man": 114,
+      "shinchiku_history_count": 3,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 77.16,
+          "price_man": 8746,
+          "tsubo_price_man": 377.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-19T15:00:25.494336"
+  },
+  "クリオ葛西シーズンテラス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1642681.html",
+      "deviation_score": 3,
+      "estimated_price_man": 9531,
+      "estimated_tsubo_price_man": 376,
+      "estimated_m2_price_man": 114,
+      "shinchiku_history_count": 3,
+      "chuko_history_count": 3,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 77.16,
+          "price_man": 8746,
+          "tsubo_price_man": 377.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-19T15:00:25.494336"
+  },
+  "セントラルレジデンス西早稲田4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/536706.html",
+      "deviation_score": 43,
+      "shinchiku_history_count": 43,
+      "chuko_history_count": 40,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 60.31,
+          "price_man": 6663,
+          "tsubo_price_man": 365.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-19T15:00:34.511759"
+  },
+  "セントラルレジデンス西早稲田": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/536706.html",
+      "deviation_score": 43,
+      "shinchiku_history_count": 43,
+      "chuko_history_count": 40,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 60.31,
+          "price_man": 6663,
+          "tsubo_price_man": 365.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-19T15:00:34.511759"
   }
 }
