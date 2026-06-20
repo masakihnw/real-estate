@@ -25185,5 +25185,27 @@
       ]
     },
     "cached_at": "2026-06-20T09:41:13.682113"
+  },
+  "デュフレベース成城": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/602132.html",
+      "deviation_score": 14,
+      "estimated_price_man": 15746,
+      "estimated_tsubo_price_man": 357,
+      "estimated_m2_price_man": 108,
+      "shinchiku_history_count": 14,
+      "chuko_history_count": 38,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 99.5,
+          "price_man": 10180,
+          "tsubo_price_man": 340.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-20T12:10:06.520002"
   }
 }
