@@ -31,6 +31,13 @@ _KNOWN_NAME_TYPOS: list[tuple[str, str]] = [
     ("フォレスコート", "フォレストコート"),
 ]
 
+# 英語表記↔日本語表記が割れる著名物件の正準名エイリアス（normalized 形の完全一致で統一）。
+# 一般のローマ字↔カタカナ音訳は機械的に不可能なため、重複検出済みの建物のみ手動登録する。
+# 例: 「THE TOYOSU TOWER」(id=6823/174639/220938) と「ザ豊洲タワー」(id=192096) の分裂を吸収。
+_KNOWN_NAME_ALIASES: dict[str, str] = {
+    "THETOYOSUTOWER": "ザ豊洲タワー",
+}
+
 _DEVELOPER_PREFIXES = (
     "三井不動産レジデンシャル", "三井不動産", "三井",
     "野村不動産", "野村",
@@ -173,6 +180,9 @@ def normalize_listing_name(name: str) -> str:
             if s.startswith(prefix):
                 s = s[len(prefix):]
                 break
+    # 著名物件の英語↔日本語 正準名エイリアス（完全一致で統一）
+    if s in _KNOWN_NAME_ALIASES:
+        s = _KNOWN_NAME_ALIASES[s]
     return s
 
 
