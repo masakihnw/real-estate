@@ -9627,24 +9627,24 @@
   "パークシティ高田馬場": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/2087280.html",
-      "deviation_score": 0,
-      "estimated_price_man": 17895,
-      "estimated_tsubo_price_man": 740,
-      "estimated_m2_price_man": 224,
-      "shinchiku_history_count": 0,
-      "chuko_history_count": 383,
+      "deviation_score": 32,
+      "estimated_price_man": 14186,
+      "estimated_tsubo_price_man": 745,
+      "estimated_m2_price_man": 226,
+      "shinchiku_history_count": 321,
+      "chuko_history_count": 392,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 60.53,
-          "price_man": 14779,
+          "area_m2": 60.52,
+          "price_man": 14768,
           "tsubo_price_man": 799.0
         }
       ]
     },
-    "cached_at": "2026-06-07T09:37:56.628697"
+    "cached_at": "2026-06-21T10:33:49.575248"
   },
   "リムテラス早稲田夏目坂": {
     "data": {
@@ -22361,24 +22361,24 @@
   "パークシティ高田馬場6階": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/2087280.html",
-      "deviation_score": 0,
-      "estimated_price_man": 17895,
-      "estimated_tsubo_price_man": 740,
-      "estimated_m2_price_man": 224,
-      "shinchiku_history_count": 0,
-      "chuko_history_count": 383,
+      "deviation_score": 32,
+      "estimated_price_man": 14186,
+      "estimated_tsubo_price_man": 745,
+      "estimated_m2_price_man": 226,
+      "shinchiku_history_count": 321,
+      "chuko_history_count": 392,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 60.53,
-          "price_man": 14779,
+          "area_m2": 60.52,
+          "price_man": 14768,
           "tsubo_price_man": 799.0
         }
       ]
     },
-    "cached_at": "2026-06-07T09:37:56.628697"
+    "cached_at": "2026-06-21T10:33:49.575248"
   },
   "ルピナス台東レジデンス秋葉原利用可/新御徒町まで6...": {
     "data": null,
@@ -25251,5 +25251,112 @@
       ]
     },
     "cached_at": "2026-06-21T05:03:14.894349"
+  },
+  "リーデンスタワー21階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/180477.html",
+      "deviation_score": 0,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 1,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 30.0,
+          "price_man": 2480,
+          "tsubo_price_man": 274.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-10T17:24:58.090620"
+  },
+  "グランエスタ7階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17537.html",
+      "deviation_score": 67,
+      "estimated_price_man": 9906,
+      "estimated_tsubo_price_man": 449,
+      "estimated_m2_price_man": 136,
+      "shinchiku_history_count": 671,
+      "chuko_history_count": 264,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 70.81,
+          "price_man": 5645,
+          "tsubo_price_man": 265.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-11T17:58:53.077659"
+  },
+  "レーベンリヴァーレ浅草エヴァ―プライド": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/534515.html",
+      "deviation_score": 0,
+      "estimated_price_man": 10414,
+      "estimated_tsubo_price_man": 514,
+      "estimated_m2_price_man": 156,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 33,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 66.51,
+          "price_man": 7610,
+          "tsubo_price_man": 380.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-21T10:33:59.788994"
+  },
+  "アスコットパーク日本橋浜町公園4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/37251.html",
+      "deviation_score": 59,
+      "estimated_price_man": 8608,
+      "estimated_tsubo_price_man": 633,
+      "estimated_m2_price_man": 192,
+      "shinchiku_history_count": 59,
+      "chuko_history_count": 38,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 54.93,
+          "price_man": 5771,
+          "tsubo_price_man": 348.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-21T10:34:08.348490"
+  },
+  "アスコットパーク日本橋浜町公園": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/37251.html",
+      "deviation_score": 59,
+      "estimated_price_man": 8608,
+      "estimated_tsubo_price_man": 633,
+      "estimated_m2_price_man": 192,
+      "shinchiku_history_count": 59,
+      "chuko_history_count": 38,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 54.93,
+          "price_man": 5771,
+          "tsubo_price_man": 348.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-21T10:34:08.348490"
   }
 }
