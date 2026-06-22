@@ -576,7 +576,9 @@ def _scrape_ward(
     if ward_total_parsed > 0:
         logger.info("livable: %s (a%s) 完了 — %d件パース, %d件通過", ward_name, ward_code, ward_total_parsed, ward_total_passed)
     elif ward_total_parsed == 0 and p > 1:
-        logger.warning("livable: %s (a%s) 全ページでパース0件 — bot検出またはHTML構造変更の可能性", ward_name, ward_code)
+        logger.warning(
+            "livable: %s (a%s) 全ページでパース0件 — IP/botブロック または HTML構造変更の可能性"
+            "（要IPレベル確認）", ward_name, ward_code)
 
     return results
 

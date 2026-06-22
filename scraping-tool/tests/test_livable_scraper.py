@@ -255,3 +255,32 @@ class TestScrapeWardFinishReasons:
         entry = scraper_metrics.get_all()["livable"]
         assert entry["finish_reasons"] == {"safety_limit": 1}
         scraper_metrics.reset()
+
+
+class TestParseListHtmlEmptyWarning:
+    """カード0件時の警告が IPブロックを『構造変更』と断定しないことの回帰テスト。"""
+
+    def test_blocked_page_warning_is_classified_not_structure_change(self, caplog):
+        import logging
+        from livable_scraper import parse_list_html
+        # 正常サイズ・正規 title だがカード0件（GHA IPブロック相当）
+        html = (
+            "<html><head><title>中央区の中古マンション購入｜東急リバブル</title></head>"
+            "<body>" + ("x" * 6000) + "</body></html>"
+        )
+        # realestate ロガーは propagate=False のため caplog ハンドラを直接アタッチする
+        rlog = logging.getLogger("realestate")
+        rlog.addHandler(caplog.handler)
+        old_level = rlog.level
+        rlog.setLevel(logging.WARNING)
+        try:
+            items = parse_list_html(html)
+        finally:
+            rlog.removeHandler(caplog.handler)
+            rlog.setLevel(old_level)
+        assert items == []
+        msg = caplog.text
+        # 旧来の誤断定文言を出さない
+        assert "HTML構造が変わった可能性があります" not in msg
+        # 分類カテゴリを含む正確な診断を出す
+        assert "blocked_or_changed" in msg

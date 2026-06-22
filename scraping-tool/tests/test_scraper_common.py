@@ -164,3 +164,9 @@ def test_classify_unexpected_when_no_title_even_if_large():
 def test_classify_does_not_assert_structure_change_for_blocked():
     # 回帰防止: 正常応答×カード0件を "structure_change" と断定しない
     assert classify_empty_list_page(_VALID_LIST_HTML) != "structure_change"
+
+
+def test_classify_empty_title_is_unexpected_not_blocked():
+    # 空タイトル(<title></title>)は大サイズでも valid page とみなさない
+    html = "<html><head><title></title></head><body>" + ("z" * 6000) + "</body></html>"
+    assert classify_empty_list_page(html) == "unexpected"

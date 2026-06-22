@@ -114,9 +114,9 @@ def is_waf_challenge(html: str) -> bool:
     return False
 
 
-# 「正常応答に見えるのにカード抽出0件」の最小ページサイズ（バイト）。
-# これ未満は短い/エラー/チャレンジ応答とみなす。
-_VALID_PAGE_MIN_BYTES = 5000
+# 「正常応答に見えるのにカード抽出0件」とみなす最小ページ長（len(html)=文字数。
+# 厳密なバイト数ではない）。これ未満は短い/エラー/チャレンジ応答とみなす。
+_VALID_PAGE_MIN_LEN = 5000
 
 
 def classify_empty_list_page(html: str) -> str:
@@ -137,7 +137,7 @@ def classify_empty_list_page(html: str) -> str:
     """
     if is_waf_challenge(html):
         return "waf_challenge"
-    if len(html) >= _VALID_PAGE_MIN_BYTES and _extract_title(html) != "(no title)":
+    if len(html) >= _VALID_PAGE_MIN_LEN and _extract_title(html).strip() not in ("", "(no title)"):
         return "blocked_or_changed"
     return "unexpected"
 
