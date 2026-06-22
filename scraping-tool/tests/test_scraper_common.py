@@ -130,3 +130,43 @@ def test_empty_parse_guard_rejects_invalid_tolerance():
     import pytest
     with pytest.raises(ValueError):
         EmptyParseGuard(0)
+
+
+# ──────────────── classify_empty_list_page（パース0件の応答分類）────────────────
+
+from scraper_common import classify_empty_list_page  # noqa: E402
+
+_VALID_LIST_HTML = (
+    "<html><head><title>中野区の中古マンション購入｜東急リバブル</title></head>"
+    "<body>" + ("x" * 6000) + "</body></html>"
+)
+
+
+def test_classify_waf_challenge():
+    html = "<html>" + "gokuProps" + "</html>"  # 5000B未満＋WAFマーカー
+    assert classify_empty_list_page(html) == "waf_challenge"
+
+
+def test_classify_blocked_or_changed_for_valid_looking_page():
+    # 正常サイズ・正規 title なのにカード0件 → IPブロック/構造変更（断定しない）
+    assert classify_empty_list_page(_VALID_LIST_HTML) == "blocked_or_changed"
+
+
+def test_classify_unexpected_for_small_page():
+    assert classify_empty_list_page("<html><body>oops</body></html>") == "unexpected"
+
+
+def test_classify_unexpected_when_no_title_even_if_large():
+    html = "<html><body>" + ("y" * 6000) + "</body></html>"  # title 無し
+    assert classify_empty_list_page(html) == "unexpected"
+
+
+def test_classify_does_not_assert_structure_change_for_blocked():
+    # 回帰防止: 正常応答×カード0件を "structure_change" と断定しない
+    assert classify_empty_list_page(_VALID_LIST_HTML) != "structure_change"
+
+
+def test_classify_empty_title_is_unexpected_not_blocked():
+    # 空タイトル(<title></title>)は大サイズでも valid page とみなさない
+    html = "<html><head><title></title></head><body>" + ("z" * 6000) + "</body></html>"
+    assert classify_empty_list_page(html) == "unexpected"

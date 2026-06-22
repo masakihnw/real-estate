@@ -200,4 +200,12 @@ def source_scan_truncated(source: str, metrics_data: dict | None = None) -> dict
         return {}
     entry = (data.get("metrics") or {}).get(source) or {}
     reasons = entry.get("finish_reasons") or {}
-    return {r: int(n) for r, n in reasons.items() if r in TRUNCATED_FINISH_REASONS and n}
+    truncated = {r: int(n) for r, n in reasons.items()
+                 if r in TRUNCATED_FINISH_REASONS and n}
+    # フェイルクローズ: 走った形跡があるのに1件もパースできなかったラン
+    # （媒体全損＝全区 bot/IPブロック等。各区は EMPTY_PARSE_TOLERANCE 到達で
+    # finish_reason="completed" になり打ち切り扱いされないが、全損は異常）は、
+    # 未取得を「掲載終了」と誤判定しないよう打ち切り扱いにして miss 加算をスキップさせる。
+    if entry.get("parsed", 0) == 0 and _has_activity(entry):
+        truncated = {**truncated, "media_loss": 1}
+    return truncated

@@ -215,3 +215,35 @@ class TestSourceScanTruncated:
         target.write_text("{not json")
         loaded = scraper_metrics.load(target)
         assert loaded == {"metrics": {}, "alerts": []}
+
+
+class TestMediaLossTruncationFailsafe:
+    """媒体全損（parsed=0＋稼働形跡）を打ち切り扱いにして掲載終了をスキップさせる。"""
+
+    def _fresh(self, entry: dict) -> dict:
+        from datetime import datetime, timezone
+        return {
+            "metrics": {"livable": entry},
+            "alerts": [],
+            "saved_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+    def test_media_loss_marked_truncated(self):
+        # 全区 finish_reason=completed（正常扱い）でも parsed=0 なら打ち切り扱い
+        data = self._fresh({"parsed": 0, "empty_pages": 46, "finish_reasons": {"completed": 23}})
+        result = scraper_metrics.source_scan_truncated("livable", data)
+        assert result.get("media_loss") == 1
+
+    def test_normal_run_with_listings_not_media_loss(self):
+        data = self._fresh({"parsed": 265, "finish_reasons": {"completed": 23}})
+        assert "media_loss" not in scraper_metrics.source_scan_truncated("livable", data)
+
+    def test_no_activity_not_media_loss(self):
+        # 一度も走っていない（形跡なし）ソースは媒体全損ではない
+        data = self._fresh({"parsed": 0, "finish_reasons": {}})
+        assert scraper_metrics.source_scan_truncated("livable", data) == {}
+
+    def test_media_loss_combines_with_real_truncation(self):
+        data = self._fresh({"parsed": 0, "finish_reasons": {"timeout": 1}})
+        result = scraper_metrics.source_scan_truncated("livable", data)
+        assert result.get("timeout") == 1 and result.get("media_loss") == 1
