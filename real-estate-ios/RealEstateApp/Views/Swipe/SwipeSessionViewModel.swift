@@ -117,22 +117,37 @@ final class SwipeSessionViewModel {
         }
     }
 
-    /// prefetchEnrichment 完了後に呼ぶ。外観写真+間取り図がない物件を除外する。
+    /// prefetchEnrichment 完了後に呼ぶ。外観写真+間取り図（実取得した実画像）がない物件を除外する。
     /// loadCards() が先に呼ばれて currentIndex/swipeResults がリセット済みであることを前提とする。
+    /// enrichment 全件取得後の「厳密版」デッキ確定に使う。
     func filterCardsWithoutImages() {
+        applyImageFilterAndDedup(keep: { $0.hasSwipeableImages }, label: "strict")
+    }
+
+    /// 起動直後・プリフェッチ途中に呼ぶ「楽観版」デッキ構築。
+    /// `countsAsSwipeableForBadge` で絞ることで、未取得物件はサーバーフラグで楽観表示し、
+    /// 取得済み物件は実画像で厳密判定する（自己調整）。これにより enrichment 全件取得を
+    /// 待たずにデッキを即表示でき、起動ローディングを短縮する。全件取得後は
+    /// `filterCardsWithoutImages()`（厳密）と同一結果に収束する（=件数バッジと一致）。
+    func filterCardsForDeck() {
+        applyImageFilterAndDedup(keep: { $0.countsAsSwipeableForBadge }, label: "optimistic")
+    }
+
+    /// 画像述語で剪定し、同一建物の重複を1枚に集約する共通処理。
+    /// 同一建物の重複（同名・別住戸／別ソースの住所粒度違いなど）を1枚に集約する。
+    /// 画像フィルタの後に dedup することで、画像のある住戸を代表として残す
+    /// （cards は loadCards で listingScore 降順のため、先頭＝最良スコアが残る）。
+    /// 注: Brillia↔ブリリア のような表記揺れは buildingGroupKey が別建物扱いのため
+    ///     ここでは集約されない（名寄せ/正規化の別対応が必要）。
+    private func applyImageFilterAndDedup(keep: (Listing) -> Bool, label: String) {
         let beforeImages = cards.count
-        cards = cards.filter { $0.hasSwipeableImages }
+        cards = cards.filter(keep)
         let afterImages = cards.count
-        // 同一建物の重複（同名・別住戸／別ソースの住所粒度違いなど）を1枚に集約する。
-        // 画像フィルタの後に行うことで、画像のある住戸を代表として残す
-        // （cards は loadCards で listingScore 降順のため、先頭＝最良スコアが残る）。
-        // 注: Brillia↔ブリリア のような表記揺れは buildingGroupKey が別建物扱いのため
-        //     ここでは集約されない（名寄せ/正規化の別対応が必要）。
         var seenBuildings = Set<String>()
         cards = cards.filter { seenBuildings.insert($0.buildingGroupKey).inserted }
         let afterDedup = cards.count
         if afterDedup < beforeImages {
-            logger.info("Pruned cards: \(beforeImages - afterImages) no-image, \(afterImages - afterDedup) duplicate building, \(afterDedup) remaining")
+            logger.info("Pruned cards (\(label, privacy: .public)): \(beforeImages - afterImages) no-image, \(afterImages - afterDedup) duplicate building, \(afterDedup) remaining")
         }
     }
 

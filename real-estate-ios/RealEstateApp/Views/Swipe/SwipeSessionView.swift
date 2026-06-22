@@ -14,6 +14,8 @@ struct SwipeSessionView: View {
     @State private var selectedListing: Listing?
     @State private var isLoadingEnrichment = true
     @State private var noEligibleListings = false
+    /// 一度でもスワイプ確定したか。背景プリフェッチ完了時の厳密版デッキ再構築の抑止に使う。
+    @State private var userDidSwipe = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.modelContext) private var modelContext
 
@@ -73,13 +75,26 @@ struct SwipeSessionView: View {
         }
         .background(Color(.systemGroupedBackground))
         .task {
-            viewModel.loadCards(from: listings)
-            await prefetchEnrichment()
-            viewModel.filterCardsWithoutImages()
-            // 画像剪定後の実デッキで保存済み進捗を復元（順序を確定してから空判定）
-            viewModel.restoreDeckOrder()
+            // 1) 楽観デッキを即構築（ネットワーク無し）。未取得物件はサーバーフラグで楽観表示する。
+            buildDeck(strict: false)
+            // 2) 先頭ウィンドウ（表示順の先頭数枚）だけ enrichment を取得して待つ。
+            //    全件待ちにしないことで起動ローディングを大幅に短縮する。
+            await prefetchEnrichment(maxCount: Self.leadingPrefetchCount)
+            // 3) 先頭が取得できた状態で楽観デッキを再構築（サーバー虚偽の先頭カードを落とす）。
+            //    まだ未取得の後続はサーバーフラグで楽観表示のまま残る。
+            //    ここはまだ isLoadingEnrichment == true でユーザーは操作できない＝currentIndex==0 が保証される。
+            buildDeck(strict: false)
             noEligibleListings = viewModel.cards.isEmpty
             isLoadingEnrichment = false
+            // 4) 残りの enrichment は同一 .task 内で継続取得（画面離脱で自動キャンセルされる）。
+            await prefetchEnrichment()
+            // 5) 全件取得後、ユーザーが一度もスワイプしていないときだけ厳密版デッキへ一度だけ確定する。
+            //    userDidSwipe で「操作済み」を判定し、undo で currentIndex==0 に戻っても再構築しない。
+            //    ドラッグ中・exit アニメ中も差し替えない（見えているカードを差し替えない不変条件）。
+            if !userDidSwipe, dragOffset == .zero, !isExiting {
+                buildDeck(strict: true)
+                noEligibleListings = viewModel.cards.isEmpty
+            }
         }
         .sheet(item: $selectedListing) { listing in
             ListingDetailView(listing: listing)
@@ -236,6 +251,9 @@ struct SwipeSessionView: View {
 
     private func commitWithAnimation(_ decision: SwipeDecision, translation: CGSize) {
         isExiting = true
+        // 一度でもスワイプを確定したら、背景プリフェッチ完了時の厳密版デッキ再構築を抑止する。
+        // undo で currentIndex==0 に戻っても再構築しない（操作済みデッキを差し替えないため）。
+        userDidSwipe = true
         // ボタン・ジェスチャ両経路で確定時に1回だけ発火（SwipeActionBar 側の直書きは廃止）
         HapticManager.impact(decision == .nope ? .medium : .light)
         // exit アニメ中にスタンプを確実に表示（skip の「あとで」は dragOffset 駆動では出ないため）
@@ -308,13 +326,40 @@ struct SwipeSessionView: View {
         .padding(.top, 12)
     }
 
+    // MARK: - Deck Build
+
+    /// 起動ローディング中に await でプリフェッチする先頭枚数。
+    /// 表示順の先頭をこの枚数だけ取得すればデッキを出せるので、残りは背景取得に回す。
+    private static let leadingPrefetchCount = 8
+
+    /// デッキを構築する。`loadCards`(eligible 抽出+スコア降順) → 画像フィルタ → 並び順復元 の順。
+    /// - strict: true なら実画像(`hasSwipeableImages`)で厳密剪定、false なら
+    ///   `countsAsSwipeableForBadge` で楽観剪定（未取得はサーバーフラグで表示）。
+    /// loadCards が currentIndex/swipeResults をリセットするため、ユーザー未操作（currentIndex==0）
+    /// の局面でのみ呼ぶこと。.task のフローはこれを保証している。
+    private func buildDeck(strict: Bool) {
+        viewModel.loadCards(from: listings)
+        if strict {
+            viewModel.filterCardsWithoutImages()
+        } else {
+            viewModel.filterCardsForDeck()
+        }
+        viewModel.restoreDeckOrder()
+    }
+
     // MARK: - Enrichment Prefetch
 
-    private func prefetchEnrichment() async {
+    /// enrichment を上限付き並列で取得する。
+    /// - maxCount: 「表示順に並んだ未取得物件」の先頭何件までを取得するか（既取得は対象外）。
+    ///   nil なら未取得の残り全件。起動時は先頭ウィンドウのみ await し、残りは背景で取得する。
+    ///   既取得物件は listingsNeedingEnrichmentFetch で除外されるため、prefix はデッキ枚数では
+    ///   なく「未取得件数」基準。デッキ先頭の未取得を優先的に埋めるのが狙い。
+    private func prefetchEnrichment(maxCount: Int? = nil) async {
         let staleThreshold = Calendar.current.date(byAdding: .hour, value: -6, to: Date()) ?? .distantPast
-        let needsFetch = SwipeSessionViewModel.listingsNeedingEnrichmentFetch(
+        let allNeedsFetch = SwipeSessionViewModel.listingsNeedingEnrichmentFetch(
             viewModel.cards, staleThreshold: staleThreshold
         )
+        let needsFetch = maxCount.map { Array(allNeedsFetch.prefix($0)) } ?? allNeedsFetch
         guard !needsFetch.isEmpty else { return }
 
         // ネットワーク取得（重い get_listing_detail）を上限付きで並列実行する。
@@ -344,6 +389,11 @@ struct SwipeSessionView: View {
                 addTask(keys[nextIndex]); nextIndex += 1
             }
             for await (key, dto, succeeded) in group {
+                // 画面離脱でキャンセル済みなら、以降の反映・追加投入を行わず即座に打ち切る。
+                if Task.isCancelled {
+                    group.cancelAll()
+                    break
+                }
                 if succeeded, let listing = byKey[key] {
                     if let dto, let incoming = Listing.from(dto: dto, fetchedAt: Date()) {
                         SupabaseListingStore.updateEnrichmentFields(listing, from: incoming)
@@ -359,6 +409,7 @@ struct SwipeSessionView: View {
                 }
             }
         }
+        // 反映済みフィールドはここまでに mutate 済み。save は冪等なのでキャンセル時も整合する。
         if didChange { try? modelContext.save() }
     }
 }

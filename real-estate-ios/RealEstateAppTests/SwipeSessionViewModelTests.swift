@@ -433,6 +433,108 @@ struct SwipeSessionViewModelTests {
         #expect(vm.isComplete)
     }
 
+    // MARK: - filterCardsForDeck（楽観版：起動ローディング短縮用）
+
+    @Test("filterCardsForDeck: 未取得でもサーバーフラグ両方ありなら楽観的に残す")
+    @MainActor
+    func filterCardsForDeckKeepsUnfetchedWithServerFlags() {
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
+        // enrichmentFetchedAt == nil（未取得）だが実画像JSONは無い。サーバーフラグで楽観表示。
+        let unfetched = makeListing(name: "未取得サーバーフラグあり", hasFloorPlanImagesServer: true, hasPropertyImagesServer: true)
+        vm.setCardsForTesting([unfetched])
+        vm.filterCardsForDeck()
+        #expect(vm.cards.count == 1, "未取得はサーバーフラグで楽観的にデッキへ残す（全件取得を待たないため）")
+    }
+
+    @Test("filterCardsForDeck: 未取得でサーバーフラグ欠落なら除外")
+    @MainActor
+    func filterCardsForDeckDropsUnfetchedWithoutServerFlags() {
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
+        let noFlags = makeListing(name: "未取得フラグなし")
+        vm.setCardsForTesting([noFlags])
+        vm.filterCardsForDeck()
+        #expect(vm.cards.isEmpty)
+    }
+
+    @Test("filterCardsForDeck: 取得済みで実画像なし（サーバー虚偽）は除外される")
+    @MainActor
+    func filterCardsForDeckDropsFetchedServerLie() {
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
+        // サーバーは画像ありと言うが、取得後に実画像が無い物件。取得済みなら厳密判定で落とす。
+        let serverLie = makeListing(name: "取得済み実画像なし", hasFloorPlanImagesServer: true, hasPropertyImagesServer: true)
+        serverLie.enrichmentFetchedAt = Date()
+        vm.setCardsForTesting([serverLie])
+        vm.filterCardsForDeck()
+        #expect(vm.cards.isEmpty, "取得済みは実画像で厳密判定し、サーバー虚偽を落とす")
+    }
+
+    @Test("filterCardsForDeck: 取得済みで実画像ありは残す")
+    @MainActor
+    func filterCardsForDeckKeepsFetchedWithImages() {
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
+        let fetched = makeListing(
+            name: "取得済み実画像あり",
+            suumoImagesJSON: #"[{"url":"https://e.com/i.jpg","label":"外観"}]"#,
+            floorPlanImagesJSON: #"["https://e.com/f.jpg"]"#,
+            hasFloorPlanImagesServer: true,
+            hasPropertyImagesServer: true
+        )
+        fetched.enrichmentFetchedAt = Date()
+        vm.setCardsForTesting([fetched])
+        vm.filterCardsForDeck()
+        #expect(vm.cards.count == 1)
+    }
+
+    @Test("filterCardsForDeck: 同一建物の重複は楽観段階でも1枚に集約する")
+    @MainActor
+    func filterCardsForDeckDeduplicatesSameBuilding() {
+        let vm = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
+        let makeUnit: (String) -> Listing = { addr in
+            Listing(
+                url: "https://test.example.com/\(UUID().uuidString)",
+                name: "楽観重複ビル",
+                address: addr,
+                addedAt: Date(),
+                propertyType: "chuko",
+                hasFloorPlanImagesServer: true,
+                hasPropertyImagesServer: true
+            )
+        }
+        let a = makeUnit("品川区東品川4丁目13")
+        let b = makeUnit("品川区東品川4")
+        #expect(a.buildingGroupKey == b.buildingGroupKey)
+        vm.setCardsForTesting([a, b])
+        vm.filterCardsForDeck()
+        #expect(vm.cards.count == 1, "未取得・サーバーフラグありの同一建物2件は1枚に集約")
+    }
+
+    @Test("filterCardsForDeck は全件取得後 filterCardsWithoutImages（厳密）と同一結果に収束する")
+    @MainActor
+    func filterCardsForDeckConvergesToStrictAfterFetch() {
+        // 全物件が取得済み（enrichmentFetchedAt != nil）になると、countsAsSwipeableForBadge は
+        // hasSwipeableImages と等価になる＝楽観版と厳密版でデッキが一致する。
+        let withImages = makeListing(
+            name: "実画像あり",
+            suumoImagesJSON: #"[{"url":"https://e.com/i.jpg","label":"外観"}]"#,
+            floorPlanImagesJSON: #"["https://e.com/f.jpg"]"#,
+            hasFloorPlanImagesServer: true,
+            hasPropertyImagesServer: true
+        )
+        let serverLie = makeListing(name: "サーバー虚偽", hasFloorPlanImagesServer: true, hasPropertyImagesServer: true)
+        [withImages, serverLie].forEach { $0.enrichmentFetchedAt = Date() }
+
+        let vmOptimistic = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
+        vmOptimistic.setCardsForTesting([withImages, serverLie])
+        vmOptimistic.filterCardsForDeck()
+
+        let vmStrict = SwipeSessionViewModel(progressStore: Self.isolatedStore(), preferenceStore: MockPreferenceStore())
+        vmStrict.setCardsForTesting([withImages, serverLie])
+        vmStrict.filterCardsWithoutImages()
+
+        #expect(vmOptimistic.cards.map(\.url) == vmStrict.cards.map(\.url))
+        #expect(vmOptimistic.cards.count == 1)
+    }
+
     // MARK: - 同一建物の重複排除（buildingGroupKey）
 
     /// 同一建物（同名・同区）の住戸を作る。`makeListing` は名前を一意化するため dedup 検証に使えない。
