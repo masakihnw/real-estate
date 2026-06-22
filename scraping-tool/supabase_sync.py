@@ -402,6 +402,23 @@ def _select_url_survivor(listing_ids: list[int]) -> tuple[int, list[int]]:
     return survivor, excess
 
 
+def _is_identity_key_conflict(exc: Exception) -> bool:
+    """listings.identity_key の一意制約違反(23505)かどうかを判定する。
+
+    identity_key の付け替え UPDATE で、別レコード（別 property_type / 既統合 tombstone /
+    取得後レース）が同じ identity_key を既に保持している場合に Postgres が返す。
+    ネットワーク/RLS/想定外の制約違反まで握り潰さないよう、23505 か
+    listings_identity_key_key に限定して判定する。
+    """
+    code = getattr(exc, "code", None)
+    if code == "23505":
+        return True
+    # code 属性が無い例外（素の Exception 等）向けフォールバック。
+    # 偶発的な "23505" 文字列の誤検知を避けるため制約名で判定する。
+    blob = f"{getattr(exc, 'message', '') or ''} {exc}"
+    return "listings_identity_key_key" in blob
+
+
 def _sync_source_listings(client, listings: list[dict], source: str, property_type: str) -> dict:
     """1ソース分の物件リストを Supabase に同期する。"""
     from report_utils import identity_key_str, normalize_listing_name, _normalize_address_for_key
@@ -472,8 +489,46 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
     # 別キーでの3本目作成を防ぐ。
     _url_claimed: dict[str, tuple[int, str]] = {}
 
-    def _resolve_identity_key(ik: str) -> str:
+    def _resolve_conflict_redirect(conflict_ik: str) -> int | None:
+        """identity_key 付け替えが一意制約に衝突したとき、その ik を現在保持している
+        レコードを DB からグローバルに引き、安全な統合先 active id を返す。
+
+        - 保持者が active（merged_into なし）→ その id（item をそこへ寄せる）。
+        - 保持者が tombstone（merged_into あり）→ チェーンを辿って非 tombstone の id。
+          tombstone 自体は再アクティブ化しない（migration 046 の不変条件を守る）。
+        - 解決不能（保持者消失/循環/欠落）→ None。
+        ローカル all_db_listings は property_type で絞られ衝突相手が見えないため DB を引く。
+        """
+        try:
+            resp = (client.table("listings")
+                    .select("id, merged_into")
+                    .eq("identity_key", conflict_ik).limit(1).execute())
+        except Exception as e:
+            logger.warning("[supabase] 衝突相手の lookup 失敗 (ik=%s): %s", conflict_ik, e)
+            return None
+        rows = resp.data or []
+        if not rows:
+            return None
+        cur_id = rows[0]["id"]
+        merged = rows[0].get("merged_into")
+        seen: set[int] = set()
+        for _ in range(6):  # merged_into チェーンの上限ホップ（循環の保険）
+            if merged is None:
+                return cur_id
+            if merged in seen:
+                return None
+            seen.add(merged)
+            r = (client.table("listings")
+                 .select("id, merged_into").eq("id", merged).limit(1).execute()).data or []
+            if not r:
+                return None
+            cur_id = r[0]["id"]
+            merged = r[0].get("merged_into")
+        return None
+
+    def _resolve_identity_key(ik: str) -> str | None:
         """新キーが既存DBに無い場合、旧キーや floor=None 版で既存を検索し、あれば更新する。
+        戻り値 None は「identity_key 衝突を安全に解決できず item をスキップすべき」を表す。
         active/inactive 両方を検索し、重複レコードがあれば1つに統合する。
         新形式: 6要素 (name|layout|area|address|built_year|floor)
         旧形式: 7要素 (name|layout|area|address|built_year|station_name|floor)"""
@@ -544,9 +599,35 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         best_key, best_id, _ = candidates[0]
 
         # best を新しい identity_key に更新
-        (client.table("listings")
-         .update({"identity_key": ik}, returning="minimal")
-         .eq("id", best_id).execute())
+        try:
+            (client.table("listings")
+             .update({"identity_key": ik}, returning="minimal")
+             .eq("id", best_id).execute())
+        except Exception as e:
+            if not _is_identity_key_conflict(e):
+                raise
+            # ik を別レコード（別 property_type / tombstone / レース）が既に保持。
+            # best_id を付け替えず、item を既存保持者へリダイレクトして source 全体の
+            # 中断を防ぐ（all-or-nothing 回避）。tombstone は統合先へ解決し再アクティブ化しない。
+            # フォールバックで一致した既存 listing(best_key=best_id) を grace period の
+            # 掲載終了判定から守る（フェイルクローズ。付け替え失敗を理由に既存を消さない）。
+            seen_identity_keys.add(best_key)
+            redirect_id = _resolve_conflict_redirect(ik)
+            if redirect_id is None:
+                # 衝突相手を解決できない（lookup失敗 / dangling / cycle tombstone）。
+                # ここで ik を返すとフェーズ2の upsert が衝突先（tombstone を含む）を
+                # is_active=True で更新＝蘇生させ得るため、item をスキップする
+                # （フェイルクローズ。migration 046 の tombstone 不変条件を守る）。
+                logger.warning(
+                    "[supabase] identity_key 衝突かつ統合先を解決できず item をスキップ "
+                    "(ik=%s, best_id=%d)", ik, best_id)
+                return None
+            logger.warning(
+                "[supabase] identity_key 衝突のため付け替えスキップ "
+                "(ik=%s, best_id=%d) — 既存 id=%d へリダイレクト",
+                ik, best_id, redirect_id)
+            _fuzzy_redirect_target.append(redirect_id)
+            return ik
         existing_listings.pop(best_key, None)
         existing_listings[ik] = best_id
         all_db_listings.pop(best_key, None)
@@ -620,9 +701,27 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         # survivor を新しい identity_key に付け替え（_resolve_identity_key 末尾と同一手順）
         survivor_old_ik = id_to_ik.get(survivor_id)
         if survivor_old_ik != new_ik:
-            (client.table("listings")
-             .update({"identity_key": new_ik}, returning="minimal")
-             .eq("id", survivor_id).execute())
+            try:
+                (client.table("listings")
+                 .update({"identity_key": new_ik}, returning="minimal")
+                 .eq("id", survivor_id).execute())
+            except Exception as e:
+                if not _is_identity_key_conflict(e):
+                    raise
+                # new_ik を別レコードが既に保持。URL 一致では item は survivor（同一URL=同一住戸）
+                # に属するため、衝突相手へリダイレクトせず survivor を既存 ik のまま維持して
+                # URL 収束だけ行い、source 全体の中断を防ぐ（付け替えは諦める）。
+                # survivor は :600 で tombstone 除外済みのため、現行 ik での upsert は蘇生を招かない。
+                # canonical_ik は survivor の現行 ik。
+                logger.warning(
+                    "[supabase] identity_key 衝突のため URL survivor 付け替えスキップ "
+                    "(new_ik=%s, survivor_id=%d) — 既存 ik=%s を維持",
+                    new_ik, survivor_id, survivor_old_ik)
+                kept = [survivor_id] + [lid for lid in candidates if lid not in mergeable]
+                url_index[url] = sorted(set(kept))
+                canonical_ik = id_to_ik.get(survivor_id, new_ik)
+                _url_claimed[url] = (survivor_id, canonical_ik)
+                return survivor_id, canonical_ik
             if survivor_old_ik:
                 existing_listings.pop(survivor_old_ik, None)
                 all_db_listings.pop(survivor_old_ik, None)
@@ -671,6 +770,9 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
                 continue
 
             ik = _resolve_identity_key(ik)
+            if ik is None:
+                # 衝突を安全に解決できず（蘇生回避のため）スキップ。次ラン以降で再試行。
+                continue
 
         # fuzzy 解決の結果が「tombstone のみ一致」だった場合も統合先へリダイレクト
         if _fuzzy_redirect_target:
