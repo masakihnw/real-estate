@@ -119,6 +119,21 @@ def test_normalize_name_strips_promo_between_markers():
     assert normalize_listing_name("パークハウス練馬 ※即入居可") == "パークハウス練馬"
 
 
+def test_normalize_name_known_alias_toyosu():
+    """英語表記の THE TOYOSU TOWER は正準名「ザ豊洲タワー」に統一される。
+
+    実データ id=6823/174639/220938（英語）と id=192096（日本語）の分裂吸収。
+    """
+    # 全角ローマ字
+    assert normalize_listing_name("ＴＨＥ　ＴＯＹＯＳＵ　ＴＯＷＥＲ") == "ザ豊洲タワー"
+    # 半角 + 括弧内の日本語別名（括弧は除去され、エイリアスで復元）
+    assert normalize_listing_name("THE TOYOSU TOWER (ザ・豊洲タワー)") == "ザ豊洲タワー"
+    # 階数付き
+    assert normalize_listing_name("THE TOYOSU TOWER 15階") == "ザ豊洲タワー"
+    # 既に日本語表記ならそのまま
+    assert normalize_listing_name("ザ豊洲タワー") == "ザ豊洲タワー"
+
+
 # --- clean_listing_name ---
 
 
