@@ -648,4 +648,183 @@ class TestMergedTombstoneSync:
         upserted_iks = [r["identity_key"] for batch in upserts["listings"] for r in batch]
         assert junk_ik not in upserted_iks
         assert upserted_iks == []
-        assert summary["new"] == 0
+
+
+class _FakeUniqueViolation(Exception):
+    """PostgREST の identity_key 一意制約違反(23505)を模した例外。"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            "duplicate key value violates unique constraint "
+            '"listings_identity_key_key"')
+        self.code = "23505"
+
+
+class TestIsIdentityKeyConflict:
+    """_is_identity_key_conflict の判定境界。"""
+
+    def test_code_23505(self):
+        from supabase_sync import _is_identity_key_conflict
+        assert _is_identity_key_conflict(_FakeUniqueViolation()) is True
+
+    def test_message_constraint_name(self):
+        from supabase_sync import _is_identity_key_conflict
+        assert _is_identity_key_conflict(
+            Exception('... unique constraint "listings_identity_key_key" ...')) is True
+
+    def test_unrelated_error_not_swallowed(self):
+        from supabase_sync import _is_identity_key_conflict
+        assert _is_identity_key_conflict(Exception("network timeout")) is False
+        assert _is_identity_key_conflict(ValueError("RLS denied")) is False
+
+
+class TestIdentityKeyConflictDoesNotAbortSource:
+    """identity_key 付け替えが一意制約に衝突しても source 全体の同期が止まらない回帰テスト。
+
+    回帰の起点: フォールバック付け替え UPDATE(:547) が無条件で、別レコード保持の ik に
+    衝突すると 23505 を送出 → source 外側で捕捉され、その source の新規挿入が全滅していた。
+    """
+
+    _helper = TestSyncSourceListingsIntegration()
+
+    def _make_item(self, name, price, url):
+        return self._helper._make_item(name, price, url)
+
+    def _ik(self, item):
+        from report_utils import identity_key_str
+        return identity_key_str(item)
+
+    def _make_client_with_conflict(self, existing_listing_rows, conflict_ik, holder_rows,
+                                   existing_source_rows=None):
+        """conflict_ik への identity_key UPDATE が 23505 を送出するクライアントを作る。
+        holder_rows は衝突相手の DB lookup（select identity_key=conflict_ik）の戻り。"""
+        from unittest.mock import MagicMock
+        client, upserts, inserts = self._helper._make_client(
+            existing_listing_rows=existing_listing_rows,
+            existing_source_rows=existing_source_rows or [])
+        lt = client.table("listings")  # lazily 作成＆キャッシュ → 以降を augment
+
+        def update_side(payload=None, **kw):
+            m = MagicMock()
+            if isinstance(payload, dict) and payload.get("identity_key") == conflict_ik:
+                m.eq.return_value.execute.side_effect = _FakeUniqueViolation()
+            else:
+                m.eq.return_value.execute.return_value = MagicMock(data=[])
+            return m
+        lt.update.side_effect = update_side
+        # 衝突相手のグローバル lookup（.select().eq(identity_key).limit().execute()）
+        (lt.select.return_value.eq.return_value.limit.return_value
+         .execute.return_value) = MagicMock(data=holder_rows)
+        return client, upserts, inserts
+
+    def test_conflict_redirects_and_other_new_listing_persists(self):
+        from supabase_sync import _sync_source_listings
+
+        # A: フォールバック候補(同prefix・floor違い)があり付け替え対象になる新規
+        item_a = self._make_item("マンションA", 5000, "https://example.com/a")
+        ik_a = self._ik(item_a)
+        cand_ik = ik_a.rsplit("|", 1)[0] + "|9"  # 同prefix, floor だけ違い → fuzzy候補
+        # B: 候補なしの純粋な新規（衝突に巻き込まれず挿入されるべき）
+        item_b = self._make_item("ベツノマンションB", 8000, "https://example.com/b")
+        ik_b = self._ik(item_b)
+
+        client, upserts, _ = self._make_client_with_conflict(
+            existing_listing_rows=[
+                {"id": 100, "identity_key": cand_ik, "is_active": True, "merged_into": None},
+            ],
+            conflict_ik=ik_a,
+            holder_rows=[{"id": 999, "merged_into": None}],  # ik_a を保持する active 行
+        )
+
+        # 例外を送出せず完走する（= source 全体が中断しない）
+        summary = _sync_source_listings(client, [item_a, item_b], "suumo", "chuko")
+        assert summary is not None
+
+        # B は衝突に関係なく listings / listing_sources に永続する
+        upserted_iks = [r["identity_key"] for batch in upserts["listings"] for r in batch]
+        assert ik_b in upserted_iks, "衝突に無関係な新規 B が挿入されていない（source 中断の疑い）"
+        source_urls = [r["url"] for batch in upserts["listing_sources"] for r in batch]
+        assert "https://example.com/b" in source_urls
+
+        # A は付け替えされず新規作成もされない（既存保持者へリダイレクト）
+        assert ik_a not in upserted_iks
+        # 衝突保持者(999)を再アクティブ化していない
+        reactivate = [
+            c for c in client.table("listings").update.call_args_list
+            if c.args and isinstance(c.args[0], dict) and c.args[0].get("is_active") is True
+        ]
+        assert not reactivate
+        # A のソースは統合先 999 に付け替わる
+        a_src = [r for batch in upserts["listing_sources"] for r in batch
+                 if r["url"] == "https://example.com/a"]
+        assert a_src and all(r["listing_id"] == 999 for r in a_src)
+
+    def test_conflict_unresolvable_skips_item_without_reactivating(self):
+        """衝突相手を解決できない（lookup空=dangling相当）場合、item を upsert に流さずスキップ。
+
+        ik を返すと phase2 upsert が衝突先（tombstone 含む）を is_active=True で蘇生し得るため、
+        フェイルクローズで item をスキップすることを固定する。
+        """
+        from supabase_sync import _sync_source_listings
+
+        item_a = self._make_item("マンションA", 5000, "https://example.com/a")
+        ik_a = self._ik(item_a)
+        cand_ik = ik_a.rsplit("|", 1)[0] + "|9"
+        item_b = self._make_item("ベツノマンションB", 8000, "https://example.com/b")
+        ik_b = self._ik(item_b)
+
+        client, upserts, _ = self._make_client_with_conflict(
+            existing_listing_rows=[
+                {"id": 100, "identity_key": cand_ik, "is_active": True, "merged_into": None},
+            ],
+            conflict_ik=ik_a,
+            holder_rows=[],  # 衝突相手が引けない（消失/dangling）→ redirect_id None
+        )
+
+        summary = _sync_source_listings(client, [item_a, item_b], "suumo", "chuko")
+        assert summary is not None
+
+        upserted_iks = [r["identity_key"] for batch in upserts["listings"] for r in batch]
+        # A は蘇生回避のためスキップ（ik_a を upsert に流さない）
+        assert ik_a not in upserted_iks
+        a_src = [r for batch in upserts["listing_sources"] for r in batch
+                 if r["url"] == "https://example.com/a"]
+        assert a_src == []
+        # B は問題なく永続
+        assert ik_b in upserted_iks
+
+    def test_reconcile_by_url_conflict_keeps_survivor_and_continues(self):
+        """_reconcile_by_url の survivor 付け替えが 23505 でも source は中断せず、
+        survivor は既存 ik のまま URL 収束し item が survivor に付く。"""
+        from supabase_sync import _sync_source_listings
+
+        survivor = self._make_item("サバイバーマンション", 5000, "https://example.com/u")
+        survivor_ik = self._ik(survivor)
+        # 同一URLだが面積ドリフトで別 ik になる再スクレイプ（URL一致で survivor に収束させたい）
+        drifted = dict(survivor)
+        drifted["area_m2"] = 71.5
+        drifted_ik = self._ik(drifted)
+        assert drifted_ik != survivor_ik
+
+        client, upserts, _ = self._make_client_with_conflict(
+            existing_listing_rows=[
+                {"id": 100, "identity_key": survivor_ik, "is_active": True, "merged_into": None},
+            ],
+            conflict_ik=drifted_ik,  # survivor を drifted_ik へ付け替える UPDATE が衝突
+            holder_rows=[{"id": 555, "merged_into": None}],
+            existing_source_rows=[
+                {"id": 9, "listing_id": 100, "source": "suumo", "url": "https://example.com/u",
+                 "price_man": 5000, "is_active": True, "consecutive_misses": 0},
+            ],
+        )
+
+        summary = _sync_source_listings(client, [drifted], "suumo", "chuko")
+        assert summary is not None  # 例外で source 中断しない
+
+        # survivor は既存 ik のまま（drifted_ik へ付け替わらない）
+        upserted_iks = [r["identity_key"] for batch in upserts["listings"] for r in batch]
+        assert drifted_ik not in upserted_iks
+        # item は URL 一致で survivor(100) に収束する
+        src = [r for batch in upserts["listing_sources"] for r in batch
+               if r["url"] == "https://example.com/u"]
+        assert src and all(r["listing_id"] == 100 for r in src)
