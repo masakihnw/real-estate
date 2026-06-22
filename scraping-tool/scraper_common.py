@@ -114,6 +114,34 @@ def is_waf_challenge(html: str) -> bool:
     return False
 
 
+# 「正常応答に見えるのにカード抽出0件」とみなす最小ページ長（len(html)=文字数。
+# 厳密なバイト数ではない）。これ未満は短い/エラー/チャレンジ応答とみなす。
+_VALID_PAGE_MIN_LEN = 5000
+
+
+def classify_empty_list_page(html: str) -> str:
+    """一覧ページのパース結果が0件だったとき、その応答を分類する（純粋関数）。
+
+    パース0件は「botブロック/IPブロック」「HTML構造変更」「正規の0件」が
+    1ページの応答だけでは判別できない。少なくとも以下は機械的に区別できる:
+
+    - ``waf_challenge``     : WAF の bot チャレンジ応答（＝確実に bot/IP ブロック）。
+    - ``blocked_or_changed``: 通常サイズ・<title> ありの正常に見える応答なのにカードが
+      1枚も抽出できない。IPブロック（カードだけ抜かれた応答）か HTML 構造変更の
+      どちらか。**「HTML構造変更」と断定してはいけない**（過去にIPブロックを構造変更と
+      誤診した）。IPレベルの確認が必要。
+    - ``unexpected``        : 短い/タイトル無しの想定外応答（エラーページ等）。
+
+    注: 「正規の0件」（その条件に物件が無い）は呼び出し側の文脈
+    （23区中古など本来0件があり得ない）で扱う。本関数は応答の形だけを見る。
+    """
+    if is_waf_challenge(html):
+        return "waf_challenge"
+    if len(html) >= _VALID_PAGE_MIN_LEN and _extract_title(html).strip() not in ("", "(no title)"):
+        return "blocked_or_changed"
+    return "unexpected"
+
+
 # ──────────────────────────── デバッグHTMLダンプ ────────────────────────────
 
 DEBUG_DUMP_DIR = Path(__file__).resolve().parent / "data" / "debug_dumps"
