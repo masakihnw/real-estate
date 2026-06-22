@@ -53,6 +53,7 @@ from scraper_common import (
     lower_tier_station_ok,
     is_tokyo_23_by_address,
     get_effective_area_min_m2,
+    classify_empty_list_page,
 )
 
 from logger import get_logger
@@ -385,10 +386,22 @@ def parse_list_html(html: str, base_url: str = BASE_URL) -> list[LivableListing]
         title = soup.find("title")
         title_text = title.get_text(strip=True) if title else "(no title)"
         body_snippet = (soup.get_text()[:200] or "").replace("\n", " ")
+        category = classify_empty_list_page(html)
+        # 「正常応答に見えるのにカード0件」を一律「HTML構造変更」と断定しない
+        # （GHA データセンターIPへの bot 判定でカードだけ抜かれた応答＝IPブロックでも
+        #  同じ症状になり、過去に構造変更と誤診した）。原因は分類して提示する。
+        diag = {
+            "waf_challenge":
+                "WAF/botチャレンジ応答を検出 — bot/IPブロックの可能性大",
+            "blocked_or_changed":
+                "一覧は正常応答だがカード抽出0件 — IP/botブロック または "
+                "HTML構造変更の可能性（要IPレベル確認・住宅IPでの再取得で切り分け）",
+            "unexpected":
+                "想定外の短い/タイトル無し応答 — エラーページ/一時障害の可能性",
+        }[category]
         logger.warning(
-            "livable: セレクタが0件 — HTML構造が変わった可能性があります。"
-            " title=%r, body_snippet=%r",
-            title_text, body_snippet,
+            "livable: 一覧カード0件 [%s] %s (HTML: %dB, title=%r, body=%r)",
+            category, diag, len(html), title_text, body_snippet,
         )
 
     return items
