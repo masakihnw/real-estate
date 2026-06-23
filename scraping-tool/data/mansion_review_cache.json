@@ -25776,5 +25776,135 @@
       ]
     },
     "cached_at": "2026-06-22T12:44:18.992742"
+  },
+  "アドリーム文京動坂": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16216.html",
+      "deviation_score": 30,
+      "estimated_price_man": 7395,
+      "estimated_tsubo_price_man": 437,
+      "estimated_m2_price_man": 133,
+      "shinchiku_history_count": 30,
+      "chuko_history_count": 69,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 60.45,
+          "price_man": 4964,
+          "tsubo_price_man": 286.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-23T04:19:44.317591"
+  },
+  "パームス押上": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/31490.html",
+      "deviation_score": 31,
+      "estimated_price_man": 4859,
+      "estimated_tsubo_price_man": 435,
+      "estimated_m2_price_man": 132,
+      "shinchiku_history_count": 31,
+      "chuko_history_count": 4,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 47.77,
+          "price_man": 4722,
+          "tsubo_price_man": 314.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-23T04:19:52.718884"
+  },
+  "アートコート早稲田戸山公園5階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/28482.html",
+      "deviation_score": 18,
+      "estimated_price_man": 9332,
+      "estimated_tsubo_price_man": 561,
+      "estimated_m2_price_man": 170,
+      "shinchiku_history_count": 18,
+      "chuko_history_count": 36,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 60.04,
+          "price_man": 6145,
+          "tsubo_price_man": 339.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-10T11:34:35.110713"
+  },
+  "2021年スタイリッシュリノベーション実施DOM神...": {
+    "data": null,
+    "cached_at": "2026-06-23T04:19:56.222625"
+  },
+  "ライオンズ北赤羽レジデンス6階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43458.html",
+      "deviation_score": 31,
+      "shinchiku_history_count": 31,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 65.44,
+          "price_man": 4567,
+          "tsubo_price_man": 230.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-23T04:20:05.804226"
+  },
+  "ライオンズ北赤羽レジデンス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43458.html",
+      "deviation_score": 31,
+      "shinchiku_history_count": 31,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 65.44,
+          "price_man": 4567,
+          "tsubo_price_man": 230.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-23T04:20:05.804226"
+  },
+  "ディアナコート二子玉川園3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/14990.html",
+      "deviation_score": 43,
+      "estimated_price_man": 12937,
+      "estimated_tsubo_price_man": 620,
+      "estimated_m2_price_man": 188,
+      "shinchiku_history_count": 43,
+      "chuko_history_count": 49,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 67.67,
+          "price_man": 7858,
+          "tsubo_price_man": 378.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-18T04:43:46.411721"
   }
 }
