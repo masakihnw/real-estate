@@ -25958,5 +25958,35 @@
   "つくばエクスプレス浅草駅徒歩2分": {
     "data": null,
     "cached_at": "2026-06-23T10:25:27.613205"
+  },
+  "東京ミッドベイ勝どき15階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43339.html",
+      "deviation_score": 23,
+      "estimated_price_man": 10663,
+      "estimated_tsubo_price_man": 608,
+      "estimated_m2_price_man": 184,
+      "shinchiku_history_count": 233,
+      "chuko_history_count": 181,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 62.84,
+          "price_man": 6478,
+          "tsubo_price_man": 339.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-11T17:44:35.800084"
+  },
+  "新交通ゆりかもめ有明テニスの森駅徒歩2分11階": {
+    "data": null,
+    "cached_at": "2026-06-23T14:29:44.866934"
+  },
+  "新交通ゆりかもめ有明テニスの森駅徒歩2分": {
+    "data": null,
+    "cached_at": "2026-06-23T14:29:44.866934"
   }
 }
