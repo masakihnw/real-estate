@@ -25988,5 +25988,71 @@
   "新交通ゆりかもめ有明テニスの森駅徒歩2分": {
     "data": null,
     "cached_at": "2026-06-23T14:29:44.866934"
+  },
+  "グランシティ日本橋2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/32193.html",
+      "deviation_score": 48,
+      "estimated_price_man": 10906,
+      "estimated_tsubo_price_man": 668,
+      "estimated_m2_price_man": 202,
+      "shinchiku_history_count": 48,
+      "chuko_history_count": 39,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 59.76,
+          "price_man": 7905,
+          "tsubo_price_man": 442.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-10T11:30:10.573838"
+  },
+  "ブリリア有明シティタワー【22階/2LDK/55.9...": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/537107.html",
+      "deviation_score": 60,
+      "estimated_price_man": 14113,
+      "estimated_tsubo_price_man": 640,
+      "estimated_m2_price_man": 194,
+      "shinchiku_history_count": 600,
+      "chuko_history_count": 609,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 17,
+          "layout": "",
+          "area_m2": 63.92,
+          "price_man": 7312,
+          "tsubo_price_man": 375.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-11T18:01:15.653233"
+  },
+  "東急ドエル・アルス世田谷ネクステージ2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/14425.html",
+      "deviation_score": 37,
+      "estimated_price_man": 8463,
+      "estimated_tsubo_price_man": 431,
+      "estimated_m2_price_man": 131,
+      "shinchiku_history_count": 37,
+      "chuko_history_count": 30,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 63.17,
+          "price_man": 6154,
+          "tsubo_price_man": 322.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-10T11:47:49.428891"
   }
 }
