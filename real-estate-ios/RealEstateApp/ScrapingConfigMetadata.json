@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "defaults": {
     "priceMinMan": 7500,
-    "priceMaxMan": 13000,
+    "priceMaxMan": 11500,
     "areaMinM2": 60,
     "areaMaxM2": null,
     "walkMinMax": 10,
