@@ -7545,23 +7545,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/753530.html",
       "deviation_score": 69,
-      "estimated_price_man": 15889,
-      "estimated_tsubo_price_man": 762,
-      "estimated_m2_price_man": 231,
+      "estimated_price_man": 16557,
+      "estimated_tsubo_price_man": 750,
+      "estimated_m2_price_man": 227,
       "shinchiku_history_count": 693,
-      "chuko_history_count": 296,
+      "chuko_history_count": 297,
       "sales_history": [
         {
           "end_date": "",
           "floor": 12,
           "layout": "",
-          "area_m2": 71.56,
+          "area_m2": 71.51,
           "price_man": 10021,
-          "tsubo_price_man": 463.0
+          "tsubo_price_man": 464.0
         }
       ]
     },
-    "cached_at": "2026-06-04T04:51:04.572746"
+    "cached_at": "2026-06-24T10:18:08.267433"
   },
   "ツインタワー住利住吉館": {
     "data": {
@@ -8633,7 +8633,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-10T04:28:57.151335"
+    "cached_at": "2026-06-24T10:17:54.459528"
   },
   "パークホームズ雪が谷大塚": {
     "data": {
@@ -26054,5 +26054,75 @@
       ]
     },
     "cached_at": "2026-06-10T11:47:49.428891"
+  },
+  "クラリティ・アスール": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13207.html",
+      "deviation_score": 78,
+      "estimated_price_man": 12327,
+      "estimated_tsubo_price_man": 567,
+      "estimated_m2_price_man": 172,
+      "shinchiku_history_count": 78,
+      "chuko_history_count": 96,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 62.18,
+          "price_man": 5492,
+          "tsubo_price_man": 290.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-24T10:17:44.910569"
+  },
+  "アールヴェール新宿弁天町3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11269.html",
+      "deviation_score": 28,
+      "estimated_price_man": 9753,
+      "estimated_tsubo_price_man": 556,
+      "estimated_m2_price_man": 169,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 41,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 64.3,
+          "price_man": 6316,
+          "tsubo_price_man": 325.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-10T11:35:27.176298"
+  },
+  "Brillia有明SkyTower(ブリリア有明スカ...": {
+    "data": null,
+    "cached_at": "2026-06-24T10:17:57.940272"
+  },
+  "藤和シティホームズ高円寺6階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16425.html",
+      "deviation_score": 25,
+      "estimated_price_man": 10339,
+      "estimated_tsubo_price_man": 496,
+      "estimated_m2_price_man": 150,
+      "shinchiku_history_count": 25,
+      "chuko_history_count": 17,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 68.29,
+          "price_man": 7169,
+          "tsubo_price_man": 348.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-10T11:54:53.249499"
   }
 }
