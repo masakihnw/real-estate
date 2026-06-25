@@ -97,7 +97,7 @@ def _fallback_metadata() -> _MetadataDoc:
         "schemaVersion": 1,
         "defaults": {
             "priceMinMan": 7500,
-            "priceMaxMan": 13000,
+            "priceMaxMan": 11500,
             "areaMinM2": 60,
             "areaMaxM2": None,
             "walkMinMax": 10,
