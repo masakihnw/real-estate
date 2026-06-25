@@ -333,6 +333,20 @@ WHERE l.is_active = false
   AND (e.suumo_images IS NOT NULL AND jsonb_array_length(e.suumo_images) > 0);
 ```
 
+**サイト別 sync 挿入数の回帰検知**（`scraping_runs` テーブル・sync 層）:
+
+```sql
+SELECT * FROM detect_source_insertion_anomalies();
+```
+
+返却された各 `source` は「直近72hで真新規（new+reappeared）ゼロ、かつ基準期間（〜10日前）では
+挿入していた」サイト＝**sync 側サイレント回帰の候補**。
+- 1件以上返れば 6b の `source_insertion_zero_<source>` issue を source ごとに登録する。
+- 0件なら正常（スキップ）。
+- これは scraper_metrics.json（パース層）や合算 `new_listings_24h` ではすり抜けた
+  「パースは成功・他サイトの挿入継続でマスクされたサイト単独のゼロ」を埋める検知
+  （例: suumo が 6/17 以降 真新規ゼロになった sync 側回帰）。
+
 ### 6b: 課題検出ルール
 
 以下のルールに従い、該当する課題を `upsert_pipeline_issue()` で登録:
@@ -352,6 +366,7 @@ WHERE l.is_active = false
 | `homes_waf_continuous_failure` | ルーティン① Step 5 で WAF 連続ブロック | high | manual | pipeline |
 | `image_urls_stale` | 非アクティブ物件の画像URLが enrichments に残存（50件以上） | low | auto_fixable | maintenance |
 | `scraper_parse_health` | 6a の scraper_metrics.json の `alerts` が1件以上（パース失敗率30%以上 or 空ページ3回以上） | high | manual | pipeline |
+| `source_insertion_zero_<source>` | 6a の `detect_source_insertion_anomalies()` が当該 source を返す（直近72h真新規ゼロ・基準期間はproductive） | critical | manual | pipeline |
 
 各 issue の `description` には現在値・傾向・推定解消時期を含める。
 `suggested_fix` には Claude Code で実行可能な修正指示を含める。
@@ -369,6 +384,24 @@ SELECT upsert_pipeline_issue(
   'manual'
 );
 ```
+
+`source_insertion_zero_<source>` の例（`detect_source_insertion_anomalies()` の返却1行＝1 issue。
+`<source>` を実際のサイト名で置換する）:
+```sql
+SELECT upsert_pipeline_issue(
+  'source_insertion_zero_suumo',
+  'critical',
+  'pipeline',
+  'suumo の真新規挿入が停止',
+  'suumo: 直近72hの真新規（new+reappeared）0件（recent_runs=9）。基準期間は 21件挿入 — sync側回帰の可能性',
+  '{"source": "suumo", "recent_inserts": 0, "recent_runs": 9, "baseline_inserts": 21, "baseline_runs": 30}'::jsonb,
+  'supabase_sync.py の identity_key 解決（URL一致で既存に誤収束していないか）と sync 経路を調査して。scraper_metrics.json が緑ならパースは正常＝sync 側の回帰',
+  'manual'
+);
+```
+
+検出された各 `source_insertion_zero_<source>` キーは 6c の `auto_resolve_stale_issues` の
+検出済み配列に必ず含める（含めないと翌ラン即 resolve され、回帰が継続しても通知が消える）。
 
 例:
 ```sql
@@ -389,7 +422,14 @@ SELECT upsert_pipeline_issue(
 今回検出された issue_key のリストを配列にまとめ、それ以外の open issue を自動解決:
 
 ```sql
-SELECT auto_resolve_stale_issues(ARRAY['notification_drafts_stuck', 'never_ai_analyzed', ...]::text[]);
+SELECT auto_resolve_stale_issues(ARRAY[
+  'notification_drafts_stuck',
+  'never_ai_analyzed',
+  -- 6a の detect_source_insertion_anomalies() が返した各 source の
+  -- 'source_insertion_zero_<source>' キーを必ずここに列挙する（例: 'source_insertion_zero_suumo'）。
+  -- 列挙漏れすると翌ラン即 resolve され、回帰継続中でも通知が消える
+  ...
+]::text[]);
 ```
 
 ---

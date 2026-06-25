@@ -1132,6 +1132,62 @@ def _sync_transactions(client, tx_path: str) -> int:
     return tx_count
 
 
+def resolve_run_id(env: dict | None = None, *, now: datetime | None = None) -> str:
+    """1回のパイプライン実行を束ねる run_id を決める（純関数）。
+
+    GHA 上では run-attempt 単位（リトライを区別）、ローカルでは UTC timestamp。
+    """
+    env = env if env is not None else os.environ
+    gha_run_id = env.get("GITHUB_RUN_ID")
+    if gha_run_id:
+        attempt = env.get("GITHUB_RUN_ATTEMPT") or "1"
+        return f"gha-{gha_run_id}-{attempt}"
+    ts = (now or datetime.now(timezone.utc)).strftime("%Y%m%dT%H%M%SZ")
+    return f"local-{ts}"
+
+
+def build_scraping_run_rows(
+    summaries: dict[str, dict[str, int]], run_id: str, property_type: str
+) -> list[dict]:
+    """per-source の sync summary を scraping_runs テーブル行へ変換する純関数。
+
+    source 昇順で安定化する（冪等 upsert・テスト容易性のため）。
+    """
+    rows: list[dict] = []
+    for source in sorted(summaries):
+        s = summaries[source]
+        rows.append({
+            "run_id": run_id,
+            "source": source,
+            "property_type": property_type,
+            "new_count": int(s.get("new", 0)),
+            "reappeared_count": int(s.get("reappeared", 0)),
+            "updated_count": int(s.get("updated", 0)),
+            "removed_count": int(s.get("removed", 0)),
+            "unchanged_count": int(s.get("unchanged", 0)),
+        })
+    return rows
+
+
+def _record_scraping_runs(
+    client, summaries: dict[str, dict[str, int]], *, run_id: str, property_type: str
+) -> int:
+    """サイト別 sync summary を scraping_runs に upsert する。
+
+    sync 層のサイレント回帰（パースは成功するが真新規挿入が止まる）の検知用。
+    記録失敗は本同期処理をブロックしない（呼び出し側で握る）。
+    summaries には sync が成功したソースのみ含める（sync 失敗ソースを new=0 で記録すると
+    インフラ瞬断を回帰と誤検知するため。全損は scraper_metrics の媒体全損アラートが担当）。
+    """
+    rows = build_scraping_run_rows(summaries, run_id, property_type)
+    if not rows:
+        return 0
+    (client.table("scraping_runs")
+     .upsert(rows, on_conflict="run_id,source,property_type", returning="minimal")
+     .execute())
+    return len(rows)
+
+
 def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None:
     """メインエントリ: latest.json / latest_shinchiku.json を Supabase に同期する。
 
@@ -1154,9 +1210,11 @@ def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None
             src = item.get("source", "suumo")
             sources_in_batch.setdefault(src, []).append(item)
 
+        run_summaries: dict[str, dict] = {}
         for source, items in sources_in_batch.items():
             try:
                 summary = _sync_source_listings(client, items, source, "chuko")
+                run_summaries[source] = summary
                 logger.info(
                     "[supabase] %s(中古): new=%d updated=%d removed=%d unchanged=%d reappeared=%d",
                     source, summary["new"], summary["updated"], summary["removed"],
@@ -1164,6 +1222,17 @@ def sync_to_supabase(output_dir: str, *, skip_enrichments: bool = False) -> None
                 )
             except Exception as e:
                 logger.error("[supabase] %s(中古) listings 同期失敗: %s", source, e)
+
+        # サイト別の真新規挿入数を記録（sync 側サイレント回帰の検知用・本処理はブロックしない）
+        # run_id は1ラン1回だけ解決し、全ソースで同一値を共有する
+        try:
+            recorded = _record_scraping_runs(
+                client, run_summaries, run_id=resolve_run_id(), property_type="chuko"
+            )
+            if recorded:
+                logger.info("[supabase] scraping_runs: %d ソース記録", recorded)
+        except Exception as e:
+            logger.warning("[supabase] scraping_runs 記録失敗: %s", e)
 
         if skip_enrichments:
             logger.info("[supabase] enrichments(中古): スキップ（dual-write モード）")
