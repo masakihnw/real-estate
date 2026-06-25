@@ -16214,7 +16214,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-10T17:19:03.291128"
+    "cached_at": "2026-06-25T04:15:08.561927"
   },
   "パークナード経堂": {
     "data": {
@@ -16703,7 +16703,7 @@
   },
   "千住ミルディスII番館(アトラスタワー北千住)": {
     "data": null,
-    "cached_at": "2026-06-10T17:22:19.510005"
+    "cached_at": "2026-06-25T04:15:20.120370"
   },
   "ライオンズ板橋氷川町レジデンス": {
     "data": {
@@ -17036,23 +17036,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/761530.html",
       "deviation_score": 0,
-      "estimated_price_man": 12191,
-      "estimated_tsubo_price_man": 640,
-      "estimated_m2_price_man": 194,
+      "estimated_price_man": 12092,
+      "estimated_tsubo_price_man": 645,
+      "estimated_m2_price_man": 196,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 15,
+      "chuko_history_count": 16,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 62.22,
-          "price_man": 9534,
-          "tsubo_price_man": 511.0
+          "area_m2": 61.9,
+          "price_man": 9625,
+          "tsubo_price_man": 519.0
         }
       ]
     },
-    "cached_at": "2026-06-10T17:24:49.533729"
+    "cached_at": "2026-06-25T04:14:59.289393"
   },
   "リーデンスタワー": {
     "data": {
@@ -17071,7 +17071,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-10T17:24:58.090620"
+    "cached_at": "2026-06-25T04:14:50.173237"
   },
   "ザ・ガーデンズ東京王子カームコート": {
     "data": {
@@ -17753,23 +17753,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/27154.html",
       "deviation_score": 68,
-      "estimated_price_man": 11055,
-      "estimated_tsubo_price_man": 469,
-      "estimated_m2_price_man": 142,
+      "estimated_price_man": 9031,
+      "estimated_tsubo_price_man": 482,
+      "estimated_m2_price_man": 146,
       "shinchiku_history_count": 68,
-      "chuko_history_count": 58,
+      "chuko_history_count": 59,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 81.41,
-          "price_man": 6620,
-          "tsubo_price_man": 270.0
+          "area_m2": 81.44,
+          "price_man": 6736,
+          "tsubo_price_man": 275.0
         }
       ]
     },
-    "cached_at": "2026-06-10T17:29:37.324611"
+    "cached_at": "2026-06-25T04:15:28.512068"
   },
   "オープンレジデンシア桜新町テラス": {
     "data": {
@@ -18784,7 +18784,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16645.html",
       "deviation_score": 27,
-      "estimated_price_man": 9745,
+      "estimated_price_man": 9441,
       "estimated_tsubo_price_man": 504,
       "estimated_m2_price_man": 153,
       "shinchiku_history_count": 27,
@@ -18800,7 +18800,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-10T11:55:01.669604"
+    "cached_at": "2026-06-24T14:31:27.875605"
   },
   "藤和シティホームズ南阿佐ヶ谷5階": {
     "data": {
@@ -19425,7 +19425,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-10T17:19:03.291128"
+    "cached_at": "2026-06-25T04:15:08.561927"
   },
   "ピアース都立大学3階": {
     "data": {
@@ -24053,23 +24053,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/26735.html",
       "deviation_score": 22,
-      "estimated_price_man": 9888,
-      "estimated_tsubo_price_man": 425,
-      "estimated_m2_price_man": 129,
+      "estimated_price_man": 10238,
+      "estimated_tsubo_price_man": 429,
+      "estimated_m2_price_man": 130,
       "shinchiku_history_count": 229,
-      "chuko_history_count": 164,
+      "chuko_history_count": 165,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 81.44,
-          "price_man": 8161,
-          "tsubo_price_man": 332.0
+          "area_m2": 81.42,
+          "price_man": 8171,
+          "tsubo_price_man": 333.0
         }
       ]
     },
-    "cached_at": "2026-06-10T11:54:41.087352"
+    "cached_at": "2026-06-24T14:31:10.566684"
   },
   "モダ・ビエント中板橋プラシア": {
     "data": {
@@ -26130,5 +26130,24 @@
       ]
     },
     "cached_at": "2026-06-24T14:31:19.358311"
+  },
+  "パトリシア信濃町テラス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/15345.html",
+      "deviation_score": 9,
+      "shinchiku_history_count": 9,
+      "chuko_history_count": 11,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 66.75,
+          "price_man": 4820,
+          "tsubo_price_man": 239.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-25T04:15:16.901884"
   }
 }
