@@ -156,6 +156,32 @@ def test_normalize_name_leading_the_not_romaji():
     assert normalize_listing_name("THE TOYOSU TOWER") == "ザ豊洲タワー"
 
 
+def test_strip_name_brackets_trailing_tag():
+    """末尾の【リノベ】等の装飾タグは除去される（実データ 174246/250868）。"""
+    from report_utils import strip_name_brackets
+    assert strip_name_brackets("テラス加賀　【リノベ】") == "テラス加賀"
+    assert strip_name_brackets("コスモ東京ベイタワー　【リノベ】") == "コスモ東京ベイタワー"
+
+
+def test_strip_name_brackets_leading_building_name():
+    """先頭【建物名】+キャッチコピーは括弧内の建物名を採用（実データ 97870）。"""
+    from report_utils import strip_name_brackets
+    assert strip_name_brackets(
+        "【マーク・ゼロワン曳舟タワー】駅近好立地　スカイツリ…"
+    ) == "マーク・ゼロワン曳舟タワー"
+
+
+def test_strip_name_brackets_noops_and_failsafe():
+    """ブラケットが無ければそのまま。空になる場合は元名を返す。"""
+    from report_utils import strip_name_brackets
+    assert strip_name_brackets("プラウド目黒") == "プラウド目黒"
+    assert strip_name_brackets("オープンレジデンス 祐天寺") == "オープンレジデンス 祐天寺"
+    # 括弧内が特徴タグ（先頭）なら後続を採用
+    assert strip_name_brackets("【ペット可】パークハウス南向き") == "パークハウス南向き"
+    # 全体が【】のみ → 元名フォールバック
+    assert strip_name_brackets("【リノベ】") == "【リノベ】"
+
+
 # --- clean_listing_name ---
 
 
