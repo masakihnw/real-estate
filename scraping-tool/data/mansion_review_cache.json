@@ -8751,15 +8751,15 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T11:10:55.912630"
+    "cached_at": "2026-06-25T13:57:00.988225"
   },
   "オープンレジデンシア阿佐ヶ谷": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/602759.html",
       "deviation_score": 24,
-      "estimated_price_man": 6958,
-      "estimated_tsubo_price_man": 329,
-      "estimated_m2_price_man": 100,
+      "estimated_price_man": 8211,
+      "estimated_tsubo_price_man": 378,
+      "estimated_m2_price_man": 115,
       "shinchiku_history_count": 24,
       "chuko_history_count": 21,
       "sales_history": [
@@ -8773,7 +8773,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T11:10:47.777441"
+    "cached_at": "2026-06-25T13:56:52.791354"
   },
   "アップルタワー東京キャナルコート33階": {
     "data": {
@@ -18388,23 +18388,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/24051.html",
       "deviation_score": 46,
-      "estimated_price_man": 8284,
-      "estimated_tsubo_price_man": 442,
-      "estimated_m2_price_man": 134,
+      "estimated_price_man": 11097,
+      "estimated_tsubo_price_man": 477,
+      "estimated_m2_price_man": 145,
       "shinchiku_history_count": 46,
-      "chuko_history_count": 116,
+      "chuko_history_count": 117,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
           "area_m2": 62.05,
-          "price_man": 5173,
-          "tsubo_price_man": 275.0
+          "price_man": 5221,
+          "tsubo_price_man": 277.0
         }
       ]
     },
-    "cached_at": "2026-06-10T11:42:56.160690"
+    "cached_at": "2026-06-24T14:23:02.623980"
   },
   "グランドメゾン江古田の杜8階": {
     "data": {
@@ -26204,5 +26204,46 @@
       ]
     },
     "cached_at": "2026-06-25T10:02:42.991083"
+  },
+  "セボン中野3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11841.html",
+      "deviation_score": 16,
+      "shinchiku_history_count": 16,
+      "chuko_history_count": 22,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 90.19,
+          "price_man": 5413,
+          "tsubo_price_man": 200.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-16T04:58:55.352497"
+  },
+  "BrilliaCity西早稲田2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1408135.html",
+      "deviation_score": 44,
+      "estimated_price_man": 10622,
+      "estimated_tsubo_price_man": 488,
+      "estimated_m2_price_man": 148,
+      "shinchiku_history_count": 444,
+      "chuko_history_count": 103,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 73.59,
+          "price_man": 9680,
+          "tsubo_price_man": 436.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-11T18:07:19.364072"
   }
 }
