@@ -134,6 +134,28 @@ def test_normalize_name_known_alias_toyosu():
     assert normalize_listing_name("ザ豊洲タワー") == "ザ豊洲タワー"
 
 
+def test_normalize_name_typo_misawa_homes():
+    """OCR/誤記「ミサワホーズ」は「ミサワホームズ」に補正される（実データ id=272763）。"""
+    a = normalize_listing_name("ミサワホーズ東大井")
+    b = normalize_listing_name("ミサワホームズ東大井")
+    assert a == b == "ミサワホームズ東大井"
+
+
+def test_normalize_name_leading_the_article():
+    """先頭の英語冠詞 THE はカタカナ名で「ザ」に統一される（実データ 174096/266409）。"""
+    a = normalize_listing_name("THEパームス西戸山")
+    b = normalize_listing_name("ザ・パームス西戸山")
+    assert a == b == "ザパームス西戸山"
+    # 大文字小文字を問わない
+    assert normalize_listing_name("Theパークハウス") == "ザパークハウス"
+
+
+def test_normalize_name_leading_the_not_romaji():
+    """full ローマ字名（THE の後がカタカナでない）は THE→ザ 変換しない（エイリアス側で処理）。"""
+    # THETOYOSUTOWER は T が続くため THE→ザ にならず、エイリアスで「ザ豊洲タワー」に
+    assert normalize_listing_name("THE TOYOSU TOWER") == "ザ豊洲タワー"
+
+
 # --- clean_listing_name ---
 
 
