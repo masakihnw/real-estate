@@ -18121,23 +18121,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13300.html",
       "deviation_score": 16,
-      "estimated_price_man": 14391,
-      "estimated_tsubo_price_man": 581,
-      "estimated_m2_price_man": 176,
+      "estimated_price_man": 13942,
+      "estimated_tsubo_price_man": 577,
+      "estimated_m2_price_man": 175,
       "shinchiku_history_count": 162,
-      "chuko_history_count": 593,
+      "chuko_history_count": 596,
       "sales_history": [
         {
           "end_date": "",
           "floor": 28,
           "layout": "",
-          "area_m2": 71.75,
-          "price_man": 8717,
-          "tsubo_price_man": 399.0
+          "area_m2": 71.81,
+          "price_man": 8735,
+          "tsubo_price_man": 400.0
         }
       ]
     },
-    "cached_at": "2026-06-11T17:45:05.108348"
+    "cached_at": "2026-06-26T04:19:53.204417"
   },
   "プラネ勝どき4階": {
     "data": {
@@ -18825,23 +18825,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16654.html",
       "deviation_score": 20,
-      "estimated_price_man": 11988,
-      "estimated_tsubo_price_man": 536,
-      "estimated_m2_price_man": 163,
+      "estimated_price_man": 12087,
+      "estimated_tsubo_price_man": 533,
+      "estimated_m2_price_man": 162,
       "shinchiku_history_count": 20,
-      "chuko_history_count": 18,
+      "chuko_history_count": 19,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 6,
+          "floor": 5,
           "layout": "",
-          "area_m2": 69.76,
-          "price_man": 7577,
-          "tsubo_price_man": 356.0
+          "area_m2": 69.91,
+          "price_man": 7767,
+          "tsubo_price_man": 364.0
         }
       ]
     },
-    "cached_at": "2026-06-10T11:55:39.236255"
+    "cached_at": "2026-06-24T14:33:05.474978"
   },
   "グローリオ南阿佐ヶ谷1階": {
     "data": {
@@ -26376,5 +26376,93 @@
   "マイキャッスルスガモ": {
     "data": null,
     "cached_at": "2026-06-26T10:05:54.745913"
+  },
+  "D’クラディア平和台13階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17074.html",
+      "deviation_score": 54,
+      "estimated_price_man": 6776,
+      "estimated_tsubo_price_man": 267,
+      "estimated_m2_price_man": 81,
+      "shinchiku_history_count": 54,
+      "chuko_history_count": 26,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 77.13,
+          "price_man": 5443,
+          "tsubo_price_man": 233.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T13:48:47.402051"
+  },
+  "D’クラディア平和台": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17074.html",
+      "deviation_score": 54,
+      "estimated_price_man": 6776,
+      "estimated_tsubo_price_man": 267,
+      "estimated_m2_price_man": 81,
+      "shinchiku_history_count": 54,
+      "chuko_history_count": 26,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 77.13,
+          "price_man": 5443,
+          "tsubo_price_man": 233.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T13:48:47.402051"
+  },
+  "カーサ要町6階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/24864.html",
+      "deviation_score": 35,
+      "estimated_price_man": 10007,
+      "estimated_tsubo_price_man": 509,
+      "estimated_m2_price_man": 154,
+      "shinchiku_history_count": 35,
+      "chuko_history_count": 39,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 54.69,
+          "price_man": 5101,
+          "tsubo_price_man": 309.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T13:48:56.010705"
+  },
+  "カーサ要町": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/24864.html",
+      "deviation_score": 35,
+      "estimated_price_man": 10007,
+      "estimated_tsubo_price_man": 509,
+      "estimated_m2_price_man": 154,
+      "shinchiku_history_count": 35,
+      "chuko_history_count": 39,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 54.69,
+          "price_man": 5101,
+          "tsubo_price_man": 309.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T13:48:56.010705"
   }
 }
