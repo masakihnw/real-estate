@@ -29,6 +29,8 @@ def best_address(listing: dict) -> str:
 _KNOWN_NAME_TYPOS: list[tuple[str, str]] = [
     ("レジテンス", "レジデンス"),
     ("フォレスコート", "フォレストコート"),
+    # OCR/誤記: ミサワホー（ム）ズ の脱字（実データ id=272763）
+    ("ミサワホーズ", "ミサワホームズ"),
 ]
 
 # 英語表記↔日本語表記が割れる著名物件の正準名エイリアス（normalized 形の完全一致で統一）。
@@ -147,6 +149,10 @@ def normalize_listing_name(name: str) -> str:
     # のように別表記でスクレイプされる取りこぼし重複を上流で吸収する。
     # ※ U+30FC（ー）自体は変換対象に含めない（カタカナ範囲 [ァ-ヶ] は U+30F6 まで）。
     s = re.sub(r"(?<=[ァ-ヶ])[ｰ－‐‑‒–—―−\-]+(?=[ァ-ヶ])", "ー", s)
+    # 先頭の英語冠詞 THE はカタカナ物件名の「ザ」と同義 → 「ザ」に統一
+    # （「THEパームス西戸山」↔「ザ(・)パームス西戸山」。カタカナが続く場合のみ＝
+    #  full ローマ字名（THETOYOSUTOWER 等）は別途 _KNOWN_NAME_ALIASES で処理）
+    s = re.sub(r"(?i)^THE(?=[ァ-ヶ])", "ザ", s)
     # SUUMO 掲載データの既知の誤字を補正
     for typo, correct in _KNOWN_NAME_TYPOS:
         s = s.replace(typo, correct)
