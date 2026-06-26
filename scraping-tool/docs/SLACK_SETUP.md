@@ -46,6 +46,39 @@
 
 > スクレイパー健全性アラート・建物名データ品質アラートを物件更新とは別チャンネルへ投稿したい場合は、そのチャンネル向けの Webhook を `SLACK_HEALTH_WEBHOOK_URL` に設定してください（`slack_notify.py` の `_send_health_alerts`）。
 
+## 2.5 削除物件をスレッド返信にする（任意・Bot トークン）
+
+既定では削除物件は本文の中にまとめて表示されます。**削除物件ブロックを本文のスレッド返信として
+ぶら下げたい**場合は、Incoming Webhook ではなく **Slack Web API（`chat.postMessage`）** が必要です
+（Webhook はメッセージの `ts` を返さず、スレッド返信ができないため）。
+
+設定すると次の挙動になります:
+
+- 本文（新規・入れ替え・値下げ・AI ダイジェスト）をトップレベル投稿
+- 「❌ 削除された物件」の明細を**その投稿のスレッド返信**として送信（本文には件数サマリーのみ残る）
+- Bot トークン未設定時は**従来通り**1通にインライン表示（後方互換・フォールバック）
+
+### 手順
+
+1. **Bot Token Scopes を追加**
+   - https://api.slack.com/apps で対象アプリを開く
+   - 「OAuth & Permissions」→「Scopes」→「Bot Token Scopes」に **`chat:write`** を追加
+2. **ワークスペースにインストール（再インストール）**
+   - 同ページ上部「Install to Workspace」/「Reinstall to Workspace」
+   - 表示される **Bot User OAuth Token**（`xoxb-...`）をコピー
+3. **Bot を投稿先チャンネルに招待**
+   - 対象チャンネルで `/invite @real-estate-notifier`（アプリ名）を実行
+4. **チャンネル ID を取得**
+   - チャンネル名をクリック →「チャンネル詳細」最下部の ID（`C0XXXXXXX`）をコピー
+   - ※ **Webhook と同じチャンネル**を指す ID にすること（投稿先がずれないように）
+5. **GitHub Secrets に登録**
+   - `SLACK_BOT_TOKEN` = `xoxb-...`
+   - `SLACK_CHANNEL_ID` = `C0XXXXXXX`
+
+> `SLACK_WEBHOOK_URL` はそのまま残してください（未設定だと通知自体がスキップされます。
+> Bot トークン未設定時のフォールバック送信にも使われます）。`SLACK_BOT_TOKEN` と
+> `SLACK_CHANNEL_ID` の**両方**が揃ったときだけスレッド返信モードになります。
+
 ## 3. 投稿する物件のフィルタ条件
 
 Slack に投稿されるのは **資産性ランクが B 以上（S/A/B）の物件のみ** です。

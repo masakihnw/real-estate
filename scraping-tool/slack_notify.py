@@ -11,7 +11,6 @@ import json
 import os
 import re
 import sys
-import unicodedata
 from pathlib import Path
 from typing import Any, Optional
 
@@ -136,12 +135,8 @@ def send_slack_message(webhook_url: str, message: str) -> bool:
         return False
 
 
-def send_slack_message_chunked_with_retry(webhook_url: str, message: str) -> bool:
-    """メッセージをチャンクに分割し、全チャンクを送信し切るまでリトライする。"""
-    import time
-
-    if not message.strip():
-        return True
+def _chunk_message(message: str) -> list[str]:
+    """メッセージを SLACK_CHUNK_SIZE 以下のチャンクに分割（行境界優先）。"""
     chunks: list[str] = []
     rest = message
     while rest:
@@ -157,6 +152,16 @@ def send_slack_message_chunked_with_retry(webhook_url: str, message: str) -> boo
         else:
             chunks.append(cut)
             rest = rest[SLACK_CHUNK_SIZE:]
+    return chunks
+
+
+def send_slack_message_chunked_with_retry(webhook_url: str, message: str) -> bool:
+    """メッセージをチャンクに分割し、全チャンクを送信し切るまでリトライする。"""
+    import time
+
+    if not message.strip():
+        return True
+    chunks = _chunk_message(message)
     for i, chunk in enumerate(chunks):
         for attempt in range(SLACK_SEND_RETRIES):
             if send_slack_message(webhook_url, chunk):
@@ -170,6 +175,93 @@ def send_slack_message_chunked_with_retry(webhook_url: str, message: str) -> boo
             logger.info(f"Slack: チャンク {i + 1}/{len(chunks)} が送信できませんでした（リトライ上限）")
             return False
     return True
+
+
+# Slack Web API（chat.postMessage）のエンドポイント。
+# スレッド返信には ts が必要なため、Incoming Webhook ではなく Bot トークン経由で送る。
+SLACK_POST_MESSAGE_URL = "https://slack.com/api/chat.postMessage"
+
+
+def send_slack_via_web_api(
+    token: str,
+    channel: str,
+    text: str,
+    thread_ts: Optional[str] = None,
+) -> Optional[str]:
+    """chat.postMessage で1通送信。成功時は投稿メッセージの ts を返す（スレッド親に使う）。失敗時 None。
+
+    thread_ts を渡すと、その親メッセージのスレッド返信として投稿する。
+    """
+    import urllib.request
+
+    payload: dict[str, Any] = {"channel": channel, "text": text}
+    if thread_ts:
+        payload["thread_ts"] = thread_ts
+    data = json.dumps(payload).encode("utf-8")
+
+    try:
+        req = urllib.request.Request(
+            SLACK_POST_MESSAGE_URL,
+            data=data,
+            headers={
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": f"Bearer {token}",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=10) as response:
+            body = json.loads(response.read().decode("utf-8"))
+    except Exception as e:
+        logger.error(f"Slack Web API 送信エラー: {e}")
+        return None
+
+    if body.get("ok"):
+        return body.get("ts")
+    logger.error("Slack Web API エラー: %s", body.get("error"))
+    return None
+
+
+def send_slack_via_web_api_chunked(
+    token: str,
+    channel: str,
+    message: str,
+    thread_ts: Optional[str] = None,
+) -> Optional[str]:
+    """Web API でメッセージをチャンク送信し、最初のチャンクの ts を返す（後続はそのスレッドにぶら下げる）。
+
+    - thread_ts 未指定: 最初のチャンクをトップレベル投稿し、以降のチャンクはそのスレッドに連結。
+      返り値はトップレベル投稿の ts（削除物件をスレッド返信する際の親）。
+    - thread_ts 指定: 全チャンクをその親スレッドへ返信する。
+    全チャンク送信に成功した場合のみ ts を返し、途中失敗時は None。
+    空メッセージは送信せず thread_ts をそのまま返す。
+    """
+    import time
+
+    if not message.strip():
+        return thread_ts
+    chunks = _chunk_message(message)
+    first_ts: Optional[str] = None
+    # 2チャンク目以降のぶら下げ先。thread_ts 指定時はその親、未指定時は最初のチャンク。
+    parent_ts = thread_ts
+    for i, chunk in enumerate(chunks):
+        sent_ts: Optional[str] = None
+        for attempt in range(SLACK_SEND_RETRIES):
+            sent_ts = send_slack_via_web_api(token, channel, chunk, thread_ts=parent_ts)
+            if sent_ts:
+                if len(chunks) > 1:
+                    logger.info(f"Slack(WebAPI): チャンク {i + 1}/{len(chunks)} 送信完了")
+                break
+            if attempt < SLACK_SEND_RETRIES - 1:
+                time.sleep(SLACK_RETRY_DELAY_SEC)
+                logger.info(f"Slack(WebAPI): チャンク {i + 1} リトライ ({attempt + 2}/{SLACK_SEND_RETRIES})")
+        if not sent_ts:
+            logger.info(f"Slack(WebAPI): チャンク {i + 1}/{len(chunks)} が送信できませんでした（リトライ上限）")
+            return None
+        if first_ts is None:
+            first_ts = sent_ts
+        if parent_ts is None:
+            # トップレベル投稿の続きチャンクは最初の投稿のスレッドに集約する
+            parent_ts = sent_ts
+    return first_ts
 
 
 def report_url_from_current_path(current_path: Path) -> Optional[str]:
@@ -649,15 +741,15 @@ def _update_notification_state(client, channel: str = "slack", expected_last: st
         raise
 
 
-def build_slack_message_from_listings(
+def _split_change_sets(
     current: list[dict[str, Any]],
     previous: Optional[list[dict[str, Any]]],
-    report_url: Optional[str] = None,
-    map_url: Optional[str] = None,
     diff_override: Optional[dict[str, list]] = None,
-) -> str:
-    """Slack用にメッセージを組み立てる。新規追加・削除のみ表示。資産性B以上の物件のみ。
-    diff_override が渡された場合は compare_listings を呼ばずにその diff を使う。"""
+) -> dict[str, Any]:
+    """diff から表示用の変更集合を計算する（資産性B以上・再登録/入れ替え検出込み）。
+
+    返り値: current_a / swap_buildings / new_by_bldg / removed_by_bldg / pure_new / pure_removed
+    """
     current_a = [r for r in current if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
     diff = diff_override if diff_override is not None else (compare_listings(current, previous) if previous else {})
     diff_new_a = [r for r in diff.get("new", []) if optional_features.get_asset_score_and_rank(r)[1] in ("S", "A", "B")]
@@ -665,13 +757,6 @@ def build_slack_message_from_listings(
 
     # --- 同一物件の再登録を検出して除外 ---
     # 階+価格+面積+築年が一致し、同一建物（住所+築年）であれば同一部屋の再掲載とみなす
-    def _normalize_layout_for_match(layout: str | None) -> str:
-        s = unicodedata.normalize("NFKC", (layout or "").strip())
-        s = re.sub(r"\s*[(（][^)）]*[)）]", "", s)
-        s = re.sub(r"^(\d+)S(LDK|LK|DK|K)(.*)$", r"\1\2+S\3", s)
-        s = re.sub(r"[+＋]S", "+S", s)
-        return s
-
     def _unit_fingerprint(r: dict) -> tuple:
         """同一部屋判定: 階+面積+築年（価格・間取り表記は揺れが多いため除外）"""
         return (
@@ -719,6 +804,59 @@ def build_slack_message_from_listings(
     pure_new = [r for r in effective_new if id(r) not in swap_new_ids]
     pure_removed = [r for r in effective_removed if id(r) not in swap_removed_ids]
 
+    return {
+        "current_a": current_a,
+        "current_total": len(current),
+        "swap_buildings": swap_buildings,
+        "new_by_bldg": new_by_bldg,
+        "removed_by_bldg": removed_by_bldg,
+        "pure_new": pure_new,
+        "pure_removed": pure_removed,
+    }
+
+
+def _removed_listing_line(r: dict[str, Any]) -> str:
+    """削除物件1件をSlack用1行に整形。"""
+    floor_str = format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure"))
+    units = format_total_units(r.get("total_units"))
+    ownership_str = format_ownership(r.get("ownership"))
+    map_url_val = google_maps_url(r.get("name") or best_address(r))
+    map_part = f" ｜ <{map_url_val}|Map>" if map_url_val else ""
+    return f"• {(r.get('name') or '')[:28]} ｜ {format_price(r.get('price_man'))} ｜ {floor_str} ｜ {units} ｜ {ownership_str}{map_part}"
+
+
+def build_removed_listings_section(pure_removed: list[dict[str, Any]]) -> str:
+    """削除された物件ブロック（スレッド返信用）を組み立てる。空なら空文字を返す。"""
+    if not pure_removed:
+        return ""
+    lines = ["*❌ 削除された物件*"]
+    lines.extend(_removed_listing_line(r) for r in pure_removed)
+    return "\n".join(lines)
+
+
+def build_slack_message_from_listings(
+    current: list[dict[str, Any]],
+    previous: Optional[list[dict[str, Any]]],
+    report_url: Optional[str] = None,
+    map_url: Optional[str] = None,
+    diff_override: Optional[dict[str, list]] = None,
+    removed_in_thread: bool = False,
+    changes: Optional[dict[str, Any]] = None,
+) -> str:
+    """Slack用にメッセージを組み立てる。新規追加・削除のみ表示。資産性B以上の物件のみ。
+    diff_override が渡された場合は compare_listings を呼ばずにその diff を使う。
+    removed_in_thread=True の場合、削除物件の明細は本文に含めず（件数サマリーは残す）、
+    呼び出し側が build_removed_listings_section でスレッド返信する想定。
+    changes が渡された場合は _split_change_sets を再計算せずそれを使う（二重計算回避）。"""
+    if changes is None:
+        changes = _split_change_sets(current, previous, diff_override)
+    current_a = changes["current_a"]
+    swap_buildings = changes["swap_buildings"]
+    new_by_bldg = changes["new_by_bldg"]
+    removed_by_bldg = changes["removed_by_bldg"]
+    pure_new = changes["pure_new"]
+    pure_removed = changes["pure_removed"]
+
     lines = [
         "🏠 *中古マンション物件情報*（資産性B以上のみ）",
         "",
@@ -741,7 +879,8 @@ def build_slack_message_from_listings(
         if pure_new:
             lines.append(f"  🆕 *新規追加*: {len(pure_new)}件")
         if pure_removed:
-            lines.append(f"  ❌ *削除*: {len(pure_removed)}件")
+            suffix = "（詳細はスレッドに表示）" if removed_in_thread else ""
+            lines.append(f"  ❌ *削除*: {len(pure_removed)}件{suffix}")
         lines.append("")
 
     # 同一マンション内の入れ替え
@@ -772,16 +911,9 @@ def build_slack_message_from_listings(
             lines.append(_listing_line_slack(r, url))
         lines.append("")
 
-    # 削除された物件（入れ替え分を除く）
-    if pure_removed:
-        lines.append("*❌ 削除された物件*")
-        for r in pure_removed:
-            floor_str = format_floor(r.get("floor_position"), r.get("floor_total"), r.get("floor_structure"))
-            units = format_total_units(r.get("total_units"))
-            ownership_str = format_ownership(r.get("ownership"))
-            map_url_val = google_maps_url(r.get("name") or best_address(r))
-            map_part = f" ｜ <{map_url_val}|Map>" if map_url_val else ""
-            lines.append(f"• {(r.get('name') or '')[:28]} ｜ {format_price(r.get('price_man'))} ｜ {floor_str} ｜ {units} ｜ {ownership_str}{map_part}")
+    # 削除された物件（入れ替え分を除く）。スレッド返信に回す場合は本文では省略する。
+    if pure_removed and not removed_in_thread:
+        lines.append(build_removed_listings_section(pure_removed))
         lines.append("")
 
     # 末尾にもレポート・地図リンク（冒頭で既に出しているが、長文の最後にも）
@@ -1037,8 +1169,22 @@ def main() -> None:
         report_url = report_url_from_report_path(report_path) if report_path else report_url_from_current_path(current_path)
         map_url = map_url_from_report_url(report_url)
 
+    # --- スレッド返信モードの判定 ---
+    # Bot トークン + チャンネルID があれば Web API（chat.postMessage）で送信し、
+    # 削除物件ブロックを本文のスレッド返信としてぶら下げる。
+    # 未設定時は従来通り Incoming Webhook で1通にまとめて送る
+    # （Webhook は ts を返さずスレッド返信ができないため）。
+    bot_token = os.environ.get("SLACK_BOT_TOKEN")
+    channel_id = os.environ.get("SLACK_CHANNEL_ID")
+    use_thread = bool(bot_token and channel_id)
+
     # --- メッセージ組み立て・送信 ---
-    message = build_slack_message_from_listings(current, None, report_url, map_url=map_url, diff_override=diff)
+    # 変更集合は一度だけ計算し、本文組み立てと削除スレッド返信で共用する（二重計算回避）。
+    changes = _split_change_sets(current, None, diff)
+    message = build_slack_message_from_listings(
+        current, None, report_url, map_url=map_url, diff_override=diff,
+        removed_in_thread=use_thread, changes=changes,
+    )
 
     # 注目物件の値下げセクションを追加
     if watchlist_drops:
@@ -1051,7 +1197,23 @@ def main() -> None:
     if digest_text:
         message = message + "\n\n" + digest_text
 
-    if send_slack_message_chunked_with_retry(webhook_url, message):
+    if use_thread:
+        parent_ts = send_slack_via_web_api_chunked(bot_token, channel_id, message)
+        send_ok = parent_ts is not None
+        if send_ok:
+            # 削除物件ブロックを親投稿のスレッド返信としてぶら下げる。
+            # ここが失敗しても send_ok は True のまま（本文は送信済み）。再送すると本文（新規通知）
+            # まで重複するため、削除明細の取りこぼしは許容しエラーログのみ残す（件数サマリーは本文に出る）。
+            removed_section = build_removed_listings_section(changes["pure_removed"])
+            if removed_section:
+                if send_slack_via_web_api_chunked(bot_token, channel_id, removed_section, thread_ts=parent_ts):
+                    logger.info("削除物件ブロックをスレッド返信で送信しました")
+                else:
+                    logger.error("削除物件のスレッド返信に失敗しました（本文は送信済み）")
+    else:
+        send_ok = send_slack_message_chunked_with_retry(webhook_url, message)
+
+    if send_ok:
         logger.info("Slack通知を送信しました")
         last_at = diff.get("_last_notified_at") if diff else None
         if supabase_client and last_at:
