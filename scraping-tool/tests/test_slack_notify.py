@@ -5,6 +5,7 @@ new_listing_digest が翌日以降も pending なら単独送信する。
 from datetime import date, timedelta
 from unittest.mock import MagicMock, call, patch
 
+import json
 import pytest
 
 import sys
@@ -17,9 +18,16 @@ from slack_notify import (
     _send_health_alerts,
     _get_watchlist_price_drops,
     _get_data_quality_issues,
+    _chunk_message,
+    _split_change_sets,
     build_watchlist_price_drop_section,
     build_data_quality_alert_section,
+    build_removed_listings_section,
+    build_slack_message_from_listings,
+    send_slack_via_web_api,
+    send_slack_via_web_api_chunked,
     has_property_name,
+    SLACK_CHUNK_SIZE,
 )
 
 
@@ -565,3 +573,199 @@ class TestSendHealthAlerts:
     def test_send_failure_returns_false(self, mock_send, _mock_health):
         result = _send_health_alerts("https://main/webhook", self._ISSUES)
         assert result is False
+
+
+class TestChunkMessage:
+    """_chunk_message: 文字数上限での分割（行境界優先）"""
+
+    def test_short_message_single_chunk(self):
+        assert _chunk_message("hello") == ["hello"]
+
+    def test_empty_message(self):
+        assert _chunk_message("") == []
+
+    def test_splits_on_line_boundary(self):
+        # 各行を SLACK_CHUNK_SIZE の半分強にして、行境界で割れることを確認
+        line = "x" * (SLACK_CHUNK_SIZE // 2 + 10)
+        msg = line + "\n" + line + "\n" + line
+        chunks = _chunk_message(msg)
+        assert len(chunks) >= 2
+        # 全チャンクを連結すると元に戻る
+        assert "".join(chunks) == msg
+        # 各チャンクは上限以下
+        assert all(len(c) <= SLACK_CHUNK_SIZE for c in chunks)
+
+    def test_long_unbreakable_line_hard_cut(self):
+        msg = "y" * (SLACK_CHUNK_SIZE * 2 + 100)
+        chunks = _chunk_message(msg)
+        assert "".join(chunks) == msg
+        assert all(len(c) <= SLACK_CHUNK_SIZE for c in chunks)
+
+
+class TestBuildRemovedListingsSection:
+    """build_removed_listings_section: 削除物件ブロック（スレッド返信用）"""
+
+    def test_empty_returns_empty_string(self):
+        assert build_removed_listings_section([]) == ""
+
+    def test_renders_name_and_price(self):
+        removed = [{
+            "name": "削除マンション", "price_man": 5000,
+            "floor_position": 3, "floor_total": 10, "address": "東京都港区",
+        }]
+        section = build_removed_listings_section(removed)
+        assert "❌ 削除された物件" in section
+        assert "削除マンション" in section
+
+    def test_lists_all_items(self):
+        removed = [
+            {"name": "A棟", "price_man": 3000},
+            {"name": "B棟", "price_man": 4000},
+        ]
+        section = build_removed_listings_section(removed)
+        assert "A棟" in section
+        assert "B棟" in section
+
+
+class TestRemovedInThreadSplit:
+    """build_slack_message_from_listings の removed_in_thread 挙動"""
+
+    _DIFF = {
+        "new": [],
+        "removed": [{
+            "name": "スレッド削除テスト", "price_man": 5000,
+            "floor_position": 3, "floor_total": 10,
+            "address": "東京都港区", "built_year": 2010, "area_m2": 50.0,
+        }],
+    }
+
+    @patch("slack_notify.optional_features.get_asset_score_and_rank", return_value=(0, "B"))
+    def test_thread_mode_omits_detail_keeps_count(self, _mock_rank):
+        msg = build_slack_message_from_listings([], None, diff_override=self._DIFF, removed_in_thread=True)
+        # 件数サマリーは残る
+        assert "削除*: 1件" in msg
+        assert "詳細はスレッドに表示" in msg
+        # 明細行（• 物件名 ｜ 価格 …）は本文に出さない
+        assert "スレッド削除テスト ｜" not in msg
+
+    @patch("slack_notify.optional_features.get_asset_score_and_rank", return_value=(0, "B"))
+    def test_inline_mode_includes_detail(self, _mock_rank):
+        msg = build_slack_message_from_listings([], None, diff_override=self._DIFF, removed_in_thread=False)
+        assert "❌ 削除された物件" in msg
+        assert "スレッド削除テスト" in msg
+        assert "詳細はスレッドに表示" not in msg
+
+    @patch("slack_notify.optional_features.get_asset_score_and_rank", return_value=(0, "B"))
+    def test_split_change_sets_exposes_pure_removed(self, _mock_rank):
+        changes = _split_change_sets([], None, self._DIFF)
+        assert len(changes["pure_removed"]) == 1
+        assert changes["pure_removed"][0]["name"] == "スレッド削除テスト"
+
+    @patch("slack_notify._split_change_sets")
+    @patch("slack_notify.optional_features.get_asset_score_and_rank", return_value=(0, "B"))
+    def test_precomputed_changes_skips_recompute(self, _mock_rank, mock_split):
+        """changes を渡すと _split_change_sets を再計算しない（二重計算回避）。"""
+        changes = {
+            "current_a": [], "current_total": 0, "swap_buildings": set(),
+            "new_by_bldg": {}, "removed_by_bldg": {}, "pure_new": [], "pure_removed": [],
+        }
+        build_slack_message_from_listings([], None, diff_override=self._DIFF, changes=changes)
+        mock_split.assert_not_called()
+
+
+class _FakeResponse:
+    def __init__(self, body: dict):
+        self._body = json.dumps(body).encode("utf-8")
+
+    def read(self):
+        return self._body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+
+class TestSendSlackViaWebApi:
+    """send_slack_via_web_api: chat.postMessage の ts 返却・スレッド指定"""
+
+    def test_returns_ts_on_ok(self):
+        with patch("urllib.request.urlopen", return_value=_FakeResponse({"ok": True, "ts": "123.456"})):
+            ts = send_slack_via_web_api("xoxb-token", "C123", "hello")
+        assert ts == "123.456"
+
+    def test_returns_none_on_api_error(self):
+        with patch("urllib.request.urlopen", return_value=_FakeResponse({"ok": False, "error": "channel_not_found"})):
+            ts = send_slack_via_web_api("xoxb-token", "C123", "hello")
+        assert ts is None
+
+    def test_returns_none_on_exception(self):
+        with patch("urllib.request.urlopen", side_effect=Exception("network")):
+            ts = send_slack_via_web_api("xoxb-token", "C123", "hello")
+        assert ts is None
+
+    def test_thread_ts_included_in_payload(self):
+        captured = {}
+
+        def fake_urlopen(req, timeout=10):
+            captured["data"] = json.loads(req.data.decode("utf-8"))
+            captured["auth"] = req.headers.get("Authorization")
+            return _FakeResponse({"ok": True, "ts": "999.1"})
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            send_slack_via_web_api("xoxb-token", "C123", "reply", thread_ts="parent.ts")
+
+        assert captured["data"]["thread_ts"] == "parent.ts"
+        assert captured["data"]["channel"] == "C123"
+        assert captured["auth"] == "Bearer xoxb-token"
+
+
+class TestSendSlackViaWebApiChunked:
+    """send_slack_via_web_api_chunked: 親 ts 返却・チャンクのスレッド集約"""
+
+    def test_empty_message_returns_thread_ts(self):
+        ts = send_slack_via_web_api_chunked("xoxb", "C1", "   ", thread_ts="t.1")
+        assert ts == "t.1"
+
+    def test_returns_first_ts(self):
+        with patch("slack_notify.send_slack_via_web_api", return_value="first.ts") as m:
+            ts = send_slack_via_web_api_chunked("xoxb", "C1", "hello")
+        assert ts == "first.ts"
+        m.assert_called_once()
+
+    def test_returns_none_when_send_fails(self):
+        with patch("slack_notify.send_slack_via_web_api", return_value=None):
+            with patch("time.sleep"):
+                ts = send_slack_via_web_api_chunked("xoxb", "C1", "hello")
+        assert ts is None
+
+    def test_multi_chunk_threads_under_first(self):
+        # 2チャンクに割れる長文を作り、2通目が1通目の ts にぶら下がることを確認
+        line = "z" * (SLACK_CHUNK_SIZE // 2 + 10)
+        msg = line + "\n" + line + "\n" + line
+        calls = []
+
+        def fake_send(token, channel, text, thread_ts=None):
+            calls.append(thread_ts)
+            return f"ts.{len(calls)}"
+
+        with patch("slack_notify.send_slack_via_web_api", side_effect=fake_send):
+            ts = send_slack_via_web_api_chunked("xoxb", "C1", msg)
+
+        assert ts == "ts.1"
+        # 1通目はトップレベル（thread_ts None）、以降は最初の ts にぶら下げ
+        assert calls[0] is None
+        assert all(t == "ts.1" for t in calls[1:])
+
+    def test_thread_reply_uses_given_parent(self):
+        calls = []
+
+        def fake_send(token, channel, text, thread_ts=None):
+            calls.append(thread_ts)
+            return "reply.ts"
+
+        with patch("slack_notify.send_slack_via_web_api", side_effect=fake_send):
+            send_slack_via_web_api_chunked("xoxb", "C1", "short reply", thread_ts="parent.ts")
+
+        assert calls == ["parent.ts"]
