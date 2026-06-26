@@ -336,6 +336,35 @@ def clean_listing_name(name: str) -> str:
     return s
 
 
+def strip_name_brackets(name: str) -> str:
+    """表示用の `name` から【】プロモタグ・キャッチコピーを除去する。
+
+    `normalized_name`（比較キー）とは別に、表示名のノイズだけを落とすための軽量クリーナ。
+    identity_key 計算には使わない（重複判定への影響なし）。
+
+    - 先頭が【建物名】+ キャッチコピー → 括弧内の建物名を採用
+      （例:「【マーク・ゼロワン曳舟タワー】駅近好立地 スカイツリ…」→「マーク・ゼロワン曳舟タワー」）
+    - 末尾・中間の【リノベ】等の装飾タグ → 除去
+      （例:「テラス加賀 【リノベ】」→「テラス加賀」、「コスモ東京ベイタワー 【リノベ】」→「コスモ東京ベイタワー」）
+    結果が空になる場合は元の名前を返す（フェイルセーフ：表示名を失わない）。
+    """
+    if not name:
+        return name
+    s = name.strip()
+    if "【" not in s and "】" not in s:
+        return s
+    m = re.match(r"^【([^】]+)】(.+)$", s)
+    if m and not _is_feature_tag(m.group(1).strip()) and m.group(2).strip():
+        # 先頭ブラケットが建物名・後続がキャッチコピー → 建物名を採用
+        s = m.group(1).strip()
+    else:
+        # 末尾・中間の装飾タグを除去
+        s = re.sub(r"【[^】]*】", "", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s or name.strip()
+
+
+
 def _normalize_address_for_key(address: str) -> str:
     """住所を丁目レベルに正規化（都道府県prefix・番地以下・丁目suffixを除去）。
     クロスサイトの住所表記揺れを吸収する。
