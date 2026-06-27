@@ -26590,5 +26590,49 @@
       ]
     },
     "cached_at": "2026-06-27T09:16:29.025060"
+  },
+  "ヴェレーナシティ東京イーストガーデンズ2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/764085.html",
+      "deviation_score": 12,
+      "estimated_price_man": 8736,
+      "estimated_tsubo_price_man": 396,
+      "estimated_m2_price_man": 120,
+      "shinchiku_history_count": 128,
+      "chuko_history_count": 39,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 72.32,
+          "price_man": 6618,
+          "tsubo_price_man": 304.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-27T12:52:21.789804"
+  },
+  "ヴェレーナシティ東京イーストガーデンズ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/764085.html",
+      "deviation_score": 12,
+      "estimated_price_man": 8736,
+      "estimated_tsubo_price_man": 396,
+      "estimated_m2_price_man": 120,
+      "shinchiku_history_count": 128,
+      "chuko_history_count": 39,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 72.32,
+          "price_man": 6618,
+          "tsubo_price_man": 304.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-27T12:52:21.789804"
   }
 }

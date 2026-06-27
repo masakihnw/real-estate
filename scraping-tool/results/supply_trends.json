@@ -17658,19 +17658,19 @@
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 11066,
+      "avg_price_man": 11063,
       "median_price_man": 11000,
       "price_distribution": {
-        "under_10000": 340,
+        "under_10000": 341,
         "10000_11000": 258,
-        "11000_12000": 329,
+        "11000_12000": 328,
         "over_12000": 273,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
           "count": 234,
-          "avg_price_man": 11002,
+          "avg_price_man": 10989,
           "min_price_man": 8180,
           "max_price_man": 13000
         },
