@@ -73,6 +73,8 @@ CI は `ci.yml` の単一ゲートに集約済み。`changes` ジョブが変更
 - Test scraper changes against a small dataset before full run
 - 方針が固まったタイミングと実装が終わったタイミングの2回、コードレビュー（code-reviewer agent）を必ず実施する
 - 実装中はこまめにユニットテストを書き、テストが通ることを確認しながら進める（省略禁止）
+- テスト設計・テストレビュー・code-review の観点出しは `.claude/skills/qa-personas`（7人の意地悪なQA）を
+  チェックリストとして使う。正常系偏重・データ整合・回帰デグレ・単一ソース突合の漏れを各ペルソナで潰す。
 
 ## リポジトリ衛生（Claude Code 厳守）
 
