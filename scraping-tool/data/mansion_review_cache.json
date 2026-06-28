@@ -6389,7 +6389,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42971.html",
       "deviation_score": 35,
-      "estimated_price_man": 8298,
+      "estimated_price_man": 8046,
       "estimated_tsubo_price_man": 416,
       "estimated_m2_price_man": 126,
       "shinchiku_history_count": 35,
@@ -6405,13 +6405,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-14T10:22:37.221344"
+    "cached_at": "2026-06-28T11:48:07.157386"
   },
   "オープンレジデンス三軒茶屋": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42971.html",
       "deviation_score": 35,
-      "estimated_price_man": 8298,
+      "estimated_price_man": 8046,
       "estimated_tsubo_price_man": 416,
       "estimated_m2_price_man": 126,
       "shinchiku_history_count": 35,
@@ -6427,7 +6427,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-14T10:22:37.221344"
+    "cached_at": "2026-06-28T11:48:07.157386"
   },
   "オープンレジデンシア千川2階": {
     "data": {
@@ -23264,23 +23264,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17565.html",
       "deviation_score": 83,
-      "estimated_price_man": 8774,
-      "estimated_tsubo_price_man": 346,
-      "estimated_m2_price_man": 105,
+      "estimated_price_man": 9298,
+      "estimated_tsubo_price_man": 354,
+      "estimated_m2_price_man": 107,
       "shinchiku_history_count": 83,
-      "chuko_history_count": 77,
+      "chuko_history_count": 78,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 70.07,
-          "price_man": 4649,
-          "tsubo_price_man": 219.0
+          "area_m2": 70.29,
+          "price_man": 4722,
+          "tsubo_price_man": 221.0
         }
       ]
     },
-    "cached_at": "2026-06-14T10:22:45.591254"
+    "cached_at": "2026-06-28T11:48:15.569418"
   },
   "ザ・パークハウス亀戸11階": {
     "data": {
