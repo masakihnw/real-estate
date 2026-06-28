@@ -16680,9 +16680,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/41316.html",
       "deviation_score": 18,
-      "estimated_price_man": 10200,
-      "estimated_tsubo_price_man": 489,
-      "estimated_m2_price_man": 148,
+      "estimated_price_man": 10095,
+      "estimated_tsubo_price_man": 506,
+      "estimated_m2_price_man": 153,
       "shinchiku_history_count": 180,
       "chuko_history_count": 94,
       "sales_history": [
@@ -16696,7 +16696,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-10T17:22:16.271525"
+    "cached_at": "2026-06-28T04:32:08.356617"
   },
   "千住ミルディスII番館(アトラスタワー北千住)": {
     "data": null,
@@ -26634,5 +26634,31 @@
       ]
     },
     "cached_at": "2026-06-27T12:52:21.789804"
+  },
+  "駅徒歩6分!管理体制良好マンション◎ミサワホームズ東...": {
+    "data": null,
+    "cached_at": "2026-06-28T04:32:11.861989"
+  },
+  "ウエストレジデンス大崎": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17309.html",
+      "deviation_score": 16,
+      "estimated_price_man": 8756,
+      "estimated_tsubo_price_man": 354,
+      "estimated_m2_price_man": 107,
+      "shinchiku_history_count": 163,
+      "chuko_history_count": 144,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 10,
+          "layout": "",
+          "area_m2": 72.18,
+          "price_man": 6306,
+          "tsubo_price_man": 293.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-28T04:32:20.861412"
   }
 }
