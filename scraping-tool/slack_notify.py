@@ -119,7 +119,9 @@ def send_slack_message(webhook_url: str, message: str) -> bool:
     import urllib.request
     import urllib.parse
 
-    payload = {"text": message}
+    # unfurl_links / unfurl_media を false にして、本文中のリンク（レポート・地図・
+    # 物件詳細など）の OGP プレビュー展開を抑止する（通知が縦に伸びるのを防ぐ）。
+    payload = {"text": message, "unfurl_links": False, "unfurl_media": False}
     data = json.dumps(payload).encode("utf-8")
 
     try:
@@ -194,7 +196,14 @@ def send_slack_via_web_api(
     """
     import urllib.request
 
-    payload: dict[str, Any] = {"channel": channel, "text": text}
+    # unfurl_links / unfurl_media を false にして、本文中のリンクの OGP プレビュー
+    # 展開を抑止する（webhook 経路と挙動を揃える）。
+    payload: dict[str, Any] = {
+        "channel": channel,
+        "text": text,
+        "unfurl_links": False,
+        "unfurl_media": False,
+    }
     if thread_ts:
         payload["thread_ts"] = thread_ts
     data = json.dumps(payload).encode("utf-8")
