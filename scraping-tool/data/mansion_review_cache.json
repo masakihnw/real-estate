@@ -9171,7 +9171,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/534753.html",
       "deviation_score": 42,
-      "estimated_price_man": 9521,
+      "estimated_price_man": 9125,
       "estimated_tsubo_price_man": 438,
       "estimated_m2_price_man": 133,
       "shinchiku_history_count": 42,
@@ -9187,7 +9187,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-15T13:00:02.555264"
+    "cached_at": "2026-06-30T04:21:38.947219"
   },
   "パークホームズ練馬豊島園ステーションプレミア": {
     "data": {
@@ -23685,38 +23685,41 @@
       "building_url": "https://www.mansion-review.jp/mansion/11906.html",
       "deviation_score": 38,
       "shinchiku_history_count": 38,
-      "chuko_history_count": 28,
+      "chuko_history_count": 29,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 61.65,
-          "price_man": 4300,
-          "tsubo_price_man": 232.0
+          "area_m2": 62.03,
+          "price_man": 4506,
+          "tsubo_price_man": 240.0
         }
       ]
     },
-    "cached_at": "2026-06-15T13:00:11.438015"
+    "cached_at": "2026-06-30T04:21:18.493616"
   },
   "等々力ガーデンハイム": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/14863.html",
       "deviation_score": 24,
+      "estimated_price_man": 10560,
+      "estimated_tsubo_price_man": 437,
+      "estimated_m2_price_man": 133,
       "shinchiku_history_count": 24,
-      "chuko_history_count": 14,
+      "chuko_history_count": 15,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 76.29,
-          "price_man": 6601,
-          "tsubo_price_man": 287.0
+          "area_m2": 76.45,
+          "price_man": 6928,
+          "tsubo_price_man": 300.0
         }
       ]
     },
-    "cached_at": "2026-06-15T13:00:20.036865"
+    "cached_at": "2026-06-30T04:21:26.619115"
   },
   "エステムプラザ池袋ザ・ヴィンテージ": {
     "data": {
@@ -26862,5 +26865,153 @@
       ]
     },
     "cached_at": "2026-06-29T11:38:56.983294"
+  },
+  "ザ・晴海レジデンス10階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/40326.html",
+      "deviation_score": 43,
+      "estimated_price_man": 10076,
+      "estimated_tsubo_price_man": 556,
+      "estimated_m2_price_man": 168,
+      "shinchiku_history_count": 438,
+      "chuko_history_count": 517,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 11,
+          "layout": "",
+          "area_m2": 76.31,
+          "price_man": 7127,
+          "tsubo_price_man": 309.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T04:19:35.027368"
+  },
+  "ファーストシーン両国レジデンス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/38510.html",
+      "deviation_score": 8,
+      "estimated_price_man": 4438,
+      "estimated_tsubo_price_man": 445,
+      "estimated_m2_price_man": 135,
+      "shinchiku_history_count": 8,
+      "chuko_history_count": 33,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 47.13,
+          "price_man": 3887,
+          "tsubo_price_man": 274.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-30T04:20:53.701313"
+  },
+  "アリーナ西落合": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/33646.html",
+      "deviation_score": 13,
+      "estimated_price_man": 7303,
+      "estimated_tsubo_price_man": 272,
+      "estimated_m2_price_man": 83,
+      "shinchiku_history_count": 13,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 92.81,
+          "price_man": 6452,
+          "tsubo_price_man": 235.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-30T04:21:01.933220"
+  },
+  "パレステージ町屋壱番館": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/601674.html",
+      "deviation_score": 30,
+      "estimated_price_man": 6686,
+      "estimated_tsubo_price_man": 357,
+      "estimated_m2_price_man": 108,
+      "shinchiku_history_count": 30,
+      "chuko_history_count": 25,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 63.6,
+          "price_man": 5582,
+          "tsubo_price_man": 291.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-30T04:21:10.103851"
+  },
+  "D́クラウディア平和台■□■~スカイツリ...": {
+    "data": null,
+    "cached_at": "2026-06-30T04:21:30.325284"
+  },
+  "D́クラウディア平和台~スカイツリ...": {
+    "data": null,
+    "cached_at": "2026-06-30T04:21:30.325284"
+  },
+  "ザ・パークハウス板橋大山大楠ノ杜1階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1419695.html",
+      "deviation_score": 18,
+      "estimated_price_man": 9285,
+      "estimated_tsubo_price_man": 530,
+      "estimated_m2_price_man": 161,
+      "shinchiku_history_count": 185,
+      "chuko_history_count": 52,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 75.02,
+          "price_man": 11326,
+          "tsubo_price_man": 497.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-28T09:33:23.879715"
+  },
+  "新交通ゆりかもめ日の出駅徒歩4分7階": {
+    "data": null,
+    "cached_at": "2026-06-30T04:21:42.300795"
+  },
+  "新交通ゆりかもめ日の出駅徒歩4分": {
+    "data": null,
+    "cached_at": "2026-06-30T04:21:42.300795"
+  },
+  "ライオンズタワー赤羽12階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/18782.html",
+      "deviation_score": 10,
+      "estimated_price_man": 10654,
+      "estimated_tsubo_price_man": 511,
+      "estimated_m2_price_man": 155,
+      "shinchiku_history_count": 105,
+      "chuko_history_count": 78,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 10,
+          "layout": "",
+          "area_m2": 68.13,
+          "price_man": 6140,
+          "tsubo_price_man": 295.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-21T05:03:23.801369"
   }
 }
