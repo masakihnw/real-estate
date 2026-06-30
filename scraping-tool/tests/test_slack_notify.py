@@ -24,6 +24,7 @@ from slack_notify import (
     build_data_quality_alert_section,
     build_removed_listings_section,
     build_slack_message_from_listings,
+    send_slack_message,
     send_slack_via_web_api,
     send_slack_via_web_api_chunked,
     has_property_name,
@@ -719,6 +720,49 @@ class TestSendSlackViaWebApi:
         assert captured["data"]["thread_ts"] == "parent.ts"
         assert captured["data"]["channel"] == "C123"
         assert captured["auth"] == "Bearer xoxb-token"
+
+    def test_unfurl_disabled_in_payload(self):
+        """OGP プレビュー抑止: unfurl_links / unfurl_media が false で送られる。"""
+        captured = {}
+
+        def fake_urlopen(req, timeout=10):
+            captured["data"] = json.loads(req.data.decode("utf-8"))
+            return _FakeResponse({"ok": True, "ts": "1.0"})
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            send_slack_via_web_api("xoxb-token", "C123", "https://example.com link")
+
+        assert captured["data"]["unfurl_links"] is False
+        assert captured["data"]["unfurl_media"] is False
+
+
+class TestSendSlackMessageWebhook:
+    """send_slack_message: Incoming Webhook 経路の payload"""
+
+    def test_unfurl_disabled_in_payload(self):
+        """OGP プレビュー抑止: unfurl_links / unfurl_media が false で送られる。"""
+        captured = {}
+
+        class _Resp:
+            status = 200
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        def fake_urlopen(req, timeout=10):
+            captured["data"] = json.loads(req.data.decode("utf-8"))
+            return _Resp()
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            ok = send_slack_message("https://hooks.slack.com/services/x", "https://example.com link")
+
+        assert ok is True
+        assert captured["data"]["unfurl_links"] is False
+        assert captured["data"]["unfurl_media"] is False
+        assert captured["data"]["text"] == "https://example.com link"
 
 
 class TestSendSlackViaWebApiChunked:
