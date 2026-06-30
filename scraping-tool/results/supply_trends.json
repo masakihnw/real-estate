@@ -18259,17 +18259,17 @@
           "min_price_man": 8500,
           "max_price_man": 12990
         },
-        "目黒区": {
-          "count": 10,
-          "avg_price_man": 12098,
-          "min_price_man": 10780,
-          "max_price_man": 12980
-        },
         "葛飾区": {
           "count": 10,
           "avg_price_man": 10957,
           "min_price_man": 9400,
           "max_price_man": 12000
+        },
+        "目黒区": {
+          "count": 10,
+          "avg_price_man": 12098,
+          "min_price_man": 10780,
+          "max_price_man": 12980
         },
         "千代田区": {
           "count": 4,

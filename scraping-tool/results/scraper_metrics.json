@@ -26,7 +26,7 @@
       }
     },
     "livable": {
-      "parsed": 3854,
+      "parsed": 3849,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -34,7 +34,7 @@
       }
     },
     "homes": {
-      "parsed": 5778,
+      "parsed": 5752,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -43,5 +43,5 @@
     }
   },
   "alerts": [],
-  "saved_at": "2026-06-30T10:15:42.439220+00:00"
+  "saved_at": "2026-06-30T13:48:40.272734+00:00"
 }
