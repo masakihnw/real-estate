@@ -27189,5 +27189,75 @@
       ]
     },
     "cached_at": "2026-06-27T04:08:40.587152"
+  },
+  "パークホームズ南麻布ザレジデンス12階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/535411.html",
+      "deviation_score": 33,
+      "estimated_price_man": 12082,
+      "estimated_tsubo_price_man": 655,
+      "estimated_m2_price_man": 199,
+      "shinchiku_history_count": 336,
+      "chuko_history_count": 289,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 63.59,
+          "price_man": 8863,
+          "tsubo_price_man": 461.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T04:19:17.145944"
+  },
+  "マークス亀戸(1404)": {
+    "data": null,
+    "cached_at": "2026-07-01T14:12:03.527467"
+  },
+  "セザールリバーサイド中洲3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/27849.html",
+      "deviation_score": 28,
+      "estimated_price_man": 8379,
+      "estimated_tsubo_price_man": 433,
+      "estimated_m2_price_man": 131,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 47,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 62.49,
+          "price_man": 4855,
+          "tsubo_price_man": 256.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-01T14:12:12.666808"
+  },
+  "セザールリバーサイド中洲": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/27849.html",
+      "deviation_score": 28,
+      "estimated_price_man": 8379,
+      "estimated_tsubo_price_man": 433,
+      "estimated_m2_price_man": 131,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 47,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 62.49,
+          "price_man": 4855,
+          "tsubo_price_man": 256.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-01T14:12:12.666808"
   }
 }

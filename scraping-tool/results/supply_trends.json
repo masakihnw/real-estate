@@ -18281,15 +18281,15 @@
     },
     {
       "date": "2026-07-01",
-      "total_listings": 1214,
-      "new_count": 1214,
+      "total_listings": 1215,
+      "new_count": 1215,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 11042,
+      "avg_price_man": 11041,
       "median_price_man": 10990,
       "price_distribution": {
-        "under_10000": 355,
+        "under_10000": 356,
         "10000_11000": 262,
         "11000_12000": 325,
         "over_12000": 272,
@@ -18333,22 +18333,22 @@
           "max_price_man": 12999
         },
         "杉並区": {
-          "count": 61,
-          "avg_price_man": 10903,
+          "count": 62,
+          "avg_price_man": 10888,
           "min_price_man": 9180,
           "max_price_man": 13000
-        },
-        "大田区": {
-          "count": 53,
-          "avg_price_man": 10484,
-          "min_price_man": 9060,
-          "max_price_man": 12980
         },
         "台東区": {
           "count": 53,
           "avg_price_man": 10645,
           "min_price_man": 7980,
           "max_price_man": 12999
+        },
+        "大田区": {
+          "count": 53,
+          "avg_price_man": 10484,
+          "min_price_man": 9060,
+          "max_price_man": 12980
         },
         "北区": {
           "count": 46,
