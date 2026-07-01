@@ -6680,23 +6680,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11320.html",
       "deviation_score": 0,
-      "estimated_price_man": 10932,
-      "estimated_tsubo_price_man": 447,
-      "estimated_m2_price_man": 135,
+      "estimated_price_man": 11088,
+      "estimated_tsubo_price_man": 448,
+      "estimated_m2_price_man": 136,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 374,
+      "chuko_history_count": 375,
       "sales_history": [
         {
           "end_date": "",
           "floor": 12,
           "layout": "",
           "area_m2": 78.65,
-          "price_man": 7716,
-          "tsubo_price_man": 322.0
+          "price_man": 7726,
+          "tsubo_price_man": 323.0
         }
       ]
     },
-    "cached_at": "2026-06-17T04:55:55.519087"
+    "cached_at": "2026-07-01T10:24:36.481579"
   },
   "南東向きテラス40.95平米ある3LDK住戸": {
     "data": null,
@@ -27159,5 +27159,35 @@
   "セザールリバーサイド中洲(303)": {
     "data": null,
     "cached_at": "2026-07-01T04:34:09.703606"
+  },
+  "ガーデンホーム幡ヶ谷(103)": {
+    "data": null,
+    "cached_at": "2026-07-01T10:24:26.328275"
+  },
+  "アップルタワー東京キャナルコート(913)": {
+    "data": null,
+    "cached_at": "2026-07-01T10:24:40.279364"
+  },
+  "Dクラディア平和台13階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17074.html",
+      "deviation_score": 54,
+      "estimated_price_man": 6453,
+      "estimated_tsubo_price_man": 267,
+      "estimated_m2_price_man": 81,
+      "shinchiku_history_count": 54,
+      "chuko_history_count": 26,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 77.13,
+          "price_man": 5443,
+          "tsubo_price_man": 233.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-27T04:08:40.587152"
   }
 }
