@@ -1,0 +1,57 @@
+name: Supabase Backup
+
+# 無料プランには自動バックアップ / PITR が無いため、その代替として全テーブルの
+# データを週次で退避する（スキーマの正は supabase/migrations/）。
+# バックアップは PII を含むため repo にはコミットせず、GHA artifact として保管する。
+# 毎週日曜 JST 04:00（UTC 日曜 19:00）に実行。手動実行も可。
+
+on:
+  schedule:
+    - cron: '0 19 * * 0'
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-scraping
+        with:
+          install-playwright: 'false'
+
+      - name: Run backup
+        working-directory: scraping-tool
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/backup_supabase.py --output-dir backups
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-backup-${{ github.run_id }}
+          path: scraping-tool/backups/
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK_URL }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-type: application/json' \
+              -d "{\"text\": \":rotating_light: *Supabase バックアップ失敗*\n実行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+          fi
