@@ -202,6 +202,21 @@ def test_normalize_name_strips_area_suffix():
     assert a == b == "サンクレイドルレヴィール池袋"
 
 
+def test_normalize_name_strips_english_append():
+    """日本語建物名に空白区切りで併記された英語名を除去（実データ 49292/120770）。"""
+    canonical = normalize_listing_name("ブリリア有明スカイタワー")
+    full = normalize_listing_name("ブリリア有明スカイタワー　Ｂｒｉｌｌｉａ有明ＳｋｙＴｏｗｅｒ 22階")
+    half = normalize_listing_name("ブリリア有明スカイタワー Brillia有明SkyTower")
+    assert canonical == full == half == "ブリリア有明スカイタワー"
+
+
+def test_normalize_name_english_append_not_touching_jp_space():
+    """全角/半角スペース区切りでも後続が日本語なら除去しない（従来どおり空白のみ除去）。"""
+    assert normalize_listing_name("オープンレジデンス 祐天寺") == "オープンレジデンス祐天寺"
+    # 全体が英語名（先頭から英字）はエイリアス側で処理され、本ルールでは削られない
+    assert normalize_listing_name("THE TOYOSU TOWER") == "ザ豊洲タワー"
+
+
 # --- clean_listing_name ---
 
 
