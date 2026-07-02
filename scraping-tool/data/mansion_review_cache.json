@@ -605,7 +605,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/534139.html",
       "deviation_score": 52,
-      "estimated_price_man": 6156,
+      "estimated_price_man": 5726,
       "estimated_tsubo_price_man": 474,
       "estimated_m2_price_man": 144,
       "shinchiku_history_count": 52,
@@ -621,7 +621,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-17T15:11:31.480145"
+    "cached_at": "2026-07-02T04:17:31.143210"
   },
   "ライトコート四谷": {
     "data": {
@@ -16110,7 +16110,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/535178.html",
       "deviation_score": 36,
-      "estimated_price_man": 9780,
+      "estimated_price_man": 9465,
       "estimated_tsubo_price_man": 522,
       "estimated_m2_price_man": 158,
       "shinchiku_history_count": 36,
@@ -16126,7 +16126,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-10T17:18:29.160289"
+    "cached_at": "2026-07-02T04:17:40.554806"
   },
   "ナイスアーバン中野坂上": {
     "data": {
@@ -27024,7 +27024,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/534139.html",
       "deviation_score": 52,
-      "estimated_price_man": 6156,
+      "estimated_price_man": 5726,
       "estimated_tsubo_price_man": 474,
       "estimated_m2_price_man": 144,
       "shinchiku_history_count": 52,
@@ -27040,7 +27040,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-17T15:11:31.480145"
+    "cached_at": "2026-07-02T04:17:31.143210"
   },
   "オーベル練馬センティア1階": {
     "data": {
@@ -27259,5 +27259,27 @@
       ]
     },
     "cached_at": "2026-07-01T14:12:12.666808"
+  },
+  "プラウドタワー石神井公園6階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/42309.html",
+      "deviation_score": 11,
+      "estimated_price_man": 10218,
+      "estimated_tsubo_price_man": 528,
+      "estimated_m2_price_man": 160,
+      "shinchiku_history_count": 117,
+      "chuko_history_count": 42,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 14,
+          "layout": "",
+          "area_m2": 73.44,
+          "price_man": 9270,
+          "tsubo_price_man": 410.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T04:35:17.168417"
   }
 }
