@@ -1,7 +1,7 @@
 {
   "metrics": {
     "rehouse": {
-      "parsed": 3917,
+      "parsed": 3935,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -18,7 +18,7 @@
       }
     },
     "nomucom": {
-      "parsed": 5544,
+      "parsed": 5550,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -26,7 +26,7 @@
       }
     },
     "livable": {
-      "parsed": 3822,
+      "parsed": 3823,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -34,7 +34,7 @@
       }
     },
     "homes": {
-      "parsed": 5945,
+      "parsed": 5887,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -43,5 +43,5 @@
     }
   },
   "alerts": [],
-  "saved_at": "2026-07-02T09:35:48.174517+00:00"
+  "saved_at": "2026-07-02T12:16:37.400494+00:00"
 }
