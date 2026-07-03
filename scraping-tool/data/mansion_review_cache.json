@@ -24596,20 +24596,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/15221.html",
       "deviation_score": 40,
+      "estimated_price_man": 9932,
+      "estimated_tsubo_price_man": 577,
+      "estimated_m2_price_man": 175,
       "shinchiku_history_count": 40,
-      "chuko_history_count": 16,
+      "chuko_history_count": 17,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 43.84,
-          "price_man": 4423,
-          "tsubo_price_man": 329.0
+          "area_m2": 44.87,
+          "price_man": 4721,
+          "tsubo_price_man": 340.0
         }
       ]
     },
-    "cached_at": "2026-06-19T11:14:19.401190"
+    "cached_at": "2026-07-03T13:33:20.025795"
   },
   "ブランズシティ品川勝島14階": {
     "data": {
@@ -27563,5 +27566,93 @@
       "deviation_score": 7
     },
     "cached_at": "2026-07-03T09:59:33.766174"
+  },
+  "クレストラフィーネ板橋本町3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1423131.html",
+      "deviation_score": 63,
+      "estimated_price_man": 9652,
+      "estimated_tsubo_price_man": 444,
+      "estimated_m2_price_man": 135,
+      "shinchiku_history_count": 63,
+      "chuko_history_count": 11,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 69.48,
+          "price_man": 8648,
+          "tsubo_price_man": 411.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T04:37:08.133261"
+  },
+  "マーク・ゼロワン曳舟タワー11階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17712.html",
+      "deviation_score": 14,
+      "estimated_price_man": 12346,
+      "estimated_tsubo_price_man": 575,
+      "estimated_m2_price_man": 174,
+      "shinchiku_history_count": 145,
+      "chuko_history_count": 55,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 12,
+          "layout": "",
+          "area_m2": 67.49,
+          "price_man": 5794,
+          "tsubo_price_man": 283.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-03T13:33:29.762525"
+  },
+  "マーク・ゼロワン曳舟タワー": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17712.html",
+      "deviation_score": 14,
+      "estimated_price_man": 12346,
+      "estimated_tsubo_price_man": 575,
+      "estimated_m2_price_man": 174,
+      "shinchiku_history_count": 145,
+      "chuko_history_count": 55,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 12,
+          "layout": "",
+          "area_m2": 67.49,
+          "price_man": 5794,
+          "tsubo_price_man": 283.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-03T13:33:29.762525"
+  },
+  "オープンレジデンシア千川フロント": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1445174.html",
+      "deviation_score": 24,
+      "estimated_price_man": 7341,
+      "estimated_tsubo_price_man": 540,
+      "estimated_m2_price_man": 164,
+      "shinchiku_history_count": 24,
+      "chuko_history_count": 6,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 46.94,
+          "price_man": 7768,
+          "tsubo_price_man": 551.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-03T13:33:38.586547"
   }
 }
