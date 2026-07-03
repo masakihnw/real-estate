@@ -6251,25 +6251,10 @@
   },
   "東京シティトリエ": {
     "data": {
-      "building_url": "https://www.mansion-review.jp/mansion/12635.html",
-      "deviation_score": 19,
-      "estimated_price_man": 10036,
-      "estimated_tsubo_price_man": 527,
-      "estimated_m2_price_man": 160,
-      "shinchiku_history_count": 191,
-      "chuko_history_count": 147,
-      "sales_history": [
-        {
-          "end_date": "",
-          "floor": 10,
-          "layout": "",
-          "area_m2": 70.35,
-          "price_man": 6416,
-          "tsubo_price_man": 303.0
-        }
-      ]
+      "building_url": "https://www.mansion-review.jp/mansion/895050.html",
+      "deviation_score": 7
     },
-    "cached_at": "2026-06-14T04:57:30.041872"
+    "cached_at": "2026-07-03T03:56:56.509664"
   },
   "パークホームズ町屋": {
     "data": {
@@ -22343,23 +22328,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11427.html",
       "deviation_score": 34,
-      "estimated_price_man": 12128,
-      "estimated_tsubo_price_man": 484,
-      "estimated_m2_price_man": 147,
+      "estimated_price_man": 12007,
+      "estimated_tsubo_price_man": 479,
+      "estimated_m2_price_man": 145,
       "shinchiku_history_count": 34,
-      "chuko_history_count": 37,
+      "chuko_history_count": 38,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 76.59,
-          "price_man": 7362,
-          "tsubo_price_man": 313.0
+          "area_m2": 76.74,
+          "price_man": 7452,
+          "tsubo_price_man": 317.0
         }
       ]
     },
-    "cached_at": "2026-06-10T11:34:52.312415"
+    "cached_at": "2026-06-24T14:15:19.776214"
   },
   "パークシティ高田馬場6階": {
     "data": {
@@ -27424,5 +27409,42 @@
       ]
     },
     "cached_at": "2026-07-02T12:21:04.214567"
+  },
+  "パークホームズセントラルシティ中央湊8階": {
+    "data": null,
+    "cached_at": "2026-07-03T03:56:41.039173"
+  },
+  "パークホームズセントラルシティ中央湊": {
+    "data": null,
+    "cached_at": "2026-07-03T03:56:41.039173"
+  },
+  "ラ・アトレ杉並松庵": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/12090.html",
+      "deviation_score": 8,
+      "estimated_price_man": 8663,
+      "estimated_tsubo_price_man": 268,
+      "estimated_m2_price_man": 81,
+      "shinchiku_history_count": 8,
+      "chuko_history_count": 11,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 104.91,
+          "price_man": 6297,
+          "tsubo_price_man": 199.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-03T03:56:49.032553"
+  },
+  "東京シティトリエ9階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/895050.html",
+      "deviation_score": 7
+    },
+    "cached_at": "2026-07-03T03:56:56.509664"
   }
 }
