@@ -1,14 +1,5 @@
 {
   "metrics": {
-    "rehouse": {
-      "parsed": 3965,
-      "parse_failures": 0,
-      "empty_pages": 0,
-      "finish_reasons": {
-        "completed": 21,
-        "early_exit": 2
-      }
-    },
     "suumo": {
       "parsed": 4357,
       "parse_failures": 0,
@@ -25,6 +16,15 @@
         "completed": 1
       }
     },
+    "rehouse": {
+      "parsed": 3969,
+      "parse_failures": 0,
+      "empty_pages": 0,
+      "finish_reasons": {
+        "completed": 21,
+        "early_exit": 2
+      }
+    },
     "livable": {
       "parsed": 3925,
       "parse_failures": 0,
@@ -34,7 +34,7 @@
       }
     },
     "homes": {
-      "parsed": 6014,
+      "parsed": 5946,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -43,5 +43,5 @@
     }
   },
   "alerts": [],
-  "saved_at": "2026-07-04T11:30:44.020650+00:00"
+  "saved_at": "2026-07-04T12:43:22.352310+00:00"
 }

@@ -27895,5 +27895,49 @@
       ]
     },
     "cached_at": "2026-07-04T11:32:10.274345"
+  },
+  "イニシア千住曙町23階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/39735.html",
+      "deviation_score": 51,
+      "estimated_price_man": 10271,
+      "estimated_tsubo_price_man": 374,
+      "estimated_m2_price_man": 113,
+      "shinchiku_history_count": 515,
+      "chuko_history_count": 281,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 9,
+          "layout": "",
+          "area_m2": 77.56,
+          "price_man": 5185,
+          "tsubo_price_man": 218.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T04:23:25.897795"
+  },
+  "ニューライズシティ東京ベイハイライズ2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17546.html",
+      "deviation_score": 35,
+      "estimated_price_man": 9638,
+      "estimated_tsubo_price_man": 389,
+      "estimated_m2_price_man": 118,
+      "shinchiku_history_count": 357,
+      "chuko_history_count": 151,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 75.61,
+          "price_man": 5440,
+          "tsubo_price_man": 238.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T04:31:03.897978"
   }
 }
