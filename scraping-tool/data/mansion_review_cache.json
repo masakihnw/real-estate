@@ -27939,5 +27939,105 @@
       ]
     },
     "cached_at": "2026-06-26T04:31:03.897978"
+  },
+  "弊社限定【ザ・パームス中野II】都心を使いこなし、心地...": {
+    "data": null,
+    "cached_at": "2026-07-05T04:05:17.022229"
+  },
+  "弊社限定ザ・パームス中野II都心を使いこなし、心地...": {
+    "data": null,
+    "cached_at": "2026-07-05T04:05:17.022229"
+  },
+  "アデッソ新宿若松町1101号室": {
+    "data": null,
+    "cached_at": "2026-07-05T04:05:20.452416"
+  },
+  "パークタワー東雲12階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/535018.html",
+      "deviation_score": 58,
+      "estimated_price_man": 11857,
+      "estimated_tsubo_price_man": 633,
+      "estimated_m2_price_man": 192,
+      "shinchiku_history_count": 585,
+      "chuko_history_count": 495,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 26,
+          "layout": "",
+          "area_m2": 69.6,
+          "price_man": 8294,
+          "tsubo_price_man": 394.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-26T04:29:27.057726"
+  },
+  "ダイナシティ田端": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/18655.html",
+      "deviation_score": 38,
+      "estimated_price_man": 6242,
+      "estimated_tsubo_price_man": 328,
+      "estimated_m2_price_man": 100,
+      "shinchiku_history_count": 38,
+      "chuko_history_count": 37,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 36.49,
+          "price_man": 2698,
+          "tsubo_price_man": 237.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-05T04:05:29.703538"
+  },
+  "アデニウム梅ヶ丘JP3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11658.html",
+      "deviation_score": 22,
+      "estimated_price_man": 9043,
+      "estimated_tsubo_price_man": 404,
+      "estimated_m2_price_man": 123,
+      "shinchiku_history_count": 22,
+      "chuko_history_count": 14,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 70.31,
+          "price_man": 6207,
+          "tsubo_price_man": 293.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-05T04:05:38.152397"
+  },
+  "アデニウム梅ヶ丘JP": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11658.html",
+      "deviation_score": 22,
+      "estimated_price_man": 9043,
+      "estimated_tsubo_price_man": 404,
+      "estimated_m2_price_man": 123,
+      "shinchiku_history_count": 22,
+      "chuko_history_count": 14,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 70.31,
+          "price_man": 6207,
+          "tsubo_price_man": 293.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-05T04:05:38.152397"
   }
 }
