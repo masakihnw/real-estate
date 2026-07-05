@@ -18909,15 +18909,15 @@
     },
     {
       "date": "2026-07-05",
-      "total_listings": 1242,
-      "new_count": 1242,
+      "total_listings": 1243,
+      "new_count": 1243,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 11009,
+      "avg_price_man": 11007,
       "median_price_man": 10980,
       "price_distribution": {
-        "under_10000": 376,
+        "under_10000": 377,
         "10000_11000": 272,
         "11000_12000": 325,
         "over_12000": 268,
@@ -19009,8 +19009,8 @@
           "max_price_man": 12999
         },
         "荒川区": {
-          "count": 30,
-          "avg_price_man": 10667,
+          "count": 31,
+          "avg_price_man": 10629,
           "min_price_man": 8680,
           "max_price_man": 12980
         },
