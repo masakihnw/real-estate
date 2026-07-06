@@ -6871,8 +6871,8 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/40274.html",
       "deviation_score": 0,
-      "estimated_price_man": 9146,
-      "estimated_tsubo_price_man": 704,
+      "estimated_price_man": 9548,
+      "estimated_tsubo_price_man": 702,
       "estimated_m2_price_man": 213,
       "shinchiku_history_count": 0,
       "chuko_history_count": 36,
@@ -6882,12 +6882,12 @@
           "floor": 4,
           "layout": "",
           "area_m2": 50.79,
-          "price_man": 5687,
+          "price_man": 5684,
           "tsubo_price_man": 368.0
         }
       ]
     },
-    "cached_at": "2026-06-18T11:16:10.453829"
+    "cached_at": "2026-07-06T04:13:45.340195"
   },
   "ブリリア新川一丁目": {
     "data": {
@@ -23537,45 +23537,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/12236.html",
       "deviation_score": 14,
-      "estimated_price_man": 11404,
-      "estimated_tsubo_price_man": 503,
-      "estimated_m2_price_man": 153,
+      "estimated_price_man": 11577,
+      "estimated_tsubo_price_man": 491,
+      "estimated_m2_price_man": 149,
       "shinchiku_history_count": 14,
-      "chuko_history_count": 20,
+      "chuko_history_count": 22,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 90.48,
-          "price_man": 11296,
-          "tsubo_price_man": 415.0
+          "area_m2": 89.2,
+          "price_man": 11260,
+          "tsubo_price_man": 420.0
         }
       ]
     },
-    "cached_at": "2026-06-15T12:59:18.608053"
+    "cached_at": "2026-07-06T04:13:25.318147"
   },
   "パーク・コート落合台": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/12236.html",
       "deviation_score": 14,
-      "estimated_price_man": 11404,
-      "estimated_tsubo_price_man": 503,
-      "estimated_m2_price_man": 153,
+      "estimated_price_man": 11577,
+      "estimated_tsubo_price_man": 491,
+      "estimated_m2_price_man": 149,
       "shinchiku_history_count": 14,
-      "chuko_history_count": 20,
+      "chuko_history_count": 22,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 90.48,
-          "price_man": 11296,
-          "tsubo_price_man": 415.0
+          "area_m2": 89.2,
+          "price_man": 11260,
+          "tsubo_price_man": 420.0
         }
       ]
     },
-    "cached_at": "2026-06-15T12:59:18.608053"
+    "cached_at": "2026-07-06T04:13:25.318147"
   },
   "マイキャッスル駒込パークヒルズ3階": {
     "data": {
@@ -28193,5 +28193,57 @@
       ]
     },
     "cached_at": "2026-07-05T11:44:48.523082"
+  },
+  "弊社限定【ザ・パームス東中野II】都心を使いこなし、心...": {
+    "data": null,
+    "cached_at": "2026-07-06T04:13:16.973787"
+  },
+  "弊社限定ザ・パームス東中野II都心を使いこなし、心...": {
+    "data": null,
+    "cached_at": "2026-07-06T04:13:16.973787"
+  },
+  "パークホームズセントラルシティ中央区湊〜ペット×新富町6分〜8階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13258.html",
+      "deviation_score": 12,
+      "estimated_price_man": 11447,
+      "estimated_tsubo_price_man": 664,
+      "estimated_m2_price_man": 201,
+      "shinchiku_history_count": 128,
+      "chuko_history_count": 82,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 67.1,
+          "price_man": 6375,
+          "tsubo_price_man": 317.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-06T04:13:34.966582"
+  },
+  "パークホームズセントラルシティ中央区湊〜": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13258.html",
+      "deviation_score": 12,
+      "estimated_price_man": 11447,
+      "estimated_tsubo_price_man": 664,
+      "estimated_m2_price_man": 201,
+      "shinchiku_history_count": 128,
+      "chuko_history_count": 82,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 67.1,
+          "price_man": 6375,
+          "tsubo_price_man": 317.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-06T04:13:34.966582"
   }
 }
