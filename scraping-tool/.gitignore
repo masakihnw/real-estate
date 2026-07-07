@@ -50,3 +50,6 @@ results/**/old/
 # 買い手コンテキスト生成物（generate_buyer_context.py --write が再生成。
 # 個人情報を含む Supabase 適用用SQL。コミットせずユーザーがレビューして適用する）
 out/
+
+# Supabase 論理バックアップ（PII 含む・GHA artifact で保管、コミット禁止）
+backups/

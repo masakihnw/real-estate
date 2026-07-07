@@ -1,0 +1,151 @@
+name: Cron Watchdog
+
+# pg_cron ジョブ（commute-yahoo-transit-daily / send-morning-slack-drafts）の
+# 独立死活監視。無料プランは無操作が続くとプロジェクトが一時停止され pg_cron も
+# 止まるため、外部（GHA）から health_check_cron_jobs RPC を叩いて検知する。
+#   - RPC が非200        → プロジェクト一時停止/障害の可能性
+#   - is_alert=true の行  → 失効/直近失敗したジョブ
+# いずれも GitHub Issue を起票し、解消時に自動クローズする（notification-watchdog と同方式）。
+# 日次 JST 09:30（UTC 00:30）に実行。両 cron（UTC 18:00 / 23:00）の後。
+
+on:
+  schedule:
+    - cron: '30 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-cron-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+
+    steps:
+      - name: Query cron health RPC
+        id: check
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X POST "${SUPABASE_URL}/rest/v1/rpc/health_check_cron_jobs" \
+            -H "apikey: ${SUPABASE_SERVICE_ROLE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{}')
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            # 非200 はプロジェクト一時停止や障害を疑う。フェイルクローズで起票する。
+            echo "::warning::Supabase RPC error: HTTP $HTTP_CODE"
+            echo "alert_count=1" >> "$GITHUB_OUTPUT"
+            DELIMITER="$(openssl rand -hex 8)"
+            echo "details<<${DELIMITER}" >> "$GITHUB_OUTPUT"
+            echo "- health_check_cron_jobs RPC が HTTP ${HTTP_CODE} を返しました（プロジェクト一時停止/障害の可能性）" >> "$GITHUB_OUTPUT"
+            echo "${DELIMITER}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          ALERT_COUNT=$(echo "$BODY" | python3 -c "import sys,json; print(sum(1 for r in json.load(sys.stdin) if r.get('is_alert')))" 2>/dev/null || echo "error")
+
+          if ! [[ "$ALERT_COUNT" =~ ^[0-9]+$ ]]; then
+            echo "::warning::ALERT_COUNT is not numeric: '$ALERT_COUNT'"
+            echo "alert_count=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "alert_count=$ALERT_COUNT" >> "$GITHUB_OUTPUT"
+          echo "::notice::Cron jobs in alert: $ALERT_COUNT"
+
+          if [ "$ALERT_COUNT" -gt 0 ]; then
+            DETAILS=$(echo "$BODY" | python3 -c "
+          import sys, json
+          for r in json.load(sys.stdin):
+              if r.get('is_alert'):
+                  print(f\"- {r['jobname']} (schedule={r['schedule']}): {r['detail']}\")
+          ")
+            DELIMITER="$(openssl rand -hex 8)"
+            echo "details<<${DELIMITER}" >> "$GITHUB_OUTPUT"
+            echo "$DETAILS" >> "$GITHUB_OUTPUT"
+            echo "${DELIMITER}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Ensure label exists
+        if: steps.check.outputs.alert_count != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "cron-watchdog" \
+            --repo "${{ github.repository }}" \
+            --description "pg_cron ジョブ障害/プロジェクト一時停止の自動検知" \
+            --color "D93F0B" \
+            2>/dev/null || true
+
+      - name: Check for existing open issue
+        if: steps.check.outputs.alert_count != '0'
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COUNT=$(gh issue list \
+            --repo "${{ github.repository }}" \
+            --label "cron-watchdog" \
+            --state open \
+            --json number \
+            --jq 'length')
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Issue
+        if: steps.check.outputs.alert_count != '0' && steps.existing.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALERT_COUNT: ${{ steps.check.outputs.alert_count }}
+          DETAILS: ${{ steps.check.outputs.details }}
+        run: |
+          cat > /tmp/cron-watchdog-issue.md <<BODY
+          ## 検出内容
+
+          pg_cron ジョブに ${ALERT_COUNT} 件の異常を検出しました。
+          プロジェクトの一時停止（無料プランの無操作 pause）、または cron/Edge Function
+          の障害の可能性があります。
+
+          ### 異常ジョブ
+
+          ${DETAILS}
+
+          ### 対処手順
+
+          1. Supabase ダッシュボードでプロジェクトが ACTIVE か確認（PAUSED なら Restore）
+          2. \`SELECT * FROM cron.job_run_details ORDER BY start_time DESC LIMIT 20;\` で失敗要因を確認
+          3. pg_net → Edge Function 呼び出し（commute-yahoo-transit）のログを確認
+          4. \`send_pending_slack_drafts()\` 関数のエラーを確認
+
+          ---
+          *[cron-watchdog](.github/workflows/cron-watchdog.yml) が自動作成。解決後にクローズしてください。*
+          BODY
+
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "🚨 pg_cron ジョブ障害の可能性: ${ALERT_COUNT}件" \
+            --label "cron-watchdog" \
+            --body-file /tmp/cron-watchdog-issue.md
+
+      - name: Auto-close resolved issues
+        if: steps.check.outputs.alert_count == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUES=$(gh issue list \
+            --repo "${{ github.repository }}" \
+            --label "cron-watchdog" \
+            --state open \
+            --json number \
+            --jq '.[].number')
+
+          for NUM in $ISSUES; do
+            gh issue close "$NUM" \
+              --repo "${{ github.repository }}" \
+              --comment "✅ pg_cron ジョブが正常化しました。自動クローズします。"
+          done

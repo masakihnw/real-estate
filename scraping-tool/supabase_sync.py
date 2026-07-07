@@ -965,6 +965,15 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
              .update({"is_active": False}, returning="minimal")
              .in_("id", batch_ids)
              .execute())
+            # 掲載終了物件の画像URLはリンク切れ候補になるため同時にクリアする。
+            # これを怠ると非アクティブ物件に suumo_images が残り image_urls_stale が累積する。
+            # 打ち切りラン（truncated）では上流の early-return で本ブロック自体に到達しない
+            # ため、掲載継続中の物件の画像を誤って消すことはない（フェイルクローズ）。
+            (client.table("enrichments")
+             .update({"suumo_images": None, "floor_plan_images": None},
+                     returning="minimal")
+             .in_("listing_id", batch_ids)
+             .execute())
 
     # 同じ値になる consecutive_misses 更新は .in_() でまとめる
     for new_misses, src_ids in gplan.miss_increment_groups.items():

@@ -54,6 +54,9 @@ jobs:
           run_id = os.environ.get("GH_RUN_ID", "")
 
           # 実際の通知本文と同じ体裁のサンプル（テストと明示）。
+          # OGP（リンクプレビュー）抑止の確認用に、本番通知と同種のリンク
+          # （GitHub レポート・htmlpreview 地図・素の URL）を含める。
+          # これらが OGP カードとして展開されなければ unfurl 抑止が効いている。
           parent = "\n".join([
               "🧪 *スレッド通知スモークテスト*（本番動作確認・自動投稿）",
               f"run: {run_id}",
@@ -61,7 +64,11 @@ jobs:
               "*■ 今回の変更*",
               "  ❌ *削除*: 2件（詳細はスレッドに表示）",
               "",
-              "_これはテスト投稿です。削除物件の明細がこの投稿のスレッドに続いて表示されれば成功です。_",
+              "📄 <https://github.com/masakihnw/real-estate/blob/main/README.md|レポートを確認>",
+              "📌 <https://htmlpreview.github.io/?https://raw.githubusercontent.com/masakihnw/real-estate/main/README.md|地図で見る>",
+              "素のURL: https://www.google.com/maps",
+              "",
+              "_テスト投稿です。上記リンクが OGP カードとして展開されず、削除物件の明細がスレッドに続けば成功です。_",
           ])
 
           # 実際の削除物件ブロックと同じ整形関数を使う（合成データ）。

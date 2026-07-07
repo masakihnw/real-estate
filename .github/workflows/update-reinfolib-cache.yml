@@ -177,7 +177,9 @@ jobs:
           gh workflow run enrich-and-report.yml --ref ${{ github.ref_name }}
 
       - name: Notify new data to Slack
-        if: steps.commit.outputs.has_changes == 'true'
+        # Slack 通知停止中（2026-07 物件購入確定）。復帰時は `if: false` を
+        # `if: steps.commit.outputs.has_changes == 'true'` に戻す。詳細: docs/purchase-decision-toyocho.md
+        if: false
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
@@ -188,7 +190,8 @@ jobs:
           fi
 
       - name: Notify failure to Slack
-        if: failure()
+        # Slack 通知停止中（2026-07 物件購入確定）。復帰時は `if: false` を `if: failure()` に戻す。
+        if: false
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |

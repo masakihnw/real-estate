@@ -28,5 +28,17 @@
       "mcp__Supabase__reset_branch",
       "mcp__Supabase__rebase_branch"
     ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/qa_personas_autoload.sh\""
+          }
+        ]
+      }
+    ]
   }
 }

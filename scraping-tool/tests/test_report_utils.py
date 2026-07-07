@@ -182,6 +182,41 @@ def test_strip_name_brackets_noops_and_failsafe():
     assert strip_name_brackets("【リノベ】") == "【リノベ】"
 
 
+def test_normalize_name_dash_katakana_kanji_boundary():
+    """カタカナと漢字の境界の長音異体字も「ー」に統一（実データ 250872/282092）。"""
+    a = normalize_listing_name("ゼファー浅草馬道通り")   # ー U+30FC
+    b = normalize_listing_name("ゼファ―浅草馬道通り")   # ― U+2015
+    assert a == b == "ゼファー浅草馬道通り"
+
+
+def test_normalize_name_dash_before_alnum_preserved():
+    """カタカナ直後でも後続が英数字なら棟番号扱いで変換しない。"""
+    assert "ー" not in normalize_listing_name("メゾン-101")
+    assert normalize_listing_name("コーポ-A") == "コーポ-A"
+
+
+def test_normalize_name_strips_area_suffix():
+    """「建物名/補足地名」の補足地名サフィックスを除去（実データ 174008/278352）。"""
+    a = normalize_listing_name("サンクレイドルレヴィール池袋")
+    b = normalize_listing_name("サンクレイドルレヴィール池袋/上池袋２丁目")
+    assert a == b == "サンクレイドルレヴィール池袋"
+
+
+def test_normalize_name_strips_english_append():
+    """日本語建物名に空白区切りで併記された英語名を除去（実データ 49292/120770）。"""
+    canonical = normalize_listing_name("ブリリア有明スカイタワー")
+    full = normalize_listing_name("ブリリア有明スカイタワー　Ｂｒｉｌｌｉａ有明ＳｋｙＴｏｗｅｒ 22階")
+    half = normalize_listing_name("ブリリア有明スカイタワー Brillia有明SkyTower")
+    assert canonical == full == half == "ブリリア有明スカイタワー"
+
+
+def test_normalize_name_english_append_not_touching_jp_space():
+    """全角/半角スペース区切りでも後続が日本語なら除去しない（従来どおり空白のみ除去）。"""
+    assert normalize_listing_name("オープンレジデンス 祐天寺") == "オープンレジデンス祐天寺"
+    # 全体が英語名（先頭から英字）はエイリアス側で処理され、本ルールでは削られない
+    assert normalize_listing_name("THE TOYOSU TOWER") == "ザ豊洲タワー"
+
+
 # --- clean_listing_name ---
 
 
