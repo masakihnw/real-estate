@@ -465,7 +465,7 @@ def sync_scrape_results(
                        they're missing from the batch. Prevents cross-contamination
                        between chuko/shinchiku when they share the same source.
     """
-    from report_utils import identity_key_str, normalize_listing_name
+    from report_utils import identity_key_str, normalize_listing_name, strip_name_brackets
 
     summary = {"new": 0, "updated": 0, "removed": 0, "unchanged": 0, "reappeared": 0}
     seen_listing_ids: set[int] = set()
@@ -477,7 +477,7 @@ def sync_scrape_results(
 
         normalized_name = normalize_listing_name(item.get("name") or "")
         listing_data = {
-            "name": item.get("name", ""),
+            "name": strip_name_brackets(item.get("name", "")),
             "normalized_name": normalized_name,
             "address": item.get("address"),
             "layout": item.get("layout"),

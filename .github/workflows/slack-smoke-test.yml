@@ -1,0 +1,93 @@
+name: Slack Thread Smoke Test
+
+# Slack スレッド返信（削除物件ブロック）の本番動作確認用の手動ワークフロー。
+# slack_notify.py の実際の送信関数（send_slack_via_web_api_chunked）を
+# 本番 Secret（SLACK_BOT_TOKEN / SLACK_CHANNEL_ID）で叩き、
+# 「本文（サンプル）＋ ❌ 削除された物件 のスレッド返信」を1回だけ投稿する。
+#
+# ※ slack_notify.py main() はあえて呼ばない（Supabase の通知基準時刻を進めたり
+#   実データを二重通知する副作用を避けるため）。合成データで送信パートのみ検証する。
+#
+# 使い方: Actions タブ → "Slack Thread Smoke Test" → Run workflow
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        working-directory: scraping-tool
+        run: pip install -r requirements.txt
+
+      - name: Run Slack thread smoke test
+        working-directory: scraping-tool
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          GH_RUN_ID: ${{ github.run_id }}
+        run: |
+          if [ -z "${SLACK_BOT_TOKEN:-}" ] || [ -z "${SLACK_CHANNEL_ID:-}" ]; then
+            echo "::error::SLACK_BOT_TOKEN / SLACK_CHANNEL_ID が未設定です。スレッド返信モードは無効のままです。"
+            exit 1
+          fi
+          python3 - <<'PY'
+          import os
+          from slack_notify import (
+              build_removed_listings_section,
+              send_slack_via_web_api_chunked,
+          )
+
+          token = os.environ["SLACK_BOT_TOKEN"]
+          channel = os.environ["SLACK_CHANNEL_ID"]
+          run_id = os.environ.get("GH_RUN_ID", "")
+
+          # 実際の通知本文と同じ体裁のサンプル（テストと明示）。
+          # OGP（リンクプレビュー）抑止の確認用に、本番通知と同種のリンク
+          # （GitHub レポート・htmlpreview 地図・素の URL）を含める。
+          # これらが OGP カードとして展開されなければ unfurl 抑止が効いている。
+          parent = "\n".join([
+              "🧪 *スレッド通知スモークテスト*（本番動作確認・自動投稿）",
+              f"run: {run_id}",
+              "",
+              "*■ 今回の変更*",
+              "  ❌ *削除*: 2件（詳細はスレッドに表示）",
+              "",
+              "📄 <https://github.com/masakihnw/real-estate/blob/main/README.md|レポートを確認>",
+              "📌 <https://htmlpreview.github.io/?https://raw.githubusercontent.com/masakihnw/real-estate/main/README.md|地図で見る>",
+              "素のURL: https://www.google.com/maps",
+              "",
+              "_テスト投稿です。上記リンクが OGP カードとして展開されず、削除物件の明細がスレッドに続けば成功です。_",
+          ])
+
+          # 実際の削除物件ブロックと同じ整形関数を使う（合成データ）。
+          removed = [
+              {"name": "スモークテスト物件A", "price_man": 5000,
+               "floor_position": 3, "floor_total": 10, "address": "東京都港区"},
+              {"name": "スモークテスト物件B", "price_man": 4200,
+               "floor_position": 7, "floor_total": 12, "address": "東京都新宿区"},
+          ]
+          section = build_removed_listings_section(removed)
+
+          parent_ts = send_slack_via_web_api_chunked(token, channel, parent)
+          if not parent_ts:
+              raise SystemExit("親メッセージの送信に失敗しました（トークン/スコープ/チャンネル招待を確認）")
+          print(f"親メッセージ送信OK ts={parent_ts}")
+
+          reply_ts = send_slack_via_web_api_chunked(token, channel, section, thread_ts=parent_ts)
+          if not reply_ts:
+              raise SystemExit("削除物件ブロックのスレッド返信に失敗しました")
+          print(f"スレッド返信送信OK ts={reply_ts}")
+          print("SUCCESS: 本文＋削除物件のスレッド返信を投稿しました")
+          PY

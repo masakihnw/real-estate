@@ -72,13 +72,19 @@
 ### 停止した内容
 
 1. **Python 経由の全 Slack 送信**（本通知・健全性アラート・通知ドラフト）
-   - `scraping-tool/slack_notify.py` の `send_slack_message()` に一元スイッチを追加。
-   - 既定で無効。停止中は実際の POST を行わず「成功」として扱うため、通知ドラフトは
-     pending に滞留せず、`notification-watchdog` の誤検知も起きない。
-2. **GitHub Actions の curl 直送通知（4ステップ）** を `if: false` で無効化。
+   - `scraping-tool/slack_notify.py` に一元スイッチ `slack_notifications_enabled()`（既定で無効）を追加し、
+     Slack へ実 POST する**2つの低レベル送信関数の両方**を遮断:
+     - `send_slack_message()`（Incoming Webhook 経路）
+     - `send_slack_via_web_api()`（Bot トークン `chat.postMessage` 経路＝スレッド返信モード。
+       `SLACK_BOT_TOKEN` + `SLACK_CHANNEL_ID` 設定時の主送信経路）
+   - 停止中は実際の POST を行わず「成功」として扱うため、通知ドラフトは pending に滞留せず、
+     `notification-watchdog` の誤検知も起きない。
+   - `slack-smoke-test.yml`（手動実行のみ）も上記 `send_slack_via_web_api` を使うため、停止中は実送信されない。
+2. **GitHub Actions の curl 直送通知（5ステップ）** を `if: false` で無効化。
    - `enrich-and-report.yml`（失敗通知）
    - `scrape-listings.yml`（失敗通知）
    - `update-reinfolib-cache.yml`（新着通知・失敗通知）
+   - `supabase-backup.yml`（失敗通知 / `SLACK_ALERT_WEBHOOK_URL`）
 
 ### 継続しているもの
 
@@ -98,5 +104,5 @@
 
 1. 環境変数 `SLACK_NOTIFICATIONS_ENABLED=1` を設定（GitHub Actions の finalize ジョブ env、
    またはローカル実行時）。または `slack_notifications_enabled()` の既定値を `"1"` に戻す。
-2. 上記 4 ワークフローの `if: false` を元の条件（`if: failure()` /
+2. 上記 5 ステップの `if: false` を元の条件（`if: failure()` /
    `if: steps.commit.outputs.has_changes == 'true'`）に戻す。各ステップにコメントで明記済み。

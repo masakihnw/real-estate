@@ -134,6 +134,89 @@ def test_normalize_name_known_alias_toyosu():
     assert normalize_listing_name("ザ豊洲タワー") == "ザ豊洲タワー"
 
 
+def test_normalize_name_typo_misawa_homes():
+    """OCR/誤記「ミサワホーズ」は「ミサワホームズ」に補正される（実データ id=272763）。"""
+    a = normalize_listing_name("ミサワホーズ東大井")
+    b = normalize_listing_name("ミサワホームズ東大井")
+    assert a == b == "ミサワホームズ東大井"
+
+
+def test_normalize_name_leading_the_article():
+    """先頭の英語冠詞 THE はカタカナ名で「ザ」に統一される（実データ 174096/266409）。"""
+    a = normalize_listing_name("THEパームス西戸山")
+    b = normalize_listing_name("ザ・パームス西戸山")
+    assert a == b == "ザパームス西戸山"
+    # 大文字小文字を問わない
+    assert normalize_listing_name("Theパークハウス") == "ザパークハウス"
+
+
+def test_normalize_name_leading_the_not_romaji():
+    """full ローマ字名（THE の後がカタカナでない）は THE→ザ 変換しない（エイリアス側で処理）。"""
+    # THETOYOSUTOWER は T が続くため THE→ザ にならず、エイリアスで「ザ豊洲タワー」に
+    assert normalize_listing_name("THE TOYOSU TOWER") == "ザ豊洲タワー"
+
+
+def test_strip_name_brackets_trailing_tag():
+    """末尾の【リノベ】等の装飾タグは除去される（実データ 174246/250868）。"""
+    from report_utils import strip_name_brackets
+    assert strip_name_brackets("テラス加賀　【リノベ】") == "テラス加賀"
+    assert strip_name_brackets("コスモ東京ベイタワー　【リノベ】") == "コスモ東京ベイタワー"
+
+
+def test_strip_name_brackets_leading_building_name():
+    """先頭【建物名】+キャッチコピーは括弧内の建物名を採用（実データ 97870）。"""
+    from report_utils import strip_name_brackets
+    assert strip_name_brackets(
+        "【マーク・ゼロワン曳舟タワー】駅近好立地　スカイツリ…"
+    ) == "マーク・ゼロワン曳舟タワー"
+
+
+def test_strip_name_brackets_noops_and_failsafe():
+    """ブラケットが無ければそのまま。空になる場合は元名を返す。"""
+    from report_utils import strip_name_brackets
+    assert strip_name_brackets("プラウド目黒") == "プラウド目黒"
+    assert strip_name_brackets("オープンレジデンス 祐天寺") == "オープンレジデンス 祐天寺"
+    # 括弧内が特徴タグ（先頭）なら後続を採用
+    assert strip_name_brackets("【ペット可】パークハウス南向き") == "パークハウス南向き"
+    # 全体が【】のみ → 元名フォールバック
+    assert strip_name_brackets("【リノベ】") == "【リノベ】"
+
+
+def test_normalize_name_dash_katakana_kanji_boundary():
+    """カタカナと漢字の境界の長音異体字も「ー」に統一（実データ 250872/282092）。"""
+    a = normalize_listing_name("ゼファー浅草馬道通り")   # ー U+30FC
+    b = normalize_listing_name("ゼファ―浅草馬道通り")   # ― U+2015
+    assert a == b == "ゼファー浅草馬道通り"
+
+
+def test_normalize_name_dash_before_alnum_preserved():
+    """カタカナ直後でも後続が英数字なら棟番号扱いで変換しない。"""
+    assert "ー" not in normalize_listing_name("メゾン-101")
+    assert normalize_listing_name("コーポ-A") == "コーポ-A"
+
+
+def test_normalize_name_strips_area_suffix():
+    """「建物名/補足地名」の補足地名サフィックスを除去（実データ 174008/278352）。"""
+    a = normalize_listing_name("サンクレイドルレヴィール池袋")
+    b = normalize_listing_name("サンクレイドルレヴィール池袋/上池袋２丁目")
+    assert a == b == "サンクレイドルレヴィール池袋"
+
+
+def test_normalize_name_strips_english_append():
+    """日本語建物名に空白区切りで併記された英語名を除去（実データ 49292/120770）。"""
+    canonical = normalize_listing_name("ブリリア有明スカイタワー")
+    full = normalize_listing_name("ブリリア有明スカイタワー　Ｂｒｉｌｌｉａ有明ＳｋｙＴｏｗｅｒ 22階")
+    half = normalize_listing_name("ブリリア有明スカイタワー Brillia有明SkyTower")
+    assert canonical == full == half == "ブリリア有明スカイタワー"
+
+
+def test_normalize_name_english_append_not_touching_jp_space():
+    """全角/半角スペース区切りでも後続が日本語なら除去しない（従来どおり空白のみ除去）。"""
+    assert normalize_listing_name("オープンレジデンス 祐天寺") == "オープンレジデンス祐天寺"
+    # 全体が英語名（先頭から英字）はエイリアス側で処理され、本ルールでは削られない
+    assert normalize_listing_name("THE TOYOSU TOWER") == "ザ豊洲タワー"
+
+
 # --- clean_listing_name ---
 
 

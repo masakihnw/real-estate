@@ -304,6 +304,8 @@ class TestSyncSourceListingsIntegration:
         tables: dict[str, MagicMock] = {}
         upsert_batches: dict[str, list] = {"listings": [], "listing_sources": []}
         insert_batches: dict[str, list] = {"price_history": [], "listing_events": []}
+        enrichment_updates: list[dict] = []
+        client._enrichment_updates = enrichment_updates
         next_id = [100]
 
         def table_router(name):
@@ -351,6 +353,18 @@ class TestSyncSourceListingsIntegration:
                     m.execute.return_value = MagicMock(data=[])
                     return m
                 tbl.insert.side_effect = insert_side
+            elif name == "enrichments":
+                def enr_update_side(payload, **kw):
+                    m = MagicMock()
+
+                    def in_side(col, ids):
+                        enrichment_updates.append({"payload": payload, "col": col, "ids": list(ids)})
+                        m2 = MagicMock()
+                        m2.execute.return_value = MagicMock(data=[])
+                        return m2
+                    m.in_.side_effect = in_side
+                    return m
+                tbl.update.side_effect = enr_update_side
             return tbl
 
         client.table.side_effect = table_router
@@ -404,6 +418,29 @@ class TestSyncSourceListingsIntegration:
         assert summary["removed"] == 1
         event_rows = [r for batch in inserts["listing_events"] for r in batch]
         assert sorted(e["event_type"] for e in event_rows) == ["appeared", "removed"]
+
+    def test_deactivation_clears_stale_images(self):
+        """掲載終了物件は enrichments.suumo_images / floor_plan_images を null 化する
+        （リンク切れ候補の累積＝image_urls_stale の再発防止）。"""
+        from supabase_sync import _sync_source_listings
+
+        old_ik = "既存マンション|2LDK|60.0|東京都江東区東雲1-1|2010|None|3"
+        client, upserts, inserts = self._make_client(
+            existing_listing_rows=[{"id": 50, "identity_key": old_ik, "is_active": True}],
+            existing_source_rows=[{"id": 9, "listing_id": 50, "source": "suumo",
+                                   "price_man": 6000, "is_active": True,
+                                   "consecutive_misses": 1}],
+        )
+        items = [self._make_item("新規マンション", 5000, "https://example.com/new")]
+        summary = _sync_source_listings(client, items, "suumo", "chuko")
+
+        assert summary["removed"] == 1
+        # deactivate された listing 50 に対して画像URLを null 化する update が発行される
+        assert client._enrichment_updates, "enrichments の画像クリアが呼ばれていない"
+        call = client._enrichment_updates[0]
+        assert call["payload"] == {"suumo_images": None, "floor_plan_images": None}
+        assert call["col"] == "listing_id"
+        assert 50 in call["ids"]
 
     def test_empty_batch_skips_grace_period(self):
         """スクレイプ0件のときは grace period を実行しない（フェイルセーフ維持）。"""

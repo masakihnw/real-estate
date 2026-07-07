@@ -421,7 +421,7 @@ def _is_identity_key_conflict(exc: Exception) -> bool:
 
 def _sync_source_listings(client, listings: list[dict], source: str, property_type: str) -> dict:
     """1ソース分の物件リストを Supabase に同期する。"""
-    from report_utils import identity_key_str, normalize_listing_name, _normalize_address_for_key
+    from report_utils import identity_key_str, normalize_listing_name, _normalize_address_for_key, strip_name_brackets
 
     summary = {"new": 0, "updated": 0, "removed": 0, "unchanged": 0, "reappeared": 0}
     seen_identity_keys: set[str] = set()
@@ -786,7 +786,7 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
         normalized_name = normalize_listing_name(item.get("name") or "")
         listing_row = {
             "identity_key": ik,
-            "name": item.get("name", ""),
+            "name": strip_name_brackets(item.get("name", "")),
             "normalized_name": normalized_name,
             "address": item.get("address"),
             "ss_address": item.get("ss_address"),
@@ -964,6 +964,15 @@ def _sync_source_listings(client, listings: list[dict], source: str, property_ty
             (client.table("listings")
              .update({"is_active": False}, returning="minimal")
              .in_("id", batch_ids)
+             .execute())
+            # 掲載終了物件の画像URLはリンク切れ候補になるため同時にクリアする。
+            # これを怠ると非アクティブ物件に suumo_images が残り image_urls_stale が累積する。
+            # 打ち切りラン（truncated）では上流の early-return で本ブロック自体に到達しない
+            # ため、掲載継続中の物件の画像を誤って消すことはない（フェイルクローズ）。
+            (client.table("enrichments")
+             .update({"suumo_images": None, "floor_plan_images": None},
+                     returning="minimal")
+             .in_("listing_id", batch_ids)
              .execute())
 
     # 同じ値になる consecutive_misses 更新は .in_() でまとめる
