@@ -20,6 +20,8 @@ from slack_notify import (
     build_watchlist_price_drop_section,
     build_data_quality_alert_section,
     has_property_name,
+    send_slack_message,
+    slack_notifications_enabled,
 )
 
 
@@ -565,3 +567,41 @@ class TestSendHealthAlerts:
     def test_send_failure_returns_false(self, mock_send, _mock_health):
         result = _send_health_alerts("https://main/webhook", self._ISSUES)
         assert result is False
+
+
+class TestSlackMuteSwitch:
+    """Slack 通知の一時停止スイッチ（2026-07 物件購入確定に伴う送信停止）。"""
+
+    def test_disabled_by_default(self):
+        """既定（環境変数未設定）では通知は無効。"""
+        with patch.dict("os.environ", {}, clear=False) as env:
+            env.pop("SLACK_NOTIFICATIONS_ENABLED", None)
+            assert slack_notifications_enabled() is False
+
+    def test_enabled_when_flag_is_one(self):
+        with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": "1"}):
+            assert slack_notifications_enabled() is True
+
+    def test_disabled_for_non_one_values(self):
+        for val in ("0", "false", "", "true", "yes"):
+            with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": val}):
+                assert slack_notifications_enabled() is False
+
+    @patch("urllib.request.urlopen")
+    def test_send_skips_network_when_muted(self, mock_urlopen):
+        """停止中は実際の HTTP 送信を行わず、成功（True）として扱う。"""
+        with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": "0"}):
+            result = send_slack_message("https://hooks.slack.test/xxx", "テスト通知")
+        assert result is True
+        mock_urlopen.assert_not_called()
+
+    @patch("urllib.request.urlopen")
+    def test_send_hits_network_when_enabled(self, mock_urlopen):
+        """有効時は従来どおり HTTP 送信を行う。"""
+        mock_resp = MagicMock()
+        mock_resp.status = 200
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+        with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": "1"}):
+            result = send_slack_message("https://hooks.slack.test/xxx", "テスト通知")
+        assert result is True
+        mock_urlopen.assert_called_once()
