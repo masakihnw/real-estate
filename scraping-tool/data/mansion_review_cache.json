@@ -25778,29 +25778,29 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16216.html",
       "deviation_score": 30,
-      "estimated_price_man": 7395,
-      "estimated_tsubo_price_man": 437,
-      "estimated_m2_price_man": 133,
+      "estimated_price_man": 7557,
+      "estimated_tsubo_price_man": 447,
+      "estimated_m2_price_man": 135,
       "shinchiku_history_count": 30,
-      "chuko_history_count": 69,
+      "chuko_history_count": 70,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 60.45,
-          "price_man": 4964,
-          "tsubo_price_man": 286.0
+          "area_m2": 60.63,
+          "price_man": 5050,
+          "tsubo_price_man": 289.0
         }
       ]
     },
-    "cached_at": "2026-06-23T04:19:44.317591"
+    "cached_at": "2026-07-07T10:20:49.511152"
   },
   "パームス押上": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/31490.html",
       "deviation_score": 31,
-      "estimated_price_man": 4859,
+      "estimated_price_man": 4991,
       "estimated_tsubo_price_man": 435,
       "estimated_m2_price_man": 132,
       "shinchiku_history_count": 31,
@@ -25816,7 +25816,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-23T04:19:52.718884"
+    "cached_at": "2026-07-07T10:20:57.844790"
   },
   "アートコート早稲田戸山公園5階": {
     "data": {
@@ -25867,20 +25867,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/43458.html",
       "deviation_score": 31,
+      "estimated_price_man": 7462,
+      "estimated_tsubo_price_man": 329,
+      "estimated_m2_price_man": 100,
       "shinchiku_history_count": 31,
-      "chuko_history_count": 19,
+      "chuko_history_count": 20,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 65.44,
-          "price_man": 4567,
-          "tsubo_price_man": 230.0
+          "area_m2": 66.7,
+          "price_man": 4808,
+          "tsubo_price_man": 236.0
         }
       ]
     },
-    "cached_at": "2026-06-23T04:20:05.804226"
+    "cached_at": "2026-07-07T10:21:07.281375"
   },
   "ディアナコート二子玉川園3階": {
     "data": {
