@@ -28415,5 +28415,27 @@
       ]
     },
     "cached_at": "2026-07-06T15:07:22.653790"
+  },
+  "デュオシティ木場公園3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17251.html",
+      "deviation_score": 29,
+      "estimated_price_man": 9704,
+      "estimated_tsubo_price_man": 494,
+      "estimated_m2_price_man": 150,
+      "shinchiku_history_count": 29,
+      "chuko_history_count": 17,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 70.99,
+          "price_man": 6388,
+          "tsubo_price_man": 300.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-24T14:28:51.068971"
   }
 }
