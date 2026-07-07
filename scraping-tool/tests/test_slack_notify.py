@@ -28,6 +28,7 @@ from slack_notify import (
     send_slack_via_web_api,
     send_slack_via_web_api_chunked,
     has_property_name,
+    slack_notifications_enabled,
     SLACK_CHUNK_SIZE,
 )
 
@@ -576,6 +577,44 @@ class TestSendHealthAlerts:
         assert result is False
 
 
+class TestSlackMuteSwitch:
+    """Slack 通知の一時停止スイッチ（2026-07 物件購入確定に伴う送信停止）。"""
+
+    def test_disabled_by_default(self):
+        """既定（環境変数未設定）では通知は無効。"""
+        with patch.dict("os.environ", {}, clear=False) as env:
+            env.pop("SLACK_NOTIFICATIONS_ENABLED", None)
+            assert slack_notifications_enabled() is False
+
+    def test_enabled_when_flag_is_one(self):
+        with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": "1"}):
+            assert slack_notifications_enabled() is True
+
+    def test_disabled_for_non_one_values(self):
+        for val in ("0", "false", "", "true", "yes"):
+            with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": val}):
+                assert slack_notifications_enabled() is False
+
+    @patch("urllib.request.urlopen")
+    def test_send_skips_network_when_muted(self, mock_urlopen):
+        """停止中は実際の HTTP 送信を行わず、成功（True）として扱う。"""
+        with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": "0"}):
+            result = send_slack_message("https://hooks.slack.test/xxx", "テスト通知")
+        assert result is True
+        mock_urlopen.assert_not_called()
+
+    @patch("urllib.request.urlopen")
+    def test_send_hits_network_when_enabled(self, mock_urlopen):
+        """有効時は従来どおり HTTP 送信を行う。"""
+        mock_resp = MagicMock()
+        mock_resp.status = 200
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+        with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": "1"}):
+            result = send_slack_message("https://hooks.slack.test/xxx", "テスト通知")
+        assert result is True
+        mock_urlopen.assert_called_once()
+
+
 class TestChunkMessage:
     """_chunk_message: 文字数上限での分割（行境界優先）"""
 
@@ -691,6 +730,12 @@ class _FakeResponse:
 class TestSendSlackViaWebApi:
     """send_slack_via_web_api: chat.postMessage の ts 返却・スレッド指定"""
 
+    @pytest.fixture(autouse=True)
+    def _enable_slack(self):
+        # 送信機構そのもののテストなので通知を有効化して実 POST 経路を検証する。
+        with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": "1"}):
+            yield
+
     def test_returns_ts_on_ok(self):
         with patch("urllib.request.urlopen", return_value=_FakeResponse({"ok": True, "ts": "123.456"})):
             ts = send_slack_via_web_api("xoxb-token", "C123", "hello")
@@ -738,6 +783,12 @@ class TestSendSlackViaWebApi:
 
 class TestSendSlackMessageWebhook:
     """send_slack_message: Incoming Webhook 経路の payload"""
+
+    @pytest.fixture(autouse=True)
+    def _enable_slack(self):
+        # 送信機構そのもののテストなので通知を有効化して実 POST 経路を検証する。
+        with patch.dict("os.environ", {"SLACK_NOTIFICATIONS_ENABLED": "1"}):
+            yield
 
     def test_unfurl_disabled_in_payload(self):
         """OGP プレビュー抑止: unfurl_links / unfurl_media が false で送られる。"""

@@ -114,8 +114,32 @@ SLACK_SEND_RETRIES = 5
 SLACK_RETRY_DELAY_SEC = 2
 
 
+def slack_notifications_enabled() -> bool:
+    """Slack 通知が有効かどうかを返す。
+
+    2026-07: パークホームズ東陽町キャナルアリーナの購入確定に伴い、物件探索用の
+    Slack 通知を一時停止している。データ取得・enrichment・AI 分析・Claude ルーティンは
+    継続する（送信のみ止める）。この関数が唯一の停止スイッチで、Slack へ実際に POST する
+    経路（本通知・健全性アラート・通知ドラフト）はすべて send_slack_message() を通るため
+    ここで一元的に遮断できる。
+
+    再開するには環境変数 SLACK_NOTIFICATIONS_ENABLED=1 を設定するか、この既定値
+    （"0"）を "1" に戻す。経緯は docs/purchase-decision-toyocho.md を参照。
+    """
+    return os.environ.get("SLACK_NOTIFICATIONS_ENABLED", "0") == "1"
+
+
 def send_slack_message(webhook_url: str, message: str) -> bool:
-    """Slack Incoming Webhookにメッセージを1通送信。"""
+    """Slack Incoming Webhookにメッセージを1通送信。
+
+    Slack 通知が停止中（slack_notifications_enabled() が False）の場合は、実際の送信を
+    行わず「成功」として扱う。これにより上位の通知ドラフトは pending に滞留せず
+    （watchdog の誤検知を防ぐ）、パイプライン本体は従来どおり完走する。
+    """
+    if not slack_notifications_enabled():
+        logger.info("Slack 通知は停止中のため送信をスキップしました（再開: SLACK_NOTIFICATIONS_ENABLED=1）")
+        return True
+
     import urllib.request
     import urllib.parse
 
@@ -193,7 +217,15 @@ def send_slack_via_web_api(
     """chat.postMessage で1通送信。成功時は投稿メッセージの ts を返す（スレッド親に使う）。失敗時 None。
 
     thread_ts を渡すと、その親メッセージのスレッド返信として投稿する。
+
+    Slack 通知が停止中（slack_notifications_enabled() が False）の場合は実際の送信を行わず、
+    成功扱いのセンチネル ts を返す。Bot トークン経由（スレッド返信モード）も webhook 経路と
+    同様に一元停止するための穴埋め。詳細は slack_notifications_enabled() の docstring 参照。
     """
+    if not slack_notifications_enabled():
+        logger.info("Slack 通知は停止中のため送信をスキップしました（WebAPI, 再開: SLACK_NOTIFICATIONS_ENABLED=1）")
+        return "muted"
+
     import urllib.request
 
     # unfurl_links / unfurl_media を false にして、本文中のリンクの OGP プレビュー

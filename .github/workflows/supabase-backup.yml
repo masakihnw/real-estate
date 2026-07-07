@@ -46,7 +46,9 @@ jobs:
           if-no-files-found: error
 
       - name: Notify failure to Slack
-        if: failure()
+        # Slack 通知停止中（2026-07 物件購入確定）。復帰時は `if: false` を `if: failure()` に戻す。
+        # 詳細: docs/purchase-decision-toyocho.md
+        if: false
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK_URL }}
         run: |
