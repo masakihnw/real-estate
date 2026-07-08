@@ -106,3 +106,43 @@
    またはローカル実行時）。または `slack_notifications_enabled()` の既定値を `"1"` に戻す。
 2. 上記 5 ステップの `if: false` を元の条件（`if: failure()` /
    `if: steps.commit.outputs.has_changes == 'true'`）に戻す。各ステップにコメントで明記済み。
+
+## 運用: GitHub Actions の失敗メール抑制（2026-07-08）
+
+上記 Slack 停止とは**別件**。GitHub Actions から失敗メールが多数届くようになったため、
+失敗していた 4 本のワークフローを **`gh workflow disable` で無効化**した
+（コード変更・push は伴わない。GitHub 側の実行状態のみ変更）。
+
+### 経緯・原因
+
+- 失敗メールを出していたのはこの 4 本のみ。**いずれも Supabase への接続失敗**
+  （DNS 解決エラー `Name or service not known` / curl exit 6）で落ちていた。
+  Slack 通知停止（#100）とは無関係の別障害。
+- 同じ `SUPABASE_URL` を使う `enrich-and-report` / `scrape-listings` / `enrich-sumai` は
+  **成功**しており、データ収集パイプライン本体は稼働継続中（40 分ごとに `Update listings` をコミット）。
+  この 4 本だけ Supabase に到達できない原因は未調査（再開時に要調査）。
+
+### 無効化した 4 本
+
+| ワークフロー | ID | トリガ | 役割 |
+|---|---|---|---|
+| Notification Watchdog | 291179546 | schedule | 通知滞留の監視 |
+| Cron Watchdog | 305110002 | schedule | cron 健全性の監視 |
+| Detect Delisted Listings | 288389568 | scrape 後（workflow_run） | 掲載終了検出 |
+| Backfill HOME'S Images | 288375909 | schedule / scrape 後 | 画像補完 |
+
+### ⚠️ 把握しておくこと
+
+- 無効化はリポジトリのコードには記録されない（GitHub 側の状態のみ）。本ドキュメントが唯一の記録。
+- 掲載終了検出・画像補完・監視が止まっている。データ収集自体は継続しているが、
+  掲載終了物件が DB に残り続ける・新規画像が補完されない点に留意。
+
+### 再開するには（先に Supabase 接続不可の原因を解消すること）
+
+```bash
+cd ~/dev/personal/real-estate-public
+gh workflow enable 291179546   # Notification Watchdog
+gh workflow enable 305110002   # Cron Watchdog
+gh workflow enable 288389568   # Detect Delisted Listings
+gh workflow enable 288375909   # Backfill HOME'S Images
+```
