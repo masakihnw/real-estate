@@ -7533,23 +7533,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/753530.html",
       "deviation_score": 69,
-      "estimated_price_man": 16557,
-      "estimated_tsubo_price_man": 750,
-      "estimated_m2_price_man": 227,
+      "estimated_price_man": 12865,
+      "estimated_tsubo_price_man": 760,
+      "estimated_m2_price_man": 230,
       "shinchiku_history_count": 693,
-      "chuko_history_count": 297,
+      "chuko_history_count": 301,
       "sales_history": [
         {
           "end_date": "",
           "floor": 12,
           "layout": "",
-          "area_m2": 71.51,
-          "price_man": 10021,
-          "tsubo_price_man": 464.0
+          "area_m2": 71.49,
+          "price_man": 10113,
+          "tsubo_price_man": 468.0
         }
       ]
     },
-    "cached_at": "2026-06-24T10:18:08.267433"
+    "cached_at": "2026-07-08T11:41:54.587398"
   },
   "ツインタワー住利住吉館": {
     "data": {
@@ -8605,9 +8605,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/43361.html",
       "deviation_score": 50,
-      "estimated_price_man": 13357,
-      "estimated_tsubo_price_man": 660,
-      "estimated_m2_price_man": 200,
+      "estimated_price_man": 13480,
+      "estimated_tsubo_price_man": 656,
+      "estimated_m2_price_man": 199,
       "shinchiku_history_count": 50,
       "chuko_history_count": 15,
       "sales_history": [
@@ -8616,12 +8616,12 @@
           "floor": 3,
           "layout": "",
           "area_m2": 68.34,
-          "price_man": 9987,
-          "tsubo_price_man": 486.0
+          "price_man": 9967,
+          "tsubo_price_man": 485.0
         }
       ]
     },
-    "cached_at": "2026-06-24T10:17:54.459528"
+    "cached_at": "2026-07-08T11:42:03.326276"
   },
   "パークホームズ雪が谷大塚": {
     "data": {
@@ -26059,9 +26059,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13207.html",
       "deviation_score": 78,
-      "estimated_price_man": 12327,
-      "estimated_tsubo_price_man": 567,
-      "estimated_m2_price_man": 172,
+      "estimated_price_man": 12523,
+      "estimated_tsubo_price_man": 553,
+      "estimated_m2_price_man": 167,
       "shinchiku_history_count": 78,
       "chuko_history_count": 96,
       "sales_history": [
@@ -26075,7 +26075,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-24T10:17:44.910569"
+    "cached_at": "2026-07-08T11:41:43.725871"
   },
   "アールヴェール新宿弁天町3階": {
     "data": {

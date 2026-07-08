@@ -1,9 +1,9 @@
 {
   "metrics": {
     "suumo": {
-      "parsed": 4348,
+      "parsed": 4378,
       "parse_failures": 0,
-      "empty_pages": 1,
+      "empty_pages": 0,
       "finish_reasons": {
         "early_exit": 23
       }
@@ -26,7 +26,7 @@
       }
     },
     "livable": {
-      "parsed": 4012,
+      "parsed": 4010,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -34,7 +34,7 @@
       }
     },
     "homes": {
-      "parsed": 6009,
+      "parsed": 5950,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -43,5 +43,5 @@
     }
   },
   "alerts": [],
-  "saved_at": "2026-07-08T09:03:53.874292+00:00"
+  "saved_at": "2026-07-08T11:40:40.910575+00:00"
 }
