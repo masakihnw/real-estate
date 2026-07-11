@@ -11596,23 +11596,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/30454.html",
       "deviation_score": 20,
-      "estimated_price_man": 10206,
+      "estimated_price_man": 7982,
       "estimated_tsubo_price_man": 433,
       "estimated_m2_price_man": 131,
       "shinchiku_history_count": 20,
-      "chuko_history_count": 22,
+      "chuko_history_count": 23,
       "sales_history": [
         {
           "end_date": "",
           "floor": 8,
           "layout": "",
-          "area_m2": 67.41,
-          "price_man": 7055,
-          "tsubo_price_man": 339.0
+          "area_m2": 67.78,
+          "price_man": 7161,
+          "tsubo_price_man": 342.0
         }
       ]
     },
-    "cached_at": "2026-06-10T11:38:36.484726"
+    "cached_at": "2026-07-11T08:34:11.498673"
   },
   "ミサワホームズ三ノ輪": {
     "data": {
@@ -16664,9 +16664,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18180.html",
       "deviation_score": 0,
-      "estimated_price_man": 7152,
-      "estimated_tsubo_price_man": 423,
-      "estimated_m2_price_man": 128,
+      "estimated_price_man": 7081,
+      "estimated_tsubo_price_man": 419,
+      "estimated_m2_price_man": 127,
       "shinchiku_history_count": 0,
       "chuko_history_count": 27,
       "sales_history": [
@@ -16675,12 +16675,12 @@
           "floor": 3,
           "layout": "",
           "area_m2": 69.22,
-          "price_man": 5966,
+          "price_man": 5947,
           "tsubo_price_man": 278.0
         }
       ]
     },
-    "cached_at": "2026-06-27T04:08:49.356977"
+    "cached_at": "2026-07-11T08:34:21.321077"
   },
   "プラウド光が丘四季の香公園": {
     "data": {
@@ -26464,9 +26464,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/32818.html",
       "deviation_score": 27,
-      "estimated_price_man": 9431,
-      "estimated_tsubo_price_man": 503,
-      "estimated_m2_price_man": 153,
+      "estimated_price_man": 9351,
+      "estimated_tsubo_price_man": 507,
+      "estimated_m2_price_man": 154,
       "shinchiku_history_count": 27,
       "chuko_history_count": 30,
       "sales_history": [
@@ -26480,7 +26480,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-27T04:08:31.610787"
+    "cached_at": "2026-07-11T08:34:03.047010"
   },
   "Dクラディア平和台": {
     "data": {
@@ -29055,5 +29055,27 @@
       ]
     },
     "cached_at": "2026-07-11T03:15:46.551326"
+  },
+  "エクセルシオール新桜台4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17113.html",
+      "deviation_score": 28,
+      "estimated_price_man": 5330,
+      "estimated_tsubo_price_man": 375,
+      "estimated_m2_price_man": 114,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 71.01,
+          "price_man": 5804,
+          "tsubo_price_man": 266.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-09T04:21:57.204033"
   }
 }
