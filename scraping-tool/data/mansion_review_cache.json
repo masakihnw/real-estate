@@ -18079,23 +18079,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13300.html",
       "deviation_score": 16,
-      "estimated_price_man": 13942,
+      "estimated_price_man": 16031,
       "estimated_tsubo_price_man": 577,
       "estimated_m2_price_man": 175,
       "shinchiku_history_count": 162,
-      "chuko_history_count": 596,
+      "chuko_history_count": 603,
       "sales_history": [
         {
           "end_date": "",
           "floor": 28,
           "layout": "",
-          "area_m2": 71.81,
-          "price_man": 8735,
-          "tsubo_price_man": 400.0
+          "area_m2": 71.88,
+          "price_man": 8788,
+          "tsubo_price_man": 401.0
         }
       ]
     },
-    "cached_at": "2026-06-26T04:19:53.204417"
+    "cached_at": "2026-07-10T10:16:26.083298"
   },
   "プラネ勝どき4階": {
     "data": {
@@ -28955,5 +28955,105 @@
       ]
     },
     "cached_at": "2026-07-10T13:53:02.286647"
+  },
+  "セザールベイサイド勝どき7階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11115.html",
+      "deviation_score": 27,
+      "estimated_price_man": 6785,
+      "estimated_tsubo_price_man": 499,
+      "estimated_m2_price_man": 151,
+      "shinchiku_history_count": 27,
+      "chuko_history_count": 54,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 61.89,
+          "price_man": 5872,
+          "tsubo_price_man": 311.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-09T04:03:55.655003"
+  },
+  "三方角住戸×4階×家具付き♪シティインデックス洗足【...": {
+    "data": null,
+    "cached_at": "2026-07-11T03:15:25.441698"
+  },
+  "三方角住戸×": {
+    "data": null,
+    "cached_at": "2026-07-11T03:15:25.441698"
+  },
+  "東南向き角住戸×駅徒歩5分×遮音性◎クレッセント用賀...": {
+    "data": null,
+    "cached_at": "2026-07-11T03:15:28.785279"
+  },
+  "シティインデックス洗足4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/602254.html",
+      "deviation_score": 28,
+      "estimated_price_man": 5774,
+      "estimated_tsubo_price_man": 546,
+      "estimated_m2_price_man": 165,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 14,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 50.58,
+          "price_man": 6852,
+          "tsubo_price_man": 436.0
+        }
+      ]
+    },
+    "cached_at": "2026-06-27T09:14:26.922514"
+  },
+  "西日暮里ローヤルコーポ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17949.html",
+      "deviation_score": 27,
+      "estimated_price_man": 8175,
+      "estimated_tsubo_price_man": 366,
+      "estimated_m2_price_man": 111,
+      "shinchiku_history_count": 27,
+      "chuko_history_count": 20,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 62.83,
+          "price_man": 4605,
+          "tsubo_price_man": 243.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-11T03:15:38.071037"
+  },
+  "ヴェールガーデン富士見台": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17136.html",
+      "deviation_score": 22,
+      "estimated_price_man": 6991,
+      "estimated_tsubo_price_man": 335,
+      "estimated_m2_price_man": 102,
+      "shinchiku_history_count": 222,
+      "chuko_history_count": 101,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 77.03,
+          "price_man": 5376,
+          "tsubo_price_man": 231.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-11T03:15:46.551326"
   }
 }
