@@ -8968,23 +8968,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42053.html",
       "deviation_score": 10,
-      "estimated_price_man": 10749,
-      "estimated_tsubo_price_man": 635,
+      "estimated_price_man": 12434,
+      "estimated_tsubo_price_man": 633,
       "estimated_m2_price_man": 192,
       "shinchiku_history_count": 1041,
-      "chuko_history_count": 989,
+      "chuko_history_count": 990,
       "sales_history": [
         {
           "end_date": "",
           "floor": 17,
           "layout": "",
           "area_m2": 65.3,
-          "price_man": 6973,
+          "price_man": 6974,
           "tsubo_price_man": 354.0
         }
       ]
     },
-    "cached_at": "2026-06-26T04:31:13.633822"
+    "cached_at": "2026-07-10T10:25:29.404236"
   },
   "クレヴィア新宿中落合EAST": {
     "data": {
@@ -23765,23 +23765,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13387.html",
       "deviation_score": 82,
-      "estimated_price_man": 9417,
-      "estimated_tsubo_price_man": 692,
-      "estimated_m2_price_man": 210,
+      "estimated_price_man": 11935,
+      "estimated_tsubo_price_man": 681,
+      "estimated_m2_price_man": 206,
       "shinchiku_history_count": 825,
-      "chuko_history_count": 733,
+      "chuko_history_count": 737,
       "sales_history": [
         {
           "end_date": "",
           "floor": 24,
           "layout": "",
-          "area_m2": 72.6,
-          "price_man": 8773,
-          "tsubo_price_man": 397.0
+          "area_m2": 72.58,
+          "price_man": 8803,
+          "tsubo_price_man": 399.0
         }
       ]
     },
-    "cached_at": "2026-06-11T18:02:06.891555"
+    "cached_at": "2026-07-10T10:28:46.788892"
   },
   "シティタワー大泉学園10階": {
     "data": {
