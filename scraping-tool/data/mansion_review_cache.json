@@ -16638,23 +16638,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/41316.html",
       "deviation_score": 18,
-      "estimated_price_man": 10095,
-      "estimated_tsubo_price_man": 506,
-      "estimated_m2_price_man": 153,
+      "estimated_price_man": 10915,
+      "estimated_tsubo_price_man": 556,
+      "estimated_m2_price_man": 168,
       "shinchiku_history_count": 180,
-      "chuko_history_count": 94,
+      "chuko_history_count": 95,
       "sales_history": [
         {
           "end_date": "",
           "floor": 15,
           "layout": "",
-          "area_m2": 68.08,
-          "price_man": 7121,
-          "tsubo_price_man": 347.0
+          "area_m2": 68.02,
+          "price_man": 7146,
+          "tsubo_price_man": 349.0
         }
       ]
     },
-    "cached_at": "2026-06-28T04:32:08.356617"
+    "cached_at": "2026-07-12T08:58:11.644982"
   },
   "千住ミルディスII番館(アトラスタワー北千住)": {
     "data": null,
@@ -23396,23 +23396,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1635895.html",
       "deviation_score": 17,
-      "estimated_price_man": 9263,
-      "estimated_tsubo_price_man": 472,
-      "estimated_m2_price_man": 143,
+      "estimated_price_man": 10291,
+      "estimated_tsubo_price_man": 494,
+      "estimated_m2_price_man": 150,
       "shinchiku_history_count": 17,
-      "chuko_history_count": 10,
+      "chuko_history_count": 11,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 66.38,
-          "price_man": 9422,
-          "tsubo_price_man": 470.0
+          "area_m2": 66.3,
+          "price_man": 9741,
+          "tsubo_price_man": 487.0
         }
       ]
     },
-    "cached_at": "2026-06-11T17:51:20.240911"
+    "cached_at": "2026-07-10T10:21:54.259242"
   },
   "マークス亀戸14階": {
     "data": {
@@ -26613,29 +26613,29 @@
   },
   "駅徒歩6分!管理体制良好マンション◎ミサワホームズ東...": {
     "data": null,
-    "cached_at": "2026-06-28T04:32:11.861989"
+    "cached_at": "2026-07-12T08:58:15.005569"
   },
   "ウエストレジデンス大崎": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17309.html",
       "deviation_score": 16,
-      "estimated_price_man": 8756,
-      "estimated_tsubo_price_man": 354,
-      "estimated_m2_price_man": 107,
+      "estimated_price_man": 10766,
+      "estimated_tsubo_price_man": 387,
+      "estimated_m2_price_man": 118,
       "shinchiku_history_count": 163,
-      "chuko_history_count": 144,
+      "chuko_history_count": 146,
       "sales_history": [
         {
           "end_date": "",
           "floor": 10,
           "layout": "",
-          "area_m2": 72.18,
-          "price_man": 6306,
-          "tsubo_price_man": 293.0
+          "area_m2": 72.17,
+          "price_man": 6349,
+          "tsubo_price_man": 295.0
         }
       ]
     },
-    "cached_at": "2026-06-28T04:32:20.861412"
+    "cached_at": "2026-07-12T08:58:23.652710"
   },
   "プリムローズ錦糸町ウェストコート": {
     "data": {
@@ -28610,23 +28610,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17309.html",
       "deviation_score": 16,
-      "estimated_price_man": 8756,
-      "estimated_tsubo_price_man": 354,
-      "estimated_m2_price_man": 107,
+      "estimated_price_man": 10766,
+      "estimated_tsubo_price_man": 387,
+      "estimated_m2_price_man": 118,
       "shinchiku_history_count": 163,
-      "chuko_history_count": 144,
+      "chuko_history_count": 146,
       "sales_history": [
         {
           "end_date": "",
           "floor": 10,
           "layout": "",
-          "area_m2": 72.18,
-          "price_man": 6306,
-          "tsubo_price_man": 293.0
+          "area_m2": 72.17,
+          "price_man": 6349,
+          "tsubo_price_man": 295.0
         }
       ]
     },
-    "cached_at": "2026-06-28T04:32:20.861412"
+    "cached_at": "2026-07-12T08:58:23.652710"
   },
   "シティハウス勝どきステーションコート": {
     "data": {
@@ -29147,5 +29147,71 @@
       ]
     },
     "cached_at": "2026-07-12T03:26:06.060016"
+  },
+  "ウェルタワー深川29階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17256.html",
+      "deviation_score": 16,
+      "estimated_price_man": 14883,
+      "estimated_tsubo_price_man": 508,
+      "estimated_m2_price_man": 154,
+      "shinchiku_history_count": 167,
+      "chuko_history_count": 137,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 21,
+          "layout": "",
+          "area_m2": 75.73,
+          "price_man": 7057,
+          "tsubo_price_man": 309.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-12T08:58:33.112064"
+  },
+  "ウェルタワー深川": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17256.html",
+      "deviation_score": 16,
+      "estimated_price_man": 14883,
+      "estimated_tsubo_price_man": 508,
+      "estimated_m2_price_man": 154,
+      "shinchiku_history_count": 167,
+      "chuko_history_count": 137,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 21,
+          "layout": "",
+          "area_m2": 75.73,
+          "price_man": 7057,
+          "tsubo_price_man": 309.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-12T08:58:33.112064"
+  },
+  "浅草第3ダイヤモンドマンション": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/31097.html",
+      "deviation_score": 22,
+      "estimated_price_man": 7873,
+      "estimated_tsubo_price_man": 442,
+      "estimated_m2_price_man": 134,
+      "shinchiku_history_count": 22,
+      "chuko_history_count": 22,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 62.71,
+          "price_man": 5284,
+          "tsubo_price_man": 278.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-12T08:58:41.758442"
   }
 }
