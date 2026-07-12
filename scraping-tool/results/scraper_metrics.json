@@ -1,7 +1,7 @@
 {
   "metrics": {
     "rehouse": {
-      "parsed": 4106,
+      "parsed": 4107,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -18,19 +18,11 @@
       }
     },
     "nomucom": {
-      "parsed": 5975,
+      "parsed": 5981,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
         "safety_limit": 1
-      }
-    },
-    "homes": {
-      "parsed": 6268,
-      "parse_failures": 0,
-      "empty_pages": 0,
-      "finish_reasons": {
-        "completed": 1
       }
     },
     "livable": {
@@ -40,10 +32,18 @@
       "finish_reasons": {
         "completed": 23
       }
+    },
+    "homes": {
+      "parsed": 6276,
+      "parse_failures": 0,
+      "empty_pages": 0,
+      "finish_reasons": {
+        "completed": 1
+      }
     }
   },
   "alerts": [
     "nomucom: 異常終端 safety_limit×1 — 残ページ取りこぼしの可能性"
   ],
-  "saved_at": "2026-07-12T11:08:21.317589+00:00"
+  "saved_at": "2026-07-12T12:39:50.507019+00:00"
 }
