@@ -8090,29 +8090,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/2281113.html",
       "deviation_score": 0,
-      "estimated_price_man": 8205,
-      "estimated_tsubo_price_man": 485,
-      "estimated_m2_price_man": 147,
-      "shinchiku_history_count": 0,
-      "chuko_history_count": 3,
-      "sales_history": [
-        {
-          "end_date": "",
-          "floor": 7,
-          "layout": "",
-          "area_m2": 55.27,
-          "price_man": 8180,
-          "tsubo_price_man": 490.0
-        }
-      ]
-    },
-    "cached_at": "2026-05-21T16:50:19.815908"
-  },
-  "デュオシティ西日暮里ステーシア": {
-    "data": {
-      "building_url": "https://www.mansion-review.jp/mansion/2281113.html",
-      "deviation_score": 0,
-      "estimated_price_man": 7987,
+      "estimated_price_man": 7696,
       "estimated_tsubo_price_man": 481,
       "estimated_m2_price_man": 146,
       "shinchiku_history_count": 0,
@@ -8128,7 +8106,29 @@
         }
       ]
     },
-    "cached_at": "2026-06-19T05:03:04.608774"
+    "cached_at": "2026-07-12T03:25:57.560221"
+  },
+  "デュオシティ西日暮里ステーシア": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/2281113.html",
+      "deviation_score": 0,
+      "estimated_price_man": 7696,
+      "estimated_tsubo_price_man": 481,
+      "estimated_m2_price_man": 146,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 5,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 55.27,
+          "price_man": 8140,
+          "tsubo_price_man": 487.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-12T03:25:57.560221"
   },
   "晴海アイランドトリトンスクエアビュータワー1号棟": {
     "data": null,
@@ -26571,7 +26571,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/764085.html",
       "deviation_score": 12,
-      "estimated_price_man": 8736,
+      "estimated_price_man": 8497,
       "estimated_tsubo_price_man": 396,
       "estimated_m2_price_man": 120,
       "shinchiku_history_count": 128,
@@ -26587,13 +26587,13 @@
         }
       ]
     },
-    "cached_at": "2026-06-27T12:52:21.789804"
+    "cached_at": "2026-07-12T03:26:14.715179"
   },
   "ヴェレーナシティ東京イーストガーデンズ": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/764085.html",
       "deviation_score": 12,
-      "estimated_price_man": 8736,
+      "estimated_price_man": 8497,
       "estimated_tsubo_price_man": 396,
       "estimated_m2_price_man": 120,
       "shinchiku_history_count": 128,
@@ -26609,7 +26609,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-27T12:52:21.789804"
+    "cached_at": "2026-07-12T03:26:14.715179"
   },
   "駅徒歩6分!管理体制良好マンション◎ミサワホームズ東...": {
     "data": null,
@@ -29099,5 +29099,53 @@
       ]
     },
     "cached_at": "2026-07-09T04:08:42.355095"
+  },
+  "ザ・パークハウス板橋大山大楠ノ杜楠館1階": {
+    "data": null,
+    "cached_at": "2026-07-10T10:33:04.734489"
+  },
+  "リベール日暮里グラシア3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/33793.html",
+      "deviation_score": 40,
+      "estimated_price_man": 7259,
+      "estimated_tsubo_price_man": 414,
+      "estimated_m2_price_man": 126,
+      "shinchiku_history_count": 40,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 66.51,
+          "price_man": 4650,
+          "tsubo_price_man": 235.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-12T03:26:06.060016"
+  },
+  "リベール日暮里グラシア": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/33793.html",
+      "deviation_score": 40,
+      "estimated_price_man": 7259,
+      "estimated_tsubo_price_man": 414,
+      "estimated_m2_price_man": 126,
+      "shinchiku_history_count": 40,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 66.51,
+          "price_man": 4650,
+          "tsubo_price_man": 235.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-12T03:26:06.060016"
   }
 }
