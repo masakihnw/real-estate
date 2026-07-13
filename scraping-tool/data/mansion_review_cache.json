@@ -10546,9 +10546,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/26971.html",
       "deviation_score": 30,
-      "estimated_price_man": 19797,
-      "estimated_tsubo_price_man": 570,
-      "estimated_m2_price_man": 173,
+      "estimated_price_man": 17550,
+      "estimated_tsubo_price_man": 501,
+      "estimated_m2_price_man": 152,
       "shinchiku_history_count": 30,
       "chuko_history_count": 106,
       "sales_history": [
@@ -10562,7 +10562,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-24T14:12:18.876516"
+    "cached_at": "2026-07-13T03:28:20.008906"
   },
   "笹塚パーク・ホームズ": {
     "data": {
@@ -24011,9 +24011,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/26735.html",
       "deviation_score": 22,
-      "estimated_price_man": 10238,
-      "estimated_tsubo_price_man": 429,
-      "estimated_m2_price_man": 130,
+      "estimated_price_man": 10232,
+      "estimated_tsubo_price_man": 423,
+      "estimated_m2_price_man": 128,
       "shinchiku_history_count": 229,
       "chuko_history_count": 165,
       "sales_history": [
@@ -24027,7 +24027,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-24T14:31:10.566684"
+    "cached_at": "2026-07-09T04:19:57.442150"
   },
   "モダ・ビエント中板橋プラシア": {
     "data": {
@@ -29213,5 +29213,27 @@
       ]
     },
     "cached_at": "2026-07-12T08:58:41.758442"
+  },
+  "グランドステージ初台2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/26971.html",
+      "deviation_score": 30,
+      "estimated_price_man": 17550,
+      "estimated_tsubo_price_man": 501,
+      "estimated_m2_price_man": 152,
+      "shinchiku_history_count": 30,
+      "chuko_history_count": 106,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 76.69,
+          "price_man": 6709,
+          "tsubo_price_man": 291.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-13T03:28:20.008906"
   }
 }
