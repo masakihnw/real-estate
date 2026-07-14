@@ -26,7 +26,7 @@
       }
     },
     "livable": {
-      "parsed": 3977,
+      "parsed": 3976,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -34,7 +34,7 @@
       }
     },
     "homes": {
-      "parsed": 6307,
+      "parsed": 6174,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -45,5 +45,5 @@
   "alerts": [
     "nomucom: 異常終端 safety_limit×1 — 残ページ取りこぼしの可能性"
   ],
-  "saved_at": "2026-07-14T08:45:05.909227+00:00"
+  "saved_at": "2026-07-14T11:22:48.717688+00:00"
 }
