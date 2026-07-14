@@ -223,23 +223,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18965.html",
       "deviation_score": 0,
-      "estimated_price_man": 13948,
-      "estimated_tsubo_price_man": 592,
-      "estimated_m2_price_man": 179,
+      "estimated_price_man": 13358,
+      "estimated_tsubo_price_man": 597,
+      "estimated_m2_price_man": 181,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 305,
+      "chuko_history_count": 308,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 66.97,
-          "price_man": 7666,
-          "tsubo_price_man": 374.0
+          "area_m2": 66.89,
+          "price_man": 7698,
+          "tsubo_price_man": 376.0
         }
       ]
     },
-    "cached_at": "2026-06-26T04:20:43.331641"
+    "cached_at": "2026-07-14T03:08:03.631398"
   },
   "シティタワー品川": {
     "data": {
@@ -22735,11 +22735,11 @@
   },
   "マーク・ゼロワン曳舟タワー駅近好立地スカイツリー眺望11階": {
     "data": null,
-    "cached_at": "2026-06-27T09:15:38.906165"
+    "cached_at": "2026-07-14T03:08:20.501683"
   },
   "マーク・ゼロワン曳舟タワー駅近好立地スカイツリー眺望": {
     "data": null,
-    "cached_at": "2026-06-27T09:15:38.906165"
+    "cached_at": "2026-07-14T03:08:20.501683"
   },
   "オーベル池袋立教通り1階": {
     "data": {
@@ -29309,5 +29309,32 @@
       ]
     },
     "cached_at": "2026-07-13T14:02:15.742308"
+  },
+  "アークプラザ西日暮里": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/41859.html",
+      "deviation_score": 39,
+      "shinchiku_history_count": 39,
+      "chuko_history_count": 34,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 50.38,
+          "price_man": 3696,
+          "tsubo_price_man": 251.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-14T03:08:11.977350"
+  },
+  "ITOHPiA大島StationCourt13階": {
+    "data": null,
+    "cached_at": "2026-07-14T03:08:16.687606"
+  },
+  "ITOHPiA大島StationCourt": {
+    "data": null,
+    "cached_at": "2026-07-14T03:08:16.687606"
   }
 }
