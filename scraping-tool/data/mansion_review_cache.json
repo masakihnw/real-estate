@@ -29436,5 +29436,27 @@
       ]
     },
     "cached_at": "2026-07-15T03:15:58.879756"
+  },
+  "シティタワー有明7階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/41200.html",
+      "deviation_score": 46,
+      "estimated_price_man": 15743,
+      "estimated_tsubo_price_man": 613,
+      "estimated_m2_price_man": 186,
+      "shinchiku_history_count": 466,
+      "chuko_history_count": 553,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 19,
+          "layout": "",
+          "area_m2": 68.2,
+          "price_man": 6951,
+          "tsubo_price_man": 338.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-10T10:25:39.558739"
   }
 }
