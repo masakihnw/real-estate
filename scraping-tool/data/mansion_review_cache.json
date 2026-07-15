@@ -29410,5 +29410,31 @@
       ]
     },
     "cached_at": "2026-07-14T11:24:36.751005"
+  },
+  "ライトコート四谷203号室": {
+    "data": null,
+    "cached_at": "2026-07-15T03:15:49.738862"
+  },
+  "クレストコート杉並宮前": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16686.html",
+      "deviation_score": 33,
+      "estimated_price_man": 7525,
+      "estimated_tsubo_price_man": 351,
+      "estimated_m2_price_man": 106,
+      "shinchiku_history_count": 33,
+      "chuko_history_count": 35,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 74.36,
+          "price_man": 5424,
+          "tsubo_price_man": 242.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-15T03:15:58.879756"
   }
 }
