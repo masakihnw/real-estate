@@ -6628,23 +6628,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603788.html",
       "deviation_score": 55,
-      "estimated_price_man": 17016,
-      "estimated_tsubo_price_man": 704,
-      "estimated_m2_price_man": 213,
+      "estimated_price_man": 19307,
+      "estimated_tsubo_price_man": 718,
+      "estimated_m2_price_man": 217,
       "shinchiku_history_count": 550,
-      "chuko_history_count": 438,
+      "chuko_history_count": 440,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 71.66,
-          "price_man": 9266,
-          "tsubo_price_man": 425.0
+          "area_m2": 71.68,
+          "price_man": 9305,
+          "tsubo_price_man": 427.0
         }
       ]
     },
-    "cached_at": "2026-07-01T04:33:49.154072"
+    "cached_at": "2026-07-15T08:52:08.959055"
   },
   "西戸山タワーホウムズサウスタワー": {
     "data": {
@@ -9251,7 +9251,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/756927.html",
       "deviation_score": 24,
-      "estimated_price_man": 6917,
+      "estimated_price_man": 7247,
       "estimated_tsubo_price_man": 363,
       "estimated_m2_price_man": 110,
       "shinchiku_history_count": 24,
@@ -9267,7 +9267,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-01T04:33:57.858395"
+    "cached_at": "2026-07-15T08:52:17.072493"
   },
   "東京ビューマークス18階(新規内装フルリノベーション...": {
     "data": {
@@ -20934,23 +20934,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/28354.html",
       "deviation_score": 44,
-      "estimated_price_man": 7365,
-      "estimated_tsubo_price_man": 530,
-      "estimated_m2_price_man": 161,
+      "estimated_price_man": 7644,
+      "estimated_tsubo_price_man": 562,
+      "estimated_m2_price_man": 170,
       "shinchiku_history_count": 44,
-      "chuko_history_count": 42,
+      "chuko_history_count": 44,
       "sales_history": [
         {
           "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 52.95,
-          "price_man": 4555,
-          "tsubo_price_man": 284.0
+          "area_m2": 52.93,
+          "price_man": 4794,
+          "tsubo_price_man": 299.0
         }
       ]
     },
-    "cached_at": "2026-06-11T09:04:29.203123"
+    "cached_at": "2026-07-15T08:51:58.493718"
   },
   "プラティーク日本橋12階": {
     "data": {
@@ -27101,23 +27101,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/29209.html",
       "deviation_score": 50,
-      "estimated_price_man": 9685,
-      "estimated_tsubo_price_man": 493,
-      "estimated_m2_price_man": 150,
+      "estimated_price_man": 10418,
+      "estimated_tsubo_price_man": 515,
+      "estimated_m2_price_man": 156,
       "shinchiku_history_count": 50,
-      "chuko_history_count": 38,
+      "chuko_history_count": 39,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 66.41,
-          "price_man": 5413,
-          "tsubo_price_man": 271.0
+          "area_m2": 66.25,
+          "price_man": 5530,
+          "tsubo_price_man": 278.0
         }
       ]
     },
-    "cached_at": "2026-07-01T04:34:06.467370"
+    "cached_at": "2026-07-15T08:51:50.160959"
   },
   "セザールリバーサイド中洲(303)3階": {
     "data": null,
