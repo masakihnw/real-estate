@@ -27251,7 +27251,7 @@
   },
   "2021年フルリノベーション実施DOM神楽坂": {
     "data": null,
-    "cached_at": "2026-07-02T09:36:45.004254"
+    "cached_at": "2026-07-16T11:41:01.336956"
   },
   "クレストフォルム東京アヴァンセ12階": {
     "data": {
@@ -27278,9 +27278,21 @@
   "プラウド鷺宮エアリーコート": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1388222.html",
-      "deviation_score": 1
+      "deviation_score": 28,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 2,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 71.44,
+          "price_man": 9480,
+          "tsubo_price_man": 439.0
+        }
+      ]
     },
-    "cached_at": "2026-07-02T09:36:57.226391"
+    "cached_at": "2026-07-16T11:41:10.522423"
   },
   "Brillia板橋大山11階": {
     "data": {
