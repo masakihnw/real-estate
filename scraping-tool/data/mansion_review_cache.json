@@ -18563,23 +18563,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/771533.html",
       "deviation_score": 44,
-      "estimated_price_man": 11866,
-      "estimated_tsubo_price_man": 623,
+      "estimated_price_man": 13355,
+      "estimated_tsubo_price_man": 622,
       "estimated_m2_price_man": 189,
       "shinchiku_history_count": 444,
-      "chuko_history_count": 122,
+      "chuko_history_count": 124,
       "sales_history": [
         {
           "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 67.94,
-          "price_man": 10175,
-          "tsubo_price_man": 497.0
+          "area_m2": 67.98,
+          "price_man": 10221,
+          "tsubo_price_man": 499.0
         }
       ]
     },
-    "cached_at": "2026-06-26T04:31:39.836013"
+    "cached_at": "2026-07-10T10:28:03.997897"
   },
   "デュオシティ木場公園5階": {
     "data": {
@@ -27187,45 +27187,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/27849.html",
       "deviation_score": 28,
-      "estimated_price_man": 8379,
-      "estimated_tsubo_price_man": 433,
-      "estimated_m2_price_man": 131,
+      "estimated_price_man": 7861,
+      "estimated_tsubo_price_man": 434,
+      "estimated_m2_price_man": 132,
       "shinchiku_history_count": 28,
-      "chuko_history_count": 47,
+      "chuko_history_count": 48,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 62.49,
-          "price_man": 4855,
-          "tsubo_price_man": 256.0
+          "area_m2": 62.6,
+          "price_man": 4961,
+          "tsubo_price_man": 260.0
         }
       ]
     },
-    "cached_at": "2026-07-01T14:12:12.666808"
+    "cached_at": "2026-07-16T03:17:23.770127"
   },
   "セザールリバーサイド中洲": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/27849.html",
       "deviation_score": 28,
-      "estimated_price_man": 8379,
-      "estimated_tsubo_price_man": 433,
-      "estimated_m2_price_man": 131,
+      "estimated_price_man": 7861,
+      "estimated_tsubo_price_man": 434,
+      "estimated_m2_price_man": 132,
       "shinchiku_history_count": 28,
-      "chuko_history_count": 47,
+      "chuko_history_count": 48,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 62.49,
-          "price_man": 4855,
-          "tsubo_price_man": 256.0
+          "area_m2": 62.6,
+          "price_man": 4961,
+          "tsubo_price_man": 260.0
         }
       ]
     },
-    "cached_at": "2026-07-01T14:12:12.666808"
+    "cached_at": "2026-07-16T03:17:23.770127"
   },
   "プラウドタワー石神井公園6階": {
     "data": {
