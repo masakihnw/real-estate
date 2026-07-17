@@ -6239,7 +6239,7 @@
       "building_url": "https://www.mansion-review.jp/mansion/895050.html",
       "deviation_score": 7
     },
-    "cached_at": "2026-07-03T03:56:56.509664"
+    "cached_at": "2026-07-17T08:51:42.361219"
   },
   "パークホームズ町屋": {
     "data": {
@@ -21044,45 +21044,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/602774.html",
       "deviation_score": 39,
-      "estimated_price_man": 10614,
-      "estimated_tsubo_price_man": 627,
-      "estimated_m2_price_man": 190,
+      "estimated_price_man": 11140,
+      "estimated_tsubo_price_man": 625,
+      "estimated_m2_price_man": 189,
       "shinchiku_history_count": 39,
-      "chuko_history_count": 15,
+      "chuko_history_count": 16,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 60.83,
-          "price_man": 7093,
-          "tsubo_price_man": 383.0
+          "area_m2": 60.68,
+          "price_man": 7336,
+          "tsubo_price_man": 398.0
         }
       ]
     },
-    "cached_at": "2026-06-11T09:04:55.601276"
+    "cached_at": "2026-07-17T08:51:26.950208"
   },
   "クリオ浅草橋": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/602774.html",
       "deviation_score": 39,
-      "estimated_price_man": 10614,
-      "estimated_tsubo_price_man": 627,
-      "estimated_m2_price_man": 190,
+      "estimated_price_man": 11140,
+      "estimated_tsubo_price_man": 625,
+      "estimated_m2_price_man": 189,
       "shinchiku_history_count": 39,
-      "chuko_history_count": 15,
+      "chuko_history_count": 16,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 60.83,
-          "price_man": 7093,
-          "tsubo_price_man": 383.0
+          "area_m2": 60.68,
+          "price_man": 7336,
+          "tsubo_price_man": 398.0
         }
       ]
     },
-    "cached_at": "2026-06-11T09:04:55.601276"
+    "cached_at": "2026-07-17T08:51:26.950208"
   },
   "アンセフォルム深沢2階": {
     "data": {
@@ -23438,7 +23438,7 @@
   },
   "ザ・パークハウス板橋大山大楠ノ杜楠館6階": {
     "data": null,
-    "cached_at": "2026-06-11T18:05:41.898443"
+    "cached_at": "2026-07-10T10:33:04.734489"
   },
   "プラウド瑞江": {
     "data": {
@@ -27413,36 +27413,36 @@
   },
   "パークホームズセントラルシティ中央湊": {
     "data": null,
-    "cached_at": "2026-07-03T03:56:41.039173"
+    "cached_at": "2026-07-17T08:51:17.027743"
   },
   "ラ・アトレ杉並松庵": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/12090.html",
       "deviation_score": 8,
-      "estimated_price_man": 8663,
-      "estimated_tsubo_price_man": 268,
-      "estimated_m2_price_man": 81,
+      "estimated_price_man": 8807,
+      "estimated_tsubo_price_man": 280,
+      "estimated_m2_price_man": 85,
       "shinchiku_history_count": 8,
-      "chuko_history_count": 11,
+      "chuko_history_count": 12,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 104.91,
-          "price_man": 6297,
-          "tsubo_price_man": 199.0
+          "area_m2": 105.02,
+          "price_man": 6589,
+          "tsubo_price_man": 208.0
         }
       ]
     },
-    "cached_at": "2026-07-03T03:56:49.032553"
+    "cached_at": "2026-07-17T08:51:34.968010"
   },
   "東京シティトリエ9階": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/895050.html",
       "deviation_score": 7
     },
-    "cached_at": "2026-07-03T03:56:56.509664"
+    "cached_at": "2026-07-17T08:51:42.361219"
   },
   "パークホームズセントラルシティ中央区湊": {
     "data": {
@@ -28890,23 +28890,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/12090.html",
       "deviation_score": 8,
-      "estimated_price_man": 8663,
-      "estimated_tsubo_price_man": 268,
-      "estimated_m2_price_man": 81,
+      "estimated_price_man": 8807,
+      "estimated_tsubo_price_man": 280,
+      "estimated_m2_price_man": 85,
       "shinchiku_history_count": 8,
-      "chuko_history_count": 11,
+      "chuko_history_count": 12,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 104.91,
-          "price_man": 6297,
-          "tsubo_price_man": 199.0
+          "area_m2": 105.02,
+          "price_man": 6589,
+          "tsubo_price_man": 208.0
         }
       ]
     },
-    "cached_at": "2026-07-03T03:56:49.032553"
+    "cached_at": "2026-07-17T08:51:34.968010"
   },
   "ダイアパレス元浅草II2階": {
     "data": {
