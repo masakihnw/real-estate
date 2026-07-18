@@ -11332,23 +11332,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/15333.html",
       "deviation_score": 32,
-      "estimated_price_man": 16123,
-      "estimated_tsubo_price_man": 593,
+      "estimated_price_man": 16649,
+      "estimated_tsubo_price_man": 592,
       "estimated_m2_price_man": 180,
       "shinchiku_history_count": 32,
-      "chuko_history_count": 31,
+      "chuko_history_count": 32,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 62.68,
-          "price_man": 8420,
-          "tsubo_price_man": 430.0
+          "area_m2": 62.63,
+          "price_man": 8500,
+          "tsubo_price_man": 435.0
         }
       ]
     },
-    "cached_at": "2026-07-04T03:36:16.404262"
+    "cached_at": "2026-07-18T08:31:56.452513"
   },
   "ビラカーサ四谷四丁目": {
     "data": {
@@ -24703,7 +24703,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1642681.html",
       "deviation_score": 3,
-      "estimated_price_man": 9998,
+      "estimated_price_man": 9883,
       "estimated_tsubo_price_man": 380,
       "estimated_m2_price_man": 115,
       "shinchiku_history_count": 3,
@@ -24719,13 +24719,13 @@
         }
       ]
     },
-    "cached_at": "2026-07-04T03:36:41.292565"
+    "cached_at": "2026-07-18T08:32:18.672626"
   },
   "クリオ葛西シーズンテラス": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1642681.html",
       "deviation_score": 3,
-      "estimated_price_man": 9998,
+      "estimated_price_man": 9883,
       "estimated_tsubo_price_man": 380,
       "estimated_m2_price_man": 115,
       "shinchiku_history_count": 3,
@@ -24741,7 +24741,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-04T03:36:41.292565"
+    "cached_at": "2026-07-18T08:32:18.672626"
   },
   "セントラルレジデンス西早稲田4階": {
     "data": {
@@ -27667,7 +27667,7 @@
   },
   "売りマンションロワール北千住": {
     "data": null,
-    "cached_at": "2026-07-04T03:36:19.826792"
+    "cached_at": "2026-07-18T08:31:59.933825"
   },
   "ランドパーク馬事公苑2階": {
     "data": {
@@ -27695,20 +27695,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/2291836.html",
       "deviation_score": 0,
+      "estimated_price_man": 7877,
+      "estimated_tsubo_price_man": 330,
+      "estimated_m2_price_man": 100,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 1,
+      "chuko_history_count": 2,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
           "area_m2": 80.98,
-          "price_man": 6480,
-          "tsubo_price_man": 265.0
+          "price_man": 7880,
+          "tsubo_price_man": 322.0
         }
       ]
     },
-    "cached_at": "2026-07-04T03:36:29.088235"
+    "cached_at": "2026-07-18T08:32:09.723306"
   },
   "最寄り駅徒歩3分": {
     "data": null,
@@ -29915,5 +29918,9 @@
       ]
     },
     "cached_at": "2026-07-09T04:26:11.388182"
+  },
+  "ヴェレーナ久が原": {
+    "data": null,
+    "cached_at": "2026-07-18T08:32:22.063320"
   }
 }
