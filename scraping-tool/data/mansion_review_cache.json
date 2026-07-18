@@ -25031,7 +25031,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11650.html",
       "deviation_score": 38,
-      "estimated_price_man": 10850,
+      "estimated_price_man": 10398,
       "estimated_tsubo_price_man": 499,
       "estimated_m2_price_man": 151,
       "shinchiku_history_count": 38,
@@ -25047,7 +25047,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-04T11:31:52.169749"
+    "cached_at": "2026-07-18T12:35:04.823974"
   },
   "ゼファー浅草馬道通り": {
     "data": {
@@ -27853,45 +27853,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13786.html",
       "deviation_score": 19,
-      "estimated_price_man": 9608,
-      "estimated_tsubo_price_man": 370,
-      "estimated_m2_price_man": 112,
+      "estimated_price_man": 9747,
+      "estimated_tsubo_price_man": 380,
+      "estimated_m2_price_man": 115,
       "shinchiku_history_count": 19,
-      "chuko_history_count": 26,
+      "chuko_history_count": 29,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 108.48,
-          "price_man": 8045,
-          "tsubo_price_man": 253.0
+          "area_m2": 106.0,
+          "price_man": 8231,
+          "tsubo_price_man": 266.0
         }
       ]
     },
-    "cached_at": "2026-07-04T11:32:01.698769"
+    "cached_at": "2026-07-18T12:35:23.379755"
   },
   "パークホームズ杉並和泉ザレジデンス": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603984.html",
       "deviation_score": 17,
-      "estimated_price_man": 11254,
-      "estimated_tsubo_price_man": 466,
-      "estimated_m2_price_man": 141,
+      "estimated_price_man": 9374,
+      "estimated_tsubo_price_man": 470,
+      "estimated_m2_price_man": 143,
       "shinchiku_history_count": 174,
-      "chuko_history_count": 101,
+      "chuko_history_count": 102,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 68.06,
-          "price_man": 6819,
-          "tsubo_price_man": 333.0
+          "area_m2": 68.02,
+          "price_man": 6849,
+          "tsubo_price_man": 334.0
         }
       ]
     },
-    "cached_at": "2026-07-04T11:32:10.274345"
+    "cached_at": "2026-07-18T12:35:14.623842"
   },
   "イニシア千住曙町23階": {
     "data": {
@@ -28579,23 +28579,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13786.html",
       "deviation_score": 19,
-      "estimated_price_man": 9608,
-      "estimated_tsubo_price_man": 370,
-      "estimated_m2_price_man": 112,
+      "estimated_price_man": 9747,
+      "estimated_tsubo_price_man": 380,
+      "estimated_m2_price_man": 115,
       "shinchiku_history_count": 19,
-      "chuko_history_count": 26,
+      "chuko_history_count": 29,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 108.48,
-          "price_man": 8045,
-          "tsubo_price_man": 253.0
+          "area_m2": 106.0,
+          "price_man": 8231,
+          "tsubo_price_man": 266.0
         }
       ]
     },
-    "cached_at": "2026-07-04T11:32:01.698769"
+    "cached_at": "2026-07-18T12:35:23.379755"
   },
   "ザ・パームス東中野都心を使いこなす理想の住まい7階": {
     "data": null,
