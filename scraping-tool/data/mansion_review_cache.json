@@ -28173,23 +28173,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17809.html",
       "deviation_score": 47,
-      "estimated_price_man": 7205,
-      "estimated_tsubo_price_man": 373,
-      "estimated_m2_price_man": 113,
+      "estimated_price_man": 7689,
+      "estimated_tsubo_price_man": 392,
+      "estimated_m2_price_man": 119,
       "shinchiku_history_count": 47,
-      "chuko_history_count": 25,
+      "chuko_history_count": 26,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 68.35,
-          "price_man": 4976,
-          "tsubo_price_man": 245.0
+          "area_m2": 68.19,
+          "price_man": 5150,
+          "tsubo_price_man": 254.0
         }
       ]
     },
-    "cached_at": "2026-07-05T11:44:48.523082"
+    "cached_at": "2026-07-19T12:36:40.040613"
   },
   "弊社限定【ザ・パームス東中野II】都心を使いこなし、心...": {
     "data": null,
@@ -30018,5 +30018,62 @@
   "朝日白金台マンションフルリ済み": {
     "data": null,
     "cached_at": "2026-07-19T08:57:26.854564"
+  },
+  "西荻ヒルズクレアヴィータ1階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16347.html",
+      "deviation_score": 19,
+      "shinchiku_history_count": 19,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 66.25,
+          "price_man": 5099,
+          "tsubo_price_man": 255.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-19T12:36:48.868305"
+  },
+  "西荻ヒルズクレアヴィータ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16347.html",
+      "deviation_score": 19,
+      "shinchiku_history_count": 19,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 66.25,
+          "price_man": 5099,
+          "tsubo_price_man": 255.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-19T12:36:48.868305"
+  },
+  "ディアナコート石神井公園": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/763983.html",
+      "deviation_score": 33,
+      "shinchiku_history_count": 33,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 64.58,
+          "price_man": 6855,
+          "tsubo_price_man": 353.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-19T12:36:56.885001"
   }
 }
