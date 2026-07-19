@@ -10634,23 +10634,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/33778.html",
       "deviation_score": 9,
-      "estimated_price_man": 11328,
-      "estimated_tsubo_price_man": 635,
-      "estimated_m2_price_man": 193,
+      "estimated_price_man": 11609,
+      "estimated_tsubo_price_man": 619,
+      "estimated_m2_price_man": 188,
       "shinchiku_history_count": 9,
-      "chuko_history_count": 32,
+      "chuko_history_count": 33,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 51.51,
-          "price_man": 6895,
-          "tsubo_price_man": 448.0
+          "area_m2": 50.81,
+          "price_man": 6824,
+          "tsubo_price_man": 451.0
         }
       ]
     },
-    "cached_at": "2026-06-24T14:12:52.973505"
+    "cached_at": "2026-07-19T03:25:28.862560"
   },
   "プリムローズ錦糸町": {
     "data": {
@@ -29944,5 +29944,49 @@
       ]
     },
     "cached_at": "2026-07-18T10:57:36.517100"
+  },
+  "ヴィルヌーブ吾妻橋": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/27477.html",
+      "deviation_score": 73,
+      "estimated_price_man": 8427,
+      "estimated_tsubo_price_man": 465,
+      "estimated_m2_price_man": 141,
+      "shinchiku_history_count": 73,
+      "chuko_history_count": 27,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 65.2,
+          "price_man": 5049,
+          "tsubo_price_man": 255.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-19T03:25:19.183438"
+  },
+  "セボン中野1階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11841.html",
+      "deviation_score": 16,
+      "estimated_price_man": 9817,
+      "estimated_tsubo_price_man": 387,
+      "estimated_m2_price_man": 117,
+      "shinchiku_history_count": 16,
+      "chuko_history_count": 26,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 89.91,
+          "price_man": 6180,
+          "tsubo_price_man": 229.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-14T11:24:10.264131"
   }
 }
