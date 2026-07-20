@@ -30075,5 +30075,57 @@
       ]
     },
     "cached_at": "2026-07-19T12:36:56.885001"
+  },
+  "弊社限定公開◆【ザ・パームス東中野II】都心を使いこ...": {
+    "data": null,
+    "cached_at": "2026-07-20T03:34:32.442016"
+  },
+  "弊社限定公開ザ・パームス東中野II都心を使いこ...": {
+    "data": null,
+    "cached_at": "2026-07-20T03:34:32.442016"
+  },
+  "マークス亀戸14階最上階・南向き住戸大幅値下げ!...": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/57245.html",
+      "deviation_score": 0,
+      "estimated_price_man": 1036,
+      "estimated_tsubo_price_man": 202,
+      "estimated_m2_price_man": 61,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 32,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 18.37,
+          "price_man": 1019,
+          "tsubo_price_man": 184.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-09T04:15:04.815726"
+  },
+  "パークハウス中村橋コルニエ5階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/12337.html",
+      "deviation_score": 58,
+      "estimated_price_man": 9117,
+      "estimated_tsubo_price_man": 382,
+      "estimated_m2_price_man": 116,
+      "shinchiku_history_count": 58,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 75.64,
+          "price_man": 5293,
+          "tsubo_price_man": 232.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-09T04:21:39.663150"
   }
 }
