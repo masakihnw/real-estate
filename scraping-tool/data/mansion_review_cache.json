@@ -30263,5 +30263,103 @@
       ]
     },
     "cached_at": "2026-07-21T03:19:58.131567"
+  },
+  "ブリリアシティ西早稲田A棟": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1408135.html",
+      "deviation_score": 44,
+      "estimated_price_man": 10633,
+      "estimated_tsubo_price_man": 496,
+      "estimated_m2_price_man": 150,
+      "shinchiku_history_count": 444,
+      "chuko_history_count": 105,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 73.56,
+          "price_man": 9716,
+          "tsubo_price_man": 437.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-10T10:35:06.122078"
+  },
+  "ザ・ライオンズ蘆花公園6階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43158.html",
+      "deviation_score": 55,
+      "shinchiku_history_count": 55,
+      "chuko_history_count": 27,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 71.46,
+          "price_man": 5503,
+          "tsubo_price_man": 255.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-21T09:07:46.895652"
+  },
+  "ザ・ライオンズ蘆花公園": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43158.html",
+      "deviation_score": 55,
+      "shinchiku_history_count": 55,
+      "chuko_history_count": 27,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 71.46,
+          "price_man": 5503,
+          "tsubo_price_man": 255.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-21T09:07:46.895652"
+  },
+  "パークホームズ大山8階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13905.html",
+      "deviation_score": 48,
+      "shinchiku_history_count": 48,
+      "chuko_history_count": 28,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 75.98,
+          "price_man": 5159,
+          "tsubo_price_man": 227.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-21T09:07:54.972687"
+  },
+  "パークホームズ大山": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13905.html",
+      "deviation_score": 48,
+      "shinchiku_history_count": 48,
+      "chuko_history_count": 28,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 75.98,
+          "price_man": 5159,
+          "tsubo_price_man": 227.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-21T09:07:54.972687"
   }
 }
