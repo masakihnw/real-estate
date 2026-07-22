@@ -15955,23 +15955,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/536497.html",
       "deviation_score": 11,
-      "estimated_price_man": 16008,
-      "estimated_tsubo_price_man": 735,
-      "estimated_m2_price_man": 223,
+      "estimated_price_man": 15503,
+      "estimated_tsubo_price_man": 733,
+      "estimated_m2_price_man": 222,
       "shinchiku_history_count": 1110,
-      "chuko_history_count": 991,
+      "chuko_history_count": 995,
       "sales_history": [
         {
           "end_date": "",
           "floor": 26,
           "layout": "",
-          "area_m2": 73.56,
-          "price_man": 10346,
+          "area_m2": 73.55,
+          "price_man": 10363,
           "tsubo_price_man": 462.0
         }
       ]
     },
-    "cached_at": "2026-07-08T03:21:05.540233"
+    "cached_at": "2026-07-22T09:11:35.895160"
   },
   "プライヴブルー東京": {
     "data": {
@@ -21132,23 +21132,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/536497.html",
       "deviation_score": 11,
-      "estimated_price_man": 16008,
-      "estimated_tsubo_price_man": 735,
-      "estimated_m2_price_man": 223,
+      "estimated_price_man": 15503,
+      "estimated_tsubo_price_man": 733,
+      "estimated_m2_price_man": 222,
       "shinchiku_history_count": 1110,
-      "chuko_history_count": 991,
+      "chuko_history_count": 995,
       "sales_history": [
         {
           "end_date": "",
           "floor": 26,
           "layout": "",
-          "area_m2": 73.56,
-          "price_man": 10346,
+          "area_m2": 73.55,
+          "price_man": 10363,
           "tsubo_price_man": 462.0
         }
       ]
     },
-    "cached_at": "2026-07-08T03:21:05.540233"
+    "cached_at": "2026-07-22T09:11:35.895160"
   },
   "アスコットパーク日本橋水天宮5階": {
     "data": {
@@ -28483,23 +28483,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18539.html",
       "deviation_score": 58,
-      "estimated_price_man": 5387,
-      "estimated_tsubo_price_man": 425,
-      "estimated_m2_price_man": 129,
+      "estimated_price_man": 6036,
+      "estimated_tsubo_price_man": 444,
+      "estimated_m2_price_man": 135,
       "shinchiku_history_count": 58,
-      "chuko_history_count": 21,
+      "chuko_history_count": 22,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 63.28,
-          "price_man": 4603,
-          "tsubo_price_man": 247.0
+          "area_m2": 63.43,
+          "price_man": 4839,
+          "tsubo_price_man": 258.0
         }
       ]
     },
-    "cached_at": "2026-07-08T03:20:53.672718"
+    "cached_at": "2026-07-22T09:11:12.021213"
   },
   "ミサワホームズ三ノ輪【2011年にリフォーム履歴有...": {
     "data": null,
@@ -30383,5 +30383,49 @@
       ]
     },
     "cached_at": "2026-07-22T03:19:44.041071"
+  },
+  "TOKYOFRONTCOURT4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13417.html",
+      "deviation_score": 98,
+      "estimated_price_man": 10324,
+      "estimated_tsubo_price_man": 526,
+      "estimated_m2_price_man": 159,
+      "shinchiku_history_count": 981,
+      "chuko_history_count": 474,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 10,
+          "layout": "",
+          "area_m2": 82.97,
+          "price_man": 6960,
+          "tsubo_price_man": 278.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-22T09:11:23.657771"
+  },
+  "TOKYOFRONTCOURT": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13417.html",
+      "deviation_score": 98,
+      "estimated_price_man": 10324,
+      "estimated_tsubo_price_man": 526,
+      "estimated_m2_price_man": 159,
+      "shinchiku_history_count": 981,
+      "chuko_history_count": 474,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 10,
+          "layout": "",
+          "area_m2": 82.97,
+          "price_man": 6960,
+          "tsubo_price_man": 278.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-22T09:11:23.657771"
   }
 }
