@@ -2055,23 +2055,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/764251.html",
       "deviation_score": 33,
-      "estimated_price_man": 13454,
-      "estimated_tsubo_price_man": 636,
-      "estimated_m2_price_man": 193,
+      "estimated_price_man": 10873,
+      "estimated_tsubo_price_man": 631,
+      "estimated_m2_price_man": 191,
       "shinchiku_history_count": 335,
-      "chuko_history_count": 111,
+      "chuko_history_count": 119,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 67.72,
-          "price_man": 8633,
-          "tsubo_price_man": 419.0
+          "area_m2": 67.66,
+          "price_man": 8883,
+          "tsubo_price_man": 432.0
         }
       ]
     },
-    "cached_at": "2026-05-14T16:14:28.436265"
+    "cached_at": "2026-07-22T03:19:35.490760"
   },
   "スカーラ品川戸越スカイタワー": {
     "data": {
@@ -30361,5 +30361,27 @@
       ]
     },
     "cached_at": "2026-07-21T09:07:54.972687"
+  },
+  "シーズガーデン戸越公園": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/37286.html",
+      "deviation_score": 26,
+      "estimated_price_man": 9495,
+      "estimated_tsubo_price_man": 499,
+      "estimated_m2_price_man": 151,
+      "shinchiku_history_count": 26,
+      "chuko_history_count": 17,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 9,
+          "layout": "",
+          "area_m2": 68.04,
+          "price_man": 6372,
+          "tsubo_price_man": 316.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-22T03:19:44.041071"
   }
 }
