@@ -21795,37 +21795,37 @@
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10287,
+      "avg_price_man": 10286,
       "median_price_man": 10300,
       "price_distribution": {
-        "under_10000": 313,
-        "10000_11000": 227,
+        "under_10000": 312,
+        "10000_11000": 228,
         "11000_12000": 138,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 136,
-          "avg_price_man": 10446,
+          "count": 137,
+          "avg_price_man": 10439,
           "min_price_man": 7980,
           "max_price_man": 11500
         },
         "中央区": {
-          "count": 53,
-          "avg_price_man": 10738,
+          "count": 52,
+          "avg_price_man": 10733,
           "min_price_man": 8380,
           "max_price_man": 11500
         },
         "世田谷区": {
           "count": 47,
-          "avg_price_man": 10545,
+          "avg_price_man": 10543,
           "min_price_man": 9280,
           "max_price_man": 11500
         },
         "豊島区": {
-          "count": 46,
-          "avg_price_man": 10270,
+          "count": 47,
+          "avg_price_man": 10303,
           "min_price_man": 8980,
           "max_price_man": 11500
         },
@@ -21842,14 +21842,14 @@
           "max_price_man": 11498
         },
         "杉並区": {
-          "count": 37,
-          "avg_price_man": 10158,
+          "count": 36,
+          "avg_price_man": 10163,
           "min_price_man": 9080,
           "max_price_man": 11480
         },
         "大田区": {
-          "count": 36,
-          "avg_price_man": 10186,
+          "count": 35,
+          "avg_price_man": 10192,
           "min_price_man": 9060,
           "max_price_man": 11480
         },
@@ -21884,8 +21884,8 @@
           "max_price_man": 11500
         },
         "荒川区": {
-          "count": 19,
-          "avg_price_man": 9654,
+          "count": 20,
+          "avg_price_man": 9635,
           "min_price_man": 8300,
           "max_price_man": 11100
         },
