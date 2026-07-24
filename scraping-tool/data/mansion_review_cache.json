@@ -8727,7 +8727,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/602759.html",
       "deviation_score": 24,
-      "estimated_price_man": 8468,
+      "estimated_price_man": 8710,
       "estimated_tsubo_price_man": 400,
       "estimated_m2_price_man": 121,
       "shinchiku_history_count": 24,
@@ -8743,7 +8743,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-09T14:30:03.140217"
+    "cached_at": "2026-07-24T03:22:40.530327"
   },
   "アップルタワー東京キャナルコート33階": {
     "data": {
@@ -14001,23 +14001,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17202.html",
       "deviation_score": 32,
-      "estimated_price_man": 10457,
-      "estimated_tsubo_price_man": 524,
-      "estimated_m2_price_man": 159,
+      "estimated_price_man": 11409,
+      "estimated_tsubo_price_man": 563,
+      "estimated_m2_price_man": 171,
       "shinchiku_history_count": 32,
-      "chuko_history_count": 10,
+      "chuko_history_count": 11,
       "sales_history": [
         {
           "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 60.93,
-          "price_man": 5292,
-          "tsubo_price_man": 284.0
+          "area_m2": 61.28,
+          "price_man": 5900,
+          "tsubo_price_man": 314.0
         }
       ]
     },
-    "cached_at": "2026-06-24T14:31:01.771222"
+    "cached_at": "2026-07-24T03:22:22.283603"
   },
   "ファミールグラン高井戸デュープレックス": {
     "data": {
@@ -14512,23 +14512,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/534783.html",
       "deviation_score": 38,
-      "estimated_price_man": 7352,
-      "estimated_tsubo_price_man": 435,
-      "estimated_m2_price_man": 132,
+      "estimated_price_man": 9398,
+      "estimated_tsubo_price_man": 438,
+      "estimated_m2_price_man": 133,
       "shinchiku_history_count": 384,
-      "chuko_history_count": 153,
+      "chuko_history_count": 156,
       "sales_history": [
         {
           "end_date": "",
           "floor": 8,
           "layout": "",
           "area_m2": 70.06,
-          "price_man": 6669,
-          "tsubo_price_man": 315.0
+          "price_man": 6713,
+          "tsubo_price_man": 317.0
         }
       ]
     },
-    "cached_at": "2026-06-10T11:58:01.835841"
+    "cached_at": "2026-07-24T03:22:31.681986"
   },
   "テラス加賀【リノベ】": {
     "data": null,
@@ -16331,25 +16331,10 @@
   },
   "松原フラット": {
     "data": {
-      "building_url": "https://www.mansion-review.jp/mansion/558127.html",
-      "deviation_score": 50,
-      "estimated_price_man": 10196,
-      "estimated_tsubo_price_man": 417,
-      "estimated_m2_price_man": 126,
-      "shinchiku_history_count": 0,
-      "chuko_history_count": 26,
-      "sales_history": [
-        {
-          "end_date": "",
-          "floor": 1,
-          "layout": "",
-          "area_m2": 76.96,
-          "price_man": 8049,
-          "tsubo_price_man": 344.0
-        }
-      ]
+      "building_url": "https://www.mansion-review.jp/mansion/167314.html",
+      "deviation_score": 7
     },
-    "cached_at": "2026-06-10T17:20:15.009663"
+    "cached_at": "2026-07-24T03:22:13.733507"
   },
   "グランウェリス瀬田": {
     "data": {
@@ -18368,23 +18353,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/754869.html",
       "deviation_score": 53,
-      "estimated_price_man": 9668,
-      "estimated_tsubo_price_man": 421,
-      "estimated_m2_price_man": 128,
+      "estimated_price_man": 9118,
+      "estimated_tsubo_price_man": 431,
+      "estimated_m2_price_man": 131,
       "shinchiku_history_count": 531,
-      "chuko_history_count": 144,
+      "chuko_history_count": 148,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 70.01,
-          "price_man": 7615,
-          "tsubo_price_man": 360.0
+          "area_m2": 69.99,
+          "price_man": 7658,
+          "tsubo_price_man": 362.0
         }
       ]
     },
-    "cached_at": "2026-06-11T17:54:45.635155"
+    "cached_at": "2026-07-10T10:30:04.354398"
   },
   "グランドメゾン江古田の杜1階": {
     "data": {
@@ -22865,9 +22850,21 @@
   "ピアース用賀テラス": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1629451.html",
-      "deviation_score": 6
+      "deviation_score": 27,
+      "shinchiku_history_count": 27,
+      "chuko_history_count": 1,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 60.01,
+          "price_man": 11680,
+          "tsubo_price_man": 644.0
+        }
+      ]
     },
-    "cached_at": "2026-06-13T04:40:44.164456"
+    "cached_at": "2026-07-24T03:22:49.178782"
   },
   "グローリオ蘆花公園ヴィラH棟": {
     "data": null,
@@ -30570,5 +30567,27 @@
       ]
     },
     "cached_at": "2026-07-23T11:50:04.736504"
+  },
+  "グランドメゾン江古田の杜5階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/754869.html",
+      "deviation_score": 53,
+      "estimated_price_man": 9118,
+      "estimated_tsubo_price_man": 431,
+      "estimated_m2_price_man": 131,
+      "shinchiku_history_count": 531,
+      "chuko_history_count": 148,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 69.99,
+          "price_man": 7658,
+          "tsubo_price_man": 362.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-10T10:30:04.354398"
   }
 }
