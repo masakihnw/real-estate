@@ -16655,9 +16655,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18180.html",
       "deviation_score": 0,
-      "estimated_price_man": 7081,
-      "estimated_tsubo_price_man": 419,
-      "estimated_m2_price_man": 127,
+      "estimated_price_man": 7009,
+      "estimated_tsubo_price_man": 414,
+      "estimated_m2_price_man": 126,
       "shinchiku_history_count": 0,
       "chuko_history_count": 27,
       "sales_history": [
@@ -16666,12 +16666,12 @@
           "floor": 3,
           "layout": "",
           "area_m2": 69.22,
-          "price_man": 5947,
-          "tsubo_price_man": 278.0
+          "price_man": 5929,
+          "tsubo_price_man": 277.0
         }
       ]
     },
-    "cached_at": "2026-07-11T08:34:21.321077"
+    "cached_at": "2026-07-25T08:49:00.791952"
   },
   "プラウド光が丘四季の香公園": {
     "data": {
@@ -26470,7 +26470,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/32818.html",
       "deviation_score": 27,
-      "estimated_price_man": 9351,
+      "estimated_price_man": 9658,
       "estimated_tsubo_price_man": 507,
       "estimated_m2_price_man": 154,
       "shinchiku_history_count": 27,
@@ -26486,7 +26486,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-11T08:34:03.047010"
+    "cached_at": "2026-07-25T08:48:51.286684"
   },
   "Dクラディア平和台": {
     "data": {
@@ -30746,5 +30746,43 @@
       ]
     },
     "cached_at": "2026-07-25T03:20:57.829869"
+  },
+  "アルファステイツ浅草橋": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/534750.html",
+      "deviation_score": 23,
+      "shinchiku_history_count": 23,
+      "chuko_history_count": 12,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 56.7,
+          "price_man": 6129,
+          "tsubo_price_man": 354.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-25T08:49:09.269652"
+  },
+  "エクセレントシティ亀有ステーションスイート": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1424135.html",
+      "deviation_score": 41,
+      "shinchiku_history_count": 41,
+      "chuko_history_count": 6,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 73.02,
+          "price_man": 7773,
+          "tsubo_price_man": 351.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-25T08:49:17.113726"
   }
 }
