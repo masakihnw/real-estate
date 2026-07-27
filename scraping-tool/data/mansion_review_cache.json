@@ -7839,9 +7839,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1386570.html",
       "deviation_score": 22,
-      "estimated_price_man": 10826,
-      "estimated_tsubo_price_man": 498,
-      "estimated_m2_price_man": 151,
+      "estimated_price_man": 10213,
+      "estimated_tsubo_price_man": 463,
+      "estimated_m2_price_man": 140,
       "shinchiku_history_count": 227,
       "chuko_history_count": 32,
       "sales_history": [
@@ -7855,7 +7855,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-18T11:14:47.582220"
+    "cached_at": "2026-07-27T14:18:40.383572"
   },
   "大山パークハウススタイリッシュタワー": {
     "data": {
@@ -13695,23 +13695,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13394.html",
       "deviation_score": 24,
-      "estimated_price_man": 11009,
-      "estimated_tsubo_price_man": 461,
-      "estimated_m2_price_man": 140,
+      "estimated_price_man": 8997,
+      "estimated_tsubo_price_man": 480,
+      "estimated_m2_price_man": 146,
       "shinchiku_history_count": 246,
-      "chuko_history_count": 118,
+      "chuko_history_count": 119,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 80.38,
-          "price_man": 6113,
-          "tsubo_price_man": 254.0
+          "area_m2": 80.34,
+          "price_man": 6153,
+          "tsubo_price_man": 256.0
         }
       ]
     },
-    "cached_at": "2026-07-13T14:02:07.086257"
+    "cached_at": "2026-07-27T14:18:30.254341"
   },
   "ドルフ新大橋リバーサイド": {
     "data": {
@@ -26404,23 +26404,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/24864.html",
       "deviation_score": 35,
-      "estimated_price_man": 10007,
-      "estimated_tsubo_price_man": 509,
-      "estimated_m2_price_man": 154,
+      "estimated_price_man": 7918,
+      "estimated_tsubo_price_man": 524,
+      "estimated_m2_price_man": 159,
       "shinchiku_history_count": 35,
-      "chuko_history_count": 39,
+      "chuko_history_count": 41,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 54.69,
-          "price_man": 5101,
-          "tsubo_price_man": 309.0
+          "area_m2": 54.89,
+          "price_man": 5339,
+          "tsubo_price_man": 322.0
         }
       ]
     },
-    "cached_at": "2026-06-26T13:48:56.010705"
+    "cached_at": "2026-07-25T03:21:06.753081"
   },
   "カーサ要町": {
     "data": {
@@ -29316,20 +29316,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/537454.html",
       "deviation_score": 40,
+      "estimated_price_man": 9187,
+      "estimated_tsubo_price_man": 533,
+      "estimated_m2_price_man": 162,
       "shinchiku_history_count": 40,
-      "chuko_history_count": 17,
+      "chuko_history_count": 18,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 55.57,
-          "price_man": 5590,
-          "tsubo_price_man": 334.0
+          "area_m2": 56.13,
+          "price_man": 5918,
+          "tsubo_price_man": 348.0
         }
       ]
     },
-    "cached_at": "2026-07-13T14:02:15.742308"
+    "cached_at": "2026-07-27T14:18:21.391074"
   },
   "アークプラザ西日暮里": {
     "data": {
