@@ -223,23 +223,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18965.html",
       "deviation_score": 0,
-      "estimated_price_man": 13358,
-      "estimated_tsubo_price_man": 597,
-      "estimated_m2_price_man": 181,
+      "estimated_price_man": 10727,
+      "estimated_tsubo_price_man": 592,
+      "estimated_m2_price_man": 179,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 308,
+      "chuko_history_count": 311,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 66.89,
-          "price_man": 7698,
-          "tsubo_price_man": 376.0
+          "area_m2": 66.7,
+          "price_man": 7705,
+          "tsubo_price_man": 379.0
         }
       ]
     },
-    "cached_at": "2026-07-14T03:08:03.631398"
+    "cached_at": "2026-07-28T03:14:13.922829"
   },
   "シティタワー品川": {
     "data": {
@@ -29338,28 +29338,31 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/41859.html",
       "deviation_score": 39,
+      "estimated_price_man": 8172,
+      "estimated_tsubo_price_man": 436,
+      "estimated_m2_price_man": 132,
       "shinchiku_history_count": 39,
-      "chuko_history_count": 34,
+      "chuko_history_count": 35,
       "sales_history": [
         {
           "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 50.38,
-          "price_man": 3696,
-          "tsubo_price_man": 251.0
+          "area_m2": 50.67,
+          "price_man": 3828,
+          "tsubo_price_man": 257.0
         }
       ]
     },
-    "cached_at": "2026-07-14T03:08:11.977350"
+    "cached_at": "2026-07-28T03:14:30.612764"
   },
   "ITOHPiA大島StationCourt13階": {
     "data": null,
-    "cached_at": "2026-07-14T03:08:16.687606"
+    "cached_at": "2026-07-28T03:14:35.439315"
   },
   "ITOHPiA大島StationCourt": {
     "data": null,
-    "cached_at": "2026-07-14T03:08:16.687606"
+    "cached_at": "2026-07-28T03:14:35.439315"
   },
   "ローレルコート赤羽": {
     "data": {
@@ -31192,5 +31195,28 @@
       ]
     },
     "cached_at": "2026-07-27T10:32:44.276476"
+  },
+  "CALMEINFOARMSTOKYOCORE": {
+    "data": null,
+    "cached_at": "2026-07-28T03:14:04.779188"
+  },
+  "グランドメゾン菊川": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/14474.html",
+      "deviation_score": 70,
+      "shinchiku_history_count": 70,
+      "chuko_history_count": 37,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 59.76,
+          "price_man": 3695,
+          "tsubo_price_man": 213.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-28T03:14:22.289835"
   }
 }
