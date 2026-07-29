@@ -6631,23 +6631,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603788.html",
       "deviation_score": 55,
-      "estimated_price_man": 19307,
+      "estimated_price_man": 16932,
       "estimated_tsubo_price_man": 718,
-      "estimated_m2_price_man": 217,
+      "estimated_m2_price_man": 218,
       "shinchiku_history_count": 550,
-      "chuko_history_count": 440,
+      "chuko_history_count": 444,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 71.68,
-          "price_man": 9305,
-          "tsubo_price_man": 427.0
+          "area_m2": 71.74,
+          "price_man": 9387,
+          "tsubo_price_man": 430.0
         }
       ]
     },
-    "cached_at": "2026-07-15T08:52:08.959055"
+    "cached_at": "2026-07-29T09:19:07.482058"
   },
   "西戸山タワーホウムズサウスタワー": {
     "data": {
@@ -9254,9 +9254,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/756927.html",
       "deviation_score": 24,
-      "estimated_price_man": 7247,
-      "estimated_tsubo_price_man": 363,
-      "estimated_m2_price_man": 110,
+      "estimated_price_man": 7846,
+      "estimated_tsubo_price_man": 388,
+      "estimated_m2_price_man": 118,
       "shinchiku_history_count": 24,
       "chuko_history_count": 27,
       "sales_history": [
@@ -9270,7 +9270,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-15T08:52:17.072493"
+    "cached_at": "2026-07-29T09:19:16.450781"
   },
   "東京ビューマークス18階(新規内装フルリノベーション...": {
     "data": {
@@ -20925,23 +20925,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/28354.html",
       "deviation_score": 44,
-      "estimated_price_man": 7644,
-      "estimated_tsubo_price_man": 562,
-      "estimated_m2_price_man": 170,
+      "estimated_price_man": 7944,
+      "estimated_tsubo_price_man": 597,
+      "estimated_m2_price_man": 181,
       "shinchiku_history_count": 44,
-      "chuko_history_count": 44,
+      "chuko_history_count": 46,
       "sales_history": [
         {
           "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 52.93,
-          "price_man": 4794,
-          "tsubo_price_man": 299.0
+          "area_m2": 52.92,
+          "price_man": 4996,
+          "tsubo_price_man": 312.0
         }
       ]
     },
-    "cached_at": "2026-07-15T08:51:58.493718"
+    "cached_at": "2026-07-29T09:18:57.133374"
   },
   "プラティーク日本橋12階": {
     "data": {
