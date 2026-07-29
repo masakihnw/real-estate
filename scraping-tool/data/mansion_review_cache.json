@@ -9103,23 +9103,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13417.html",
       "deviation_score": 98,
-      "estimated_price_man": 10140,
-      "estimated_tsubo_price_man": 524,
+      "estimated_price_man": 17084,
+      "estimated_tsubo_price_man": 523,
       "estimated_m2_price_man": 159,
       "shinchiku_history_count": 981,
-      "chuko_history_count": 474,
+      "chuko_history_count": 476,
       "sales_history": [
         {
           "end_date": "",
           "floor": 10,
           "layout": "",
-          "area_m2": 82.97,
-          "price_man": 6960,
-          "tsubo_price_man": 278.0
+          "area_m2": 82.94,
+          "price_man": 6980,
+          "tsubo_price_man": 279.0
         }
       ]
     },
-    "cached_at": "2026-07-13T14:01:58.259896"
+    "cached_at": "2026-07-29T12:08:10.643827"
   },
   "プレシス市谷台町坂": {
     "data": {
@@ -26761,23 +26761,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13417.html",
       "deviation_score": 98,
-      "estimated_price_man": 10140,
-      "estimated_tsubo_price_man": 524,
+      "estimated_price_man": 17084,
+      "estimated_tsubo_price_man": 523,
       "estimated_m2_price_man": 159,
       "shinchiku_history_count": 981,
-      "chuko_history_count": 474,
+      "chuko_history_count": 476,
       "sales_history": [
         {
           "end_date": "",
           "floor": 10,
           "layout": "",
-          "area_m2": 82.97,
-          "price_man": 6960,
-          "tsubo_price_man": 278.0
+          "area_m2": 82.94,
+          "price_man": 6980,
+          "tsubo_price_man": 279.0
         }
       ]
     },
-    "cached_at": "2026-07-13T14:01:58.259896"
+    "cached_at": "2026-07-29T12:08:10.643827"
   },
   "コスモ押上ガーデンシティ2階": {
     "data": {
