@@ -25969,23 +25969,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/32193.html",
       "deviation_score": 48,
-      "estimated_price_man": 11108,
-      "estimated_tsubo_price_man": 668,
-      "estimated_m2_price_man": 202,
+      "estimated_price_man": 11308,
+      "estimated_tsubo_price_man": 656,
+      "estimated_m2_price_man": 199,
       "shinchiku_history_count": 48,
-      "chuko_history_count": 39,
+      "chuko_history_count": 40,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 59.76,
-          "price_man": 7905,
-          "tsubo_price_man": 442.0
+          "area_m2": 59.64,
+          "price_man": 7951,
+          "tsubo_price_man": 446.0
         }
       ]
     },
-    "cached_at": "2026-06-24T14:11:01.897298"
+    "cached_at": "2026-07-23T09:11:05.761324"
   },
   "ブリリア有明シティタワー【22階/2LDK/55.9...": {
     "data": {
@@ -29440,29 +29440,29 @@
   },
   "ライトコート四谷203号室": {
     "data": null,
-    "cached_at": "2026-07-15T03:15:49.738862"
+    "cached_at": "2026-07-29T03:18:58.476730"
   },
   "クレストコート杉並宮前": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16686.html",
       "deviation_score": 33,
-      "estimated_price_man": 7525,
-      "estimated_tsubo_price_man": 351,
-      "estimated_m2_price_man": 106,
+      "estimated_price_man": 7860,
+      "estimated_tsubo_price_man": 361,
+      "estimated_m2_price_man": 110,
       "shinchiku_history_count": 33,
-      "chuko_history_count": 35,
+      "chuko_history_count": 36,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 74.36,
-          "price_man": 5424,
-          "tsubo_price_man": 242.0
+          "area_m2": 74.4,
+          "price_man": 5528,
+          "tsubo_price_man": 246.0
         }
       ]
     },
-    "cached_at": "2026-07-15T03:15:58.879756"
+    "cached_at": "2026-07-29T03:19:16.523400"
   },
   "シティタワー有明7階": {
     "data": {
@@ -31306,5 +31306,49 @@
       ]
     },
     "cached_at": "2026-07-28T11:56:35.825562"
+  },
+  "プレシス葛西プロスタイル": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1441406.html",
+      "deviation_score": 33,
+      "estimated_price_man": 5401,
+      "estimated_tsubo_price_man": 331,
+      "estimated_m2_price_man": 101,
+      "shinchiku_history_count": 33,
+      "chuko_history_count": 7,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 61.65,
+          "price_man": 6255,
+          "tsubo_price_man": 336.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-29T03:19:07.347393"
+  },
+  "シアンズテラス下高井戸1階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16594.html",
+      "deviation_score": 22,
+      "estimated_price_man": 9866,
+      "estimated_tsubo_price_man": 466,
+      "estimated_m2_price_man": 141,
+      "shinchiku_history_count": 22,
+      "chuko_history_count": 12,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 72.24,
+          "price_man": 6766,
+          "tsubo_price_man": 312.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-26T11:25:59.110080"
   }
 }
