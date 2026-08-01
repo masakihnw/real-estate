@@ -25016,7 +25016,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11650.html",
       "deviation_score": 38,
-      "estimated_price_man": 10398,
+      "estimated_price_man": 10700,
       "estimated_tsubo_price_man": 499,
       "estimated_m2_price_man": 151,
       "shinchiku_history_count": 38,
@@ -25032,7 +25032,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-18T12:35:04.823974"
+    "cached_at": "2026-08-01T12:42:25.041658"
   },
   "ゼファー浅草馬道通り": {
     "data": {
@@ -27816,45 +27816,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13786.html",
       "deviation_score": 19,
-      "estimated_price_man": 9747,
-      "estimated_tsubo_price_man": 380,
-      "estimated_m2_price_man": 115,
+      "estimated_price_man": 10031,
+      "estimated_tsubo_price_man": 377,
+      "estimated_m2_price_man": 114,
       "shinchiku_history_count": 19,
-      "chuko_history_count": 29,
+      "chuko_history_count": 28,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 106.0,
-          "price_man": 8231,
-          "tsubo_price_man": 266.0
+          "area_m2": 106.76,
+          "price_man": 8169,
+          "tsubo_price_man": 262.0
         }
       ]
     },
-    "cached_at": "2026-07-18T12:35:23.379755"
+    "cached_at": "2026-08-01T12:42:34.986538"
   },
   "グランディオーゼ岡本": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13786.html",
       "deviation_score": 19,
-      "estimated_price_man": 9747,
-      "estimated_tsubo_price_man": 380,
-      "estimated_m2_price_man": 115,
+      "estimated_price_man": 10031,
+      "estimated_tsubo_price_man": 377,
+      "estimated_m2_price_man": 114,
       "shinchiku_history_count": 19,
-      "chuko_history_count": 29,
+      "chuko_history_count": 28,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 106.0,
-          "price_man": 8231,
-          "tsubo_price_man": 266.0
+          "area_m2": 106.76,
+          "price_man": 8169,
+          "tsubo_price_man": 262.0
         }
       ]
     },
-    "cached_at": "2026-07-18T12:35:23.379755"
+    "cached_at": "2026-08-01T12:42:34.986538"
   },
   "パークホームズ杉並和泉ザレジデンス": {
     "data": {
@@ -28564,23 +28564,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13786.html",
       "deviation_score": 19,
-      "estimated_price_man": 9747,
-      "estimated_tsubo_price_man": 380,
-      "estimated_m2_price_man": 115,
+      "estimated_price_man": 10031,
+      "estimated_tsubo_price_man": 377,
+      "estimated_m2_price_man": 114,
       "shinchiku_history_count": 19,
-      "chuko_history_count": 29,
+      "chuko_history_count": 28,
       "sales_history": [
         {
           "end_date": "",
           "floor": 1,
           "layout": "",
-          "area_m2": 106.0,
-          "price_man": 8231,
-          "tsubo_price_man": 266.0
+          "area_m2": 106.76,
+          "price_man": 8169,
+          "tsubo_price_man": 262.0
         }
       ]
     },
-    "cached_at": "2026-07-18T12:35:23.379755"
+    "cached_at": "2026-08-01T12:42:34.986538"
   },
   "ザ・パームス東中野都心を使いこなす理想の住まい7階": {
     "data": null,
