@@ -8273,7 +8273,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/766307.html",
       "deviation_score": 35,
-      "estimated_price_man": 9364,
+      "estimated_price_man": 8989,
       "estimated_tsubo_price_man": 413,
       "estimated_m2_price_man": 125,
       "shinchiku_history_count": 35,
@@ -8289,29 +8289,29 @@
         }
       ]
     },
-    "cached_at": "2026-07-19T11:10:32.276643"
+    "cached_at": "2026-08-02T11:23:45.324573"
   },
   "ガーデンテラス馬込プレミアム": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/781486.html",
       "deviation_score": 11,
-      "estimated_price_man": 11496,
-      "estimated_tsubo_price_man": 488,
-      "estimated_m2_price_man": 148,
+      "estimated_price_man": 11519,
+      "estimated_tsubo_price_man": 483,
+      "estimated_m2_price_man": 146,
       "shinchiku_history_count": 11,
-      "chuko_history_count": 28,
+      "chuko_history_count": 29,
       "sales_history": [
         {
           "end_date": "",
           "floor": 2,
           "layout": "",
-          "area_m2": 60.91,
-          "price_man": 7293,
-          "tsubo_price_man": 390.0
+          "area_m2": 61.47,
+          "price_man": 7421,
+          "tsubo_price_man": 393.0
         }
       ]
     },
-    "cached_at": "2026-07-19T11:10:23.268418"
+    "cached_at": "2026-08-02T11:23:36.732168"
   },
   "パークタワー東雲29階": {
     "data": {
@@ -9508,9 +9508,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/15762.html",
       "deviation_score": 97,
-      "estimated_price_man": 26296,
-      "estimated_tsubo_price_man": 576,
-      "estimated_m2_price_man": 175,
+      "estimated_price_man": 27711,
+      "estimated_tsubo_price_man": 615,
+      "estimated_m2_price_man": 186,
       "shinchiku_history_count": 97,
       "chuko_history_count": 145,
       "sales_history": [
@@ -9524,7 +9524,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-19T11:10:13.741334"
+    "cached_at": "2026-08-02T11:23:19.193996"
   },
   "ウェリスシティ大森タワー": {
     "data": {
@@ -9552,7 +9552,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/777585.html",
       "deviation_score": 24,
-      "estimated_price_man": 8022,
+      "estimated_price_man": 8468,
       "estimated_tsubo_price_man": 492,
       "estimated_m2_price_man": 149,
       "shinchiku_history_count": 24,
@@ -9568,15 +9568,15 @@
         }
       ]
     },
-    "cached_at": "2026-07-19T11:10:50.078592"
+    "cached_at": "2026-08-02T11:23:54.084272"
   },
   "ライオンズタワー赤羽": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18782.html",
       "deviation_score": 10,
-      "estimated_price_man": 10328,
-      "estimated_tsubo_price_man": 495,
-      "estimated_m2_price_man": 150,
+      "estimated_price_man": 10278,
+      "estimated_tsubo_price_man": 493,
+      "estimated_m2_price_man": 149,
       "shinchiku_history_count": 105,
       "chuko_history_count": 79,
       "sales_history": [
@@ -9585,12 +9585,12 @@
           "floor": 10,
           "layout": "",
           "area_m2": 68.17,
-          "price_man": 6176,
-          "tsubo_price_man": 297.0
+          "price_man": 6172,
+          "tsubo_price_man": 296.0
         }
       ]
     },
-    "cached_at": "2026-07-19T11:10:58.842897"
+    "cached_at": "2026-08-02T11:24:02.848969"
   },
   "ウェリスシティ大森タワー【リノベ】【高層階】": {
     "data": null,
@@ -25189,23 +25189,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/742203.html",
       "deviation_score": 0,
-      "estimated_price_man": 9303,
-      "estimated_tsubo_price_man": 400,
-      "estimated_m2_price_man": 121,
+      "estimated_price_man": 9535,
+      "estimated_tsubo_price_man": 410,
+      "estimated_m2_price_man": 124,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 25,
+      "chuko_history_count": 27,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 4,
+          "floor": 3,
           "layout": "",
-          "area_m2": 59.84,
-          "price_man": 4517,
-          "tsubo_price_man": 250.0
+          "area_m2": 60.07,
+          "price_man": 4799,
+          "tsubo_price_man": 264.0
         }
       ]
     },
-    "cached_at": "2026-07-19T11:10:40.967923"
+    "cached_at": "2026-08-02T11:23:28.133676"
   },
   "リーデンスタワー21階": {
     "data": {
@@ -28092,45 +28092,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/785253.html",
       "deviation_score": 0,
-      "estimated_price_man": 3737,
-      "estimated_tsubo_price_man": 515,
+      "estimated_price_man": 9152,
+      "estimated_tsubo_price_man": 513,
       "estimated_m2_price_man": 156,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 32,
+      "chuko_history_count": 33,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 48.47,
-          "price_man": 5928,
-          "tsubo_price_man": 398.0
+          "area_m2": 47.77,
+          "price_man": 5864,
+          "tsubo_price_man": 401.0
         }
       ]
     },
-    "cached_at": "2026-07-19T11:11:07.469077"
+    "cached_at": "2026-08-02T11:24:11.760671"
   },
   "リヴシティ日暮里": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/785253.html",
       "deviation_score": 0,
-      "estimated_price_man": 3737,
-      "estimated_tsubo_price_man": 515,
+      "estimated_price_man": 9152,
+      "estimated_tsubo_price_man": 513,
       "estimated_m2_price_man": 156,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 32,
+      "chuko_history_count": 33,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 48.47,
-          "price_man": 5928,
-          "tsubo_price_man": 398.0
+          "area_m2": 47.77,
+          "price_man": 5864,
+          "tsubo_price_man": 401.0
         }
       ]
     },
-    "cached_at": "2026-07-19T11:11:07.469077"
+    "cached_at": "2026-08-02T11:24:11.760671"
   },
   "コスモ東日暮里ガーデンフォート4階": {
     "data": {
