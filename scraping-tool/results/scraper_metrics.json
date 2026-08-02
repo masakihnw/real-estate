@@ -13,8 +13,8 @@
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
-        "early_exit": 2,
-        "completed": 21
+        "completed": 21,
+        "early_exit": 2
       }
     },
     "nomucom": {
@@ -34,7 +34,7 @@
       }
     },
     "homes": {
-      "parsed": 6367,
+      "parsed": 6411,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -45,5 +45,5 @@
   "alerts": [
     "nomucom: 異常終端 safety_limit×1 — 残ページ取りこぼしの可能性"
   ],
-  "saved_at": "2026-08-02T11:22:15.796021+00:00"
+  "saved_at": "2026-08-02T12:41:46.275641+00:00"
 }
