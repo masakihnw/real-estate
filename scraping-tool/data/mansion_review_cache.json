@@ -31874,5 +31874,49 @@
       "deviation_score": 7
     },
     "cached_at": "2026-08-02T09:06:41.464547"
+  },
+  "朝日クレスパリオ新宿4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/24078.html",
+      "deviation_score": 39,
+      "estimated_price_man": 4536,
+      "estimated_tsubo_price_man": 349,
+      "estimated_m2_price_man": 106,
+      "shinchiku_history_count": 39,
+      "chuko_history_count": 59,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 48.21,
+          "price_man": 4011,
+          "tsubo_price_man": 278.0
+        }
+      ]
+    },
+    "cached_at": "2026-07-23T09:13:17.315512"
+  },
+  "アトラス杉並方南町": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16503.html",
+      "deviation_score": 63,
+      "estimated_price_man": 8940,
+      "estimated_tsubo_price_man": 429,
+      "estimated_m2_price_man": 130,
+      "shinchiku_history_count": 63,
+      "chuko_history_count": 67,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 65.43,
+          "price_man": 5191,
+          "tsubo_price_man": 263.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-03T03:30:15.363377"
   }
 }
