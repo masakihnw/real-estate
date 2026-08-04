@@ -9015,23 +9015,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17532.html",
       "deviation_score": 26,
-      "estimated_price_man": 15160,
-      "estimated_tsubo_price_man": 597,
-      "estimated_m2_price_man": 181,
+      "estimated_price_man": 13404,
+      "estimated_tsubo_price_man": 576,
+      "estimated_m2_price_man": 175,
       "shinchiku_history_count": 263,
-      "chuko_history_count": 622,
+      "chuko_history_count": 634,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 77.04,
-          "price_man": 6980,
-          "tsubo_price_man": 296.0
+          "area_m2": 76.99,
+          "price_man": 7079,
+          "tsubo_price_man": 300.0
         }
       ]
     },
-    "cached_at": "2026-06-14T10:22:56.417387"
+    "cached_at": "2026-08-04T03:10:24.427674"
   },
   "プライムパークス品川シーサイドザ・タワー7階": {
     "data": {
@@ -19128,7 +19128,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-11T08:59:11.249823"
+    "cached_at": "2026-08-04T03:10:33.015315"
   },
   "亀戸レジデンス6階": {
     "data": {
@@ -23948,23 +23948,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13407.html",
       "deviation_score": 10,
-      "estimated_price_man": 17255,
-      "estimated_tsubo_price_man": 680,
-      "estimated_m2_price_man": 206,
+      "estimated_price_man": 15099,
+      "estimated_tsubo_price_man": 675,
+      "estimated_m2_price_man": 205,
       "shinchiku_history_count": 1063,
-      "chuko_history_count": 1579,
+      "chuko_history_count": 1600,
       "sales_history": [
         {
           "end_date": "",
           "floor": 28,
           "layout": "",
-          "area_m2": 74.14,
-          "price_man": 8926,
-          "tsubo_price_man": 393.0
+          "area_m2": 74.23,
+          "price_man": 9029,
+          "tsubo_price_man": 397.0
         }
       ]
     },
-    "cached_at": "2026-06-16T14:12:33.867784"
+    "cached_at": "2026-08-04T03:10:14.240311"
   },
   "クレアホームズ滝野川オートロック付・ペット飼育可": {
     "data": null,
@@ -32069,5 +32069,27 @@
       ]
     },
     "cached_at": "2026-08-03T14:21:35.206472"
+  },
+  "プラウドタワー渋谷": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1639448.html",
+      "deviation_score": 0,
+      "estimated_price_man": 34725,
+      "estimated_tsubo_price_man": 1640,
+      "estimated_m2_price_man": 497,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 203,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 11,
+          "layout": "",
+          "area_m2": 80.55,
+          "price_man": 41444,
+          "tsubo_price_man": 1675.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-04T03:10:42.202058"
   }
 }
