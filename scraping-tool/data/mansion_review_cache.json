@@ -32104,5 +32104,93 @@
   "眺望良好グランイーグルシーサイド大森": {
     "data": null,
     "cached_at": "2026-08-04T09:13:44.955215"
+  },
+  "白金テラス三光坂": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/14094.html",
+      "deviation_score": 9,
+      "estimated_price_man": 88277,
+      "estimated_tsubo_price_man": 1431,
+      "estimated_m2_price_man": 433,
+      "shinchiku_history_count": 9,
+      "chuko_history_count": 14,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 197.57,
+          "price_man": 43807,
+          "tsubo_price_man": 731.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-05T03:12:20.173047"
+  },
+  "カルミネ西葛西": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1635264.html",
+      "deviation_score": 20,
+      "estimated_price_man": 9397,
+      "estimated_tsubo_price_man": 444,
+      "estimated_m2_price_man": 135,
+      "shinchiku_history_count": 20,
+      "chuko_history_count": 2,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 8,
+          "layout": "",
+          "area_m2": 71.2,
+          "price_man": 9430,
+          "tsubo_price_man": 438.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-05T03:12:28.782417"
+  },
+  "新宿七丁目ハイライズ1階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/15471.html",
+      "deviation_score": 36,
+      "estimated_price_man": 10892,
+      "estimated_tsubo_price_man": 591,
+      "estimated_m2_price_man": 179,
+      "shinchiku_history_count": 36,
+      "chuko_history_count": 10,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 65.0,
+          "price_man": 6610,
+          "tsubo_price_man": 341.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-05T03:12:38.042403"
+  },
+  "新宿七丁目ハイライズ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/15471.html",
+      "deviation_score": 36,
+      "estimated_price_man": 10892,
+      "estimated_tsubo_price_man": 591,
+      "estimated_m2_price_man": 179,
+      "shinchiku_history_count": 36,
+      "chuko_history_count": 10,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 65.0,
+          "price_man": 6610,
+          "tsubo_price_man": 341.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-05T03:12:38.042403"
   }
 }
