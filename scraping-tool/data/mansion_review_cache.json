@@ -28468,7 +28468,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18539.html",
       "deviation_score": 58,
-      "estimated_price_man": 6036,
+      "estimated_price_man": 5634,
       "estimated_tsubo_price_man": 444,
       "estimated_m2_price_man": 135,
       "shinchiku_history_count": 58,
@@ -28484,7 +28484,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-22T09:11:12.021213"
+    "cached_at": "2026-08-05T09:17:44.962829"
   },
   "ミサワホームズ三ノ輪【2011年にリフォーム履歴有...": {
     "data": null,
@@ -30366,23 +30366,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/37286.html",
       "deviation_score": 26,
-      "estimated_price_man": 9495,
-      "estimated_tsubo_price_man": 499,
-      "estimated_m2_price_man": 151,
+      "estimated_price_man": 9865,
+      "estimated_tsubo_price_man": 526,
+      "estimated_m2_price_man": 160,
       "shinchiku_history_count": 26,
-      "chuko_history_count": 17,
+      "chuko_history_count": 18,
       "sales_history": [
         {
           "end_date": "",
           "floor": 9,
           "layout": "",
-          "area_m2": 68.04,
-          "price_man": 6372,
-          "tsubo_price_man": 316.0
+          "area_m2": 67.7,
+          "price_man": 6628,
+          "tsubo_price_man": 331.0
         }
       ]
     },
-    "cached_at": "2026-07-22T03:19:44.041071"
+    "cached_at": "2026-08-05T09:17:35.654125"
   },
   "TOKYOFRONTCOURT4階": {
     "data": {
