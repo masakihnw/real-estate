@@ -1,20 +1,20 @@
 {
   "metrics": {
-    "suumo": {
-      "parsed": 4631,
-      "parse_failures": 0,
-      "empty_pages": 0,
-      "finish_reasons": {
-        "early_exit": 23
-      }
-    },
     "rehouse": {
-      "parsed": 4500,
+      "parsed": 4530,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
         "completed": 21,
         "early_exit": 2
+      }
+    },
+    "suumo": {
+      "parsed": 4649,
+      "parse_failures": 0,
+      "empty_pages": 0,
+      "finish_reasons": {
+        "early_exit": 23
       }
     },
     "nomucom": {
@@ -26,7 +26,7 @@
       }
     },
     "livable": {
-      "parsed": 4255,
+      "parsed": 4263,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -34,7 +34,7 @@
       }
     },
     "homes": {
-      "parsed": 6012,
+      "parsed": 6023,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -45,5 +45,5 @@
   "alerts": [
     "nomucom: 異常終端 safety_limit×1 — 残ページ取りこぼしの可能性"
   ],
-  "saved_at": "2026-08-09T12:08:39.557717+00:00"
+  "saved_at": "2026-08-10T02:29:06.797169+00:00"
 }
