@@ -33210,5 +33210,27 @@
       "deviation_score": 7
     },
     "cached_at": "2026-08-10T11:01:41.338342"
+  },
+  "ルネコーディス西巣鴨": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/36347.html",
+      "deviation_score": 75,
+      "estimated_price_man": 6539,
+      "estimated_tsubo_price_man": 401,
+      "estimated_m2_price_man": 122,
+      "shinchiku_history_count": 75,
+      "chuko_history_count": 37,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 59.48,
+          "price_man": 4847,
+          "tsubo_price_man": 271.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-10T12:31:12.338706"
   }
 }
