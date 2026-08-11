@@ -24508,16 +24508,16 @@
     },
     {
       "date": "2026-08-11",
-      "total_listings": 708,
-      "new_count": 708,
+      "total_listings": 707,
+      "new_count": 707,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10269,
-      "median_price_man": 10300,
+      "avg_price_man": 10268,
+      "median_price_man": 10290,
       "price_distribution": {
         "under_10000": 335,
-        "10000_11000": 240,
+        "10000_11000": 239,
         "11000_12000": 133,
         "over_12000": 0,
         "undecided": 0
@@ -24560,8 +24560,8 @@
           "max_price_man": 11500
         },
         "大田区": {
-          "count": 37,
-          "avg_price_man": 10026,
+          "count": 38,
+          "avg_price_man": 10009,
           "min_price_man": 9060,
           "max_price_man": 11480
         },
@@ -24596,8 +24596,8 @@
           "max_price_man": 11500
         },
         "荒川区": {
-          "count": 23,
-          "avg_price_man": 9855,
+          "count": 22,
+          "avg_price_man": 9826,
           "min_price_man": 8300,
           "max_price_man": 11480
         },
@@ -24620,8 +24620,8 @@
           "max_price_man": 11500
         },
         "港区": {
-          "count": 13,
-          "avg_price_man": 10295,
+          "count": 12,
+          "avg_price_man": 10321,
           "min_price_man": 9280,
           "max_price_man": 11450
         },
