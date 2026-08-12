@@ -31317,23 +31317,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1441406.html",
       "deviation_score": 33,
-      "estimated_price_man": 5401,
-      "estimated_tsubo_price_man": 331,
-      "estimated_m2_price_man": 101,
+      "estimated_price_man": 6715,
+      "estimated_tsubo_price_man": 347,
+      "estimated_m2_price_man": 105,
       "shinchiku_history_count": 33,
-      "chuko_history_count": 7,
+      "chuko_history_count": 8,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 61.65,
-          "price_man": 6255,
-          "tsubo_price_man": 336.0
+          "area_m2": 63.36,
+          "price_man": 6702,
+          "tsubo_price_man": 348.0
         }
       ]
     },
-    "cached_at": "2026-07-29T03:19:07.347393"
+    "cached_at": "2026-08-12T08:04:51.984257"
   },
   "シアンズテラス下高井戸1階": {
     "data": {
