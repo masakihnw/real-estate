@@ -20426,45 +20426,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/14581.html",
       "deviation_score": 90,
-      "estimated_price_man": 13018,
-      "estimated_tsubo_price_man": 538,
-      "estimated_m2_price_man": 163,
+      "estimated_price_man": 15152,
+      "estimated_tsubo_price_man": 528,
+      "estimated_m2_price_man": 160,
       "shinchiku_history_count": 90,
-      "chuko_history_count": 66,
+      "chuko_history_count": 71,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 84.85,
-          "price_man": 7694,
-          "tsubo_price_man": 297.0
+          "area_m2": 84.6,
+          "price_man": 8044,
+          "tsubo_price_man": 312.0
         }
       ]
     },
-    "cached_at": "2026-06-11T09:03:03.207904"
+    "cached_at": "2026-08-13T02:41:43.231722"
   },
   "フォーリア駒沢公園パークサイド": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/14581.html",
       "deviation_score": 90,
-      "estimated_price_man": 13018,
-      "estimated_tsubo_price_man": 538,
-      "estimated_m2_price_man": 163,
+      "estimated_price_man": 15152,
+      "estimated_tsubo_price_man": 528,
+      "estimated_m2_price_man": 160,
       "shinchiku_history_count": 90,
-      "chuko_history_count": 66,
+      "chuko_history_count": 71,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 84.85,
-          "price_man": 7694,
-          "tsubo_price_man": 297.0
+          "area_m2": 84.6,
+          "price_man": 8044,
+          "tsubo_price_man": 312.0
         }
       ]
     },
-    "cached_at": "2026-06-11T09:03:03.207904"
+    "cached_at": "2026-08-13T02:41:43.231722"
   },
   "パークタワー山王15階": {
     "data": {
