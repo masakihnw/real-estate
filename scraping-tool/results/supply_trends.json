@@ -24815,7 +24815,7 @@
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10273,
+      "avg_price_man": 10274,
       "median_price_man": 10370,
       "price_distribution": {
         "under_10000": 332,
@@ -24868,8 +24868,8 @@
           "max_price_man": 11480
         },
         "杉並区": {
-          "count": 35,
-          "avg_price_man": 10251,
+          "count": 36,
+          "avg_price_man": 10238,
           "min_price_man": 9080,
           "max_price_man": 11490
         },
@@ -24891,17 +24891,17 @@
           "min_price_man": 9080,
           "max_price_man": 11500
         },
-        "荒川区": {
-          "count": 23,
-          "avg_price_man": 9855,
-          "min_price_man": 8300,
-          "max_price_man": 11480
-        },
         "墨田区": {
           "count": 23,
           "avg_price_man": 9882,
           "min_price_man": 7980,
           "max_price_man": 11500
+        },
+        "荒川区": {
+          "count": 22,
+          "avg_price_man": 9882,
+          "min_price_man": 8300,
+          "max_price_man": 11480
         },
         "北区": {
           "count": 22,
