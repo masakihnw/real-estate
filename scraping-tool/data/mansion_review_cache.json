@@ -33296,5 +33296,35 @@
   "アルファグランデ小岩スカイコート": {
     "data": null,
     "cached_at": "2026-08-12T02:37:01.335483"
+  },
+  "ミサワホームズ三ノ輪【2011年リフォーム履歴有】": {
+    "data": null,
+    "cached_at": "2026-08-13T08:07:21.502362"
+  },
+  "ミサワホームズ三ノ輪2011年リフォーム履歴有": {
+    "data": null,
+    "cached_at": "2026-08-13T08:07:21.502362"
+  },
+  "ダイナシティ田端8階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/18655.html",
+      "deviation_score": 38,
+      "estimated_price_man": 6696,
+      "estimated_tsubo_price_man": 363,
+      "estimated_m2_price_man": 110,
+      "shinchiku_history_count": 38,
+      "chuko_history_count": 39,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 37.82,
+          "price_man": 2964,
+          "tsubo_price_man": 246.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-02T09:06:33.695189"
   }
 }
