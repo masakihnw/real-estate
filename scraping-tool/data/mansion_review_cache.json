@@ -27270,6 +27270,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1388222.html",
       "deviation_score": 28,
+      "estimated_price_man": 9551,
+      "estimated_tsubo_price_man": 445,
+      "estimated_m2_price_man": 135,
       "shinchiku_history_count": 28,
       "chuko_history_count": 2,
       "sales_history": [
@@ -27283,7 +27286,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-16T11:41:10.522423"
+    "cached_at": "2026-08-14T02:36:49.176399"
   },
   "Brillia板橋大山11階": {
     "data": {
