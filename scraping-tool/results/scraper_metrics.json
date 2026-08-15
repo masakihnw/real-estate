@@ -10,9 +10,9 @@
       }
     },
     "suumo": {
-      "parsed": 4733,
+      "parsed": 4735,
       "parse_failures": 0,
-      "empty_pages": 1,
+      "empty_pages": 0,
       "finish_reasons": {
         "early_exit": 23
       }
@@ -26,7 +26,7 @@
       }
     },
     "livable": {
-      "parsed": 4352,
+      "parsed": 4351,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -34,7 +34,7 @@
       }
     },
     "homes": {
-      "parsed": 6141,
+      "parsed": 6036,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
@@ -45,5 +45,5 @@
   "alerts": [
     "nomucom: 異常終端 safety_limit×1 — 残ページ取りこぼしの可能性"
   ],
-  "saved_at": "2026-08-15T10:05:01.902206+00:00"
+  "saved_at": "2026-08-15T12:00:26.221899+00:00"
 }
