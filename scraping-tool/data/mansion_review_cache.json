@@ -28600,23 +28600,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/38510.html",
       "deviation_score": 8,
-      "estimated_price_man": 4438,
-      "estimated_tsubo_price_man": 445,
-      "estimated_m2_price_man": 135,
+      "estimated_price_man": 6861,
+      "estimated_tsubo_price_man": 437,
+      "estimated_m2_price_man": 132,
       "shinchiku_history_count": 8,
-      "chuko_history_count": 33,
+      "chuko_history_count": 35,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 47.13,
-          "price_man": 3887,
-          "tsubo_price_man": 274.0
+          "area_m2": 48.07,
+          "price_man": 4127,
+          "tsubo_price_man": 282.0
         }
       ]
     },
-    "cached_at": "2026-06-30T04:20:53.701313"
+    "cached_at": "2026-08-11T10:40:22.124725"
   },
   "ウエストレジデンス大崎7階": {
     "data": {
