@@ -17558,23 +17558,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16318.html",
       "deviation_score": 46,
-      "estimated_price_man": 11594,
-      "estimated_tsubo_price_man": 581,
-      "estimated_m2_price_man": 176,
+      "estimated_price_man": 11962,
+      "estimated_tsubo_price_man": 591,
+      "estimated_m2_price_man": 179,
       "shinchiku_history_count": 46,
-      "chuko_history_count": 30,
+      "chuko_history_count": 32,
       "sales_history": [
         {
           "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 70.76,
-          "price_man": 5717,
-          "tsubo_price_man": 271.0
+          "area_m2": 70.45,
+          "price_man": 6122,
+          "tsubo_price_man": 293.0
         }
       ]
     },
-    "cached_at": "2026-06-10T17:28:46.017782"
+    "cached_at": "2026-08-17T10:22:23.923155"
   },
   "クラルテ武蔵小山": {
     "data": {
