@@ -33633,5 +33633,93 @@
       ]
     },
     "cached_at": "2026-08-18T07:27:09.536600"
+  },
+  "ブリリア月島四丁目4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1637352.html",
+      "deviation_score": 55,
+      "estimated_price_man": 8515,
+      "estimated_tsubo_price_man": 655,
+      "estimated_m2_price_man": 199,
+      "shinchiku_history_count": 55,
+      "chuko_history_count": 29,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 51.24,
+          "price_man": 10042,
+          "tsubo_price_man": 649.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-14T08:05:18.989223"
+  },
+  "プレシス豊洲2階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/603006.html",
+      "deviation_score": 57,
+      "estimated_price_man": 9427,
+      "estimated_tsubo_price_man": 473,
+      "estimated_m2_price_man": 143,
+      "shinchiku_history_count": 57,
+      "chuko_history_count": 42,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 66.94,
+          "price_man": 5473,
+          "tsubo_price_man": 271.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-20T01:55:38.491572"
+  },
+  "プレシス豊洲": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/603006.html",
+      "deviation_score": 57,
+      "estimated_price_man": 9427,
+      "estimated_tsubo_price_man": 473,
+      "estimated_m2_price_man": 143,
+      "shinchiku_history_count": 57,
+      "chuko_history_count": 42,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 66.94,
+          "price_man": 5473,
+          "tsubo_price_man": 271.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-20T01:55:38.491572"
+  },
+  "パークハウス二子玉川": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/776109.html",
+      "deviation_score": 20,
+      "estimated_price_man": 27645,
+      "estimated_tsubo_price_man": 839,
+      "estimated_m2_price_man": 254,
+      "shinchiku_history_count": 20,
+      "chuko_history_count": 2,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 106.85,
+          "price_man": 27650,
+          "tsubo_price_man": 856.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-20T01:55:46.698243"
   }
 }
