@@ -10883,7 +10883,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11264.html",
       "deviation_score": 36,
-      "estimated_price_man": 11319,
+      "estimated_price_man": 11166,
       "estimated_tsubo_price_man": 506,
       "estimated_m2_price_man": 153,
       "shinchiku_history_count": 36,
@@ -10899,7 +10899,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-06T09:20:02.058355"
+    "cached_at": "2026-08-21T01:58:31.876625"
   },
   "サンクタス下落合": {
     "data": {
@@ -18083,8 +18083,8 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/36130.html",
       "deviation_score": 46,
-      "estimated_price_man": 12405,
-      "estimated_tsubo_price_man": 578,
+      "estimated_price_man": 12421,
+      "estimated_tsubo_price_man": 579,
       "estimated_m2_price_man": 175,
       "shinchiku_history_count": 46,
       "chuko_history_count": 41,
@@ -18099,7 +18099,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-06T09:18:27.940011"
+    "cached_at": "2026-08-20T10:19:22.558944"
   },
   "ブリリア新川一丁目5階": {
     "data": {
@@ -33904,5 +33904,24 @@
       ]
     },
     "cached_at": "2026-08-20T10:29:38.800206"
+  },
+  "パークシティ小岩ザタワー": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1640914.html",
+      "deviation_score": 50,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 18,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 20,
+          "layout": "",
+          "area_m2": 80.36,
+          "price_man": 15671,
+          "tsubo_price_man": 631.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-21T01:58:41.716936"
   }
 }
