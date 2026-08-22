@@ -16646,23 +16646,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18180.html",
       "deviation_score": 0,
-      "estimated_price_man": 6690,
-      "estimated_tsubo_price_man": 410,
-      "estimated_m2_price_man": 124,
+      "estimated_price_man": 9928,
+      "estimated_tsubo_price_man": 406,
+      "estimated_m2_price_man": 123,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 27,
+      "chuko_history_count": 28,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 69.22,
-          "price_man": 5910,
-          "tsubo_price_man": 276.0
+          "area_m2": 69.27,
+          "price_man": 5978,
+          "tsubo_price_man": 279.0
         }
       ]
     },
-    "cached_at": "2026-08-08T10:19:45.099397"
+    "cached_at": "2026-08-22T12:02:50.330412"
   },
   "プラウド光が丘四季の香公園": {
     "data": {
@@ -30779,7 +30779,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-08T10:19:35.231198"
+    "cached_at": "2026-08-22T12:02:23.905978"
   },
   "エクセレントシティ亀有ステーションスイート": {
     "data": {
@@ -30798,7 +30798,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-08T10:20:10.122504"
+    "cached_at": "2026-08-22T12:02:58.552741"
   },
   "ベルハイム元浅草4階": {
     "data": {
@@ -32695,7 +32695,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/287899.html",
       "deviation_score": 0,
-      "estimated_price_man": 597,
+      "estimated_price_man": 634,
       "estimated_tsubo_price_man": 41,
       "estimated_m2_price_man": 13,
       "shinchiku_history_count": 0,
@@ -32711,29 +32711,29 @@
         }
       ]
     },
-    "cached_at": "2026-08-08T10:19:53.450606"
+    "cached_at": "2026-08-22T12:02:32.884246"
   },
   "クレヴィア氷川台": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1706927.html",
       "deviation_score": 39,
-      "estimated_price_man": 10075,
-      "estimated_tsubo_price_man": 397,
-      "estimated_m2_price_man": 120,
+      "estimated_price_man": 10616,
+      "estimated_tsubo_price_man": 423,
+      "estimated_m2_price_man": 128,
       "shinchiku_history_count": 39,
-      "chuko_history_count": 3,
+      "chuko_history_count": 4,
       "sales_history": [
         {
           "end_date": "",
           "floor": 3,
           "layout": "",
-          "area_m2": 82.23,
-          "price_man": 9956,
-          "tsubo_price_man": 400.0
+          "area_m2": 80.37,
+          "price_man": 9962,
+          "tsubo_price_man": 410.0
         }
       ]
     },
-    "cached_at": "2026-08-08T10:20:02.107725"
+    "cached_at": "2026-08-22T12:02:41.483124"
   },
   "ザ・パークハウス浅草橋西レジデンス3階": {
     "data": {
