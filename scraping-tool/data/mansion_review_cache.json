@@ -8648,45 +8648,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1639694.html",
       "deviation_score": 0,
-      "estimated_price_man": 12642,
-      "estimated_tsubo_price_man": 558,
-      "estimated_m2_price_man": 169,
+      "estimated_price_man": 11632,
+      "estimated_tsubo_price_man": 535,
+      "estimated_m2_price_man": 162,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 30,
+      "chuko_history_count": 33,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 73.49,
-          "price_man": 13159,
-          "tsubo_price_man": 591.0
+          "area_m2": 73.43,
+          "price_man": 12972,
+          "tsubo_price_man": 583.0
         }
       ]
     },
-    "cached_at": "2026-08-08T02:16:52.578687"
+    "cached_at": "2026-08-22T07:20:19.961389"
   },
   "クレヴィア新宿中落合": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1639694.html",
       "deviation_score": 0,
-      "estimated_price_man": 12642,
-      "estimated_tsubo_price_man": 558,
-      "estimated_m2_price_man": 169,
+      "estimated_price_man": 11632,
+      "estimated_tsubo_price_man": 535,
+      "estimated_m2_price_man": 162,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 30,
+      "chuko_history_count": 33,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 73.49,
-          "price_man": 13159,
-          "tsubo_price_man": 591.0
+          "area_m2": 73.43,
+          "price_man": 12972,
+          "tsubo_price_man": 583.0
         }
       ]
     },
-    "cached_at": "2026-08-08T02:16:52.578687"
+    "cached_at": "2026-08-22T07:20:19.961389"
   },
   "ブランズ東中野プレシアス": {
     "data": {
@@ -17907,23 +17907,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/43339.html",
       "deviation_score": 23,
-      "estimated_price_man": 14379,
-      "estimated_tsubo_price_man": 602,
-      "estimated_m2_price_man": 183,
+      "estimated_price_man": 7511,
+      "estimated_tsubo_price_man": 592,
+      "estimated_m2_price_man": 179,
       "shinchiku_history_count": 233,
-      "chuko_history_count": 186,
+      "chuko_history_count": 190,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 62.84,
-          "price_man": 6607,
-          "tsubo_price_man": 346.0
+          "area_m2": 62.76,
+          "price_man": 6687,
+          "tsubo_price_man": 351.0
         }
       ]
     },
-    "cached_at": "2026-07-24T11:43:26.979740"
+    "cached_at": "2026-08-22T01:55:04.558322"
   },
   "ザ・晴海レジデンス19階": {
     "data": {
@@ -23096,23 +23096,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13388.html",
       "deviation_score": 11,
-      "estimated_price_man": 15805,
-      "estimated_tsubo_price_man": 484,
-      "estimated_m2_price_man": 147,
+      "estimated_price_man": 12992,
+      "estimated_tsubo_price_man": 483,
+      "estimated_m2_price_man": 146,
       "shinchiku_history_count": 1149,
-      "chuko_history_count": 1087,
+      "chuko_history_count": 1092,
       "sales_history": [
         {
           "end_date": "",
           "floor": 28,
           "layout": "",
-          "area_m2": 94.22,
-          "price_man": 8412,
+          "area_m2": 94.3,
+          "price_man": 8446,
           "tsubo_price_man": 293.0
         }
       ]
     },
-    "cached_at": "2026-08-08T02:17:09.469124"
+    "cached_at": "2026-08-22T07:20:51.227849"
   },
   "WComfortTowersWEST19階": {
     "data": {
@@ -28764,23 +28764,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13388.html",
       "deviation_score": 11,
-      "estimated_price_man": 15805,
-      "estimated_tsubo_price_man": 484,
-      "estimated_m2_price_man": 147,
+      "estimated_price_man": 12992,
+      "estimated_tsubo_price_man": 483,
+      "estimated_m2_price_man": 146,
       "shinchiku_history_count": 1149,
-      "chuko_history_count": 1087,
+      "chuko_history_count": 1092,
       "sales_history": [
         {
           "end_date": "",
           "floor": 28,
           "layout": "",
-          "area_m2": 94.22,
-          "price_man": 8412,
+          "area_m2": 94.3,
+          "price_man": 8446,
           "tsubo_price_man": 293.0
         }
       ]
     },
-    "cached_at": "2026-08-08T02:17:09.469124"
+    "cached_at": "2026-08-22T07:20:51.227849"
   },
   "シティハウス東陽町プロッシモ": {
     "data": {
@@ -32592,19 +32592,19 @@
       "building_url": "https://www.mansion-review.jp/mansion/535194.html",
       "deviation_score": 63,
       "shinchiku_history_count": 63,
-      "chuko_history_count": 19,
+      "chuko_history_count": 20,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 73.23,
-          "price_man": 6486,
-          "tsubo_price_man": 292.0
+          "area_m2": 73.13,
+          "price_man": 6621,
+          "tsubo_price_man": 298.0
         }
       ]
     },
-    "cached_at": "2026-08-08T02:17:18.430363"
+    "cached_at": "2026-08-22T07:20:38.191194"
   },
   "ザ・ライオンズ蘆花公園1階": {
     "data": {
@@ -32651,20 +32651,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/24847.html",
       "deviation_score": 70,
+      "estimated_price_man": 6920,
+      "estimated_tsubo_price_man": 533,
+      "estimated_m2_price_man": 161,
       "shinchiku_history_count": 70,
-      "chuko_history_count": 47,
+      "chuko_history_count": 49,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 60.49,
-          "price_man": 4630,
-          "tsubo_price_man": 254.0
+          "area_m2": 60.27,
+          "price_man": 4804,
+          "tsubo_price_man": 266.0
         }
       ]
     },
-    "cached_at": "2026-08-08T02:17:27.261578"
+    "cached_at": "2026-08-22T07:20:28.442005"
   },
   "レックス大塚山の手台3階": {
     "data": {
