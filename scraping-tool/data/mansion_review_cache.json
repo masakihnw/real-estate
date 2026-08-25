@@ -33239,23 +33239,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/36347.html",
       "deviation_score": 75,
-      "estimated_price_man": 6539,
-      "estimated_tsubo_price_man": 401,
-      "estimated_m2_price_man": 122,
+      "estimated_price_man": 7164,
+      "estimated_tsubo_price_man": 409,
+      "estimated_m2_price_man": 124,
       "shinchiku_history_count": 75,
-      "chuko_history_count": 37,
+      "chuko_history_count": 38,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 59.48,
-          "price_man": 4847,
-          "tsubo_price_man": 271.0
+          "area_m2": 59.8,
+          "price_man": 4982,
+          "tsubo_price_man": 276.0
         }
       ]
     },
-    "cached_at": "2026-08-10T12:31:12.338706"
+    "cached_at": "2026-08-25T01:54:52.677365"
   },
   "【お盆期間中ご対応可能】ライオンズマンション日暮里...": {
     "data": null,
@@ -34409,5 +34409,127 @@
       ]
     },
     "cached_at": "2026-08-23T02:04:14.989459"
+  },
+  "早稲田鶴巻町パーク・ホームズ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11291.html",
+      "deviation_score": 50,
+      "estimated_price_man": 10720,
+      "estimated_tsubo_price_man": 529,
+      "estimated_m2_price_man": 161,
+      "shinchiku_history_count": 50,
+      "chuko_history_count": 58,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 65.68,
+          "price_man": 5545,
+          "tsubo_price_man": 282.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-25T01:54:14.694019"
+  },
+  "オープンレジデンシア上野入谷": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1433808.html",
+      "deviation_score": 51,
+      "estimated_price_man": 4798,
+      "estimated_tsubo_price_man": 467,
+      "estimated_m2_price_man": 142,
+      "shinchiku_history_count": 51,
+      "chuko_history_count": 10,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 13,
+          "layout": "",
+          "area_m2": 48.62,
+          "price_man": 6873,
+          "tsubo_price_man": 467.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-25T01:54:23.274982"
+  },
+  "オープンルーム開催ディアハイム浅草8/29(土)...": {
+    "data": null,
+    "cached_at": "2026-08-25T01:54:26.651822"
+  },
+  "コスモ西日暮里ロイヤルフォルム11階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17904.html",
+      "deviation_score": 49,
+      "estimated_price_man": 11978,
+      "estimated_tsubo_price_man": 495,
+      "estimated_m2_price_man": 150,
+      "shinchiku_history_count": 49,
+      "chuko_history_count": 19,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 77.4,
+          "price_man": 8242,
+          "tsubo_price_man": 351.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-20T10:22:35.243262"
+  },
+  "プレストンフォーレ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17124.html",
+      "deviation_score": 11,
+      "estimated_price_man": 6995,
+      "estimated_tsubo_price_man": 317,
+      "estimated_m2_price_man": 96,
+      "shinchiku_history_count": 110,
+      "chuko_history_count": 33,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 75.11,
+          "price_man": 5163,
+          "tsubo_price_man": 229.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-25T01:54:35.769414"
+  },
+  "シティタワー赤羽テラス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/43390.html",
+      "deviation_score": 11,
+      "estimated_price_man": 9317,
+      "estimated_tsubo_price_man": 434,
+      "estimated_m2_price_man": 132,
+      "shinchiku_history_count": 110,
+      "chuko_history_count": 37,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 68.97,
+          "price_man": 7205,
+          "tsubo_price_man": 347.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-25T01:54:44.078125"
+  },
+  "入谷駅徒歩6分「オープンレジデンシア上野入谷」7階": {
+    "data": null,
+    "cached_at": "2026-08-25T01:54:55.886445"
+  },
+  "入谷駅徒歩6分「オープンレジデンシア上野入谷」": {
+    "data": null,
+    "cached_at": "2026-08-25T01:54:55.886445"
   }
 }
