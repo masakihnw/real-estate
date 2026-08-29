@@ -9191,9 +9191,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42061.html",
       "deviation_score": 16,
-      "estimated_price_man": 11179,
-      "estimated_tsubo_price_man": 514,
-      "estimated_m2_price_man": 156,
+      "estimated_price_man": 11293,
+      "estimated_tsubo_price_man": 512,
+      "estimated_m2_price_man": 155,
       "shinchiku_history_count": 16,
       "chuko_history_count": 32,
       "sales_history": [
@@ -9202,12 +9202,12 @@
           "floor": 1,
           "layout": "",
           "area_m2": 66.67,
-          "price_man": 6740,
+          "price_man": 6734,
           "tsubo_price_man": 336.0
         }
       ]
     },
-    "cached_at": "2026-07-23T09:29:23.965951"
+    "cached_at": "2026-08-29T06:34:45.304238"
   },
   "セザールスカイリバー": {
     "data": {
@@ -34968,5 +34968,46 @@
   "東南向き角住戸": {
     "data": null,
     "cached_at": "2026-08-28T22:03:26.432483"
+  },
+  "リムテラス早稲田夏目坂3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1639033.html",
+      "deviation_score": 4,
+      "shinchiku_history_count": 4,
+      "chuko_history_count": 1,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 84.41,
+          "price_man": 11480,
+          "tsubo_price_man": 450.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-28T22:02:11.379363"
+  },
+  "パルテール深沢3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/27154.html",
+      "deviation_score": 68,
+      "estimated_price_man": 13543,
+      "estimated_tsubo_price_man": 527,
+      "estimated_m2_price_man": 160,
+      "shinchiku_history_count": 68,
+      "chuko_history_count": 61,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 80.89,
+          "price_man": 6874,
+          "tsubo_price_man": 284.0
+        }
+      ]
+    },
+    "cached_at": "2026-08-22T02:10:47.718109"
   }
 }
