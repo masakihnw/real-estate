@@ -27727,30 +27727,30 @@
     },
     {
       "date": "2026-09-01",
-      "total_listings": 732,
-      "new_count": 732,
+      "total_listings": 733,
+      "new_count": 733,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10272,
-      "median_price_man": 10300,
+      "avg_price_man": 10277,
+      "median_price_man": 10380,
       "price_distribution": {
-        "under_10000": 346,
+        "under_10000": 344,
         "10000_11000": 253,
-        "11000_12000": 133,
+        "11000_12000": 136,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 141,
-          "avg_price_man": 10302,
+          "count": 142,
+          "avg_price_man": 10310,
           "min_price_man": 8490,
           "max_price_man": 11500
         },
         "中央区": {
-          "count": 69,
-          "avg_price_man": 10645,
+          "count": 67,
+          "avg_price_man": 10643,
           "min_price_man": 8380,
           "max_price_man": 11500
         },
@@ -27760,21 +27760,21 @@
           "min_price_man": 8480,
           "max_price_man": 11500
         },
-        "世田谷区": {
-          "count": 50,
-          "avg_price_man": 10587,
-          "min_price_man": 9480,
-          "max_price_man": 11500
-        },
         "新宿区": {
-          "count": 47,
-          "avg_price_man": 10179,
+          "count": 46,
+          "avg_price_man": 10183,
           "min_price_man": 7980,
           "max_price_man": 11500
         },
+        "世田谷区": {
+          "count": 46,
+          "avg_price_man": 10634,
+          "min_price_man": 9480,
+          "max_price_man": 11500
+        },
         "台東区": {
-          "count": 38,
-          "avg_price_man": 10225,
+          "count": 39,
+          "avg_price_man": 10245,
           "min_price_man": 8490,
           "max_price_man": 11490
         },
@@ -27785,22 +27785,22 @@
           "max_price_man": 11490
         },
         "大田区": {
-          "count": 33,
-          "avg_price_man": 10048,
+          "count": 34,
+          "avg_price_man": 10061,
           "min_price_man": 9080,
           "max_price_man": 11480
+        },
+        "品川区": {
+          "count": 33,
+          "avg_price_man": 10294,
+          "min_price_man": 8280,
+          "max_price_man": 11500
         },
         "板橋区": {
           "count": 33,
           "avg_price_man": 10043,
           "min_price_man": 9180,
           "max_price_man": 11480
-        },
-        "品川区": {
-          "count": 32,
-          "avg_price_man": 10257,
-          "min_price_man": 8280,
-          "max_price_man": 11500
         },
         "北区": {
           "count": 28,
@@ -27816,13 +27816,19 @@
         },
         "江戸川区": {
           "count": 23,
-          "avg_price_man": 10341,
+          "avg_price_man": 10337,
           "min_price_man": 9180,
           "max_price_man": 11500
         },
+        "港区": {
+          "count": 21,
+          "avg_price_man": 10291,
+          "min_price_man": 9280,
+          "max_price_man": 11500
+        },
         "墨田区": {
-          "count": 22,
-          "avg_price_man": 9872,
+          "count": 21,
+          "avg_price_man": 9905,
           "min_price_man": 7980,
           "max_price_man": 11500
         },
@@ -27838,15 +27844,9 @@
           "min_price_man": 8300,
           "max_price_man": 11480
         },
-        "港区": {
-          "count": 18,
-          "avg_price_man": 10371,
-          "min_price_man": 9280,
-          "max_price_man": 11500
-        },
         "渋谷区": {
-          "count": 11,
-          "avg_price_man": 10334,
+          "count": 12,
+          "avg_price_man": 10255,
           "min_price_man": 8300,
           "max_price_man": 11490
         },
@@ -27857,8 +27857,8 @@
           "max_price_man": 11480
         },
         "文京区": {
-          "count": 7,
-          "avg_price_man": 10572,
+          "count": 8,
+          "avg_price_man": 10626,
           "min_price_man": 9280,
           "max_price_man": 11499
         },
