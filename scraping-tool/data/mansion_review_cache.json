@@ -16062,7 +16062,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/535178.html",
       "deviation_score": 36,
-      "estimated_price_man": 9096,
+      "estimated_price_man": 9394,
       "estimated_tsubo_price_man": 493,
       "estimated_m2_price_man": 150,
       "shinchiku_history_count": 36,
@@ -16078,7 +16078,7 @@
         }
       ]
     },
-    "cached_at": "2026-07-30T09:05:49.343317"
+    "cached_at": "2026-09-01T04:32:58.011807"
   },
   "ナイスアーバン中野坂上": {
     "data": {
@@ -18303,23 +18303,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/2322638.html",
       "deviation_score": 0,
-      "estimated_price_man": 12927,
-      "estimated_tsubo_price_man": 594,
-      "estimated_m2_price_man": 180,
+      "estimated_price_man": 10507,
+      "estimated_tsubo_price_man": 579,
+      "estimated_m2_price_man": 176,
       "shinchiku_history_count": 0,
-      "chuko_history_count": 47,
+      "chuko_history_count": 72,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 23,
+          "floor": 22,
           "layout": "",
-          "area_m2": 75.14,
-          "price_man": 13707,
-          "tsubo_price_man": 602.0
+          "area_m2": 74.78,
+          "price_man": 13279,
+          "tsubo_price_man": 586.0
         }
       ]
     },
-    "cached_at": "2026-06-11T17:50:30.523726"
+    "cached_at": "2026-08-22T01:58:14.638158"
   },
   "ミサワホームズ東大井5階": {
     "data": {
@@ -35321,5 +35321,54 @@
       ]
     },
     "cached_at": "2026-08-31T13:34:46.156246"
+  },
+  "【本駒込駅から徒歩1分♪】ルミネ本駒込": {
+    "data": null,
+    "cached_at": "2026-09-01T04:32:29.531560"
+  },
+  "本駒込駅から徒歩1分♪ルミネ本駒込": {
+    "data": null,
+    "cached_at": "2026-09-01T04:32:29.531560"
+  },
+  "エルザ世田谷イーストレジデンス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/12930.html",
+      "deviation_score": 16,
+      "estimated_price_man": 13372,
+      "estimated_tsubo_price_man": 456,
+      "estimated_m2_price_man": 138,
+      "shinchiku_history_count": 167,
+      "chuko_history_count": 197,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 12,
+          "layout": "",
+          "area_m2": 79.12,
+          "price_man": 6811,
+          "tsubo_price_man": 285.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-01T04:32:40.419100"
+  },
+  "プレサンスジェネ赤羽真正寺坂": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1435818.html",
+      "deviation_score": 4,
+      "shinchiku_history_count": 4,
+      "chuko_history_count": 1,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 25.73,
+          "price_man": 3220,
+          "tsubo_price_man": 414.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-01T04:32:48.868126"
   }
 }
