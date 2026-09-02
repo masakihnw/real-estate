@@ -28502,7 +28502,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-19T10:19:32.895921"
+    "cached_at": "2026-09-02T11:27:31.223696"
   },
   "ミサワホームズ三ノ輪【2011年にリフォーム履歴有...": {
     "data": null,
@@ -30381,23 +30381,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/37286.html",
       "deviation_score": 26,
-      "estimated_price_man": 9865,
-      "estimated_tsubo_price_man": 526,
-      "estimated_m2_price_man": 160,
+      "estimated_price_man": 9394,
+      "estimated_tsubo_price_man": 518,
+      "estimated_m2_price_man": 157,
       "shinchiku_history_count": 26,
-      "chuko_history_count": 18,
+      "chuko_history_count": 20,
       "sales_history": [
         {
           "end_date": "",
           "floor": 9,
           "layout": "",
-          "area_m2": 67.7,
-          "price_man": 6628,
-          "tsubo_price_man": 331.0
+          "area_m2": 67.12,
+          "price_man": 6914,
+          "tsubo_price_man": 349.0
         }
       ]
     },
-    "cached_at": "2026-08-19T10:19:23.579188"
+    "cached_at": "2026-09-02T11:27:20.905247"
   },
   "TOKYOFRONTCOURT4階": {
     "data": {
@@ -32167,7 +32167,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1635264.html",
       "deviation_score": 20,
-      "estimated_price_man": 10274,
+      "estimated_price_man": 10133,
       "estimated_tsubo_price_man": 466,
       "estimated_m2_price_man": 141,
       "shinchiku_history_count": 20,
@@ -32183,7 +32183,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-19T10:19:14.791012"
+    "cached_at": "2026-09-02T11:27:12.374358"
   },
   "新宿七丁目ハイライズ1階": {
     "data": {
@@ -32227,7 +32227,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-19T10:19:41.675766"
+    "cached_at": "2026-09-02T11:27:03.849256"
   },
   "BrilliaCity西早稲田4階": {
     "data": {
@@ -35516,5 +35516,24 @@
       ]
     },
     "cached_at": "2026-09-02T03:51:28.551315"
+  },
+  "フェアロージュ駒込": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17845.html",
+      "deviation_score": 30,
+      "shinchiku_history_count": 30,
+      "chuko_history_count": 8,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 74.92,
+          "price_man": 8096,
+          "tsubo_price_man": 361.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-02T11:27:39.296212"
   }
 }
