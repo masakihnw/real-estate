@@ -25773,7 +25773,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/31490.html",
       "deviation_score": 31,
-      "estimated_price_man": 4728,
+      "estimated_price_man": 4991,
       "estimated_tsubo_price_man": 435,
       "estimated_m2_price_man": 132,
       "shinchiku_history_count": 31,
@@ -25789,7 +25789,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-18T12:08:37.236647"
+    "cached_at": "2026-09-02T03:51:09.971874"
   },
   "アートコート早稲田戸山公園5階": {
     "data": {
@@ -31987,20 +31987,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17420.html",
       "deviation_score": 43,
+      "estimated_price_man": 9108,
+      "estimated_tsubo_price_man": 402,
+      "estimated_m2_price_man": 122,
       "shinchiku_history_count": 43,
-      "chuko_history_count": 17,
+      "chuko_history_count": 18,
       "sales_history": [
         {
           "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 71.67,
-          "price_man": 5304,
-          "tsubo_price_man": 246.0
+          "area_m2": 71.62,
+          "price_man": 5526,
+          "tsubo_price_man": 256.0
         }
       ]
     },
-    "cached_at": "2026-08-03T10:24:38.455479"
+    "cached_at": "2026-08-31T13:32:51.825656"
   },
   "プラウド世田谷砧ガーデンテラス2階": {
     "data": {
@@ -35450,5 +35453,68 @@
       ]
     },
     "cached_at": "2026-09-01T11:57:12.838890"
+  },
+  "プレジール新宿大久保": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/41373.html",
+      "deviation_score": 16,
+      "estimated_price_man": 6599,
+      "estimated_tsubo_price_man": 475,
+      "estimated_m2_price_man": 144,
+      "shinchiku_history_count": 16,
+      "chuko_history_count": 68,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 2,
+          "layout": "",
+          "area_m2": 45.91,
+          "price_man": 4696,
+          "tsubo_price_man": 341.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-02T03:51:01.585760"
+  },
+  "等々力アパートメント": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/583500.html",
+      "deviation_score": 0,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 4,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 84.46,
+          "price_man": 7230,
+          "tsubo_price_man": 283.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-02T03:51:19.273253"
+  },
+  "エスポワール巣鴨": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/26407.html",
+      "deviation_score": 20,
+      "estimated_price_man": 8589,
+      "estimated_tsubo_price_man": 474,
+      "estimated_m2_price_man": 144,
+      "shinchiku_history_count": 20,
+      "chuko_history_count": 13,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 60.86,
+          "price_man": 7121,
+          "tsubo_price_man": 387.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-02T03:51:28.551315"
   }
 }
