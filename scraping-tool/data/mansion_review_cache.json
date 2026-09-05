@@ -16667,8 +16667,8 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18180.html",
       "deviation_score": 0,
-      "estimated_price_man": 9928,
-      "estimated_tsubo_price_man": 406,
+      "estimated_price_man": 9644,
+      "estimated_tsubo_price_man": 404,
       "estimated_m2_price_man": 123,
       "shinchiku_history_count": 0,
       "chuko_history_count": 28,
@@ -16678,12 +16678,12 @@
           "floor": 3,
           "layout": "",
           "area_m2": 69.27,
-          "price_man": 5978,
+          "price_man": 5971,
           "tsubo_price_man": 279.0
         }
       ]
     },
-    "cached_at": "2026-08-22T12:02:50.330412"
+    "cached_at": "2026-09-05T14:23:10.131272"
   },
   "プラウド光が丘四季の香公園": {
     "data": {
@@ -30729,11 +30729,11 @@
   },
   "renovation〜カテリーナ池袋西プラザタワー4階": {
     "data": null,
-    "cached_at": "2026-08-22T02:10:51.030636"
+    "cached_at": "2026-09-05T14:23:22.038221"
   },
   "renovation〜カテリーナ池袋西プラザタワー": {
     "data": null,
-    "cached_at": "2026-08-22T02:10:51.030636"
+    "cached_at": "2026-09-05T14:23:22.038221"
   },
   "~浜離宮恩賜庭園を望む開放的な眺望~コスモ東京ベイタ...": {
     "data": null,
@@ -30800,7 +30800,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-22T12:02:23.905978"
+    "cached_at": "2026-09-05T14:22:35.349281"
   },
   "エクセレントシティ亀有ステーションスイート": {
     "data": {
@@ -30819,7 +30819,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-22T12:02:58.552741"
+    "cached_at": "2026-09-05T14:23:30.092328"
   },
   "ベルハイム元浅草4階": {
     "data": {
@@ -32735,13 +32735,13 @@
         }
       ]
     },
-    "cached_at": "2026-08-22T12:02:32.884246"
+    "cached_at": "2026-09-05T14:22:52.554954"
   },
   "クレヴィア氷川台": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1706927.html",
       "deviation_score": 39,
-      "estimated_price_man": 10616,
+      "estimated_price_man": 10744,
       "estimated_tsubo_price_man": 423,
       "estimated_m2_price_man": 128,
       "shinchiku_history_count": 39,
@@ -32757,7 +32757,7 @@
         }
       ]
     },
-    "cached_at": "2026-08-22T12:02:41.483124"
+    "cached_at": "2026-09-05T14:23:01.254643"
   },
   "ザ・パークハウス浅草橋西レジデンス3階": {
     "data": {
@@ -36200,5 +36200,93 @@
       ]
     },
     "cached_at": "2026-09-05T10:49:11.478061"
+  },
+  "オーベルグランディオベイフロント13階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13394.html",
+      "deviation_score": 24,
+      "estimated_price_man": 11751,
+      "estimated_tsubo_price_man": 505,
+      "estimated_m2_price_man": 153,
+      "shinchiku_history_count": 246,
+      "chuko_history_count": 123,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 80.16,
+          "price_man": 6350,
+          "tsubo_price_man": 265.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-05T14:22:44.101412"
+  },
+  "オーベルグランディオベイフロント": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13394.html",
+      "deviation_score": 24,
+      "estimated_price_man": 11751,
+      "estimated_tsubo_price_man": 505,
+      "estimated_m2_price_man": 153,
+      "shinchiku_history_count": 246,
+      "chuko_history_count": 123,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 80.16,
+          "price_man": 6350,
+          "tsubo_price_man": 265.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-05T14:22:44.101412"
+  },
+  "セレナハイム浅草橋アプレ10階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/29095.html",
+      "deviation_score": 20,
+      "estimated_price_man": 7398,
+      "estimated_tsubo_price_man": 453,
+      "estimated_m2_price_man": 138,
+      "shinchiku_history_count": 20,
+      "chuko_history_count": 33,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 57.84,
+          "price_man": 4934,
+          "tsubo_price_man": 283.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-05T14:23:18.671694"
+  },
+  "セレナハイム浅草橋アプレ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/29095.html",
+      "deviation_score": 20,
+      "estimated_price_man": 7398,
+      "estimated_tsubo_price_man": 453,
+      "estimated_m2_price_man": 138,
+      "shinchiku_history_count": 20,
+      "chuko_history_count": 33,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 57.84,
+          "price_man": 4934,
+          "tsubo_price_man": 283.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-05T14:23:18.671694"
   }
 }
