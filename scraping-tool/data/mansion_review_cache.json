@@ -31356,8 +31356,8 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1441406.html",
       "deviation_score": 33,
-      "estimated_price_man": 6925,
-      "estimated_tsubo_price_man": 347,
+      "estimated_price_man": 6764,
+      "estimated_tsubo_price_man": 345,
       "estimated_m2_price_man": 105,
       "shinchiku_history_count": 33,
       "chuko_history_count": 8,
@@ -31367,12 +31367,12 @@
           "floor": 4,
           "layout": "",
           "area_m2": 63.36,
-          "price_man": 6702,
-          "tsubo_price_man": 348.0
+          "price_man": 6661,
+          "tsubo_price_man": 346.0
         }
       ]
     },
-    "cached_at": "2026-08-26T10:22:22.352574"
+    "cached_at": "2026-09-09T11:35:40.540478"
   },
   "シアンズテラス下高井戸1階": {
     "data": {
@@ -36911,5 +36911,27 @@
       ]
     },
     "cached_at": "2026-09-09T04:05:55.399640"
+  },
+  "カテリーナ大森8階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/206413.html",
+      "deviation_score": 0,
+      "estimated_price_man": 2399,
+      "estimated_tsubo_price_man": 361,
+      "estimated_m2_price_man": 110,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 29,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 22.22,
+          "price_man": 2123,
+          "tsubo_price_man": 303.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-07T12:30:28.246064"
   }
 }
