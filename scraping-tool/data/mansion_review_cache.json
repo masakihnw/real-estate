@@ -9533,9 +9533,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16416.html",
       "deviation_score": 17,
-      "estimated_price_man": 14195,
-      "estimated_tsubo_price_man": 618,
-      "estimated_m2_price_man": 187,
+      "estimated_price_man": 13599,
+      "estimated_tsubo_price_man": 600,
+      "estimated_m2_price_man": 182,
       "shinchiku_history_count": 172,
       "chuko_history_count": 108,
       "sales_history": [
@@ -9549,7 +9549,7 @@
         }
       ]
     },
-    "cached_at": "2026-06-21T05:02:48.844063"
+    "cached_at": "2026-09-10T04:08:05.488672"
   },
   "オープンレジデンシア中野中央": {
     "data": {
@@ -28741,23 +28741,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/15760.html",
       "deviation_score": 10,
-      "estimated_price_man": 12736,
-      "estimated_tsubo_price_man": 520,
-      "estimated_m2_price_man": 158,
+      "estimated_price_man": 9902,
+      "estimated_tsubo_price_man": 529,
+      "estimated_m2_price_man": 160,
       "shinchiku_history_count": 102,
-      "chuko_history_count": 154,
+      "chuko_history_count": 157,
       "sales_history": [
         {
           "end_date": "",
           "floor": 13,
           "layout": "",
-          "area_m2": 67.77,
-          "price_man": 7010,
-          "tsubo_price_man": 344.0
+          "area_m2": 67.97,
+          "price_man": 7108,
+          "tsubo_price_man": 347.0
         }
       ]
     },
-    "cached_at": "2026-07-02T12:18:20.025431"
+    "cached_at": "2026-08-28T10:37:59.563524"
   },
   "マイキャッスル東長崎": {
     "data": {
@@ -34049,23 +34049,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/534292.html",
       "deviation_score": 88,
-      "estimated_price_man": 8505,
-      "estimated_tsubo_price_man": 391,
-      "estimated_m2_price_man": 119,
+      "estimated_price_man": 8966,
+      "estimated_tsubo_price_man": 418,
+      "estimated_m2_price_man": 127,
       "shinchiku_history_count": 88,
-      "chuko_history_count": 57,
+      "chuko_history_count": 59,
       "sales_history": [
         {
           "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 72.75,
-          "price_man": 5655,
-          "tsubo_price_man": 258.0
+          "area_m2": 72.66,
+          "price_man": 5790,
+          "tsubo_price_man": 264.0
         }
       ]
     },
-    "cached_at": "2026-08-07T12:34:52.248684"
+    "cached_at": "2026-09-05T04:08:45.374181"
   },
   "THEパ一ムス西戸山1階": {
     "data": null,
@@ -36933,5 +36933,27 @@
       ]
     },
     "cached_at": "2026-09-07T12:30:28.246064"
+  },
+  "アイムズ荻窪3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11923.html",
+      "deviation_score": 52,
+      "estimated_price_man": 5288,
+      "estimated_tsubo_price_man": 486,
+      "estimated_m2_price_man": 147,
+      "shinchiku_history_count": 52,
+      "chuko_history_count": 47,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 47.08,
+          "price_man": 4880,
+          "tsubo_price_man": 339.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-03T11:42:11.211849"
   }
 }
