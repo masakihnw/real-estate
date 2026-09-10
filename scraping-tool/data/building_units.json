@@ -140277,89 +140277,97 @@
     ]
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_21242438/": {
+    "total_units": 29,
+    "floor_position": 2,
+    "floor_total": 6,
+    "floor_structure": "RC6階建",
+    "ownership": "所有権",
+    "management_fee": 19400,
+    "repair_reserve_fund": 21240,
+    "balcony_area_m2": 17.05,
+    "delivery_date": "相談",
     "feature_tags": [
-      "пј’жІҝз·ҡд»ҘдёҠеҲ©з”ЁеҸҜ",
-      "гӮ№гғјгғ‘гғј еҫ’жӯ©10еҲҶд»ҘеҶ…",
-      "еҶ…иЈ…гғӘгғ•гӮ©гғјгғ",
-      "гӮ·гӮ№гғҶгғ гӮӯгғғгғҒгғі",
-      "жөҙе®Өд№ҫзҮҘж©ҹ",
-      "и§’дҪҸжҲё",
-      "йҷҪеҪ“гӮҠиүҜеҘҪ",
-      "е…Ёеұ…е®ӨеҸҺзҙҚ",
-      "пј¬пјӨпј«пј‘пј•з•ід»ҘдёҠ",
-      "гӮ·гғЈгғҜгғјд»ҳжҙ—йқўеҢ–зІ§еҸ°",
-      "еҜҫйқўејҸгӮӯгғғгғҒгғі",
-      "жё©ж°ҙжҙ—жө„дҫҝеә§",
-      "пјҙпј¶гғўгғӢгӮҝд»ҳгӮӨгғігӮҝгғјгғӣгғі",
-      "гғӘгғҺгғҷгғјгӮ·гғ§гғі",
-      "з·‘иұҠгҒӢгҒӘдҪҸе®…ең°",
-      "е…Ёеұ…е®Өгғ•гғӯгғјгғӘгғігӮ°",
-      "еҚ—иҘҝеҗ‘гҒҚ",
-      "гӮҰгӮ©гғјгӮҜгӮӨгғігӮҜгғӯгғјгӮјгғғгғҲ",
-      "е…Ёеұ…е®Өпј–з•ід»ҘдёҠ",
-      "гғҡгғғгғҲзӣёи«Ү",
-      "еәҠжҡ–жҲҝ",
-      "гӮЁгғ¬гғҷгғјгӮҝгғј",
-      "е®…й…ҚгғңгғғгӮҜгӮ№",
-      "йЈҹеҷЁжҙ—д№ҫзҮҘж©ҹ",
-      "жө„ж°ҙеҷЁ"
+      "２沿線以上利用可",
+      "スーパー 徒歩10分以内",
+      "内装リフォーム",
+      "システムキッチン",
+      "浴室乾燥機",
+      "角住戸",
+      "陽当り良好",
+      "全居室収納",
+      "ＬＤＫ１５畳以上",
+      "シャワー付洗面化粧台",
+      "対面式キッチン",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "リノベーション",
+      "緑豊かな住宅地",
+      "全居室フローリング",
+      "南西向き",
+      "ウォークインクローゼット",
+      "全居室６畳以上",
+      "ペット相談",
+      "床暖房",
+      "エレベーター",
+      "宅配ボックス",
+      "食器洗乾燥機",
+      "浄水器"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0002.jpg&w=1200&h=900"
     ],
     "suumo_images": [
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0001.jpg&w=1200&h=900",
-        "label": "гӮӯгғғгғҒгғі"
-      },
-      {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0002.jpg&w=1200&h=900",
-        "label": "й–“еҸ–гӮҠеӣі"
+        "label": "キッチン"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0003.jpg&w=1200&h=900",
-        "label": "зҸҫең°еӨ–иҰіеҶҷзңҹ"
+        "label": "現地外観写真"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0004.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°"
+        "label": "リビング"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0008.jpg&w=1200&h=900",
-        "label": "жөҙе®Ө"
+        "label": "浴室"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0006.jpg&w=1200&h=900",
-        "label": "гӮӯгғғгғҒгғі"
+        "label": "キッチン"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0009.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°д»ҘеӨ–гҒ®еұ…е®Ө"
+        "label": "リビング以外の居室"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0011.jpg&w=1200&h=900",
-        "label": "зҺ„й–ў"
+        "label": "玄関"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0007.jpg&w=1200&h=900",
-        "label": "жҙ—йқўеҸ°гғ»жҙ—йқўжүҖ"
+        "label": "洗面台・洗面所"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0012.jpg&w=1200&h=900",
-        "label": "гғҲгӮӨгғ¬"
+        "label": "トイレ"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0005.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°"
+        "label": "リビング"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0010.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°д»ҘеӨ–гҒ®еұ…е®Ө"
+        "label": "リビング以外の居室"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0014.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°"
+        "label": "リビング"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F438%2F21242438%2F21242438_0013.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°д»ҘеӨ–гҒ®еұ…е®Ө"
+        "label": "リビング以外の居室"
       }
     ]
   },
@@ -204128,108 +204136,118 @@
     ]
   },
   "https://suumo.jp/ms/chuko/tokyo/sc_chuo/nc_21093937/": {
+    "total_units": 106,
+    "floor_position": 7,
+    "floor_total": 12,
+    "floor_structure": "SRC12階建",
+    "ownership": "所有権",
+    "management_fee": 15261,
+    "repair_reserve_fund": 10452,
+    "balcony_area_m2": 4.65,
+    "parking": "敷地内（3万6000円～4万円／月）",
+    "zoning": "商業",
+    "delivery_date": "相談",
     "feature_tags": [
-      "е№ҙеҶ…еј•жёЎеҸҜ",
-      "гӮ№гғјгғ‘гғј еҫ’жӯ©10еҲҶд»ҘеҶ…",
-      "еёӮиЎ—ең°гҒҢиҝ‘гҒ„",
-      "еҶ…иЈ…гғӘгғ•гӮ©гғјгғ",
-      "жөҙе®Өд№ҫзҮҘж©ҹ",
-      "и§’дҪҸжҲё",
-      "е…Ёеұ…е®ӨеҸҺзҙҚ",
-      "й§…гҒҫгҒ§е№іеқҰ",
-      "й–‘йқҷгҒӘдҪҸе®…ең°",
-      "еҜҫйқўејҸгӮӯгғғгғҒгғі",
-      "пј’пј”жҷӮй–“гӮҙгғҹеҮәгҒ—еҸҜ",
-      "гӮ»гӮӯгғҘгғӘгғҶгӮЈе……е®ҹ",
-      "пјҙпј¶гғўгғӢгӮҝд»ҳгӮӨгғігӮҝгғјгғӣгғі",
-      "йҖҡйўЁиүҜеҘҪ",
-      "е…Ёеұ…е®Өгғ•гғӯгғјгғӘгғігӮ°",
-      "е№іеқҰең°",
-      "еәҠжҡ–жҲҝ",
-      "гӮЁгғ¬гғҷгғјгӮҝгғј",
-      "еұӢдёҠ",
-      "йЈҹеҷЁжҙ—д№ҫзҮҘж©ҹ"
+      "年内引渡可",
+      "スーパー 徒歩10分以内",
+      "市街地が近い",
+      "内装リフォーム",
+      "浴室乾燥機",
+      "角住戸",
+      "全居室収納",
+      "駅まで平坦",
+      "閑静な住宅地",
+      "対面式キッチン",
+      "２４時間ゴミ出し可",
+      "セキュリティ充実",
+      "ＴＶモニタ付インターホン",
+      "通風良好",
+      "全居室フローリング",
+      "平坦地",
+      "床暖房",
+      "エレベーター",
+      "屋上",
+      "食器洗乾燥機"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0021.jpg&w=1200&h=900"
     ],
     "suumo_images": [
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0002.jpg&w=1200&h=900",
-        "label": "зҸҫең°еӨ–иҰіеҶҷзңҹ"
-      },
-      {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0021.jpg&w=1200&h=900",
-        "label": "й–“еҸ–гӮҠеӣі"
+        "label": "現地外観写真"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0022.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°"
+        "label": "リビング"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0024.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°"
+        "label": "リビング"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0025.jpg&w=1200&h=900",
-        "label": "жөҙе®Ө"
+        "label": "浴室"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0023.jpg&w=1200&h=900",
-        "label": "гӮӯгғғгғҒгғі"
+        "label": "キッチン"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0027.jpg&w=1200&h=900",
-        "label": "гғӘгғ“гғігӮ°д»ҘеӨ–гҒ®еұ…е®Ө"
+        "label": "リビング以外の居室"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0010.jpg&w=1200&h=900",
-        "label": "зҺ„й–ў"
+        "label": "玄関"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0008.jpg&w=1200&h=900",
-        "label": "жҙ—йқўеҸ°гғ»жҙ—йқўжүҖ"
+        "label": "洗面台・洗面所"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0026.jpg&w=1200&h=900",
-        "label": "еҸҺзҙҚ"
+        "label": "収納"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0009.jpg&w=1200&h=900",
-        "label": "гғҲгӮӨгғ¬"
+        "label": "トイレ"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0006.jpg&w=1200&h=900",
-        "label": "гӮЁгғігғҲгғ©гғігӮ№"
+        "label": "エントランス"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0015.jpg&w=1200&h=900",
-        "label": "гҒқгҒ®д»–е…ұз”ЁйғЁ"
+        "label": "その他共用部"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0007.jpg&w=1200&h=900",
-        "label": "гҒқгҒ®д»–еҶ…иҰі"
+        "label": "その他内観"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0019.jpg&w=1200&h=900",
-        "label": "гҒқгҒ®д»–"
+        "label": "その他"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0012.jpg&w=1200&h=900",
-        "label": "гӮЁгғігғҲгғ©гғігӮ№"
+        "label": "エントランス"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0011.jpg&w=1200&h=900",
-        "label": "гҒқгҒ®д»–е…ұз”ЁйғЁ"
+        "label": "その他共用部"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0013.jpg&w=1200&h=900",
-        "label": "гҒқгҒ®д»–е…ұз”ЁйғЁ"
+        "label": "その他共用部"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0016.jpg&w=1200&h=900",
-        "label": "гҒқгҒ®д»–е…ұз”ЁйғЁ"
+        "label": "その他共用部"
       },
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F937%2F21093937%2F21093937_0003.jpg&w=1200&h=900",
-        "label": "гҒқгҒ®д»–е…ұз”ЁйғЁ"
+        "label": "その他共用部"
       }
     ]
   },
