@@ -17538,23 +17538,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/27082.html",
       "deviation_score": 37,
-      "estimated_price_man": 8848,
-      "estimated_tsubo_price_man": 505,
-      "estimated_m2_price_man": 153,
+      "estimated_price_man": 9214,
+      "estimated_tsubo_price_man": 500,
+      "estimated_m2_price_man": 152,
       "shinchiku_history_count": 37,
-      "chuko_history_count": 15,
+      "chuko_history_count": 16,
       "sales_history": [
         {
           "end_date": "",
           "floor": 9,
           "layout": "",
-          "area_m2": 65.25,
-          "price_man": 7227,
-          "tsubo_price_man": 361.0
+          "area_m2": 65.76,
+          "price_man": 7451,
+          "tsubo_price_man": 369.0
         }
       ]
     },
-    "cached_at": "2026-06-10T17:28:28.757721"
+    "cached_at": "2026-09-11T04:04:12.365990"
   },
   "ルイシャトレ目黒不動前": {
     "data": {
@@ -30020,23 +30020,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18002.html",
       "deviation_score": 44,
-      "estimated_price_man": 8409,
-      "estimated_tsubo_price_man": 525,
-      "estimated_m2_price_man": 159,
+      "estimated_price_man": 10324,
+      "estimated_tsubo_price_man": 551,
+      "estimated_m2_price_man": 167,
       "shinchiku_history_count": 44,
-      "chuko_history_count": 56,
+      "chuko_history_count": 61,
       "sales_history": [
         {
           "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 54.58,
-          "price_man": 4491,
-          "tsubo_price_man": 274.0
+          "area_m2": 55.51,
+          "price_man": 5010,
+          "tsubo_price_man": 296.0
         }
       ]
     },
-    "cached_at": "2026-07-09T04:09:47.602689"
+    "cached_at": "2026-09-03T11:36:12.157876"
   },
   "朝日白金台マンションフルリ済み4階": {
     "data": null,
@@ -32254,23 +32254,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1408135.html",
       "deviation_score": 44,
-      "estimated_price_man": 10669,
+      "estimated_price_man": 10522,
       "estimated_tsubo_price_man": 497,
       "estimated_m2_price_man": 151,
       "shinchiku_history_count": 444,
-      "chuko_history_count": 109,
+      "chuko_history_count": 114,
       "sales_history": [
         {
           "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 73.49,
-          "price_man": 9749,
-          "tsubo_price_man": 439.0
+          "area_m2": 73.42,
+          "price_man": 9798,
+          "tsubo_price_man": 442.0
         }
       ]
     },
-    "cached_at": "2026-08-22T02:10:12.905243"
+    "cached_at": "2026-09-05T04:15:56.300046"
   },
   "マイキャッスル目黒": {
     "data": {
@@ -37150,5 +37150,47 @@
       ]
     },
     "cached_at": "2026-09-10T15:34:41.841972"
+  },
+  "マノ―蔵前リバーステージ3階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/18024.html",
+      "deviation_score": 37,
+      "shinchiku_history_count": 37,
+      "chuko_history_count": 14,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 67.96,
+          "price_man": 4756,
+          "tsubo_price_man": 236.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-11T04:04:00.601028"
+  },
+  "マノ―蔵前リバーステージ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/18024.html",
+      "deviation_score": 37,
+      "shinchiku_history_count": 37,
+      "chuko_history_count": 14,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 5,
+          "layout": "",
+          "area_m2": 67.96,
+          "price_man": 4756,
+          "tsubo_price_man": 236.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-11T04:04:00.601028"
+  },
+  "コニファーコート・ロジワール": {
+    "data": null,
+    "cached_at": "2026-09-11T04:04:04.012205"
   }
 }
