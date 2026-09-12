@@ -9191,9 +9191,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/42061.html",
       "deviation_score": 16,
-      "estimated_price_man": 11293,
-      "estimated_tsubo_price_man": 512,
-      "estimated_m2_price_man": 155,
+      "estimated_price_man": 10923,
+      "estimated_tsubo_price_man": 509,
+      "estimated_m2_price_man": 154,
       "shinchiku_history_count": 16,
       "chuko_history_count": 32,
       "sales_history": [
@@ -9202,12 +9202,12 @@
           "floor": 1,
           "layout": "",
           "area_m2": 66.67,
-          "price_man": 6734,
-          "tsubo_price_man": 336.0
+          "price_man": 6724,
+          "tsubo_price_man": 335.0
         }
       ]
     },
-    "cached_at": "2026-08-29T06:34:45.304238"
+    "cached_at": "2026-09-12T10:54:52.005643"
   },
   "セザールスカイリバー": {
     "data": {
@@ -28334,9 +28334,9 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11956.html",
       "deviation_score": 13,
-      "estimated_price_man": 9689,
-      "estimated_tsubo_price_man": 501,
-      "estimated_m2_price_man": 152,
+      "estimated_price_man": 9781,
+      "estimated_tsubo_price_man": 498,
+      "estimated_m2_price_man": 151,
       "shinchiku_history_count": 135,
       "chuko_history_count": 87,
       "sales_history": [
@@ -28345,12 +28345,12 @@
           "floor": 4,
           "layout": "",
           "area_m2": 79.81,
-          "price_man": 6549,
+          "price_man": 6545,
           "tsubo_price_man": 270.0
         }
       ]
     },
-    "cached_at": "2026-08-20T10:23:44.373222"
+    "cached_at": "2026-09-03T11:36:57.508132"
   },
   "セレナハイム上池袋5階": {
     "data": {
@@ -34998,11 +34998,11 @@
   },
   "西葛西駅3分「スカイクレストビュー西葛西」西葛西Selection10階": {
     "data": null,
-    "cached_at": "2026-08-28T22:03:23.240076"
+    "cached_at": "2026-09-12T10:54:43.160793"
   },
   "西葛西駅3分「スカイクレストビュー西葛西」西葛西Selection": {
     "data": null,
-    "cached_at": "2026-08-28T22:03:23.240076"
+    "cached_at": "2026-09-12T10:54:43.160793"
   },
   "東南向き角住戸": {
     "data": null,
@@ -37420,5 +37420,49 @@
       ]
     },
     "cached_at": "2026-09-11T15:34:12.370781"
+  },
+  "ザ・湾岸タワーレックスガーデン25階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/42227.html",
+      "deviation_score": 45,
+      "estimated_price_man": 8752,
+      "estimated_tsubo_price_man": 517,
+      "estimated_m2_price_man": 157,
+      "shinchiku_history_count": 456,
+      "chuko_history_count": 448,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 18,
+          "layout": "",
+          "area_m2": 66.06,
+          "price_man": 6115,
+          "tsubo_price_man": 310.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-01T11:54:55.718585"
+  },
+  "シティタワーズ東京ベイ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/764068.html",
+      "deviation_score": 15,
+      "estimated_price_man": 16783,
+      "estimated_tsubo_price_man": 782,
+      "estimated_m2_price_man": 237,
+      "shinchiku_history_count": 1539,
+      "chuko_history_count": 806,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 18,
+          "layout": "",
+          "area_m2": 60.46,
+          "price_man": 11507,
+          "tsubo_price_man": 617.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-12T10:54:38.902577"
   }
 }
