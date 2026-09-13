@@ -6248,23 +6248,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/537802.html",
       "deviation_score": 69,
-      "estimated_price_man": 8136,
-      "estimated_tsubo_price_man": 396,
-      "estimated_m2_price_man": 120,
+      "estimated_price_man": 9375,
+      "estimated_tsubo_price_man": 431,
+      "estimated_m2_price_man": 131,
       "shinchiku_history_count": 69,
-      "chuko_history_count": 16,
+      "chuko_history_count": 17,
       "sales_history": [
         {
           "end_date": "",
-          "floor": 6,
+          "floor": 7,
           "layout": "",
-          "area_m2": 65.34,
-          "price_man": 6139,
-          "tsubo_price_man": 310.0
+          "area_m2": 65.59,
+          "price_man": 6365,
+          "tsubo_price_man": 320.0
         }
       ]
     },
-    "cached_at": "2026-05-16T08:38:12.275406"
+    "cached_at": "2026-09-13T04:15:13.967964"
   },
   "ボヌール小岩": {
     "data": null,
@@ -34790,11 +34790,11 @@
   },
   "パークホームズ南麻布ザレジデンス中古マンション12階部分12階": {
     "data": null,
-    "cached_at": "2026-08-27T08:35:05.067811"
+    "cached_at": "2026-09-13T04:15:05.230009"
   },
   "パークホームズ南麻布ザレジデンス中古マンション": {
     "data": null,
-    "cached_at": "2026-08-27T08:35:05.067811"
+    "cached_at": "2026-09-13T04:15:05.230009"
   },
   "ライオンズステージ麻布2階": {
     "data": {
@@ -37552,5 +37552,129 @@
       ]
     },
     "cached_at": "2026-09-12T14:42:09.427012"
+  },
+  "セザールリバーサイド中州(アフター保証付きリノベーシ...": {
+    "data": null,
+    "cached_at": "2026-09-13T04:14:19.291771"
+  },
+  "日神パレステージ浅草橋": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/32087.html",
+      "deviation_score": 28,
+      "shinchiku_history_count": 28,
+      "chuko_history_count": 12,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 64.7,
+          "price_man": 5265,
+          "tsubo_price_man": 269.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-13T04:14:28.018353"
+  },
+  "ドルチェ経堂": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11688.html",
+      "deviation_score": 11,
+      "shinchiku_history_count": 11,
+      "chuko_history_count": 13,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 1,
+          "layout": "",
+          "area_m2": 89.93,
+          "price_man": 6440,
+          "tsubo_price_man": 238.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-13T04:14:36.956428"
+  },
+  "ブリリア山手動坂グランスイート": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/701495.html",
+      "deviation_score": 59,
+      "estimated_price_man": 11668,
+      "estimated_tsubo_price_man": 544,
+      "estimated_m2_price_man": 165,
+      "shinchiku_history_count": 59,
+      "chuko_history_count": 27,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 70.82,
+          "price_man": 7088,
+          "tsubo_price_man": 331.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-13T04:14:46.657245"
+  },
+  "下町情緒あふれる雑司ヶ谷にある格調高い低層マンショ...": {
+    "data": null,
+    "cached_at": "2026-09-13T04:14:50.156393"
+  },
+  "目黒グランドール6階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/557637.html",
+      "deviation_score": 0,
+      "estimated_price_man": 4624,
+      "estimated_tsubo_price_man": 356,
+      "estimated_m2_price_man": 108,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 9,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 57.38,
+          "price_man": 5284,
+          "tsubo_price_man": 311.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-13T04:14:58.624032"
+  },
+  "目黒グランドール": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/557637.html",
+      "deviation_score": 0,
+      "estimated_price_man": 4624,
+      "estimated_tsubo_price_man": 356,
+      "estimated_m2_price_man": 108,
+      "shinchiku_history_count": 0,
+      "chuko_history_count": 9,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 57.38,
+          "price_man": 5284,
+          "tsubo_price_man": 311.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-13T04:14:58.624032"
+  },
+  "大崎駅4分「ウエストレジデンス大崎」大崎Selection10階": {
+    "data": null,
+    "cached_at": "2026-09-13T04:15:01.885473"
+  },
+  "大崎駅4分「ウエストレジデンス大崎」大崎Selection": {
+    "data": null,
+    "cached_at": "2026-09-13T04:15:01.885473"
+  },
+  "大崎駅4分「ウエストレジデンス大崎」大崎Selection7階": {
+    "data": null,
+    "cached_at": "2026-09-13T04:15:01.885473"
   }
 }
