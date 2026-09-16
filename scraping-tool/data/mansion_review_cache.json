@@ -7527,23 +7527,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/753530.html",
       "deviation_score": 69,
-      "estimated_price_man": 20390,
-      "estimated_tsubo_price_man": 758,
-      "estimated_m2_price_man": 230,
+      "estimated_price_man": 16628,
+      "estimated_tsubo_price_man": 764,
+      "estimated_m2_price_man": 231,
       "shinchiku_history_count": 693,
-      "chuko_history_count": 310,
+      "chuko_history_count": 315,
       "sales_history": [
         {
           "end_date": "",
           "floor": 12,
           "layout": "",
-          "area_m2": 71.66,
-          "price_man": 10321,
-          "tsubo_price_man": 476.0
+          "area_m2": 71.61,
+          "price_man": 10404,
+          "tsubo_price_man": 480.0
         }
       ]
     },
-    "cached_at": "2026-09-02T15:42:07.244653"
+    "cached_at": "2026-09-16T16:06:49.316785"
   },
   "ツインタワー住利住吉館": {
     "data": {
@@ -26075,7 +26075,7 @@
         }
       ]
     },
-    "cached_at": "2026-09-02T15:41:56.502002"
+    "cached_at": "2026-09-16T16:06:39.650712"
   },
   "アールヴェール新宿弁天町3階": {
     "data": {
