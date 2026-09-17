@@ -30239,80 +30239,80 @@
     },
     {
       "date": "2026-09-17",
-      "total_listings": 811,
-      "new_count": 811,
+      "total_listings": 820,
+      "new_count": 820,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10306,
-      "median_price_man": 10399,
+      "avg_price_man": 10296,
+      "median_price_man": 10390,
       "price_distribution": {
-        "under_10000": 374,
-        "10000_11000": 266,
-        "11000_12000": 171,
+        "under_10000": 381,
+        "10000_11000": 267,
+        "11000_12000": 172,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 169,
-          "avg_price_man": 10321,
-          "min_price_man": 8490,
+          "count": 170,
+          "avg_price_man": 10301,
+          "min_price_man": 7998,
           "max_price_man": 11500
         },
         "中央区": {
-          "count": 76,
-          "avg_price_man": 10635,
+          "count": 77,
+          "avg_price_man": 10609,
           "min_price_man": 8380,
           "max_price_man": 11500
         },
         "豊島区": {
-          "count": 54,
+          "count": 57,
           "avg_price_man": 10214,
           "min_price_man": 8480,
           "max_price_man": 11500
         },
-        "世田谷区": {
-          "count": 52,
-          "avg_price_man": 10694,
-          "min_price_man": 9280,
-          "max_price_man": 11500
-        },
         "新宿区": {
-          "count": 51,
-          "avg_price_man": 10290,
+          "count": 52,
+          "avg_price_man": 10292,
           "min_price_man": 8200,
           "max_price_man": 11500
         },
+        "世田谷区": {
+          "count": 52,
+          "avg_price_man": 10673,
+          "min_price_man": 9380,
+          "max_price_man": 11500
+        },
         "台東区": {
-          "count": 49,
-          "avg_price_man": 10178,
+          "count": 51,
+          "avg_price_man": 10177,
           "min_price_man": 7980,
           "max_price_man": 11490
         },
         "品川区": {
-          "count": 42,
-          "avg_price_man": 10361,
+          "count": 41,
+          "avg_price_man": 10329,
           "min_price_man": 8280,
           "max_price_man": 11500
         },
         "杉並区": {
-          "count": 40,
-          "avg_price_man": 10314,
+          "count": 41,
+          "avg_price_man": 10289,
           "min_price_man": 9080,
           "max_price_man": 11500
         },
-        "大田区": {
-          "count": 37,
-          "avg_price_man": 10073,
-          "min_price_man": 9090,
-          "max_price_man": 11500
-        },
         "北区": {
-          "count": 37,
-          "avg_price_man": 10259,
+          "count": 36,
+          "avg_price_man": 10255,
           "min_price_man": 8480,
           "max_price_man": 11480
+        },
+        "大田区": {
+          "count": 35,
+          "avg_price_man": 10072,
+          "min_price_man": 9090,
+          "max_price_man": 11500
         },
         "板橋区": {
           "count": 30,
@@ -30327,14 +30327,14 @@
           "max_price_man": 11400
         },
         "荒川区": {
-          "count": 23,
-          "avg_price_man": 9933,
+          "count": 24,
+          "avg_price_man": 9968,
           "min_price_man": 8300,
           "max_price_man": 11490
         },
         "江戸川区": {
-          "count": 23,
-          "avg_price_man": 10253,
+          "count": 24,
+          "avg_price_man": 10283,
           "min_price_man": 9180,
           "max_price_man": 11500
         },
@@ -30351,8 +30351,8 @@
           "max_price_man": 11500
         },
         "港区": {
-          "count": 18,
-          "avg_price_man": 10261,
+          "count": 19,
+          "avg_price_man": 10311,
           "min_price_man": 9280,
           "max_price_man": 11500
         },
@@ -30363,9 +30363,9 @@
           "max_price_man": 11490
         },
         "文京区": {
-          "count": 9,
-          "avg_price_man": 10700,
-          "min_price_man": 9280,
+          "count": 10,
+          "avg_price_man": 10528,
+          "min_price_man": 8980,
           "max_price_man": 11499
         },
         "葛飾区": {
