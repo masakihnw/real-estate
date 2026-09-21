@@ -236530,11 +236530,11 @@
       "浄水器"
     ],
     "floor_plan_images": [
-      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F669%2F21527669%2F21527669_0040.jpg&w=1200&h=900"
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F669%2F21527669%2F21527669_0043.jpg&w=1200&h=900"
     ],
     "suumo_images": [
       {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F669%2F21527669%2F21527669_0041.jpg&w=1200&h=900",
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F669%2F21527669%2F21527669_0042.jpg&w=1200&h=900",
         "label": "リビング"
       },
       {
@@ -257875,6 +257875,227 @@
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F207%2F21756207%2F21756207_0009.jpg&w=1200&h=900",
         "label": "現地外観写真"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20634072/": {
+    "floor_position": 2,
+    "floor_total": 12,
+    "floor_structure": "RC12階建",
+    "ownership": "所有権",
+    "management_fee": 22290,
+    "repair_reserve_fund": 12254,
+    "delivery_date": "即引渡可",
+    "feature_tags": [
+      "即引渡可",
+      "南向き",
+      "システムキッチン",
+      "角住戸",
+      "陽当り良好",
+      "ＬＤＫ１５畳以上",
+      "２４時間ゴミ出し可",
+      "ＴＶモニタ付インターホン",
+      "ペット相談",
+      "エレベーター",
+      "食器洗乾燥機"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0002.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0001.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0003.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0004.jpg&w=1200&h=900",
+        "label": "リビング"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0005.jpg&w=1200&h=900",
+        "label": "浴室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0008.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0006.jpg&w=1200&h=900",
+        "label": "洗面台・洗面所"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0007.jpg&w=1200&h=900",
+        "label": "トイレ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F072%2F20634072%2F20634072_0009.jpg&w=1200&h=900",
+        "label": "リビング以外の居室"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_adachi/nc_21760173/": {
+    "total_units": 91,
+    "floor_position": 5,
+    "floor_total": 11,
+    "floor_structure": "RC11階建",
+    "ownership": "所有権",
+    "management_fee": 14700,
+    "repair_reserve_fund": 7700,
+    "balcony_area_m2": 10.62,
+    "parking": "敷地内（1万8000円／月）",
+    "zoning": "準工業",
+    "delivery_date": "相談",
+    "feature_tags": [
+      "２沿線以上利用可",
+      "リバーサイド",
+      "スーパー 徒歩10分以内",
+      "システムキッチン",
+      "浴室乾燥機",
+      "共有施設充実",
+      "閑静な住宅地",
+      "対面式キッチン",
+      "２面以上バルコニー",
+      "オートバス",
+      "高速ネット対応",
+      "温水洗浄便座",
+      "ＴＶモニタ付インターホン",
+      "全居室フローリング",
+      "眺望良好",
+      "パントリー（食器・食品の収納庫）",
+      "ウォークインクローゼット",
+      "シューズインクローク",
+      "ペット相談",
+      "小学校 徒歩10分以内",
+      "平坦地",
+      "エレベーター",
+      "宅配ボックス",
+      "駐輪場",
+      "可動間仕切り",
+      "食器洗乾燥機",
+      "バイク置場"
+    ],
+    "floor_plan_images": [
+      "https://img01.suumo.com/jj/resizeImage?src=common%2Fkrcommon%2Fimg%2FNo_Photo_220_165.jpg&w=1200&h=900"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=common%2Fkrcommon%2Fimg%2FNo_Photo_452_339.jpg&w=1200&h=900",
+        "label": "現地外観写真"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=common%2Fkrcommon%2Fimg%2FNo_Photo_96_72.jpg&w=1200&h=900",
+        "label": "駐車場"
+      }
+    ]
+  },
+  "https://suumo.jp/ms/chuko/tokyo/sc_nerima/nc_21254974/": {
+    "feature_tags": [
+      "гӮ№гғјгғ‘гғј еҫ’жӯ©10еҲҶд»ҘеҶ…",
+      "гӮ·гӮ№гғҶгғ гӮӯгғғгғҒгғі",
+      "жөҙе®Өд№ҫзҮҘж©ҹ",
+      "и§’дҪҸжҲё",
+      "е…ұжңүж–ҪиЁӯе……е®ҹ",
+      "еҜҫйқўејҸгӮӯгғғгғҒгғі",
+      "гӮ»гӮӯгғҘгғӘгғҶгӮЈе……е®ҹ",
+      "гӮӘгғјгғҲгғҗгӮ№",
+      "зҜҖж°ҙеһӢгғҲгӮӨгғ¬",
+      "йҖҡйўЁиүҜеҘҪ",
+      "гӮҰгӮ©гғјгӮҜгӮӨгғігӮҜгғӯгғјгӮјгғғгғҲ",
+      "гӮ·гғҘгғјгӮәгӮӨгғігӮҜгғӯгғјгӮҜ",
+      "гғҡгғғгғҲзӣёи«Ү",
+      "е°ҸеӯҰж Ў еҫ’жӯ©10еҲҶд»ҘеҶ…",
+      "еәҠжҡ–жҲҝ",
+      "гӮЁгғ¬гғҷгғјгӮҝгғј",
+      "е®…й…ҚгғңгғғгӮҜгӮ№",
+      "й§җијӘе ҙ",
+      "йЈҹеҷЁжҙ—д№ҫзҮҘж©ҹ",
+      "гғҮгӮЈгӮ№гғқгғјгӮ¶гғјпјҲз”ҹгҒ”гҒҝзІүз •еҮҰзҗҶеҷЁпјү",
+      "жө„ж°ҙеҷЁ"
+    ],
+    "suumo_images": [
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0001.jpg&w=1200&h=900",
+        "label": "зҸҫең°еӨ–иҰіеҶҷзңҹ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0002.jpg&w=1200&h=900",
+        "label": "й–“еҸ–гӮҠеӣі"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0003.jpg&w=1200&h=900",
+        "label": "зҸҫең°еӨ–иҰіеҶҷзңҹ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0004.jpg&w=1200&h=900",
+        "label": "зҸҫең°еӨ–иҰіеҶҷзңҹ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0005.jpg&w=1200&h=900",
+        "label": "гӮЁгғігғҲгғ©гғігӮ№"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0008.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–е…ұз”ЁйғЁ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0010.jpg&w=1200&h=900",
+        "label": "дҪҸжҲёгҒӢгӮүгҒ®зңәжңӣеҶҷзңҹ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0012.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0006.jpg&w=1200&h=900",
+        "label": "гӮЁгғігғҲгғ©гғігӮ№"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0009.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–е…ұз”ЁйғЁ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0011.jpg&w=1200&h=900",
+        "label": "дҪҸжҲёгҒӢгӮүгҒ®зңәжңӣеҶҷзңҹ"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0013.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0007.jpg&w=1200&h=900",
+        "label": "гӮЁгғігғҲгғ©гғігӮ№"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0014.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0015.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0016.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0017.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0018.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0019.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
+      },
+      {
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F974%2F21254974%2F21254974_0020.jpg&w=1200&h=900",
+        "label": "гҒқгҒ®д»–"
       }
     ]
   }
