@@ -6652,23 +6652,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603788.html",
       "deviation_score": 55,
-      "estimated_price_man": 15117,
-      "estimated_tsubo_price_man": 685,
-      "estimated_m2_price_man": 208,
+      "estimated_price_man": 14572,
+      "estimated_tsubo_price_man": 679,
+      "estimated_m2_price_man": 206,
       "shinchiku_history_count": 550,
-      "chuko_history_count": 452,
+      "chuko_history_count": 455,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 71.71,
-          "price_man": 9460,
-          "tsubo_price_man": 434.0
+          "area_m2": 71.68,
+          "price_man": 9480,
+          "tsubo_price_man": 435.0
         }
       ]
     },
-    "cached_at": "2026-09-09T15:48:06.991238"
+    "cached_at": "2026-09-23T16:04:21.316373"
   },
   "西戸山タワーホウムズサウスタワー": {
     "data": {
@@ -9294,7 +9294,7 @@
         }
       ]
     },
-    "cached_at": "2026-09-09T15:48:16.169080"
+    "cached_at": "2026-09-23T16:04:30.604099"
   },
   "東京ビューマークス18階(新規内装フルリノベーション...": {
     "data": {
@@ -28126,45 +28126,45 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13882.html",
       "deviation_score": 52,
-      "estimated_price_man": 9331,
-      "estimated_tsubo_price_man": 406,
-      "estimated_m2_price_man": 123,
+      "estimated_price_man": 9535,
+      "estimated_tsubo_price_man": 410,
+      "estimated_m2_price_man": 124,
       "shinchiku_history_count": 52,
-      "chuko_history_count": 42,
+      "chuko_history_count": 45,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 67.38,
-          "price_man": 5420,
-          "tsubo_price_man": 269.0
+          "area_m2": 67.95,
+          "price_man": 5653,
+          "tsubo_price_man": 277.0
         }
       ]
     },
-    "cached_at": "2026-09-04T15:35:17.187031"
+    "cached_at": "2026-09-23T16:04:40.381012"
   },
   "カテリーナ池袋西プラザタワー": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13882.html",
       "deviation_score": 52,
-      "estimated_price_man": 9331,
-      "estimated_tsubo_price_man": 406,
-      "estimated_m2_price_man": 123,
+      "estimated_price_man": 9535,
+      "estimated_tsubo_price_man": 410,
+      "estimated_m2_price_man": 124,
       "shinchiku_history_count": 52,
-      "chuko_history_count": 42,
+      "chuko_history_count": 45,
       "sales_history": [
         {
           "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 67.38,
-          "price_man": 5420,
-          "tsubo_price_man": 269.0
+          "area_m2": 67.95,
+          "price_man": 5653,
+          "tsubo_price_man": 277.0
         }
       ]
     },
-    "cached_at": "2026-09-04T15:35:17.187031"
+    "cached_at": "2026-09-23T16:04:40.381012"
   },
   "リヴシティ日暮里11階": {
     "data": {
@@ -39494,5 +39494,27 @@
       ]
     },
     "cached_at": "2026-09-23T04:24:07.024397"
+  },
+  "中落合パーク・ホームズ4階": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/11284.html",
+      "deviation_score": 10,
+      "estimated_price_man": 8052,
+      "estimated_tsubo_price_man": 392,
+      "estimated_m2_price_man": 119,
+      "shinchiku_history_count": 103,
+      "chuko_history_count": 61,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 6,
+          "layout": "",
+          "area_m2": 77.87,
+          "price_man": 6845,
+          "tsubo_price_man": 289.0
+        }
+      ]
+    },
+    "cached_at": "2026-09-17T11:54:10.813800"
   }
 }
