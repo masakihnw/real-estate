@@ -9554,23 +9554,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16416.html",
       "deviation_score": 17,
-      "estimated_price_man": 13599,
-      "estimated_tsubo_price_man": 600,
-      "estimated_m2_price_man": 182,
+      "estimated_price_man": 12371,
+      "estimated_tsubo_price_man": 593,
+      "estimated_m2_price_man": 180,
       "shinchiku_history_count": 172,
-      "chuko_history_count": 108,
+      "chuko_history_count": 109,
       "sales_history": [
         {
           "end_date": "",
           "floor": 11,
           "layout": "",
-          "area_m2": 66.64,
-          "price_man": 7103,
-          "tsubo_price_man": 351.0
+          "area_m2": 66.65,
+          "price_man": 7134,
+          "tsubo_price_man": 353.0
         }
       ]
     },
-    "cached_at": "2026-09-10T04:08:05.488672"
+    "cached_at": "2026-09-24T04:10:39.790152"
   },
   "オープンレジデンシア中野中央": {
     "data": {
