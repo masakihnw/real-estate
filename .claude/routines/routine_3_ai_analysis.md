@@ -51,7 +51,12 @@ SELECT * FROM get_active_prompt('investment_summary');
 ```sql
 SELECT * FROM buyer_profiles LIMIT 1;
 ```
-全フィールド（family_composition, household_income, work_style, child_plan, priorities, current_housing, commute_quality, deal_breakers, self_funds, planned_borrowing, interest_type, estimated_rate, repayment_years, monthly_payment_limit, relocation_reason, post_sale_strategy, timeline, risk_tolerance等）を日本語テキストに整形する。
+全フィールドを日本語テキストに整形する。フィールドは次のとおり。
+- family_composition, household_income, work_style, child_plan
+- priorities, current_housing, commute_quality, deal_breakers
+- self_funds, planned_borrowing, interest_type, estimated_rate
+- repayment_years, monthly_payment_limit, relocation_reason
+- post_sale_strategy, timeline, risk_tolerance等
 
 3. 対象物件取得（全アクティブ物件のうち未分析orプロンプト変更分）。
 ```sql
@@ -59,9 +64,9 @@ SELECT listing_id, listing_data FROM get_listings_for_ai('investment_summary');
 ```
 1回あたり最大20件を新着順に処理する。未分析が0件になるまで、毎日の実行で全件を処理する。
 
-4. 各物件を1件ずつAI分析: system_promptをシステムプロンプトとして、user_prompt_templateの`{buyer_profile}`にバイヤープロファイル、`{listing_data}`に物件データを埋め込んで分析。JSONでscore, conclusion, flags, scenarios, actionを生成。
+4. 各物件を1件ずつAI分析する。system_promptをシステムプロンプトにする。user_prompt_templateの`{buyer_profile}`にバイヤープロファイル、`{listing_data}`に物件データを埋め込む。JSONでscore, conclusion, flags, scenarios, actionを生成する。
 
-   各物件は必ずsystem_promptを使って1件ずつAIで分析する。Pythonスクリプト、ルールベース処理、一括バッチ処理は禁止。get_listings_for_aiの結果が大きくファイルに保存された場合も、ファイルから読み込んで1件ずつAI分析を行う。
+   各物件は必ずsystem_promptを使って1件ずつAIで分析する。Pythonスクリプト、ルールベース処理、一括バッチ処理は禁止。get_listings_for_aiの結果が大きくファイルに保存された場合は、ファイルから読み込む。その場合も1件ずつAI分析を行う。
 
 5. 結果書き戻し
 ```sql
@@ -204,7 +209,7 @@ Daily Briefはアプリのダッシュボードで確認するので、Slack通�
 SELECT skip_notification_draft('slack', 'daily_brief');
 ```
 
-### Step 4b: Price Alert — お気に入り物件のみ
+### Step 4b: Price Alert（お気に入り物件のみ）
 
 直近24時間の有意な価格変動を、お気に入り物件に限定して検出する。
 
@@ -217,7 +222,10 @@ JOIN user_building_preferences ubp ON ubp.identity_key = (
 WHERE ubp.preference = 'like';
 ```
 
-- 結果1件以上: 「💰 *お気に入り物件 価格変動*」、各物件の旧価格→新価格（-X%）、AIの一言コメント（投資観点で値下げの意味を解説）をメッセージにして保存する。
+- 結果1件以上: 次の内容をメッセージにして保存する。
+  - 「💰 *お気に入り物件 価格変動*」
+  - 各物件の旧価格→新価格（-X%）
+  - AIの一言コメント（投資観点で値下げの意味を解説）
 ```sql
 SELECT upsert_notification_draft('slack', 'price_alert', '<メッセージ>', '<metadata>'::jsonb);
 ```
@@ -323,7 +331,7 @@ SELECT skip_notification_draft('slack', 'new_listing_digest');
 
 ## 共通ルール
 - サブエージェント委任禁止: 全ステップの処理をメインエージェントのコンテキストで実行する。サブエージェント（Agentツール）への委任は禁止
-- AI分析必須: 各物件は、get_active_prompt()で取得したsystem_promptを使って1件ずつAIで分析する。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
+- AI分析必須: 各物件を1件ずつAIで分析する。分析にはget_active_prompt()で取得したsystem_promptを使う。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
 - Step 4必須: Step 1〜3の完了後、必ずStep 4（通知ドラフト生成）を実行する。Step 4a、4b、4cの全てを実行し、該当なしの場合はskip_notification_draftを呼ぶ。Step 4をスキップするとSlack通知が送信されないので、絶対にスキップ禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む

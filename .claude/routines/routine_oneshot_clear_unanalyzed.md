@@ -2,12 +2,15 @@
 
 - スケジュール: ワンショット（手動実行・複数セッション並行可）
 - MCP: Supabase（必須）
-- 背景: 購入戦略を3層に分けたためai_promptsを更新した（investment_summary v6、ai_scoring v7、2026-06-11適用）。
+- 背景: 購入戦略を3層に分けたため、ai_promptsを更新した。2026-06-11に、investment_summary v6とai_scoring v7を適用した。
   prompt_hashが変わり、全アクティブ物件が再分析の対象になった。
   通常の日次ルーティンは1回の処理上限が50件と100件で、消化に数週間かかる。そこで、このワンショットで全件を処理する。
-- 規模（2026-06-11時点）: text_enricher 15件 / ai_scoring 883件 / investment_summary 1,188件。
-  1セッションでは処理しきれないので、シャードに分割して複数セッションで並行実行する。
-- 推奨: `SHARD_COUNT = 8`（1シャードあたり約260件 ≒ investment_summary 150件 + ai_scoring 110件）。
+- 規模（2026-06-11時点）は次のとおり。
+  - text_enricher 15件
+  - ai_scoring 883件
+  - investment_summary 1,188件
+- 1セッションでは処理しきれないので、シャードに分割して複数セッションで並行実行する。
+- 推奨: `SHARD_COUNT = 8`。1シャードあたり約260件で、investment_summary 150件とai_scoring 110件に相当する。
   セッション数を減らす場合も、コンテキストを使い切らないよう、1シャードを300件以内にする。
 
 ---
@@ -61,7 +64,7 @@ ORDER BY listing_id
 LIMIT 20;
 ```
 
-- 処理済みの物件は、extracted_featuresやai_listing_scoreなどがセットされるので、次回のクエリから自動的に除外される
+- 処理済みの物件には、extracted_featuresやai_listing_scoreなどがセットされる。そのため、次回のクエリから自動的に除外される
 - したがって、0件になるまで「このクエリ、分析、書き戻し」を繰り返せば、シャード内の全件を処理できる
 - 1回を20件のチャンクにして、コンテキストの消費を抑える
 

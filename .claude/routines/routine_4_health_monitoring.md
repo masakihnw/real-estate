@@ -24,7 +24,7 @@ Supabase project_id: `dzhcumdmzskkvusynmyw`
 SELECT * FROM health_check_enrichment_coverage();
 ```
 
-結果テーブル（field_name, total_active, non_null_count, coverage_pct）を確認する。
+結果テーブルを確認する。列はfield_name, total_active, non_null_count, coverage_pctである。
 
 最低基準は次の表のとおり。
 
@@ -141,7 +141,7 @@ SELECT * FROM health_check_data_quality();
 
 ---
 
-## Step 3.5: AI品質スイープ（セーフティネット）
+## Step 3.5: AI品質スイープ
 
 ルーティン①で漏れた品質問題を検出する確認ステップ。
 修正は行わず、検出だけを行う。問題があれば`pipeline_issues`に登録し、次回のルーティン①で修正する。
@@ -250,7 +250,7 @@ SELECT * FROM health_check_anomaly_detection();
 
 `is_alert = true`の項目を重点的に報告する。
 
-注意: `active_count_drop`がアラートになった場合は、意図的な一括非アクティブ化（例: 新築物件の廃止、条件変更による除外）が原因ではないか確認する。直近のルーティン①の実行ログや`listing_events`テーブルに大量の`deactivated`イベントがあれば、誤検知として扱い、`pipeline_issues`には登録しない。
+注意: `active_count_drop`がアラートになった場合は、原因を確認する。意図的な一括非アクティブ化（例: 新築物件の廃止、条件変更による除外）でないかを調べる。直近のルーティン①の実行ログや`listing_events`テーブルに大量の`deactivated`イベントがあれば、誤検知として扱う。その場合は`pipeline_issues`に登録しない。
 
 ---
 
@@ -321,7 +321,7 @@ https://raw.githubusercontent.com/masakihnw/real-estate/main/scraping-tool/resul
 形式: `{"metrics": {"suumo": {"parsed": N, "parse_failures": N, "empty_pages": N}, ...}, "alerts": ["..."]}`
 
 - `alerts`配列が空でない場合は、6bの`scraper_parse_health` issueを登録する
-- fetchに失敗した場合とファイルが存在しない場合はスキップする（初回ランの前や一時的なネットワーク要因が考えられるので、issueにしない）
+- fetchに失敗した場合とファイルが存在しない場合は、スキップする。初回ランの前や一時的なネットワーク要因が考えられるので、issueにしない
 - `metrics`が空の`{}`の場合もスキップする（メトリクスを収集していないランがあるだけで、異常ではない）
 
 ```sql
@@ -339,11 +339,11 @@ WHERE l.is_active = false
 SELECT * FROM detect_source_insertion_anomalies();
 ```
 
-返却された各`source`は、直近72hの真新規（new+reappeared）が0件で、基準期間（〜10日前）には挿入していたサイトである。
+返却された各`source`は、基準期間（〜10日前）には挿入していたサイトである。直近72hの真新規（new+reappeared）は0件である。
 sync側でエラーを出さずに挿入が止まった回帰の候補になる。
 - 1件以上返れば、6bの`source_insertion_zero_<source>` issueをsourceごとに登録する
 - 0件なら正常なのでスキップする
-- この検知は、scraper_metrics.json（パース層）や合算の`new_listings_24h`では見つからない、サイト単独のゼロを拾う。パースは成功しており、他サイトの挿入が続くために合算値には現れない（例: suumoが6/17以降、真新規ゼロになったsync側の回帰）
+- scraper_metrics.json（パース層）や合算の`new_listings_24h`では、サイト単独のゼロは見つからない。この検知は、そのゼロを検出する。パースは成功している。他サイトの挿入が続くため、合算値には現れない（例: suumoが6/17以降、真新規ゼロになったsync側の回帰）
 
 ### 6b: 課題検出ルール
 
@@ -571,5 +571,5 @@ SELECT skip_notification_draft('slack', 'pipeline_health_report');
 - ヘルスチェックの失敗は他のチェックをブロックしない
 - 全チェック完了後に1つのhealth_check_logsレコードを保存する
 - 対象が0件のチェックも「0件」として報告する（スキップしない）
-- Step 7のSlack通知だけは例外: pipeline_health_reportをnotification_draftsに保存し、GHAのslack_notify.pyが送信する
+- Step 7のSlack通知だけは例外とする。pipeline_health_reportをnotification_draftsに保存する。送信はGHAのslack_notify.pyが行う
 - 日本語で回答する

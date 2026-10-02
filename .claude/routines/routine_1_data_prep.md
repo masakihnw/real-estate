@@ -12,8 +12,8 @@
 後続のルーティン②（スコアリング & 画像分析）がこの結果に依存するので、先に実行する。
 
 ほかのルーティンやワークフローへ移した処理は次のとおり。
-- AIスコアリング（ai_scoringモジュール）は、バイヤープロファイルを参照するため、ルーティン②のStep 1で実行する
-- HOME'S画像の取得は、クラウドコンテナからhomes.co.jpへ接続できないため、GitHub Actionsの`backfill-homes-images`ワークフローで実行する。CIパイプライン（`run_enrich.sh` Track G）も、新着物件の画像をローカルとGHA環境で自動取得する
+- AIスコアリング（ai_scoringモジュール）はバイヤープロファイルを参照する。そのため、ルーティン②のStep 1で実行する
+- クラウドコンテナからhomes.co.jpへ接続できない。そのため、HOME'S画像の取得はGitHub Actionsの`backfill-homes-images`ワークフローで実行する。CIパイプライン（`run_enrich.sh` Track G）も、新着物件の画像をローカルとGHA環境で自動取得する
 
 Supabase project_id: `dzhcumdmzskkvusynmyw`
 全てのSQLはSupabase MCPの`execute_sql`で実行する。
@@ -58,8 +58,8 @@ SELECT * FROM get_latest_health_check();
 
 ## Step 0.5: データ品質クリーンアップ（AI名前検証）
 
-スクレイパーが取り込んだ不要データ（ページタイトル、説明文、空名前）を検出して除去し、
-normalized_nameの品質を維持する。Phase AはSQLで自動処理し、Phase BはAIが判定する。
+スクレイパーが取り込んだ不要データ（ページタイトル、説明文、空名前）を検出して除去する。
+normalized_nameの品質を維持するのが目的である。Phase AはSQLで自動処理し、Phase BはAIが判定する。
 
 ### Phase A: 自動クリーンアップ（SQLのみ）
 
@@ -117,7 +117,7 @@ LIMIT 30;
    - nameとnormalized_nameは正当な日本のマンション・物件名か？
    - 説明文・特徴タグ・ページタイトルが物件名になっていないか？
    - 同一住所・同一スペックの正しい名前のレコードが既に存在しないか？
-   - `name`にプロモーション文言（ペット可×南向き等の×区切りタグ、【】内の修飾語）が含まれ、`normalized_name`と大きく異なる場合: `name`を`normalized_name`の値で上書きする（`UPDATE listings SET name = normalized_name WHERE id = <id>`）
+   - `name`にプロモーション文言が含まれ、`normalized_name`と大きく異なる場合は、`name`を`normalized_name`の値で上書きする（`UPDATE listings SET name = normalized_name WHERE id = <id>`）。プロモーション文言とは、ペット可×南向き等の×区切りタグと、【】内の修飾語を指す
 
 3. 判定結果に応じたアクション。
 
@@ -167,11 +167,15 @@ LIMIT 30;
 
 ## Step 0.7: AIファジー重複検出
 
-Step 1（セマンティック重複排除）は`normalized_name`の完全一致で候補を絞り込むため、
-ダッシュの異体字（ー と -）や細かい表記揺れを検出できない。
-英語とカタカナの表記差（`BrilliaCity西早稲田`と`ブリリアシティ西早稲田`）、
-三点リーダーの残存（`AQUAVISTA...`）、間取り表記の揺れ（`2SLDK`と`2LDK+S`）などがあると、
-同一マンション・同一部屋が別物件として扱われ、Slack通知で誤って「入れ替え」と報告される。
+Step 1（セマンティック重複排除）は`normalized_name`の完全一致で候補を絞り込む。
+そのため、ダッシュの異体字（ー と -）や細かい表記揺れを検出できない。
+次のような違いがあると、同一マンション・同一部屋が別物件として扱われる。
+
+- 英語とカタカナの表記差（`BrilliaCity西早稲田`と`ブリリアシティ西早稲田`）
+- 三点リーダーの残存（`AQUAVISTA...`）
+- 間取り表記の揺れ（`2SLDK`と`2LDK+S`）
+
+その結果、Slack通知が誤って「入れ替え」と報告する。
 このステップでは、より広い候補をAIが判定し、その場で修正する。
 
 1. 候補ペア取得
@@ -228,7 +232,9 @@ LIMIT 30;
 
 2. 各ペアについてAI（自分自身）で判定する。以下の観点で分析。
 
-   - 名前の比較: 表記揺れか？（ダッシュの種類違い、全角/半角、スペース有無、タワー名の有無、英語↔カタカナ変換、三点リーダー・装飾文字の残存、副名やカタカナ読みの付加）
+   - 名前の比較: 表記揺れか？ 次の違いを確認する。
+     - ダッシュの種類違い、全角/半角、スペース有無、タワー名の有無
+     - 英語↔カタカナ変換、三点リーダー・装飾文字の残存、副名やカタカナ読みの付加
    - スペック比較: 面積・階数・築年・住所が一致または近似するか？
    - 価格比較: 価格差が20%以内か？
    - 間取り比較: 表記が異なるだけで同一か？（`2SLDK` = `2LDK+S（納戸）`等）
@@ -261,13 +267,15 @@ LIMIT 30;
    UPDATE listings SET is_active = false, merged_into = <keep_id> WHERE id = <remove_id>;
    ```
 
-   tombstoneの鉄則（再アクティブ化の防止）
-   - `merged_into`を必ずセットする。is_active=falseだけでは、掲載元がページを掲載し続ける限り、
-     スクレイパー同期がidentity_keyの完全一致で毎朝再アクティブ化する。
+   tombstoneを再アクティブ化しないための規則
+   - `merged_into`を必ずセットする。is_active=falseだけでは再アクティブ化を防げない。
+     掲載元がページを掲載し続ける限り、スクレイパー同期が毎朝再アクティブ化するためである。
+     照合にはidentity_keyの完全一致を使う。
      merged_intoが付いていれば、スクレイパーは統合先へリダイレクトする。
    - マージ元（tombstone）の`name` / `normalized_name` / `identity_key`は修正しない。
      スクレイパーが再計算するidentity_keyと一致し続けることで、リダイレクトが成立する。
-     プロモーション文言の入った名前を修正すると、identity_keyが一致しなくなり、同じ不要な名前で重複が再作成される。
+     プロモーション文言の入った名前を修正すると、identity_keyが一致しなくなる。
+     その結果、同じ不要な名前で重複が再作成される。
    - 統合URLの記録は`enrichments.alt_sources`を使う。`listings.alt_urls`は
      スクレイパーが毎回上書きするため手動追加が消える。
 
@@ -298,10 +306,12 @@ SELECT listing_id, listing_data FROM get_listings_for_ai('dedup');
 ```
 
 listing_dataには物件の基本情報に加え、`group_members`配列が含まれる。
-`group_members`は同一マンション内の候補物件リストで、normalized_nameが一致するか、住所・階数・総戸数が一致する物件が入る。
+`group_members`は同一マンション内の候補物件リストである。
+normalized_nameが一致するか、住所・階数・総戸数が一致する物件が入る。
 
 3. ペア比較の方法: listing_dataの物件（親）と`group_members`内の各物件（候補）を1対1で比較する。
-   - 親物件の情報: listing_dataのトップレベルフィールド（name, normalized_name, layout, area_m2, floor_position等）
+   - 親物件の情報: listing_dataのトップレベルフィールド
+     - name, normalized_name, layout, area_m2, floor_position等
    - 候補物件の情報: `group_members`配列内の各オブジェクト
    - `group_members`がnullまたは空配列の場合はスキップ
    - 各ペアについてsystem_promptに従い分析。user_prompt_templateの物件Aに親物件、物件Bに候補物件を埋め込む
@@ -333,7 +343,11 @@ SELECT listing_id, listing_data FROM get_listings_for_ai('text_enricher');
 
    各物件は必ずsystem_promptを使って1件ずつAIで分析する。Pythonスクリプト、ルールベース処理、キーワードマッチングは禁止。
 
-   - listings_feedに存在するフィールド: name, address, layout, area_m2, built_year, floor_position, floor_total, total_units, management_fee, repair_reserve_fund, feature_tags, key_strengths, key_risks, ownership, direction, parking等
+   - listings_feedに存在するフィールドは次のとおり。
+     - name, address, layout, area_m2
+     - built_year, floor_position, floor_total, total_units
+     - management_fee, repair_reserve_fund, feature_tags
+     - key_strengths, key_risks, ownership, direction, parking等
    - 注意: `remarks`や`equipment`はlistings_feedに存在しない。テンプレートに含まれていてもnullとして扱う
    - 値がnullの場合は「不明」と記載
 
@@ -348,7 +362,7 @@ SELECT upsert_ai_enrichment(<listing_id>::bigint, 'text_enricher', '<結果JSON>
 
 ## Step 3: 通勤時間更新（マスタ参照方式）
 
-方針: `station_commute_times`マスタテーブル（330駅以上）と`batch_update_commute_from_master()` RPCを使い、物件の最寄り駅から2オフィスへの通勤時間を一括更新する。APIとWebFetchは使用しない。
+方針: `station_commute_times`マスタテーブル（330駅以上）と`batch_update_commute_from_master()` RPCを使う。物件の最寄り駅から2オフィスへの通勤時間を一括更新する。APIとWebFetchは使用しない。
 
 1. バッチ更新の実行
 ```sql
@@ -409,7 +423,7 @@ SELECT * FROM batch_update_commute_from_master(100);
 
 ## 共通ルール
 - サブエージェント委任禁止: 全ステップの処理をメインエージェントのコンテキストで実行する。サブエージェント（Agentツール）への委任は禁止
-- AI分析必須: Step 1-2の各物件は、get_active_prompt()で取得したsystem_promptを使って1件ずつAIで分析する。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
+- AI分析必須: Step 1-2の各物件を1件ずつAIで分析する。分析にはget_active_prompt()で取得したsystem_promptを使う。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む
 - 日本語で回答する

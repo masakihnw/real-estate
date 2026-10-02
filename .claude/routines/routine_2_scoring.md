@@ -71,8 +71,8 @@ SELECT * FROM buyer_profiles WHERE user_id = '<BUYER_PROFILE_USER_ID>';
 SELECT listing_id, listing_data FROM get_listings_for_ai('ai_scoring');
 ```
 
-同一normalized_nameの物件はDISTINCT ONで重複排除済みで、prompt_hashが変わっていない物件は返らない。
-高スコア物件（65以上、Grade A/S）は、rescore_interval（1日）が経過すると自動的に再分析の対象になる。
+同一normalized_nameの物件はDISTINCT ONで重複排除済みである。prompt_hashが変わっていない物件は返らない。
+高スコア物件（65以上、Grade A/S）は、rescore_interval（1日）の経過後に自動で再分析される。
 
 4. 各物件についてsystem_promptに従って分析する。user_prompt_templateの`{buyer_profile}`にバイヤープロファイル、`{listing_data}`に物件データを代入する。
 
@@ -184,7 +184,7 @@ SELECT * FROM batch_cleanup_junk_images();
 
 ## 共通ルール
 - サブエージェント委任禁止: 全ステップの処理をメインエージェントのコンテキストで実行する
-- AI分析必須: Step 1の各物件は、get_active_prompt()で取得したsystem_promptを使って1件ずつAIで分析する。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
+- AI分析必須: Step 1の各物件を1件ずつAIで分析する。分析にはget_active_prompt()で取得したsystem_promptを使う。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む
 - 日本語で回答する

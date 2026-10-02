@@ -7,8 +7,8 @@
 
 ## 概要
 
-DB上のHOME'S物件のうち、画像（suumo_images）が未登録の全物件について、
-Playwright（ヘッドレスブラウザ）で詳細ページを取得し、画像を抽出してenrichmentsテーブルに書き込む。
+DB上のHOME'S物件のうち、画像（suumo_images）が未登録の全物件が対象である。
+Playwright（ヘッドレスブラウザ）で詳細ページを取得し、画像を抽出する。抽出した画像はenrichmentsテーブルに書き込む。
 
 Claudeルーティンからは実行できない。クラウドコンテナのネットワーク許可リストにhomes.co.jpが含まれないためである。
 GitHub Actions経由で実行する。
