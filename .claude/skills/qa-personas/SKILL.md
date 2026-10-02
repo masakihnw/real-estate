@@ -37,7 +37,7 @@ description: >-
 | P4 | データ整合性の監査役 | 画面やログを信用せず、裏のDBを直接確認する。SupabaseとFirestoreのCRUD整合、dedupの取りこぼしと誤統合、delistingとgrace periodの整合、`upsert` の冪等性、versionとprompt_hashの正しさ | DB/dedup/enrich |
 | P5 | 移行担当者 | 既存データの投入。Firebaseからの移行やマイグレーションでの欠損、異形式、件数の一致。マイグレーションの採番（既存最大番号に1を足した3桁。過去に025が衝突した）。新機能の作り方で移行を設計しない（要件は満たすが、既存仕様とずれるケースを取りこぼす） | 移行/migrations |
 | P6 | 回帰デグレの番人 | 今まで動いていたものが壊れていないか。`tests/test_pipeline_smoke.py` のステージ間結線、単一ソースの同期（後述）、既存のユニットテスト、iOSの既存ロジック。CLAUDE.mdの「デグレ防止」の中心になる観点である | 全体/回帰 |
-| P7 | 仕様懐疑者 | 実装が正しい仕様だとは考えない。単一ソースと実際の挙動を突き合わせる。対象は `ScrapingConfigMetadata.json` と `docs/SPECIFICATION.md`、`buyer_profile.json` と `purchase_strategy.md` と `prompts/<module>.md` と `docs/BUYER_PROFILE.md`、Supabaseの本番値。フェイルクローズの原則（取りこぼしを許容する側を選ぶ）が守られているかも確認する | 仕様/単一ソース |
+| P7 | 仕様懐疑者 | 実装が正しい仕様だとは考えない。単一ソースと実際の挙動を突き合わせる。対象は `ScrapingConfigMetadata.json` と `docs/SPECIFICATION.md`、`buyer_profile.json` と `purchase_strategy.md` と `prompts/<module>.md` と `docs/BUYER_PROFILE.md`、Supabaseの本番値。フェイルクローズの原則（取りこぼし側に倒す）が守られているかも確認する | 仕様/単一ソース |
 
 ### そのままプロンプトに貼れる版
 

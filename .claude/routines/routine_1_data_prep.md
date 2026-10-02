@@ -13,7 +13,7 @@
 
 ほかのルーティンやワークフローへ移した処理は次のとおり。
 - AIスコアリング（ai_scoringモジュール）はバイヤープロファイルを参照する。そのため、ルーティン②のStep 1で実行する
-- クラウドコンテナからhomes.co.jpへ接続できない。そのため、HOME'S画像の取得はGitHub Actionsの`backfill-homes-images`ワークフローで実行する。CIパイプライン（`run_enrich.sh` Track G）も、新着物件の画像をローカルとGHA環境で自動取得する
+- クラウドコンテナからhomes.co.jpへ接続できない。そのため、HOME'S画像の取得はGitHub Actionsの`backfill-homes-images`ワークフローへ移した。このワークフローは現在GitHub側で無効（`disabled_manually`）である。CIパイプライン（`run_enrich.sh` Track G）も、新着物件の画像をローカルとGHA環境で自動取得する
 
 Supabase project_id: `dzhcumdmzskkvusynmyw`
 全てのSQLはSupabase MCPの`execute_sql`で実行する。

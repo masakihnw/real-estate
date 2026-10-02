@@ -31,7 +31,7 @@ real-estate-public/
 └── .github/workflows/      # 定期スクレイピング・enrichment・監視・バックアップ・CI
 ```
 
-データの流れは次のとおりです。スクレイパーが物件を取得します。物件はdedupとenrichment（通勤、ハザード、AIスコアリング）を経て、Supabaseに保存します。iOSアプリが読むのは、そのデータです。Firebaseは、iOSの認証、FCM、写真Storageに使います。
+データの流れは次のとおりです。スクレイパーが物件を取得します。物件はdedupとenrichment（通勤、ハザード、AIスコアリング）を経て、Supabaseに保存します。iOSアプリが読むのは、そのデータです。Firebaseは、iOSの認証、FCM、写真Storageに使います。Firestoreは、写真のメタデータとスクレイピングログの保存に使います。
 
 ## セットアップ
 
@@ -48,7 +48,7 @@ playwright install chromium   # ブラウザ enrichment を使う場合
 lintとテストのコマンドは、[.claude/CLAUDE.md](.claude/CLAUDE.md) の Commands に書いてあります。
 
 主要な環境変数（GitHub ActionsではSecretsで渡す）は次のとおりです。
-`SUPABASE_URL` / `SUPABASE_SERVICE_KEY` / `ANTHROPIC_API_KEY` /
+`SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` / `ANTHROPIC_API_KEY` /
 `SLACK_WEBHOOK_URL` / `FIREBASE_SERVICE_ACCOUNT`（FCM送信とスクレイピングログのアップロードに使う）
 
 ### iOS（real-estate-ios）

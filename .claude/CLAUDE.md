@@ -134,7 +134,7 @@ pbxprojからTestFlightをビルドして、ログインできなくなった。
 
 - スクレイピング条件の正は `real-estate-ios/RealEstateApp/ScrapingConfigMetadata.json` である
   （iOSと `scraping-tool/config.py` のフォールバックの両方が参照する）。片側だけ変更しない。
-- デフォルト値を変更したら、`python3 scripts/generate_scraping_conditions_doc.py --write-spec`
+- デフォルト値を変更したら、`cd scraping-tool && python3 scripts/generate_scraping_conditions_doc.py --write-spec`
   で `docs/SPECIFICATION.md` を再生成する（テストが同期を検証している）。
 - ランタイムの上書きは、Supabaseの `scraping_config` テーブル（`supabase_config_loader.py`）が現行である。
   旧実装の `firestore_config_loader.py` は削除済み。
@@ -162,6 +162,6 @@ pbxprojからTestFlightをビルドして、ログインできなくなった。
 - リクエスト間隔は、`config.py` の `*_REQUEST_DELAY_SEC` を下回らない。新しいサイトは3秒以上から始める。
 - パース0件が、正常な終端なのか、botブロックまたは構造変更なのかを区別する。
   `EMPTY_PARSE_TOLERANCE`（連続2回で停止）のパターンを必ず適用する（livableとsuumoを参照）。
-- 失敗したときは、取りこぼしを許容する側を選ぶフェイルクローズを原則とする
+- 失敗したときは、「取りこぼし側に倒す」フェイルクローズを原則とする
   （取得失敗を「掲載終了」と誤判定して大量削除しない）。
 - パース例外を無視せず、最低限、debugログと件数の集計を残す。

@@ -268,7 +268,7 @@ SUUMOの一覧には総戸数が出ないため、詳細ページのキャッシ
 
 `price_predictor.py` は、内部で `future_estate_predictor.py` の `FutureEstatePredictor` を使う。現在の推定成約価格と、10年後の3シナリオ（Standardは中立、Bestは楽観、Worstは悲観）を算出する。
 
-`FutureEstatePredictor` は、収益還元法（インカム）と原価法（コスト）の両方で10年後の価格を計算し、高い方を採用する。計算の詳細は [docs/calculation-summary.md](./docs/calculation-summary.md) と [docs/price-prediction-logic.md](./docs/price-prediction-logic.md) を参照してください。
+`FutureEstatePredictor` は、収益還元法（インカム）と原価法（コスト）の両方で10年後の価格を計算し、6対4で加重平均する（片方が0以下のときは他方を使う）。その価格に2026年市場補正（15分ずらし+5%、都心3区1.5億以上-5%、ZEH/リノベ+2%）をかける。計算の詳細は [docs/calculation-summary.md](./docs/calculation-summary.md) と [docs/price-prediction-logic.md](./docs/price-prediction-logic.md) を参照してください。
 
 外部データは次のとおり。
 - `data/ward_potential.csv`: 区ごとの賃料成長ポテンシャル（S/A/B/C）と供給制約係数（future_estate_predictor 用）
