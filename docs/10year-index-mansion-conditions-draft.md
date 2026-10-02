@@ -15,11 +15,11 @@
 
 ---
 
-## 0) 買う前に取得する情報
+## 0) 必須の情報取得（買う前に必ずやる）
 
-- 成約データでの検証 REINSの取引価格情報（成約ベース）で、同一または近傍マンションの成約推移と回転を確認する。成約価格を重視する。取引価格情報の提供元は指定流通機構である。サイトは [REINS取引情報提供サイト](https://www.contract.reins.or.jp/) である（出典 [contract.reins.or.jp](https://www.contract.reins.or.jp/search/displayAreaConditionBLogic.do?utm_source=chatgpt.com)）。
-- マクロ環境の確認 国土交通省の不動産価格指数で、都市圏と全国のトレンドを確認する。個別銘柄が市場全体にどれだけ連動するかを読むための材料である（出典 [mlit.go.jp](https://www.mlit.go.jp/totikensangyo/totikensangyo_tk5_000085.html?utm_source=chatgpt.com)）。
-- 市場レポートによる相場の把握 東京カンテイなどの定期レポートで、駅別・沿線別の相場水準を把握する。相対比較に使う（出典 [kantei.ne.jp](https://www.kantei.ne.jp/report/category/wayside_station/?utm_source=chatgpt.com)）。
+- 成約データでの検証（必須） REINSの取引価格情報（成約ベース）で、同一または近傍マンションの成約推移と回転を確認する。成約価格を重視する。取引価格情報の提供元は指定流通機構である。サイトは [REINS取引情報提供サイト](https://www.contract.reins.or.jp/) である（出典 [contract.reins.or.jp](https://www.contract.reins.or.jp/search/displayAreaConditionBLogic.do?utm_source=chatgpt.com)）。
+- マクロ環境の確認（必須） 国土交通省の不動産価格指数で、都市圏と全国のトレンドを確認する。個別銘柄が市場全体にどれだけ連動するかを読むための材料である（出典 [mlit.go.jp](https://www.mlit.go.jp/totikensangyo/totikensangyo_tk5_000085.html?utm_source=chatgpt.com)）。
+- 市場レポートによる相場の把握（必須） 東京カンテイなどの定期レポートで、駅別・沿線別の相場水準を把握する。相対比較に使う（出典 [kantei.ne.jp](https://www.kantei.ne.jp/report/category/wayside_station/?utm_source=chatgpt.com)）。
 
 ---
 
