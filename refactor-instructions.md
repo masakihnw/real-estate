@@ -172,7 +172,7 @@ baselineで失敗するテストがあれば、修正せずに記録してユー
 ### Phase 1: テストの追加（挙動変更ゼロ）。完了（2026-06-12）
 - D1: `main.py` のdedup特性テストを `tests/test_main_dedup.py`（16件）に実装した。
 - D2: `generate_report.py` と `check_changes.py` の特性テストを `tests/test_check_changes.py`（9件）と `tests/test_generate_report.py`（9件）に実装した。差分検出の中核である `compare_listings` は、既存の `test_report_utils.py` がカバー済みだった。そのため、exit codeの仕様とレポート整形に絞った。
-- D8: `ListingFilter.swift` の述語テストを `RealEstateAppTests/ListingFilterTests.swift` に実装した。
+- D8: `ListingFilter.swift` の述語テストを `RealEstateAppTests/ListingFilterTests.swift`（18件）に実装した。
 - このフェーズでは本体コードを1行も変更しない。
 
 ### Phase 2: 安全に整理できるもの。完了（PR #16 マージ済み）
@@ -183,7 +183,7 @@ baselineで失敗するテストがあれば、修正せずに記録してユー
 - D3: `EmptyParseGuard` を `scraper_common.py` に実装した（ユニットテスト5件）。livable、suumo、athome、homesの順に4スクレイパーを移行した。停止挙動、ログ、metricsの記録条件は従来と同じで、各スクレイパーのテストが全件通ることで確認した。
 
 ### Phase 4: 小さな責務分離（iOS）。完了
-- D6: `HazardAdvisor` を抽出しテストを追加した。ListingDetailViewの `hazardBuyerTips` と `extractRank` を純関数にした。
+- D6: `HazardAdvisor` を抽出しテストを11件追加した。ListingDetailViewの `hazardBuyerTips` と `extractRank` を純関数にした。
 - D7: 不要になった。mainのUI刷新（PR #7）で `DashboardView.swift` が削除され、TodayViewに再編された。懸念していたフィルタの重複はなかった。フィルタの正準実装は `ListingFilter.apply(to:)` に統一済みだった。ListingListView、MapTabView、Transaction系が共通で使い、Phase 1のD8でテスト済みだった。
 
 ### Phase 5: 触った範囲のエラーハンドリング改善。対象なし
