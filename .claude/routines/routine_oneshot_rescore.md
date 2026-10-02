@@ -11,7 +11,7 @@
 
 ルーティン②③と同じ制約を守る。
 1. `get_active_prompt(module)`で取得したsystem_promptを**必ず使用**する
-2. 各物件を1件ずつAI（自分自身）で分析し、system_promptの指示に従ってJSONを生成する
+2. 各物件を1件ずつAI（自分自身）で分析する
 3. Pythonスクリプト、ルールベース処理、Fetch-Then-Ignoreパターンは**すべて禁止**。
 4. `prompt_hash`と`version`は`get_active_prompt()`の返り値から取得する
 

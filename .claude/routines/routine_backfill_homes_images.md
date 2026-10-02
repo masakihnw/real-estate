@@ -51,5 +51,6 @@ python3 homes_image_backfill.py --delay 8
 
 ## 共通ルール
 
+- WAFが連続5回になったら全体を中断する
 - ページ間の間隔は、手動実行の既定値が8秒
 - `enrichments`テーブルへの書き込みは`listing_facts`ビューに即座に反映される
