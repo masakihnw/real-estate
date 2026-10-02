@@ -1,7 +1,7 @@
 # ワンショット: HOME'S画像バックフィル
 
-- 実行方法: GitHub Actions `backfill-homes-images`ワークフローを手動で起動する。ワークフローは毎日JST 4:30と、`Enrich and Report`の成功後にも自動で実行される
-- 所要時間目安: 対象件数 × 10秒。ワークフローの`timeout-minutes`は60分
+- 実行方法: GitHub Actions `backfill-homes-images`ワークフローを手動で起動する
+- 所要時間目安: 対象件数 × 10秒（WAFリトライを含め最大3時間）
 
 ---
 

@@ -293,9 +293,9 @@ SELECT skip_notification_draft('slack', 'new_listing_digest');
 | ステップ | 処理件数 | ステータス |
 |---|---|---|
 | Step 1: investment_summary | X件（5=X/4=X/3=X/2=X/1=X） | ✅/スキップ |
-| Step 2: 好み傾向分析 | - | ✅/スキップ |
+| Step 2: 好み傾向分析 | — | ✅/スキップ |
 | Step 3: buyer_picks | X件抽出 | ✅/スキップ |
-| Step 4a: daily_brief | - | skipped |
+| Step 4a: daily_brief | — | skipped |
 | Step 4b: price_alert | X件 | pending/skipped |
 | Step 4c: new_listing_digest | X件中必見Y件 | pending/skipped |
 

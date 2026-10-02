@@ -160,7 +160,7 @@ SELECT * FROM batch_cleanup_junk_images();
 
 | ステップ | 処理件数 | ステータス |
 |---|---|---|
-| Step 0: ヘルスチェック | - | ✅/⚠️ |
+| Step 0: ヘルスチェック | — | ✅/⚠️ |
 | Step 1: AIスコアリング | X件（平均XX点、S:X A:X B:X C:X D:X） | ✅/スキップ |
 | Step 2: 画像分析 | X件（junk削除Y件） | ✅/スキップ |
 

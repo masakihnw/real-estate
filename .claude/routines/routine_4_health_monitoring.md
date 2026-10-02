@@ -361,7 +361,7 @@ sync側でエラーを出さずに挿入が止まった回帰の候補になる�
 | `fuzzy_dedup_missed` | Step 3.5で表記揺れ重複を検出 | high | auto_fixable | data_quality |
 | `promotional_name` | Step 3.5でnameにプロモーション文言残存 | medium | auto_fixable | data_quality |
 | `homes_images_backlog_large` | Step 1のhomes画像取得率が30%未満 | high | auto_fixable | data_quality |
-| `homes_waf_continuous_failure` | HOME'S画像取得でWAF連続ブロック（ルーティン① Step 5は廃止済み。GitHub Actionsの`backfill-homes-images`は無効化されているため、現在の取得経路は`run_enrich.sh` Track G） | high | manual | pipeline |
+| `homes_waf_continuous_failure` | ルーティン① Step 5で WAF連続ブロック | high | manual | pipeline |
 | `image_urls_stale` | 非アクティブ物件の画像URLがenrichmentsに残存（50件以上） | low | auto_fixable | maintenance |
 | `scraper_parse_health` | 6aのscraper_metrics.jsonの`alerts`が1件以上（パース失敗率30%以上or空ページ3回以上） | high | manual | pipeline |
 | `source_insertion_zero_<source>` | 6aの`detect_source_insertion_anomalies()`が当該sourceを返す（直近72h真新規ゼロ・基準期間はproductive） | critical | manual | pipeline |

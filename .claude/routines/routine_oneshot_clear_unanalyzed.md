@@ -39,12 +39,12 @@ SHARD_INDEX = 0   ← このセッションの担当番号（0 〜 N-1）
 1. `get_active_prompt(module)`で取得したsystem_promptを**必ず使用**する
 2. 各物件を1件ずつAI（自分自身）で分析し、system_promptの指示に従ってJSONを生成する
 3. 以下は**すべて禁止**。
-   - Pythonスクリプトの作成・実行（`python3 << 'EOF'`等）
-   - ルールベース処理（キーワードマッチング、重み付け計算式、if/else分岐ロジック）
-   - Bashコマンドでのデータ加工・スコア計算
+   - Pythonスクリプトの作成・実行
+   - ルールベース処理（キーワードマッチング、計算式、if/else分岐）
+   - Bashでのデータ加工・スコア計算
    - 取得したsystem_promptを無視して独自ロジックで処理する（Fetch-Then-Ignoreパターン）
    - サブエージェント（Agentツール）への委任
-4. upsert_ai_enrichmentの`prompt_hash`と`version`は`get_active_prompt()`の返り値から取得する（ハードコード禁止）
+4. upsert_ai_enrichmentの`prompt_hash`と`version`は`get_active_prompt()`の返り値から取得する
 
 Supabase project_id: `dzhcumdmzskkvusynmyw`
 全てのSQLはSupabase MCPの`execute_sql`で実行する。

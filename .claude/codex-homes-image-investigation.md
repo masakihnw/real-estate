@@ -48,14 +48,16 @@ iOSアプリで画像が表示されない物件が多数ありました。調�
 
 ### 3b. 他媒体との比較
 
-| 媒体 | 一覧で画像取得 | 詳細ページenrich |
-|------|--------------|-----------------|
-| suumo | あり | あり（詳細キャッシュ経由） |
-| athome | あり | あり（`enrich_athome_listings()`） |
-| rehouse | なし | あり（`enrich_rehouse_listings()`） |
-| nomucom | なし | あり（`enrich_nomucom_listings()`） |
-| livable | なし | あり（`enrich_livable_listings()`） |
-| homes | なし | 間取り図のみ |
+次の表は2026-06-03時点のコードの記録です。画像抽出関数の列にある `_extract_images()` と `_extract_athome_detail_images()` は、現在のコードにありません。
+
+| 媒体 | 一覧で画像取得 | 詳細ページenrich | 画像抽出関数 |
+|------|--------------|-----------------|------------|
+| suumo | ✅ `_extract_images()` | ✅ 詳細キャッシュ経由 | 一覧と詳細 |
+| athome | ✅ `_extract_athome_detail_images()` | ✅ `enrich_athome_listings()` | 詳細ページ |
+| rehouse | — | ✅ `enrich_rehouse_listings()` | 詳細ページ |
+| nomucom | — | ✅ `enrich_nomucom_listings()` | 詳細ページ |
+| livable | — | ✅ `enrich_livable_listings()` | 詳細ページ |
+| **homes** | **❌ なし** | **❌ 間取り図のみ** | **❌ 物件写真なし** |
 
 ### 3c. `floor_plan_enricher.py` だけでは足りなかった理由
 
@@ -129,7 +131,7 @@ iOSアプリで画像が表示されない物件が多数ありました。調�
 
 ### 理由
 
-1. 既存のHTML取得とキャッシュの仕組みを、そのまま使えます。
+1. 最小変更で最大効果が得られます。既存のHTML取得とキャッシュの仕組みを、そのまま使えます。
 2. 追加のリクエストが不要です。キャッシュ済みのHTMLから、物件写真を抽出するだけで済みます。
 3. 新しいHTTPリクエストを増やさないため、WAFのリスクが低くなります。
 4. 既存のキャッシュがあれば、再スクレイピングなしで画像を取得できます。

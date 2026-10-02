@@ -22,7 +22,7 @@ Supabase project_id: `dzhcumdmzskkvusynmyw`
 
 ## 処理方法の制約（全Step共通）
 
-AI分析ステップ（Step 1-2）は、次の制約を守る。
+全てのAI分析ステップ（Step 1-3）は、次の制約を守る。
 1. `get_active_prompt(module)`で取得したsystem_promptを**必ず使用**する
 2. 各物件を1件ずつAI（自分自身）で分析し、system_promptの指示に従ってJSONを生成する
 3. 以下は**すべて禁止**。
@@ -47,7 +47,7 @@ SELECT * FROM get_latest_health_check();
 | alerts.source | 該当チェック | 対応アクション |
 |---|---|---|
 | `data_quality` / `duplicate_active` | 重複アクティブ物件あり | Step 1のdedupで優先的に処理されるので、件数を確認する |
-| `freshness` / `no_enrichment_48h` | 48h以上エンリッチメントなし | Step 2、Step 3、ルーティン②で該当物件が処理されるか確認する |
+| `freshness` / `no_enrichment_48h` | 48h以上エンリッチメントなし | Step 2-4で該当物件が処理されるよう注視する |
 | `freshness` / `stale_ai_7d` | AI分析が7日以上古い | ルーティン②のStep 1で再スコアリング対象に含まれているか確認する |
 | `coverage` / 基準未満フィールド | エンリッチメント不足 | 該当Stepで処理漏れがないか確認する |
 
@@ -394,7 +394,7 @@ SELECT * FROM batch_update_commute_from_master(100);
 
 | ステップ | 処理件数 | ステータス |
 |---|---|---|
-| Step 0: ヘルスチェック | - | ✅/⚠️ |
+| Step 0: ヘルスチェック | — | ✅/⚠️ |
 | Step 0.5: データ品質 | 自動削除X件、AI検証Y件（修正Z件、削除W件） | ✅/スキップ |
 | Step 0.7: ファジー重複 | X件検出（merge Y件、統一Z件） | ✅/スキップ |
 | Step 1: 重複排除 | X件（merge Y件、flag Z件） | ✅/スキップ |
