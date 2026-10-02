@@ -44,7 +44,7 @@ Firebaseは、アプリの次の機能に使っている。いいねとコメン
 3. 「Google」を選んで有効にする。
 4. プロジェクトのサポートメールに自分のGmailを選んで保存する。
 
-### GoogleService-Info.plistを再ダウンロードする
+### GoogleService-Info.plistを再ダウンロードする（重要）
 
 Googleログインを有効にすると、plistに `CLIENT_ID` と `REVERSED_CLIENT_ID` が加わる。有効にする前にダウンロードしたplistには、この2つがない。
 
@@ -52,7 +52,7 @@ Googleログインを有効にすると、plistに `CLIENT_ID` と `REVERSED_CLI
 2. 「マイアプリ」セクションで、iOSアプリの `GoogleService-Info.plist` を再ダウンロードする。
 3. `RealEstateApp/GoogleService-Info.plist` を再度上書きする。
 
-### URL Schemeを設定する
+### URL Schemeを設定する（重要）
 
 1. 再ダウンロードした `GoogleService-Info.plist` を開き、`REVERSED_CLIENT_ID` の値をコピーする（例: `com.googleusercontent.apps.481688023840-xxxxxxxxxxxx`）。
 2. `RealEstateApp/Info.plist` を開く。`project.yml` が `Info.plist` を生成する構成なので、`project.yml` の `CFBundleURLTypes` にも同じ値を入れる。

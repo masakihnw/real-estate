@@ -76,7 +76,6 @@ python3 scripts/migrate_storage_to_r2.py --phase delete-source --execute
 ```sql
 select count(*) from enrichments
 where suumo_images::text like '%supabase.co/storage%'
-   or image_categories::text like '%supabase.co/storage%'
    or floor_plan_images::text like '%supabase.co/storage%'
    or best_thumbnail_url like '%supabase.co/storage%';
 ```

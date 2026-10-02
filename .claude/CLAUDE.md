@@ -99,7 +99,7 @@ CIは `ci.yml` の単一ゲートに集約済みである。`changes` ジョブ�
 - Mac版（Mac Catalyst）は廃止済み。Mac Catalyst向けのコードとビルド設定を追加しない。
 - `DateFormatter` は `static let` と `Locale(identifier: "en_US_POSIX")` で共有する（和暦端末への対策）。
 
-### de-PII外部plist（必須機密リソース）とログイン不能の再発防止
+### de-PII外部plist（必須機密リソース）。ログイン不能を絶対に再発させない
 
 `AllowedEmails.plist` と `CommuteOffices.plist` は、de-PIIで外部plist化された機密リソースである。
 `.gitignore` 対象でローカルにのみ存在する。ビルドに含めないと、次の障害が起きる。

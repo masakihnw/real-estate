@@ -55,7 +55,7 @@ Pythonモジュールは、役割ごとにファイルを分けてある（ス�
 
 `optional_features.py` は、オプショナル依存を一箇所でロードする。対象はasset_score、loan_calc、commute、price_predictorなどである。未インストールのときは、"-" などの互換値を返す。`generate_report.py` と `slack_notify.py` は `optional_features` 経由で使う。そのため、optional依存に関する try/except ImportError を持たない。
 
-差分検出では、名前、間取り、広さ、住所、築年、駅徒歩が同じ物件を同一物件とみなす（`identity_key`。価格は含まない）。価格だけが変わった物件はupdated（価格変動）に分類され、newとremovedにはならない。`main.py` のdedupには、`listing_key`（価格を含む）で完全一致した行を1件にまとめる段階がある。
+差分検出では、名前、間取り、広さ、住所（丁目まで）、築年、所在階が同じ物件を同一物件とみなす（`identity_key`。価格は含まない。所在階は両方に値があるときだけ比べ、駅と徒歩は含まない）。価格だけが変わった物件はupdated（価格変動）に分類され、newとremovedにはならない。`main.py` のdedupには、`listing_key`（価格を含む）で完全一致した行を1件にまとめる段階がある。
 
 ## 使い方
 
@@ -279,8 +279,8 @@ SUUMOの一覧には総戸数が出ないため、詳細ページのキャッシ
 ## 利用規約・注意
 
 - 私的利用と軽負荷を前提とする。リクエスト間隔は、`config.py` の `*_REQUEST_DELAY_SEC` を下回らないようにする。2026-10-02時点の値は、SUUMO用の `REQUEST_DELAY_SEC` が2秒、HOME'Sとathomeが5秒である。rehouse、nomucom、stepon、livableは3秒である。
-- 各サイトの利用規約は [docs/terms-check.md](./docs/terms-check.md) を参照し、利用前に最新の規約を確認してください。
-- 出力は、候補を拾う一次フィルタ用である。管理書類での絞り込みと、REINSの成約確認は手動で行ってください。
+- 各サイトの利用規約は [docs/terms-check.md](./docs/terms-check.md) を参照し、利用前に必ず最新の規約を確認してください。
+- 出力は候補20件を拾う一次フィルタ用である。管理書類での絞り込みと、REINSの成約確認は手動で行ってください。
 
 ## 関連ドキュメント
 

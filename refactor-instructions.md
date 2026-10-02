@@ -49,7 +49,7 @@
 ### 設定の単一ソース（片側だけ変更すると他の箇所も動かなくなる）
 
 - スクレイピング条件の正は `real-estate-ios/RealEstateApp/ScrapingConfigMetadata.json` です。iOSと `scraping-tool/config.py` のフォールバックの両方が参照するため、片側だけ変更してはならない。
-- 買い手コンテキストの構成ファイルは次の3つである。`scraping-tool/config/buyer_profile.json`、`config/purchase_strategy.md`、`config/prompts/<module>.md`（ai_scoring と investment_summary）。変更したら `generate_buyer_context.py --write` で再生成する。
+- 買い手コンテキストの構成ファイルは次の3つである。`scraping-tool/config/buyer_profile.json`、`config/purchase_strategy.md`、`config/prompts/<module>.md`（ai_scoring と investment_summary）。変更したら `generate_buyer_context.py --write` での再生成が必須である。
 - ランタイムの上書きはSupabaseの `scraping_config` テーブルで行い、`supabase_config_loader.py` が読み込む。旧実装の `firestore_config_loader.py` は削除済み。
 - `docs/SPECIFICATION.md` と `docs/BUYER_PROFILE.md` は自動生成する。テストが同期を検証しているため、ソースを変更したら再生成しないとCIが失敗する。
 
@@ -61,11 +61,11 @@
 2. **dedupの判定結果**: `main.py` の3段階dedup（listing_key、fuzzy、building_key）は、同じ入力に対する判定結果が変わらない。`claude_dedup.py` の出力も同様である。
 3. **フェイルクローズ原則**: 取得失敗を「掲載終了」と誤判定して大量削除しない。delisting判定のロジック（`detect-delisted.yml` の経路、`041_get_delisted_since.sql`）の挙動を変えない。
 4. **スクレイパーのレート制御**: `config.py` の `*_REQUEST_DELAY_SEC` を下回らない。リトライ回数とjitterを変更しない。
-5. **Supabaseスキーマと保存済みデータ**: 適用済みmigration（001から053）のファイル名と内容は変更しない。修正は新番号（054以降）で行う。適用は `.claude/CLAUDE.md` の「Supabase マイグレーション」の手順に従う。
-6. **iOSの2段階フェッチと差分同期**: `SupabaseListingStore` の `lastSyncTimestamp` に基づく増分同期。SwiftDataスキーマ（現v22）。スキーマを変更するとマイグレーションが失敗するため、リファクタリングでは変更しない。
+5. **Supabaseスキーマと保存済みデータ**: 適用済みmigration（001から053）のファイル名と内容は変更しない。修正は新番号（054以降）で行い、SQLは用意のみとする（適用はユーザーが行う）。
+6. **iOSの2段階フェッチと差分同期**: `SupabaseListingStore` の `lastSyncTimestamp` に基づく増分同期。SwiftDataスキーマ（現v22）。スキーマ変更はマイグレーション破壊につながるため禁止する。
 7. **iOSのFirebase依存機能**: 認証（Google Sign-In）、FCM、写真Storageは現役である。`ScrapingLogService` はFirestoreを読み取っている。Firebaseはレガシーだが、まだ使っている。
 8. **`main.py` のstdout JSON出力**: `main.py` 末尾の `print(json.dumps(...))` は仕様であり、logger化の対象外。
-9. **`results/` 配下のコミット対象ファイル**（GeoJSON、supply_trends.json など）の生成フォーマット。
+9. **`results/` 配下のコミット対象ファイル**（report.md、GeoJSON、supply_trends.json など）の生成フォーマット。
 
 ---
 
@@ -176,7 +176,7 @@ baselineで失敗するテストがあれば、修正せずに記録してユー
 - このフェーズでは本体コードを1行も変更しない。
 
 ### Phase 2: 安全に整理できるもの。完了（PR #16 マージ済み）
-- D4: printからloggerへの置換を7モジュールで実施した。対象はsumai_surfin_enricher、mansion_review_scraper、commute_gmaps_enricher、reinfolib_enricher、sumai_surfin_browser、build_transaction_feed、upload_floor_plans。CLI出力、デモ出力、進捗の継ぎ足し表示は、除外ルールに従って残した。
+- D4: printからloggerへの置換を6モジュールで実施した。対象はsumai_surfin_enricher、mansion_review_scraper、commute_gmaps_enricher、reinfolib_enricher、sumai_surfin_browser、build_transaction_feed、upload_floor_plans。CLI出力、デモ出力、進捗の継ぎ足し表示は、除外ルールに従って残した。
 - D5: DateFormatterを共有化するために `Utilities/DateFormatting.swift` を新設した。ScrapingLogServiceとListing+MarkdownExportは、これに置き換えた。
 
 ### Phase 3: 小さな責務分離（Python）。完了（PR #17 マージ済み）
