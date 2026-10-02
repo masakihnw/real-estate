@@ -45,7 +45,7 @@ Firebaseは認証、FCM、内見写真のStorage、スクレイピングログ�
 - 駅名フィルタ（F2）: FilterSheet内の駅名アコーディオンで、路線別に駅名チップを複数選択できる。
 - 物件比較（F3）: ツールバーから比較モードを起動し、最大4件を横並びで比較する（`ComparisonView`）。
 - CSVエクスポート（F5）: お気に入り物件をShareLinkでCSVにして共有する。
-- 共有フィルタ（U2）: FilterStoreで、フィルタ状態を複数のタブで共有する。
+- 共有フィルタ（U2）: FilterStoreでフィルタ状態を全タブで共有する実装として完了した。現在は中古一覧（`ListingListView`）と地図（`MapTabView`）がそれぞれ独立した `FilterStore` を持ち、タブ間では共有しない。
 - 現在地表示（U4）: 地図タブ左下の現在地ボタンで、MapKitの現在地表示を切り替える。
 - 空状態（U5）: 「今すぐ更新」ボタン付きの空状態画面で、初回ユーザーを案内する。
 - 更新時刻の表記（U6）: 更新時刻を `HH:mm` 形式で表示する。
@@ -68,7 +68,7 @@ Firebaseは認証、FCM、内見写真のStorage、スクレイピングログ�
 - 物件名、価格、間取り、専有面積、駅徒歩
 - 築年数、階数と階建て、所有権か定借か、総戸数
 - 路線と駅名
-- コメントの1行プレビュー（あれば）、いいねアイコン
+- コメントの件数（吹き出しアイコンと件数、コメントがあるとき）、いいねアイコン
 
 ### 3.4 未実装
 
@@ -125,7 +125,7 @@ Firebaseは認証、FCM、内見写真のStorage、スクレイピングログ�
 ## 8. 用語
 
 - listing: 物件1件のデータ。
-- identity_key: 名前、間取り、専有面積、住所、築年、路線、徒歩から一意にするキー。価格は含めない。
+- identity_key: 物件を一意にするキー。価格、駅名、徒歩は含めない。スクレイパー側（`scraping-tool/report_utils.py`）は名前、間取り、専有面積、住所、築年、所在階の6項目で、iOS側（`Listing.identityKey`）は所在階を除く5項目で作る。
 - 新規: 前回の取得リストに `identity_key` が存在しなかった物件。
 - annotation: いいねとコメントのユーザーデータ。Supabaseで家族間共有する。
 - property_type: `"chuko"`（中古）。
@@ -159,7 +159,7 @@ Firebaseは認証、FCM、内見写真のStorage、スクレイピングログ�
 
 | 項目 | 対応状況 |
 |---|---|
-| Dynamic Type | 全画面でシステムフォントスタイル（`.headline`、`.subheadline`、`.caption` など）を使う。ハードコードしたサイズはない。 |
+| Dynamic Type | 多くの画面でシステムフォントスタイル（`.headline`、`.subheadline`、`.caption` など）を使う。`RealEstateApp` 配下には `.system(size:)` が73箇所残っており、置き換えは完了していない（2026-10-02 時点。[IMPROVEMENT-LIST.md](IMPROVEMENT-LIST.md) の D2 を参照）。 |
 | VoiceOver | 一覧行に `accessibilityLabel`（物件名、価格、面積、徒歩）を設定する。ボタン類にも `accessibilityLabel` を付ける。 |
 | 色のコントラスト | セマンティックカラー（`.primary`、`.secondary`、`.accentColor`）を使い、ライトモードとダークモードで自動調整する。 |
 | ボタンサイズ | タップターゲットは最小44ptを目安に設定する。 |

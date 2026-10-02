@@ -8,7 +8,7 @@
 - Firestoreによるいいね、メモ、コメントの共有: `FirebaseSyncService` を削除し、`SupabaseAnnotationService` に置き換えた。
 - Firestoreの `scraping_config` と、アプリの設定編集画面: 撤去済みである（[リファクタリング提案書](../../docs/refactor-proposals.md) のP1）。
 
-未着手として残る項目は、末尾「スキップ」節の駅名パースのテスト（I6）である。単体テスト（N1）は `RealEstateAppTests` に追加済みである。
+未着手として残る項目は、末尾「スキップ」節の駅名パースのテスト（I6）である。Dynamic Typeの置き換え（N5、D2）は、`.system(size:)` が73箇所残っており未完了である（2026-10-02 時点）。単体テスト（N1）は `RealEstateAppTests` に追加済みである。
 
 ---
 
@@ -181,7 +181,7 @@
 - [x] N2: APNs環境をDebugはdevelopment、Releaseはproductionに自動で切り替える
 - [x] N3: URLSessionにタイムアウトを設定（リクエスト30秒、リソース60秒）
 - [x] N4: SwiftDataのsave失敗時のエラーハンドリングを強化
-- [x] N5: Dynamic Type対応（ハードコードしたフォントサイズをText Styleに置換）
+- [x] N5: Dynamic Type対応（ハードコードしたフォントサイズをText Styleに置換。現在は `.system(size:)` が73箇所残る）
 - [x] N6: オフラインとタイムアウトのとき、日本語のエラーメッセージを表示する
 - [x] F1: 新築価格フィルタの範囲交差判定を修正（`priceMan` から `priceMaxMan`）
 - [x] F2: いいねやメモが付いた物件の自動削除を防ぐ
@@ -229,12 +229,12 @@
 
 #### デザイン
 - [x] D1: DesignSystemにセマンティックカラー定数を追加（物件価格、通勤バッジ、値上がりと値下がり）
-- [x] D2: Dynamic Type完全対応（`.system(size:)` をシステムフォントスタイルに置換）
+- [x] D2: Dynamic Type完全対応（`.system(size:)` をシステムフォントスタイルに置換。現在は `.system(size:)` が73箇所残る）
 - [x] D4: 通勤バッジの色をDesignSystemの定数にした
 - [x] D5: 価格の色をDesignSystemの定数にして一貫性を確保
 
 #### UI/UX
-- [x] U2: タブ間でフィルタ状態を共有（FilterStore、`@Observable`）
+- [x] U2: タブ間でフィルタ状態を共有（FilterStore、`@Observable`。現在は一覧と地図が独立した `FilterStore` を持ち、共有しない）
 - [x] U3: コメントセクションを詳細画面の下部に移動（物件情報を先に表示）
 - [x] U4: 地図に現在地ボタンを追加
 - [x] U5: 空状態の案内を強化（「今すぐ更新」ボタンを追加）
