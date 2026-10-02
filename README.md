@@ -1,6 +1,6 @@
 # real-estate (public)
 
-本プロジェクトの正規リポジトリは [https://github.com/masakihnw/real-estate](https://github.com/masakihnw/real-estate) です。
+本プロジェクトの正規リポジトリは [masakihnw/real-estate](https://github.com/masakihnw/real-estate) です。
 GitHub Actions（物件情報の定期取得、レポート、Slack通知）は、このリポジトリだけで実行します。
 
 10年住み替え前提で「インデックスに勝つ」ための中古マンション購入を検討するための、
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 playwright install chromium   # ブラウザ enrichment を使う場合
 ```
 
-lintとテストのコマンドは、[.claude/CLAUDE.md](.claude/CLAUDE.md) の Commands に書いてあります。
+lintとテストのコマンドは、[.claude/CLAUDE.md](.claude/CLAUDE.md) の Commands を参照してください。
 
 主要な環境変数（GitHub ActionsではSecretsで渡す）は次のとおりです。
 `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` / `ANTHROPIC_API_KEY` /
@@ -57,7 +57,7 @@ lintとテストのコマンドは、[.claude/CLAUDE.md](.claude/CLAUDE.md) の 
 brew install xcodegen
 ```
 
-プロジェクトの再生成とテストのコマンドは、[.claude/CLAUDE.md](.claude/CLAUDE.md) の Commands に書いてあります。新規ファイルを追加したときは、必ず `xcodegen generate` で再生成します。
+プロジェクトの再生成とテストのコマンドは、[.claude/CLAUDE.md](.claude/CLAUDE.md) の Commands を参照してください。新規ファイルを追加したときは、必ず `xcodegen generate` で再生成します。
 
 TestFlightへの配布は `deploy.sh --ios` で行います（API Keyは設定済み）。
 

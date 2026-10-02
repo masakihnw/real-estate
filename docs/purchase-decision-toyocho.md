@@ -117,8 +117,6 @@
 | Detect Delisted Listings | 288389568 | Enrich and Reportの完了後（workflow_run） | 掲載終了検出 |
 | Backfill HOME'S Images | 288375909 | schedule、Enrich and Reportの完了後 | 画像補完 |
 
-2026-10-02に `gh workflow list --all` で確認した時点でも、4本とも `disabled_manually` である。
-
 ### 把握しておくこと
 
 - 無効化はリポジトリのコードに記録されない。GitHub側の状態だけが変わるため、本ドキュメントが唯一の記録である。
