@@ -26,7 +26,7 @@
 
 ### 1.1 目的
 
-10年住み替え前提で、インデックス投資（年5%）を上回る中古マンションを購入するためのツール群。複数の不動産サイトから物件情報を自動スクレイピングし、iOS アプリで閲覧・比較・評価する。取得元は `scraping-tool/` の `suumo_scraper.py`、`homes_scraper.py`、`rehouse_scraper.py`、`nomucom_scraper.py`、`athome_scraper.py`、`stepon_scraper.py`、`livable_scraper.py` の7サイト。iOS アプリは新築マンションを表示せず、中古のみを扱う（`SupabaseListingStore.purgeNonChukoListings` が中古以外を端末から削除する）。
+10年住み替え前提で、インデックス投資（年5%）を上回る中古マンションを購入するためのツール群。複数の不動産サイトから物件情報を自動スクレイピングし、iOS アプリで閲覧・比較・評価する。取得元は `scraping-tool/` の `suumo_scraper.py`、`homes_scraper.py`、`rehouse_scraper.py`、`nomucom_scraper.py`、`athome_scraper.py`、`stepon_scraper.py`、`livable_scraper.py` の7サイト。`scraping-tool/config.py` の `DISABLED_SCRAPERS` は既定で `("stepon", "athome")` であり、ワークフローとスクリプトはこの値を上書きしていない。`main.py` は無効のスクレイパーを飛ばすので、定期実行で取得するのは5サイトである。iOS アプリは新築マンションを表示せず、中古のみを扱う（`SupabaseListingStore.purgeNonChukoListings` が中古以外を端末から削除する）。
 
 ### 1.2 ターゲットユーザー
 
@@ -1517,7 +1517,7 @@ AI 比較プロンプトは、全物件を対等に扱う。各物件の `toMark
 
 ## 5. スクレイピングツール仕様
 
-> 現状との差分（2026-10-02 にコードで確認）。この章は 2026-03 時点のパイプラインで書かれており、現行のコードと次の点が異なる。新築のスクレイピングは2026-06に廃止された。`main.py` の `--property-type`、`scripts/run_scrape.sh`、`scripts/run_enrich.sh` は中古（chuko）だけを扱う。`suumo_shinchiku_scraper.py`、`shinchiku_detail_enricher.py`、`homes_shinchiku_scraper.py` は存在しない。`main.py --source all` の対象は、次の7ソースである。suumo、homes、athome、rehouse、nomucom、stepon、livable。WF2 の enrich ジョブは2つある。`enrich-chuko-core`（`--tracks core`）と `enrich-chuko-mansion`（`--tracks mansion`）である。住まいサーフィンは、別ワークフロー `enrich-sumai.yml` が処理する。`run_enrich.sh` の Track G は HOME'S 画像（`floor_plan_enricher.py`）である。`send_push.py` は `scripts/` 配下にある。この章の新築に関する記述と 5.2 節の WF2 構成図は旧構成のものである。
+> 現状との差分（2026-10-02 にコードで確認）。この章は 2026-03 時点のパイプラインで書かれており、現行のコードと次の点が異なる。新築のスクレイピングは2026-06に廃止された。`main.py` の `--property-type`、`scripts/run_scrape.sh`、`scripts/run_enrich.sh` は中古（chuko）だけを扱う。`suumo_shinchiku_scraper.py`、`shinchiku_detail_enricher.py`、`homes_shinchiku_scraper.py` は存在しない。`main.py --source all` の対象は、次の7ソースである。suumo、homes、athome、rehouse、nomucom、stepon、livable。ただし `config.py` の `DISABLED_SCRAPERS` が既定で `("stepon", "athome")` なので、`main.py` はこの2つを飛ばし、定期実行で取得するのは5ソースである。WF2 の enrich ジョブは2つある。`enrich-chuko-core`（`--tracks core`）と `enrich-chuko-mansion`（`--tracks mansion`）である。住まいサーフィンは、別ワークフロー `enrich-sumai.yml` が処理する。`run_enrich.sh` の Track G は HOME'S 画像（`floor_plan_enricher.py`）である。`send_push.py` は `scripts/` 配下にある。この章の新築に関する記述と 5.2 節の WF2 構成図は旧構成のものである。
 
 ### 5.1 データソース
 
