@@ -1,10 +1,10 @@
 # Coworkタスク Yahoo路線情報で通勤時間を更新
 
-> 現行の通勤時間更新は、`.claude/routines/routine_1_data_prep.md` のStep 3（`station_commute_times` マスタを参照する方式）で行っている。本文書はYahoo路線情報をWebFetchで引く旧手順である。リモート環境からYahoo Transitへアクセスすると HTTP 403 になることは、[codex-commute-research.md](./codex-commute-research.md) の背景に書いている。
+> 現行の通勤時間更新は、`.claude/routines/routine_1_data_prep.md` のStep 3（`station_commute_times` マスタを参照する方式）で行っている。本文書はYahoo路線情報をWebFetchで引く旧手順である。リモート環境からYahoo TransitへアクセスするとHTTP 403になる。この経緯は、[codex-commute-research.md](./codex-commute-research.md) の背景に書いている。
 
 ## 概要
 
-Supabase上のアクティブな物件について、Yahoo路線情報（WebFetch）で通勤時間を調べ、`enrichments.commute_info` に書き戻す。
+Supabase上のアクティブな物件について、Yahoo路線情報（WebFetch）で通勤時間を調べる。結果は `enrichments.commute_info` に書き戻す。
 
 ## オフィス情報
 

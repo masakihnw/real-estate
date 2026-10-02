@@ -102,7 +102,7 @@ iOSアプリで画像が表示されない物件が多数ありました。調�
 デメリットは次のとおりです。
 
 - `floor_plan_enricher.py` のHTMLキャッシュと重複する仕組みを作ることになります。
-- homesはWAFが厳しいため、一覧のスクレイピング直後に詳細ページも取得すると、レート制限を受けるリスクが高くなります。
+- homesはWAFが厳しいです。一覧のスクレイピング直後に詳細ページも取得すると、レート制限を受けるリスクが高くなります。
 - Playwrightが必要になる可能性があります。一覧ページはWAFのためPlaywrightが必須ですが、詳細ページはrequestsでも通った実績があります。
 
 想定工数は大きく、新規関数、キャッシュの仕組み、`main.py` への統合が必要になる。
@@ -129,7 +129,7 @@ iOSアプリで画像が表示されない物件が多数ありました。調�
 
 ### 理由
 
-1. 最小の変更で最大の効果が得られます。既存のHTML取得とキャッシュの仕組みを、そのまま使えます。
+1. 既存のHTML取得とキャッシュの仕組みを、そのまま使えます。
 2. 追加のリクエストが不要です。キャッシュ済みのHTMLから、物件写真を抽出するだけで済みます。
 3. 新しいHTTPリクエストを増やさないため、WAFのリスクが低くなります。
 4. 既存のキャッシュがあれば、再スクレイピングなしで画像を取得できます。
@@ -157,7 +157,7 @@ iOSアプリで画像が表示されない物件が多数ありました。調�
 | 5件 | `first_seen_source=suumo`、`created_at` が古い | 詳細ページを再取得すれば解消できる |
 | 5件 | `first_seen_source=suumo`、最近作成 | 一覧ページで画像が取れていない可能性があり、個別の調査が必要 |
 
-優先度は、homesの対応が済んだ後で足ります。
+suumoの14件の調査は、homesの対応が済んでからで十分です。
 
 ---
 
@@ -167,5 +167,5 @@ iOSアプリで画像が表示されない物件が多数ありました。調�
 
 - `floor_plan_enricher.py` に `parse_homes_property_images()` があります。`main()` は、間取り図と物件写真の両方を取得し、`write_enrichments(listings, ["floor_plan_images", "suumo_images"], "homes_images")` で書き込みます。
 - `scripts/run_enrich.sh` の Track G が、`floor_plan_enricher.py` を `--limit 50` で実行します。
-- 既存のhomes物件で `suumo_images` が未登録のものは、`homes_image_backfill.py` が詳細ページから取得してenrichmentsに書き込みます。GitHub Actionsの `backfill-homes-images.yml` が、毎日JST 4:30と、`Enrich and Report` の成功後に実行します。
+- 既存のhomes物件で `suumo_images` が未登録のものは、`homes_image_backfill.py` が詳細ページから取得します。取得した画像はenrichmentsに書き込みます。GitHub Actionsの `backfill-homes-images.yml` が、毎日JST 4:30と、`Enrich and Report` の成功後に実行します。
 - `homes_scraper.py` の `HomesListing` には、現在も画像のフィールドがありません。

@@ -9,9 +9,9 @@
 ### 現状
 
 - Yahoo路線情報のWebページをWebFetchでスクレイピングしていた。
-- 実行環境が「Claude Desktop Routines」（Anthropicのリモートサーバー上で動作）に移った。
+- 実行環境が「Claude Desktop Routines」に移った。この環境はAnthropicのリモートサーバー上で動作する。
 - リモート環境からYahoo Transitへのアクセスが HTTP 403 Forbidden でブロックされる。
-- 利用できるツールは、WebFetch（URLからHTML/JSONを取得）、WebSearch（Web検索）、Supabase MCP（DB操作）である。
+- 利用できるツールは3つある。WebFetchはURLからHTML/JSONを取得する。WebSearchはWeb検索を行い、Supabase MCPはDBを操作する。
 - リモート環境の制約により、Playwrightなどのブラウザ操作は使えない。
 
 ### 要件
@@ -34,7 +34,7 @@
 
 ### 1. 日本の乗り換え案内API（有料を含む）
 
-- Google Maps Directions API（Transitモード） 料金体系、日本の鉄道への対応状況、精度、レート制限
+- Google Maps Directions API（Transitモード）。調べる点は、料金体系、日本の鉄道への対応状況、精度、レート制限である。
 - NAVITIME API 法人向けAPIの有無、料金、WebFetchでアクセスできるか
 - 駅すぱあとWebサービスAPI（ヴァル研究所） 料金、個人開発者向けプラン
 - ジョルダンAPI 同上
@@ -42,10 +42,10 @@
 
 ### 2. 無料または低コストの代替案
 
-- Google Maps URLからWebFetch `https://www.google.com/maps/dir/...` のようなURLでルート情報を取得できるか（403にならないか）
+- Google Maps URLからWebFetch `https://www.google.com/maps/dir/...` のようなURLでルート情報を取得できるか。403にならないかも確かめる。
 - Apple Maps / MapKit APIでルート検索ができるか
-- GTFS（General Transit Feed Specification）データ 日本の鉄道のGTFSデータが公開されているか。ローカルでルートを計算する方法が実現可能か
-- OpenTripPlannerと日本のGTFS セルフホストの乗り換え案内を、Supabase Edge Functionで動かせるか
+- GTFS（General Transit Feed Specification）データ。日本の鉄道のGTFSデータが公開されているか。ローカルでルートを計算する方法が実現可能か。
+- OpenTripPlannerと日本のGTFS。セルフホストの乗り換え案内を、Supabase Edge Functionで動かせるか。
 
 ### 3. 静的なアプローチ（APIなし）
 
@@ -58,7 +58,7 @@
 各手段について次を評価する。
 
 - Claude Desktop RoutinesのWebFetchでアクセスできるか（403にならないか）
-- APIキーが必要な場合、WebFetchのヘッダーに付けられるか、Supabase Edge Function経由で呼べるか
+- APIキーが必要な場合、WebFetchのヘッダーに付けられるか。Supabase Edge Function経由で呼べるかも確かめる。
 - 月額コストの目安（月約200クエリを想定）
 - セットアップの手間
 

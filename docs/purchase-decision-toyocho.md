@@ -101,12 +101,12 @@
 
 ## 運用 GitHub Actionsの失敗メール抑制（2026-07-08）
 
-上のSlack停止とは別件である。GitHub Actionsから失敗メールが多数届くようになったため、失敗していた4本のワークフローを `gh workflow disable` で無効化した。コード変更とpushは伴わず、GitHub側の実行状態だけを変更している。
+上のSlack停止とは別件である。GitHub Actionsから失敗メールが多数届くようになった。そこで、失敗していた4本のワークフローを `gh workflow disable` で無効化した。コード変更とpushは伴わず、GitHub側の実行状態だけを変更している。
 
 ### 経緯と原因
 
 - 失敗メールを出していたのはこの4本だけである。いずれもSupabaseへの接続に失敗していた。エラーはDNS解決エラー `Name or service not known`（curl exit 6）である。Slack通知停止（#100）とは無関係の別の障害である。
-- 同じ `SUPABASE_URL` を使う `enrich-and-report`、`scrape-listings`、`enrich-sumai` は成功しており、データ収集パイプライン本体は稼働を続けている（40分ごとに `Update listings` をコミットしている）。この4本だけがSupabaseに到達できない原因は未調査で、再開するときに調べる必要がある。
+- 同じ `SUPABASE_URL` を使う `enrich-and-report`、`scrape-listings`、`enrich-sumai` は成功している。データ収集パイプライン本体は稼働を続けており、40分ごとに `Update listings` をコミットしている。この4本だけがSupabaseに到達できない原因は未調査である。再開するときに調べる必要がある。
 
 ### 無効化した4本
 

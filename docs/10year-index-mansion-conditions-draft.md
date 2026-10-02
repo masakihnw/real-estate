@@ -1,6 +1,6 @@
 # 10年住み替え前提でインデックス（年5%）を上回るための中古マンション購入条件（ドラフト）
 
-このドラフトの条件は購入判断の目安である。スクレイピングが実際に使う既定値は `real-estate-ios/RealEstateApp/ScrapingConfigMetadata.json` が正で、本ドラフトと一致しない。2026-10-02時点の既定値は、価格7,500万〜1億1,500万円、専有面積60㎡以上、駅徒歩10分以内、築30年以内、総戸数20戸以上である。
+このドラフトの条件は購入判断の目安である。スクレイピングが実際に使う既定値は `real-estate-ios/RealEstateApp/ScrapingConfigMetadata.json` が正で、本ドラフトと一致しない。2026-10-02時点の既定値は次のとおりである。価格7,500万〜1億1,500万円、専有面積60㎡以上、駅徒歩10分以内、築30年以内、総戸数20戸以上。
 
 ## 目的と成立条件
 
@@ -17,9 +17,9 @@
 
 ## 0) 買う前に取得する情報
 
-- 成約データでの検証 REINSの取引価格情報（成約ベース）で、同一または近傍マンションの成約推移と回転を確認する。成約価格を重視する。指定流通機構が取引価格情報を提供しているサイトは [REINS取引情報提供サイト](https://www.contract.reins.or.jp/) である（出典 [contract.reins.or.jp](https://www.contract.reins.or.jp/search/displayAreaConditionBLogic.do?utm_source=chatgpt.com)）。
+- 成約データでの検証 REINSの取引価格情報（成約ベース）で、同一または近傍マンションの成約推移と回転を確認する。成約価格を重視する。取引価格情報の提供元は指定流通機構である。サイトは [REINS取引情報提供サイト](https://www.contract.reins.or.jp/) である（出典 [contract.reins.or.jp](https://www.contract.reins.or.jp/search/displayAreaConditionBLogic.do?utm_source=chatgpt.com)）。
 - マクロ環境の確認 国土交通省の不動産価格指数で、都市圏と全国のトレンドを確認する。個別銘柄が市場全体にどれだけ連動するかを読むための材料である（出典 [mlit.go.jp](https://www.mlit.go.jp/totikensangyo/totikensangyo_tk5_000085.html?utm_source=chatgpt.com)）。
-- 市場レポートによる相場の把握 東京カンテイなどの定期レポートで、駅別・沿線別の相場水準を把握し、相対比較に使う（出典 [kantei.ne.jp](https://www.kantei.ne.jp/report/category/wayside_station/?utm_source=chatgpt.com)）。
+- 市場レポートによる相場の把握 東京カンテイなどの定期レポートで、駅別・沿線別の相場水準を把握する。相対比較に使う（出典 [kantei.ne.jp](https://www.kantei.ne.jp/report/category/wayside_station/?utm_source=chatgpt.com)）。
 
 ---
 
@@ -30,7 +30,7 @@
 ### Must（満たさなければ候補から外す）
 
 - 駅徒歩 5分以内（上限10分）
-  - 徒歩1分は80mなどの表示ルールがあるため、物件を比べるときは表示ルールも踏まえて距離感をそろえる（出典 [suumo.jp](https://suumo.jp/journal/2022/08/31/189602/?utm_source=chatgpt.com)）。
+  - 徒歩1分は80mなどの表示ルールがある。物件を比べるときは、表示ルールも踏まえて距離感をそろえる（出典 [suumo.jp](https://suumo.jp/journal/2022/08/31/189602/?utm_source=chatgpt.com)）。
 - 主要ターミナルへのアクセスが良い（朝ピーク時の所要時間で比べる）
 - 賃貸需要も強い（出口が実需と賃貸の両方になりやすく、流動性が上がる）
 
@@ -65,7 +65,7 @@
 
 ### Must（判定フローで必須チェックに昇格）
 
-- 国土交通省の管理計画認定制度について、対象かどうか、認定を受けているかを必ず確認する。対象外なら候補から外す。認定は税制や金融面の措置（フラットなど）に結びついており、制度として管理水準を見える形にする意図がある（出典 [mlit.go.jp](https://www.mlit.go.jp/jutakukentiku/house/keikakunintei.html?utm_source=chatgpt.com)）。
+- 国土交通省の管理計画認定制度について、対象かどうか、認定を受けているかを必ず確認する。対象外なら候補から外す。認定は税制や金融面の措置（フラットなど）に結びついている。制度として管理水準を見える形にする意図がある（出典 [mlit.go.jp](https://www.mlit.go.jp/jutakukentiku/house/keikakunintei.html?utm_source=chatgpt.com)）。
 
 ### Prefer（制度・第三者評価）
 
@@ -84,7 +84,7 @@
 
 ## 5) 売りやすい型に寄せる（10年で換金するため）
 
-住み替え前提では、個性は価値にならず、売却時の摩擦になる。
+住み替えを前提にすると、個性は価値にならず、売却しにくくなる。
 
 ### Must
 

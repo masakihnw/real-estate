@@ -1,6 +1,6 @@
 # AI Integration Guide
 
-物件データ（listing_facts）と買い手プロファイル（buyer_profiles）をAI（Claude / ChatGPT）から直接分析するための設定ガイドです。
+AI（Claude / ChatGPT）から物件データと買い手プロファイルを直接分析するための設定ガイドです。対象のテーブルは listing_facts と buyer_profiles です。
 
 ## アーキテクチャ
 
