@@ -1,6 +1,6 @@
 # リファクタリング提案書
 
-[refactor-instructions.md](../refactor-instructions.md) のDebt Mapで「提案に留める」とした P1からP8 をまとめます。
+[refactor-instructions.md](../refactor-instructions.md) のDebt Mapで「提案に留める」とした P1からP8をまとめます。
 各項目は、承認を得てから着手する前提で書きました。公開API、スキーマ、外部連携、互換性に影響するため、プロダクトとしての判断が必要です。
 
 各項目の構成は、現状、提案、リスク、移行手順、検証方法です。
@@ -105,7 +105,7 @@ iOSの巨大Viewの分割は、引き続き有効な提案として次に残し�
 
 #### 提案
 責務の境界で分割する。全面的な再構成は承認後に行う。次の3つが、安全に切り出せる単位の例です。
-- `report_utils.py` を `report_format.py` と `dedup_keys.py` に分ける。整形を `report_format.py` に置き、`dedup_keys.py` には listing_key、building_key、fuzzy_match を置く。Phase 1でdedupの特性テストを整備済みなので、比較的安全に切り出せる。上の再評価により、実施はしない。
+- `report_utils.py` を `report_format.py` と `dedup_keys.py` に分ける。整形を `report_format.py` に置く。`dedup_keys.py` には listing_key、building_key、fuzzy_match を置く。Phase 1でdedupの特性テストを整備済みなので、比較的安全に切り出せる。上の再評価により、実施はしない。
 - `ListingDetailView.swift` を、セクション単位（hazard、market、sumai_surfinなど）で子Viewのファイルに分ける。D6と同じく、純粋なロジックはUtilitiesに置き、表示は子Viewに置く。
 - `sumai_surfin_enricher.py` を、ブラウザ自動化、パース、enrichment本体の3層に分ける。
 
@@ -142,7 +142,7 @@ iOSの巨大Viewの分割は、引き続き有効な提案として次に残し�
 分岐の軸は3つあります。区巡回の有無、requestsとPlaywrightのどちらを使うか、WAFとbot処理の違いです。さらに、metricsの記録条件、early-exit、finish_reasonの分岐がサイトごとに異なります。詳細enrichment（athome、rehouse、nomucom）も同様です。共通部分は、キャッシュの入出力とループの薄い定型しかありません。キャッシュを無効にする条件、パース、フィールドのマージは、すべてサイト固有です。
 
 ### 判断
-基底クラスや共通ループにまとめると、過剰な抽象化になります。指示書が負債として挙げている項目そのものです。サイトごとに調整したフェイルセーフ（CLAUDE.mdの「パース0件は正常終端とbotブロックを区別」と「フェイルクローズ原則」）があります。これを損なうリスクが、得られる便益（行数の削減）を上回ります。そのため、基底クラス化は実施しません。共通化すべき中核は既に抽出済みで、残りの重複は、サイトごとの本来の違いによるものだと判断しました。
+基底クラスや共通ループにまとめると、過剰な抽象化になります。指示書が負債として挙げている項目そのものです。サイトごとに調整したフェイルセーフがあります。CLAUDE.mdの「パース0件は正常終端とbotブロックを区別」と「フェイルクローズ原則」が該当します。これを損なうリスクが、得られる便益（行数の削減）を上回ります。そのため、基底クラス化は実施しません。共通化すべき中核は既に抽出済みで、残りの重複は、サイトごとの本来の違いによるものだと判断しました。
 
 ### 将来の再検討の契機
 新規スクレイパーを追加するときに、巡回ループの定型をコピーして済ませる場合は、その時点で検討します。検討するのは、区別requests型のような同型グループの中に限った、薄いヘルパーの抽出です。
@@ -152,7 +152,7 @@ iOSの巨大Viewの分割は、引き続き有効な提案として次に残し�
 ## P6. EMPTY_PARSE_TOLERANCEの未適用スクレイパーへの適用（完了。2026-06-13）
 
 ### 実施前の状況
-stepon、rehouse、nomucom、mansion_reviewには `EmptyParseGuard` パターンが入っていませんでした。CLAUDE.mdは、このパターンを必ず適用すると定めています。
+次の4サイトには `EmptyParseGuard` パターンが入っていませんでした。stepon、rehouse、nomucom、mansion_reviewです。CLAUDE.mdは、このパターンを必ず適用すると定めています。
 
 ### 実施した内容
 - rehouseとnomucomを `EmptyParseGuard` に移行した。

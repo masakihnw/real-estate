@@ -1,6 +1,6 @@
 # ChatGPT リファクタ指示の妥当性評価
 
-このメモは、プロンプト「リファクタリング指示（Cursor用）: scraping-tool Pythonコードの構造改善」を扱います。
+このメモは、次のプロンプトを扱います。プロンプトの題名は「リファクタリング指示（Cursor用）: scraping-tool Pythonコードの構造改善」です。
 指摘の妥当性と実施の優先度を整理しています。
 
 セクション1から4は、直近のリファクタ後のコードベースを前提にした評価です。「更新」の節に、実施済みの項目をまとめました。
@@ -15,8 +15,8 @@
 - テスト追加: `tests/test_report_utils.py` が、pytestで次の仕様を固定している。
   対象は `normalize_listing_name`、`identity_key`、`listing_key`、`compare_listings`、フォーマット系である。
 - optional依存の集約: `optional_features.py` を新設した。asset_score、loan_calc、commute、price_predictorなどは、ここで一括ロードする。
-  `generate_report.py` と `slack_notify.py` から、optional依存に関する try/except ImportError を撤去した。optional依存は `optional_features` 経由に統一した。
-  `generate_report.py` には、`config` のimport失敗に備えた try/except ImportError が別に残っている。
+  `generate_report.py` と `slack_notify.py` から、optional依存の try/except ImportError を撤去した。optional依存は `optional_features` 経由に統一した。
+  `generate_report.py` には、`config` のimport失敗に備えた try/except ImportError も残っている。
 - 依存の逆転: `get_three_scenario_columns` を `optional_features` に移した。`slack_notify.py` は `generate_report.py` をimportしない。
 - load_jsonの統一: `report_utils.load_json(path, *, missing_ok=False, default=None)` に仕様をそろえた。`slack_notify.py` は `missing_ok=True, default=[]` で呼び出す。
 
@@ -67,7 +67,7 @@
 
 ### 良い点
 
-- domain（listing_key、compare_listings、DiffResult）: 純粋ロジックの切り出しは妥当である。テストもしやすい。
+- domain: 純粋ロジックの切り出しは妥当である。対象は listing_key、compare_listings、DiffResult である。テストもしやすい。
 - io（load_json、save_json）: JSONの読み書きを1か所にまとめるのは妥当。`missing_ok` で、slackとreportの仕様差を吸収できる。
 - optional依存の集約: 前述のとおり、可読性と保守性の向上に有効。
 - 既存スクリプトを薄いラッパーで残す: CLIの互換性と、GitHub Actionsおよび `update_listings.sh` との整合を保てる。
@@ -106,7 +106,7 @@
 
 ### 採用してよい（妥当で効果が大きい）
 
-1. pytestの追加（Step A）: listing_key、compare_listings、format系の境界値テストを書く。
+1. pytestを追加する（Step A）。listing_key、compare_listings、format系の境界値テストを書く。
 2. optional依存の集約（Step E）: `integrations/optional_features.py` で一括ロードする。generate_reportとslack_notifyの try/except を減らす。
 3. 依存の逆転（Step Dの一部）: `get_three_scenario_columns` をreport_utilsか専用モジュールに移す。これで、slack_notifyがgenerate_reportに依存しなくなる。
 4. ioの整理（Step C）: `load_json(path, missing_ok=False)` を1か所に定義し、slackは `missing_ok=True` で呼ぶ。既存の `report_utils.load_json` を、その関数への委譲にしてもよい。
@@ -129,6 +129,6 @@
 
 ## 5. この評価の使い方
 
-- ChatGPTに依頼するときは、採用する部分を限定する。例は「StepAとEだけ先にやってほしい」「get_three_scenario_columnsの依存逆転だけやってほしい」である。過剰な変更を避けられる。
+- ChatGPTに依頼するときは、採用する部分を限定する。例は「StepAとEだけ先にやってほしい」である。「get_three_scenario_columnsの依存逆転だけやってほしい」も例である。過剰な変更を避けられる。
 - 「診断3と4を解消する」「テストを追加する」と明示すると、妥当で効果の大きい部分だけを実行してもらいやすい。
 - パッケージ化とCLI統合は、将来行うかどうかを決めたうえで、別のタスクとして依頼する。

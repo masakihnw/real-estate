@@ -1,6 +1,6 @@
 # スクレイピングツール
 
-REINS以外の物件サイトから、10年住み替え前提の中古マンション条件を満たす物件を取得するツールです。条件は [../docs/10year-index-mansion-conditions-draft.md](../docs/10year-index-mansion-conditions-draft.md) を参照してください。取得した物件はdedupとenrichmentを経てSupabaseに同期します。Markdownレポートも出力します。
+REINS以外の物件サイトから、10年住み替え前提の中古マンション条件を満たす物件を取得するツールです。条件は [10year-index-mansion-conditions-draft.md](../docs/10year-index-mansion-conditions-draft.md) を参照してください。取得した物件はdedupとenrichmentを経てSupabaseに同期します。Markdownレポートも出力します。
 
 - 取得元: SUUMO、HOME'S、athome、rehouse、nomucom、stepon、livable。`main.py --source` で選べる。
 - 既定で無効にしているスクレイパー: stepon、athome。理由はボット検知で取得できないことで、`config.py` の `DISABLED_SCRAPERS` に書いてある。環境変数 `DISABLED_SCRAPERS` で上書きできる。
@@ -170,7 +170,7 @@ python3 scripts/build_map_viewer.py --limit 20
 
 ### ローカルでの一括実行（update_listings.sh）
 
-`scripts/update_listings.sh` は、スクレイピング、enrichment、レポート生成、通知、`results/` のGitコミットまでを、1回の実行で行う。
+`scripts/update_listings.sh` は、1回の実行で次の処理を行う。スクレイピング、enrichment、レポート生成、通知、`results/` のGitコミットである。
 
 ```bash
 # 通常実行（Git操作も自動実行）
@@ -268,10 +268,10 @@ SUUMOの一覧には総戸数が出ないため、詳細ページのキャッシ
 
 `price_predictor.py` は、内部で `future_estate_predictor.py` の `FutureEstatePredictor` を使う。現在の推定成約価格と、10年後の3シナリオ（Standardは中立、Bestは楽観、Worstは悲観）を算出する。
 
-`FutureEstatePredictor` は、収益還元法（インカム）と原価法（コスト）の両方で10年後の価格を計算し、6対4で加重平均する（片方が0以下のときは他方を使う）。その価格に2026年市場補正（15分ずらし+5%、都心3区1.5億以上-5%、ZEH/リノベ+2%）をかける。計算の詳細は [docs/calculation-summary.md](./docs/calculation-summary.md) と [docs/price-prediction-logic.md](./docs/price-prediction-logic.md) を参照してください。
+`FutureEstatePredictor` は、収益還元法（インカム）と原価法（コスト）の両方で10年後の価格を計算する。2つの価格は6対4で加重平均する（片方が0以下のときは他方を使う）。その価格に2026年市場補正（15分ずらし+5%、都心3区1.5億以上-5%、ZEH/リノベ+2%）をかける。計算の詳細は [docs/calculation-summary.md](./docs/calculation-summary.md) を参照してください。ロジックは [docs/price-prediction-logic.md](./docs/price-prediction-logic.md) も参照してください。
 
 外部データは次のとおり。
-- `data/ward_potential.csv`: 区ごとの賃料成長ポテンシャル（S/A/B/C）と供給制約係数（future_estate_predictor 用）
+- `data/ward_potential.csv`: 区ごとの賃料成長ポテンシャル（S/A/B/C）と供給制約係数。future_estate_predictor が使う。
 - `data/ward_coefficients.csv`、`data/management_guidelines.csv`、`data/area_coefficients.csv` など: price_predictor の前処理と区判定用
 
 入力は、`listing_price`（円）、`address`、`station_name` などか、`price_man`（万円）、`station_line` などのどちらでもよい。`listing_to_property_data()` で、既存のlisting辞書を変換できる。動作確認は `python3 price_predictor.py`（サンプル入力）で行う。
@@ -298,4 +298,4 @@ SUUMOの一覧には総戸数が出ないため、詳細ページのキャッシ
 | [docs/SUUMO_DETAIL_PARSER.md](./docs/SUUMO_DETAIL_PARSER.md) | SUUMO詳細ページのパーサ |
 | [docs/CHANGELOG-slack-and-filter.md](./docs/CHANGELOG-slack-and-filter.md) | Slack通知とフィルタの変更履歴 |
 
-購入条件（リポジトリルート）: [../docs/10year-index-mansion-conditions-draft.md](../docs/10year-index-mansion-conditions-draft.md)
+購入条件（リポジトリルート）: [10year-index-mansion-conditions-draft.md](../docs/10year-index-mansion-conditions-draft.md)
