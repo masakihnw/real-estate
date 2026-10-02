@@ -1,6 +1,9 @@
 # 10年後成約価格予測の実装構成（MansionPricePredictor）
 
-SUUMOとHOMESの掲載情報を入力に、現在の推定成約価格と10年後の3シナリオ価格を返す `price_predictor.py` の入出力、処理の流れ、参照データの使われ方をまとめた文書です。計算式と係数の正本は [calculation-summary.md](./calculation-summary.md) で、この文書には重ねて書きません。記述は `price_predictor.py`、`future_estate_predictor.py`、`asset_score.py`、`evaluate.py` の現状の実装に合わせています。
+この文書は、`price_predictor.py` の入出力、処理の流れ、参照データの使われ方をまとめたものです。
+`price_predictor.py` は、SUUMOとHOMESの掲載情報を入力に、現在の推定成約価格と10年後の3シナリオ価格を返します。
+計算式と係数の正本は [calculation-summary.md](./calculation-summary.md) で、この文書には重ねて書きません。
+記述は `price_predictor.py`、`future_estate_predictor.py`、`asset_score.py`、`evaluate.py` の現状の実装に合わせています。
 
 ---
 
@@ -10,7 +13,8 @@ SUUMOとHOMESの掲載情報を入力に、現在の推定成約価格と10年�
 
 1. `preprocess()` が入力から特徴量を作ります。区名の判定、築年数、推定賃料の逆算を行います。
 2. 売り出し価格が0以下か未入力の場合は、価格を0にした結果と `risk_factors` の「価格情報なし」を返して終わります。
-3. `FutureEstatePredictor.predict()` を呼び、価格計算を委ねます。収益還元法、原価法、2026年市場補正、含み益率の計算はここで行います（式は calculation-summary.md を参照）。
+3. `FutureEstatePredictor.predict()` を呼び、価格計算を委ねます。
+   収益還元法、原価法、2026年市場補正、含み益率の計算はここで行います（式は calculation-summary.md を参照）。
 4. 戻り値を次のように読み替えます。
 
 | 出力 | 元になる値 |
@@ -23,7 +27,10 @@ SUUMOとHOMESの掲載情報を入力に、現在の推定成約価格と10年�
 | `implied_gain_yen`、`implied_gain_ratio` | `FutureEstatePredictor` が計算した中立シナリオの含み益と含み益率 |
 | `profit_level` | `investment_grade` がS/Aなら「高」、Bなら「中」、Cなら「低」 |
 
-`risk_factors` と `positive_factors` の文言は、`investment_grade` で決まる固定の文です。Cなら `risk_factors` に「金利・賃料悪化シナリオで残債割れリスク」を追加し、S/Aなら `positive_factors` に「賃料・建築費シナリオで下値支持」を追加します。`FutureEstatePredictor` の `strategic_advice` は、グレードに関係なく `positive_factors` に追加されます。
+`risk_factors` と `positive_factors` の文言は、`investment_grade` で決まる固定の文です。
+Cなら `risk_factors` に「金利・賃料悪化シナリオで残債割れリスク」を追加します。
+S/Aなら `positive_factors` に「賃料・建築費シナリオで下値支持」を追加します。
+`FutureEstatePredictor` の `strategic_advice` は、グレードに関係なく `positive_factors` への追加対象です。
 
 資産性ランク（S/A/B/C）は `predict()` の戻り値に含みません。`asset_score.py` が `implied_gain_ratio` を `implied_gain_ratio_to_asset_rank` に渡して決めます（閾値は calculation-summary.md の第2節）。
 
@@ -53,7 +60,8 @@ SUUMOとHOMESの掲載情報を入力に、現在の推定成約価格と10年�
 
 価格への反映が「なし」の項目は、`preprocess()` が特徴量として保持するだけで、`predict()` の価格計算には渡りません。
 
-推定賃料が未入力で売り出し価格がある場合、`preprocess()` が `listing_price × キャップレート ÷ 12` で月額賃料を作り、`FutureEstatePredictor` へ `current_rent` として渡します。キャップレートは `ward_coefficients.csv` の `rent_cluster_group` で決めます。グループ1と2は3.5%（`CAP_RATE_TIER1`）、グループ3は4%（`CAP_RATE_TIER2`）、グループ4と5は4.5%（`CAP_RATE_TIER3`）です。住所から区名を判定できないときは、グループ5として4.5%を使います。
+推定賃料が未入力で売り出し価格がある場合、`preprocess()` が `listing_price × キャップレート ÷ 12` で月額賃料を作り、`FutureEstatePredictor` へ `current_rent` として渡します。
+キャップレートは `ward_coefficients.csv` の `rent_cluster_group` で決めます。グループ1と2は3.5%（`CAP_RATE_TIER1`）、グループ3は4%（`CAP_RATE_TIER2`）、グループ4と5は4.5%（`CAP_RATE_TIER3`）です。住所から区名を判定できないときは、グループ5として4.5%を使います。
 
 ### 形式B（既存スクレイピング結果）
 
@@ -69,7 +77,7 @@ SUUMOとHOMESの掲載情報を入力に、現在の推定成約価格と10年�
 
 ## 3. 参照データ
 
-`predict()` の価格に効くデータは `data/ward_potential.csv` だけです。ほかのファイルは `preprocess()` が読み込むか、どのコードからも読み込まれません。
+`predict()` の価格の計算に使うデータは `data/ward_potential.csv` だけです。ほかのファイルは `preprocess()` が読み込むか、どのコードからも読み込まれません。
 
 ### 3.1 `data/ward_potential.csv`（価格計算に使用）
 
@@ -95,7 +103,13 @@ SUUMOとHOMESの掲載情報を入力に、現在の推定成約価格と10年�
 | inventory_trend_score | 在庫・需給スコア（1.0が基準） |
 | tower_regulation_flag | タワーマンション規制・高さ制限（1 規制あり、0 なし） |
 
-グループごとの `rent_cagr` は、グループ1（千代田、中央、港、渋谷）が0.055、グループ2（新宿、目黒、品川、文京、台東）が0.050、グループ3（江東、墨田、中野、世田谷、豊島）が0.045、グループ4（杉並、大田、北、荒川）が0.038、グループ5（板橋、練馬、江戸川、葛飾、足立）が0.040です。
+グループごとの `rent_cagr` は次のとおりです。
+
+- グループ1（千代田、中央、港、渋谷）は0.055です。
+- グループ2（新宿、目黒、品川、文京、台東）は0.050です。
+- グループ3（江東、墨田、中野、世田谷、豊島）は0.045です。
+- グループ4（杉並、大田、北、荒川）は0.038です。
+- グループ5（板橋、練馬、江戸川、葛飾、足立）は0.040です。
 
 `predict()` の価格計算で使うのは、このファイルから導いたキャップレート（第2節）だけです。`rent_cagr`、`inventory_trend_score`、`tower_regulation_flag` は特徴量に入りますが、`FutureEstatePredictor` には渡しません。住所から区名を判定できないときの既定値は、`rent_cluster_group` 5、`rent_cagr` 0.035、`inventory_trend_score` 1.0、`tower_regulation_flag` 0です。
 
@@ -168,7 +182,15 @@ worst,Stagnation (Worst),0.85,金利上昇により購買力が低下し需給�
 
 ## 4. `price_predictor.py` の定数
 
-`price_predictor.py` の冒頭には、次の定数が定義されています。`predict()` の価格計算から参照されるのは、築年数の計算に使う `CURRENT_YEAR`、推定賃料の逆算に使う `CAP_RATE_TIER1`〜`CAP_RATE_TIER3`、ランク判定に使う `IMPLIED_GAIN_RATIO_S`、`IMPLIED_GAIN_RATIO_A`、`IMPLIED_GAIN_RATIO_B` だけです。残りは定義だけが残り、どこからも参照されません。`FutureEstatePredictor` は、同名の `LISTING_TO_CONTRACT_RATIO` などを `future_estate_predictor.py` 側で別に持っています。
+`price_predictor.py` の冒頭には、次の定数が定義されています。
+`predict()` の価格計算から参照されるのは、次の定数だけです。
+
+- 築年数の計算に使う `CURRENT_YEAR`
+- 推定賃料の逆算に使う `CAP_RATE_TIER1`〜`CAP_RATE_TIER3`
+- ランク判定に使う `IMPLIED_GAIN_RATIO_S`、`IMPLIED_GAIN_RATIO_A`、`IMPLIED_GAIN_RATIO_B`
+
+残りは定義だけが残り、どこからも参照されません。
+`FutureEstatePredictor` は、同名の `LISTING_TO_CONTRACT_RATIO` などを `future_estate_predictor.py` 側で別に持っています。
 
 | 定数 | 値 | 説明 | 参照 |
 |------|-----|------|------|
@@ -264,7 +286,9 @@ worst,Stagnation (Worst),0.85,金利上昇により購買力が低下し需給�
 
 物件特徴と実績成約価格を読み、`predict()` が返す `current_estimated_contract_price` と実績成約価格の差からMAE、MAPE、Biasを算出します。`current_estimated_contract_price` は売り出し価格×0.958なので、評価の対象は売り出しから成約への補正係数です。10年後の予測価格は評価しません。
 
-- 入力はCSVまたはJSONLです。`listing_price`、`address`、`station_name`、`walk_min`、`area_sqm`、`build_year` などの物件特徴と、実績成約価格（`actual_contract_price`、`contract_price`、`成約価格`、`actual_price` のいずれか）が必要です。
+- 入力はCSVまたはJSONLです。
+  `listing_price`、`address`、`station_name`、`walk_min`、`area_sqm`、`build_year` などの物件特徴が必要です。
+  実績成約価格（`actual_contract_price`、`contract_price`、`成約価格`、`actual_price` のいずれか）も必要です。
 - 出力はn（件数）、MAE（円）、MAPE（%）、Bias（円）です。Biasが正のときは、予測が実績より高めです。
 
 ```bash

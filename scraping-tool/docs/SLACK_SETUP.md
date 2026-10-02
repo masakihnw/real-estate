@@ -43,7 +43,8 @@
 | `SLACK_HEALTH_WEBHOOK_URL` | スクレイパー健全性アラート、建物名データ品質アラート、`pipeline_health_report` | `SLACK_WEBHOOK_URL` にフォールバック |
 | `SLACK_ALERT_WEBHOOK_URL` | enrichmentカバレッジアラート（`check_enrichment_health.py`） | `SLACK_WEBHOOK_URL` にフォールバック |
 
-スクレイパー健全性アラートと建物名データ品質アラートを、物件更新とは別のチャンネルに投稿したい場合は、そのチャンネル向けのWebhookを `SLACK_HEALTH_WEBHOOK_URL` に設定してください（`slack_notify.py` の `_send_health_alerts`）。
+スクレイパー健全性アラートと建物名データ品質アラートを、物件更新とは別のチャンネルに投稿したい場合は、設定が必要です。
+そのチャンネル向けのWebhookを `SLACK_HEALTH_WEBHOOK_URL` に設定してください（`slack_notify.py` の `_send_health_alerts`）。
 
 ## 2.5 削除物件をスレッド返信にする（任意・Botトークン）
 
@@ -59,9 +60,9 @@
 
 1. Bot Token Scopesを追加します。
    - https://api.slack.com/apps で対象のアプリを開きます。
-   - 「OAuth & Permissions」の「Scopes」にある「Bot Token Scopes」に `chat:write` を追加します。
+   - 「OAuth & Permissions」の「Scopes」にある「Bot Token Scopes」へ、`chat:write` を追加します。
 2. ワークスペースにインストール（再インストール）します。
-   - 同じページの上部にある「Install to Workspace」または「Reinstall to Workspace」を押します。
+   - 同じページ上部の「Install to Workspace」または「Reinstall to Workspace」を押します。
    - 表示された Bot User OAuth Token（`xoxb-...`）をコピーします。
 3. Botを投稿先のチャンネルに招待します。
    - 対象のチャンネルで `/invite @real-estate-notifier`（アプリ名）を実行します。
@@ -88,7 +89,9 @@ Slackに投稿するのは、資産性ランクがB以上（S、A、B）の物�
 
 ### 投稿のタイミング
 
-- Slackの差分通知は、GitHub Actions の `Enrich and Report` ワークフローの finalize ジョブが `slack_notify.py` を呼んで送ります。Scrape Listings の開始がUTC 0〜5時（JST 9:00の回）だったときだけ、送信対象になります。詳しくは [GITHUB_SETUP.md](./GITHUB_SETUP.md) の「スケジュールと動作」を参照してください。
+- Slackの差分通知は、GitHub Actions の `Enrich and Report` ワークフローの finalize ジョブが `slack_notify.py` を呼んで送ります。
+  送信対象になるのは、Scrape Listings の開始がUTC 0〜5時（JST 9:00の回）だったときだけです。
+  詳しくは [GITHUB_SETUP.md](./GITHUB_SETUP.md) の「スケジュールと動作」を参照してください。
 - 資産性B以上の新規と削除がなく、注目物件の値下げも、送信待ちのAIダイジェストもない場合は、投稿をスキップします。
 - 新規がなく削除だけの差分では、注目物件の値下げかAIダイジェストがない限り、通知を保留します。
 - 差分がある場合は、冒頭に「■ 今回の変更」（入れ替え、新規追加、削除の件数）を出し、該当する物件を投稿します。
@@ -122,7 +125,8 @@ Slackに投稿するのは、資産性ランクがB以上（S、A、B）の物�
    - Settings、Secrets の `SLACK_WEBHOOK_URL` が正しく設定されているかを確認します。
 
 2. ワークフローのログを確認します。
-   - Actions タブで "Enrich and Report" の実行履歴を開き、finalize ジョブの "Run finalize" ステップを見ます。
+   - Actions タブで "Enrich and Report" の実行履歴を開きます。
+     finalize ジョブの "Run finalize" ステップを見ます。
    - `Slack 差分通知スキップ（is_slack_time=false）` と出ている場合は、通知の時間帯ではない回です。
    - `変更なし（資産性B以上の新規・削除なし、注目値下げなし）Slack通知をスキップします` と出ている場合は、通知対象の差分がありません。
 

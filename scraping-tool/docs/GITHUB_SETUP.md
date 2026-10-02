@@ -31,7 +31,8 @@
 
 ## スケジュールと動作
 
-- 実行頻度は1日4回です。JST 9:00、15:00、18:00、20:00（UTC 0:00、6:00、9:00、11:00）に Scrape Listings を起動します。
+- 実行頻度は1日4回です。
+  Scrape Listings は JST 9:00、15:00、18:00、20:00（UTC 0:00、6:00、9:00、11:00）に起動します。
 - Slack通知は、UTC 0〜5時に開始した回だけ送ります（JST 9:00の回に当たります）。GitHub Actions のcronは数時間遅れることがあるため、UTC 0〜5時を通知の時間帯にしています。
 - 変更があったときだけ、WF2 の enrich、レポート作成、コミットとプッシュを行います。変更がなければ、スクレイピングと変更判定だけで終わります。ただし、通知の時間帯の回は、変更がなくても finalize ジョブが動き、未送信の通知を送ります。
 
@@ -50,7 +51,10 @@
 
 ### プッシュが失敗する
 
-`main` はブランチ保護で、必須チェックは `ci-gate`、直接pushは禁止です。`github-actions[bot]` は管理者ではないので、`GITHUB_TOKEN` でpushすると `GH006` で拒否されます。WF2の「Commit and push」ステップは、Secret `PAT_FINALIZE_PUSH` に入れた管理者用のPersonal Access Tokenでpushします。Secretが未設定だと `GITHUB_TOKEN` にフォールバックし、checkoutは通っても、pushだけが失敗します。
+`main` はブランチ保護で、必須チェックは `ci-gate`、直接pushは禁止です。
+`github-actions[bot]` は管理者ではないので、`GITHUB_TOKEN` でpushすると `GH006` で拒否されます。
+WF2の「Commit and push」ステップは、Secret `PAT_FINALIZE_PUSH` に入れた管理者用のPersonal Access Tokenでpushする設定です。
+Secretが未設定だと `GITHUB_TOKEN` にフォールバックします。この場合、checkoutは通っても、pushだけが失敗します。
 
 確認する点は次のとおりです。
 
@@ -58,7 +62,9 @@
 2. 失敗したrunの "Commit and push" ステップを開き、赤いエラー行を確認します。
    - `protected branch` や `refusing to allow` と出る場合は、ブランチ保護がpushを止めています。
    - `Permission denied` と出る場合は、権限かトークンに問題があります。
-3. `git exit code 128` で失敗する場合は、リポジトリの Settings、Actions、General、Workflow permissions で "Read and write permissions" を選び、Save で保存します。ワークフローが置かれているリポジトリの設定を変更してください。親リポジトリのサブフォルダとして含まれている場合は、親リポジトリの設定になります。
+3. `git exit code 128` で失敗する場合は、次の手順で設定を変えます。
+   - リポジトリの Settings、Actions、General、Workflow permissions で "Read and write permissions" を選び、Save で保存します。
+   - 変更するのは、ワークフローが置かれているリポジトリの設定です。親リポジトリのサブフォルダとして含まれている場合は、親リポジトリの設定になります。
 4. フォークしたリポジトリでは、デフォルトブランチへのpushが制限されている場合があります。親リポジトリへPRを出すか、独立したリポジトリで実行してください。
 
 ### 実行がスキップされる

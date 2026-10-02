@@ -2,7 +2,8 @@
 
 ## 背景
 
-Supabase Freeプランの Storage 上限は1GBです。`listing-images` バケットが、物件画像と間取り図を合わせて4GB超（約4万ファイル）まで増え、Fair Use Policy の警告を受けました。そこで画像の保存先を Cloudflare R2（無料枠10GB、配信転送量は無料）へ移し、不要画像を定期的に削除するGCを導入しました。
+Supabase Freeプランの Storage 上限は1GBです。`listing-images` バケットが、物件画像と間取り図を合わせて4GB超（約4万ファイル）まで増え、Fair Use Policy の警告を受けました。
+そこで画像の保存先を Cloudflare R2（無料枠10GB、配信転送量は無料）へ移し、不要画像を定期的に削除するGCを導入しました。
 
 - DB、認証、REST APIはSupabaseのままです。画像URLはすべて `enrichments` 経由で配布されるため、iOSアプリのコードは変更していません。
 - アップロードの経路は `upload_floor_plans.py` のままです。保存先だけをR2に切り替えました。
@@ -80,11 +81,21 @@ where suumo_images::text like '%supabase.co/storage%'
    or best_thumbnail_url like '%supabase.co/storage%';
 ```
 
-過去の移行では `image_categories` 列が書き換えの対象から漏れ、GCもこの列を参照として数えていませんでした。そのため、URLが旧Supabaseのまま残るエントリや、実体がGC済みでR2に存在しないエントリが生じている場合があります。その修復には、`--phase recover-image-categories` を使います。R2に実在するオブジェクトは、URLをR2へ書き換えます。R2に無いオブジェクトは、エントリを削除します。`--execute` を付けたときだけ変更を行います。
+過去の移行では `image_categories` 列が書き換えの対象から漏れ、GCもこの列を参照として数えていませんでした。
+そのため、次のエントリが生じている場合があります。
+
+- URLが旧Supabaseのまま残るエントリ
+- 実体がGC済みでR2に存在しないエントリ
+
+修復用のフェーズは `--phase recover-image-categories` です。
+R2に実在するオブジェクトはURLをR2へ書き換えます。
+R2に無いオブジェクトは、エントリごと削除します。
+変更を実行するのは `--execute` を付けたときだけです。
 
 ## 移行後の運用
 
-- GitHub Secretsに `R2_*` が登録されていれば、finalizeの `upload_floor_plans.py` は自動でR2へアップロードします（`image_storage.r2_configured()` で判定します）。
+- GitHub Secretsに `R2_*` が登録されていれば、finalizeの `upload_floor_plans.py` は自動でR2へアップロードします。
+  登録の有無は `image_storage.r2_configured()` で判定します。
 - `storage-image-gc.yml` が、毎週月曜の4:00 JSTに不要画像を削除します。手動実行では、対象のバックエンドを `auto`、`supabase`、`r2` から選べます。`auto` はR2が設定済みならR2を対象にします。次のフェイルセーフがあります。
   - 削除比率が全体の60%を超える場合は中止します。取得失敗を疑うためです。
   - 直近24時間以内に作成されたオブジェクトは削除しません。enrichmentsに未反映の新規アップロードを守るためです。
@@ -93,4 +104,6 @@ where suumo_images::text like '%supabase.co/storage%'
 
 ## ロールバック
 
-手順5（delete-source）を実行するまでは、Supabase側に全ファイルが残っています。問題が出た場合は、rewriteを逆向きに流せば戻せます。R2のベースURLをSupabaseのベースURLへ、文字列で置換します。delete-sourceを実行した後は、R2が唯一のコピーになります。
+手順5（delete-source）を実行するまでは、Supabase側に全ファイルが残っています。問題が出た場合は、rewriteを逆向きに流せば戻せます。
+逆向きの処理は、R2のベースURLをSupabaseのベースURLへ文字列で置換するものです。
+delete-sourceを実行した後は、R2が唯一のコピーになります。

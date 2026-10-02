@@ -21,7 +21,8 @@ SUUMOやHOME'Sの一覧ページのクラス名やレイアウトが変わると
   python main.py --source suumo --no-filter -o /tmp/suumo_raw.json
   python main.py --source homes --no-filter -o /tmp/homes_raw.json
   ```
-- どちらも0件なら、該当サイトの一覧HTMLを開き、SUUMOの `property_unit-content` と `cassetteitem`、HOME'Sの `mod-mergeBuilding` などのセレクタがまだ使えるかを確認します。
+- どちらも0件なら、該当サイトの一覧HTMLを開きます。
+  SUUMOの `property_unit-content` と `cassetteitem`、HOME'Sの `mod-mergeBuilding` などのセレクタがまだ使えるかを確認します。
 
 ## 2. 全件が条件で除外された（パースはできているが通過0件）
 
