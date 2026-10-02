@@ -125,7 +125,7 @@ Storageのルールは `storage.rules` にある。内見写真は認証済み�
 ## トラブルシューティング
 
 - 起動時にクラッシュする: `GoogleService-Info.plist` が正しいファイルでない可能性がある。Firebase Consoleからダウンロードしたファイルで上書きする。
-- 「Firebase Client IDが見つかりません」というエラーが出る: Googleログインを有効にした後で `GoogleService-Info.plist` を再ダウンロードしていない可能性がある。ステップ3の再ダウンロードを実行する。
+- 「Firebase Client IDが見つかりません」というエラーが出る。Googleログインを有効にした後で `GoogleService-Info.plist` を再ダウンロードしていない可能性がある。ステップ3の再ダウンロードを実行する。
 - Googleログインが開かない、またはコールバックが戻らない: `Info.plist` のURL Schemeを確認する。正しい `REVERSED_CLIENT_ID` が設定されている必要がある。
 - 写真が共有されない: Firebase ConsoleでFirestoreとStorageのルールを確認する。
 - `GoogleService-Info.plist` の `BUNDLE_ID` が違う: plist内の `BUNDLE_ID` が `com.hanawa.realestate.app` であることを確認する。

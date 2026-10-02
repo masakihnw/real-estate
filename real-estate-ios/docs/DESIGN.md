@@ -1,13 +1,13 @@
 # デザイン指針（HIG・OOUI・Liquid Glass）
 
-本アプリはAppleのHuman Interface Guidelines（HIG）とOOUI（Object-Oriented User Interface）に従う。iOS 26のLiquid Glassにも対応する。iOS 17〜25では、システムの背景色による塗りにフォールバックする。
+本アプリはAppleのHuman Interface Guidelines（HIG）に従う。OOUI（Object-Oriented User Interface）にも従う。iOS 26のLiquid Glassにも対応する。iOS 17〜25では、システムの背景色による塗りにフォールバックする。
 
 ---
 
 ## 1. Human Interface Guidelines（HIG）
 
 - レイアウト: セーフエリアを尊重する。リストは `.listStyle(.plain)` と適切な `listRowInsets` で余白をそろえる（`DesignSystem.listRowVerticalPadding` / `listRowHorizontalPadding`）。
-- タイポグラフィ: システムフォントを前提とする。`ListingObjectStyle` で階層を定義する（title / subtitle / caption / detailValue / detailLabel）。Dynamic Typeに対応するため、カスタムフォントサイズは極力使わない。
+- タイポグラフィ: システムフォントを前提とする。`ListingObjectStyle` で階層を定義する。階層は title / subtitle / caption / detailValue / detailLabel である。Dynamic Typeに対応するため、カスタムフォントサイズは極力使わない。
 - 色: セマンティックカラー（`.primary` / `.secondary` / `.tertiary`）を優先する。アクセントは `.accentColor`（システムのtint）を使う。
 - フィードバック: 一覧の更新中は、`ProgressView` を `.regularMaterial` のカプセルに入れて画面下部に重ねる。エラーは同じ位置に短く表示し、タップでメッセージをコピーできる。
 - アクセシビリティ: 一覧行に `accessibilityLabel`（物件名・価格・面積・徒歩）と `accessibilityHint`（タップで詳細）を付ける。並び順メニューには「並び順」ラベルを付ける。詳細の「詳細を開く」リンクにもラベルを付ける。

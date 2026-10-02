@@ -28,7 +28,7 @@
 ### 1.2 スキーマ変更
 
 - `Listing` のストアドプロパティを追加、削除、変更したら、`currentSchemaVersion` を1つ上げる。
-- 起動時に、保存済みのバージョンが `currentSchemaVersion` より小さければ、SwiftDataのストアファイルと画像のディスクキャッシュを削除する。その後、サーバーから再取得する。
+- 起動時に、保存済みのバージョンを `currentSchemaVersion` と比べる。保存済みの方が小さければ、SwiftDataのストアファイルと画像のディスクキャッシュを削除する。その後、サーバーから再取得する。
 - VersionedSchemaとSchemaMigrationPlanは使っていない。
 - ユーザーデータ（いいね、コメントなど）は、同期の途中で `UserAnnotationStore` がUserDefaultsにバックアップする。再取得した物件へ `identityKey` で照合して復元する。
 

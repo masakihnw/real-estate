@@ -60,7 +60,7 @@ Firebaseは認証、FCM、内見写真のStorage、スクレイピングログ�
 - ハザードマップオーバーレイ: 国土地理院のタイルを地図に重ねる。レイヤーごとに表示と非表示を切り替えられる。
   - 洪水浸水想定、土砂災害警戒、高潮浸水想定、津波浸水想定、液状化（地形分類）、地盤の揺れやすさ。
   - 内水浸水想定、浸水継続時間、家屋倒壊（氾濫流）、家屋倒壊（河岸侵食）。
-- 地域危険度オーバーレイ（東京都）: 東京都都市整備局の地域危険度（建物倒壊、火災、総合）をGeoJSONからMKPolygonに変換する。ランク1から5で色分けする。GeoJSONは `scraping-tool/results/risk_geojson/` に置く。
+- 地域危険度オーバーレイ（東京都）: 東京都都市整備局の地域危険度（建物倒壊、火災、総合）を使う。GeoJSONからMKPolygonに変換する。ランク1から5で色分けする。GeoJSONは `scraping-tool/results/risk_geojson/` に置く。
 - リモートプッシュ通知: トピック `new_listings` を購読する。スクレイピングで新着を検出すると、GitHub ActionsからFCMで送信する。
 
 ### 3.3 一覧に表示する情報
@@ -103,10 +103,10 @@ Firebaseは認証、FCM、内見写真のStorage、スクレイピングログ�
 
 - アプリ: SwiftUIとSwiftDataでローカルに永続化する。タブは今日、さがす（リストと地図）、マイリスト、設定。HIG、OOUI、Liquid Glass（iOS 26）、システムスタイル（iOS 17から25）。
 - データ同期: 既定ではSupabaseから差分を取得し、SwiftDataを更新する。同一物件は `identityKey` でマッチして更新し、新規は挿入し、掲載終了した物件はローカルから削除する。
-- 通知: BGAppRefreshTaskがバックグラウンドで自動取得する（最短間隔30分、実行タイミングはOSが決める）。FCMのリモートプッシュ通知（GitHub Actions、FCM HTTP v1 API、トピック送信）も使う。
+- 通知: BGAppRefreshTaskがバックグラウンドで自動取得する。最短間隔は30分で、実行タイミングはOSが決める。FCMのリモートプッシュ通知（GitHub Actions、FCM HTTP v1 API、トピック送信）も使う。
 - 共有: いいねとコメントはSupabaseのRPCで読み書きする（`SupabaseAnnotationService`）。内見写真はFirebase StorageとFirestoreで共有する。
 - 地図: MapKit、MKTileOverlay（国土地理院のハザードタイル10種）、MKPolygon（東京都地域危険度のGeoJSON）、CLGeocoderとMapKitのジオコーディング。
-- スクレイピング: SUUMOやHOME'Sなどの中古物件をGitHub Actionsで取得し、Supabaseに同期する。
+- スクレイピング: SUUMOやHOME'Sなどの中古物件をGitHub Actionsで取得する。取得したデータはSupabaseに同期する。
 
 ---
 
@@ -125,7 +125,7 @@ Firebaseは認証、FCM、内見写真のStorage、スクレイピングログ�
 ## 8. 用語
 
 - listing: 物件1件のデータ。
-- identity_key: 物件を一意にするキー。価格、駅名、徒歩は含めない。スクレイパー側（`scraping-tool/report_utils.py`）は名前、間取り、専有面積、住所、築年、所在階の6項目で、iOS側（`Listing.identityKey`）は所在階を除く5項目で作る。
+- identity_key: 物件を一意にするキー。価格、駅名、徒歩は含めない。スクレイパー側（`scraping-tool/report_utils.py`）は名前、間取り、専有面積、住所、築年、所在階の6項目で作る。iOS側（`Listing.identityKey`）は所在階を除く5項目で作る。
 - 新規: 前回の取得リストに `identity_key` が存在しなかった物件。
 - annotation: いいねとコメントのユーザーデータ。Supabaseで家族間共有する。
 - property_type: `"chuko"`（中古）。

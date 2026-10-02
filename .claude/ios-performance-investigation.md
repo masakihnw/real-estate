@@ -152,7 +152,7 @@ private func prefetchEnrichment() async {
 
 ### 問題の詳細
 
-- enrichment未取得のカードが50件あると、50件のSupabase RPCがすべて完了するまでスピナーを表示する。
+- enrichment未取得のカードが50件あると、スピナーを表示する。スピナーは50件のSupabase RPCがすべて完了するまで続く。
 - 各RPCは `get_listing_detail` で、個別物件のenrichmentを全部取得する（JSONBを含む重いレスポンス）。
 - TaskGroupに並列数の上限がない。同時にN件のHTTPリクエストが走り、Supabaseのレート制限に達する可能性がある。
 - ユーザーはカードを1枚ずつ見るのに、全件のフェッチを待つ必要がある。
@@ -407,7 +407,7 @@ for (i, row) in jsonArray.enumerated() {
 
 ### 提案する修正
 
-ListingDTOのJSONBフィールドの型を `String?` から、直接JSONデコードできる型に変更し、二重変換をなくす。ただしListingDTOの変更は影響範囲が大きいため、段階的に対応する。
+ListingDTOのJSONBフィールドの型を `String?` から、直接JSONデコードできる型に変更する。これで二重変換がなくなる。ただしListingDTOの変更は影響範囲が大きいため、段階的に対応する。
 
 短期対策として、バッチ処理をバックグラウンドスレッドに移す。
 

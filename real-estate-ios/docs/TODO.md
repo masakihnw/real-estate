@@ -8,7 +8,7 @@
 - Firestoreによるいいね、メモ、コメントの共有: `FirebaseSyncService` を削除し、`SupabaseAnnotationService` に置き換えた。
 - Firestoreの `scraping_config` と、アプリの設定編集画面: 撤去済みである（[リファクタリング提案書](../../docs/refactor-proposals.md) のP1）。
 
-未着手として残る項目は、末尾「スキップ」節の駅名パースのテスト（I6）である。Dynamic Typeの置き換え（N5、D2）は、`.system(size:)` が73箇所残っており未完了である（2026-10-02 時点）。単体テスト（N1）は `RealEstateAppTests` に追加済みである。
+未着手として残る項目は、末尾「スキップ」節の駅名パースのテスト（I6）である。Dynamic Typeの置き換え（N5、D2）は未完了である。`.system(size:)` が73箇所残っている（2026-10-02 時点）。単体テスト（N1）は `RealEstateAppTests` に追加済みである。
 
 ---
 
@@ -74,12 +74,12 @@
 - [x] カラースキームを選び、A. Blue（#007AFF）を採用
 - [x] Geminiで画像生成（虫眼鏡とマンションのシルエット、Blue #007AFF）
 - [x] 生成した1024x1024のPNGを `Assets.xcassets/AppIcon.appiconset/` に配置し、`Contents.json` を更新
-- [x] DesignSystemのセマンティックカラーを適用した（D1、D4、D5: 物件価格、通勤バッジ、値上がりと値下がりの色を定数化）
+- [x] DesignSystemのセマンティックカラーを適用した。D1、D4、D5で、物件価格、通勤バッジ、値上がりと値下がりの色を定数化した。
 
 ### Phase 13: ハイブリッド改善（データ取得の最適化、完了）
 - [x] デフォルトURLをアプリにハードコード（初回のURL設定を不要にした）。現在の既定の取得元はSupabaseである。
 - [x] ETagによる差分チェック（未変更なら全件ダウンロードをスキップ）。現在はカスタムURLのJSON経路だけが対象である。
-- [x] GitHub Actionsの更新頻度を1日4回に増加（JST 06:00、12:00、19:00、00:00）。現在のスケジュールはJST 9:00、15:00、18:00、20:00である（`scrape-listings.yml`）。
+- [x] GitHub Actionsの更新頻度を1日4回に増やした。時刻はJST 06:00、12:00、19:00、00:00である。現在のスケジュールはJST 9:00、15:00、18:00、20:00である（`scrape-listings.yml`）。
 - [x] Settings画面改善（カスタムURLを「詳細設定」に折りたたみ、ステータス表示を追加）
 - [x] フルリフレッシュ機能（ETagキャッシュをクリアして全件を再取得）
 
@@ -101,7 +101,7 @@
 
 #### パフォーマンス最適化
 - [x] ListingStore: `#Predicate` による `propertyType` フィルタ（全件フェッチから対象のみへ）
-- [x] FirebaseSyncService: FirestoreのINクエリでバッチ取得するようにした（全ドキュメント取得から対象のみへ）。現在は `FirebaseSyncService` を削除済み。
+- [x] FirebaseSyncService: FirestoreのINクエリでバッチ取得するようにした。全ドキュメントの取得をやめ、対象のみを取得する。現在は `FirebaseSyncService` を削除済み。
 - [x] ジオコーディング: TaskGroupによる2並列化（直列に比べて約2倍速）
 - [x] ハザードマップオーバーレイ: 差分更新（描画のたびに全削除して再追加していたのを、変更時のみにした）
 
