@@ -2,8 +2,8 @@
 
 ## 背景
 
-Supabase Freeプランの Storage 上限は1GBです。`listing-images` バケットが、物件画像と間取り図を合わせて4GB超（約4万ファイル）まで増え、Fair Use Policy の警告を受けました。
-そこで画像の保存先を Cloudflare R2（無料枠10GB、配信転送量は無料）へ移し、不要画像を定期的に削除するGCを導入しました。
+Supabase Freeプランの Storage 上限は1GBです。`listing-images` バケットが、物件画像と間取り図を合わせて4GB超（約4万ファイル）まで増えています。Fair Use Policy の警告も受けました。
+そこで画像の保存先を Cloudflare R2（無料枠10GB、配信転送量は無料）へ移しました。不要画像を定期的に削除するGCも導入しています。
 
 - DB、認証、REST APIはSupabaseのままです。画像URLはすべて `enrichments` 経由で配布されるため、iOSアプリのコードは変更していません。
 - アップロードの経路は `upload_floor_plans.py` のままです。保存先だけをR2に切り替えました。
@@ -93,7 +93,7 @@ R2に無いオブジェクトは、エントリごと削除します。
 
 ## 移行後の運用
 
-- GitHub Secretsに `R2_*` が登録されていれば、finalizeの `upload_floor_plans.py` は自動でR2へアップロードします。
+- finalizeの `upload_floor_plans.py` は、R2へ自動でアップロードします。条件は、GitHub Secretsに `R2_*` が登録されていることです。
   登録の有無は `image_storage.r2_configured()` で判定します。
 - `storage-image-gc.yml` が、毎週月曜の4:00 JSTに不要画像を削除します。手動実行では、対象のバックエンドを `auto`、`supabase`、`r2` から選べます。`auto` はR2が設定済みならR2を対象にします。次のフェイルセーフがあります。
   - 削除比率が全体の60%を超える場合は中止します。取得失敗を疑うためです。

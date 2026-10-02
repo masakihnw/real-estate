@@ -30,7 +30,7 @@ HOME'Sの一覧ページは、サイト側の変更でパースが0件になる�
 
 3. HTMLをコピーします。
    - 開発者ツールの「Elements」タブ（日本語表示では「要素」タブ）を開きます。
-   - `<html>` タグを右クリックし、「Copy」から「Copy element」または「Copy outerHTML」を選びます。
+   - `<html>` タグを右クリックします。「Copy」から「Copy element」または「Copy outerHTML」を選びます。
    - `<body>` タグだけをコピーしてもかまいません。
 
 4. ファイルに保存して共有します。

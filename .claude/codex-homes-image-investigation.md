@@ -169,5 +169,5 @@ suumoの14件の調査は、homesの対応が済んでからで十分です。
 
 - `floor_plan_enricher.py` に `parse_homes_property_images()` があります。`main()` は、間取り図と物件写真の両方を取得し、`write_enrichments(listings, ["floor_plan_images", "suumo_images"], "homes_images")` で書き込みます。
 - `scripts/run_enrich.sh` の Track G が、`floor_plan_enricher.py` を `--limit 50` で実行します。
-- 既存のhomes物件で `suumo_images` が未登録のものは、`homes_image_backfill.py` が詳細ページから取得します。取得した画像はenrichmentsに書き込みます。GitHub Actionsの `backfill-homes-images.yml` は、cron（毎日JST 4:30）と `Enrich and Report` の成功後（`workflow_run`）の起動を定義していますが、GitHub側で無効にしているため、現在は動きません（`gh workflow list --all` の状態は `disabled_manually`）。
+- 既存のhomes物件で `suumo_images` が未登録のものは、`homes_image_backfill.py` が詳細ページから取得します。取得した画像はenrichmentsに書き込みます。GitHub Actionsの `backfill-homes-images.yml` は、cron（毎日JST 4:30）での起動を定義しています。`Enrich and Report` の成功後（`workflow_run`）の起動も定義しています。ただしGitHub側で無効にしているため、現在は動きません（`gh workflow list --all` の状態は `disabled_manually`）。
 - `homes_scraper.py` の `HomesListing` には、現在も画像のフィールドがありません。

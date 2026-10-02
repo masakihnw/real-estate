@@ -60,9 +60,9 @@
 
 1. Bot Token Scopesを追加します。
    - https://api.slack.com/apps で対象のアプリを開きます。
-   - 「OAuth & Permissions」の「Scopes」にある「Bot Token Scopes」へ、`chat:write` を追加します。
+   - 「OAuth & Permissions」を開きます。「Scopes」にある「Bot Token Scopes」へ、`chat:write` を追加します。
 2. ワークスペースにインストール（再インストール）します。
-   - 同じページ上部の「Install to Workspace」または「Reinstall to Workspace」を押します。
+   - 同じページの上部を見ます。「Install to Workspace」または「Reinstall to Workspace」を押します。
    - 表示された Bot User OAuth Token（`xoxb-...`）をコピーします。
 3. Botを投稿先のチャンネルに招待します。
    - 対象のチャンネルで `/invite @real-estate-notifier`（アプリ名）を実行します。
@@ -90,8 +90,8 @@ Slackに投稿するのは、資産性ランクがB以上（S、A、B）の物�
 ### 投稿のタイミング
 
 - Slack通知は、2026-07-07から全経路で停止しています。環境変数 `SLACK_NOTIFICATIONS_ENABLED=1` を設定したときだけ送信します（[README.md](../README.md) を参照）。以下は送信を再開した場合の動作です。
-- Slackの差分通知は、GitHub Actions の `Enrich and Report` ワークフローの finalize ジョブが `slack_notify.py` を呼んで送ります。
-  送信対象になるのは、Scrape Listings の開始がUTC 0〜5時（JST 9:00の回）だったときだけです。
+- Slackの差分通知は、GitHub Actions の `Enrich and Report` ワークフローが送ります。finalize ジョブが `slack_notify.py` を呼びます。
+  送信するのは、Scrape Listings の開始がUTC 0〜5時（JST 9:00の回）だったときだけです。
   詳しくは [GITHUB_SETUP.md](./GITHUB_SETUP.md) の「スケジュールと動作」を参照してください。
 - 資産性B以上の新規と削除がなく、注目物件の値下げも、送信待ちのAIダイジェストもない場合は、投稿をスキップします。
 - 新規がなく削除だけの差分では、注目物件の値下げかAIダイジェストがない限り、通知を保留します。

@@ -778,7 +778,7 @@ Playwright（ブラウザ自動化）で、住まいサーフィンの中古物�
 通勤時間データは2段階で取得する。
 
 1. **パイプライン側（即時表示用）**: `commute_enricher.py` が駅名ベースのドアtoドア概算を `commute_info` としてJSONに付与する。アプリ起動時にすぐ表示できる
-2. **iOS側（高精度更新）**: `CommuteTimeService` がMKDirections（Apple Mapsの公共交通機関）で経路を取得する。この経路はより正確で、パイプラインのデータを上書きする
+2. **iOS側（高精度更新）**: `CommuteTimeService` が経路を取得する。経路の取得にはMKDirections（Apple Mapsの公共交通機関）を使う。この経路はより正確で、パイプラインのデータを上書きする
 
 | 項目 | 詳細 |
 |------|------|
@@ -851,7 +851,7 @@ Playwright（ブラウザ自動化）で、住まいサーフィンの中古物�
 | 金利 | 1.2% | 0.79% |
 | 返済期間 | 50年 | 35年 |
 
-住まいサーフィンからは**変動率（%）のみ**を取り込み、予測価格・ローン残高・含み益はアプリ独自のパラメータで再計算する。
+住まいサーフィンから取り込むのは**変動率（%）のみ**である。予測価格・ローン残高・含み益は、アプリ独自のパラメータで再計算する。
 
 #### 3.5.3 シミュレーション出力
 
@@ -1517,7 +1517,7 @@ AI 比較プロンプトは、全物件を対等に扱う。各物件の `toMark
 
 ## 5. スクレイピングツール仕様
 
-> 現状との差分（2026-10-02 にコードで確認）。この章は 2026-03 時点のパイプラインで書かれており、現行のコードと次の点が異なる。新築のスクレイピングは2026-06に廃止された。`main.py` の `--property-type`、`scripts/run_scrape.sh`、`scripts/run_enrich.sh` は中古（chuko）だけを扱う。`suumo_shinchiku_scraper.py`、`shinchiku_detail_enricher.py`、`homes_shinchiku_scraper.py` は存在しない。`main.py --source all` の対象は、次の7ソースである。suumo、homes、athome、rehouse、nomucom、stepon、livable。ただし `config.py` の `DISABLED_SCRAPERS` が既定で `("stepon", "athome")` なので、`main.py` はこの2つを飛ばし、定期実行で取得するのは5ソースである。WF2 の enrich ジョブは2つある。`enrich-chuko-core`（`--tracks core`）と `enrich-chuko-mansion`（`--tracks mansion`）である。住まいサーフィンは、別ワークフロー `enrich-sumai.yml` が処理する。`run_enrich.sh` の Track G は HOME'S 画像（`floor_plan_enricher.py`）である。`send_push.py` は `scripts/` 配下にある。この章の新築に関する記述と 5.2 節の WF2 構成図は旧構成のものである。
+> 現状との差分（2026-10-02 にコードで確認）。この章は 2026-03 時点のパイプラインで書かれており、現行のコードと次の点が異なる。新築のスクレイピングは2026-06に廃止された。`main.py` の `--property-type`、`scripts/run_scrape.sh`、`scripts/run_enrich.sh` は中古（chuko）だけを扱う。`suumo_shinchiku_scraper.py`、`shinchiku_detail_enricher.py`、`homes_shinchiku_scraper.py` は存在しない。`main.py --source all` の対象は、次の7ソースである。suumo、homes、athome、rehouse、nomucom、stepon、livable。ただし `config.py` の `DISABLED_SCRAPERS` が既定で `("stepon", "athome")` なので、`main.py` はこの2つを飛ばす。定期実行で取得するのは5ソースである。WF2 の enrich ジョブは2つある。`enrich-chuko-core`（`--tracks core`）と `enrich-chuko-mansion`（`--tracks mansion`）である。住まいサーフィンは、別ワークフロー `enrich-sumai.yml` が処理する。`run_enrich.sh` の Track G は HOME'S 画像（`floor_plan_enricher.py`）である。`send_push.py` は `scripts/` 配下にある。この章の新築に関する記述と 5.2 節の WF2 構成図は旧構成のものである。
 
 ### 5.1 データソース
 

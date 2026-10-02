@@ -20,19 +20,19 @@
 ### 2. GitHub Actionsの確認
 
 1. GitHubリポジトリの Actions タブを開きます。
-2. 左サイドバーに "Scrape Listings" と "Enrich and Report" が表示されることを確認します。
+2. 左サイドバーに表示される項目を確認します。項目は "Scrape Listings" と "Enrich and Report" です。
 3. 初回は、手動実行でテストできます（"Run workflow" ボタン）。
 
 ### 3. 動作確認
 
-- 初回実行は、Actions タブで "Scrape Listings" を選び、"Run workflow" を押します。成功すると "Enrich and Report" が続けて起動します。
+- 初回実行は、Actions タブで "Scrape Listings" を選びます。続けて "Run workflow" を押します。成功すると "Enrich and Report" が続けて起動します。
 - 実行ログは、実行中のワークフローをクリックして確認します。
 - 結果は、`scraping-tool/results/` にファイルが追加されていることで確認します。
 
 ## スケジュールと動作
 
 - 実行頻度は1日4回です。
-  Scrape Listings は JST 9:00、15:00、18:00、20:00（UTC 0:00、6:00、9:00、11:00）に起動します。
+  Scrape Listings の起動時刻は、JST 9:00、15:00、18:00、20:00 です。UTCでは 0:00、6:00、9:00、11:00 です。
 - Slack通知は、2026-07-07から全経路で停止しています。`slack_notify.py` は、環境変数 `SLACK_NOTIFICATIONS_ENABLED=1` を設定したときだけ送信します。ワークフローはこの変数を設定していないため、現在は届きません。再開後の送信は、UTC 0〜5時に開始した回だけです（JST 9:00の回に当たります）。GitHub Actions のcronは数時間遅れることがあるため、UTC 0〜5時を通知の時間帯にしています。
 - 変更があったときだけ、WF2 の enrich、レポート作成、コミットとプッシュを行います。変更がなければ、スクレイピングと変更判定だけで終わります。ただし、通知の時間帯の回は、変更がなくても finalize ジョブが動き、未送信の通知を送ります。
 
@@ -53,7 +53,7 @@
 
 `main` はブランチ保護で、必須チェックは `ci-gate`、直接pushは禁止です。
 `github-actions[bot]` は管理者ではないので、`GITHUB_TOKEN` でpushすると `GH006` で拒否されます。
-WF2の「Commit and push」ステップは、Secret `PAT_FINALIZE_PUSH` に入れた管理者用のPersonal Access Tokenでpushする設定です。
+WF2の「Commit and push」ステップは、Personal Access Tokenでpushする設定です。このトークンは管理者用で、Secret `PAT_FINALIZE_PUSH` に入れた値です。
 Secretが未設定だと `GITHUB_TOKEN` にフォールバックします。この場合、checkoutは通っても、pushだけが失敗します。
 
 確認する点は次のとおりです。
@@ -63,7 +63,7 @@ Secretが未設定だと `GITHUB_TOKEN` にフォールバックします。こ�
    - `protected branch` や `refusing to allow` と出る場合は、ブランチ保護がpushを止めています。
    - `Permission denied` と出る場合は、権限かトークンに問題があります。
 3. `git exit code 128` で失敗する場合は、次の手順で設定を変えます。
-   - リポジトリの Settings、Actions、General、Workflow permissions で "Read and write permissions" を選び、Save で保存します。
+   - リポジトリの Settings、Actions、General、Workflow permissions を開きます。"Read and write permissions" を選び、Save で保存します。
    - 変更するのは、ワークフローが置かれているリポジトリの設定です。親リポジトリのサブフォルダとして含まれている場合は、親リポジトリの設定になります。
 4. フォークしたリポジトリでは、デフォルトブランチへのpushが制限されている場合があります。親リポジトリへPRを出すか、独立したリポジトリで実行してください。
 

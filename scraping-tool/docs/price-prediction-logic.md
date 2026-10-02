@@ -14,7 +14,7 @@
 1. `preprocess()` が入力から特徴量を作ります。区名の判定、築年数、推定賃料の逆算を行います。
 2. 売り出し価格が0以下か未入力の場合は、価格を0にした結果と `risk_factors` の「価格情報なし」を返して終わります。
 3. `FutureEstatePredictor.predict()` を呼び、価格計算を委ねます。
-   収益還元法、原価法、2026年市場補正、含み益率の計算はここで行います（式は calculation-summary.md を参照）。
+   ここで行う計算は、収益還元法、原価法、2026年市場補正、含み益率です。式は calculation-summary.md を参照してください。
 4. 戻り値を次のように読み替えます。
 
 | 出力 | 元になる値 |
@@ -32,7 +32,7 @@ Cなら `risk_factors` に「金利・賃料悪化シナリオで残債割れリ
 S/Aなら `positive_factors` に「賃料・建築費シナリオで下値支持」を追加します。
 `FutureEstatePredictor` の `strategic_advice` は、グレードに関係なく `positive_factors` への追加対象です。
 
-資産性ランク（S/A/B/C）は `predict()` の戻り値に含みません。`asset_score.py` が `implied_gain_ratio` を `implied_gain_ratio_to_asset_rank` に渡して決めます（閾値は calculation-summary.md の第2節）。
+資産性ランク（S/A/B/C）は `predict()` の戻り値に含みません。`asset_score.py` が `implied_gain_ratio` を `implied_gain_ratio_to_asset_rank` に渡し、ランクを決めます。閾値は calculation-summary.md の第2節にあります。
 
 ---
 
@@ -60,7 +60,7 @@ S/Aなら `positive_factors` に「賃料・建築費シナリオで下値支持
 
 価格への反映が「なし」の項目は、`preprocess()` が特徴量として保持するだけで、`predict()` の価格計算には渡りません。
 
-推定賃料が未入力で売り出し価格がある場合、`preprocess()` が `listing_price × キャップレート ÷ 12` で月額賃料を作り、`FutureEstatePredictor` へ `current_rent` として渡します。
+推定賃料が未入力で売り出し価格がある場合、`preprocess()` が `listing_price × キャップレート ÷ 12` で月額賃料を作ります。作った賃料は `current_rent` として、`FutureEstatePredictor` に渡す値です。
 キャップレートは `ward_coefficients.csv` の `rent_cluster_group` で決めます。グループ1と2は3.5%（`CAP_RATE_TIER1`）、グループ3は4%（`CAP_RATE_TIER2`）、グループ4と5は4.5%（`CAP_RATE_TIER3`）です。住所から区名を判定できないときは、グループ5として4.5%を使います。
 
 ### 形式B（既存スクレイピング結果）
