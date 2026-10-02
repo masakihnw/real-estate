@@ -89,6 +89,7 @@ Slackに投稿するのは、資産性ランクがB以上（S、A、B）の物�
 
 ### 投稿のタイミング
 
+- Slack通知は、2026-07-07から全経路で停止しています。環境変数 `SLACK_NOTIFICATIONS_ENABLED=1` を設定したときだけ送信します（[README.md](../README.md) を参照）。以下は送信を再開した場合の動作です。
 - Slackの差分通知は、GitHub Actions の `Enrich and Report` ワークフローの finalize ジョブが `slack_notify.py` を呼んで送ります。
   送信対象になるのは、Scrape Listings の開始がUTC 0〜5時（JST 9:00の回）だったときだけです。
   詳しくは [GITHUB_SETUP.md](./GITHUB_SETUP.md) の「スケジュールと動作」を参照してください。
@@ -104,7 +105,8 @@ Slackに投稿するのは、資産性ランクがB以上（S、A、B）の物�
 
 ## 4. 動作確認
 
-次回のワークフロー実行時、または手動実行時に、変更があればSlackに通知が届きます。
+`SLACK_NOTIFICATIONS_ENABLED=1` を設定した場合は、次回のワークフロー実行時または手動実行時に、変更があればSlackに通知が届きます。
+設定していない場合、Slackには何も届かず、送信をスキップしたことを示すログだけが残る。
 
 通知の内容は次のとおりです。
 

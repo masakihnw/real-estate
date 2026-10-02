@@ -3,7 +3,7 @@
 このメモは、プロンプト「リファクタリング指示（Cursor用）: scraping-tool Pythonコードの構造改善」を扱います。
 指摘の妥当性と実施の優先度を整理しています。
 
-セクション1から4は、リファクタを実施する前（初版は2026-02-02のコミット）のコードベースに対する評価です。実施後の状態は、次の「更新」の節に書きました。2つが食い違う場合は、「更新」の節を優先します。
+セクション1から4は、直近のリファクタ後のコードベースを前提にした評価です。「更新」の節に、実施済みの項目をまとめました。
 
 ---
 
@@ -32,29 +32,29 @@
 
 - 事実: `generate_report.py` に、次の処理が同居している。
   CLI（argparse）、Markdownの組み立て、資産性B以上のフィルタ、検索条件表の生成、price_predictorの呼び出しである。
-- 当時の状態: 差分判定、キー、フォーマットは `report_utils` に集約済みだった。行の組み立ては `_listing_cells` と `_link_from_group` で共通化済みだった。
+- 現状: 差分判定、キー、フォーマットは `report_utils` に集約済み。行の組み立ては `_listing_cells` と `_link_from_group` で共通化済み。
 - 評価: 責務の混在はあるが、プロンプトが想定するほどひどくはない。「レポート生成」という1つの責務の中で整理するにとどめる。パッケージ分割まで行うかどうかは、規模に応じて決める。
 
 ### 2) 重複と二重実装: ほぼ解消済み。残りは意図的
 
-事実（当時）は次の2点です。
-- `load_json`: `report_utils` に1つある（存在チェックなし）。`generate_report` と `check_changes` が使う。`slack_notify` だけが、「pathが無ければ `[]`」という別仕様の自前実装を持っていた。
+事実は次の2点です。
+- `load_json`: `report_utils` に1つある（存在チェックなし）。`generate_report` と `check_changes` が使う。`slack_notify` だけが、「pathが無ければ `[]`」という別仕様の自前実装を持つ。
 - 差分判定: `report_utils.compare_listings` に集約済み。`check_changes` は自前でキーを比較しているが、ロジックは同じ（price_manの差分でupdated）。
 
 評価: 重複はほぼ解消済み。`slack_notify.load_json` は「存在しなければ `[]`」という仕様差があるため、`io/json_store.load_json(path, missing_ok=True)` のようにオプションで統一する案には意味がある。この案は、`report_utils.load_json` の `missing_ok` で実現済み。
 
 ### 3) 依存関係の歪み: 妥当。解消するとよい
 
-- 事実（当時）: `slack_notify.py` が `generate_report.get_three_scenario_columns` をimportしていた。通知がレポート生成に依存する形になっていた。
+- 事実: `slack_notify.py` が `generate_report.get_three_scenario_columns` をimportしている。通知がレポート生成に依存する形になっている。
 - 評価: 指摘のとおり。`get_three_scenario_columns` はprice_predictorを使う予測ロジックである。
   `report_utils` か `integrations/optional_features`（または専用のprice_predictorラッパー）に移すとよい。`generate_report` と `slack_notify` の両方がそこを参照すれば、依存が一方向になる。
   実施する価値がある。この項目は `optional_features` への移動で実施済み。
 
 ### 4) オプショナル依存の扱い: 妥当。改善の余地あり
 
-- 事実（当時）: `generate_report.py` と `slack_notify.py` の両方に、try/except ImportError とダミー関数が複数あった。
+- 事実: `generate_report.py` と `slack_notify.py` の両方に、try/except ImportError とダミー関数が複数ある。
   対象は、asset_score、asset_simulation、loan_calc、commute、price_predictorである。
-- 評価: 指摘のとおりで、可読性と保守性を損なっていた。`integrations/optional_features.py` で一括ロードし、`features.get_asset_score_and_rank(...)` のように呼ぶ形にすれば、両ファイルの try/except が減る。妥当な改善で、`optional_features.py` として実施済み（`integrations/` ディレクトリは作らず、`scraping-tool/` 直下に置いた）。
+- 評価: 指摘のとおりで、可読性と保守性を損なう。`integrations/optional_features.py` で一括ロードし、`features.get_asset_score_and_rank(...)` のように呼ぶ形にすれば、両ファイルの try/except が減る。妥当な改善で、`optional_features.py` として実施済み（`integrations/` ディレクトリは作らず、`scraping-tool/` 直下に置いた）。
 
 ### 5) sys.path hack: 事実だが、パッケージ化しないなら許容範囲
 

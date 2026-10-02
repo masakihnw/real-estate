@@ -174,9 +174,9 @@ worst,Stagnation (Worst),0.85,金利上昇により購買力が低下し需給�
 | trend_coefficient_clip_min / trend_coefficient_clip_max | 0.90 / 1.10 |
 | floor_bonus_per_floor / total_units_bonus_per_100 / mgmt_repair_per_sqm_bonus_per_100 | 0.0 / 0.0 / 0.0 |
 
-### 3.6 `data/area_coefficients.csv`（未使用）
+### 3.6 `data/area_coefficients.csv`（価格予測では未使用）
 
-駅単位の係数ファイルです。`price_predictor.py` を含む `scraping-tool` 直下のPythonコードは、このファイルを読み込みません。
+駅単位の係数ファイルです。`price_predictor.py` を含む `scraping-tool` 直下のPythonコードは、このファイルを読み込みません。一方、`scripts/fetch_station_prices.py` と `scripts/station_price_trend_chart.py` は、このファイルを読み込みます。
 
 ---
 
@@ -278,7 +278,7 @@ worst,Stagnation (Worst),0.85,金利上昇により購買力が低下し需給�
 | 管理目安 | `scraping-tool/data/management_guidelines.csv` |
 | マクロシナリオ（未使用） | `scraping-tool/data/macro_economic_scenarios.csv` |
 | 較正係数（未使用） | `scraping-tool/data/calibration.json` |
-| 駅別係数（未使用） | `scraping-tool/data/area_coefficients.csv` |
+| 駅別係数（価格予測では未使用） | `scraping-tool/data/area_coefficients.csv` |
 
 ---
 

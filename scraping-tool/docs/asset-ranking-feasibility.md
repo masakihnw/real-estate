@@ -6,7 +6,7 @@
 
 - 資産性ランク（S/A/B/C）は `scraping-tool/asset_score.py` が付けている。算出方法は案Aの加点式ではなく、含み益率である。含み益率は、`price_predictor` の10年後Standard予測価格から10年後のローン残債を引いた値である。この値を現在の成約推定価格で割って求める。10%以上がS、5%以上がA、0%以上がB、0%未満がCである。
 - 案Bの駅ランクマスタ `data/station_asset_rank.json` は作成していない。
-- 案Cの過去の値上がり実績は、取引価格データから上昇率を算出する形では組み込んでいない。`price_predictor` は外部の係数CSV（ward_coefficients.csv など）を使うルールベースの予測である。
+- 案Cの過去の値上がり実績は、取引価格データから上昇率を算出する形では組み込んでいない。`price_predictor` は外部の係数CSV（ward_potential.csv）を使うルールベースの予測である。
 
 ## 結論
 
