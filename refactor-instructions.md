@@ -1,20 +1,26 @@
 # refactor-instructions.md
 
-実装担当モデルへのリファクタリング指示書。
-このリポジトリの既存仕様を壊さず、技術的負債を減らし、今後変更しやすい状態にすることが目的である。
-**見た目の綺麗さは目的ではない。証拠なく大きな削除や全面書き換えをしてはならない。**
+実装担当モデルへのリファクタリング指示書です。
+このリポジトリの既存仕様を変えずに、技術的負債を減らし、今後変更しやすい状態にすることが目的です。
+見た目を整えることは目的に含めません。証拠なく大きな削除や全面書き換えをしてはなりません。
+
+## 実施状況
+
+2026-06-12から2026-06-13にかけて、Phase 1からPhase 6を実施済みです。D1からD9とP1からP8それぞれの結果は §7 と §8 に記録しました。提案に留めた項目の判断は [docs/refactor-proposals.md](docs/refactor-proposals.md) に書いてあります。
+
+§7のDebt Mapと§6のBaselineは、着手前の調査結果と手順です。現在の状態は、§8に書いた完了記録に従います。新しくリファクタリングを始める場合は、この指示書を手順の見本として使い、根拠の行番号と件数を取り直してください。
 
 ---
 
 ## 1. Objective
 
-1. 本番で毎日動いているスクレイピング→enrichment→Supabase同期パイプライン、およびiOSアプリの**既存挙動を一切変えずに**、以下を達成する:
-   - 重複実装の共通化(スクレイパーのフェイルセーフパターン)
-   - 未テストのコア処理(dedup、レポート差分、フィルタロジック)への安全網追加
-   - 明確に死んでいるコードの削除(証拠つきのもののみ)
-   - ログ/エラーハンドリングの統一(print → logger)
-   - 巨大Viewからのロジック抽出(テスト可能なUtilitiesへ)
-2. 大きな設計変更(Firebase完全撤退、巨大ファイルの全面分割)は**実装せず提案に留める**。
+1. 次の5点を達成する。本番で毎日動いているスクレイピング、enrichment、Supabase同期のパイプラインは、一切変えない。iOSアプリの既存挙動も、一切変えない。
+   - 重複実装の共通化（スクレイパーのフェイルセーフパターン）
+   - 未テストのコア処理（dedup、レポート差分、フィルタロジック）へのテスト追加
+   - 参照されていないことが確認できたコードの削除（証拠つきのものだけ）
+   - ログとエラーハンドリングの統一（printからloggerへ）
+   - 巨大なViewからのロジック抽出（テストできるUtilitiesへ）
+2. 大きな設計変更（Firebaseの完全撤退、巨大ファイルの全面分割）は実装せず、提案に留める。
 
 ---
 
@@ -22,90 +28,86 @@
 
 ### 何をするプロダクトか
 
-「10年住み替え前提でインデックス投資に勝つ」中古マンション購入を支援する個人向けプラットフォーム。
+「10年住み替え前提でインデックス投資に勝つ」中古マンション購入を支援する個人向けプラットフォームです。
 
-- **scraping-tool/** (Python 3.11): SUUMO/HOME'S/athome/livable/stepon/rehouse/nomucom/マンションレビューの8スクレイパー → 3段階dedup → enrichment(通勤・ハザード・e-Stat・reinfolib・住まいサーフィン・Claude AI分析) → Supabase同期 → Markdownレポート/Slack通知。
-- **real-estate-ios/** (SwiftUI, iOS 17+, SwiftData, XcodeGen): 物件閲覧・スワイプ評価・ウォッチリスト・地図・ダッシュボード。データはSupabase REST(2段階フェッチ: `listings_feed_light` → `get_listing_detail`)。いいね/コメントはSupabase RPC `upsert_annotation`。認証・FCM・写真Storage・スクレイピング設定/ログ閲覧はFirebase。
-- **supabase/migrations/**: 3桁連番045まで(025は歴史的に2ファイル衝突。**触らない**)。
-- **本番運用はGitHub Actions**(.github/workflows/、10本)。`scrape-listings.yml`(1日4回) → `enrich-and-report.yml`(workflow_run連鎖、結果をmainにgit push) → detect-delisted / enrich-sumai / backfill-homes-images など。
+- scraping-tool/（Python 3.11）: 8つのスクレイパーが物件を取得する。対象サイトはSUUMO、HOME'S、athome、livable、stepon、rehouse、nomucom、マンションレビューである。取得した物件は3段階のdedupにかけ、Supabaseへ同期する。同期前にenrichmentを行う。内容は、通勤、ハザード、e-Stat、reinfolib、住まいサーフィン、Claude AI分析である。結果はMarkdownレポートとSlack通知にも出力する。
+- real-estate-ios/: SwiftUIのiOS 17+アプリである。SwiftDataとXcodeGenを使う。物件閲覧、スワイプ評価、ウォッチリスト、地図、ダッシュボードを提供する。データはSupabase RESTから2段階で取得する（`listings_feed_light` の次に `get_listing_detail`）。いいねとコメントはSupabase RPC `upsert_annotation` で保存する。認証、FCM、写真Storage、スクレイピングログ閲覧にはFirebaseを使う。
+- supabase/migrations/: 3桁連番で053まである。025は歴史的に2ファイルが同じ番号を持つ。このファイルには触らない。
+- 本番運用はGitHub Actions（`.github/workflows/`、13本）。`scrape-listings.yml`（1日4回）が先に動く。その後、`enrich-and-report.yml` がworkflow_runで続く。後者は結果をmainにgit pushする。このほかのworkflowも同じディレクトリにある。例はdetect-delisted、enrich-sumai、backfill-homes-imagesである。
 
 ### 主要エントリーポイント
 
 | 種別 | パス |
 |---|---|
-| パイプライン本体 | `scraping-tool/main.py`(スクレイパー実行→dedup→JSON出力) |
+| パイプライン本体 | `scraping-tool/main.py`（スクレイパー実行、dedup、JSON出力） |
 | CI実行スクリプト | `scraping-tool/scripts/run_scrape.sh` / `run_enrich.sh` / `run_finalize.sh` |
 | Supabase同期 | `scraping-tool/supabase_sync.py` |
 | レポート生成 | `scraping-tool/generate_report.py` |
 | Slack通知 | `scraping-tool/slack_notify.py` / `send_pending_drafts.py` |
-| iOS | `real-estate-ios/RealEstateApp/RealEstateAppApp.swift`(@main) |
+| iOS | `real-estate-ios/RealEstateApp/RealEstateAppApp.swift`（@main） |
 
-### 設定の単一ソース(壊すと連鎖破損する)
+### 設定の単一ソース（片側だけ変更すると他の箇所も動かなくなる）
 
-- スクレイピング条件の正: `real-estate-ios/RealEstateApp/ScrapingConfigMetadata.json`(iOSと`scraping-tool/config.py`フォールバックの両方が参照。**片側だけ変更禁止**)。
-- 買い手コンテキスト: `scraping-tool/config/buyer_profile.json` + `config/purchase_strategy.md` + `config/prompts/<module>.md`(ai_scoring / investment_summary)。変更時は `generate_buyer_context.py --write` で再生成必須。
-- ランタイム上書き: Supabase `scraping_config` テーブル(`supabase_config_loader.py`が現行。`firestore_config_loader.py`は旧)。
-- ドキュメント同期: `docs/SPECIFICATION.md` と `docs/BUYER_PROFILE.md` は自動生成。**テストが同期を検証している**ため、ソース変更後は再生成しないとCIが落ちる。
+- スクレイピング条件の正は `real-estate-ios/RealEstateApp/ScrapingConfigMetadata.json` です。iOSと `scraping-tool/config.py` のフォールバックの両方が参照するため、片側だけ変更してはならない。
+- 買い手コンテキストの構成ファイルは次の3つである。`scraping-tool/config/buyer_profile.json`、`config/purchase_strategy.md`、`config/prompts/<module>.md`（ai_scoring と investment_summary）。変更したら `generate_buyer_context.py --write` での再生成が必須である。
+- ランタイムの上書きはSupabaseの `scraping_config` テーブルで行い、`supabase_config_loader.py` が読み込む。旧実装の `firestore_config_loader.py` は削除済み。
+- `docs/SPECIFICATION.md` と `docs/BUYER_PROFILE.md` は自動生成する。テストが同期を検証しているため、ソースを変更したら再生成しないとCIが失敗する。
 
 ---
 
 ## 3. Behaviors To Preserve(絶対に壊さない既存挙動)
 
-1. **GitHub Actionsパイプラインの成立**: `run_scrape.sh` / `run_enrich.sh` / `run_finalize.sh` のCLIインターフェース、環境変数名、成果物パス(`results/latest_raw.json` 等)、workflow間のartifact受け渡し。
-2. **dedupの判定結果**: `main.py` の3段階dedup(listing_key → fuzzy → building_key)と `claude_dedup.py` の出力が、同一入力に対して変わらないこと。
-3. **フェイルクローズ原則**: 取得失敗を「掲載終了」と誤判定して大量削除しない。delisting判定ロジック(`detect-delisted.yml` 経路、`041_get_delisted_since.sql`)の挙動を変えない。
-4. **スクレイパーのレート制御**: `config.py` の `*_REQUEST_DELAY_SEC` を下回らない。リトライ回数・jitterを勝手に変えない。
-5. **Supabaseスキーマと保存済みデータ**: 適用済みmigration(001〜045)のファイル名・内容は変更しない。修正は新番号(046〜)で行い、SQLは用意のみ(適用はユーザーが行う)。
-6. **iOSの2段階フェッチと差分同期**: `SupabaseListingStore` の `lastSyncTimestamp` ベース増分同期、SwiftDataスキーマ(現v22)。スキーマ変更はマイグレーション破壊につながるため禁止。
-7. **iOSのFirebase依存機能**: 認証(Google Sign-In)、FCM、写真Storage、`ScrapingConfigService` / `ScrapingLogService` のFirestore読み書きは現役。**Firebaseはレガシーだが死んでいない。**
-8. **`main.py` のstdout JSON出力**(`main.py:403` 付近のprintは仕様。logger化対象外)。
-9. **`results/` 配下のコミット対象ファイル**(report.md、GeoJSON、supply_trends.json等)の生成フォーマット。
+1. **GitHub Actionsパイプラインの成立**: `run_scrape.sh` / `run_enrich.sh` / `run_finalize.sh` のCLIインターフェースと環境変数名。成果物パス（`results/latest_raw.json` など）。workflow間のartifact受け渡し。
+2. **dedupの判定結果**: `main.py` は3段階のdedupを行う。段階は listing_key、fuzzy、building_key である。同じ入力に対する判定結果は変わらない。`claude_dedup.py` の出力も同様である。
+3. **フェイルクローズ原則**: 取得失敗を「掲載終了」と誤判定して大量削除しない。delisting判定のロジック（`detect-delisted.yml` の経路、`041_get_delisted_since.sql`）の挙動を変えない。
+4. **スクレイパーのレート制御**: `config.py` の `*_REQUEST_DELAY_SEC` を下回らない。リトライ回数とjitterを変更しない。
+5. **Supabaseスキーマと保存済みデータ**: 適用済みmigrationは001から053である。ファイル名と内容は変更しない。修正は新番号（054以降）で行い、SQLは用意のみとする（適用はユーザーが行う）。
+6. **iOSの2段階フェッチと差分同期**: `SupabaseListingStore` の `lastSyncTimestamp` に基づく増分同期。SwiftDataスキーマ（現v22）。スキーマ変更はマイグレーション破壊につながるため禁止する。
+7. **iOSのFirebase依存機能**: 次の3つは現役である。認証（Google Sign-In）、FCM、写真Storageである。`ScrapingLogService` はFirestoreを読み取っている。Firebaseはレガシーだが、まだ使っている。
+8. **`main.py` のstdout JSON出力**: `main.py` 末尾の `print(json.dumps(...))` は仕様であり、logger化の対象外。
+9. **`results/` 配下のコミット対象ファイル**: 生成フォーマットを変えない。対象は report.md、GeoJSON、supply_trends.json などである。
 
 ---
 
-## 4. Non-Negotiables(作業規律)
+## 4. Non-Negotiables（作業規律）
 
-- 最初に `git status` を確認する。既存の未コミット変更があれば自分の変更と混ぜない(別ブランチ/stashで分離し、ユーザーに報告)。
-- 編集前にbaseline検証結果(§6のコマンド出力)を記録する。
-- 変更は小さく戻しやすい単位でコミットする。1コミット=1関心事。
-- 無関係な整形・ついでのリファクタリングをしない。`ruff format` の一括適用等も禁止。
-- `git add .` / `git add -A` 禁止。パス指定で個別にadd。
-- 以下をコミットしない: `*_html_cache/`、`*.bak`、`*.backup.json`、`enriched-chuko-sumai/`、`real-estate-ios/build/`、`.venv/`、`.env`、`*.db-wal`、`*.db-shm`。
-- 新しいキャッシュ/中間ファイルを生成するコードを足したら同一コミットで `.gitignore` に登録。
-- `old/` や `results/**/old/` に新規ファイルを作らない。
-- Python: `print()` でなく `logger.get_logger`。パース関数は純粋関数に切り出し `tests/` に最低1つテスト。
-- iOS: 新規Swiftファイル追加後は `xcodegen generate`。ロジックはViewでなく `Utilities/` へ。`DateFormatter` は `static let` + `en_US_POSIX`。Mac Catalyst向けコードを**追加しない**。
-- APIキーのハードコード禁止。
-- 正しさが不明な点に遭遇したら、実装を止めて質問する(§5)。
-
----
-
-## 5. Stop And Ask Conditions(実装を止めて質問する条件)
-
-以下に該当したら**作業を止め、現状と選択肢を提示して指示を仰ぐ**:
-
-1. Supabaseのテーブル/ビュー/RPC、保存済みデータ、iOS SwiftDataスキーマに影響が及ぶ変更。
-2. Firebase関連コードの削除(下記「未確定事項」A参照)。
-3. GitHub Actionsのworkflowファイル・スケジュール・secretsの変更。
-4. テストと実装が矛盾している箇所を見つけた場合(どちらが正か勝手に決めない)。
-5. dedup・delisting・通知のロジック変更が出力差分を生むことが判明した場合。
-6. `ScrapingConfigMetadata.json`、`buyer_profile.json`、`purchase_strategy.md`、`prompts/*.md` の内容変更が必要になった場合(再生成連鎖+本番`ai_prompts`再分析コストが発生する)。
-7. 削除候補コードに1箇所でも参照(import、workflow、シェルスクリプト、ドキュメントの運用手順)が見つかった場合。
-
-### 未確定事項（2026-06-12 ユーザー回答により解決済み。記録として残す）
-
-- **A. Firebaseレガシーの削除可否** → **解決**: `firestore_config_loader.py` は削除済み（PR #10）。
-  `push_scraping_config_to_firestore.py` は iOS `ScrapingConfigService` のFirestore読み取りが現役のため**温存**。
-  Firebase完全撤退時に改めて削除する。
-- **B. iOS レガシーデータ経路** → **解決**: `FirebaseSyncService.swift` と `shinchikuListURL` は削除済み（PR #10）。
-  `ListingStore` のカスタムJSON URLフォールバック自体は開発用として残置。
-- **C. Mac Catalyst設定** → **解決**: `SUPPORTS_MACCATALYST: NO` に変更済み（PR #10）。
-- **D. `scraping-tool/data/listings.db` のGit追跡** → **解決**: CI artifact 受け渡し
-  （`scrape-listings.yml` / `enrich-and-report.yml`）に使用中のため**意図的な追跡。維持する**。
+- 最初に `git status` を確認する。既存の未コミット変更があれば、自分の変更と混ぜない（別ブランチかstashで分離し、ユーザーに報告する）。
+- 編集前に、§6のコマンドの出力をbaselineとして記録する。
+- 変更は小さく戻しやすい単位でコミットする。1コミットにつき1つの関心事に絞る。
+- 無関係な整形やついでのリファクタリングをしない。`ruff format` の一括適用も禁止。
+- `git add .` と `git add -A` は禁止。パスを指定して個別にaddする。
+- 次のファイルはコミットしない: `*_html_cache/`、`*.bak`、`*.backup.json`、`enriched-chuko-sumai/`、`real-estate-ios/build/`、`.venv/`、`.env`、`*.db-wal`、`*.db-shm`。
+- 新しいキャッシュや中間ファイルを生成するコードを足したら、同じコミットで `.gitignore` に登録する。
+- `old/` と `results/**/old/` に新規ファイルを作らない。
+- Python: `print()` でなく `logger.get_logger` を使う。パース関数は純粋関数に切り出し、`tests/` に最低1つテストを書く。
+- iOS: 新規Swiftファイルを追加したら `xcodegen generate` を実行する。ロジックはViewでなく `Utilities/` に置く。`DateFormatter` は `static let` と `en_US_POSIX` で共有する。Mac Catalyst向けのコードは追加しない。
+- APIキーをハードコードしない。
+- 正しさが不明な点に出会ったら、実装を止めて質問する（§5）。
 
 ---
 
-## 6. Baseline Commands(編集前に必ず実行し結果を記録)
+## 5. Stop And Ask Conditions（実装を止めて質問する条件）
+
+次のどれかに該当したら、作業を止め、現状と選択肢を提示して指示を仰ぐ。
+
+1. Supabaseのテーブル、ビュー、RPC、保存済みデータ、iOSのSwiftDataスキーマに影響が及ぶ変更。
+2. Firebase関連コードの削除（下の「未確定事項」A参照）。
+3. GitHub Actionsのworkflowファイル、スケジュール、secretsの変更。
+4. テストと実装が矛盾している箇所を見つけた場合。どちらが正しいかを自分で決めない。
+5. dedup、delisting、通知のロジック変更が出力の差分を生むと分かった場合。
+6. `ScrapingConfigMetadata.json`、`buyer_profile.json`、`purchase_strategy.md`、`prompts/*.md` の内容変更が必要になった場合。再生成が連鎖し、本番 `ai_prompts` の再分析コストが発生するためである。
+7. 削除候補のコードに、1箇所でも参照が見つかった場合。参照とは、import、workflow、シェルスクリプト、ドキュメントの運用手順を指す。
+
+### 未確定事項（2026-06-12 にユーザーが回答して解決済み。記録として残す）
+
+- A. Firebaseレガシーの削除可否: `firestore_config_loader.py` はPR #10で削除済み。`push_scraping_config_to_firestore.py` はiOS `ScrapingConfigService` のFirestore読み取りが現役だったため、このときは残した。その後2026-06-13のP1で、このスクリプトと `ScrapingConfigService` を削除した。詳細は [docs/refactor-proposals.md](docs/refactor-proposals.md) のP1を参照。
+- B. iOSのレガシーデータ経路: `FirebaseSyncService.swift` と `shinchikuListURL` はPR #10で削除済み。`ListingStore` のカスタムJSON URLフォールバックは開発用として残す。
+- C. Mac Catalyst設定: PR #10で `SUPPORTS_MACCATALYST: NO` に変更済み。
+- D. `scraping-tool/data/listings.db` のGit追跡: 意図的に追跡している。CI artifactの受け渡し（`scrape-listings.yml` と `enrich-and-report.yml`）に使っているためである。維持する。
+
+---
+
+## 6. Baseline Commands（編集前に必ず実行し、結果を記録する）
 
 ```bash
 # 状態確認
@@ -124,96 +126,86 @@ xcodebuild test -project RealEstateApp.xcodeproj -scheme RealEstateApp \
   -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO
 ```
 
-baselineで失敗するテストがあれば、**修正せず記録してユーザーに報告**(自分の変更の失敗と区別するため)。
+baselineで失敗するテストがあれば、修正せずに記録してユーザーに報告する。自分の変更による失敗と区別するためです。
 
 ---
 
-## 7. Debt Map(根拠・リスク・着手可否つき)
+## 7. Debt Map（根拠、リスク、着手可否）
 
-### 実装してよいもの(Phase 2〜5で扱う)
+ここに書いた根拠と行番号は着手前（2026-06-12）の調査結果です。
+
+### 実装してよいもの（Phase 2から5で扱う）
 
 | # | 負債 | 根拠 | なぜ負債か | リスク | 改善案 | 検証 |
 |---|---|---|---|---|---|---|
-| D1 | コアdedupが未テスト | `main.py`(407行)の `dedupe_listings()` / `_merge_images()` にテストなし | パイプラインの心臓部。回 帰検知不能 | 低(テスト追加のみ) | 現挙動を固定する特性テストを `tests/test_main_dedup.py` に追加 | pytest |
-| D2 | レポート差分検出が未テスト | `generate_report.py`、`check_changes.py` | 通知の正確性に直結 | 低 | 入出力フィクスチャで特性テスト追加 | pytest |
-| D3 | EMPTY_PARSE_TOLERANCEの4重実装 | suumo:931,999 / athome:82,690 / homes:122,662 / livable:87,496。定数名すらバラバラ | 同一パターンの4実装。修正漏れ温床 | 中(挙動同一性が必須) | `scraper_common.py` に `EmptyParseGuard` クラス(連続空回数カウント+停止判定)を追加し、**D1相当のテストを先に書いてから**4スクレイパーを順次置換。1スクレイパー=1コミット | 各scraperの既存テスト+新規ガードのユニットテスト |
-| D4 | print()がロガー混在(非テストコードに約270箇所) | `price_predictor.py:532-536`、`sumai_surfin_enricher.py:931,951,2207`、`reinfolib_cache_builder.py` 等 | CIログの可観測性低下。CLAUDE.mdルール違反 | 低 | logger置換。**例外**: `main.py` のstdout JSON出力、CLIツールのユーザー向け出力は対象外。判断に迷うものは残す | ruff + pytest + 該当スクリプトのドライラン |
-| D5 | iOS DateFormatterルール違反 | `ScrapingLogService.swift:36-44`(computed propertyで毎回生成)、`Listing+MarkdownExport.swift:146-147`(ループ内生成) | 和暦端末バグの再発リスク+アロケーション圧 | 低 | `Utilities/DateFormatting.swift` に `static let` + `en_US_POSIX` で集約し参照を置換 | xcodebuild test |
-| D6 | ハザード助言ロジックがViewに埋没 | `ListingDetailView.swift:2394-2409` `hazardBuyerTips()`、`:2495-2499` `extractRank()` | テスト不能。CLAUDE.mdルール違反 | 低 | `Utilities/HazardAdvisor.swift` へ純関数として抽出+ユニットテスト追加 | xcodebuild test |
-| D7 | フィルタロジックの重複 | `ListingListView.swift:40-52`(FilterCache)と `DashboardView.swift:602-628` で類似フィルタ処理 | 二重保守 | 中 | まず両者の挙動差の有無をテストで固定→共通Utilityへ抽出。**挙動差があれば質問**(§5-4) | 新規ユニットテスト+xcodebuild test |
-| D8 | `ListingFilter.swift`(347行)が未テスト | テストファイル一覧に該当なし | フィルタはUXの根幹 | 低 | 述語ごとの特性テスト追加(実装変更はしない) | xcodebuild test |
-| D9 | 例外の握り潰しが広範(except Exceptionが約480箇所) | `slack_notify.py`(18)、`sumai_surfin_enricher.py`(13)等 | 障害の黙殺 | 中 | **一括変更禁止。** 触ったファイルの範囲内でのみ、`logger.debug/warning` の追記(例外を再送出に変える変更は不可=フェイルセーフ挙動が変わるため) | pytest |
+| D1 | コアdedupが未テスト | `main.py`（407行）の `dedupe_listings()` / `_merge_images()` にテストなし | パイプラインの中核であり、回帰を検知できない | 低（テスト追加のみ） | 現挙動を固定する特性テストを `tests/test_main_dedup.py` に追加 | pytest |
+| D2 | レポート差分検出が未テスト | `generate_report.py`、`check_changes.py` | 通知の正確性に直結する | 低 | 入出力フィクスチャで特性テストを追加 | pytest |
+| D3 | EMPTY_PARSE_TOLERANCEの4重実装 | suumo:931,999 / athome:82,690 / homes:122,662 / livable:87,496。定数名もそろっていない | 同じパターンが4か所にあり、修正漏れの原因になる | 中（挙動が同一であることが必須） | `scraper_common.py` に `EmptyParseGuard` クラス（連続空回数のカウントと停止判定）を追加する。D1に相当するテストを先に書いてから、4スクレイパーを順に置換する。1スクレイパーにつき1コミット | 各scraperの既存テストと新規ガードのユニットテスト |
+| D4 | print()とロガーの混在（非テストコードに約270箇所） | `price_predictor.py:532-536`、`sumai_surfin_enricher.py:931,951,2207`、`reinfolib_cache_builder.py` など | CIログの可観測性が下がる。CLAUDE.mdのルールにも違反する | 低 | loggerへ置換する。例外は `main.py` のstdout JSON出力とCLIツールのユーザー向け出力。判断に迷うものは残す | ruff、pytest、該当スクリプトのドライラン |
+| D5 | iOS DateFormatterのルール違反 | `ScrapingLogService.swift:36-44`（computed propertyで毎回生成）、`Listing+MarkdownExport.swift:146-147`（ループ内で生成） | 和暦端末のバグが再発するおそれがあり、生成のたびにメモリも使う | 低 | `Utilities/DateFormatting.swift` に `static let` と `en_US_POSIX` で集約し、参照を置換する | xcodebuild test |
+| D6 | ハザード助言ロジックがViewの中にある | `ListingDetailView.swift:2394-2409` `hazardBuyerTips()`、`:2495-2499` `extractRank()` | テストできない。CLAUDE.mdのルールにも違反する | 低 | `Utilities/HazardAdvisor.swift` へ純関数として抽出し、ユニットテストを追加する | xcodebuild test |
+| D7 | フィルタロジックの重複 | `ListingListView.swift:40-52`（FilterCache）と `DashboardView.swift:602-628` に似たフィルタ処理がある | 二重に保守することになる | 中 | 両者の挙動に差があるかをテストで固定してから、共通Utilityへ抽出する。挙動に差があれば質問する（§5-4） | 新規ユニットテストとxcodebuild test |
+| D8 | `ListingFilter.swift`（347行）が未テスト | テストファイル一覧に該当なし | フィルタはUXの基本機能 | 低 | 述語ごとの特性テストを追加する（実装は変更しない） | xcodebuild test |
+| D9 | 例外の握りつぶしが広範（except Exceptionが約480箇所） | `slack_notify.py`（18）、`sumai_surfin_enricher.py`（13）など | 障害が記録されないまま見逃される | 中 | 一括変更は禁止。触ったファイルの範囲でだけ `logger.debug/warning` を追記する。例外を再送出に変える変更は、フェイルセーフ挙動が変わるため不可 | pytest |
 
-### 提案に留めるもの(承認なしに実装禁止)
+### 提案に留めるもの（承認なしに実装してはならない）
 
 | # | 負債 | 根拠 | 提案内容 |
 |---|---|---|---|
-| P1 | Firebaseレガシー2ファイル | `firestore_config_loader.py`(import 0件、[DEPRECATED]マーカーあり)、`push_scraping_config_to_firestore.py`(手動workflowから参照あり) | 未確定事項A。前者のみ先行削除する案を提示可 |
-| P2 | iOS Firebase/Supabase二重化 | `FirebaseSyncService.swift`、`useSupabase` フラグ、カスタムJSON URLフォールバック | 未確定事項B。撤退ロードマップ案を文書で提案 |
-| P3 | Mac Catalyst設定残存 | `project.yml:6,23,148` | 未確定事項C |
-| P4 | 巨大ファイルの本格分割 | `sumai_surfin_enricher.py`(2,348行)、`ListingDetailView.swift`(3,133行)、`ListingListView.swift`(1,975行)、`MapTabView.swift`(1,830行)、`slack_notify.py`(1,028行)、`report_utils.py`(969行) | 分割方針(責務境界・ファイル構成)を提案文書にまとめる。D6/D7の小規模抽出はPhase 4で実施可だが、ファイル全体の再構成は承認後 |
-| P5 | スクレイパー基底クラス導入 | 8スクレイパーがdataclass/ページループ/詳細enrichmentを各自実装(athome/rehouse/nomucomで各約200行重複) | D3完了後の次段階として設計案を提案。一斉移行は禁止 |
-| P6 | EMPTY_PARSE_TOLERANCE未適用スクレイパーへの適用 | stepon/rehouse/nomucom/mansion_reviewに同パターンなし。CLAUDE.mdは「必ず適用」と規定 | 適用すると停止挙動が変わる(=既存挙動の変更)ため、D3の共通化後に「適用するか」を質問してから実施 |
-| P7 | migration 025の番号衝突 | `025_buyer_preference_summary.sql` / `025_health_check_logs.sql` | **何もしない。** 適用済みmigrationのリネームは禁止。新規採番が046以降であることの確認のみ |
-| P8 | Claude系enricherのテスト不足 | `claude_text_enricher.py` / `claude_dedup.py` / `claude_image_analyzer.py` にテストなし(`test_claude_client.py` はあり) | プロンプト合成・キャッシュキー・confidence閾値の特性テスト案を提案。プロンプト本文の変更は本番再分析を誘発するため触らない |
+| P1 | Firebaseレガシー2ファイル | `firestore_config_loader.py`（import 0件、[DEPRECATED]マーカーあり）、`push_scraping_config_to_firestore.py`（手動workflowから参照あり） | 未確定事項A。前者だけを先行して削除する案を提示してよい |
+| P2 | iOSのFirebaseとSupabaseの二重化 | `FirebaseSyncService.swift`、`useSupabase` フラグ、カスタムJSON URLフォールバック | 未確定事項B。撤退ロードマップ案を文書で提案する |
+| P3 | Mac Catalyst設定の残存 | `project.yml:6,23,148` | 未確定事項C |
+| P4 | 巨大ファイルの本格分割 | `sumai_surfin_enricher.py`（2,348行）、`ListingDetailView.swift`（3,133行）、`ListingListView.swift`（1,975行）、`MapTabView.swift`（1,830行）、`slack_notify.py`（1,028行）、`report_utils.py`（969行） | 分割方針（責務の境界とファイル構成）を提案文書にまとめる。D6とD7の小規模な抽出はPhase 4で実施してよいが、ファイル全体の再構成は承認後に行う |
+| P5 | スクレイパー基底クラスの導入 | 8スクレイパーがdataclass、ページループ、詳細enrichmentを各自で実装している（athome、rehouse、nomucomで各約200行が重複） | D3の完了後の次段階として設計案を提案する。一斉移行は禁止 |
+| P6 | EMPTY_PARSE_TOLERANCE未適用のスクレイパーへの適用 | stepon、rehouse、nomucom、mansion_reviewに同じパターンがない。CLAUDE.mdは「必ず適用」と規定している | 適用すると停止挙動が変わる（既存挙動の変更）ため、D3の共通化後に、適用するかどうかを質問してから実施する |
+| P7 | migration 025の番号衝突 | `025_buyer_preference_summary.sql` と `025_health_check_logs.sql` | 何もしない。適用済みmigrationのリネームは禁止。新規採番が既存の最大番号より後であることだけを確認する |
+| P8 | Claude系enricherのテスト不足 | `claude_text_enricher.py` / `claude_dedup.py` / `claude_image_analyzer.py` にテストなし（`test_claude_client.py` はある） | プロンプト合成、キャッシュキー、confidence閾値の特性テスト案を提案する。プロンプト本文を変更すると本番の再分析が走るため、本文には触れない |
 
 ---
 
-## 8. Implementation Phases(この順で。各フェーズ末に検証+コミット)
+## 8. Implementation Phases（この順に進める。各フェーズ末に検証とコミットを行う）
 
 ### Phase 0: 現状確認
-- `git status` / baseline(§6)を実行し、結果を `refactor-report.md`(作業記録、コミットしない)に記録。
-- baseline失敗があれば停止して報告。
+- `git status` とbaseline（§6）を実行し、結果を `refactor-report.md`（作業記録。コミットしない）に記録する。
+- baselineで失敗があれば、停止して報告する。
 
-### Phase 1: 安全網の構築(挙動変更ゼロ) — **完了（2026-06-12）**
-- D1: `main.py` のdedup特性テスト → `tests/test_main_dedup.py`（16件）実装済み。
-- D2: `generate_report.py` / `check_changes.py` の特性テスト →
-  `tests/test_check_changes.py`（9件）/ `tests/test_generate_report.py`（9件）実装済み。
-  ※ 差分検出の中核 `compare_listings` は既存 `test_report_utils.py` がカバー済みだったため、
-  exit code 仕様とレポート整形に焦点を絞った。
-- D8: `ListingFilter.swift` の述語テスト → `RealEstateAppTests/ListingFilterTests.swift`（18件）実装済み。
-- **このフェーズでは本体コードを1行も変更しない。**
+### Phase 1: テストの追加（挙動変更ゼロ）。完了（2026-06-12）
+- D1: `main.py` のdedup特性テストを `tests/test_main_dedup.py`（16件）に実装した。
+- D2: `generate_report.py` と `check_changes.py` の特性テストを `tests/test_check_changes.py`（9件）と `tests/test_generate_report.py`（9件）に実装した。差分検出の中核である `compare_listings` は、既存の `test_report_utils.py` がカバー済みだった。そのため、exit codeの仕様とレポート整形に絞った。
+- D8: `ListingFilter.swift` の述語テストを `RealEstateAppTests/ListingFilterTests.swift`（18件）に実装した。
+- このフェーズでは本体コードを1行も変更しない。
 
-### Phase 2: 明らかに安全な整理 — **完了（PR #16 マージ済み）**
-- D4: print → logger 置換 → 6モジュール（sumai_surfin_enricher / mansion_review_scraper /
-  commute_gmaps_enricher / reinfolib_enricher / sumai_surfin_browser / build_transaction_feed /
-  upload_floor_plans）。CLI出力・デモ出力・継ぎ足し進捗表示は除外ルールに従い残置。
-- D5: DateFormatter共有化 → `Utilities/DateFormatting.swift` 新設、ScrapingLogService /
-  Listing+MarkdownExport を置換。
+### Phase 2: 安全に整理できるもの。完了（PR #16 マージ済み）
+- D4: printからloggerへの置換を6モジュールで実施した。対象はsumai_surfin_enricher、mansion_review_scraper、commute_gmaps_enricher、reinfolib_enricher、sumai_surfin_browser、build_transaction_feed、upload_floor_plans。CLI出力、デモ出力、進捗の継ぎ足し表示は、除外ルールに従って残した。
+- D5: DateFormatterを共有化するために `Utilities/DateFormatting.swift` を新設した。ScrapingLogServiceとListing+MarkdownExportは、これに置き換えた。
 
-### Phase 3: 小さな責務分離(Python) — **完了（PR #17 マージ済み）**
-- D3: `EmptyParseGuard` を `scraper_common.py` に実装（ユニットテスト5件）→
-  livable → suumo → athome → homes の4スクレイパーを移行。停止挙動・ログ・metrics
-  記録条件は従来と同一（各スクレイパーのテスト全パスで確認）。
+### Phase 3: 小さな責務分離（Python）。完了（PR #17 マージ済み）
+- D3: `EmptyParseGuard` を `scraper_common.py` に実装した（ユニットテスト5件）。livable、suumo、athome、homesの順に4スクレイパーを移行した。停止挙動、ログ、metricsの記録条件は従来と同じで、各スクレイパーのテストが全件通ることで確認した。
 
-### Phase 4: 小さな責務分離(iOS) — **完了**
-- D6: `HazardAdvisor` 抽出+テスト11件 → ListingDetailView の hazardBuyerTips / extractRank を
-  純関数化。
-- D7: **不要化（main の UI 刷新 PR #7 で DashboardView.swift が削除され TodayView に再編）。**
-  懸念されたフィルタ重複は存在せず、フィルタの正準実装は `ListingFilter.apply(to:)` に
-  既に統一済み（ListingListView / MapTabView / Transaction系が共通利用、Phase 1 D8 でテスト済み）。
+### Phase 4: 小さな責務分離（iOS）。完了
+- D6: `HazardAdvisor` を抽出しテストを11件追加した。ListingDetailViewの `hazardBuyerTips` と `extractRank` を純関数にした。
+- D7: 不要になった。mainのUI刷新（PR #7）で `DashboardView.swift` が削除され、TodayViewに再編された。懸念していたフィルタの重複はなかった。フィルタの正準実装は `ListingFilter.apply(to:)` に統一済みだった。ListingListView、MapTabView、Transaction系が共通で使っていた。Phase 1のD8でテスト済みだった。
 
-### Phase 5: 触った範囲のエラーハンドリング改善 — **対象なし**
-- D9: 本ブランチで触った Python ファイルは Phase 2/3 で既にマージ済み。新規に握り潰し
-  except を導入した箇所はなく、追加ログが必要な未処理箇所も発見されなかったためスキップ。
+### Phase 5: 触った範囲のエラーハンドリング改善。対象なし
+- D9: このブランチで触ったPythonファイルは、Phase 2と3で既にマージ済みだった。握りつぶしのexceptを新規に導入した箇所はなく、ログの追加が必要な未処理の箇所も見つからなかったため、スキップした。
 
-### Phase 6: 提案書の作成(実装しない) — **完了**
-- P1〜P6, P8 を `docs/refactor-proposals.md` に各1セクション（現状・案・リスク・移行手順・
-  検証方法）でまとめた。
+### Phase 6: 提案書の作成（実装しない）。完了
+- P1からP6とP8を `docs/refactor-proposals.md` にまとめた。各項目に、現状、案、リスク、移行手順、検証方法を1セクションずつ書いた。P7は対応不要のため、記録のみ。
+- その後の結果は同書に記録している。P1はFirebase設定経路の撤去で完了した。P3は解消済みである。P5と、P4の `report_utils.py` 分割は、スキップを推奨している。P6はstepon、rehouse、nomucomへの適用で完了した。mansion_reviewはページ巡回をしないため対象外である。P8は純粋なロジックへのテスト追加まで完了した（対象の範囲は同書のP8を参照）。
 
 ---
 
 ## 9. Verification Requirements
 
-- 各フェーズ末に必ず実行: `cd scraping-tool && ruff check . && python3 -m pytest tests/ -q`
-- Swift変更を含むフェーズ末: `xcodegen generate` + `xcodebuild test`(ローカル不可ならpush後に `ios-build.yml` のCI結果を確認)。
-- ドキュメント生成ソース(config.py、ScrapingConfigMetadata.json、buyer context系)に触れた場合のみ、§6の再生成コマンドを実行し差分をコミットに含める。触れていない場合は再生成しない。
-- スクレイパー変更後は、可能なら小データセットでのドライラン(例: `python suumo_scraper.py` を1区・1ページ相当に絞る既存オプションがあれば使用。なければテストのみで可。**本番相当のフルスクレイプ実行は禁止**=対象サイトへの負荷)。
-- テスト数は減らさない。スキップ・xfailの追加は理由をコミットメッセージに明記。
+- 各フェーズの末尾で必ず実行する: `cd scraping-tool && ruff check . && python3 -m pytest tests/ -q`
+- Swiftの変更を含むフェーズの末尾では、`xcodegen generate` と `xcodebuild test` を実行する。ローカルで実行できなければ、pushしたあとに `ios-build.yml` のCI結果を確認する。
+- ドキュメント生成のソースは、config.py、ScrapingConfigMetadata.json、buyer context系である。これらに触れた場合だけ、§6の再生成コマンドを実行する。差分はコミットに含める。触れていなければ再生成しない。
+- スクレイパーを変更したら、可能であれば小さなデータセットでドライランを行う。例として、`python suumo_scraper.py` を1区1ページ相当に絞る既存オプションがあれば使う。なければテストだけでよい。本番相当のフルスクレイプは、対象サイトへの負荷が大きいため禁止する。
+- テスト数は減らさない。スキップやxfailを追加するときは、理由をコミットメッセージに書く。
 
 ## 10. Reporting Format
 
-作業完了時(または停止時)に以下を報告する:
+作業が完了したとき、または停止したときに、次の形式で報告する。
 
 ```
 ## 実施サマリ
@@ -233,16 +225,16 @@ baselineで失敗するテストがあれば、**修正せず記録してユー�
 - docs/refactor-proposals.md の目次
 ```
 
-## 11. Out-of-scope Items(今回やらないこと)
+## 11. Out-of-scope Items（今回やらないこと）
 
-- Firebase撤退の実施(P1/P2/P3)。
-- Supabaseスキーマ変更・新規migration作成。
+- Firebase撤退の実施（P1、P2、P3）。
+- Supabaseスキーマの変更と新規migrationの作成。
 - GitHub Actions workflowの変更。
-- `sumai_surfin_enricher.py` / `ListingDetailView.swift` 等、巨大ファイルの全面分割(P4)。
-- スクレイパー基底クラスへの一斉移行(P5)。
-- EMPTY_PARSE_TOLERANCE未適用スクレイパーへの新規適用(P6)。
-- プロンプト(`config/prompts/*.md`、各enricherのSYSTEM_PROMPT)の内容変更。
-- `ref/`(購入研究資料)、`design/`、`docs/10year-index-mansion-conditions-draft.md` への変更。
+- `sumai_surfin_enricher.py` や `ListingDetailView.swift` など、巨大ファイルの全面分割（P4）。
+- スクレイパー基底クラスへの一斉移行（P5）。
+- EMPTY_PARSE_TOLERANCE未適用のスクレイパーへの新規適用（P6）。
+- プロンプト（`config/prompts/*.md`、各enricherのSYSTEM_PROMPT）の内容変更。
+- `ref/`（購入研究資料）、`design/`、`docs/10year-index-mansion-conditions-draft.md` への変更。
 - 依存ライブラリのバージョン更新。
-- パフォーマンスチューニング(計測なしの最適化禁止)。
-- migration 025衝突の「修正」(P7: 触らない)。
+- パフォーマンスチューニング（計測なしの最適化は禁止）。
+- migration 025の衝突を直すこと（P7。触らない）。

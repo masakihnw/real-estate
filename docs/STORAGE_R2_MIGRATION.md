@@ -1,51 +1,45 @@
-# 画像ストレージの Cloudflare R2 移行ガイド
+# 画像ストレージのCloudflare R2移行ガイド
 
 ## 背景
 
-Supabase Free プランの Storage 上限（1GB）に対し、`listing-images` バケットが
-4GB 超（物件画像 + 間取り図、約4万ファイル）まで膨らみ、Fair Use Policy の
-警告を受けた。画像の保存先を Cloudflare R2（無料枠 10GB・配信転送量無料）へ
-移行し、あわせて不要画像の定期 GC を導入する。
+Supabase Freeプランの Storage 上限は1GBです。`listing-images` バケットが、物件画像と間取り図を合わせて4GB超（約4万ファイル）まで増えています。Fair Use Policy の警告も受けました。
+そこで画像の保存先を Cloudflare R2（無料枠10GB、配信転送量は無料）へ移しました。不要画像を定期的に削除するGCも導入しています。
 
-- DB・認証・REST API は Supabase のまま（iOS アプリはコード変更なし。
-  画像 URL はすべて `enrichments` 経由で配布されるため）
-- アップロード経路は `upload_floor_plans.py` のまま（保存先だけ R2 に切替）
+- DB、認証、REST APIはSupabaseのままです。画像URLはすべて `enrichments` 経由で配布されるため、iOSアプリのコードは変更していません。
+- アップロードの経路は `upload_floor_plans.py` のままです。保存先だけをR2に切り替えました。
 
 ## 構成
 
 | ファイル | 役割 |
 |---|---|
-| `scraping-tool/image_storage.py` | ストレージバックエンド抽象化。`R2_*` 環境変数があれば R2、なければ Supabase |
-| `scraping-tool/storage_gc.py` | GC の純粋ロジック（テスト対象） |
-| `scraping-tool/scripts/storage_image_gc.py` | 不要画像 GC の CLI（孤児 + 掲載終了物件の画像を削除） |
-| `scraping-tool/scripts/migrate_storage_to_r2.py` | Supabase → R2 の移行 CLI |
-| `.github/workflows/storage-image-gc.yml` | GC の定期実行（週次 + 手動） |
+| `scraping-tool/image_storage.py` | ストレージバックエンドの抽象化。`R2_*` 環境変数が揃っていればR2、なければSupabaseを使う |
+| `scraping-tool/storage_gc.py` | GCの純粋ロジック（テスト対象） |
+| `scraping-tool/scripts/storage_image_gc.py` | 不要画像GCのCLI。孤児と、掲載終了物件だけが参照する画像を削除する |
+| `scraping-tool/scripts/migrate_storage_to_r2.py` | SupabaseからR2への移行CLI |
+| `.github/workflows/storage-image-gc.yml` | GCの定期実行（週次と手動） |
+| `.github/workflows/storage-r2-migrate.yml` | 移行CLIをGitHub Actionsから手動実行する。フェーズと `execute` を入力で選ぶ |
 
-## 必要な環境変数 / GitHub Secrets
+## 必要な環境変数とGitHub Secrets
 
 | 名前 | 値 |
 |---|---|
 | `R2_ENDPOINT_URL` | `https://<account_id>.r2.cloudflarestorage.com` |
-| `R2_ACCESS_KEY_ID` | R2 API トークンのアクセスキー |
-| `R2_SECRET_ACCESS_KEY` | R2 API トークンのシークレット |
+| `R2_ACCESS_KEY_ID` | R2 APIトークンのアクセスキー |
+| `R2_SECRET_ACCESS_KEY` | R2 APIトークンのシークレット |
 | `R2_BUCKET_NAME` | バケット名（例: `listing-images`） |
-| `R2_PUBLIC_BASE_URL` | 公開ベース URL（例: `https://pub-xxxx.r2.dev`。末尾スラッシュなし） |
+| `R2_PUBLIC_BASE_URL` | 公開ベースURL（例: `https://pub-xxxx.r2.dev`。末尾のスラッシュは付けない） |
 
-## Cloudflare 側の準備（手動・1回のみ）
+## Cloudflare側の準備（手動で1回だけ）
 
-1. Cloudflare アカウントを作成し、ダッシュボードで R2 を有効化
-   （支払い方法の登録が必要。無料枠内なら請求は発生しない）。
-2. バケット `listing-images` を作成（ロケーション: Asia-Pacific 推奨）。
-3. バケットの **Settings → Public access → R2.dev subdomain** を有効化し、
-   表示される `https://pub-xxxx.r2.dev` を `R2_PUBLIC_BASE_URL` に使う。
-   （独自ドメインを割り当てる場合はそちらのベース URL を使う）
-4. **R2 API トークン**（Object Read & Write、対象バケット限定）を発行。
-5. 上記5つを GitHub リポジトリの Actions Secrets に登録する。
+1. Cloudflareアカウントを作成し、ダッシュボードでR2を有効化します。支払い方法の登録が必要です。無料枠内であれば請求は発生しません。
+2. バケット `listing-images` を作成します。ロケーションはAsia-Pacificを推奨します。
+3. バケットの Settings、Public access、R2.dev subdomain を有効化します。表示された `https://pub-xxxx.r2.dev` を `R2_PUBLIC_BASE_URL` に使います。独自ドメインを割り当てる場合は、そのベースURLを使います。
+4. R2 APIトークンを発行します。権限はObject Read & Write、対象はこのバケットだけにします。
+5. 上記の5つをGitHubリポジトリのActions Secretsに登録します。
 
 ## 移行手順
 
-実行はスクレイピングパイプラインが動いていない時間帯に行う。
-`SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` / `R2_*` を環境変数に設定した上で:
+実行は、スクレイピングパイプラインが動いていない時間帯に行います。`SUPABASE_URL`、`SUPABASE_SERVICE_ROLE_KEY`、`R2_*` を環境変数に設定した上で、次のコマンドを順に実行してください。GitHub Actionsの「Storage R2 Migration」ワークフローでも、同じフェーズを実行できます。
 
 ```bash
 cd scraping-tool
@@ -77,7 +71,7 @@ python3 scripts/migrate_storage_to_r2.py --phase delete-source
 python3 scripts/migrate_storage_to_r2.py --phase delete-source --execute
 ```
 
-手順 3 のあと、旧 Supabase URL が残っていないかは次で確認できる:
+手順3のあと、旧SupabaseのURLが残っていないかは、次のSQLで確認できます。
 
 ```sql
 select count(*) from enrichments
@@ -86,23 +80,29 @@ where suumo_images::text like '%supabase.co/storage%'
    or best_thumbnail_url like '%supabase.co/storage%';
 ```
 
+過去の移行では `image_categories` 列が書き換えの対象から漏れ、GCもこの列を参照として数えていませんでした。
+そのため、次のエントリが生じている場合があります。
+
+- URLが旧Supabaseのまま残るエントリ
+- 実体がGC済みでR2に存在しないエントリ
+
+修復用のフェーズは `--phase recover-image-categories` です。
+R2に実在するオブジェクトはURLをR2へ書き換えます。
+R2に無いオブジェクトは、エントリごと削除します。
+変更を実行するのは `--execute` を付けたときだけです。
+
 ## 移行後の運用
 
-- GitHub Secrets に `R2_*` が登録されていれば、finalize の
-  `upload_floor_plans.py` は自動的に R2 へアップロードする
-  （`image_storage.r2_configured()` で判定）。
-- `storage-image-gc.yml` が週次（月曜 4:00 JST）で不要画像を削除する。
-  フェイルセーフ:
-  - 削除比率が全体の 60% を超える場合は中止（取得失敗の疑い）
-  - 直近 24 時間以内に作成されたオブジェクトは削除しない
-    （enrichments 未反映の新規アップロードを保護）
-  - listings / enrichments の取得が空・active 参照 0 件なら中止
-- 掲載終了物件の画像は GC が削除し、enrichments の参照とマニフェストの
-  エントリも同時に除去する。再掲載された場合は次回パイプラインで
-  再アップロードされる。
+- finalizeの `upload_floor_plans.py` は、R2へ自動でアップロードします。条件は、GitHub Secretsに `R2_*` が登録されていることです。
+  登録の有無は `image_storage.r2_configured()` で判定します。
+- `storage-image-gc.yml` が、毎週月曜の4:00 JSTに不要画像を削除します。手動実行では、対象のバックエンドを `auto`、`supabase`、`r2` から選べます。`auto` はR2が設定済みならR2を対象にします。次のフェイルセーフがあります。
+  - 削除比率が全体の60%を超える場合は中止します。取得失敗を疑うためです。
+  - 直近24時間以内に作成されたオブジェクトは削除しません。enrichmentsに未反映の新規アップロードを守るためです。
+  - listingsとenrichmentsの取得が空の場合と、activeな参照が0件の場合は中止します。
+- 掲載終了物件の画像は、GCが削除します。同時に、enrichmentsの参照とマニフェストのエントリも除去します。再掲載された場合は、次回のパイプラインで再アップロードします。
 
 ## ロールバック
 
-手順 5（delete-source）を実行するまでは Supabase 側に全ファイルが残っている。
-問題が出た場合は rewrite を逆向き（R2 ベース URL → Supabase ベース URL の
-文字列置換）に流せば戻せる。delete-source 実行後は R2 が唯一のコピーになる。
+手順5（delete-source）を実行するまでは、Supabase側に全ファイルが残っています。問題が出た場合は、rewriteを逆向きに流せば戻せます。
+逆向きの処理は、R2のベースURLをSupabaseのベースURLへ文字列で置換するものです。
+delete-sourceを実行した後は、R2が唯一のコピーになります。

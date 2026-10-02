@@ -1,6 +1,6 @@
 # AI Integration Guide
 
-物件データ（listing_facts）と買い手プロファイル（buyer_profiles）をAI（Claude / ChatGPT）から直接分析するための設定ガイド。
+AI（Claude / ChatGPT）から物件データと買い手プロファイルを直接分析するための設定ガイドです。対象のテーブルは listing_facts と buyer_profiles です。
 
 ## アーキテクチャ
 
@@ -21,14 +21,14 @@
 └─────────────┘
 ```
 
-- **listing_facts**: 事実・第三者データのみ（自前スコアは除外 → AIバイアス防止）
-- **buyer_profiles**: 買い手プロファイル（iOSアプリ、パイプライン、外部AI共通参照）
+- listing_facts: 事実と第三者データのみを持つ。自前スコアを除外し、AIのバイアスを防ぐ
+- buyer_profiles: 買い手プロファイル。iOSアプリ、パイプライン、外部AIが共通で参照する
 
 ## 1. Claude (MCP) 設定
 
-### claude_desktop_config.json に追加
+### claude_desktop_config.jsonに追加
 
-`~/Library/Application Support/Claude/claude_desktop_config.json`:
+`~/Library/Application Support/Claude/claude_desktop_config.json` に次を追加します。
 
 ```json
 {
@@ -46,7 +46,7 @@
 }
 ```
 
-> **Note**: Supabase MCP が利用可能な場合は直接利用。それ以外は PostgreSQL MCP を使用。
+> Supabase MCPが利用可能な場合は直接利用します。利用できない場合はPostgreSQL MCPを使います。
 
 ### 推奨システムプロンプト（Claude Projects）
 
@@ -76,15 +76,14 @@
 
 ### GPT Actionsの作成手順
 
-1. ChatGPT で「GPT を作成」→「Actions」タブ
-2. 「Import from URL」または「Schema」に OpenAPI spec を貼り付け
-   - ファイル: `docs/openapi-listing-facts.yaml`
-3. Authentication:
+1. ChatGPTで「GPT を作成」→「Actions」タブを開く
+2. 「Import from URL」または「Schema」にOpenAPI specを貼り付ける。ファイルは `docs/openapi-listing-facts.yaml`
+3. Authenticationを次のとおり設定する
    - Type: **API Key**
    - Auth Type: **Custom**
    - Custom Header Name: `apikey`
    - API Key: `<YOUR_SERVICE_ROLE_KEY>`
-4. 追加ヘッダー:
+4. 追加ヘッダーに次を設定する
    - `Authorization: Bearer <YOUR_SERVICE_ROLE_KEY>`
 
 ### GPTの指示（Instructions）
@@ -144,10 +143,11 @@ Content-Type: application/json
 
 ## 4. カラムコメント
 
-全テーブル・カラムに `COMMENT ON COLUMN` が設定済み。
-Claude MCP の `list_tables` や `\d+ listing_facts` で自動的にカラムの意味が表示される。
+全テーブル・カラムに `COMMENT ON COLUMN` が設定済みです。
+Claude MCPの `list_tables` や `\d+ listing_facts` で、カラムの意味が自動的に表示されます。
 
-重要なカラム:
+主なカラムは次のとおりです。
+
 | カラム | 説明 |
 |--------|------|
 | `sources_json` | 全掲載サイトのURL・価格をJSONB配列で集約 |
@@ -160,6 +160,6 @@ Claude MCP の `list_tables` や `\d+ listing_facts` で自動的にカラムの
 
 ## 5. セキュリティ
 
-- **Service Role Key** を使用（個人利用・2ユーザー限定）
-- Key は環境変数で管理し、コードにハードコードしない
-- RLS は `service_role` に全アクセス許可、`anon` は自身のプロファイルのみ読み取り可
+- Service Role Keyを使用する（個人利用・2ユーザー限定）
+- Keyは環境変数で管理し、コードにハードコードしない
+- RLSは `service_role` に全アクセスを許可する。`anon` にはSELECTのポリシー `anon_read_own` があるが、条件が `true` のため全行を読み取れる（`supabase/migrations/020_listing_facts_and_buyer_profiles.sql`）

@@ -1,57 +1,60 @@
 # ワンショット: AI未分析物件の一括解消（並行シャード対応）
 
-- **スケジュール**: ワンショット（手動実行・複数セッション並行可）
-- **MCP**: Supabase（必須）
-- **背景**: 購入戦略の3層化に伴い ai_prompts を更新（investment_summary v6 / ai_scoring v7、2026-06-11適用）。
-  prompt_hash が変わったため全アクティブ物件が再分析対象になった。
-  通常の日次ルーティンの処理上限（50/100件/回）では消化に数週間かかるため、ワンショットで処理しきる。
-- **規模**（2026-06-11 時点）: text_enricher 15件 / ai_scoring 883件 / investment_summary 1,188件。
-  1セッションでは処理しきれないため、**シャード分割して複数セッションで並行実行**する。
-- **推奨**: `SHARD_COUNT = 8`（1シャードあたり約260件 ≒ investment_summary 150件 + ai_scoring 110件）。
-  セッション数を減らす場合も1シャード300件超にしない（コンテキスト枯渇防止）。
+- スケジュール: ワンショット（手動実行・複数セッション並行可）
+- MCP: Supabase（必須）
+- 背景: 購入戦略を3層に分けたため、ai_promptsを更新した。2026-06-11に、investment_summary v6とai_scoring v7を適用した。
+  prompt_hashが変わり、全アクティブ物件が再分析の対象になった。
+  通常の日次ルーティンは1回の処理上限が50件と100件で、消化に数週間かかる。そこで、このワンショットで全件を処理する。
+- 規模（2026-06-11時点）は次のとおり。
+  - text_enricher 15件
+  - ai_scoring 883件
+  - investment_summary 1,188件
+- 1セッションでは処理しきれないので、シャードに分割して複数セッションで並行実行する。
+- 推奨: `SHARD_COUNT = 8`。1シャードあたり約260件で、investment_summary 150件とai_scoring 110件に相当する。
+  セッション数を減らす場合も、コンテキストを使い切らないよう、1シャードを300件以内にする。
 
 ---
 
-## 🔀 シャード設定（このセッションの担当範囲）
+## シャード設定（このセッションの担当範囲）
 
-このセッションが担当するシャードを以下で指定する。**起動時にユーザーが指定する**:
+このセッションが担当するシャードを次の値で指定する。起動時にユーザーが指定する。
 
 ```
 SHARD_COUNT = 8   ← 同時に起動する並行セッションの総数（N）
 SHARD_INDEX = 0   ← このセッションの担当番号（0 〜 N-1）
 ```
 
-> 例: 4セッション並行なら、それぞれ `SHARD_INDEX = 0, 1, 2, 3` で起動する。
-> 各セッションは `listing_id % SHARD_COUNT = SHARD_INDEX` の物件**のみ**を処理するため、
-> セッション間で物件が重複せず、衝突しない。
+> 例: 4セッション並行なら、それぞれ`SHARD_INDEX = 0, 1, 2, 3`で起動する。
+> 各セッションは`listing_id % SHARD_COUNT = SHARD_INDEX`の物件だけを処理する。
+> そのため、セッション間で物件が重複せず、衝突しない。
 
-**⚠️ 全 SQL の対象取得クエリに必ず `WHERE listing_id % <SHARD_COUNT> = <SHARD_INDEX>` を付けること。**
-このフィルタを外すと他セッションと二重処理になる。
+全SQLの対象取得クエリに、必ず`WHERE listing_id % <SHARD_COUNT> = <SHARD_INDEX>`を付ける。
+このフィルタを外すと、他セッションと二重に処理する。
 
 ---
 
-## ⛔ 処理方法の制約（全 Step 共通）
+## 処理方法の制約（全Step共通）
 
-ルーティン②③と同じ制約:
-1. `get_active_prompt(module)` で取得した system_prompt を**必ず使用**する
-2. 各物件を **1件ずつ AI（自分自身）で分析**する
-3. 以下は**すべて禁止**:
-   - Python スクリプトの作成・実行
-   - ルールベース処理（キーワードマッチング、計算式、if/else 分岐）
-   - Bash でのデータ加工・スコア計算
-   - サブエージェント（Agent ツール）への委任
-   - Fetch-Then-Ignore パターン（取得した system_prompt を無視）
-4. `upsert_ai_enrichment` の `prompt_hash` と `version` は `get_active_prompt()` の返り値から取得
+ルーティン②③と同じ制約を守る。
+1. `get_active_prompt(module)`で取得したsystem_promptを**必ず使用**する
+2. 各物件を1件ずつAI（自分自身）で分析する
+3. 以下は**すべて禁止**。
+   - Pythonスクリプトの作成・実行
+   - ルールベース処理（キーワードマッチング、計算式、if/else分岐）
+   - Bashでのデータ加工・スコア計算
+   - サブエージェント（Agentツール）への委任
+   - Fetch-Then-Ignoreパターン（取得したsystem_promptを無視）
+4. upsert_ai_enrichmentの`prompt_hash`と`version`は`get_active_prompt()`の返り値から取得する
 
 Supabase project_id: `dzhcumdmzskkvusynmyw`
-全ての SQL は Supabase MCP の `execute_sql` で実行すること。
+全てのSQLはSupabase MCPの`execute_sql`で実行する。
 
 ---
 
-## 📐 対象取得クエリの共通パターン
+## 対象取得クエリの共通パターン
 
-`get_listings_for_ai` は `max_items_per_run` で内部 LIMIT される。全バックログを見えるようにするため
-**第2引数で上限を引き上げ**、外側で**シャードフィルタ + チャンク LIMIT**をかける:
+`get_listings_for_ai`は`max_items_per_run`で内部のLIMITがかかる。未処理の全件を取得するため、
+第2引数で上限を引き上げ、外側でシャードフィルタとチャンクのLIMITをかける。
 
 ```sql
 SELECT listing_id, listing_data
@@ -61,47 +64,47 @@ ORDER BY listing_id
 LIMIT 20;
 ```
 
-- 処理済み物件は次回クエリで自動的に除外される（extracted_features / ai_listing_score 等がセットされるため）
-- よって **0件になるまでこのクエリ→分析→書き戻しを繰り返す**だけで、シャード内全件を消化できる
-- 1回20件のチャンクにすることでコンテキストを管理しやすくする
+- 処理済みの物件には、extracted_featuresやai_listing_scoreなどがセットされる。そのため、次回のクエリから自動的に除外される
+- したがって、0件になるまで「このクエリ、分析、書き戻し」を繰り返せば、シャード内の全件を処理できる
+- 1回を20件のチャンクにして、コンテキストの消費を抑える
 
-**このセッションは途中で中断しても安全**: 再開時に同じクエリを叩けば、未処理の残りだけが返る。
+このセッションは途中で中断しても安全である。再開時に同じクエリを実行すれば、未処理の残りだけが返る。
 
 ---
 
 ## Step 1: text_enricher（このシャード分）
 
-ai_scoring / investment_summary が参照する `extracted_features` を生成するため**最初に処理**する。
+ai_scoringとinvestment_summaryは`extracted_features`を参照する。そのため、text_enricherを最初に処理する。
 
 ```sql
 SELECT prompt_hash, version, system_prompt, user_prompt_template
 FROM get_active_prompt('text_enricher');
 ```
 
-対象取得（共通パターン、module = `text_enricher`）→ 各物件を system_prompt に従い1件ずつ分析。
+対象取得（共通パターン、module = `text_enricher`）のあと、各物件をsystem_promptに従って1件ずつ分析する。
 
-書き戻し:
+書き戻し
 ```sql
 SELECT upsert_ai_enrichment(<listing_id>::bigint, 'text_enricher', '<結果JSON>'::jsonb, 'claude-sonnet-4-6', '<prompt_hash>', <version>, 'routine');
 ```
 
-シャード分が 0 件になるまで繰り返す。
+シャード分が0件になるまで繰り返す。
 
 ---
 
 ## Step 2: ai_scoring（このシャード分）
 
-Step 1（このシャード分）完了後に実行。
+Step 1（このシャード分）の完了後に実行する。
 
 ```sql
 SELECT * FROM get_active_prompt('ai_scoring');
 SELECT * FROM buyer_profiles WHERE user_id = '[USER_ID]';
 ```
 
-対象取得（共通パターン、module = `ai_scoring`）→ 各物件を1件ずつ分析。
-user_prompt_template の `{buyer_profile}` にバイヤープロファイル、`{listing_data}` に物件データを代入。
+対象取得（共通パターン、module = `ai_scoring`）のあと、各物件を1件ずつ分析する。
+user_prompt_templateの`{buyer_profile}`にバイヤープロファイル、`{listing_data}`に物件データを代入する。
 
-出力形式:
+出力形式
 ```json
 {
   "listing_score": 75,
@@ -120,43 +123,43 @@ user_prompt_template の `{buyer_profile}` にバイヤープロファイル、`
 }
 ```
 
-**⚠️ 住居適合度のnoteには必ず「子ども何人なら何年住めるか」を含めること。**
+住居適合度のnoteには、必ず「子ども何人なら何年住めるか」を含める。
 
-書き戻し:
+書き戻し
 ```sql
 SELECT upsert_ai_enrichment(<listing_id>::bigint, 'ai_scoring', '<結果JSON>'::jsonb, 'claude-sonnet-4-6', '<prompt_hash>', <version>, 'routine');
 ```
 
-シャード分が 0 件になるまで繰り返す。
+シャード分が0件になるまで繰り返す。
 
 ---
 
 ## Step 3: investment_summary（このシャード分）
 
-Step 2（このシャード分）完了後に実行。
+Step 2（このシャード分）の完了後に実行する。
 
 ```sql
 SELECT * FROM get_active_prompt('investment_summary');
 ```
 
-バイヤープロファイルは Step 2 で取得したものを再利用。
-対象取得（共通パターン、module = `investment_summary`）→ 各物件を1件ずつ分析。
-system_prompt に従い JSON で `score, conclusion, flags, scenarios, action` を生成。
+バイヤープロファイルは、Step 2で取得したものを再利用する。
+対象取得（共通パターン、module = `investment_summary`）のあと、各物件を1件ずつ分析する。
+system_promptに従い、JSONで`score, conclusion, flags, scenarios, action`を生成する。
 
-**⚠️ 面積不足だけで即スコア1にしないこと。子ども2人シナリオ、短期住み替え戦略も含めて柔軟に評価。**
+面積不足だけで即スコア1にしない。子ども2人のシナリオと短期の住み替え戦略も含めて、柔軟に評価する。
 
-書き戻し:
+書き戻し
 ```sql
 SELECT upsert_ai_enrichment(<listing_id>::bigint, 'investment_summary', '<結果JSON>'::jsonb, 'claude-sonnet-4-6', '<prompt_hash>', <version>, 'routine');
 ```
 
-シャード分が 0 件になるまで繰り返す。
+シャード分が0件になるまで繰り返す。
 
 ---
 
 ## Step 4: このシャードの完了確認
 
-3モジュールとも、このシャード分の対象取得クエリが 0 件になったことを確認する:
+3モジュールとも、このシャード分の対象取得クエリが0件になったことを確認する。
 
 ```sql
 SELECT 'text_enricher' AS module, COUNT(*) AS remaining
@@ -204,19 +207,19 @@ WHERE listing_id % <SHARD_COUNT> = <SHARD_INDEX>;
 
 ## ファイル操作の禁止
 
-リモート実行環境のため以下は禁止:
+リモート実行環境のため、次の操作は禁止する。
 - ログファイルの読み書き・編集
 - `git add` / `git commit` / `git push`
-- GitHub MCP の `push_files` / `create_branch`
+- GitHub MCPの`push_files` / `create_branch`
 
 ---
 
 ## 共通ルール
 
-- **シャードフィルタ必須**: 全対象取得クエリに `WHERE listing_id % <SHARD_COUNT> = <SHARD_INDEX>` を付ける
-- **サブエージェント委任禁止**: 全ステップの処理はメインエージェントのコンテキストで実行
-- **AI 分析必須**: ルールベース処理・Python スクリプト・一括バッチ処理は禁止
-- **順序遵守**: 自シャード内で Step 1 → 2 → 3 の順（text_enricher の結果を後段が参照するため）
+- シャードフィルタ必須: 全対象取得クエリに`WHERE listing_id % <SHARD_COUNT> = <SHARD_INDEX>`を付ける
+- サブエージェント委任禁止: 全ステップの処理をメインエージェントのコンテキストで実行する
+- AI分析必須: ルールベース処理、Pythonスクリプト、一括バッチ処理は禁止
+- 順序遵守: 自シャード内でStep 1、2、3の順に実行する（後段がtext_enricherの結果を参照するため）
 - 中断しても安全。再開時は同じクエリで残りが返る
-- エラーが発生しても他の物件・ステップの処理は続行する
-- 日本語で回答すること
+- エラーが発生しても、他の物件とステップの処理は続行する
+- 日本語で回答する

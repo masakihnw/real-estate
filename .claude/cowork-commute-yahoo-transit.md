@@ -1,20 +1,20 @@
-# Cowork タスク: Yahoo路線情報で通勤時間を更新
+# Coworkタスク Yahoo路線情報で通勤時間を更新
+
+> 現行の通勤時間更新は、`.claude/routines/routine_1_data_prep.md` のStep 3（`station_commute_times` マスタを参照する方式）で行っている。本文書はYahoo路線情報をWebFetchで引く旧手順である。リモート環境からYahoo TransitへアクセスするとHTTP 403になる。この経緯は、[codex-commute-research.md](./codex-commute-research.md) の背景に書いている。
 
 ## 概要
 
-Supabase上のアクティブな物件に対して、Yahoo路線情報（WebFetch）で通勤時間を調べ、`enrichments.commute_info` に書き戻す。
+Supabase上のアクティブな物件について、Yahoo路線情報（WebFetch）で通勤時間を調べる。結果は `enrichments.commute_info` に書き戻す。
 
 ## オフィス情報
 
-通勤先2箇所（slug: `playground` / `m3career`）。実住所・名称は環境変数
-`COMMUTE_OFFICES_JSON` / Supabase で管理する（このドキュメントに実住所を書かない）。
-以下の手順内の `{playground_address}` / `{m3career_address}` は実行時に注入する。
+通勤先は2か所（slug は `playground` と `m3career`）。実住所と名称は環境変数 `COMMUTE_OFFICES_JSON` とSupabaseで管理する。このドキュメントには実住所を書かない。以下の手順内の `{playground_address}` と `{m3career_address}` は、実行時に注入する。
 
 ## 手順
 
 ### 1. 対象物件を取得
 
-Supabase MCP (`execute_sql`, project_id: `dzhcumdmzskkvusynmyw`) で以下を実行:
+Supabase MCP（`execute_sql`、project_id は `dzhcumdmzskkvusynmyw`）で次を実行する。
 
 ```sql
 SELECT l.id, l.ss_address, l.name
@@ -31,30 +31,31 @@ ORDER BY l.updated_at DESC
 LIMIT 20;
 ```
 
-### 2. 各物件に対して通勤時間を取得
+### 2. 各物件の通勤時間を取得
 
-各物件の `ss_address` を使い、WebFetch で Yahoo路線情報を取得:
+各物件の `ss_address` を使い、WebFetchでYahoo路線情報を取得する。
 
-**playground:**
+playground
 ```
 https://transit.yahoo.co.jp/search/result?from={ss_address}&to={playground_address}&type=4&dt={YYYYMMDD}&tm=0900
 ```
 
-**m3career:**
+m3career
 ```
 https://transit.yahoo.co.jp/search/result?from={ss_address}&to={m3career_address}&type=4&dt={YYYYMMDD}&tm=0900
 ```
 
-- `{YYYYMMDD}`: 次の平日の日付（土日祝を避ける）
-- `type=4`: 到着時刻指定
-- `tm=0900`: 朝9:00到着
+- `{YYYYMMDD}` 次の平日の日付（土日祝を避ける）
+- `type=4` 到着時刻を指定する
+- `tm=0900` 朝9:00に到着する
 
-WebFetch のプロンプト:
+WebFetchのプロンプトは次のとおり。
+
 > 最初のルートの所要時間（何分）、乗り換え回数、主要経由駅を教えてください。
 
-### 3. 結果を Supabase に書き戻し
+### 3. 結果をSupabaseに書き戻す
 
-各物件に対して:
+各物件について次を実行する。
 
 ```sql
 UPDATE enrichments 
@@ -75,9 +76,9 @@ SET commute_info = jsonb_build_object(
 WHERE listing_id = {id};
 ```
 
-### 4. サマリー出力
+### 4. サマリーを出力
 
-処理完了後、以下の形式でレポート:
+処理が終わったら、次の形式でレポートする。
 
 ```
 === Yahoo Transit 通勤時間更新 ===
@@ -93,8 +94,8 @@ WHERE listing_id = {id};
 
 ## ルール
 
-- `source` が `gmaps` または `yahoo_transit` の既存データがある物件は**スキップ**
-- Yahoo Transit が結果を返さない場合はスキップ（エラーログに記録）
-- 所要時間が 120分を超える場合は異常値として SKIP
-- 1リクエストごとに数秒の間隔を空ける（レート制限対策）
-- Supabase project_id: `dzhcumdmzskkvusynmyw`
+- `source` が `gmaps` または `yahoo_transit` の既存データがある物件はスキップする。
+- Yahoo Transitが結果を返さない場合はスキップする（エラーログに記録する）。
+- 所要時間が120分を超える場合は異常値としてスキップする。
+- 1リクエストごとに数秒の間隔を空ける（レート制限対策）。
+- Supabaseのproject_idは `dzhcumdmzskkvusynmyw`。

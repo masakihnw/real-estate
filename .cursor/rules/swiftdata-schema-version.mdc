@@ -11,41 +11,41 @@ alwaysApply: false
 
 ## 背景
 
-`Listing` は SwiftData の `@Model` クラスで、50以上のストアドプロパティを持つ。
-SwiftData の自動軽量マイグレーションはこの規模のモデルでは信頼できず、
-スキーマ変更時に Objective-C レベルの NSException でアプリが起動クラッシュする。
+`Listing` はSwiftDataの `@Model` クラスで、50以上のストアドプロパティを持つ。
+この規模のモデルでは、SwiftDataの自動軽量マイグレーションを信頼できない。
+スキーマを変更すると、Objective-CレベルのNSExceptionでアプリが起動時にクラッシュする。
 
-そのため `RealEstateAppApp.swift` に簡易バージョン管理を実装済み:
-- `currentSchemaVersion` を比較し、旧バージョンの DB を自動削除してクリーンスタートする方式
+そのため `RealEstateAppApp.swift` に簡易バージョン管理を実装済みである。
+`currentSchemaVersion` を比較し、旧バージョンのDBを自動削除してクリーンスタートする。
 
 ## 必須ルール
 
-### Listing.swift にストアドプロパティを追加・削除・型変更する場合
+### Listing.swift にストアドプロパティを追加、削除、型変更する場合
 
-以下の **3つ全て** を同じコミットで必ず行うこと:
+次の3つを全て、同じコミットで必ず行うこと。
 
-1. **`RealEstateAppApp.swift` の `currentSchemaVersion` をインクリメント**
-   - コメントに何を変更したか記載する
+1. `RealEstateAppApp.swift` の `currentSchemaVersion` をインクリメントする。
+   - コメントに、何を変更したかを書く。
    - 例: `private static let currentSchemaVersion = 4  // v4: newField 追加`
 
-2. **`ListingStore.swift` の `update(existing:from:)` メソッドに新プロパティのコピーを追加**
-   - 既存物件の更新時に新フィールドが反映されないバグを防ぐ
+2. `ListingStore.swift` の `update(_:from:)` メソッドに、新しいプロパティのコピーを追加する。
+   - 既存の物件を更新するときに、新しいフィールドが反映されないバグを防ぐ。
    - 例: `existing.newField = new.newField`
 
-3. **ビルド番号をインクリメント**（以下3ファイル全て）
-   - `Info.plist` の `CFBundleVersion`
-   - `project.pbxproj` の `CURRENT_PROJECT_VERSION`（Debug / Release 両方）
-   - `project.yml` の `CURRENT_PROJECT_VERSION`
+3. ビルド番号をインクリメントする。
+   - `project.yml` の `CURRENT_PROJECT_VERSION` を上げる。これがビルド番号の正である。
+   - `Info.plist` の `CFBundleVersion` は `$(CURRENT_PROJECT_VERSION)` を参照するため、直接は編集しない。
+   - `project.pbxproj` は `.gitignore` 対象の生成物であり、`xcodegen generate` で再生成される。
 
 ### チェックリスト
 
-Listing.swift を編集した際は、以下を自問すること:
+Listing.swift を編集したら、次を自問すること。
 
-- [ ] `var` / `let` でストアドプロパティを追加・削除・型変更したか？
-  - YES → 上記 3 ステップを実行
-  - NO（computed property やメソッドのみの変更）→ スキーマバージョン変更不要
+- `var` または `let` で、ストアドプロパティを追加、削除、型変更したか。
+  - 該当する場合は、上の3ステップを実行する。
+  - computed propertyやメソッドだけの変更なら、スキーマバージョンの変更は不要である。
 
 ### やってはいけないこと
 
-- スキーマバージョンをインクリメントせずに Listing のストアドプロパティを変更する
-  → **アプリが起動時にクラッシュする**（過去に2回発生）
+- スキーマバージョンをインクリメントせずに、Listingのストアドプロパティを変更する。
+  アプリが起動時にクラッシュする（過去に2回発生した）。

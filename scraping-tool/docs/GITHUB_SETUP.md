@@ -1,93 +1,88 @@
-# GitHub Actions セットアップガイド
+# GitHub Actionsのセットアップガイド
 
-物件情報の自動更新をGitHub Actionsで行うためのセットアップ手順です。
+物件情報を GitHub Actions で自動更新するためのセットアップ手順です。
+
+## ワークフローの構成
+
+更新は2つのワークフローで行います。どちらもリポジトリルートの `.github/workflows/` にあります。
+
+| ワークフロー | ファイル | 役割 |
+|---|---|---|
+| Scrape Listings（WF1） | `scrape-listings.yml` | 中古物件を取得し、前回結果との変更有無を判定する。結果はartifactでWF2に渡す |
+| Enrich and Report（WF2） | `enrich-and-report.yml` | Scrape Listings が成功すると自動で起動する。enrich、レポート作成、Slack通知、コミットとプッシュを行う |
 
 ## セットアップ手順
 
-### 1. リポジトリにプッシュ
+### 1. ワークフローをリポジトリに入れる
 
-このリポジトリをGitHubにプッシュします：
+`.github/workflows/` の2ファイルをGitHubのリポジトリに入れる作業です。`main` はブランチ保護のため、直接pushできません。ブランチを切ってPRを作成し、必須チェックの `ci-gate` が緑になってからマージしてください。
 
-```bash
-git add .
-git commit -m "Add GitHub Actions workflow for automatic listings update"
-git push origin main
-```
+### 2. GitHub Actionsの確認
 
-### 2. GitHub Actions の確認
-
-1. GitHubリポジトリの **Actions** タブを開く
-2. 左サイドバーに "Update Listings" ワークフローが表示されることを確認
-3. 初回は手動実行でテスト可能（"Run workflow" ボタン）
+1. GitHubリポジトリの Actions タブを開きます。
+2. 左サイドバーに表示される項目を確認します。項目は "Scrape Listings" と "Enrich and Report" です。
+3. 初回は、手動実行でテストできます（"Run workflow" ボタン）。
 
 ### 3. 動作確認
 
-- **初回実行**: Actions タブから "Run workflow" → "Run workflow" をクリック
-- **実行ログ**: 実行中のワークフローをクリックしてログを確認
-- **結果確認**: `scraping-tool/results/` にファイルが追加されていることを確認
+- 初回実行は、Actions タブで "Scrape Listings" を選びます。続けて "Run workflow" を押します。成功すると "Enrich and Report" が続けて起動します。
+- 実行ログは、実行中のワークフローをクリックして確認します。
+- 結果は、`scraping-tool/results/` にファイルが追加されていることで確認します。
 
 ## スケジュールと動作
 
-- **実行頻度**: デフォルトで**毎日 1 回、JST 8:00**（UTC 23:00）。サイト負荷を抑えるため 1 日 1 回にしている。
-- **変更時のみ**: 物件に新規・価格変動・削除があったときだけ、レポート作成・Slack通知・コミット・プッシュを行う。変更がなければスクレイピングのみ実行して終了。
+- 実行頻度は1日4回です。
+  Scrape Listings の起動時刻は、JST 9:00、15:00、18:00、20:00 です。UTCでは 0:00、6:00、9:00、11:00 です。
+- Slack通知は、2026-07-07から全経路で停止しています。`slack_notify.py` は、環境変数 `SLACK_NOTIFICATIONS_ENABLED=1` を設定したときだけ送信します。ワークフローはこの変数を設定していないため、現在は届きません。再開後の送信は、UTC 0〜5時に開始した回だけです（JST 9:00の回に当たります）。GitHub Actions のcronは数時間遅れることがあるため、UTC 0〜5時を通知の時間帯にしています。
+- 変更があったときだけ、WF2 の enrich、レポート作成、コミットとプッシュを行います。変更がなければ、スクレイピングと変更判定だけで終わります。ただし、通知の時間帯の回は、変更がなくても finalize ジョブが動き、未送信の通知を送ります。
 
-スケジュールを変更する場合（リポジトリルートの `.github/workflows/update-listings.yml` を編集）：
+スケジュールを変える場合は、`.github/workflows/scrape-listings.yml` の `cron` を編集します。
 
-- `cron: '0 23 * * *'` = 毎日 JST 8:00 のみ（**現在の設定**）
-- `cron: '0 */2 * * *'` = 2時間ごと（JST 9:00, 11:00, ...）
-- `cron: '0 * * * *'` = 毎時 0 分（負荷が増えるため推奨しない）
+- `cron: '0 0,6,9,11 * * *'` は1日4回で、現在の設定です。
+- `cron: '0 23 * * *'` は毎日 JST 8:00 の1回のみです。
+- `cron: '0 */2 * * *'` = 2時間ごと（JST 9:00, 11:00, ...）です。現在の設定は1日4回です。
+- `cron: '0 * * * *'` は毎時0分です。サイトへの負荷が増えるため、推奨しません。
 
 ## トラブルシューティング
 
-### コミット・通知が作成されない
+### コミットや通知が作成されない
 
-- 物件に変更（新規・価格変動・削除）がない場合、レポート作成・Slack通知・コミットは行いません（正常動作）
-- ログに「変更なし（レポート・通知をスキップ）」または "changed=false" と出る場合は、前回と同じ結果です
+- 物件に変更（新規、価格変動、削除）がない場合、WF2 のレポート作成とコミットは行いません。これは正常な動作です。
+- Scrape Listings のログに `中古: 変更なし` と出る場合や、`has_changes: false` と出る場合は、前回と同じ結果です。
 
-### プッシュが失敗する（git exit code 128）
+### プッシュが失敗する
 
-**原因**: デフォルトの GITHUB_TOKEN は「読み取り専用」のため、ワークフローから `git push` できません。
+`main` はブランチ保護で、必須チェックは `ci-gate`、直接pushは禁止です。
+`github-actions[bot]` は管理者ではないので、`GITHUB_TOKEN` でpushすると `GH006` で拒否されます。
+WF2の「Commit and push」ステップは、Personal Access Tokenでpushする設定です。このトークンは管理者用で、Secret `PAT_FINALIZE_PUSH` に入れた値です。
+Secretが未設定だと `GITHUB_TOKEN` にフォールバックします。この場合、checkoutは通っても、pushだけが失敗します。
 
-**対処（必須）**: このワークフローが動いている **リポジトリ**（例: real-estate やあなたのリポジトリ名）で、以下を実施してください。
+確認する点は次のとおりです。
 
-1. GitHub でそのリポジトリを開く
-2. **Settings** → **Actions** → **General**
-3. 下の方の **Workflow permissions** で  
-   **「Read and write permissions」** を選択
-4. **Save** で保存
-
-※ 本リポジトリが real-estate 単体の場合は、そのリポジトリの Settings を変更します。real-estate が別リポジトリのサブフォルダとして含まれる場合は、親リポジトリ（ワークフローが置いてあるリポジトリ）の設定を変更します。
-
-**Read and write にしているのに 128 になる場合**
-
-1. **エラー本文を確認**  
-   Actions → 失敗した run → 「Commit and push」ステップを開き、赤いエラー行を確認。  
-   - `protected branch` / `refusing to allow` → ブランチ保護でブロックされている
-   - `Permission denied` → 権限かトークンの問題
-
-2. **ブランチ保護の確認**  
-   Settings → Branches → Branch protection rules で `main` にルールがある場合：
-   - **Restrict who can push to matching branches** が有効だと、GITHUB_TOKEN が許可されていないと push できないことがある
-   - その場合は「Allow specified actors to bypass required pull requests」などでワークフローからの push を許可するか、このワークフロー用に `main` を保護対象外にする
-
-3. **フォークの場合**  
-   フォークしたリポジトリでは、デフォルトブランチへの push が制限されている場合がある。親リポジトリへ PR で出す運用にするか、自分の独立したリポジトリで実行する。
+1. Secret `PAT_FINALIZE_PUSH` が設定されていて、トークンが失効していないことを確認します。
+2. 失敗したrunの "Commit and push" ステップを開き、赤いエラー行を確認します。
+   - `protected branch` や `refusing to allow` と出る場合は、ブランチ保護がpushを止めています。
+   - `Permission denied` と出る場合は、権限かトークンに問題があります。
+3. `git exit code 128` で失敗する場合は、次の手順で設定を変えます。
+   - リポジトリの Settings、Actions、General、Workflow permissions を開きます。"Read and write permissions" を選び、Save で保存します。
+   - 変更するのは、ワークフローが置かれているリポジトリの設定です。親リポジトリのサブフォルダとして含まれている場合は、親リポジトリの設定になります。
+4. フォークしたリポジトリでは、デフォルトブランチへのpushが制限されている場合があります。親リポジトリへPRを出すか、独立したリポジトリで実行してください。
 
 ### 実行がスキップされる
 
-- リポジトリがフォークの場合、デフォルトでスケジュール実行が無効
-- Settings → Actions → General で有効化
+- リポジトリがフォークの場合、スケジュール実行はデフォルトで無効です。
+- Settings、Actions、General で有効化してください。
 
 ## 手動実行
 
-ローカル環境から手動で実行する場合：
+ローカル環境から手動で実行する場合は、次のコマンドを使います。
 
 ```bash
 cd scraping-tool
 ./scripts/update_listings.sh
 ```
 
-Git操作をスキップする場合：
+Git操作をスキップする場合は、次のコマンドを使います。
 
 ```bash
 ./scripts/update_listings.sh --no-git
