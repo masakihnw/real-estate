@@ -184,6 +184,25 @@ python3 scripts/build_map_viewer.py --limit 20
 - レポート: `scraping-tool/results/report/report.md`（毎回上書き）
 - データ: `scraping-tool/results/current_YYYYMMDD_HHMMSS.json`（履歴用）
 
+コミットメッセージ例は次のとおり。
+
+```
+Update listings: 20260128_132800
+
+🆕 新規: 2件
+🔄 価格変動: 1件
+❌ 削除: 1件
+
+取得件数: 3件
+レポート: scraping-tool/results/report/report.md
+```
+
+ローカル環境でcronから定期実行する例は次のとおり。
+
+```bash
+0 8 * * * cd /path/to/real-estate/scraping-tool && ./scripts/update_listings.sh
+```
+
 スクリプトの構成（Phase 1からPhase 3）と所要時間の集計は、スクリプト冒頭のコメントを参照してください。
 
 ### GitHub Actionsでの定期実行
@@ -234,6 +253,8 @@ python3 slack_notify.py current.json [previous.json] [report.md]
 ### 総戸数フィルタ
 
 スクレイパーは、総戸数が分かった物件のうち `TOTAL_UNITS_MIN` 未満のものを除外する。総戸数が分からない物件は通過させて、取りこぼしを防ぐ。
+
+HOME'Sは、一覧の `textFeatureComment`（例: 総戸数143戸）から総戸数をパースし、20戸未満を除外する。
 
 SUUMOの一覧には総戸数が出ないため、詳細ページのキャッシュを使う。
 

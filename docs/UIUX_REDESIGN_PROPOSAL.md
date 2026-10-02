@@ -248,7 +248,7 @@ enum DS {
         static let floating = ShadowStyle(opacity: 0.16, radius: 16, y: 8)
     }
     enum Typography { // Dynamic Type 対応の役割ベース
-        static let hero = Font.largeTitle.bold()          // 価格など最も目立たせる数値
+        static let hero = Font.largeTitle.bold()          // 価格など主役数値
         static let sectionTitle = Font.headline
         static let body = Font.subheadline
         static let label = Font.caption

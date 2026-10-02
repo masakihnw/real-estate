@@ -331,7 +331,7 @@ SELECT skip_notification_draft('slack', 'new_listing_digest');
 
 ## 共通ルール
 - サブエージェント委任禁止: 全ステップの処理をメインエージェントのコンテキストで実行する。サブエージェント（Agentツール）への委任は禁止
-- AI分析必須: 各物件を1件ずつAIで分析する。分析にはget_active_prompt()で取得したsystem_promptを使う。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
+- AI分析必須: 各物件は必ずget_active_prompt()で取得したsystem_promptを使って1件ずつAIで分析する。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
 - Step 4必須: Step 1〜3の完了後、必ずStep 4（通知ドラフト生成）を実行する。Step 4a、4b、4cの全てを実行し、該当なしの場合はskip_notification_draftを呼ぶ。Step 4をスキップするとSlack通知が送信されないので、絶対にスキップ禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む

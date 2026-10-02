@@ -293,7 +293,7 @@ worst,Stagnation (Worst),0.85,金利上昇により購買力が低下し需給�
 
 ```bash
 python3 evaluate.py data/backtest_sample.csv
-# --data-dir、--calibration でパスを指定できる。--use-listing-as-actual を付けると、実績カラムが無いときに listing_price を実績として使う。
+# --data-dir, --calibration でパス指定可。--use-listing-as-actual で実績カラム無し時は listing_price を実績として使用。
 ```
 
 `--calibration` で渡す `calibration.json` は、第3.5節のとおり価格に影響しません。

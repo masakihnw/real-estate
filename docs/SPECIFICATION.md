@@ -60,7 +60,7 @@ real-estate/
     ├── scripts/               # シェルスクリプト（run_scrape.sh, run_enrich.sh, run_finalize.sh 等）
     ├── config/                # 買い手プロフィール、購入戦略、AI プロンプト
     ├── data/                  # キャッシュ・マスターデータ
-    ├── results/               # 出力（latest.json 等）
+    ├── results/               # 出力（latest.json, report.md 等）
     ├── docs/                  # セットアップ・技術ドキュメント
     └── tests/                 # pytest テスト
 ```
@@ -76,6 +76,7 @@ real-estate/
 │                    GitHub Actions（CI/CD）                          │
 │  main.py → enrichers → sync_db.py → generate_report.py             │
 │  → send_push.py → upload_scraping_log.py → slack_notify.py         │
+│  → git commit & push                                               │
 └────────────────────┬───────────────────────────────────────────────┘
                      │
         ┌────────────┼────────────┐
@@ -2323,7 +2324,10 @@ photos/{docId}/{photoId}     → 認証済みユーザーのみ読み書き
                                 サイズ上限: 10MB
                                 コンテンツタイプ: image/*
 floor_plans/{imageId}        → 公開読み取り（認証不要）
+                                書き込みは Admin SDK（パイプライン）のみ
 property_images/{imageId}    → 公開読み取り（認証不要）
+                                書き込みは Admin SDK（パイプライン）のみ
+                                SUUMO 物件写真（外観・室内・水回り等）の永続保存用
 ```
 
 `floor_plans/` と `property_images/` のルールは、SUUMO と HOME'S の公開物件写真のキャッシュ用です。ダウンロードトークンが無効になった場合でも、`AsyncImage` が読み込めるように公開読み取りにしています。パイプラインの現在のアップロード先はR2です。未設定ならSupabase Storageを使います。`upload_floor_plans.py` がFirebase Storageへ書き込むことはありません。

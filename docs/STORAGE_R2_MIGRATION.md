@@ -44,29 +44,29 @@ Supabase Freeプランの Storage 上限は1GBです。`listing-images` バケ�
 ```bash
 cd scraping-tool
 
-# 0. 不要画像のGC（孤児と掲載終了物件の画像、約1.4GBを先に削除）
-python3 scripts/storage_image_gc.py            # dry-runで件数を確認
-python3 scripts/storage_image_gc.py --execute  # マニフェストの剪定も行うので、変更をコミットする
+# 0. 不要画像の GC（孤児 + 掲載終了物件の画像 ≒ 1.4GB を先に削除）
+python3 scripts/storage_image_gc.py            # dry-run で件数確認
+python3 scripts/storage_image_gc.py --execute  # マニフェスト剪定も行うので変更をコミット
 
-# 1. 全オブジェクトをR2へコピー（中断しても再実行で続きから）
+# 1. 全オブジェクトを R2 へコピー（中断しても再実行で続きから）
 python3 scripts/migrate_storage_to_r2.py --phase copy
 
-# 2. 件数とサイズの一致を検証（未移行が0件になるまでcopyを繰り返す）
+# 2. 件数・サイズの一致を検証（未移行 0 件になるまで copy を繰り返す）
 python3 scripts/migrate_storage_to_r2.py --phase verify
 
-# 3. URLの書き換え（DBのenrichments、マニフェスト、ローカルJSON）
+# 3. URL の書き換え（DB の enrichments + マニフェスト + ローカル JSON）
 python3 scripts/migrate_storage_to_r2.py --phase rewrite \
     --rewrite-file results/latest.json          # 存在しない場合はスキップされる
 python3 scripts/migrate_storage_to_r2.py --phase rewrite \
     --rewrite-file results/latest.json --execute
-# 書き換わったマニフェストをコミットする
+# → 書き換わったマニフェストをコミットする
 
-# 4. パイプラインを1サイクル（scrape、enrich、finalize）流し、
-#    アプリで画像が表示されることを確認する。
-#    旧URLを含む実行中のアーティファクトがDBに再アップサートされる余地を
-#    なくすため、1サイクル置いてから次へ進む。
+# 4. パイプラインを1サイクル（scrape → enrich → finalize）流し、
+#    アプリで画像表示を確認する。
+#    ※ 旧 URL を含む実行中アーティファクトが DB に再アップサートされる
+#      余地を消すため、1サイクル置いてから次へ進む。
 
-# 5. Supabase側のオブジェクトを削除（容量を解放する。R2に存在するものだけ削除する）
+# 5. Supabase 側のオブジェクトを削除（容量解放。R2 に存在するものだけ消す）
 python3 scripts/migrate_storage_to_r2.py --phase delete-source
 python3 scripts/migrate_storage_to_r2.py --phase delete-source --execute
 ```

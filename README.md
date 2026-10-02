@@ -18,7 +18,7 @@ real-estate-public/
 │   ├── *_scraper.py        #   suumo / homes / athome / nomucom / rehouse / livable / stepon
 │   ├── *_enricher.py       #   通勤時間 / ハザード / e-Stat / reinfolib / 住まいサーフィン
 │   ├── claude_*.py         #   Claude API による投資分析・テキスト抽出・画像分類
-│   ├── supabase_sync.py    #   Supabase への同期
+│   ├── supabase_sync.py    #   Supabase への同期（正系）
 │   ├── slack_notify.py     #   差分・ウォッチリスト値下げの Slack 通知（既定で送信停止）
 │   └── tests/              #   pytest（CI で実行）
 ├── supabase/migrations/    # Supabase スキーマ（3桁連番。採番規律は .claude/CLAUDE.md 参照）

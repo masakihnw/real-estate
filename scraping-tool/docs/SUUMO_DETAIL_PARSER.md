@@ -13,10 +13,8 @@ result = parse_suumo_detail_html(html)
 # result["total_units"]     → 総戸数（例: 38）
 # result["floor_position"]  → 所在階（例: 12）
 # result["floor_total"]     → 建物階数（例: 13）
-# result["floor_structure"] → 表示用の構造・階建文字列（例: "RC13階地下1階建"）
+# result["floor_structure"] → 表示用「構造・階建」文字列（例: "RC13階地下1階建"）。report_utils.format_floor に渡すと「12階/RC13階地下1階建」形式になる。
 ```
-
-`report_utils.format_floor` に `floor_position` と `floor_structure` を渡すと、「12階/RC13階地下1階建」の形式になります。
 
 戻り値のdictが持つ、上の4項目以外のキーは次のとおりです。
 

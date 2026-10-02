@@ -184,7 +184,7 @@ SELECT * FROM batch_cleanup_junk_images();
 
 ## 共通ルール
 - サブエージェント委任禁止: 全ステップの処理をメインエージェントのコンテキストで実行する
-- AI分析必須: Step 1の各物件を1件ずつAIで分析する。分析にはget_active_prompt()で取得したsystem_promptを使う。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
+- AI分析必須: Step 1の各物件は必ずget_active_prompt()で取得したsystem_promptを使って1件ずつAIで分析する。Pythonスクリプト、ルールベース処理、一括バッチ処理、Fetch-Then-Ignoreパターンは禁止
 - エラーが発生しても他の物件・ステップの処理は続行する
 - 対象が0件のステップはスキップして次へ進む
 - 日本語で回答する

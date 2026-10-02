@@ -53,7 +53,7 @@ private func commitWithAnimation(_ decision: SwipeDecision, translation: CGSize)
         exitOffset = translation
     }
 
-    // 問題: 固定時間待ちでアニメーション完了を推定
+    // ★ 問題: 固定時間待ちでアニメーション完了を推定
     DispatchQueue.main.asyncAfter(deadline: .now() + (reduceMotion ? 0.2 : 0.35)) {
         viewModel.commitSwipe(decision)
         dragOffset = .zero
@@ -381,7 +381,7 @@ for i in 0..<jsonArray.count {
     var row = jsonArray[i]
     for key in Self.jsonbStringFields {
         if let val = row[key], !(val is NSNull), !(val is String) {
-            // 問題: Object → Data → String
+            // ★ Object → Data → String
             if let jsonData = try? JSONSerialization.data(withJSONObject: val),
                let str = String(data: jsonData, encoding: .utf8) {
                 row[key] = str
@@ -393,7 +393,7 @@ for i in 0..<jsonArray.count {
 
 // さらに row → Data → ListingDTO にデコード
 for (i, row) in jsonArray.enumerated() {
-    let rowData = try JSONSerialization.data(withJSONObject: row)  // 問題: 再シリアライズ
+    let rowData = try JSONSerialization.data(withJSONObject: row)  // ★ 再シリアライズ
     let dto = try decoder.decode(ListingDTO.self, from: rowData)
 }
 ```

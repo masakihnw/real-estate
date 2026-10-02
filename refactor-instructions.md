@@ -55,7 +55,7 @@
 
 ---
 
-## 3. Behaviors To Preserve（変えてはならない既存挙動）
+## 3. Behaviors To Preserve(絶対に壊さない既存挙動)
 
 1. **GitHub Actionsパイプラインの成立**: `run_scrape.sh` / `run_enrich.sh` / `run_finalize.sh` のCLIインターフェースと環境変数名。成果物パス（`results/latest_raw.json` など）。workflow間のartifact受け渡し。
 2. **dedupの判定結果**: `main.py` は3段階のdedupを行う。段階は listing_key、fuzzy、building_key である。同じ入力に対する判定結果は変わらない。`claude_dedup.py` の出力も同様である。
