@@ -5,7 +5,7 @@
 > 最終更新: 2026-02-11（Phase 19 包括的品質改善後）
 > 2026-10-02 にコードと照合し、D2、N1、I5 の記述を更新した。
 
-2026-06 の UI/UX 刷新（Phase 1〜5）に関わる残件は、リポジトリ直下の `docs/BACKLOG.md` を正本とする。本書は2026-02時点の改善候補の記録であり、刷新後のデザイン、比較、フィルタの状態は BACKLOG.md と、リポジトリ直下の `docs/UIUX_REDESIGN_PROPOSAL.md` に従う。
+2026-06 の UI/UX 刷新（Phase 1〜5）に関わる残件は、リポジトリ直下の `docs/BACKLOG.md` を正本とする。本書は2026-02時点の改善候補の記録である。刷新後のデザイン、比較、フィルタの状態は BACKLOG.md と、リポジトリ直下の `docs/UIUX_REDESIGN_PROPOSAL.md` に従う。
 
 ---
 
@@ -92,7 +92,7 @@
 - 全箇所を `do/catch` とエラーログに改めた。
 
 ### I5. FirebaseSyncService 責務分離: 対象外
-- `FirebaseSyncService.swift` は PR #10 で削除済み（リポジトリ直下の `docs/refactor-proposals.md`）。現在のアノテーション同期は `SupabaseAnnotationService` が担う。
+- `FirebaseSyncService.swift` は PR #10 で削除済み（リポジトリ直下の `docs/refactor-proposals.md`）。現在のアノテーション同期は `SupabaseAnnotationService` が行う。
 
 ### I6. 駅名パースのテスト: 将来課題（N1 依存）
 - `RealEstateAppTests` に、`parsedStations` を対象にしたテストは無い（2026-10-02 のgrepで確認）。

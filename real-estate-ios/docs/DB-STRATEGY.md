@@ -20,7 +20,7 @@
 ### 1.1 取得元の使い分け
 
 - 既定のSupabaseモード: `SupabaseListingStore` がSupabaseのRPCから物件を取得する。`ListingStore.useSupabase` の既定値は `true` である。
-- JSONモード: 設定のデータ取得で「Supabase API」をオフにして「カスタム URL 設定」にURLを入れると、そのURLの一覧JSON（GitHub rawなど）から取得する。ETagによる差分チェックが使える。
+- JSONモード: 設定のデータ取得で「Supabase API」をオフにする。「カスタム URL 設定」にURLを入れると、そのURLの一覧JSON（GitHub rawなど）から取得する。ETagによる差分チェックが使える。
 - いいねとコメントは `SupabaseAnnotationService` がSupabaseのRPCで読み書きする。ユーザーの識別にはFirebase AuthのUIDを使う。
 - 物件データの正はSupabaseである。アプリはそのスナップショットをローカルに持つ。
 - Notionは使わない。元はNotionで行っていたDB機能をアプリに寄せている。
@@ -28,9 +28,9 @@
 ### 1.2 スキーマ変更
 
 - `Listing` のストアドプロパティを追加、削除、変更したら、`currentSchemaVersion` を1つ上げる。
-- 起動時に、保存済みのバージョンが `currentSchemaVersion` より小さければ、SwiftDataのストアファイルと画像のディスクキャッシュを削除し、サーバーから再取得する。
+- 起動時に、保存済みのバージョンが `currentSchemaVersion` より小さければ、SwiftDataのストアファイルと画像のディスクキャッシュを削除する。その後、サーバーから再取得する。
 - VersionedSchemaとSchemaMigrationPlanは使っていない。
-- ユーザーデータ（いいね、コメントなど）は、同期の途中で `UserAnnotationStore` がUserDefaultsにバックアップし、再取得した物件へ `identityKey` で照合して復元する。
+- ユーザーデータ（いいね、コメントなど）は、同期の途中で `UserAnnotationStore` がUserDefaultsにバックアップする。再取得した物件へ `identityKey` で照合して復元する。
 
 ### 1.3 データの流れ
 
@@ -48,7 +48,7 @@
 ### 2.1 ローカルファースト
 
 - 一覧と詳細は常にローカルDBから表示する。ネットワークがなくても見られる。
-- 更新はpull-to-refreshによる手動実行か、バックグラウンド更新（BGAppRefreshTask）で行い、取得結果でローカルDBを更新する。
+- 更新はpull-to-refreshによる手動実行か、バックグラウンド更新（BGAppRefreshTask）で行う。取得結果でローカルDBを更新する。
 
 ### 2.2 更新状況の表示
 

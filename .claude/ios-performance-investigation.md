@@ -154,7 +154,7 @@ private func prefetchEnrichment() async {
 
 - enrichment未取得のカードが50件あると、50件のSupabase RPCがすべて完了するまでスピナーを表示する。
 - 各RPCは `get_listing_detail` で、個別物件のenrichmentを全部取得する（JSONBを含む重いレスポンス）。
-- TaskGroupに並列数の上限がないため、同時にN件のHTTPリクエストが走り、Supabaseのレート制限に達する可能性がある。
+- TaskGroupに並列数の上限がない。同時にN件のHTTPリクエストが走り、Supabaseのレート制限に達する可能性がある。
 - ユーザーはカードを1枚ずつ見るのに、全件のフェッチを待つ必要がある。
 
 ### 提案する修正
@@ -402,7 +402,7 @@ for (i, row) in jsonArray.enumerated() {
 
 - JSONBフィールド（13種類）が `[String: Any]` から `Data`、さらに `String` に変換される。
 - その後、行全体が `[String: Any]` から `Data`、さらに `ListingDTO` にデコードされる。
-- 200件を同期すると、200 × (13回の部分シリアライズ + 1回の全体シリアライズ) = 2,800回のJSONSerialization呼び出しになる。
+- 200件を同期すると、JSONSerializationの呼び出しは2,800回になる。内訳は200 × (13回の部分シリアライズ + 1回の全体シリアライズ)である。
 - この処理は `refresh()` の中で走り、同期中のメインスレッドの応答性に影響する。
 
 ### 提案する修正

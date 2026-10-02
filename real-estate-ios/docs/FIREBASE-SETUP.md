@@ -10,7 +10,7 @@ Firebaseは、アプリの次の機能に使っている。いいねとコメン
 | スクレイピングログの閲覧 | Firestore（`scraping_logs/latest`） | `ScrapingLogService.swift` |
 | クラッシュ収集 | Crashlytics | `RealEstateAppApp.swift` |
 
-過去にはFirestoreでいいねとメモを共有し、設定画面からFirestoreの `scraping_config` を編集していた。どちらもアプリから撤去済みで、現在の設定の正は Supabase の `scraping_config` である（[リファクタリング提案書](../../docs/refactor-proposals.md) のP1とP2を参照）。
+過去にはFirestoreでいいねとメモを共有し、設定画面からFirestoreの `scraping_config` を編集していた。どちらもアプリから撤去済みである。現在の設定の正は Supabase の `scraping_config` である（[リファクタリング提案書](../../docs/refactor-proposals.md) のP1とP2を参照）。
 
 プロジェクトは作成済みで、実際の `GoogleService-Info.plist` が `RealEstateApp/GoogleService-Info.plist` にコミットされている。以下の手順は、プロジェクトを作り直すときや、別のFirebaseプロジェクトに接続するときに使う。
 
@@ -125,7 +125,7 @@ Storageのルールは `storage.rules` にある。内見写真は認証済み�
 ## トラブルシューティング
 
 - 起動時にクラッシュする: `GoogleService-Info.plist` が正しいファイルでない可能性がある。Firebase Consoleからダウンロードしたファイルで上書きする。
-- 「Firebase Client IDが見つかりません」というエラーが出る: Googleログインを有効にした後に `GoogleService-Info.plist` を再ダウンロードしていない可能性がある。ステップ3の再ダウンロードを実行する。
-- Googleログインが開かない、またはコールバックが戻らない: `Info.plist` のURL Schemeに、正しい `REVERSED_CLIENT_ID` が設定されているかを確認する。
+- 「Firebase Client IDが見つかりません」というエラーが出る: Googleログインを有効にした後で `GoogleService-Info.plist` を再ダウンロードしていない可能性がある。ステップ3の再ダウンロードを実行する。
+- Googleログインが開かない、またはコールバックが戻らない: `Info.plist` のURL Schemeを確認する。正しい `REVERSED_CLIENT_ID` が設定されている必要がある。
 - 写真が共有されない: Firebase ConsoleでFirestoreとStorageのルールを確認する。
 - `GoogleService-Info.plist` の `BUNDLE_ID` が違う: plist内の `BUNDLE_ID` が `com.hanawa.realestate.app` であることを確認する。

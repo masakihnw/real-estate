@@ -74,7 +74,7 @@
 - [x] カラースキームを選び、A. Blue（#007AFF）を採用
 - [x] Geminiで画像生成（虫眼鏡とマンションのシルエット、Blue #007AFF）
 - [x] 生成した1024x1024のPNGを `Assets.xcassets/AppIcon.appiconset/` に配置し、`Contents.json` を更新
-- [x] DesignSystemのセマンティックカラーを適用（D1、D4、D5: 物件価格、通勤バッジ、値上がりと値下がりの色を定数化）
+- [x] DesignSystemのセマンティックカラーを適用した（D1、D4、D5: 物件価格、通勤バッジ、値上がりと値下がりの色を定数化）
 
 ### Phase 13: ハイブリッド改善（データ取得の最適化、完了）
 - [x] デフォルトURLをアプリにハードコード（初回のURL設定を不要にした）。現在の既定の取得元はSupabaseである。
@@ -101,7 +101,7 @@
 
 #### パフォーマンス最適化
 - [x] ListingStore: `#Predicate` による `propertyType` フィルタ（全件フェッチから対象のみへ）
-- [x] FirebaseSyncService: FirestoreのINクエリでバッチ取得（全ドキュメント取得から対象のみへ）。現在は `FirebaseSyncService` を削除済み。
+- [x] FirebaseSyncService: FirestoreのINクエリでバッチ取得するようにした（全ドキュメント取得から対象のみへ）。現在は `FirebaseSyncService` を削除済み。
 - [x] ジオコーディング: TaskGroupによる2並列化（直列に比べて約2倍速）
 - [x] ハザードマップオーバーレイ: 差分更新（描画のたびに全削除して再追加していたのを、変更時のみにした）
 
@@ -158,7 +158,7 @@
 - [x] HIGとOOUIに準拠したデザイン
 - [x] 新築マンションスクレイパー（SUUMOとHOME'S。現在は削除済み）
 - [x] 新築と中古のタブ分離（現在は新築を廃止）
-- [x] 地図タブ（MKMapViewのUIViewRepresentableと、ハザードマップタイルオーバーレイ、地域危険度、物件ピン）
+- [x] 地図タブ（MKMapViewのUIViewRepresentable、ハザードマップタイルオーバーレイ、地域危険度、物件ピン）
 - [x] ジオコーディング改善（CLGeocoderとSwiftDataキャッシュ）
 - [x] 物件詳細画面の新築対応（引渡時期と種別の表示）
 - [x] FCMリモートプッシュ通知（GitHub Actions、FCM HTTP v1 API、トピック送信）
@@ -211,7 +211,7 @@
 ### Phase 18: メモからコメントへ（家族間共有と作成者表示、完了）
 - [x] C1: `CommentData` 構造体を追加（id、text、authorName、authorId、createdAt）
 - [x] C2: `Listing` に `commentsJSON: String?` プロパティを追加（SwiftDataの軽量マイグレーション。現在はスキーマバージョンを上げて再取得する方式）
-- [x] C3: `FirebaseSyncService` をコメント対応に書き直した。現在は `FirebaseSyncService` を削除し、`SupabaseAnnotationService`（`AnnotationRouter` 経由）が同じ操作を担う。
+- [x] C3: `FirebaseSyncService` をコメント対応に書き直した。現在は `FirebaseSyncService` を削除し、`SupabaseAnnotationService`（`AnnotationRouter` 経由）が同じ操作を行う。
   - `pushAnnotation` を `pushLikeState`（いいね専用）に分離
   - `addComment(for:text:modelContext:)` を新規追加（楽観的更新とFirestore mapへの書き込み）
   - `deleteComment(for:commentId:modelContext:)` を新規追加（自分のコメントだけ削除できる）
