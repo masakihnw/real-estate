@@ -67,9 +67,10 @@ CIは `ci.yml` の単一ゲートに集約済みである。`changes` ジョブ�
 - スクレイパーを変更したら、フルランの前に小さなデータセットで試す
 - 方針が固まったときと実装が終わったときの2回、コードレビュー（code-reviewer agent）を必ず実施する
 - 実装中はこまめにユニットテストを書き、テストが通ることを確認しながら進める（省略禁止）
-- テスト設計、テストレビュー、code-review、実装（iOS、スクレイパーとenricher、マイグレーション、AI分析）の
-  観点出しでは、ユーザーの明示指示がなくても `.claude/skills/qa-personas`（7人の意地悪なQA）スキルを
-  自動的に起動する。正常系への偏り、データ整合、回帰デグレ、単一ソース突合の漏れを、各ペルソナで洗い出す。
+- 観点出しでは、ユーザーの明示指示がなくても `.claude/skills/qa-personas`（7人の意地悪なQA）スキルを
+  自動的に起動する。観点出しの対象は、テスト設計、テストレビュー、code-review、
+  実装（iOS、スクレイパーとenricher、マイグレーション、AI分析）である。
+  正常系への偏り、データ整合、回帰デグレ、単一ソース突合の漏れを、各ペルソナで洗い出す。
   `UserPromptSubmit` フックも、該当するターンで自動的にリマインドする（設定は `.claude/hooks/qa_personas_autoload.sh`）。
 
 ## リポジトリ衛生（Claude Codeが厳守する）
@@ -125,7 +126,7 @@ pbxprojからTestFlightをビルドして、ログインできなくなった。
   採番前に必ず `ls supabase/migrations/ | sort | tail` で最大番号を確認する（過去に025が衝突した）。
 - 適用済みマイグレーションのファイル名と内容は変更しない。修正は新番号で行う。
 - マイグレーションはClaudeがSupabase MCP（`execute_sql`）で直接適用する。採番済みの
-  `supabase/migrations/0XX_*.sql` は正（source of truth）としてコミットし、本番へはMCPで適用する。
+  `supabase/migrations/0XX_*.sql` は正としてコミットし、本番へはMCPで適用する。
   DDLは `CREATE OR REPLACE` などで冪等にし、将来のCLI再適用と衝突しないようにする。適用後は
   実データで効果を検証する（旧運用の「ユーザーに適用を依頼」は廃止）。
 

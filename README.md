@@ -31,7 +31,7 @@ real-estate-public/
 └── .github/workflows/      # 定期スクレイピング・enrichment・監視・バックアップ・CI
 ```
 
-データの流れは次のとおりです。スクレイパーが物件を取得し、dedup、enrichment（通勤、ハザード、AIスコアリング）を経て、Supabaseに保存します。iOSアプリは、そのデータを読みます。Firebaseは、iOSの認証、FCM、写真Storageに使う。
+データの流れは次のとおりです。スクレイパーが物件を取得します。物件はdedupとenrichment（通勤、ハザード、AIスコアリング）を経て、Supabaseに保存します。iOSアプリが読むのは、そのデータです。Firebaseは、iOSの認証、FCM、写真Storageに使います。
 
 ## セットアップ
 
@@ -68,13 +68,13 @@ TestFlightへの配布は `deploy.sh --ios` で行います（API Keyは設定�
 
 ## 定期更新
 
-物件情報は、GitHub Actionsが1日4回（JST 9:00、15:00、18:00、20:00）に自動で更新します。
+GitHub Actionsが、物件情報を1日4回自動で更新します。時刻はJST 9:00、15:00、18:00、20:00です。
 
 - 最新のレポート: `scraping-tool/results/report/` に生成される。`.gitignore` 対象のため、リポジトリには含まれない。
 - 実行履歴: GitHub Actionsの [Actions タブ](https://github.com/masakihnw/real-estate/actions) で確認できます。
 
 Slack通知は、2026-07-07から全経路を停止した。`slack_notify.py` は、環境変数 `SLACK_NOTIFICATIONS_ENABLED=1` を設定したときだけ送信する。
-Backfill HOME'S Images、Detect Delisted Listings、Notification Watchdog、Cron Watchdogの4つのworkflowは、GitHub側で手動で無効化してあります（2026-10-02に `gh workflow list --all` で確認）。経緯と再開手順は [docs/purchase-decision-toyocho.md](docs/purchase-decision-toyocho.md) にあります。
+次の4つのworkflowは、GitHub側で手動で無効化してあります。Backfill HOME'S Images、Detect Delisted Listings、Notification Watchdog、Cron Watchdogです。2026-10-02に `gh workflow list --all` で確認しました。経緯と再開手順は [docs/purchase-decision-toyocho.md](docs/purchase-decision-toyocho.md) にあります。
 
 ## ドキュメント
 

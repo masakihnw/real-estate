@@ -1,13 +1,13 @@
 # スクレイピングツール
 
-10年住み替え前提の中古マンション条件（[../docs/10year-index-mansion-conditions-draft.md](../docs/10year-index-mansion-conditions-draft.md)）を満たす物件を、REINS以外の物件サイトから取得するツールです。取得した物件は、dedupとenrichmentを経てSupabaseに同期し、Markdownレポートとして出力します。
+REINS以外の物件サイトから、10年住み替え前提の中古マンション条件を満たす物件を取得するツールです。条件は [../docs/10year-index-mansion-conditions-draft.md](../docs/10year-index-mansion-conditions-draft.md) を参照してください。取得した物件はdedupとenrichmentを経てSupabaseに同期します。Markdownレポートも出力します。
 
 - 取得元: SUUMO、HOME'S、athome、rehouse、nomucom、stepon、livable。`main.py --source` で選べる。
 - 既定で無効にしているスクレイパー: stepon、athome。理由はボット検知で取得できないことで、`config.py` の `DISABLED_SCRAPERS` に書いてある。環境変数 `DISABLED_SCRAPERS` で上書きできる。
 - athomeは、利用規約でクローラー等による情報取得が明示的に禁止されている（[docs/terms-check.md](./docs/terms-check.md)）。
 - REINS: 成約データは本ツールでは取得しない。手動でレインズマーケットインフォメーションを参照する。
 
-パイプライン全体の構成とGitHub Actionsの実行時刻は [../README.md](../README.md) に、Commandsと開発規約は [../.claude/CLAUDE.md](../.claude/CLAUDE.md) にある。このREADMEは、`scraping-tool/` 内のモジュールとコマンドの説明に絞る。
+パイプライン全体の構成とGitHub Actionsの実行時刻は、[../README.md](../README.md) にある。Commandsと開発規約は、[../.claude/CLAUDE.md](../.claude/CLAUDE.md) にある。このREADMEは、`scraping-tool/` 内のモジュールとコマンドの説明に絞る。
 
 ## フォルダ構成
 
@@ -53,7 +53,7 @@ Pythonモジュールは、役割ごとにファイルを分けてある（ス�
 
 `report_utils.py` は、フォーマット、比較、差分検出用キー、重複除去用キー、`load_json` を提供する。差分検出用キーは `identity_key`（価格を除く同一判定）で、重複除去用キーは `listing_key`（価格を含む完全一致）である。
 
-`optional_features.py` は、asset_score、loan_calc、commute、price_predictorなどのオプショナル依存を一箇所でロードする。未インストールのときは、"-" などの互換値を返す。`generate_report.py` と `slack_notify.py` は `optional_features` 経由で使うため、optional依存に関する try/except ImportError を持たない。
+`optional_features.py` は、オプショナル依存を一箇所でロードする。対象はasset_score、loan_calc、commute、price_predictorなどである。未インストールのときは、"-" などの互換値を返す。`generate_report.py` と `slack_notify.py` は `optional_features` 経由で使う。そのため、optional依存に関する try/except ImportError を持たない。
 
 差分検出では、名前、間取り、広さ、住所、築年、駅徒歩が同じ物件を同一物件とみなす（`identity_key`。価格は含まない）。価格だけが変わった物件はupdated（価格変動）に分類され、newとremovedにはならない。`main.py` のdedupには、`listing_key`（価格を含む）で完全一致した行を1件にまとめる段階がある。
 
@@ -166,7 +166,7 @@ python3 scripts/build_map_viewer.py --limit 20
 
 生成した `results/map_viewer.html` をブラウザで開くと、Leaflet地図上にマーカーが表示される。マーカーをクリックすると、物件名、価格、間取り、最寄駅、詳細リンクを確認できる。
 
-`results/map_viewer.html` はリポジトリにコミットされる。GitHub Actionsの実行では、このHTMLを生成し、[htmlpreview.github.io](https://htmlpreview.github.io/) 経由のURLをレポートのリンク（`--map-url`）に使う。スマホからも同じリンクで開ける。
+`results/map_viewer.html` はリポジトリにコミットされる。GitHub Actionsの実行では、このHTMLを生成する。[htmlpreview.github.io](https://htmlpreview.github.io/) 経由のURLを、レポートのリンク（`--map-url`）に使う。スマホからも同じリンクで開ける。
 
 ### ローカルでの一括実行（update_listings.sh）
 
@@ -278,7 +278,7 @@ SUUMOの一覧には総戸数が出ないため、詳細ページのキャッシ
 
 ## 利用規約・注意
 
-- 私的利用と軽負荷を前提とする。リクエスト間隔は、`config.py` の `*_REQUEST_DELAY_SEC` を下回らないようにする。値は2026-10-02時点で、SUUMO用の `REQUEST_DELAY_SEC` が2秒、HOME'Sとathomeが5秒、rehouse、nomucom、stepon、livableが3秒である。
+- 私的利用と軽負荷を前提とする。リクエスト間隔は、`config.py` の `*_REQUEST_DELAY_SEC` を下回らないようにする。2026-10-02時点の値は、SUUMO用の `REQUEST_DELAY_SEC` が2秒、HOME'Sとathomeが5秒である。rehouse、nomucom、stepon、livableは3秒である。
 - 各サイトの利用規約は [docs/terms-check.md](./docs/terms-check.md) を参照し、利用前に最新の規約を確認してください。
 - 出力は、候補を拾う一次フィルタ用である。管理書類での絞り込みと、REINSの成約確認は手動で行ってください。
 
