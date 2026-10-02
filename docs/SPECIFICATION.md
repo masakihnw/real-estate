@@ -225,7 +225,7 @@ App起動
 
 #### 3.3.0 今日画面（TodayView）
 
-朝刊型のホーム画面。上から順に、AIデイリーブリーフ（当日分がなければ `TodayDigest` がローカルで合成した要約）、変化カード（横スクロール、最大5枚）、スワイプ判定を始めるカード（未判定の物件があるときのみ）、週次相場（折りたたみ）、「すべての動き」へのリンクを表示する。「すべての動き」（ActivityFeedView）は直近7日の新着・再掲・価格変動を最大100件のタイムラインで表示する。今日タブの変化カードと「すべての動き」は、D評価の物件を除外する（`GradeVisibility`。いいね済みの物件は常に表示する）。
+朝刊型のホーム画面。上から順に、AIデイリーブリーフを表示する（当日分がなければ `TodayDigest` がローカルで合成した要約）。次に、変化カード（横スクロール、最大5枚）と、スワイプ判定を始めるカード（未判定の物件があるときのみ）を表示する。その下に、週次相場（折りたたみ）と「すべての動き」へのリンクを置く。「すべての動き」（ActivityFeedView）は、直近7日の新着、再掲、価格変動をタイムラインで表示する。上限は100件である。今日タブの変化カードと「すべての動き」は、D評価の物件を除外する（`GradeVisibility`。いいね済みの物件は常に表示する）。
 
 #### 3.3.1 ログイン画面（LoginView）
 
@@ -260,7 +260,7 @@ App起動
 
 ##### カード（行）の表示構成
 
-カードは左に80ptのサムネイル、右に情報の列を置く。サムネイルは `thumbnailURL`（外観写真を優先）を `TrimmedAsyncImage` で余白トリミングして表示し、その下に `highlightBadge` がある物件では `HighlightBadgeView` でマルチソースバッジを出す。右の列は次の順に並ぶ。
+カードは左に80ptのサムネイル、右に情報の列を置く。サムネイルは `thumbnailURL`（外観写真を優先）を `TrimmedAsyncImage` で余白トリミングして表示する。`highlightBadge` がある物件では、その下に `HighlightBadgeView` でマルチソースバッジを出す。右の列は次の順に並ぶ。
 
 | 行 | 要素 | 詳細 |
 |----|------|------|
@@ -285,13 +285,13 @@ App起動
 
 AI推奨度（`aiRecommendationScore`）またはAI要約（`displayAISummary`）がある物件は、カード下部にAI評価のトグルを表示する。タップすると、星1〜5個の評価、結論（`aiRecommendationSummary`）、次のアクション（`aiRecommendationAction`）が開く。
 
-一覧行内のバッジ（New / 別部屋、騰落率、複数戸売出、価格変動、掲載終了）は、`.padding(.vertical, 2)`、`.padding(.horizontal, 5)`、`cornerRadius: 4` の共通寸法で高さをそろえる。
+一覧行内のバッジ（New / 別部屋、騰落率、複数戸売出、価格変動、掲載終了）は、共通寸法で高さをそろえる。寸法は `.padding(.vertical, 2)`、`.padding(.horizontal, 5)`、`cornerRadius: 4` である。
 
 ##### マンション単位グルーピングと展開カード
 
-一覧画面では `buildingGroupKey`（クリーニング済み物件名と区名を連結したキー）が一致する物件を同一マンションとしてグルーピングし、1マンション = 1カードとして表示する（`ListingGroup`）。住所は区名だけを使う（`extractWardFromAddress`）。そのため、番地の有無（大山町と大山町54番5）やSUUMOの住所誤入力（代田と代沢）があっても、マンション名が同じなら1つに集約できる。マンション名は開発会社が一意に登録するので、同一区内に同名の別建物はほぼない。同一敷地内の別棟は、棟名（コート名、タワー名など）で名前から区別できる。
+一覧画面では、`buildingGroupKey` が一致する物件を同一マンションとしてグルーピングする。`buildingGroupKey` は、クリーニング済み物件名と区名を連結したキーである。1マンション = 1カードとして表示する（`ListingGroup`）。住所は区名だけを使う（`extractWardFromAddress`）。そのため、マンション名が同じなら、番地の有無（大山町と大山町54番5）があっても1つに集約できる。SUUMOの住所誤入力（代田と代沢）があっても同じである。マンション名は開発会社が一意に登録するので、同一区内に同名の別建物はほぼない。同一敷地内の別棟は、棟名（コート名、タワー名など）で名前から区別できる。
 
-物件名は `cleanListingName` でクリーニングしたあと、すべての空白と中黒（・）を除去し、既知の誤字を補正（レジテンスをレジデンスに）してから比較する。この処理で、ザ・レジデンスとザレジデンスのような表記ゆれを吸収する。
+物件名は `cleanListingName` でクリーニングする。そのあと、すべての空白と中黒（・）を除去し、既知の誤字を補正してから比較する。補正の例はレジテンスをレジデンスに直す処理である。この処理で、ザ・レジデンスとザレジデンスのような表記ゆれを吸収する。
 
 次の項目はSUUMOのデータに不整合が多いため、キーに含めない。
 
@@ -323,7 +323,7 @@ AI推奨度（`aiRecommendationScore`）またはAI要約（`displayAISummary`�
 
 #### 3.3.3 フィルタシート（ListingFilterSheet）
 
-シートの上部に、クイックフィルタのチップを横スクロールで並べる。チップは、駅近（徒歩5分以内）、割安物件（価格妥当性60以上）、大規模（100戸以上）、都心3区（千代田区・中央区・港区）、城南エリア（品川区・大田区・目黒区）、3LDK 70m²以上である。その下に、次のセクションを開閉式で並べる。
+シートの上部に、クイックフィルタのチップを横スクロールで並べる。チップには、駅近（徒歩5分以内）、割安物件（価格妥当性60以上）、大規模（100戸以上）がある。ほかに、都心3区（千代田区・中央区・港区）、城南エリア（品川区・大田区・目黒区）、3LDK 70m²以上がある。その下に、次のセクションを開閉式で並べる。
 
 | フィルタ項目 | 入力形式 | 詳細 |
 |-------------|---------|------|
@@ -368,13 +368,13 @@ AI推奨度（`aiRecommendationScore`）またはAI要約（`displayAISummary`�
 
 #### 3.3.4 物件詳細画面（ListingDetailView / ListingDetailPagerView）
 
-フルスクリーンカバー（`.fullScreenCover`）として表示。一覧画面から開く場合は `ListingDetailPagerView`（スワイプページャー）でラップされ、横スワイプで前後の物件に遷移可能。現在の1物件のみ `ListingDetailView` を生成し、`.id()` で物件切替時にビューを再生成する方式で、メモリ使用量を最小化。`DragGesture` の方向判定で縦スクロールと競合回避。ページャーは画面下部にフローティングのページインジケーター（`< 3 / 15 >`）を表示し、現在位置の把握とタップによる前後移動が可能。
+フルスクリーンカバー（`.fullScreenCover`）として表示する。一覧画面から開く場合は `ListingDetailPagerView`（スワイプページャー）でラップし、横スワイプで前後の物件に遷移できる。現在の1物件のみ `ListingDetailView` を生成し、物件を切り替えるときは `.id()` でビューを再生成する。この方式でメモリ使用量を最小にする。縦スクロールとの競合は、`DragGesture` の方向判定で避ける。ページャーは画面下部に、フローティングのページインジケーター（`< 3 / 15 >`）を表示する。ユーザーは現在位置を確かめ、タップで前後に移動できる。
 
 **画面構成**
 
 画面は、上から順にヒーロー領域、タブ切替、タブの中身で構成する。
 
-タブ切替は「概要 / お金 / 資産 / 環境 / メモ」の5つで、segmentedピッカー（`tabPickerHeader`）をスクロール時も画面上部にピン留めする。横スワイプのページャーと操作が重ならないように、切り替えはタップだけにし、中身は `switch` で差し替える（`TabView(.page)` は使わない）。
+タブ切替は「概要 / お金 / 資産 / 環境 / メモ」の5つである。segmentedピッカー（`tabPickerHeader`）は、スクロール時も画面上部にピン留めする。横スワイプのページャーと操作が重ならないよう、切り替えはタップだけにする。中身は `switch` で差し替える（`TabView(.page)` は使わない）。
 
 **ヒーロー領域（タブの上に常に表示）**
 
@@ -388,7 +388,7 @@ AI推奨度（`aiRecommendationScore`）またはAI要約（`displayAISummary`�
 | ⑥ | **スタットストリップ** | 3セルを横に並べる。月々の支払い（約X万）、間取り・面積、徒歩・築年 |
 | ⑦ | **AI購入推奨度 / 投資サマリー** | `InvestmentSummaryCard`。`aiRecommendationScore` がある場合は星の評価、結論、フラグ、強み、リスクを表示する。ない場合は、AI要約またはハイライトバッジだけの簡易カードを表示する |
 
-**物件画像ギャラリー（`propertyImagesGallery`）**: 間取り図を先頭に、SUUMOの物件写真（外観・室内・水回り等）を後ろに置いた横スクロールのギャラリー。各画像にラベルを表示する。サムネイル（`GalleryThumbnailView`）とフルスクリーン表示（`GalleryFullScreenView`）のどちらも、白余白を自動トリミングする。長押し（`.contextMenu`）で「画像をコピー」「共有…」を選べる（コピーは `UIPasteboard.general.image`）。タップするとフルスクリーン表示になり、横スワイプで前後の画像に移動できる。下部のミニマップにサムネイルを並べ、タップで直接ジャンプできる。ページインジケーターと画像ラベルを表示し、ツールバー右上にコピーボタンを常設する。コピーが完了するとオーバーレイで知らせる。Firebase Storage経由で、掲載終了後も画像を表示できる。
+**物件画像ギャラリー（`propertyImagesGallery`）**: 横スクロールのギャラリーで、先頭に間取り図を置く。その後ろに、SUUMOの物件写真（外観・室内・水回り等）を並べる。各画像にラベルを表示する。サムネイル（`GalleryThumbnailView`）とフルスクリーン表示（`GalleryFullScreenView`）のどちらも、白余白を自動トリミングする。長押し（`.contextMenu`）で「画像をコピー」「共有…」を選べる（コピーは `UIPasteboard.general.image`）。タップするとフルスクリーン表示になり、横スワイプで前後の画像に移動できる。下部のミニマップにサムネイルを並べ、タップで直接ジャンプできる。ページインジケーターと画像ラベルを表示し、ツールバー右上にコピーボタンを常設する。コピーが完了するとオーバーレイで知らせる。Firebase Storage経由で、掲載終了後も画像を表示できる。
 
 **タブの中身**
 
@@ -400,7 +400,7 @@ AI推奨度（`aiRecommendationScore`）またはAI要約（`displayAISummary`�
 | **環境** | 通勤時間、ハザード情報 | 通勤時間は Playground / M3Career への所要時間（MKDirections）とGoogle Mapsへのリンクを表示する。座標があり通勤時間が未取得の場合は計算ボタンを表示する。両方とも未取得の場合は「環境情報は未取得です」を表示する |
 | **メモ** | 内見予定と内見モード、AI相談、内見メモ、内見チェックリスト | 内見予定のトグルと「内見モードを開く」ボタンを置く。続けてAI相談（下記）、内見メモのコンパクトボタン（カメラアイコン、コメントアイコン、件数。タップで内見メモのオーバーレイをシートで開き、コメント入力と写真追加はオーバーレイ内で行う）、内見チェックリストを並べる |
 
-内見チェックリストはDisclosureGroupで折りたたむ。日当たり、騒音、共用部の清掃・管理状態、エントランス・セキュリティ、眺望・窓からの景色、水回り、収納スペース、周辺環境、駐車場・駐輪場、におい・換気の10項目を、タップでチェックのオンとオフを切り替える。結果は `checklistJSON` にJSONでローカル保存し、保存がない物件にはデフォルトテンプレート（`ChecklistItem.defaultTemplate`）を表示する。
+内見チェックリストはDisclosureGroupで折りたたむ。項目は10個ある。日当たり、騒音、共用部の清掃・管理状態、エントランス・セキュリティ、眺望・窓からの景色がある。水回り、収納スペース、周辺環境、駐車場・駐輪場、におい・換気もある。各項目は、タップでチェックのオンとオフを切り替える。結果は `checklistJSON` にJSONでローカル保存し、保存がない物件にはデフォルトテンプレート（`ChecklistItem.defaultTemplate`）を表示する。
 
 資産タブの各セクションは次のとおり。
 
@@ -516,7 +516,7 @@ n = 返済回数（月）= 返済年数 × 12
 
 **データ取得**
 
-住まいサーフィンの中古・新築物件ページから「周辺の中古マンション相場」テーブルを HTML パースで取得する（`sumai_surfin_enricher.py` `_extract_surrounding_properties()`）。
+住まいサーフィンの中古・新築物件ページから、「周辺の中古マンション相場」テーブルを取得する。取得は HTML パースで行う（`sumai_surfin_enricher.py` `_extract_surrounding_properties()`）。
 
 | 取得フィールド | 型 | 説明 |
 |------------|------|------|
@@ -542,7 +542,7 @@ n = 返済回数（月）= 返済年数 × 12
 
 **データ取得**
 
-住まいサーフィンの中古物件ページで「販売価格が割安か判定する」ボタンをブラウザ自動化（Playwright）でクリックし、判定結果を取得する（`sumai_surfin_browser.py` `extract_chuko_price_judgments()`）。中古物件のみ対象。住まいサーフィン評価セクション（`sumaiSurfinSection`）内の末尾に、Dividerを挟んで折りたたみ式サブセクションとして表示する。
+Playwright（ブラウザ自動化）で、住まいサーフィンの中古物件ページを操作する。「販売価格が割安か判定する」ボタンをクリックし、判定結果を取得する（`sumai_surfin_browser.py` `extract_chuko_price_judgments()`）。中古物件のみ対象。住まいサーフィン評価セクション（`sumaiSurfinSection`）内の末尾に、Dividerを挟んで折りたたみ式サブセクションとして表示する。
 
 取得フローは次のとおり。
 
@@ -575,7 +575,7 @@ n = 返済回数（月）= 返済年数 × 12
 優先順位は次のとおり。
 
 1. `ssValueJudgment`。ブラウザ自動化で取得した代表判定（「販売価格が割安か判定する」ボタン押下結果）
-2. `ssPriceJudgments`。住戸ごとの判定から、掲載価格（`priceMan`）に最も近い住戸の `judgment` を採用する（1住戸なら即採用、掲載価格なしの場合は先頭住戸）
+2. `ssPriceJudgments`。住戸ごとの判定のうち、掲載価格（`priceMan`）に最も近い住戸の `judgment` を採用する。1住戸なら即採用し、掲載価格なしの場合は先頭住戸を採用する
 3. データなしの場合は `nil`（判定バッジを非表示）
 
 **UI 仕様**
@@ -617,7 +617,7 @@ n = 返済回数（月）= 返済年数 × 12
 | **洪水詳細** | 浸水継続時間、家屋倒壊（氾濫流）、家屋倒壊（河岸侵食） |
 | **地盤** | 揺れやすさ（地形分類）※1 |
 
-> ※1 液状化リスク・揺れやすさの GSI オリジナルタイル（`08_liquid`・`13_jibanshindou`）は非公開(404)のため、代替として国土地理院 治水地形分類図（`lcmfc2`）を使用。地形種別（旧河道・後背湿地等）からリスクを間接的に判読する。
+> ※1 液状化リスク・揺れやすさの GSI オリジナルタイル（`08_liquid`・`13_jibanshindou`）は非公開(404)である。代替として国土地理院 治水地形分類図（`lcmfc2`）を使用。地形種別（旧河道・後背湿地等）からリスクを間接的に判読する。
 
 **タイルズーム制限（`maxNativeZoom`）**: GSI タイルのデータ公開ズームレベルはレイヤーにより異なる。`MKTileOverlay.maximumZ` をレイヤーごとの `maxNativeZoom` に設定し、超過ズームでは最大ズームタイルを拡大表示する。
 
@@ -655,10 +655,10 @@ n = 返済回数（月）= 返済年数 × 12
 - 2〜4件を横並びで比較
 - 横スクロール `Grid` レイアウト（行高が全列で自動同期）
 - 比較項目: 価格、間取り、面積、築年、徒歩、階数、総戸数、権利形態、住まいサーフィン評価
-- **AIで比較**: ツールバーの「AIで比較」ボタンで `AIComparisonSheet` を表示する。選択した全物件の詳細情報を含む比較プロンプトを生成し、ChatGPT / Gemini / Claude に対等比較とランキングを依頼する
-- **PDFエクスポート（p6-03）**: ツールバーの「PDF出力」ボタンでA4の比較シートを生成し、UIActivityViewControllerで共有する（ファイル保存、AirDrop、メールなど）
+- **AIで比較**: ツールバーの「AIで比較」ボタンで `AIComparisonSheet` を表示する。選択した全物件の詳細情報を含む比較プロンプトを生成する。このプロンプトで、ChatGPT / Gemini / Claude に対等比較とランキングを依頼する
+- **PDFエクスポート（p6-03）**: ツールバーの「PDF出力」ボタンでA4の比較シートを生成する。シートはUIActivityViewControllerで共有する（ファイル保存、AirDrop、メールなど）
 
-#### 3.3.8 内見写真（PhotoSectionView）— 内見メモオーバーレイ内に表示
+#### 3.3.8 内見写真（PhotoSectionView、内見メモオーバーレイ内に表示）
 
 | 機能 | 詳細 |
 |------|------|
@@ -719,7 +719,7 @@ n = 返済回数（月）= 返済年数 × 12
 | **ListingDetailView** | 近隣の成約事例 | 同一区の成約実績（`TransactionRecord`）を最大5件。取引時期の新しい順。タップで成約詳細へ |
 | **TransactionDetailView** | このエリアの販売中物件 | 同一区の販売中物件（`Listing`、掲載終了を除く）を最大5件。タップで物件詳細へ |
 
-マッチング条件は区名（`ward`）のみ。Listing は `extractWardFromAddress` で住所から区を抽出、TransactionRecord は `ward` プロパティを直接使用。
+マッチング条件は区名（`ward`）のみ。Listing は `extractWardFromAddress` で住所から区を抽出する。TransactionRecord は `ward` プロパティを直接使用する。
 
 #### 3.3.13 ホーム画面ウィジェット（WidgetKit）
 
@@ -759,7 +759,7 @@ n = 返済回数（月）= 返済年数 × 12
 
 #### 3.4.2 SupabaseAnnotationService（いいね・コメントの同期）
 
-旧 `FirebaseSyncService`（Firestore の `annotations` を使う実装）は削除済みである。`SupabaseAnnotationService` が同じ操作をSupabaseに対して行う。認証はFirebase AuthのUIDを `user_id` に使い、アクセス制御はSupabase側のSECURITY DEFINERのRPCが担う。
+旧 `FirebaseSyncService`（Firestore の `annotations` を使う実装）は削除済みである。`SupabaseAnnotationService` が同じ操作をSupabaseに対して行う。認証にはFirebase AuthのUIDを使い、`user_id` に保存する。アクセス制御はSupabase側のSECURITY DEFINERのRPCで行う。
 
 | 操作 | 詳細 |
 |------|------|
@@ -778,7 +778,7 @@ n = 返済回数（月）= 返済年数 × 12
 通勤時間データは2段階で取得する。
 
 1. **パイプライン側（即時表示用）**: `commute_enricher.py` が駅名ベースのドアtoドア概算を `commute_info` としてJSONに付与する。アプリ起動時にすぐ表示できる
-2. **iOS側（高精度更新）**: `CommuteTimeService` がMKDirections（Apple Mapsの公共交通機関）でより正確な経路を取得し、パイプラインのデータを上書きする
+2. **iOS側（高精度更新）**: `CommuteTimeService` がMKDirections（Apple Mapsの公共交通機関）で経路を取得する。この経路はより正確で、パイプラインのデータを上書きする
 
 | 項目 | 詳細 |
 |------|------|
@@ -917,7 +917,7 @@ n = 返済回数（月）= 返済年数 × 12
 
 各画面で使える操作を一覧にする。
 
-> 現状との差分（2026-10-02 にコードで確認）。この章は 2026-03 時点の画面構成で書かれており、現行の iOS アプリと次の点が異なる。`ContentView.swift` のタブは今日（TodayView）、さがす（BrowseTabView）、マイリスト（ListingListView の favoritesOnly）、設定（SettingsView）の4つである。DashboardView、DashboardFilteredListView、ScrapingConfigView は現行のコードに存在しない。成約タブ（TransactionTabView）は設定画面から開く。この章の該当箇所は旧構成の記述であり、現行の画面構成はコードで確認すること。
+> 現状との差分（2026-10-02 にコードで確認）。この章は 2026-03 時点の画面構成で書かれており、現行の iOS アプリと次の点が異なる。`ContentView.swift` のタブは4つである。今日（TodayView）とさがす（BrowseTabView）がある。マイリスト（ListingListView の favoritesOnly）と設定（SettingsView）もある。DashboardView と DashboardFilteredListView は、現行のコードにない。ScrapingConfigView もない。成約タブ（TransactionTabView）は設定画面から開く。この章の該当箇所は旧構成の記述であり、現行の画面構成はコードで確認すること。
 
 ---
 
@@ -946,7 +946,7 @@ n = 返済回数（月）= 返済年数 × 12
 
 ---
 
-### 4.2b ダッシュボード画面（DashboardView）— Phase1 追加
+### 4.2b ダッシュボード画面（DashboardView、Phase1 追加）
 
 タブバーの先頭に「概況」タブとして配置し、マーケット全体の状況を表示する。
 
@@ -979,7 +979,7 @@ n = 返済回数（月）= 返済年数 × 12
 
 #### 検索・表示
 
-> パフォーマンス対策として、`@Query` に `#Predicate` を設定し DB レベルで物件種別・掲載状態をフィルタ（中古/新築/お気に入り各タブで必要な物件のみロード）。フィルタ＋ソート結果は `onChange(of:)` で検知した場合のみ非同期再計算（`Task` でスケジュールし連続変更時は前回をキャンセル）し、`@State cachedFiltered` にキャッシュ。MapTabView も同様に `filteredListings` をキャッシュ。
+> パフォーマンス対策として、`@Query` に `#Predicate` を設定する。DB レベルで物件種別・掲載状態をフィルタし、中古/新築/お気に入り各タブで必要な物件のみロードする。フィルタ＋ソート結果は、`onChange(of:)` で変更を検知した場合のみ非同期で再計算する。再計算は `Task` でスケジュールし、連続変更時は前回をキャンセルする。再計算した結果は `@State cachedFiltered` にキャッシュする。MapTabView も同様に `filteredListings` をキャッシュ。
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
@@ -1245,7 +1245,7 @@ n = 返済回数（月）= 返済年数 × 12
 
 #### 類似物件セクション（Phase 4）
 
-同一区・同一物件種別（中古/新築）・価格帯（±20%）の類似物件を最大3件表示。`.task` で `FetchDescriptor`（`fetchLimit: 20`、価格帯・種別プレディケート）による遅延フェッチで必要データのみ取得し、`Listing.extractWardFromAddress` で区名フィルタ。掲載終了物件・自物件は除外。
+同一区・同一物件種別（中古/新築）・価格帯（±20%）の類似物件を最大3件表示。`.task` で `FetchDescriptor`（`fetchLimit: 20`、価格帯・種別プレディケート）による遅延フェッチを行い、必要データのみ取得する。区名は `Listing.extractWardFromAddress` でフィルタする。掲載終了物件・自物件は除外。
 
 | # | 機能 | 操作 | 詳細 |
 |---|------|------|------|
@@ -1300,7 +1300,7 @@ ComparisonView のツールバー「AI で比較」ボタンから表示され�
 | 6 | Gemini で比較 | ボタンタップ | 同上、Gemini を起動 |
 | 7 | Claude で比較 | ボタンタップ | 同上、Claude を起動 |
 
-AI 比較プロンプトは、全物件を対等に扱い、各物件の `toMarkdown()` フル情報 + 住まいサーフィンシミュレーションデータを含む。出力フォーマットは総合ランキング・横断比較表（価格妥当性・資産性・生活利便性・リスク・総合評価）・各物件個別分析（妥当価格レンジ・買付上限・出口試算3シナリオ）・物件間の決定的差異・仲介確認質問・未確認事項。自律リサーチ指示（各物件のマンション名・住所・成約相場・ハザード検索）を含む。
+AI 比較プロンプトは、全物件を対等に扱う。各物件の `toMarkdown()` フル情報と、住まいサーフィンシミュレーションデータを含む。出力フォーマットには、総合ランキングと、横断比較表（価格妥当性・資産性・生活利便性・リスク・総合評価）を含める。各物件個別分析（妥当価格レンジ・買付上限・出口試算3シナリオ）も含める。そのほか、物件間の決定的差異、仲介確認質問、未確認事項を出力する。自律リサーチ指示（各物件のマンション名・住所・成約相場・ハザード検索）を含む。
 
 ---
 
@@ -1517,7 +1517,7 @@ AI 比較プロンプトは、全物件を対等に扱い、各物件の `toMark
 
 ## 5. スクレイピングツール仕様
 
-> 現状との差分（2026-10-02 にコードで確認）。この章は 2026-03 時点のパイプラインで書かれており、現行のコードと次の点が異なる。新築のスクレイピングは2026-06に廃止され、`main.py` の `--property-type`、`scripts/run_scrape.sh`、`scripts/run_enrich.sh` は中古（chuko）だけを扱う。`suumo_shinchiku_scraper.py`、`shinchiku_detail_enricher.py`、`homes_shinchiku_scraper.py` は存在しない。`main.py --source all` の対象は suumo、homes、athome、rehouse、nomucom、stepon、livable の7ソースである。WF2 の enrich ジョブは `enrich-chuko-core`（`--tracks core`）と `enrich-chuko-mansion`（`--tracks mansion`）の2つで、住まいサーフィンは別ワークフロー `enrich-sumai.yml` が処理する。`run_enrich.sh` の Track G は HOME'S 画像（`floor_plan_enricher.py`）である。`send_push.py` は `scripts/` 配下にある。この章の新築に関する記述と 5.2 節の WF2 構成図は旧構成のものである。
+> 現状との差分（2026-10-02 にコードで確認）。この章は 2026-03 時点のパイプラインで書かれており、現行のコードと次の点が異なる。新築のスクレイピングは2026-06に廃止された。`main.py` の `--property-type`、`scripts/run_scrape.sh`、`scripts/run_enrich.sh` は中古（chuko）だけを扱う。`suumo_shinchiku_scraper.py`、`shinchiku_detail_enricher.py`、`homes_shinchiku_scraper.py` は存在しない。`main.py --source all` の対象は、次の7ソースである。suumo、homes、athome、rehouse、nomucom、stepon、livable。WF2 の enrich ジョブは2つある。`enrich-chuko-core`（`--tracks core`）と `enrich-chuko-mansion`（`--tracks mansion`）である。住まいサーフィンは、別ワークフロー `enrich-sumai.yml` が処理する。`run_enrich.sh` の Track G は HOME'S 画像（`floor_plan_enricher.py`）である。`send_push.py` は `scripts/` 配下にある。この章の新築に関する記述と 5.2 節の WF2 構成図は旧構成のものである。
 
 ### 5.1 データソース
 
@@ -1533,7 +1533,7 @@ AI 比較プロンプトは、全物件を対等に扱い、各物件の `toMark
 
 ### 5.2 スクレイピングパイプライン
 
-パイプラインは2つの GitHub Actions ワークフローに分離されている。WF1（Scrape Listings）がデータ取得を行い、WF2（Enrich & Report）が加工・レポート生成を行う。WF1 は 20-40分で完走するため 2時間スケジュールでキャンセルされない。WF2 は `cancel-in-progress: false` で、実行中のジョブは完了まで実行され、次の実行はキューで待機する（GitHub Actions はキューに1件のみ保持）。
+パイプラインは2つの GitHub Actions ワークフローに分離されている。WF1（Scrape Listings）がデータ取得を行う。WF2（Enrich & Report）が加工・レポート生成を行う。WF1 は 20-40分で完走するため、2時間スケジュールでキャンセルされない。WF2 は `cancel-in-progress: false` なので、実行中のジョブは完了まで実行される。次の実行はキューで待機する（GitHub Actions はキューに1件のみ保持）。
 
 #### WF1: Scrape Listings（`scripts/run_scrape.sh`）
 
@@ -1585,26 +1585,26 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
    └── git commit & push
 ```
 
-> 全 enricher を並列化しても安全な理由は、各 enricher が追加するフィールドに重複がないことにある（sumai_surfin: `ss_*`, hazard: `hazard_info`, commute: `commute_info`, reinfolib: `reinfolib_market_data`, estat: `estat_population_data`, mansion_review: `mansion_review_data`, units_cache: `total_units`, `direction`, `balcony_area_m2`, `parking`, `constructor`, `zoning`, `repair_fund_onetime`, `delivery_date`, `feature_tags` 等）。各 enricher が独自のファイルコピーで動作し、`merge_enrichments.py` がフィールドレベルで union マージするため競合なし。マージ時に `None` 値は無視する（後続 track ファイルの未設定フィールドで先行 track の値を上書きしない）。
+> 全 enricher を並列化しても安全な理由は、各 enricher が追加するフィールドに重複がないことにある。追加するフィールドは次の通り。sumai_surfin は `ss_*`、hazard は `hazard_info`、commute は `commute_info` である。reinfolib は `reinfolib_market_data`、estat は `estat_population_data` である。mansion_review は `mansion_review_data` である。units_cache は `total_units`、`direction`、`balcony_area_m2`、`parking`、`constructor` を追加する。さらに `zoning`、`repair_fund_onetime`、`delivery_date`、`feature_tags` 等も追加する。各 enricher は独自のファイルコピーで動作する。`merge_enrichments.py` がフィールドレベルで union マージするため、競合は起きない。マージ時に `None` 値は無視する。後続 track ファイルの未設定フィールドで、先行 track の値を上書きしない。
 
-> Phase1 で追加した投資判断支援 enrichment は、全 enricher 完了後の Phase 3 で次の順に実行する。
-> 1. `inject_price_history(cur, prev)` — 前回比較で価格変動があった物件に `price_history` を追記（`report_utils.py`）
-> 2. `inject_first_seen_at(cur, prev)` — 初回掲載検出日 `first_seen_at` を付与・継承（`report_utils.py`）
-> 3. `inject_competing_count(listings)` — 同一マンション内の競合売出物件数 `competing_listings_count` を付与（`report_utils.py`）
-> 4. `investment_enricher.py` — `price_fairness_score`、`resale_liquidity_score`、`listing_score` を算出・付与
-> 5. `build_supply_trends.py` — 供給トレンドの日次スナップショットを `supply_trends.json` に蓄積（最大365日分）
+> Phase1 で追加した投資判断支援 enrichment は、Phase 3 で次の順に実行する。実行は全 enricher の完了後である。
+> 1. `inject_price_history(cur, prev)` は、前回比較で価格変動があった物件に `price_history` を追記する（`report_utils.py`）
+> 2. `inject_first_seen_at(cur, prev)` は、初回掲載検出日 `first_seen_at` を付与・継承する（`report_utils.py`）
+> 3. `inject_competing_count(listings)` は、同一マンション内の競合売出物件数 `competing_listings_count` を付与する（`report_utils.py`）
+> 4. `investment_enricher.py` は、`price_fairness_score`、`resale_liquidity_score`、`listing_score` を算出・付与する
+> 5. `build_supply_trends.py` は、供給トレンドの日次スナップショットを `supply_trends.json` に蓄積する（最大365日分）
 
 > 障害許容は5層で構成する。(1) WF 分離により取得は常に完走する。(2) ジョブは `continue-on-error: true` で、中古が失敗しても新築は反映する。(3) 全 enricher を `|| true` でラップする。(4) マージは存在するファイルだけを対象にする。(5) finalize は `if: !cancelled()` で、部分データでもコミットする。
 
-> キャッシュマージについて。中古/新築の各ジョブが独立更新した `geocode_cache.json`, `sumai_surfin_cache.json`, `floor_plan_storage_manifest.json`, `station_cache.json`, `reverse_geocode_cache.json`, `building_units.json` は、finalize ジョブで `merge_caches.py` により union マージされてからコミットされる。`building_units.json` のマージにより、物件詳細ページから取得した権利形態（所有権/定借）等の情報がリポジトリに蓄積される。
+> キャッシュマージについて。中古/新築の各ジョブは、次のファイルを独立に更新する。`geocode_cache.json`, `sumai_surfin_cache.json`, `floor_plan_storage_manifest.json`, `station_cache.json`, `reverse_geocode_cache.json`, `building_units.json` である。finalize ジョブが `merge_caches.py` でこれらを union マージし、そのあとコミットする。`building_units.json` のマージにより、物件詳細ページから取得した権利形態（所有権/定借）等の情報がリポジトリに蓄積される。
 
-> ジオコーディングの最適化として、`geocode.py` は住所の早期フィルタ機能を持つ。他県住所（千葉・埼玉・神奈川等）や東京都多摩地域（八王子・町田・府中等）は Nominatim API 問い合わせ前にスキップし、不要な API コールと待機時間を削減する。
+> ジオコーディングの最適化として、`geocode.py` は住所の早期フィルタ機能を持つ。次の住所は、Nominatim API に問い合わせる前にスキップする。他県住所（千葉・埼玉・神奈川等）と、東京都多摩地域（八王子・町田・府中等）である。これで不要な API コールと待機時間を削減する。
 
 > ローカル実行用に `scripts/update_listings.sh` を維持している。全フェーズを直列で実行する旧来のパイプラインである。
 
-> データ品質検証（Phase3）として、`scripts/validate_data.py` がパイプラインの最終段階で `latest.json` / `latest_shinchiku.json` の品質を検証する。必須フィールド欠損率（50%超でエラー、10%超で警告）、価格・面積の妥当性、0以下価格、URL 重複、identity_key 衝突、ジオコーディング率、住まいサーフィンマッチ率を報告する。エラー有無は `ValidationResult.has_errors` で判定する。`--previous` オプションで前回データとの件数変動（25%超で警告、50%超でエラー）を検出する。
+> データ品質検証（Phase3）として、`scripts/validate_data.py` が、パイプラインの最終段階で品質を検証する。対象は `latest.json` / `latest_shinchiku.json` である。報告する項目は、必須フィールド欠損率（50%超でエラー、10%超で警告）である。価格・面積の妥当性、0以下価格、URL 重複も報告する。identity_key 衝突、ジオコーディング率、住まいサーフィンマッチ率も報告する。エラー有無は `ValidationResult.has_errors` で判定する。`--previous` オプションで前回データとの件数変動（25%超で警告、50%超でエラー）を検出する。
 
-> キャッシュ管理（Phase3）として、`scripts/cache_manager.py` が TTL に基づいてキャッシュをクリーンアップする。`geocode_cache.json`（90日）、`sumai_surfin_cache.json`（30日）、`station_cache.json`（180日）、`reverse_geocode_cache.json`（90日）の各エントリについて、`cached_at` / `fetched_at` / `timestamp` フィールドで期限切れを判定して削除する。`--stats` で統計を表示し、`--cleanup` で削除を実行する。
+> キャッシュ管理（Phase3）として、`scripts/cache_manager.py` が TTL に基づいてキャッシュをクリーンアップする。`geocode_cache.json`（90日）、`sumai_surfin_cache.json`（30日）、`station_cache.json`（180日）、`reverse_geocode_cache.json`（90日）の各エントリが対象である。`cached_at` / `fetched_at` / `timestamp` フィールドで期限切れを判定し、削除する。`--stats` で統計を表示し、`--cleanup` で削除を実行する。
 
 ### 5.3 スクレイパー詳細
 
@@ -1621,9 +1621,9 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | 早期打ち切り | 連続20ページで新規通過0件の区はスキップ（`EARLY_EXIT_PAGES=20`）。サーバーサイドフィルタ（価格・面積・徒歩）で対象外物件が事前に除外されるため、早期打ち切りによる取りこぼしは大幅に少ない |
 | 出力 | `SuumoListing` dataclass |
 
-#### 5.3.2 ~~HOME'S 中古（homes_scraper.py）~~ — 現在無効
+#### 5.3.2 ~~HOME'S 中古（homes_scraper.py）~~（現在無効）
 
-> 無効化の理由は次の通り。AWS WAF が GitHub Actions の IP を積極的にブロックし、1ページあたり最大7分のリトライが発生。30ページ処理しても通過0件という状況が続いたため無効化。コードは `--source homes` / `--source both` で再有効化可能。
+> 無効化の理由は次の通り。AWS WAF が GitHub Actions の IP を積極的にブロックした。そのため、1ページあたり最大7分のリトライが発生した。30ページ処理しても通過0件という状況が続いたので、無効化した。コードは `--source homes` / `--source both` で再有効化できる。
 
 #### 5.3.3 SUUMO 新築（suumo_shinchiku_scraper.py + shinchiku_detail_enricher.py）
 
@@ -1634,9 +1634,9 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | 間取りフィルタ | 間取りタブの全タイプから `LAYOUT_PREFIX_OK`（= "2", "3"）に合致するもののみ採用 |
 | 出力 | `SuumoShinchikuListing` dataclass |
 
-#### 5.3.4 ~~HOME'S 新築（homes_shinchiku_scraper.py）~~ — 現在無効
+#### 5.3.4 ~~HOME'S 新築（homes_shinchiku_scraper.py）~~（現在無効）
 
-> 中古と同様の理由で無効化。権利形態（ownership）取得ロジックは実装済み（テーブルの「権利形態」「敷地の権利形態」「権利」ラベル + `parse_ownership` / `parse_ownership_from_text` フォールバック）。
+> 中古と同様の理由で無効化。権利形態（ownership）の取得ロジックは実装済みである。テーブルの「権利形態」「敷地の権利形態」「権利」ラベルを読む。取れなければ `parse_ownership` / `parse_ownership_from_text` にフォールバックする。
 
 ### 5.4 物件名クリーニング（`clean_listing_name`）
 
@@ -1652,7 +1652,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | 条件タグ除外 | 「ペット可」「リフォーム済」「角部屋」等の物件特徴タグ → 空 |
 | 路線情報のみ除外 | 「○○線○○駅徒歩X分」のみのテキスト → 空 |
 
-条件タグ除外（`_is_feature_tag`）は、CSS クラス `title` / `name` にマッチするバッジ要素や h2-h4 見出しから物件条件テキスト（「ペット可」「即入居可」「リノベーション済」等）が物件名として誤抽出されるのを防ぐ。完全一致リスト（`_NOT_A_NAME_EXACT`）とパターンマッチ（`_NOT_A_NAME_PATTERNS`）の2段階で判定。クリーニング後に条件タグだけが残った場合も再判定して空を返す。
+条件タグ除外（`_is_feature_tag`）は、物件条件テキストが物件名として誤抽出されるのを防ぐ。条件テキストは、「ペット可」「即入居可」「リノベーション済」等である。誤抽出が起きるのは、CSS クラス `title` / `name` にマッチするバッジ要素や、h2-h4 見出しである。判定は2段階で行う。完全一致リスト（`_NOT_A_NAME_EXACT`）とパターンマッチ（`_NOT_A_NAME_PATTERNS`）を使う。クリーニング後に条件タグだけが残った場合も再判定して空を返す。
 
 `main.py` の後処理では `clean_listing_name` が空を返した場合に「（不明）」をフォールバック値として設定する。
 
@@ -1662,7 +1662,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 各スクレイパーの結果に、次の条件でローカルフィルタ（`apply_conditions`）をかける。
 
-> サーバーサイドフィルタとして、SUUMO 中古では JJ012FC001 エンドポイントの `kb`/`kt`（価格）、`mb`（面積下限）、`et`（駅徒歩上限）パラメータでサーバー側の絞り込みを行う。`mb`/`et` は SUUMO が受け付ける固定値のみ使用可（mb: 20,30,40,50,60,70,80,90,100、et: 1,3,5,7,10,15,20）。config 値は `_snap_mb`（切り捨て）・`_snap_et`（切り上げ）で最寄り固定値に丸める。ローカルフィルタはこの結果に対してさらに正確な面積・間取り・築年・徒歩等の条件で絞り込む2段構成
+> サーバーサイドフィルタとして、SUUMO 中古では JJ012FC001 エンドポイントで絞り込む。使うパラメータは `kb`/`kt`（価格）、`mb`（面積下限）、`et`（駅徒歩上限）である。`mb`/`et` は、SUUMO が受け付ける固定値だけを使える。固定値は、mb が 20,30,40,50,60,70,80,90,100 である。et は 1,3,5,7,10,15,20 である。config 値は `_snap_mb`（切り捨て）・`_snap_et`（切り上げ）で最寄り固定値に丸める。ローカルフィルタは、この結果をさらに正確な面積・間取り・築年・徒歩等の条件で絞り込む。絞り込みは、サーバーとローカルの2段構成である。
 
 - 東京23区以内
 - 価格: `PRICE_MIN_MAN`〜`PRICE_MAX_MAN`
@@ -1677,7 +1677,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 #### 重複除去（`dedupe_listings`）
 
-`listing_key` = (normalize_listing_name(name), layout, area, price, normalized_address, built_year, station_name) の組み合わせで一意化する。重複件数は `duplicate_count` に記録する。`station_line` の路線テキストはＪＲ総武線とＪＲ総武線快速のように表記が揺れるため、キーには駅名だけを使う。`walk_min` はキーから除外する。address は `_normalize_address_for_key` で丁目レベルに正規化（番地以下の精度差を吸収）。`normalize_listing_name` は◆装飾・【】・階数・PROJECT等の説明文を除去し、空白除去・中黒（・）除去・既知の誤字補正を行う強化版正規化を適用。◆NAME◆ パターン（先頭◆で囲まれた物件名）は内容を抽出して空文字化を防止。
+物件は `listing_key` で一意化する。`listing_key` は、`(normalize_listing_name(name), layout, area, price, normalized_address, built_year, station_name)` の組み合わせである。重複件数は `duplicate_count` に記録する。`station_line` の路線テキストはＪＲ総武線とＪＲ総武線快速のように表記が揺れるため、キーには駅名だけを使う。`walk_min` はキーから除外する。address は `_normalize_address_for_key` で丁目レベルに正規化（番地以下の精度差を吸収）。`normalize_listing_name` には、強化版の正規化を適用する。◆装飾・【】・階数・PROJECT等の説明文を除去し、空白除去・中黒（・）除去・既知の誤字補正を行う。◆NAME◆ パターン（先頭◆で囲まれた物件名）は内容を抽出して空文字化を防止。
 
 ### 5.6 エンリッチャー
 
@@ -1775,7 +1775,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 ### 5.7 成約実績フィード構築（build_transaction_feed.py）
 
-東京23区の成約実績データを取得・フィルタ・ジオコード・集約して iOS アプリ向け `transactions.json` を生成するバッチスクリプト。スクレイピングツール（suumo_scraper.py）と同じ購入条件に合致する成約物件だけを対象とする。
+東京23区の成約実績データを取得・フィルタ・ジオコード・集約するバッチスクリプト。iOS アプリ向けの `transactions.json` を生成する。スクレイピングツール（suumo_scraper.py）と同じ購入条件に合致する成約物件だけを対象とする。
 
 | 項目 | 詳細 |
 |------|------|
@@ -1854,7 +1854,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 #### 5.8.2 Google Maps 通勤エンリッチャー（commute_gmaps_enricher.py）
 
-物件住所をGoogle Mapsの出発地に入力し、公共交通機関経路の所要時間をPlaywrightでスクレイピングして取得する。`commute_enricher.py`（駅テーブルベース）より精度が高い実測値を取得する。
+物件住所をGoogle Mapsの出発地に入力する。公共交通機関経路の所要時間は、Playwrightでスクレイピングして取得する。`commute_enricher.py`（駅テーブルベース）より精度が高い実測値を取得する。
 
 | オプション | 説明 |
 |-----------|------|
@@ -1866,7 +1866,7 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 
 キャッシュ（`commute_gmaps_cache/results.json`）は CI 間で `actions/cache/restore` / `actions/cache/save`（`if: always()`）により永続化される。タイムアウトでジョブがキャンセルされても部分キャッシュが保存され、次回実行時に未取得分のみスクレイピングする。`commute_gmaps_cache/` は `.gitignore` の対象で、リポジトリにコミットしない。
 
-マージ順序: Track C（commute_enricher）→ Track F（commute_gmaps_enricher）で、Track F の結果が優先される。
+先に Track C（commute_enricher）をマージする。後に Track F（commute_gmaps_enricher）をマージする。後にマージするTrack Fの結果が優先される。
 
 ### 5.9 分析・予測
 
@@ -1884,11 +1884,11 @@ Job 4: finalize（if: !cancelled()、一部ジョブ失敗でも実行）
 | scripts/validate_data.py | 物件データのバリデーション。ValidationResult、validate_listings（必須フィールド・異常値・重複URL検出） |
 | scripts/build_supply_trends.py | 供給トレンド集計。区別・四半期別の物件件数を aggregate_trends で集計する |
 
-`price_predictor` と `future_estate_predictor` は `shared_utils` を利用する。CSV/JSONの読込は try/except で囲み、ファイルが欠けている場合は警告を出し、空のDataFrameとデフォルト値で続行する。
+`price_predictor` と `future_estate_predictor` は `shared_utils` を利用する。CSV/JSONの読込は try/except で囲む。ファイルが欠けている場合は警告を出し、空のDataFrameとデフォルト値で続行する。
 
 ### 5.10 レポート生成
 
-`generate_report.py` が次のレポートをMarkdownで生成する。`report_utils.row_merge_key` は物件名・価格・間取りに加えて住所（address）と築年（built_year）をキーに含め、異なる建物の物件が誤ってマージされるのを防ぐ。
+`generate_report.py` が次のレポートをMarkdownで生成する。`report_utils.row_merge_key` は、物件名・価格・間取りに加えて住所（address）と築年（built_year）をキーに含める。これで、異なる建物の物件が誤ってマージされるのを防ぐ。
 
 | セクション | 内容 |
 |-----------|------|
@@ -2092,7 +2092,7 @@ iOSアプリのメインデータモデル。`SupabaseListingStore` がSupabase�
 ### 6.2 TransactionRecord（SwiftData @Model）
 
 iOSアプリの成約実績データモデル。`scraping-tool/results/transactions.json` の1取引に対応する。
-reinfolib API（不動産情報ライブラリ）の成約価格情報から、`config.py` の購入条件（価格帯、面積、間取り、築年、駅徒歩）に合う東京23区のレコードを抽出する。条件の値はスクレイピングと同じで、[9.1](#91-スクレイピング検索条件configpy) の表に従う。
+reinfolib API（不動産情報ライブラリ）の成約価格情報から、東京23区のレコードを抽出する。対象は、`config.py` の購入条件（価格帯、面積、間取り、築年、駅徒歩）に合うレコードである。条件の値はスクレイピングと同じで、[9.1](#91-スクレイピング検索条件configpy) の表に従う。
 
 #### 取引情報
 
@@ -2240,7 +2240,7 @@ reinfolib API（不動産情報ライブラリ）の成約価格情報から、`
 
 ### 6.9 ScrapingConfig
 
-スクレイピング条件は、Supabaseの `scraping_config` テーブルの `id = 'default'` の行にある `config` 列（JSONB）が正です。パイプラインの `supabase_config_loader.py` が読み込みます。iOSアプリの `ScrapingConfig` モデルと編集画面は、2026-06-13に削除しました（[docs/refactor-proposals.md](refactor-proposals.md) のP1）。`config` のキーは次のとおりです。
+スクレイピング条件の正は、Supabaseの `scraping_config` テーブルにあります。`id = 'default'` の行の `config` 列（JSONB）です。パイプラインの `supabase_config_loader.py` が読み込みます。iOSアプリの `ScrapingConfig` モデルと編集画面は、2026-06-13に削除しました。経緯は [docs/refactor-proposals.md](refactor-proposals.md) のP1にあります。`config` のキーは次のとおりです。
 
 | キー | 型 | 説明 |
 |-----------|-----|------|
@@ -2268,7 +2268,7 @@ reinfolib API（不動産情報ライブラリ）の成約価格情報から、`
 
 ## 7. Firebase 仕様
 
-Firebaseは一部が現役で残っている。経緯は [docs/refactor-proposals.md](refactor-proposals.md) のP1とP2にある。2026-06-13に、スクレイピング条件のFirestore経路をP1で撤去した。同じ日に、認証、FCM、写真Storageは維持すると決めた（P2）。
+Firebaseは一部が現役で残っている。経緯は、[docs/refactor-proposals.md](refactor-proposals.md) のP1とP2にある。2026-06-13に、スクレイピング条件のFirestore経路をP1で撤去した。同じ日に、認証、FCM、写真Storageは維持すると決めた（P2）。
 
 | 用途 | 現在の場所 |
 |------|-----------|
@@ -2326,7 +2326,7 @@ floor_plans/{imageId}        → 公開読み取り（認証不要）
 property_images/{imageId}    → 公開読み取り（認証不要）
 ```
 
-`floor_plans/` と `property_images/` のルールは、SUUMO と HOME'S の公開物件写真のキャッシュ用です。ダウンロードトークンが無効になった場合でも、`AsyncImage` が読み込めるように公開読み取りにしています。パイプラインの現在のアップロード先はR2（未設定ならSupabase Storage）で、`upload_floor_plans.py` がFirebase Storageへ書き込むことはありません。
+`floor_plans/` と `property_images/` のルールは、SUUMO と HOME'S の公開物件写真のキャッシュ用です。ダウンロードトークンが無効になった場合でも、`AsyncImage` が読み込めるように公開読み取りにしています。パイプラインの現在のアップロード先はR2です。未設定ならSupabase Storageを使います。`upload_floor_plans.py` がFirebase Storageへ書き込むことはありません。
 
 ### 7.4 Firebase Cloud Messaging
 
@@ -2388,9 +2388,9 @@ check → has_changes / is_slack_time を判定（timeout: 5分）
 
 finalizeの各処理は `scripts/run_finalize.sh` に書かれています。`git add` する対象は `scraping-tool/results/` と、`data/` 配下の一部のキャッシュファイルです。`.gitignore` 対象のファイルは `check-ignore` で除外します。
 
-Slack通知は2026-07-07から全経路を停止しています。`slack_notify.py` は、環境変数 `SLACK_NOTIFICATIONS_ENABLED=1` を設定したときだけ送信します（[README.md](../README.md) を参照）。両ワークフローの失敗通知ステップも `if: false` で無効にしてあります。
+Slack通知は2026-07-07から全経路を停止しています。`slack_notify.py` が送信するのは、環境変数 `SLACK_NOTIFICATIONS_ENABLED=1` を設定したときだけです（[README.md](../README.md) を参照）。両ワークフローの失敗通知ステップも `if: false` で無効にしてあります。
 
-両ワークフローは `cancel-in-progress: false` なので、WF2の実行中に新しいWF1が完了しても、実行中のWF2は最後まで走ります。新しいWF2はキューで待ち、現在の実行が終わってから始まる。GitHub Actionsはconcurrency groupごとにキューへ1件しか保持しないため、待機が複数溜まることはない。
+両ワークフローは `cancel-in-progress: false` なので、WF2の実行中に新しいWF1が完了しても、実行中のWF2は最後まで走ります。新しいWF2はキューで待ち、現在の実行が終わってから始まる。GitHub Actionsは、concurrency groupごとにキューへ1件しか保持しない。そのため、待機が複数溜まることはない。
 
 `upload_floor_plans.py` はfinalizeジョブで実行します。enrichジョブがタイムアウトしても、enrichedアーティファクトの保存が失われないようにするためです。`ThreadPoolExecutor`（`MAX_WORKERS = 8`）で並列に処理し、`--max-time 20` で時間を制限します。保存先はR2（未設定ならSupabase Storage）です。
 
@@ -2423,7 +2423,7 @@ Slack通知は2026-07-07から全経路を停止しています。`slack_notify.
 | `notification-watchdog.yml` | Slack通知パイプラインを監視する（`0 1,3 * * *`） |
 | `slack-smoke-test.yml` | Slackスレッド返信の動作確認（手動実行） |
 
-`Backfill HOME'S Images`、`Detect Delisted Listings`、`Notification Watchdog`、`Cron Watchdog` の4つは、GitHub側で無効化してあります（[README.md](../README.md) を参照）。
+次の4つは、GitHub側で無効化してあります。`Backfill HOME'S Images`、`Detect Delisted Listings`、`Notification Watchdog`、`Cron Watchdog` です（[README.md](../README.md) を参照）。
 
 ### 8.2 不動産情報ライブラリ・人口動態キャッシュ更新ワークフロー
 
@@ -2431,7 +2431,7 @@ Slack通知は2026-07-07から全経路を停止しています。`slack_notify.
 
 不動産情報ライブラリAPIとe-Stat APIから、キャッシュデータを事前に構築します。トリガーは毎週月曜 6:00 UTC（`0 6 * * 1`）と `workflow_dispatch`（入力 `target`）です。Enrich and Reportワークフローはこのキャッシュを参照するだけで、これらのAPIを直接呼びません。独自のconcurrency group（`update-reinfolib-cache`）で動くため、他のワークフローと干渉しません。
 
-`fetch_station_prices.py` の直接APIモードは、全ワーカー共通のグローバルレートリミッターを使い、50リクエスト/分（1.2秒間隔）に制限します。不動産情報ライブラリの目安は60リクエスト/分で、それに余裕を持たせた値です。ワークフローのタイムアウトは90分です（初回のフル取得は、809駅 × 5年 ÷ 50リクエスト/分で約81分）。`--resume` により、通常の週次実行は取得済みのデータをスキップして数分で終わります。
+`fetch_station_prices.py` の直接APIモードは、全ワーカー共通のグローバルレートリミッターを使います。上限は50リクエスト/分（1.2秒間隔）です。不動産情報ライブラリの目安は60リクエスト/分で、それに余裕を持たせた値です。ワークフローのタイムアウトは90分です（初回のフル取得は、809駅 × 5年 ÷ 50リクエスト/分で約81分）。`--resume` により、通常の週次実行は取得済みのデータをスキップして数分で終わります。
 
 `target` が `all` の場合、地価公示と人口動態のキャッシュは、4月の実行と手動実行のときだけ更新します。
 
@@ -2463,9 +2463,9 @@ Slack通知は2026-07-07から全経路を停止しています。`slack_notify.
 
 **ファイル**: `real-estate-ios/scripts/deploy.sh`
 
-ローカルマシンのCLIで、ビルド番号の更新、アーカイブ、App Store Connectへのアップロードまでを一括で実行します。個人開発のためXcode Cloudは使わず、ローカルデプロイに一本化しています。
+ローカルマシンのCLIで、一括して実行します。内容は、ビルド番号の更新、アーカイブ、App Store Connectへのアップロードです。個人開発のためXcode Cloudは使わず、ローカルデプロイに一本化しています。
 
-TestFlightへの配布は、必ず `./scripts/deploy.sh --ios` で行う。Mac版（Mac Catalyst）は2026-05-16に廃止済みで、`project.yml` は `SUPPORTS_MACCATALYST: "NO"` である。ただし `deploy.sh` には、`--mac`、`--all`、引数なしの実行でMac Catalystを処理するコードがまだ残っているため、これらの実行は避けること。
+TestFlightへの配布は、必ず `./scripts/deploy.sh --ios` で行う。Mac版（Mac Catalyst）は2026-05-16に廃止済みで、`project.yml` は `SUPPORTS_MACCATALYST: "NO"` である。ただし `deploy.sh` には、Mac Catalystを処理するコードがまだ残っている。`--mac`、`--all`、引数なしで実行すると、そのコードが動く。これらの実行は避けること。
 
 #### コマンド
 
@@ -2489,9 +2489,9 @@ TestFlightへの配布は、必ず `./scripts/deploy.sh --ios` で行う。Mac�
 3. Widget拡張の `CFBundleVersion` は `$(CURRENT_PROJECT_VERSION)` を参照するため、自動で同じ番号になる
 4. `BUILD_BUMPED` フラグにより、複数のプラットフォームを続けて処理する場合も、番号の更新は1回だけにする
 
-App Store Connectは、同一アプリで未使用のCFBundleVersion（ビルド番号）でないとアップロードを受け付けません。別のマシンやCIで、すでに大きい番号がApp Store Connectに登録されている場合は、`project.yml` の `CURRENT_PROJECT_VERSION` をその最大値以上に手動で合わせてから `deploy.sh` を実行してください。例えば、App Store Connect上のiOSの最新が354なら、354からデプロイして355にします。
+App Store Connectが受け付けるのは、未使用のCFBundleVersion（ビルド番号）だけです。同一アプリの範囲で判定します。別のマシンやCIで、すでに大きい番号がApp Store Connectに登録されている場合は、手動で合わせてください。`project.yml` の `CURRENT_PROJECT_VERSION` を、その最大値以上にしてから `deploy.sh` を実行します。例えば、App Store Connect上のiOSの最新が354なら、354からデプロイして355にします。
 
-エクスポート段階で `xcodebuild` のログに `Upload succeeded` や `EXPORT SUCCEEDED` が出ていても、既存のビルド番号と重複している場合は、処理の後で失敗することがあります。メール通知は必ずしも届かないため、TestFlightまたはApp Store Connectのビルド一覧で確認してください。
+エクスポート段階で、`xcodebuild` のログに `Upload succeeded` や `EXPORT SUCCEEDED` が出る場合がある。それでも、既存のビルド番号と重複していると、処理の後で失敗することがある。メール通知は必ずしも届かない。TestFlightまたはApp Store Connectのビルド一覧で確認してください。
 
 #### 前提条件
 
@@ -2528,9 +2528,9 @@ App Store Connectは、同一アプリで未使用のCFBundleVersion（ビルド
 
 ### 9.2 Supabase 経由の条件上書き
 
-Supabaseの `scraping_config` テーブルで `id = 'default'` の行に保存された条件は、`supabase_config_loader.py` の `load_config_from_supabase()` が読み込み、`config.apply_runtime_overrides()` でconfigモジュールに反映します。`main.py` と `generate_report.py` は、どちらもこの関数をconfigのimportより前に呼びます。Supabaseのクライアントが無い場合、行が無い場合、取得に失敗した場合は、`config.py` の既定値を使う。その旨はログに出力される。
+Supabaseの `scraping_config` テーブルで `id = 'default'` の行に保存された条件は、`supabase_config_loader.py` の `load_config_from_supabase()` が読み込みます。読み込んだ条件は、`config.apply_runtime_overrides()` でconfigモジュールに反映される。`main.py` と `generate_report.py` は、どちらもconfigのimportより前にこの関数を呼びます。Supabaseのクライアントが無い場合、行が無い場合、取得に失敗した場合は、`config.py` の既定値を使う。その旨はログに出力される。
 
-以前はFirestoreの `scraping_config` とiOSアプリの設定画面から条件を上書きしていましたが、2026-06-13に撤去しました（[7章](#7-firebase-仕様)、[docs/refactor-proposals.md](refactor-proposals.md) のP1）。現在の条件は、migrationとSQLで更新します。
+以前はFirestoreの `scraping_config` とiOSアプリの設定画面から、条件を上書きしていました。この経路は2026-06-13に撤去しました（[7章](#7-firebase-仕様)、[docs/refactor-proposals.md](refactor-proposals.md) のP1）。現在の条件は、migrationとSQLで更新します。
 
 ### 9.2.1 設定メタデータの単一ソース化
 
@@ -2542,9 +2542,9 @@ Supabaseの `scraping_config` テーブルで `id = 'default'` の行に保存�
 
 ### 9.3 iOS アプリのフィルタロジック（共通化）
 
-`ListingFilter.apply(to:)` が物件一覧（ListingListView）と地図（MapTabView）の両方でフィルタ条件を適用する共通メソッドとして使用される。
+`ListingFilter.apply(to:)` は、フィルタ条件を適用する共通メソッドである。物件一覧（ListingListView）と地図（MapTabView）の両方が使う。
 
-- **流れ**: View 側で前処理（お気に入りタブ・座標有無・掲載終了除外など）→ `filter.apply(to: baseList)` → View 側で後処理（検索テキスト・ソートなど）
+- **流れ**: View 側で前処理する（お気に入りタブ・座標有無・掲載終了除外など）。次に `filter.apply(to: baseList)` を呼ぶ。最後に View 側で後処理する（検索テキスト・ソートなど）
 - **ヘルパー**: `availableLayouts(from:)`, `availableWards(from:)`, `availableRouteStations(from:)` がフィルタシートの選択肢データ生成に使用される
 
 ### 9.4 購入判断フロー
@@ -2668,7 +2668,7 @@ Supabaseの `scraping_config` テーブルで `id = 'default'` の行に保存�
 | `REINFOLIB_API_KEY` | 不動産情報ライブラリAPIのキー | enrich-and-report.yml、update-reinfolib-cache.yml、reinfolib_cache_builder.py、fetch_station_prices.py、build_transaction_feed.py |
 | `ESTAT_API_KEY` | e-StatのアプリケーションID | update-reinfolib-cache.yml、estat_population_builder.py、estat_aging_builder.py |
 
-`SLACK_ALERT_WEBHOOK_URL`、`SLACK_HEALTH_WEBHOOK_URL`、`SLACK_BOT_TOKEN`、`SLACK_CHANNEL_ID`、`PAT_FINALIZE_PUSH` は、ワークフローがGitHub Actionsのシークレットとして参照します。用途は 8.2 の「使用するシークレット」にあります。
+ワークフローは、GitHub Actionsのシークレットを参照します。`SLACK_ALERT_WEBHOOK_URL`、`SLACK_HEALTH_WEBHOOK_URL`、`SLACK_BOT_TOKEN`、`SLACK_CHANNEL_ID`、`PAT_FINALIZE_PUSH` です。用途は 8.2 の「使用するシークレット」にあります。
 
 ---
 
@@ -2741,7 +2741,7 @@ Supabaseの `scraping_config` テーブルで `id = 'default'` の行に保存�
 
 ### C.2 新築マンション（latest_shinchiku.json）
 
-新築の取得は2026-06-03に廃止しました。次の例は廃止前の出力形式で、現在のパイプラインはこのファイルを生成しません（`run_enrich.sh` は `--property-type chuko` だけを受け付けます）。
+新築の取得は2026-06-03に廃止しました。次の例は廃止前の出力形式です。現在のパイプラインはこのファイルを生成しません（`run_enrich.sh` は `--property-type chuko` だけを受け付けます）。
 
 ```json
 [
