@@ -32751,48 +32751,48 @@
     },
     {
       "date": "2026-10-03",
-      "total_listings": 883,
-      "new_count": 883,
+      "total_listings": 888,
+      "new_count": 888,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10283,
-      "median_price_man": 10380,
+      "avg_price_man": 10291,
+      "median_price_man": 10400,
       "price_distribution": {
-        "under_10000": 416,
-        "10000_11000": 282,
-        "11000_12000": 185,
+        "under_10000": 413,
+        "10000_11000": 286,
+        "11000_12000": 189,
         "over_12000": 0,
         "undecided": 0
       },
       "ward_stats": {
         "江東区": {
-          "count": 182,
-          "avg_price_man": 10255,
+          "count": 183,
+          "avg_price_man": 10254,
           "min_price_man": 7680,
           "max_price_man": 11500
         },
         "中央区": {
-          "count": 83,
-          "avg_price_man": 10512,
+          "count": 88,
+          "avg_price_man": 10544,
           "min_price_man": 8280,
           "max_price_man": 11500
         },
         "豊島区": {
-          "count": 65,
-          "avg_price_man": 10228,
+          "count": 62,
+          "avg_price_man": 10267,
           "min_price_man": 8580,
           "max_price_man": 11500
         },
         "世田谷区": {
-          "count": 62,
-          "avg_price_man": 10631,
+          "count": 61,
+          "avg_price_man": 10669,
           "min_price_man": 9280,
           "max_price_man": 11500
         },
         "新宿区": {
-          "count": 61,
-          "avg_price_man": 10317,
+          "count": 60,
+          "avg_price_man": 10302,
           "min_price_man": 8200,
           "max_price_man": 11500
         },
@@ -32803,33 +32803,39 @@
           "max_price_man": 11490
         },
         "杉並区": {
-          "count": 48,
-          "avg_price_man": 10368,
+          "count": 50,
+          "avg_price_man": 10349,
           "min_price_man": 9080,
           "max_price_man": 11500
         },
-        "北区": {
-          "count": 39,
-          "avg_price_man": 10042,
-          "min_price_man": 7980,
-          "max_price_man": 11480
-        },
         "品川区": {
-          "count": 38,
-          "avg_price_man": 10452,
+          "count": 39,
+          "avg_price_man": 10473,
           "min_price_man": 8800,
           "max_price_man": 11498
         },
+        "北区": {
+          "count": 39,
+          "avg_price_man": 10029,
+          "min_price_man": 7980,
+          "max_price_man": 11480
+        },
         "板橋区": {
-          "count": 35,
-          "avg_price_man": 10073,
+          "count": 34,
+          "avg_price_man": 10076,
           "min_price_man": 9000,
           "max_price_man": 11480
         },
         "大田区": {
-          "count": 31,
-          "avg_price_man": 10098,
+          "count": 32,
+          "avg_price_man": 10091,
           "min_price_man": 9099,
+          "max_price_man": 11500
+        },
+        "荒川区": {
+          "count": 27,
+          "avg_price_man": 10012,
+          "min_price_man": 8280,
           "max_price_man": 11500
         },
         "練馬区": {
@@ -32838,27 +32844,21 @@
           "min_price_man": 9080,
           "max_price_man": 11480
         },
-        "荒川区": {
-          "count": 25,
-          "avg_price_man": 9953,
-          "min_price_man": 8280,
-          "max_price_man": 11490
-        },
-        "墨田区": {
-          "count": 23,
-          "avg_price_man": 9792,
-          "min_price_man": 7880,
-          "max_price_man": 11500
-        },
         "江戸川区": {
           "count": 23,
           "avg_price_man": 10232,
           "min_price_man": 9000,
           "max_price_man": 11500
         },
+        "墨田区": {
+          "count": 22,
+          "avg_price_man": 9787,
+          "min_price_man": 7880,
+          "max_price_man": 11500
+        },
         "中野区": {
           "count": 22,
-          "avg_price_man": 10204,
+          "avg_price_man": 10163,
           "min_price_man": 9180,
           "max_price_man": 11490
         },
