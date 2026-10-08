@@ -33379,16 +33379,16 @@
     },
     {
       "date": "2026-10-07",
-      "total_listings": 792,
-      "new_count": 792,
+      "total_listings": 794,
+      "new_count": 794,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10300,
+      "avg_price_man": 10302,
       "median_price_man": 10400,
       "price_distribution": {
         "under_10000": 367,
-        "10000_11000": 256,
+        "10000_11000": 258,
         "11000_12000": 169,
         "over_12000": 0,
         "undecided": 0
@@ -33396,13 +33396,13 @@
       "ward_stats": {
         "江東区": {
           "count": 173,
-          "avg_price_man": 10235,
+          "avg_price_man": 10234,
           "min_price_man": 7680,
           "max_price_man": 11500
         },
         "中央区": {
-          "count": 72,
-          "avg_price_man": 10582,
+          "count": 74,
+          "avg_price_man": 10590,
           "min_price_man": 8380,
           "max_price_man": 11500
         },
