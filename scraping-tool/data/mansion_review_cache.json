@@ -6616,23 +6616,23 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603788.html",
       "deviation_score": 55,
-      "estimated_price_man": 14572,
-      "estimated_tsubo_price_man": 679,
-      "estimated_m2_price_man": 206,
+      "estimated_price_man": 17941,
+      "estimated_tsubo_price_man": 674,
+      "estimated_m2_price_man": 204,
       "shinchiku_history_count": 550,
-      "chuko_history_count": 455,
+      "chuko_history_count": 458,
       "sales_history": [
         {
           "end_date": "",
           "floor": 16,
           "layout": "",
-          "area_m2": 71.68,
-          "price_man": 9480,
-          "tsubo_price_man": 435.0
+          "area_m2": 71.71,
+          "price_man": 9510,
+          "tsubo_price_man": 436.0
         }
       ]
     },
-    "cached_at": "2026-09-23T16:04:21.316373"
+    "cached_at": "2026-10-08T05:39:57.877695"
   },
   "西戸山タワーホウムズサウスタワー": {
     "data": {
@@ -9242,7 +9242,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/756927.html",
       "deviation_score": 24,
-      "estimated_price_man": 9791,
+      "estimated_price_man": 9522,
       "estimated_tsubo_price_man": 444,
       "estimated_m2_price_man": 135,
       "shinchiku_history_count": 24,
@@ -9258,7 +9258,7 @@
         }
       ]
     },
-    "cached_at": "2026-09-23T16:04:30.604099"
+    "cached_at": "2026-10-08T05:40:07.280443"
   },
   "東京ビューマークス18階(新規内装フルリノベーション...": {
     "data": {
@@ -9518,7 +9518,7 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/16416.html",
       "deviation_score": 17,
-      "estimated_price_man": 12371,
+      "estimated_price_man": 12013,
       "estimated_tsubo_price_man": 593,
       "estimated_m2_price_man": 180,
       "shinchiku_history_count": 172,
@@ -9534,7 +9534,7 @@
         }
       ]
     },
-    "cached_at": "2026-09-24T04:10:39.790152"
+    "cached_at": "2026-10-08T05:39:48.366898"
   },
   "オープンレジデンシア中野中央": {
     "data": {
