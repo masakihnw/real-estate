@@ -34483,7 +34483,7 @@
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10289,
+      "avg_price_man": 10290,
       "median_price_man": 10299,
       "price_distribution": {
         "under_10000": 395,
@@ -34500,8 +34500,8 @@
           "max_price_man": 11500
         },
         "中央区": {
-          "count": 72,
-          "avg_price_man": 10524,
+          "count": 73,
+          "avg_price_man": 10525,
           "min_price_man": 8380,
           "max_price_man": 11500
         },
@@ -34537,7 +34537,7 @@
         },
         "北区": {
           "count": 41,
-          "avg_price_man": 10118,
+          "avg_price_man": 10111,
           "min_price_man": 7980,
           "max_price_man": 11480
         },
@@ -34548,8 +34548,8 @@
           "max_price_man": 11500
         },
         "板橋区": {
-          "count": 36,
-          "avg_price_man": 10121,
+          "count": 35,
+          "avg_price_man": 10137,
           "min_price_man": 9000,
           "max_price_man": 11490
         },
