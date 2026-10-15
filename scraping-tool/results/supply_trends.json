@@ -34635,17 +34635,17 @@
     },
     {
       "date": "2026-10-15",
-      "total_listings": 842,
-      "new_count": 842,
+      "total_listings": 843,
+      "new_count": 843,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
-      "avg_price_man": 10294,
+      "avg_price_man": 10295,
       "median_price_man": 10299,
       "price_distribution": {
         "under_10000": 398,
         "10000_11000": 268,
-        "11000_12000": 176,
+        "11000_12000": 177,
         "over_12000": 0,
         "undecided": 0
       },
@@ -34699,8 +34699,8 @@
           "max_price_man": 11500
         },
         "北区": {
-          "count": 39,
-          "avg_price_man": 10181,
+          "count": 40,
+          "avg_price_man": 10211,
           "min_price_man": 7980,
           "max_price_man": 11480
         },
