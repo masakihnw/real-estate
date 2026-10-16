@@ -38653,7 +38653,7 @@
       "building_url": "https://www.mansion-review.jp/mansion/1640105.html",
       "deviation_score": 4
     },
-    "cached_at": "2026-10-01T13:33:24.949971"
+    "cached_at": "2026-10-16T04:13:47.411690"
   },
   "オープンレジデンシア日本橋横山町": {
     "data": {
@@ -40637,7 +40637,7 @@
   },
   "4REST.フォレストAtype": {
     "data": null,
-    "cached_at": "2026-09-29T05:21:03.283400"
+    "cached_at": "2026-10-16T04:13:50.872035"
   },
   "ライオンズシティ浅草■□■~浅草駅3分...": {
     "data": null,
@@ -42789,5 +42789,50 @@
       ]
     },
     "cached_at": "2026-10-15T11:50:11.412534"
+  },
+  "Brillia月島四丁目(ブリリア月島四丁目)": {
+    "data": null,
+    "cached_at": "2026-10-16T04:13:37.316820"
+  },
+  "ロワール板橋": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/535689.html",
+      "deviation_score": 20,
+      "shinchiku_history_count": 20,
+      "chuko_history_count": 11,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 7,
+          "layout": "",
+          "area_m2": 61.55,
+          "price_man": 5646,
+          "tsubo_price_man": 308.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-16T04:13:59.481959"
+  },
+  "プリンスハイツ駒込": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17851.html",
+      "deviation_score": 34,
+      "estimated_price_man": 12595,
+      "estimated_tsubo_price_man": 485,
+      "estimated_m2_price_man": 147,
+      "shinchiku_history_count": 34,
+      "chuko_history_count": 15,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 3,
+          "layout": "",
+          "area_m2": 91.99,
+          "price_man": 9129,
+          "tsubo_price_man": 334.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-16T04:14:08.423851"
   }
 }
