@@ -34949,16 +34949,16 @@
     },
     {
       "date": "2026-10-17",
-      "total_listings": 850,
-      "new_count": 850,
+      "total_listings": 849,
+      "new_count": 849,
       "removed_count": 0,
       "updated_count": 0,
       "price_changed_count": 0,
       "avg_price_man": 10303,
-      "median_price_man": 10299,
+      "median_price_man": 10290,
       "price_distribution": {
         "under_10000": 406,
-        "10000_11000": 262,
+        "10000_11000": 261,
         "11000_12000": 182,
         "over_12000": 0,
         "undecided": 0
@@ -35031,8 +35031,8 @@
           "max_price_man": 11500
         },
         "大田区": {
-          "count": 28,
-          "avg_price_man": 10138,
+          "count": 27,
+          "avg_price_man": 10122,
           "min_price_man": 9280,
           "max_price_man": 11490
         },
