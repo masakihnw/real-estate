@@ -240426,7 +240426,7 @@
     ],
     "suumo_images": [
       {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F709%2F21687709%2F21687709_0001.jpg&w=1200&h=900",
+        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F709%2F21687709%2F21687709_0086.jpg&w=1200&h=900",
         "label": "住戸からの眺望写真"
       },
       {
@@ -272833,14 +272833,34 @@
     "zoning": "無指定",
     "delivery_date": "即引渡可",
     "feature_tags": [
+      "年内引渡可",
+      "即引渡可",
       "２沿線以上利用可",
+      "年度内引渡可",
+      "スーパー 徒歩10分以内",
       "内装リフォーム",
       "システムキッチン",
+      "浴室乾燥機",
+      "角住戸",
+      "陽当り良好",
+      "駅まで平坦",
+      "高層階",
+      "セキュリティ充実",
+      "２面以上バルコニー",
+      "フローリング張替",
+      "オートバス",
+      "温水洗浄便座",
+      "リノベーション",
+      "通風良好",
+      "全居室フローリング",
+      "眺望良好",
       "南西向き",
       "ペット相談",
+      "エレベーター",
       "宅配ボックス",
       "駐輪場",
-      "バイク置場"
+      "バイク置場",
+      "浄水器"
     ],
     "floor_plan_images": [
       "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F467%2F21816467%2F21816467_0002.jpg&w=1200&h=900"
@@ -272921,10 +272941,6 @@
       {
         "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F467%2F21816467%2F21816467_0020.jpg&w=1200&h=900",
         "label": "エントランス"
-      },
-      {
-        "url": "https://img01.suumo.com/jj/resizeImage?src=gazo%2Fbukken%2F030%2FN010000%2Fimg%2F467%2F21816467%2F21816467_0021.jpg&w=1200&h=900",
-        "label": "図書館"
       }
     ]
   },
