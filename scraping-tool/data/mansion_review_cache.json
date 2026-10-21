@@ -43419,5 +43419,27 @@
       ]
     },
     "cached_at": "2026-10-20T04:38:26.770795"
+  },
+  "アーデル大塚Cースクエア": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/35919.html",
+      "deviation_score": 49,
+      "estimated_price_man": 8543,
+      "estimated_tsubo_price_man": 393,
+      "estimated_m2_price_man": 119,
+      "shinchiku_history_count": 49,
+      "chuko_history_count": 57,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 4,
+          "layout": "",
+          "area_m2": 64.95,
+          "price_man": 5957,
+          "tsubo_price_man": 304.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-21T04:24:19.743611"
   }
 }
