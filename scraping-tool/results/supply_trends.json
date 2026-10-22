@@ -35731,6 +35731,163 @@
           "max_price_man": 11500
         }
       }
+    },
+    {
+      "date": "2026-10-22",
+      "total_listings": 842,
+      "new_count": 842,
+      "removed_count": 0,
+      "updated_count": 0,
+      "price_changed_count": 0,
+      "avg_price_man": 10307,
+      "median_price_man": 10380,
+      "price_distribution": {
+        "under_10000": 399,
+        "10000_11000": 267,
+        "11000_12000": 176,
+        "over_12000": 0,
+        "undecided": 0
+      },
+      "ward_stats": {
+        "江東区": {
+          "count": 211,
+          "avg_price_man": 10305,
+          "min_price_man": 8399,
+          "max_price_man": 11500
+        },
+        "中央区": {
+          "count": 61,
+          "avg_price_man": 10625,
+          "min_price_man": 8380,
+          "max_price_man": 11500
+        },
+        "豊島区": {
+          "count": 54,
+          "avg_price_man": 10240,
+          "min_price_man": 8580,
+          "max_price_man": 11500
+        },
+        "世田谷区": {
+          "count": 52,
+          "avg_price_man": 10720,
+          "min_price_man": 9280,
+          "max_price_man": 11500
+        },
+        "台東区": {
+          "count": 51,
+          "avg_price_man": 10141,
+          "min_price_man": 7980,
+          "max_price_man": 11499
+        },
+        "杉並区": {
+          "count": 47,
+          "avg_price_man": 10296,
+          "min_price_man": 9200,
+          "max_price_man": 11500
+        },
+        "品川区": {
+          "count": 45,
+          "avg_price_man": 10582,
+          "min_price_man": 9180,
+          "max_price_man": 11500
+        },
+        "新宿区": {
+          "count": 43,
+          "avg_price_man": 10476,
+          "min_price_man": 9180,
+          "max_price_man": 11500
+        },
+        "北区": {
+          "count": 41,
+          "avg_price_man": 10132,
+          "min_price_man": 7980,
+          "max_price_man": 11480
+        },
+        "板橋区": {
+          "count": 35,
+          "avg_price_man": 10067,
+          "min_price_man": 9000,
+          "max_price_man": 11490
+        },
+        "荒川区": {
+          "count": 33,
+          "avg_price_man": 9946,
+          "min_price_man": 7680,
+          "max_price_man": 11500
+        },
+        "大田区": {
+          "count": 28,
+          "avg_price_man": 10082,
+          "min_price_man": 9280,
+          "max_price_man": 11490
+        },
+        "江戸川区": {
+          "count": 26,
+          "avg_price_man": 10306,
+          "min_price_man": 9000,
+          "max_price_man": 11500
+        },
+        "練馬区": {
+          "count": 26,
+          "avg_price_man": 10111,
+          "min_price_man": 9080,
+          "max_price_man": 11480
+        },
+        "墨田区": {
+          "count": 20,
+          "avg_price_man": 9681,
+          "min_price_man": 7780,
+          "max_price_man": 11500
+        },
+        "中野区": {
+          "count": 20,
+          "avg_price_man": 10072,
+          "min_price_man": 9180,
+          "max_price_man": 10990
+        },
+        "足立区": {
+          "count": 12,
+          "avg_price_man": 10278,
+          "min_price_man": 9180,
+          "max_price_man": 11500
+        },
+        "渋谷区": {
+          "count": 10,
+          "avg_price_man": 10407,
+          "min_price_man": 8970,
+          "max_price_man": 11500
+        },
+        "文京区": {
+          "count": 10,
+          "avg_price_man": 10577,
+          "min_price_man": 9280,
+          "max_price_man": 11500
+        },
+        "葛飾区": {
+          "count": 10,
+          "avg_price_man": 10231,
+          "min_price_man": 9180,
+          "max_price_man": 11480
+        },
+        "港区": {
+          "count": 3,
+          "avg_price_man": 11500,
+          "min_price_man": 11500,
+          "max_price_man": 11500
+        },
+        "目黒区": {
+          "count": 3,
+          "avg_price_man": 10846,
+          "min_price_man": 9580,
+          "max_price_man": 11480
+        },
+        "千代田区": {
+          "count": 1,
+          "avg_price_man": 11500,
+          "min_price_man": 11500,
+          "max_price_man": 11500
+        }
+      }
     }
   ],
   "shinchiku": [
@@ -51345,8 +51502,8 @@
     }
   ],
   "metadata": {
-    "last_updated": "2026-10-21",
-    "total_snapshots_chuko": 236,
+    "last_updated": "2026-10-22",
+    "total_snapshots_chuko": 237,
     "total_snapshots_shinchiku": 105
   }
 }

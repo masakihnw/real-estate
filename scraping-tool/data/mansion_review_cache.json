@@ -3036,23 +3036,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/14341.html",
       "deviation_score": 16,
-      "estimated_price_man": 12707,
-      "estimated_tsubo_price_man": 618,
-      "estimated_m2_price_man": 187,
+      "estimated_price_man": 16244,
+      "estimated_tsubo_price_man": 572,
+      "estimated_m2_price_man": 173,
       "shinchiku_history_count": 165,
-      "chuko_history_count": 198,
+      "chuko_history_count": 203,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 12,
           "layout": "",
-          "area_m2": 65.73,
-          "price_man": 6378,
-          "tsubo_price_man": 322.0
+          "area_m2": 66.36,
+          "price_man": 390,
+          "tsubo_price_man": 327.0
         }
       ]
     },
-    "cached_at": "2026-06-10T17:28:12.158529"
+    "cached_at": "2026-10-22T12:03:49.271204"
   },
   "ニューライズシティ東京ベイハイライズ": {
     "data": {
@@ -3675,23 +3674,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/754869.html",
       "deviation_score": 53,
-      "estimated_price_man": 9617,
-      "estimated_tsubo_price_man": 442,
-      "estimated_m2_price_man": 134,
+      "estimated_price_man": 9778,
+      "estimated_tsubo_price_man": 449,
+      "estimated_m2_price_man": 136,
       "shinchiku_history_count": 531,
-      "chuko_history_count": 152,
+      "chuko_history_count": 154,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 69.95,
-          "price_man": 7700,
-          "tsubo_price_man": 364.0
+          "area_m2": 69.88,
+          "price_man": 291,
+          "tsubo_price_man": 365.0
         }
       ]
     },
-    "cached_at": "2026-10-03T05:11:26.199374"
+    "cached_at": "2026-10-22T12:03:25.030251"
   },
   "ミッドアベニュー中野": {
     "data": {
@@ -6614,23 +6612,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/603788.html",
       "deviation_score": 55,
-      "estimated_price_man": 17941,
-      "estimated_tsubo_price_man": 674,
-      "estimated_m2_price_man": 204,
+      "estimated_price_man": 19225,
+      "estimated_tsubo_price_man": 669,
+      "estimated_m2_price_man": 203,
       "shinchiku_history_count": 550,
-      "chuko_history_count": 458,
+      "chuko_history_count": 462,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 16,
           "layout": "",
           "area_m2": 71.71,
-          "price_man": 9510,
-          "tsubo_price_man": 436.0
+          "price_man": 660,
+          "tsubo_price_man": 438.0
         }
       ]
     },
-    "cached_at": "2026-10-08T05:39:57.877695"
+    "cached_at": "2026-10-22T12:03:15.892654"
   },
   "西戸山タワーホウムズサウスタワー": {
     "data": {
@@ -9239,23 +9236,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/756927.html",
       "deviation_score": 24,
-      "estimated_price_man": 9522,
+      "estimated_price_man": 9388,
       "estimated_tsubo_price_man": 444,
       "estimated_m2_price_man": 135,
       "shinchiku_history_count": 24,
       "chuko_history_count": 28,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 2,
           "layout": "",
           "area_m2": 59.17,
-          "price_man": 5910,
+          "price_man": 258,
           "tsubo_price_man": 332.0
         }
       ]
     },
-    "cached_at": "2026-10-08T05:40:07.280443"
+    "cached_at": "2026-10-22T12:03:33.562557"
   },
   "東京ビューマークス18階(新規内装フルリノベーション...": {
     "data": {
@@ -31358,23 +31354,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/1441406.html",
       "deviation_score": 33,
-      "estimated_price_man": 6764,
+      "estimated_price_man": 6556,
       "estimated_tsubo_price_man": 345,
       "estimated_m2_price_man": 105,
       "shinchiku_history_count": 33,
       "chuko_history_count": 8,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 4,
           "layout": "",
           "area_m2": 63.36,
-          "price_man": 6661,
+          "price_man": 207,
           "tsubo_price_man": 346.0
         }
       ]
     },
-    "cached_at": "2026-10-07T13:35:33.207718"
+    "cached_at": "2026-10-22T12:03:06.293534"
   },
   "シアンズテラス下高井戸1階": {
     "data": {
@@ -43428,5 +43423,17 @@
       ]
     },
     "cached_at": "2026-10-21T04:24:19.743611"
+  },
+  "デュオ駒込古川庭園駒込": {
+    "data": null,
+    "cached_at": "2026-10-22T12:03:37.055887"
+  },
+  "【デュオ駒込古川庭園】ペット可×駒込9分": {
+    "data": null,
+    "cached_at": "2026-10-22T12:03:40.319296"
+  },
+  "デュオ駒込古川庭園": {
+    "data": null,
+    "cached_at": "2026-10-22T12:03:40.319296"
   }
 }
