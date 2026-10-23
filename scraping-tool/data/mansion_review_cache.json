@@ -11625,23 +11625,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/18337.html",
       "deviation_score": 53,
-      "estimated_price_man": 7915,
-      "estimated_tsubo_price_man": 504,
-      "estimated_m2_price_man": 153,
+      "estimated_price_man": 9118,
+      "estimated_tsubo_price_man": 503,
+      "estimated_m2_price_man": 152,
       "shinchiku_history_count": 53,
-      "chuko_history_count": 38,
+      "chuko_history_count": 41,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 7,
           "layout": "",
-          "area_m2": 53.9,
-          "price_man": 5501,
-          "tsubo_price_man": 333.0
+          "area_m2": 53.74,
+          "price_man": 452,
+          "tsubo_price_man": 348.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:44:24.990862"
+    "cached_at": "2026-10-23T12:00:48.888298"
   },
   "ユニオンパレス御徒町": {
     "data": {
@@ -17518,23 +17517,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/27082.html",
       "deviation_score": 37,
-      "estimated_price_man": 10471,
+      "estimated_price_man": 10627,
       "estimated_tsubo_price_man": 517,
       "estimated_m2_price_man": 157,
       "shinchiku_history_count": 37,
       "chuko_history_count": 18,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 9,
           "layout": "",
           "area_m2": 66.61,
-          "price_man": 7848,
+          "price_man": 484,
           "tsubo_price_man": 383.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:44:42.664935"
+    "cached_at": "2026-10-23T12:00:57.174144"
   },
   "ルイシャトレ目黒不動前": {
     "data": {
@@ -27425,7 +27423,7 @@
   },
   "パークホームズセントラルシティ中央湊": {
     "data": null,
-    "cached_at": "2026-10-09T05:44:07.142385"
+    "cached_at": "2026-10-23T12:00:32.117311"
   },
   "ラ・アトレ杉並松庵": {
     "data": {
@@ -37144,23 +37142,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/754020.html",
       "deviation_score": 52,
-      "estimated_price_man": 8233,
-      "estimated_tsubo_price_man": 419,
-      "estimated_m2_price_man": 127,
+      "estimated_price_man": 8574,
+      "estimated_tsubo_price_man": 450,
+      "estimated_m2_price_man": 137,
       "shinchiku_history_count": 52,
-      "chuko_history_count": 22,
+      "chuko_history_count": 23,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 6,
           "layout": "",
-          "area_m2": 67.44,
-          "price_man": 5771,
-          "tsubo_price_man": 284.0
+          "area_m2": 67.42,
+          "price_man": 342,
+          "tsubo_price_man": 293.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:44:33.748510"
+    "cached_at": "2026-10-23T12:00:40.326646"
   },
   "マノ―蔵前リバーステージ3階": {
     "data": {
@@ -38447,16 +38444,15 @@
       "chuko_history_count": 44,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 6,
           "layout": "",
           "area_m2": 49.31,
-          "price_man": 4608,
+          "price_man": 535,
           "tsubo_price_man": 306.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:44:15.767392"
+    "cached_at": "2026-10-23T12:02:27.733083"
   },
   "パシフィックハウス豊町": {
     "data": {
@@ -39703,23 +39699,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/29207.html",
       "deviation_score": 35,
-      "estimated_price_man": 4995,
+      "estimated_price_man": 5301,
       "estimated_tsubo_price_man": 338,
       "estimated_m2_price_man": 102,
       "shinchiku_history_count": 35,
       "chuko_history_count": 43,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 7,
           "layout": "",
           "area_m2": 56.58,
-          "price_man": 3846,
+          "price_man": 153,
           "tsubo_price_man": 224.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:44:59.745880"
+    "cached_at": "2026-10-23T12:01:05.205111"
   },
   "ルネ・グランマリーナ潮見15階": {
     "data": {
@@ -39755,23 +39750,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/13178.html",
       "deviation_score": 88,
-      "estimated_price_man": 11028,
-      "estimated_tsubo_price_man": 500,
+      "estimated_price_man": 11357,
+      "estimated_tsubo_price_man": 501,
       "estimated_m2_price_man": 152,
       "shinchiku_history_count": 88,
-      "chuko_history_count": 43,
+      "chuko_history_count": 44,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 71.39,
-          "price_man": 6388,
-          "tsubo_price_man": 292.0
+          "area_m2": 71.43,
+          "price_man": 302,
+          "tsubo_price_man": 297.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:45:56.066402"
+    "cached_at": "2026-10-23T12:02:10.574182"
   },
   "ランドステージ要町イグジスト": {
     "data": {
@@ -39784,16 +39778,15 @@
       "chuko_history_count": 28,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 2,
           "layout": "",
           "area_m2": 66.4,
-          "price_man": 5479,
+          "price_man": 500,
           "tsubo_price_man": 275.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:45:46.978890"
+    "cached_at": "2026-10-23T12:03:01.549638"
   },
   "Brillia西荻窪8階": {
     "data": {
@@ -39821,23 +39814,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/11942.html",
       "deviation_score": 83,
-      "estimated_price_man": 15369,
-      "estimated_tsubo_price_man": 833,
-      "estimated_m2_price_man": 252,
+      "estimated_price_man": 21538,
+      "estimated_tsubo_price_man": 828,
+      "estimated_m2_price_man": 251,
       "shinchiku_history_count": 833,
-      "chuko_history_count": 899,
+      "chuko_history_count": 906,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 28,
           "layout": "",
-          "area_m2": 81.34,
-          "price_man": 11314,
-          "tsubo_price_man": 461.0
+          "area_m2": 81.27,
+          "price_man": 925,
+          "tsubo_price_man": 465.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:46:06.037704"
+    "cached_at": "2026-10-23T12:02:37.026422"
   },
   "パークホームズ王子": {
     "data": {
@@ -39847,16 +39839,15 @@
       "chuko_history_count": 6,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 7,
           "layout": "",
           "area_m2": 64.33,
-          "price_man": 6481,
+          "price_man": 200,
           "tsubo_price_man": 332.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:45:38.128077"
+    "cached_at": "2026-10-23T12:02:01.875515"
   },
   "ファミール赤羽シィティーアヴェニュー12階": {
     "data": null,
@@ -42153,68 +42144,68 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/17207.html",
       "deviation_score": 42,
-      "estimated_price_man": 8691,
-      "estimated_tsubo_price_man": 472,
-      "estimated_m2_price_man": 143,
+      "estimated_price_man": 8168,
+      "estimated_tsubo_price_man": 466,
+      "estimated_m2_price_man": 141,
       "shinchiku_history_count": 42,
-      "chuko_history_count": 34,
+      "chuko_history_count": 35,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 63.04,
-          "price_man": 5468,
-          "tsubo_price_man": 290.0
+          "area_m2": 63.17,
+          "price_man": 295,
+          "tsubo_price_man": 295.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:45:08.157818"
+    "cached_at": "2026-10-23T12:01:13.360025"
   },
   "クレストフォルム清澄庭園パークウィング": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/32030.html",
       "deviation_score": 16,
+      "estimated_price_man": 12165,
+      "estimated_tsubo_price_man": 530,
+      "estimated_m2_price_man": 161,
       "shinchiku_history_count": 16,
-      "chuko_history_count": 11,
+      "chuko_history_count": 12,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 4,
           "layout": "",
-          "area_m2": 65.53,
-          "price_man": 6055,
-          "tsubo_price_man": 303.0
+          "area_m2": 66.22,
+          "price_man": 606,
+          "tsubo_price_man": 319.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:45:17.363913"
+    "cached_at": "2026-10-23T12:01:21.933658"
   },
   "ディアナコート石神井公園専用庭付き": {
     "data": null,
-    "cached_at": "2026-10-09T05:45:29.473056"
+    "cached_at": "2026-10-23T12:01:37.210965"
   },
   "ルフォン世田谷": {
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/14419.html",
       "deviation_score": 88,
-      "estimated_price_man": 13952,
-      "estimated_tsubo_price_man": 600,
-      "estimated_m2_price_man": 182,
+      "estimated_price_man": 11735,
+      "estimated_tsubo_price_man": 597,
+      "estimated_m2_price_man": 181,
       "shinchiku_history_count": 88,
-      "chuko_history_count": 50,
+      "chuko_history_count": 51,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 76.33,
-          "price_man": 8114,
-          "tsubo_price_man": 352.0
+          "area_m2": 76.36,
+          "price_man": 376,
+          "tsubo_price_man": 357.0
         }
       ]
     },
-    "cached_at": "2026-10-09T05:46:14.925937"
+    "cached_at": "2026-10-23T12:01:30.488370"
   },
   "コスモ入谷ロイヤルフォルム": {
     "data": {
@@ -43566,5 +43557,169 @@
       ]
     },
     "cached_at": "2026-10-23T04:31:06.909523"
+  },
+  "ヴェルト日本橋III": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/34155.html",
+      "deviation_score": 80,
+      "estimated_price_man": 11169,
+      "estimated_tsubo_price_man": 606,
+      "estimated_m2_price_man": 184,
+      "shinchiku_history_count": 80,
+      "chuko_history_count": 48,
+      "sales_history": [
+        {
+          "floor": 9,
+          "layout": "",
+          "area_m2": 28.74,
+          "price_man": 349,
+          "tsubo_price_man": 306.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-23T12:00:25.689988"
+  },
+  "セザールリバーサイド中州☆アフター保証付": {
+    "data": null,
+    "cached_at": "2026-10-23T12:00:28.898195"
+  },
+  "WコンフォートタワーズWest": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/13388.html",
+      "deviation_score": 11,
+      "estimated_price_man": 11717,
+      "estimated_tsubo_price_man": 485,
+      "estimated_m2_price_man": 147,
+      "shinchiku_history_count": 1149,
+      "chuko_history_count": 1131,
+      "sales_history": [
+        {
+          "end_date": "",
+          "floor": 28,
+          "layout": "",
+          "area_m2": 94.83,
+          "price_man": 8744,
+          "tsubo_price_man": 300.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-17T11:14:27.817640"
+  },
+  "桜上水ガーデンズD棟": {
+    "data": null,
+    "cached_at": "2026-10-17T11:06:07.241416"
+  },
+  "シティタワー大泉学園■2026年10月フルリノベ...": {
+    "data": null,
+    "cached_at": "2026-10-23T12:01:33.943527"
+  },
+  "シティタワー大泉学園2026年10月フルリノベ...": {
+    "data": null,
+    "cached_at": "2026-10-23T12:01:33.943527"
+  },
+  "西荻窪デュープレックスII": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/12178.html",
+      "deviation_score": 49,
+      "estimated_price_man": 9333,
+      "estimated_tsubo_price_man": 355,
+      "estimated_m2_price_man": 108,
+      "shinchiku_history_count": 49,
+      "chuko_history_count": 20,
+      "sales_history": [
+        {
+          "floor": 2,
+          "layout": "",
+          "area_m2": 79.35,
+          "price_man": 273,
+          "tsubo_price_man": 287.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-23T12:01:45.330204"
+  },
+  "シャリ工高井戸ソルパティオ": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/16605.html",
+      "deviation_score": 62,
+      "estimated_price_man": 8175,
+      "estimated_tsubo_price_man": 392,
+      "estimated_m2_price_man": 119,
+      "shinchiku_history_count": 62,
+      "chuko_history_count": 25,
+      "sales_history": [
+        {
+          "floor": 2,
+          "layout": "",
+          "area_m2": 69.66,
+          "price_man": 300,
+          "tsubo_price_man": 301.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-23T12:01:53.817344"
+  },
+  "ザ・パークハウス新宿柏木": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/534502.html",
+      "deviation_score": 61,
+      "estimated_price_man": 10142,
+      "estimated_tsubo_price_man": 579,
+      "estimated_m2_price_man": 175,
+      "shinchiku_history_count": 61,
+      "chuko_history_count": 59,
+      "sales_history": [
+        {
+          "floor": 4,
+          "layout": "",
+          "area_m2": 60.72,
+          "price_man": 310,
+          "tsubo_price_man": 384.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-23T12:02:18.993419"
+  },
+  "ライオンズグローベル浅草雷門": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/18028.html",
+      "deviation_score": 49,
+      "estimated_price_man": 7101,
+      "estimated_tsubo_price_man": 534,
+      "estimated_m2_price_man": 162,
+      "shinchiku_history_count": 49,
+      "chuko_history_count": 55,
+      "sales_history": [
+        {
+          "floor": 5,
+          "layout": "",
+          "area_m2": 51.28,
+          "price_man": 551,
+          "tsubo_price_man": 474.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-23T12:02:45.375253"
+  },
+  "アールヴェール平和台": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/17076.html",
+      "deviation_score": 67,
+      "estimated_price_man": 7456,
+      "estimated_tsubo_price_man": 271,
+      "estimated_m2_price_man": 82,
+      "shinchiku_history_count": 67,
+      "chuko_history_count": 21,
+      "sales_history": [
+        {
+          "floor": 2,
+          "layout": "",
+          "area_m2": 80.79,
+          "price_man": 200,
+          "tsubo_price_man": 206.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-23T12:02:53.424967"
   }
 }
