@@ -7624,7 +7624,7 @@
   },
   "ブリリア有明スカイタワー/2LDK+DEN+SIC/...": {
     "data": null,
-    "cached_at": "2026-06-18T11:13:54.440040"
+    "cached_at": "2026-10-17T11:15:36.678264"
   },
   "ブリリア有明スカイタワー/": {
     "data": null,
@@ -13412,23 +13412,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/31304.html",
       "deviation_score": 19,
-      "estimated_price_man": 8705,
-      "estimated_tsubo_price_man": 465,
-      "estimated_m2_price_man": 141,
+      "estimated_price_man": 10403,
+      "estimated_tsubo_price_man": 472,
+      "estimated_m2_price_man": 143,
       "shinchiku_history_count": 192,
-      "chuko_history_count": 144,
+      "chuko_history_count": 147,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 5,
           "layout": "",
-          "area_m2": 72.96,
-          "price_man": 5364,
-          "tsubo_price_man": 245.0
+          "area_m2": 72.97,
+          "price_man": 247,
+          "tsubo_price_man": 249.0
         }
       ]
     },
-    "cached_at": "2026-09-03T11:38:05.749807"
+    "cached_at": "2026-10-25T04:23:51.482876"
   },
   "東京フロントコート16階": {
     "data": {
@@ -14256,16 +14255,15 @@
       "chuko_history_count": 12,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 4,
           "layout": "",
           "area_m2": 66.93,
-          "price_man": 6650,
+          "price_man": 693,
           "tsubo_price_man": 333.0
         }
       ]
     },
-    "cached_at": "2026-09-18T15:38:12.925034"
+    "cached_at": "2026-10-25T04:24:00.874706"
   },
   "グローリオ南阿佐ヶ谷": {
     "data": {
@@ -19585,16 +19583,15 @@
       "chuko_history_count": 1,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 1,
           "layout": "",
           "area_m2": 78.7,
-          "price_man": 13000,
-          "tsubo_price_man": 547.0
+          "price_man": 1400,
+          "tsubo_price_man": 526.0
         }
       ]
     },
-    "cached_at": "2026-06-11T09:00:33.044339"
+    "cached_at": "2026-10-25T04:23:32.765034"
   },
   "ディアナコート大森山王空と光を独占する、ダブルテラスの私邸。1階": {
     "data": null,
@@ -43846,5 +43843,26 @@
       ]
     },
     "cached_at": "2026-10-24T11:21:00.152212"
+  },
+  "グランイーグル蒲田ウエスト": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/709617.html",
+      "deviation_score": 21,
+      "estimated_price_man": 7058,
+      "estimated_tsubo_price_man": 377,
+      "estimated_m2_price_man": 114,
+      "shinchiku_history_count": 21,
+      "chuko_history_count": 9,
+      "sales_history": [
+        {
+          "floor": 6,
+          "layout": "",
+          "area_m2": 64.79,
+          "price_man": 190,
+          "tsubo_price_man": 338.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-25T04:23:42.202789"
   }
 }
