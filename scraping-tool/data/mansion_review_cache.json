@@ -1964,23 +1964,22 @@
     "data": {
       "building_url": "https://www.mansion-review.jp/mansion/756946.html",
       "deviation_score": 36,
-      "estimated_price_man": 8601,
-      "estimated_tsubo_price_man": 711,
-      "estimated_m2_price_man": 216,
+      "estimated_price_man": 14162,
+      "estimated_tsubo_price_man": 689,
+      "estimated_m2_price_man": 209,
       "shinchiku_history_count": 363,
-      "chuko_history_count": 260,
+      "chuko_history_count": 328,
       "sales_history": [
         {
-          "end_date": "",
           "floor": 13,
           "layout": "",
-          "area_m2": 62.74,
-          "price_man": 10841,
-          "tsubo_price_man": 567.0
+          "area_m2": 62.51,
+          "price_man": 793,
+          "tsubo_price_man": 591.0
         }
       ]
     },
-    "cached_at": "2026-06-24T14:37:08.352735"
+    "cached_at": "2026-10-26T04:21:18.806255"
   },
   "品川イーストシティタワー11階": {
     "data": {
@@ -43847,5 +43846,80 @@
       ]
     },
     "cached_at": "2026-10-25T11:44:55.193088"
+  },
+  "フォーリア日本橋人形町": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/897249.html",
+      "deviation_score": 7
+    },
+    "cached_at": "2026-10-26T04:21:00.594001"
+  },
+  "クリオ町屋サザンマークス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1383462.html",
+      "deviation_score": 17,
+      "shinchiku_history_count": 17,
+      "chuko_history_count": 8,
+      "sales_history": [
+        {
+          "floor": 7,
+          "layout": "",
+          "area_m2": 60.03,
+          "price_man": 100,
+          "tsubo_price_man": 327.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-26T04:21:09.321933"
+  },
+  "【世田谷千歳台ガーデン&レジデンス】重厚を纏う低層レ...": {
+    "data": null,
+    "cached_at": "2026-10-26T04:21:22.074600"
+  },
+  "世田谷千歳台ガーデン&レジデンス重厚を纏う低層レ...": {
+    "data": null,
+    "cached_at": "2026-10-26T04:21:22.074600"
+  },
+  "ピアース若林レジデンス": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/1406541.html",
+      "deviation_score": 44,
+      "estimated_price_man": 12398,
+      "estimated_tsubo_price_man": 672,
+      "estimated_m2_price_man": 204,
+      "shinchiku_history_count": 44,
+      "chuko_history_count": 16,
+      "sales_history": [
+        {
+          "floor": 3,
+          "layout": "",
+          "area_m2": 59.67,
+          "price_man": 736,
+          "tsubo_price_man": 621.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-26T04:21:31.049251"
+  },
+  "リゾセントラルコート東陽町": {
+    "data": {
+      "building_url": "https://www.mansion-review.jp/mansion/35494.html",
+      "deviation_score": 12,
+      "estimated_price_man": 10645,
+      "estimated_tsubo_price_man": 400,
+      "estimated_m2_price_man": 121,
+      "shinchiku_history_count": 126,
+      "chuko_history_count": 101,
+      "sales_history": [
+        {
+          "floor": 7,
+          "layout": "",
+          "area_m2": 75.96,
+          "price_man": 290,
+          "tsubo_price_man": 237.0
+        }
+      ]
+    },
+    "cached_at": "2026-10-26T04:21:41.373220"
   }
 }
