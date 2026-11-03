@@ -1,20 +1,36 @@
 {
   "metrics": {
     "rehouse": {
-      "parsed": 5957,
+      "parsed": 5959,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
-        "completed": 21,
-        "early_exit": 2
+        "completed": 22,
+        "early_exit": 1
       }
     },
     "suumo": {
-      "parsed": 5900,
+      "parsed": 5922,
       "parse_failures": 0,
       "empty_pages": 0,
       "finish_reasons": {
         "early_exit": 23
+      }
+    },
+    "homes": {
+      "parsed": 0,
+      "parse_failures": 0,
+      "empty_pages": 2,
+      "finish_reasons": {
+        "empty_parse_abort": 1
+      }
+    },
+    "livable": {
+      "parsed": 4972,
+      "parse_failures": 0,
+      "empty_pages": 0,
+      "finish_reasons": {
+        "completed": 23
       }
     },
     "nomucom": {
@@ -24,26 +40,11 @@
       "finish_reasons": {
         "safety_limit": 1
       }
-    },
-    "livable": {
-      "parsed": 4979,
-      "parse_failures": 0,
-      "empty_pages": 0,
-      "finish_reasons": {
-        "completed": 23
-      }
-    },
-    "homes": {
-      "parsed": 1150,
-      "parse_failures": 0,
-      "empty_pages": 0,
-      "finish_reasons": {
-        "early_exit": 1
-      }
     }
   },
   "alerts": [
+    "homes: 1件もパースできずに終了（媒体全損の可能性） — 終端: empty_parse_abort×1",
     "nomucom: 異常終端 safety_limit×1 — 残ページ取りこぼしの可能性"
   ],
-  "saved_at": "2026-11-02T15:42:37.476484+00:00"
+  "saved_at": "2026-11-03T06:30:13.004760+00:00"
 }
